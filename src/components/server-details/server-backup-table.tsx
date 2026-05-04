@@ -1,6 +1,5 @@
 "use client";
-
-import { useIntlayer } from 'react-intlayer';
+import { useTranslation } from "react-i18next";
 import type { Backup } from "@/lib/types";
 import React, { useState, useEffect, useMemo } from "react";
 import {
@@ -48,8 +47,7 @@ interface ServerBackupTableProps {
 }
 
 export function ServerBackupTable({ backups, serverName, serverAlias, serverNote }: ServerBackupTableProps) {
-  const content = useIntlayer('server-backup-table');
-  const common = useIntlayer('common');
+  const { t } = useTranslation();
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState<SortConfig>({ column: '', direction: 'asc' });
   const { selectedBackup, setSelectedBackup } = useBackupSelection();
@@ -125,32 +123,32 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
 
   // Reset to first page when filter changes
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+     
     setCurrentPage(1);
   }, [selectedBackup]);
 
   // Reset to first page when sort changes
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+     
     setCurrentPage(1);
   }, [sortConfig]);
 
   // Reset to first page when table page size changes
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+     
     setCurrentPage(1);
   }, [tablePageSize]);
 
   // Reset to first page when backups data changes (e.g. after deletion)
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+     
     setCurrentPage(1);
   }, [backups.length]);
   
   // Ensure current page is valid when totalPages changes
   useEffect(() => {
     if (currentPage > totalPages && totalPages > 0) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setCurrentPage(totalPages);
     }
   }, [currentPage, totalPages]);
@@ -184,7 +182,7 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
   const handleBackupClick = (backup: Backup) => {
     // Only navigate if there are messages to show
     if (!hasNoMessages(backup)) {
-      router.push(`/${locale}/detail/${backup.server_id}/backup/${backup.id}`);
+      router.push(`/detail/${backup.server_id}/backup/${backup.id}`);
     }
   };
 
@@ -200,10 +198,10 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
               onValueChange={setSelectedBackup}
             >
               <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder={content.selectBackup.value} />
+                <SelectValue placeholder={t("Select backup")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">{content.allBackups.value}</SelectItem>
+                <SelectItem value="all">{t("All Backups")}</SelectItem>
                 {uniqueBackupNames.filter(name => name !== "all").map((name) => (
                   <SelectItem key={name} value={name}>
                     {name}
@@ -218,37 +216,37 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
               <TableHeader>
                 <TableRow>
                   <SortableTableHead column="name" sortConfig={displaySortConfig} onSort={handleSort}>
-                    {content.backupName}
+                    {t("Backup Name")}
                   </SortableTableHead>
                   <SortableTableHead column="date" sortConfig={displaySortConfig} onSort={handleSort}>
-                    {content.date}
+                    {t("Date")}
                   </SortableTableHead>
                   <SortableTableHead column="status" sortConfig={displaySortConfig} onSort={handleSort}>
-                    {content.status}
+                    {t("Status")}
                   </SortableTableHead>
                   <SortableTableHead column="warnings" sortConfig={displaySortConfig} onSort={handleSort} align="center">
-                    {content.warnings}
+                    {t("Warnings")}
                   </SortableTableHead>
                   <SortableTableHead column="errors" sortConfig={displaySortConfig} onSort={handleSort} align="center">
-                    {content.errors}
+                    {t("Errors")}
                   </SortableTableHead>
                   <SortableTableHead column="backup_list_count" sortConfig={displaySortConfig} onSort={handleSort} align="center">
-                    {content.availableVersions}
+                    {t("Available Versions")}
                   </SortableTableHead>
                   <SortableTableHead column="fileCount" sortConfig={displaySortConfig} onSort={handleSort} align="right">
-                    {content.fileCount}
+                    {t("File Count")}
                   </SortableTableHead>
                   <SortableTableHead column="fileSize" sortConfig={displaySortConfig} onSort={handleSort} align="right">
-                    {content.fileSize}
+                    {t("File Size")}
                   </SortableTableHead>
                   <SortableTableHead column="uploadedSize" sortConfig={displaySortConfig} onSort={handleSort} align="right">
-                    {content.uploadedSize}
+                    {t("Uploaded Size")}
                   </SortableTableHead>
                   <SortableTableHead column="duration" sortConfig={displaySortConfig} onSort={handleSort} align="right">
-                    {content.duration}
+                    {t("Duration")}
                   </SortableTableHead>
                   <SortableTableHead column="knownFileSize" sortConfig={displaySortConfig} onSort={handleSort} align="right">
-                    {content.storageSize}
+                    {t("Storage Size")}
                   </SortableTableHead>
                 </TableRow>
               </TableHeader>
@@ -256,7 +254,7 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
                 {paginatedBackups.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={11} className="text-center h-24">
-                      {content.noBackupsFoundForThisServer}
+                      {t("No backups found for this server.")}
                     </TableCell>
                   </TableRow>
                 )}
@@ -282,7 +280,7 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
                             </div>
                           </TooltipTrigger>
                           <TooltipContent side="top" align="center">
-                            <p>No messages were received for this backup.</p>
+                            <p>{t("No messages were received for this backup.")}</p>
                           </TooltipContent>
                         </Tooltip>
                       ) : (
@@ -320,7 +318,7 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
           <div className="md:hidden space-y-3 p-4">
             {paginatedBackups.length === 0 && (
               <div className="text-center py-8 text-muted-foreground">
-                {content.noBackupsFoundForThisMachine}
+                {t("No backups found for this machine.")}
               </div>
             )}
             {paginatedBackups.map((backup) => (
@@ -344,7 +342,7 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
                             </div>
                           </TooltipTrigger>
                           <TooltipContent side="top" align="center">
-                            <p>No messages were received for this backup.</p>
+                            <p>{t("No messages were received for this backup.")}</p>
                           </TooltipContent>
                         </Tooltip>
                       ) : (
@@ -362,7 +360,7 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
                   <div className="grid grid-cols-2 gap-3">
                     {/* Row 1 */}
                     <div className="space-y-1">
-                      <Label className="text-xs text-muted-foreground">Available Versions</Label>
+                      <Label className="text-xs text-muted-foreground">{t("Available Versions")}</Label>
                       <div className="flex justify-start">
                         <AvailableBackupsIcon
                           availableBackups={backup.available_backups}
@@ -378,29 +376,29 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
                     </div>
                     
                     <div className="space-y-1">
-                      <Label className="text-xs text-muted-foreground">File Count</Label>
+                      <Label className="text-xs text-muted-foreground">{t("File Count")}</Label>
                       <div className="text-sm">{formatInteger(backup.fileCount, locale)}</div>
                     </div>
 
                     {/* Row 2 */}
                     <div className="space-y-1">
-                      <Label className="text-xs text-muted-foreground">File Size</Label>
+                      <Label className="text-xs text-muted-foreground">{t("File Size")}</Label>
                       <div className="text-sm">{formatBytes(backup.fileSize, locale)}</div>
                     </div>
                     
                     <div className="space-y-1">
-                      <Label className="text-xs text-muted-foreground">Uploaded Size</Label>
+                      <Label className="text-xs text-muted-foreground">{t("Uploaded Size")}</Label>
                       <div className="text-sm">{formatBytes(backup.uploadedSize, locale)}</div>
                     </div>
 
                     {/* Row 3 */}
                     <div className="space-y-1">
-                      <Label className="text-xs text-muted-foreground">Duration</Label>
+                      <Label className="text-xs text-muted-foreground">{t("Duration")}</Label>
                       <div className="text-sm">{backup.duration}</div>
                     </div>
                     
                     <div className="space-y-1">
-                      <Label className="text-xs text-muted-foreground">Storage Size</Label>
+                      <Label className="text-xs text-muted-foreground">{t("Storage Size")}</Label>
                       <div className="text-sm">{formatBytes(backup.knownFileSize, locale)}</div>
                     </div>
                   </div>
@@ -408,12 +406,12 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
                   {/* Additional Info Row */}
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1">
-                      <Label className="text-xs text-muted-foreground">Warnings</Label>
+                      <Label className="text-xs text-muted-foreground">{t("Warnings")}</Label>
                       <div className="text-sm">{backup.warnings}</div>
                     </div>
                     
                     <div className="space-y-1">
-                      <Label className="text-xs text-muted-foreground">Errors</Label>
+                      <Label className="text-xs text-muted-foreground">{t("Errors")}</Label>
                       <div className="text-sm">{backup.errors}</div>
                     </div>
                   </div>
@@ -427,7 +425,7 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
                         onClick={() => handleBackupClick(backup)}
                         className="w-full"
                       >
-                        View Details
+                        {t("View Details")}
                       </Button>
                     </div>
                   )}
@@ -445,10 +443,10 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
               disabled={currentPage === 1}
             >
               <ChevronLeft className="h-4 w-4" />
-              {content.previous}
+              {t("Previous")}
             </Button>
             <div className="text-sm text-muted-foreground">
-              {content.page} {currentPage} {content.of} {totalPages}
+              {t("Page")} {currentPage} {t("of")} {totalPages}
             </div>
             <Button
               variant="outline"
@@ -456,7 +454,7 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
               onClick={handleNextPage}
               disabled={currentPage === totalPages}
             >
-              {content.next}
+              {t("Next")}
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>

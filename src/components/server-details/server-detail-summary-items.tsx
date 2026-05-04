@@ -1,8 +1,8 @@
-// src/components/server-details/server-detail-summary-items.tsx
 "use client";
+// src/components/server-details/server-detail-summary-items.tsx
 
 import React from "react";
-import { useIntlayer } from 'react-intlayer';
+import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
 import { useLocale } from "@/contexts/locale-context";
 import type { BackupStatus } from "@/lib/types";
@@ -50,8 +50,7 @@ export function ServerDetailSummaryItems({
   lastOverdueCheck,
   totalBackupJobs,
 }: ServerDetailSummaryItemsProps) {
-  const content = useIntlayer('server-detail-summary-items');
-  const common = useIntlayer('common');
+  const { t } = useTranslation();
   const router = useRouter();
   const locale = useLocale();
   // Use a try/catch for each item to ensure nothing breaks
@@ -100,7 +99,7 @@ export function ServerDetailSummaryItems({
     if (!selectedBackup && totalBackupJobs !== undefined) {
       items.push({
         id: 'totalBackupJobs',
-        title: content.totalBackupJobs.value,
+        title: t("Total Backup Jobs"),
         value: getFormattedNumber(totalBackupJobs),
         icon: <FolderOpen className="h-4 w-4 text-blue-600" />,
         "data-ai-hint": "folder backup jobs"
@@ -111,42 +110,42 @@ export function ServerDetailSummaryItems({
     items.push(
       { 
         id: 'totalBackupRuns',
-        title: content.totalBackupRuns.value, 
+        title: t("Total Backup Runs"), 
         value: getFormattedNumber(totalBackupsRuns),
         icon: <Archive className="h-4 w-4 text-blue-600" />, 
         "data-ai-hint": "archive storage" 
       },
       { 
         id: 'availableVersions',
-        title: content.availableVersions.value, 
+        title: t("Available Versions"), 
         value: lastBackupListCount !== null ? getFormattedNumber(lastBackupListCount) : 'N/A',
         icon: <History className="h-4 w-4 text-blue-600" />, 
         "data-ai-hint": "history versions" 
       },
       { 
         id: 'avgDuration',
-        title: content.avgDuration.value, 
+        title: t("Avg. Duration"), 
         value: getFormattedValue(averageDuration, formatDurationFromMinutes, "00:00:00"),
         icon: <Clock className="h-4 w-4 text-blue-600" />, 
         "data-ai-hint": "timer clock" 
       },
       { 
         id: 'lastBackupSize',
-        title: content.lastBackupSize.value, 
+        title: t("Last Backup Size"), 
         value: getFormattedValue(lastBackupFileSize, (val) => formatBytes(val, locale), "0 Bytes"),
         icon: <HardDrive className="h-4 w-4 text-blue-600" />, 
         "data-ai-hint": "hard drive" 
       },
       { 
         id: 'totalStorageUsed',
-        title: content.totalStorageUsed.value, 
+        title: t("Total Storage Used"), 
         value: getFormattedValue(lastBackupStorageSize, (val) => formatBytes(val, locale), "0 Bytes"),
         icon: <Database className="h-4 w-4 text-blue-600" />, 
         "data-ai-hint": "database symbol" 
       },
       { 
         id: 'totalUploaded',
-        title: content.totalUploaded.value, 
+        title: t("Total Uploaded"), 
         value: getFormattedValue(totalUploadedSize, (val) => formatBytes(val, locale), "0 Bytes"),
         icon: <UploadCloud className="h-4 w-4 text-blue-600" />, 
         "data-ai-hint": "cloud data" 
@@ -159,14 +158,14 @@ export function ServerDetailSummaryItems({
   const summaryItems = getSummaryItems();
 
   const handleSettingsClick = () => {
-    router.push(`/${locale}/settings?tab=monitoring`);
+    router.push(`/settings?tab=monitoring`);
   };
 
   return (
     <div className="pt-4" data-screenshot-target="server-detail-summary">
       <div>
         <h3 className="text-base font-semibold mb-2 text-foreground">
-          {selectedBackup ? `${selectedBackup.name} - ${content.statistics.value}` : content.machineStatistics.value}
+          {selectedBackup ? `${selectedBackup.name} - ${t("Statistics")}` : t("Machine Statistics")}
         </h3>
         
         <div className={`grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 ${!selectedBackup ? 'lg:grid-cols-7' : 'lg:grid-cols-6'} gap-2 lg:gap-3`}>
@@ -194,14 +193,14 @@ export function ServerDetailSummaryItems({
                 <div className="flex items-center gap-2">
                   <CalendarX2 className="h-4 w-4 text-red-400" />
                   <span className="text-sm">
-                    <span className="text-muted-foreground">{content.overdueScheduledBackups.value}</span> {overdueBackups.map(ob => {
+                    <span className="text-muted-foreground">{t("Overdue scheduled backups:")}</span> {overdueBackups.map(ob => {
                       const elapsed = ob.expectedBackupDate !== 'N/A' 
                         ? formatTimeElapsed(ob.expectedBackupDate, undefined, locale)
                         : ob.expectedBackupElapsed;
-                      return `'${ob.backupName} (${elapsed} ${content.overdue.value})'`;
+                      return `'${ob.backupName} (${elapsed} ${t("overdue")})'`;
                     }).join(', ')}.
                     {lastOverdueCheck && lastOverdueCheck !== 'N/A' && (
-                      <span className="px-3 text-muted-foreground">Last checked: {formatRelativeTime(lastOverdueCheck, undefined, locale)}</span>
+                      <span className="px-3 text-muted-foreground">{t("Last checked:")} {formatRelativeTime(lastOverdueCheck, undefined, locale)}</span>
                     )}
                   </span>
                 </div>
@@ -212,7 +211,7 @@ export function ServerDetailSummaryItems({
                   className="text-xs h-7 px-2"
                 >
                   <Settings className="h-3 w-3 mr-1" />
-                  Configure
+                  {t("Configure")}
                 </Button>
               </div>
             </div>
@@ -225,11 +224,12 @@ export function ServerDetailSummaryItems({
                 <div className="flex items-center gap-2">
                   <CalendarX2 className="h-4 w-4 text-red-400" />
                   <span className="text-sm font-medium text-muted-foreground">
-                     {content.scheduledBackupIsOverdue.value
-                       .replace('{date}', formattedExpectedBackupDate || 'N/A')
-                       .replace('{elapsed}', formattedExpectedBackupElapsed || 'N/A')}
+                     {t("Scheduled backup is overdue. Expected backup date: {{date}} ({{elapsed}} overdue).", {
+                       date: formattedExpectedBackupDate || 'N/A',
+                       elapsed: formattedExpectedBackupElapsed || 'N/A',
+                     })}
                      {lastOverdueCheck && lastOverdueCheck !== 'N/A' && (
-                       <span className="px-3 text-muted-foreground">{content.lastChecked.value} {formatRelativeTime(lastOverdueCheck, undefined, locale)}</span>
+                       <span className="px-3 text-muted-foreground">{t("Last checked:")} {formatRelativeTime(lastOverdueCheck, undefined, locale)}</span>
                      )}
                   </span>
                 </div>
@@ -240,7 +240,7 @@ export function ServerDetailSummaryItems({
                   className="text-xs h-7 px-2"
                 >
                   <Settings className="h-3 w-3 mr-1" />
-                  {content.configure.value}
+                  {t("Configure")}
                 </Button>
               </div>
             </div>

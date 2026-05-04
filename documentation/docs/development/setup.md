@@ -127,7 +127,7 @@ The project includes several npm scripts for different development tasks:
 - `pnpm build` - Build the application for production (includes pre-checks)
 - `pnpm lint` - Run ESLint to check code quality
 - `pnpm typecheck` - Run TypeScript type checking
-- `scripts/upgrade-dependencies.sh` - Upgrade all packages to the latest version, check for vulnerabilities, and automatically fix them
+- `scripts/upgrade-dependencies.sh` — Upgrade root and `documentation/` packages (`npm-check-updates`), refresh the workspace lockfile, update browserslist, and run `pnpm audit` / fix. Prefer `source ./scripts/upgrade-dependencies.sh` so **nvm** applies to your shell; in CI or automation use `CI=1` or `DUPLISTATUS_UPGRADE_ALLOW_EXEC=1` when executing the file directly. See also `scripts/upgrade-tools.sh` for Node/pnpm tooling only.
 - `scripts/clean-workspace.sh` - Clean the workspace
 
 **Note:** The `preinstall` script automatically enforces pnpm as the package manager.
@@ -168,12 +168,8 @@ The development servers (`start:*`) provide hot module replacement for rapid dev
 
 ### Test Scripts {#test-scripts}
 - `pnpm generate-test-data` - Generate test backup data (requires --servers=N parameter)
-- `pnpm show-overdue-notifications` - Show overdue notification contents
-- `pnpm run-overdue-check` - Run overdue check at a specific date/time
-- `pnpm test-cron-port` - Test cron service port connectivity
-- `pnpm test-overdue-detection` - Test overdue backup detection logic
 - `pnpm validate-csv-export` - Validate CSV export functionality
-- `pnpm set-smtp-test-config` - Set SMTP test configuration from environment variables (see [Test Scripts](test-scripts))
-- `pnpm test-smtp-connections` - Test SMTP connection type cross-compatibility (see [Test Scripts](test-scripts))
 - `pnpm test-entrypoint` - Test Docker entrypoint script in local development (see [Test Scripts](test-scripts))
 - `pnpm take-screenshots` - Take screenshots for documentation (see [Documentation Tools](documentation-tools))
+
+Overdue checks, cron health checks, and SMTP testing are done through the running application and `curl` (see [Test Scripts](test-scripts)); the old standalone `pnpm` helpers for those were removed.

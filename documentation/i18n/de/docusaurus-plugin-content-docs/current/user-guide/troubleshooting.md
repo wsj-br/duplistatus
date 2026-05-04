@@ -1,9 +1,11 @@
 ---
-translation_last_updated: '2026-03-01T00:45:12.418Z'
-source_file_mtime: '2026-02-16T00:30:39.432Z'
-source_file_hash: e98421b0542e0de6
+translation_last_updated: '2026-04-18T00:03:45.775Z'
+source_file_mtime: '2026-03-05T22:33:28.423Z'
+source_file_hash: 1b216d0be72a0dca0f6061ab7464800febcf29632cfc6c148b164a42a62b165d
 translation_language: de
-source_file_path: user-guide/troubleshooting.md
+source_file_path: documentation/docs/user-guide/troubleshooting.md
+translation_models:
+  - anthropic/claude-haiku-4.5
 ---
 # Fehlerbehebung {#troubleshooting}
 

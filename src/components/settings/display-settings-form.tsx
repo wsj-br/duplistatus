@@ -1,7 +1,6 @@
 "use client";
-
+import { useTranslation } from "react-i18next";
 import { useState, useEffect } from 'react';
-import { useIntlayer } from 'react-intlayer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import {
@@ -20,8 +19,7 @@ import { MonitorCog, Table, BarChart3, RefreshCw, SortDesc, Moon, Sun, Calendar1
 import { ColoredIcon } from '@/components/ui/colored-icon';
 
 export function DisplaySettingsForm() {
-  const content = useIntlayer('display-settings-form');
-  const common = useIntlayer('common');
+  const { t } = useTranslation();
   const {
     tablePageSize,
     setTablePageSize,
@@ -42,7 +40,7 @@ export function DisplaySettingsForm() {
 
   // Use useEffect with a flag to track mounting without directly calling setState
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+     
     setMounted(true);
   }, []);
 
@@ -52,10 +50,10 @@ export function DisplaySettingsForm() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <ColoredIcon icon={MonitorCog} color="blue" size="md" />
-            {content.title.value}
+            {t("Display Settings")}
           </CardTitle>
           <CardDescription>
-            {content.description.value}
+            {t("Customize how duplistatus displays your data and controls the visual appearance")}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -63,24 +61,24 @@ export function DisplaySettingsForm() {
           <div className="grid gap-2">
             <Label htmlFor="table-page-size" className="flex items-center gap-2">
               <ColoredIcon icon={Table} color="blue" size="sm" />
-              {content.tablePageSizeLabel.value}
+              {t("Table Page Size")}
             </Label>
             <Select
               value={tablePageSize.toString()}
               onValueChange={(value) => setTablePageSize(parseInt(value) as TablePageSize)}
             >
               <SelectTrigger id="table-page-size">
-                <SelectValue placeholder={content.tablePageSizePlaceholder.value} />
+                <SelectValue placeholder={t("Select page size")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="5">{content.rows.value.replace('{count}', '5')}</SelectItem>
-                <SelectItem value="10">{content.rows.value.replace('{count}', '10')}</SelectItem>
-                <SelectItem value="15">{content.rows.value.replace('{count}', '15')}</SelectItem>
-                <SelectItem value="20">{content.rows.value.replace('{count}', '20')}</SelectItem>
-                <SelectItem value="25">{content.rows.value.replace('{count}', '25')}</SelectItem>
-                <SelectItem value="30">{content.rows.value.replace('{count}', '30')}</SelectItem>
-                <SelectItem value="40">{content.rows.value.replace('{count}', '40')}</SelectItem>
-                <SelectItem value="50">{content.rows.value.replace('{count}', '50')}</SelectItem>
+                <SelectItem value="5">{t("{{count}} rows", { count: 5 })}</SelectItem>
+                <SelectItem value="10">{t("{{count}} rows", { count: 10 })}</SelectItem>
+                <SelectItem value="15">{t("{{count}} rows", { count: 15 })}</SelectItem>
+                <SelectItem value="20">{t("{{count}} rows", { count: 20 })}</SelectItem>
+                <SelectItem value="25">{t("{{count}} rows", { count: 25 })}</SelectItem>
+                <SelectItem value="30">{t("{{count}} rows", { count: 30 })}</SelectItem>
+                <SelectItem value="40">{t("{{count}} rows", { count: 40 })}</SelectItem>
+                <SelectItem value="50">{t("{{count}} rows", { count: 50 })}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -89,23 +87,23 @@ export function DisplaySettingsForm() {
           <div className="grid gap-2">
             <Label htmlFor="chart-time-range" className="flex items-center gap-2">
               <ColoredIcon icon={BarChart3} color="green" size="sm" />
-              {content.chartTimeRangeLabel.value}
+              {t("Chart Time Range")}
             </Label>
             <Select
               value={chartTimeRange}
               onValueChange={(value) => setChartTimeRange(value as '2 weeks' | '1 month' | '3 months' | '6 months' | '1 year' | '2 years' | 'All data')}
             >
               <SelectTrigger id="chart-time-range">
-                <SelectValue placeholder={content.chartTimeRangePlaceholder.value} />
+                <SelectValue placeholder={t("Select time range")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="2 weeks">{common.time.last2Weeks.value}</SelectItem>
-                <SelectItem value="1 month">{common.time.lastMonth.value}</SelectItem>
-                <SelectItem value="3 months">{common.time.lastQuarter.value}</SelectItem>
-                <SelectItem value="6 months">{common.time.lastSemester.value}</SelectItem>
-                <SelectItem value="1 year">{common.time.lastYear.value}</SelectItem>
-                <SelectItem value="2 years">{common.time.last2Years.value}</SelectItem>
-                <SelectItem value="All data">{common.time.allAvailableData.value}</SelectItem>
+                <SelectItem value="2 weeks">{t("Last 2 weeks")}</SelectItem>
+                <SelectItem value="1 month">{t("Last month")}</SelectItem>
+                <SelectItem value="3 months">{t("Last quarter")}</SelectItem>
+                <SelectItem value="6 months">{t("Last semester")}</SelectItem>
+                <SelectItem value="1 year">{t("Last Year")}</SelectItem>
+                <SelectItem value="2 years">{t("Last 2 years")}</SelectItem>
+                <SelectItem value="All data">{t("All available data")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -114,24 +112,24 @@ export function DisplaySettingsForm() {
           <div className="grid gap-2">
             <Label htmlFor="auto-refresh-interval" className="flex items-center gap-2">
               <ColoredIcon icon={RefreshCw} color="purple" size="sm" />
-              {content.autoRefreshLabel.value}
+              {t("Auto-refresh Interval")}
             </Label>
             <Select
               value={autoRefreshInterval.toString()}
               onValueChange={(value) => setAutoRefreshInterval(parseFloat(value) as 0.25 | 0.5 | 1 | 2 | 3 | 4 | 5 | 10)}
             >
               <SelectTrigger id="auto-refresh-interval">
-                <SelectValue placeholder={content.autoRefreshPlaceholder.value} />
+                <SelectValue placeholder={t("Select refresh interval")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="0.25">{content.seconds15.value}</SelectItem>
-                <SelectItem value="0.5">{content.seconds30.value}</SelectItem>
-                <SelectItem value="1">{common.time.intervals['1min'].value}</SelectItem>
-                <SelectItem value="2">{common.time.intervals['2min'].value}</SelectItem>
-                <SelectItem value="3">{common.time.intervals['3min'].value}</SelectItem>
-                <SelectItem value="4">{common.time.intervals['4min'].value}</SelectItem>
-                <SelectItem value="5">{common.time.intervals['5min'].value}</SelectItem>
-                <SelectItem value="10">{common.time.intervals['10min'].value}</SelectItem>
+                <SelectItem value="0.25">{t("15 seconds")}</SelectItem>
+                <SelectItem value="0.5">{t("30 seconds")}</SelectItem>
+                <SelectItem value="1">{t("1 minute")}</SelectItem>
+                <SelectItem value="2">{t("2 minutes")}</SelectItem>
+                <SelectItem value="3">{t("3 minutes")}</SelectItem>
+                <SelectItem value="4">{t("4 minutes")}</SelectItem>
+                <SelectItem value="5">{t("5 minutes")}</SelectItem>
+                <SelectItem value="10">{t("10 minutes")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -140,19 +138,19 @@ export function DisplaySettingsForm() {
           <div className="grid gap-2">
             <Label htmlFor="dashboard-cards-sort-order" className="flex items-center gap-2">
               <ColoredIcon icon={SortDesc} color="yellow" size="sm" />
-              {content.cardsSortOrderLabel.value}
+              {t("Cards Sort Order")}
             </Label>
             <Select
               value={dashboardCardsSortOrder}
               onValueChange={(value) => setDashboardCardsSortOrder(value as 'Server name (a-z)' | 'Status (error>warnings>success)' | 'Last backup received (new>old)')}
             >
               <SelectTrigger id="dashboard-cards-sort-order">
-                <SelectValue placeholder={content.cardsSortOrderPlaceholder.value} />
+                <SelectValue placeholder={t("Select sort order")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Server name (a-z)">{content.sortByServerName.value}</SelectItem>
-                <SelectItem value="Status (error>warnings>success)">{content.sortByStatus.value}</SelectItem>
-                <SelectItem value="Last backup received (new>old)">{content.sortByLastBackup.value}</SelectItem>
+                <SelectItem value="Server name (a-z)">{t("Server name (a-z)")}</SelectItem>
+                <SelectItem value="Status (error>warnings>success)">{t("Status (error > warning > success)")}</SelectItem>
+                <SelectItem value="Last backup received (new>old)">{t("Last backup received (new > old)")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -161,19 +159,19 @@ export function DisplaySettingsForm() {
           <div className="grid gap-2">
             <Label htmlFor="start-of-week" className="flex items-center gap-2">
               <ColoredIcon icon={Calendar1} color="blue" size="sm" />
-              {content.startOfWeekLabel.value}
+              {t("Start of Week")}
             </Label>
             <Select
               value={startOfWeek}
               onValueChange={(value) => setStartOfWeek(value as StartOfWeek)}
             >
               <SelectTrigger id="start-of-week">
-                <SelectValue placeholder={content.startOfWeekPlaceholder.value} />
+                <SelectValue placeholder={t("Select start of week")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="locale">{content.basedOnLocale.value}</SelectItem>
-                <SelectItem value="sunday">{content.startOfWeekSunday.value}</SelectItem>
-                <SelectItem value="monday">{content.startOfWeekMonday.value}</SelectItem>
+                <SelectItem value="locale">{t("Based on locale")}</SelectItem>
+                <SelectItem value="sunday">{t("Sunday")}</SelectItem>
+                <SelectItem value="monday">{t("Monday")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -182,34 +180,34 @@ export function DisplaySettingsForm() {
           <div className="grid gap-2">
             <Label className="flex items-center gap-2">
               <ColoredIcon icon={theme === "light" ? Sun : Moon} color="orange" size="sm" />
-              {content.themeLabel.value}
+              {t("Theme")}
             </Label>
             <div className="flex items-center gap-3">
               <Button
                 variant="outline"
                 onClick={toggleTheme}
                 className="w-full sm:w-auto"
-                aria-label={content.toggleTheme.value}
+                aria-label={t("Toggle Theme")}
               >
                 {!mounted ? (
                   <>
                     <Sun className="h-4 w-4 mr-2" />
-                    {content.toggleTheme.value}
+                    {t("Toggle Theme")}
                   </>
                 ) : theme === "light" ? (
                   <>
                     <Moon className="h-4 w-4 mr-2" />
-                    {content.switchToDark.value}
+                    {t("Switch to Dark Mode")}
                   </>
                 ) : (
                   <>
                     <Sun className="h-4 w-4 mr-2" />
-                    {content.switchToLight.value}
+                    {t("Switch to Light Mode")}
                   </>
                 )}
               </Button>
               <span className="text-sm text-muted-foreground">
-                {content.currentTheme.value} <span className="font-medium">{theme === "light" ? content.themeLight.value : content.themeDark.value}</span>
+                {t("Current theme:")} <span className="font-medium">{theme === "light" ? t("Light") : t("Dark")}</span>
               </span>
             </div>
           </div>

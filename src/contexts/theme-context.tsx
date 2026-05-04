@@ -44,7 +44,7 @@ export const CustomThemeProvider = ({ children }: { children: ReactNode }) => {
     hasLoadedUserThemeRef.current = true;
     const storedTheme = getUserLocalStorageItem("theme", currentUser.id) as Theme | null;
     if (storedTheme === 'dark' || storedTheme === 'light') {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setTheme(storedTheme);
     }
   }, [currentUser]);

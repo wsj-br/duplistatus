@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "react-i18next";
 
 import { useMemo } from 'react';
 import { useRouter } from "next/navigation";
@@ -11,8 +12,6 @@ import { ColoredIcon } from "@/components/ui/colored-icon";
 import { formatShortTimeAgo } from "@/lib/utils";
 import { ServerConfigurationButton } from "@/components/ui/server-configuration-button";
 import { BackupTooltipContent } from "@/components/ui/backup-tooltip-content";
-import { useIntlayer } from 'react-intlayer';
-
 interface OverviewStatusPanelProps {
   servers: ServerSummary[];
   totalBackups: number;
@@ -41,7 +40,7 @@ interface BackupWithServer {
 export function OverviewStatusPanel({ servers, totalBackups }: OverviewStatusPanelProps) {
   const router = useRouter();
   const locale = useLocale();
-  const content = useIntlayer('overview-status-cards');
+  const { t } = useTranslation();
 
   // Helper function to calculate percentage
   const calculatePercentage = (count: number): number => {
@@ -152,7 +151,7 @@ export function OverviewStatusPanel({ servers, totalBackups }: OverviewStatusPan
   }, [servers, totalBackups]);
 
   const handleBackupClick = (serverId: string, backupName: string) => {
-    router.push(`/${locale}/detail/${serverId}?backup=${encodeURIComponent(backupName)}`);
+    router.push(`/detail/${serverId}?backup=${encodeURIComponent(backupName)}`);
   };
 
   return (
@@ -164,7 +163,7 @@ export function OverviewStatusPanel({ servers, totalBackups }: OverviewStatusPan
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <ColoredIcon icon={CheckCheck} color="green" size="md" />
-                <span className="text-sm font-medium">{content.success}</span>
+                <span className="text-sm font-medium">{t("Success")}</span>
               </div>
               <div className="text-right">
                 <span className="text-lg font-bold text-green-500">{successCount}</span>
@@ -184,7 +183,7 @@ export function OverviewStatusPanel({ servers, totalBackups }: OverviewStatusPan
                 ) : (
                   <ColoredIcon icon={ThumbsUp} color="green" size="md" />
                 )}
-                <CardTitle className="text-sm font-medium">{content.overdueBackups.value}</CardTitle>
+                <CardTitle className="text-sm font-medium">{t("Overdue Backups")}</CardTitle>
               </div>
               <div className="text-right">
                 <span className={`text-lg font-bold ${overdueBackups.length > 0 ? 'text-red-500' : 'text-green-500'}`}>{overdueBackups.length}</span>
@@ -284,7 +283,7 @@ export function OverviewStatusPanel({ servers, totalBackups }: OverviewStatusPan
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <ColoredIcon icon={OctagonAlert} color={warningErrorBackups.length > 0 ? "yellow" : "gray"} size="md" />
-                <CardTitle className="text-sm font-medium">{content.warningsAndErrors}</CardTitle>
+                <CardTitle className="text-sm font-medium">{t("Warnings & Errors")}</CardTitle>
               </div>
               <div className="text-right">
                 <span className={`text-lg font-bold ${warningErrorBackups.length > 0 ? 'text-yellow-500' : 'text-gray-500'}`}>{warningErrorBackups.length}</span>

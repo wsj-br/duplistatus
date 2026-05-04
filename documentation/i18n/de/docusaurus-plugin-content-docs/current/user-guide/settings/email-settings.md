@@ -1,9 +1,11 @@
 ---
-translation_last_updated: '2026-03-01T00:45:12.133Z'
-source_file_mtime: '2026-02-16T00:30:39.432Z'
-source_file_hash: c7c041a3840aa396
+translation_last_updated: '2026-04-18T00:03:42.699Z'
+source_file_mtime: '2026-03-05T22:33:28.423Z'
+source_file_hash: b978c78a610418d49df860a0680c231bce4f9a5f2690a3736ca40ae39b5ace0d
 translation_language: de
-source_file_path: user-guide/settings/email-settings.md
+source_file_path: documentation/docs/user-guide/settings/email-settings.md
+translation_models:
+  - anthropic/claude-haiku-4.5
 ---
 # E-Mail {#email}
 

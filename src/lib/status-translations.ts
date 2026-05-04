@@ -1,58 +1,32 @@
 /**
- * Status value translations for notifications
- * Mirrors the translations from status-badge.content.ts
+ * Status labels for notifications — uses the same flat locale JSON as the UI (English keys).
  */
+
+import de from "@/locales/de.json";
+import fr from "@/locales/fr.json";
+import es from "@/locales/es.json";
+import ptBR from "@/locales/pt-BR.json";
 
 export type BackupStatus = 'Success' | 'Unknown' | 'Warning' | 'Error' | 'Fatal' | 'N/A';
 
-export const STATUS_TRANSLATIONS: Record<string, Record<string, string>> = {
-  en: {
-    Success: 'Success',
-    Unknown: 'Unknown',
-    Warning: 'Warning',
-    Error: 'Error',
-    Fatal: 'Fatal',
-    'N/A': 'N/A',
-  },
-  de: {
-    Success: 'Erfolg',
-    Unknown: 'Unbekannt',
-    Warning: 'Warnung',
-    Error: 'Fehler',
-    Fatal: 'Kritisch',
-    'N/A': 'N/V',
-  },
-  fr: {
-    Success: 'Succès',
-    Unknown: 'Inconnu',
-    Warning: 'Avertissement',
-    Error: 'Erreur',
-    Fatal: 'Fatal',
-    'N/A': 'N/A',
-  },
-  es: {
-    Success: 'Éxito',
-    Unknown: 'Desconocido',
-    Warning: 'Advertencia',
-    Error: 'Error',
-    Fatal: 'Fatal',
-    'N/A': 'N/A',
-  },
-  'pt-BR': {
-    Success: 'Sucesso',
-    Unknown: 'Desconhecido',
-    Warning: 'Aviso',
-    Error: 'Erro',
-    Fatal: 'Fatal',
-    'N/A': 'N/A',
-  },
+const bundles: Record<string, Record<string, string>> = {
+  de: de as Record<string, string>,
+  fr: fr as Record<string, string>,
+  es: es as Record<string, string>,
+  'pt-BR': ptBR as Record<string, string>,
 };
 
 /**
- * Translate a backup status value to the given locale
+ * Translate a backup status value for the given locale.
  */
 export function translateStatus(status: BackupStatus | string, locale: string = 'en'): string {
-  const normalizedLocale = locale === 'pt-br' ? 'pt-BR' : locale;
-  const translations = STATUS_TRANSLATIONS[normalizedLocale] || STATUS_TRANSLATIONS.en;
-  return translations[status as BackupStatus] || String(status);
+  const normalizedLocale = locale.toLowerCase() === 'pt-br' ? 'pt-BR' : locale;
+  if (normalizedLocale === 'en') {
+    return String(status);
+  }
+  const bundle = bundles[normalizedLocale];
+  if (bundle && typeof bundle[String(status)] === 'string') {
+    return bundle[String(status)];
+  }
+  return String(status);
 }

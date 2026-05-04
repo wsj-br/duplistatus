@@ -1,15 +1,14 @@
 'use client';
-
+import { useTranslation } from "react-i18next";
 import { usePathname } from 'next/navigation';
 import { Suspense } from 'react';
-import { useIntlayer } from 'react-intlayer';
 import { AppHeader } from '@/components/app-header';
 import AppVersion from '@/components/app-version';
 import { GithubLink } from '@/components/github-link';
 import { PasswordChangeGuard } from '@/components/password-change-guard';
 
 export function ConditionalLayout({ children }: { children: React.ReactNode }) {
-  const content = useIntlayer('conditional-layout');
+  const { t } = useTranslation();
   const pathname = usePathname();
   const isLoginPage = /\/login$/.test(pathname ?? "");
 
@@ -31,7 +30,7 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
           <GithubLink />
         </div>
         <span className="text-tiny text-muted-foreground text-center mb-4">
-          {content.footerDisclaimer.value}
+          {t("Product names and icons belong to their respective owners and are used for identification purposes only.")}
         </span>
       </div>
     </div>

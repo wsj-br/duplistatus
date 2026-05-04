@@ -1,63 +1,124 @@
 #!/bin/bash
 # upgrade-dependencies.sh
 #
-# This script upgrades the dependencies in the project to the latest versions.
+# Upgrades dependencies and runs pnpm audit for:
+#   - Repository root (Next.js app: dependencies + devDependencies)
+#   - documentation/ (Docusaurus; workspace package — shares root pnpm lockfile)
+#
+# Shells cannot export environment changes to a parent process; nvm must run in your
+# interactive shell (see https://github.com/nvm-sh/nvm/issues/2124). Run:
+#   source ./scripts/upgrade-dependencies.sh
+# This file aborts if executed as ./scripts/upgrade-dependencies.sh unless CI=1 or
+# DUPLISTATUS_UPGRADE_ALLOW_EXEC=1 (for automation).
 #
 
-
-
-set -e  # Exit on error
-
-# Load nvm (it's a shell function, not available in script subshells by default)
-export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
-if [ -s "$NVM_DIR/nvm.sh" ]; then
-  # shellcheck source=/dev/null
-  . "$NVM_DIR/nvm.sh"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [ -n "${BASH_VERSION:-}" ] && [ "${BASH_SOURCE[0]}" = "${0}" ]; then
+  if [ -z "${DUPLISTATUS_UPGRADE_ALLOW_EXEC:-}" ] && [ -z "${CI:-}" ]; then
+    echo "Abort: run this script with source so nvm applies to your current shell." >&2
+    echo "  source ${SCRIPT_DIR}/upgrade-dependencies.sh" >&2
+    echo "(Automation: set CI=1 or DUPLISTATUS_UPGRADE_ALLOW_EXEC=1 to allow execution without source.)" >&2
+    exit 1
+  fi
 fi
 
-# Color codes
-BLUE='\033[0;34m'
-RESET='\033[0m'
+_duplistatus_upgrade_dependencies() {
+  set -e
 
-echo ""
-echo "--------------------------------"
-echo "🔄 Upgrading dependencies "
-echo "--------------------------------"
+  REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+  cd "$REPO_ROOT"
 
-# upgrade Node.js to the latest LTS version
-echo -e "${BLUE}🔄  Upgrading Node.js to the latest LTS version...${RESET}"
-nvm install --lts
-nvm use --lts
+  BLUE='\033[0;34m'
+  GREEN='\033[0;32m'
+  YELLOW='\033[0;33m'
+  RESET='\033[0m'
 
-# ensure pnpm is installed
-echo -e "${BLUE}🔄  Ensure pnpm, npm-check-updates and doctoc are installed and in the latest version...${RESET}"
-npm install -g pnpm npm-check-updates doctoc
+  echo ""
+  echo "--------------------------------"
+  echo "🔄 Upgrading dependencies "
+  echo "--------------------------------"
 
+  _suppress_done_was_set=0
+  _suppress_done_prev=
+  if [ -n "${DUPLISTATUS_UPGRADE_TOOLS_SUPPRESS_DONE+x}" ]; then
+    _suppress_done_prev=$DUPLISTATUS_UPGRADE_TOOLS_SUPPRESS_DONE
+    _suppress_done_was_set=1
+  fi
+  DUPLISTATUS_UPGRADE_TOOLS_SUPPRESS_DONE=1
+  export DUPLISTATUS_UPGRADE_TOOLS_SUPPRESS_DONE
+  DUPLISTATUS_UPGRADE_TOOLS_DEFINE_ONLY=1
+  export DUPLISTATUS_UPGRADE_TOOLS_DEFINE_ONLY
+  # shellcheck source=scripts/upgrade-tools.sh
+  . "${SCRIPT_DIR}/upgrade-tools.sh"
+  _duplistatus_upgrade_tools
+  if [ "$_suppress_done_was_set" -eq 1 ]; then
+    DUPLISTATUS_UPGRADE_TOOLS_SUPPRESS_DONE=$_suppress_done_prev
+    export DUPLISTATUS_UPGRADE_TOOLS_SUPPRESS_DONE
+  else
+    unset DUPLISTATUS_UPGRADE_TOOLS_SUPPRESS_DONE
+  fi
+  unset _suppress_done_prev _suppress_done_was_set
 
-# Update package.json with latest versions using npm-check-updates
-echo -e "${BLUE}📦  Running npm-check-updates...${RESET}"
-ncu --upgrade 2>&1 | pr -o 4 -T
+  cd "$REPO_ROOT"
 
-# Update pnpm lockfile and install updated dependencies
-echo -e "${BLUE}⬆️  Running pnpm install...${RESET}"
-pnpm install 2>&1 | pr -o 4 -T
+  # npm-check-updates: optionally pin eslint stack until React ESLint plugins allow ESLint 10
+  # (see scripts/eslint-react-peers-allow-eslint10.js).
+  _eslint_ncu_reject='eslint,@eslint/js,eslint-plugin-react,eslint-plugin-react-hooks'
+  echo -e "${BLUE}📦  [repo root] Checking registry: do latest react ESLint plugins allow ESLint 10?${RESET}"
+  set +e
+  _eslint10_peer_out=$(node "${SCRIPT_DIR}/eslint-react-peers-allow-eslint10.js" 2>&1)
+  _eslint10_peer_ok=$?
+  set -e
+  printf '%s\n' "$_eslint10_peer_out" | pr -o 4 -T
+  echo -e "${BLUE}📦  [repo root] npm-check-updates (app: dependencies + devDependencies)...${RESET}"
+  if [ "$_eslint10_peer_ok" -eq 0 ]; then
+    echo -e "${GREEN}Peer ranges include ESLint 10; upgrading the ESLint stack with everything else.${RESET}"
+    ncu --upgrade 2>&1 | pr -o 4 -T
+  elif [ "$_eslint10_peer_ok" -eq 1 ]; then
+    echo -e "${YELLOW}Peer ranges still exclude ESLint 10; excluding ${_eslint_ncu_reject} from bump${RESET}"
+    ncu --upgrade -x "$_eslint_ncu_reject" 2>&1 | pr -o 4 -T
+  else
+    echo -e "${YELLOW}Could not verify peer ranges (offline or error). Excluding ${_eslint_ncu_reject} from bump${RESET}"
+    ncu --upgrade -x "$_eslint_ncu_reject" 2>&1 | pr -o 4 -T
+  fi
 
-# Update browserslist database
+  echo -e "${BLUE}📦  [documentation] npm-check-updates (Docusaurus: dependencies + devDependencies)...${RESET}"
+  if [ -f "${REPO_ROOT}/documentation/package.json" ]; then
+    # Same ESLint peer decision as root (registry-wide); keep eslint stack aligned with Next/Docusaurus.
+    if [ "$_eslint10_peer_ok" -eq 0 ]; then
+      ( cd "${REPO_ROOT}/documentation" && ncu --upgrade 2>&1 | pr -o 4 -T )
+    elif [ "$_eslint10_peer_ok" -eq 1 ]; then
+      ( cd "${REPO_ROOT}/documentation" && ncu --upgrade -x "$_eslint_ncu_reject" 2>&1 | pr -o 4 -T )
+    else
+      ( cd "${REPO_ROOT}/documentation" && ncu --upgrade -x "$_eslint_ncu_reject" 2>&1 | pr -o 4 -T )
+    fi
+  else
+    echo -e "${YELLOW}Skipping documentation: ${REPO_ROOT}/documentation/package.json not found.${RESET}"
+  fi
 
-echo -e "${BLUE}🌐  Updating browserslist database...${RESET}"
-npx --yes update-browserslist-db@latest 2>&1 | pr -o 4 -T
+  echo -e "${BLUE}⬆️  [repo root] pnpm install (workspace lockfile)...${RESET}"
+  pnpm install 2>&1 | pr -o 4 -T
 
-echo -e "${BLUE}✅  Dependency upgrade completed${RESET}"
-echo ""
+  echo -e "${BLUE}🌐  Updating browserslist database...${RESET}"
+  npx --yes update-browserslist-db@latest 2>&1 | pr -o 4 -T
 
-# check for vulnerabilities
-echo -e "${BLUE}🔍  Checking for vulnerabilities...${RESET}"
-pnpm audit 2>&1 | pr -o 4 -T
+  echo -e "${BLUE}✅  Dependency upgrade completed${RESET}"
+  echo ""
 
-# fix vulnerabilities
-echo -e "${BLUE}🔧  Fixing vulnerabilities...${RESET}"
-pnpm audit fix 2>&1 | pr -o 4 -T
+  echo -e "${BLUE}🔍  Checking for vulnerabilities...${RESET}"
+  pnpm audit 2>&1 | pr -o 4 -T
 
-# check for vulnerabilities again
-echo -e "${BLUE}🔍  Checking for vulnerabilities again...${RESET}"
-pnpm audit 2>&1 | pr -o 4 -T
+  echo -e "${BLUE}🔧  Fixing vulnerabilities...${RESET}"
+  pnpm audit fix 2>&1 | pr -o 4 -T
+
+  echo -e "${BLUE}🔍  Checking for vulnerabilities again...${RESET}"
+  pnpm audit 2>&1 | pr -o 4 -T
+}
+
+if [ -n "${BASH_VERSION:-}" ] && [ "${BASH_SOURCE[0]}" != "${0}" ]; then
+  _duplistatus_upgrade_dependencies "$@"
+  return 0
+fi
+
+_duplistatus_upgrade_dependencies "$@"
+exit $?

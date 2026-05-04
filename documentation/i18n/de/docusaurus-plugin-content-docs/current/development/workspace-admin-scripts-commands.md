@@ -1,9 +1,12 @@
 ---
-translation_last_updated: '2026-03-01T00:45:09.532Z'
-source_file_mtime: '2026-02-16T00:30:39.430Z'
-source_file_hash: a8ff236072ebae34
+translation_last_updated: '2026-04-18T00:02:51.698Z'
+source_file_mtime: '2026-03-05T22:33:28.423Z'
+source_file_hash: b9dfcfd3eb168aae0a90e7ccbb98d8283697df3cd211d0b0a7892295130d6f0a
 translation_language: de
-source_file_path: development/workspace-admin-scripts-commands.md
+source_file_path: documentation/docs/development/workspace-admin-scripts-commands.md
+translation_models:
+  - anthropic/claude-3.5-haiku
+  - anthropic/claude-haiku-4.5
 ---
 # Workspace-Admin-Skripte und -Befehle {#workspace-admin-scripts-commands}
 

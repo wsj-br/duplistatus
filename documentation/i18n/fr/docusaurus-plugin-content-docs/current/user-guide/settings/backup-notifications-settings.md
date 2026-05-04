@@ -1,9 +1,11 @@
 ---
-translation_last_updated: '2026-03-01T00:45:07.610Z'
-source_file_mtime: '2026-02-16T00:30:39.432Z'
-source_file_hash: 175a9e765f355f43
+translation_last_updated: '2026-04-18T00:03:34.129Z'
+source_file_mtime: '2026-03-05T22:33:28.423Z'
+source_file_hash: c28881ecd9af6c672fb4a386e56703be381997ef49fd8a5db83df90528d1376e
 translation_language: fr
-source_file_path: user-guide/settings/backup-notifications-settings.md
+source_file_path: documentation/docs/user-guide/settings/backup-notifications-settings.md
+translation_models:
+  - anthropic/claude-haiku-4.5
 ---
 # Notifications de sauvegarde {#backup-notifications}
 

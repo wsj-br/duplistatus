@@ -1,9 +1,12 @@
 ---
-translation_last_updated: '2026-03-01T00:45:07.860Z'
-source_file_mtime: '2026-02-16T00:30:39.432Z'
-source_file_hash: faafdd8670f3c3f8
+translation_last_updated: '2026-04-18T00:03:48.836Z'
+source_file_mtime: '2026-03-05T22:33:28.423Z'
+source_file_hash: 3bd58d9cbad231e20c93f90d5f2904a572e10982cc151b37c80613510401bb52
 translation_language: fr
-source_file_path: user-guide/settings/ntfy-settings.md
+source_file_path: documentation/docs/user-guide/settings/ntfy-settings.md
+translation_models:
+  - anthropic/claude-haiku-4.5
+  - 'stepfun/step-3.5-flash:free'
 ---
 # NTFY {#ntfy}
 

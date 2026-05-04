@@ -1,9 +1,13 @@
 ---
-translation_last_updated: '2026-03-01T00:45:18.529Z'
-source_file_mtime: '2026-02-16T00:30:39.431Z'
-source_file_hash: 65a8594207f730f7
+translation_last_updated: '2026-04-18T00:02:06.527Z'
+source_file_mtime: '2026-04-10T18:19:13.216Z'
+source_file_hash: 18c3808b355ca85cf99e63f258dc6c18f79f738a87a5623a96e332a06ea24ee7
 translation_language: pt-BR
-source_file_path: intro.md
+source_file_path: documentation/docs/intro.md
+translation_models:
+  - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
+  - 'stepfun/step-3.5-flash:free'
 ---
 # Bem-vindo ao duplistatus {#welcome-to-duplistatus}
 
@@ -77,7 +81,9 @@ Este projeto foi construído principalmente com ajuda de IA. Para aprender como,
 
 💙 Se você encontrar [Duplicati](https://www.duplicati.com) útil, considere apoiar o desenvolvedor. Mais detalhes estão disponíveis em seu site ou página do GitHub.
 
-- Ícone SVG do Duplicati de https://dashboardicons.com/icons/duplicati - Ícone SVG do ntfy de https://dashboardicons.com/icons/ntfy - Ícone SVG do GitHub de https://github.com/logos
+- Ícone SVG do Duplicati de https://dashboardicons.com/icons/duplicati
+- Ícone SVG do ntfy de https://dashboardicons.com/icons/ntfy
+- Ícone SVG do GitHub de https://github.com/logos
 
 :::note
  Todos os nomes de produtos, logos e marcas registradas são propriedade de seus respectivos proprietários. Ícones e nomes são usados apenas para fins de identificação e não implicam endosso.

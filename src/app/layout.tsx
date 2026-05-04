@@ -15,7 +15,7 @@ import { SessionInitializer } from "@/components/session-initializer";
 import { GlobalSessionErrorHandler } from "@/components/global-session-error-handler";
 import { ConditionalLayout } from "@/components/conditional-layout";
 import { ClientLocaleProvider } from "@/contexts/locale-context";
-import { IntlayerProviderClient } from "./intlayer-provider-client";
+import { I18nProvider } from "@/components/i18n-provider";
 import { getTextDirection } from "@/lib/rtl-utils";
 
 const SUPPORTED_LOCALES = ["en", "de", "fr", "es", "pt-BR"] as const;
@@ -181,7 +181,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   // Note: For locale-specific metadata, consider using generateMetadata() function
-  // in individual page components or [locale]/layout.tsx
+  // in individual page components or generateMetadata() where needed
 };
 
 export default async function RootLayout({
@@ -224,7 +224,7 @@ export default async function RootLayout({
         />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <IntlayerProviderClient>
+        <I18nProvider>
           <CustomThemeProvider>
             <ClientLocaleProvider>
             <ConfigProvider>
@@ -247,7 +247,7 @@ export default async function RootLayout({
             </ConfigProvider>
             </ClientLocaleProvider>
           </CustomThemeProvider>
-        </IntlayerProviderClient>
+        </I18nProvider>
       </body>
     </html>
   );

@@ -1,7 +1,6 @@
 "use client";
-
+import { useTranslation } from "react-i18next";
 import { useRouter } from 'next/navigation';
-import { useIntlayer } from 'react-intlayer';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 
@@ -12,8 +11,7 @@ interface BackButtonProps {
 }
 
 export function BackButton({ variant = "outline", size = "sm", className }: BackButtonProps) {
-  const content = useIntlayer('back-button');
-  const common = useIntlayer('common');
+  const { t } = useTranslation();
   const router = useRouter();
 
   const handleBack = () => {
@@ -23,7 +21,7 @@ export function BackButton({ variant = "outline", size = "sm", className }: Back
   return (
     <Button variant={variant} size={size} onClick={handleBack} className={className}>
       <ArrowLeft className="h-4 w-4 mr-2" />
-      {common.ui.back.value}
+      {t("Back")}
     </Button>
   );
 } 

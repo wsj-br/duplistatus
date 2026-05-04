@@ -1,9 +1,11 @@
 ---
-translation_last_updated: '2026-03-01T00:45:14.562Z'
-source_file_mtime: '2026-02-16T00:30:39.431Z'
-source_file_hash: f18ae0bd1263eac9
+translation_last_updated: '2026-04-18T00:01:48.330Z'
+source_file_mtime: '2026-04-10T18:19:13.216Z'
+source_file_hash: 8db5711d4031f54e856800f57a26c3a4d6f0b4d1d15c4c7a9225fbeae0f272bb
 translation_language: es
-source_file_path: migration/version_upgrade.md
+source_file_path: documentation/docs/migration/version_upgrade.md
+translation_models:
+  - anthropic/claude-haiku-4.5
 ---
 # Guía de Migración {#migration-guide}
 

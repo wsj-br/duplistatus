@@ -1,8 +1,7 @@
 'use client';
-
+import { useTranslation } from "react-i18next";
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { useIntlayer } from 'react-intlayer';
 import {
   Dialog,
   DialogContent,
@@ -47,9 +46,7 @@ const RequirementItem = ({ met, label }: { met: boolean; label: string }) => (
 
 export function ChangePasswordModal({ open, onOpenChange, required = false }: ChangePasswordModalProps) {
   const router = useRouter();
-  const content = useIntlayer('change-password-modal');
-  const common = useIntlayer('common');
-  const auth = useIntlayer('auth');
+  const { t } = useTranslation();
   const passwordPolicy = usePasswordPolicy();
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -160,7 +157,7 @@ export function ChangePasswordModal({ open, onOpenChange, required = false }: Ch
     setLoading(true);
 
     if (!isPasswordValid) {
-      setError(content.errorRequirements.value);
+      setError(t("Please ensure all password requirements are met"));
       setLoading(false);
       return;
     }
@@ -188,19 +185,19 @@ export function ChangePasswordModal({ open, onOpenChange, required = false }: Ch
         const message = (() => {
           switch (data.errorCode) {
             case 'NEW_PASSWORD_REQUIRED':
-              return auth.changePassword.newPasswordRequired.value;
+              return t("New password is required");
             case 'POLICY_NOT_MET':
-              return auth.changePassword.policyNotMet.value;
+              return t("New password does not meet policy requirements");
             case 'USER_NOT_FOUND':
-              return auth.changePassword.userNotFound.value;
+              return t("User not found");
             case 'CURRENT_PASSWORD_INCORRECT':
-              return auth.changePassword.currentPasswordIncorrect.value;
+              return t("Current password is incorrect");
             case 'NEW_PASSWORD_SAME_AS_CURRENT':
-              return auth.changePassword.newPasswordSameAsCurrent.value;
+              return t("New password must be different from current password");
             case 'INTERNAL_ERROR':
-              return auth.changePassword.internalError.value;
+              return t("Internal server error");
             default:
-              return data.error || auth.changePassword.changeFailed.value;
+              return data.error || t("Failed to change password");
           }
         })();
         setError(message);
@@ -222,7 +219,7 @@ export function ChangePasswordModal({ open, onOpenChange, required = false }: Ch
       
     } catch (error) {
       console.error('Change password error:', error);
-      setError(content.errorUnexpected.value);
+      setError(t("An unexpected error occurred"));
       setLoading(false);
     }
   };
@@ -231,11 +228,15 @@ export function ChangePasswordModal({ open, onOpenChange, required = false }: Ch
     <Dialog open={open} onOpenChange={required ? () => {} : handleOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>{content.title.value}</DialogTitle>
+          <DialogTitle>{t("Change Password")}</DialogTitle>
           <DialogDescription>
-            {required 
-              ? content.descriptionRequired.value
-              : content.descriptionOptional.value}
+            {required
+              ? t(
+                  "You must change your password before continuing. Please set a new password that meets the requirements below.",
+                )
+              : t(
+                  "Set a new password for your account. Make sure it meets all the requirements below.",
+                )}
           </DialogDescription>
         </DialogHeader>
 
@@ -249,19 +250,19 @@ export function ChangePasswordModal({ open, onOpenChange, required = false }: Ch
           {success && (
             <div className="rounded-md bg-green-50 dark:bg-green-900/20 p-3">
               <div className="text-sm text-green-800 dark:text-green-200">
-                ✓ {auth.changePassword.changeSuccess.value}
+                ✓ {t("Password changed successfully")}
               </div>
             </div>
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="new-password">{content.newPasswordLabel.value}</Label>
+            <Label htmlFor="new-password">{t("New Password")}</Label>
             <TogglePasswordInput
               ref={passwordInputRef}
               id="new-password"
               value={newPassword}
               onChange={setNewPassword}
-              placeholder={content.newPasswordPlaceholder.value}
+              placeholder={t("Enter new password")}
               disabled={loading || success}
               showPassword={showPassword}
               onTogglePassword={() => setShowPassword(!showPassword)}
@@ -269,12 +270,12 @@ export function ChangePasswordModal({ open, onOpenChange, required = false }: Ch
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="confirm-password" className={showPassword ? 'opacity-60' : ''}>{content.confirmPasswordLabel.value}</Label>
+            <Label htmlFor="confirm-password" className={showPassword ? 'opacity-60' : ''}>{t("Confirm New Password")}</Label>
             <TogglePasswordInput
               id="confirm-password"
               value={confirmPassword}
               onChange={setConfirmPassword}
-              placeholder={content.confirmPasswordPlaceholder.value}
+              placeholder={t("Confirm new password")}
               disabled={loading || success}
               showPassword={showPassword}
               onTogglePassword={() => setShowPassword(!showPassword)}
@@ -285,35 +286,37 @@ export function ChangePasswordModal({ open, onOpenChange, required = false }: Ch
           </div>
 
           <div className="space-y-2 rounded-md bg-muted p-3">
-            <div className="text-sm font-semibold mb-2">{content.requirementsTitle.value}</div>
+            <div className="text-sm font-semibold mb-2">{t("Password Requirements:")}</div>
             <div className="space-y-1.5">
               {passwordPolicy && (
                 <>
                   <RequirementItem 
                     met={requirements.minLength} 
-                    label={content.requirementMinLength.value.replace('{minLength}', String(passwordPolicy.minLength))}
+                    label={t("At least {{minLength}} characters long", {
+                      minLength: String(passwordPolicy.minLength),
+                    })}
                   />
                   {passwordPolicy.requireUppercase && (
                     <RequirementItem 
                       met={requirements.hasUppercase} 
-                      label={content.requirementUppercase.value} 
+                      label={t("Contains at least one uppercase letter (A-Z)")} 
                     />
                   )}
                   {passwordPolicy.requireLowercase && (
                     <RequirementItem 
                       met={requirements.hasLowercase} 
-                      label={content.requirementLowercase.value} 
+                      label={t("Contains at least one lowercase letter (a-z)")} 
                     />
                   )}
                   {passwordPolicy.requireNumbers && (
                     <RequirementItem 
                       met={requirements.hasNumber} 
-                      label={content.requirementNumber.value} 
+                      label={t("Contains at least one number (0-9)")} 
                     />
                   )}
                   <RequirementItem 
                     met={requirements.passwordsMatch} 
-                    label={content.requirementMatch.value} 
+                    label={t("Passwords match")} 
                   />
                 </>
               )}
@@ -328,14 +331,14 @@ export function ChangePasswordModal({ open, onOpenChange, required = false }: Ch
                 onClick={() => onOpenChange(false)}
                 disabled={loading || success}
               >
-                {common.ui.cancel.value}
+                {t("Cancel")}
               </Button>
             )}
             <Button
               type="submit"
               disabled={!isPasswordValid || loading || success}
             >
-              {loading ? content.buttonChanging.value : success ? common.ui.success.value : content.buttonChangePassword.value}
+              {loading ? t("Changing...") : success ? t("Success") : t("Change Password")}
             </Button>
           </DialogFooter>
         </form>

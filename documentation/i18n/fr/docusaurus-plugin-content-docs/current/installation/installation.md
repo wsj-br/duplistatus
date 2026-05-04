@@ -1,9 +1,12 @@
 ---
-translation_last_updated: '2026-03-01T00:45:05.480Z'
-source_file_mtime: '2026-02-16T02:19:54.124Z'
-source_file_hash: 9b1245b795aeb585
+translation_last_updated: '2026-04-18T00:02:33.959Z'
+source_file_mtime: '2026-03-05T22:33:28.423Z'
+source_file_hash: ff45fe5f2dea04589c6b35a872a2fbb19c0c49b4c33a0951774e8556326297c0
 translation_language: fr
-source_file_path: installation/installation.md
+source_file_path: documentation/docs/installation/installation.md
+translation_models:
+  - anthropic/claude-3.5-haiku
+  - anthropic/claude-haiku-4.5
 ---
 # Guide d'Installation {#installation-guide}
 

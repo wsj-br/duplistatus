@@ -1,9 +1,11 @@
 ---
-translation_last_updated: '2026-03-01T00:45:13.266Z'
-source_file_mtime: '2026-03-01T00:08:29.885Z'
-source_file_hash: 717b94b8fdfe2364
+translation_last_updated: '2026-04-18T00:01:26.916Z'
+source_file_mtime: '2026-03-05T22:33:28.423Z'
+source_file_hash: 1b0cbbe3a12f7a343230d78134d9363a4281a2f7fe7a9366fa6509e427ba450b
 translation_language: es
-source_file_path: development/release-management.md
+source_file_path: documentation/docs/development/release-management.md
+translation_models:
+  - anthropic/claude-haiku-4.5
 ---
 # Gestión de Versiones {#release-management}
 

@@ -1,15 +1,23 @@
+---
+translation_last_updated: '2026-04-17T23:59:51.080Z'
+source_file_mtime: '2026-03-05T22:33:28.419Z'
+source_file_hash: e8daf2dcb7456f01747c2576f18ec55fa9ca80d2816091104bc8cdef9ae84fb7
+translation_language: fr
+source_file_path: documentation/docs/api-reference/chart-data-apis.md
+translation_models:
+  - qwen/qwen3-235b-a22b-2507
+---
+# Données du graphique {#chart-data}
 
+## Obtenir les données agrégées du graphique - `/api/chart-data/aggregated` {#get-aggregated-chart-data-apichart-dataaggregated}
+- **Point de terminaison** : `/api/chart-data/aggregated`
+- **Méthode** : GET
+- **Description** : Récupère les données agrégées du graphique avec un filtrage facultatif par plage horaire.
+- **Paramètres de requête** :
+  - `startDate` (facultatif) : Date de début pour le filtrage (format ISO)
+  - `endDate` (facultatif) : Date de fin pour le filtrage (format ISO)
+- **Réponse** :
 
-# Chart Data {#chart-data}
-
-## Get Aggregated Chart Data - `/api/chart-data/aggregated` {#get-aggregated-chart-data-apichart-dataaggregated}
-- **Endpoint**: `/api/chart-data/aggregated`
-- **Method**: GET
-- **Description**: Retrieves aggregated chart data with optional time range filtering.
-- **Query Parameters**:
-  - `startDate` (optional): Start date for filtering (ISO format)
-  - `endDate` (optional): End date for filtering (ISO format)
-- **Response**:
   ```json
   [
     {
@@ -24,24 +32,26 @@
     }
   ]
   ```
-- **Error Responses**:
-  - `400`: Invalid date parameters
-  - `500`: Server error fetching chart data
-- **Notes**:
-  - Supports time range filtering with startDate and endDate parameters
-  - Validates date format before processing
-  - Returns aggregated data across all servers
 
-## Get Server Chart Data - `/api/chart-data/server/:serverId` {#get-server-chart-data-apichart-dataserverserverid}
-- **Endpoint**: `/api/chart-data/server/:serverId`
-- **Method**: GET
-- **Description**: Retrieves chart data for a specific server with optional time range filtering.
-- **Parameters**:
-  - `serverId`: the server identifier
-- **Query Parameters**:
-  - `startDate` (optional): Start date for filtering (ISO format)
-  - `endDate` (optional): End date for filtering (ISO format)
-- **Response**:
+- **Réponses d'erreur** :
+  - `400` : Paramètres de date invalides
+  - `500` : Erreur serveur lors de la récupération des données du graphique
+- **Notes** :
+  - Prend en charge le filtrage par plage horaire avec les paramètres startDate et endDate
+  - Valide le format de date avant le traitement
+  - Renvoie les données agrégées pour tous les serveurs
+
+## Obtenir les données du graphique du serveur - `/api/chart-data/server/:serverId` {#get-server-chart-data-apichart-dataserverserverid}
+- **Point de terminaison** : `/api/chart-data/server/:serverId`
+- **Méthode** : GET
+- **Description** : Récupère les données du graphique pour un serveur spécifique avec un filtrage facultatif par plage horaire.
+- **Paramètres** :
+  - `serverId` : l'identifiant du serveur
+- **Paramètres de requête** :
+  - `startDate` (facultatif) : Date de début pour le filtrage (format ISO)
+  - `endDate` (facultatif) : Date de fin pour le filtrage (format ISO)
+- **Réponse** :
+
   ```json
   [
     {
@@ -56,25 +66,27 @@
     }
   ]
   ```
-- **Error Responses**:
-  - `400`: Invalid date parameters
-  - `500`: Server error fetching chart data
-- **Notes**:
-  - Supports time range filtering with startDate and endDate parameters
-  - Validates date format before processing
-  - Returns chart data for specific server
 
-## Get Server Backup Chart Data - `/api/chart-data/server/:serverId/backup/:backupName` {#get-server-backup-chart-data-apichart-dataserverserveridbackupbackupname}
-- **Endpoint**: `/api/chart-data/server/:serverId/backup/:backupName`
-- **Method**: GET
-- **Description**: Retrieves chart data for a specific server and backup with optional time range filtering.
-- **Parameters**:
-  - `serverId`: the server identifier
-  - `backupName`: the backup name (URL encoded)
-- **Query Parameters**:
-  - `startDate` (optional): Start date for filtering (ISO format)
-  - `endDate` (optional): End date for filtering (ISO format)
-- **Response**:
+- **Réponses d'erreur** :
+  - `400` : Paramètres de date invalides
+  - `500` : Erreur serveur lors de la récupération des données du graphique
+- **Notes** :
+  - Prend en charge le filtrage par plage horaire avec les paramètres startDate et endDate
+  - Valide le format de date avant le traitement
+  - Renvoie les données du graphique pour un serveur spécifique
+
+## Obtenir les données du graphique de sauvegarde du serveur - `/api/chart-data/server/:serverId/backup/:backupName` {#get-server-backup-chart-data-apichart-dataserverserveridbackupbackupname}
+- **Point de terminaison** : `/api/chart-data/server/:serverId/backup/:backupName`
+- **Méthode** : GET
+- **Description** : Récupère les données du graphique pour un serveur et une sauvegarde spécifiques avec un filtrage facultatif par plage horaire.
+- **Paramètres** :
+  - `serverId` : l'identifiant du serveur
+  - `backupName` : le nom de la sauvegarde (encodé en URL)
+- **Paramètres de requête** :
+  - `startDate` (facultatif) : Date de début pour le filtrage (format ISO)
+  - `endDate` (facultatif) : Date de fin pour le filtrage (format ISO)
+- **Réponse** :
+
   ```json
   [
     {
@@ -89,11 +101,12 @@
     }
   ]
   ```
-- **Error Responses**:
-  - `400`: Invalid date parameters
-  - `500`: Server error fetching chart data
-- **Notes**:
-  - Supports time range filtering with startDate and endDate parameters
-  - Validates date format before processing
-  - Returns chart data for specific server and backup combination
-  - Backup name must be URL encoded
+
+- **Réponses d'erreur** :
+  - `400` : Paramètres de date invalides
+  - `500` : Erreur serveur lors de la récupération des données du graphique
+- **Notes** :
+  - Prend en charge le filtrage par plage horaire avec les paramètres startDate et endDate
+  - Valide le format de date avant le traitement
+  - Renvoie les données du graphique pour une combinaison spécifique de serveur et de sauvegarde
+  - Le nom de la sauvegarde doit être encodé en URL

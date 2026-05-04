@@ -1,6 +1,5 @@
 "use client";
-
-import { useIntlayer } from 'react-intlayer';
+import { useTranslation } from "react-i18next";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import Image from 'next/image';
 
@@ -12,15 +11,15 @@ interface NtfyQrModalProps {
 }
 
 export function NtfyQrModal({ isOpen, onOpenChange, qrCodeDataUrl, topicUrl }: NtfyQrModalProps) {
-  const content = useIntlayer('ntfy-qr-modal');
-  
+  const { t } = useTranslation();
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md data-[state=open]:modal-zoom-center data-[state=closed]:modal-zoom-center-out" data-screenshot-target="ntfy-configure-device-popup">
         <DialogHeader>
-          <DialogTitle>{content.title.value}</DialogTitle>
+          <DialogTitle>{t("Configure your device")}</DialogTitle>
           <DialogDescription>
-            {content.description.value}
+            {t("Scan this QR code with your device to receive NTFY notifications for this topic.")}
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col items-center space-y-4">
@@ -30,7 +29,7 @@ export function NtfyQrModal({ isOpen, onOpenChange, qrCodeDataUrl, topicUrl }: N
               <div className="p-4 bg-white rounded-lg">
               <Image 
                   src={qrCodeDataUrl} 
-                  alt={content.qrCodeAlt.value} 
+                  alt={t("NTFY Configuration QR Code")} 
                   width={256}
                   height={256}
                   className="w-full h-auto"
@@ -39,10 +38,10 @@ export function NtfyQrModal({ isOpen, onOpenChange, qrCodeDataUrl, topicUrl }: N
             </>
           )}
           <p className="text-sm text-foreground text-center">
-            {content.scanInstruction.value}
+            {t("Open your device camera or a QR code scanner app to scan this code.")}
           </p>
           <p className="text-sm text-muted-foreground text-center">
-            <a href="https://ntfy.sh/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:underline">{content.installInstruction.value}</a>.
+            <a href="https://ntfy.sh/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:underline">{t("Before scanning install the NTFY app from the Play Store, App Store or F-Droid")}</a>.
           </p>
         </div>
       </DialogContent>

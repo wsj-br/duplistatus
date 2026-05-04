@@ -75,7 +75,7 @@ export function ServerSelectionProvider({ children }: ServerSelectionProviderPro
         ? savedOverviewSidePanel
         : 'status';
       
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setState(prev => ({
         ...prev,
         viewMode: viewMode as 'table' | 'overview',

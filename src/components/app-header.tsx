@@ -1,5 +1,5 @@
 'use client';
-
+import { useTranslation } from "react-i18next";
 import Link from 'next/link';
 import Image from 'next/image';
 import { LayoutDashboard, Settings, BookOpenText, LogOut, User, KeyRound, Users, ChevronDown, ArrowLeft, ScrollText, Languages } from 'lucide-react';
@@ -25,8 +25,7 @@ import { useState, useEffect } from 'react';
 import { ChangePasswordModal } from '@/components/change-password-modal';
 import { getHelpUrl } from '@/lib/helpMapper';
 import { useLocale } from '@/contexts/locale-context';
-import { useIntlayer } from 'react-intlayer';
-
+import i18n, { loadLocale } from '@/i18n';
 //import the logo image
 import DupliLogo from '../../public/images/duplistatus_logo.png';
 
@@ -54,8 +53,7 @@ export function AppHeader() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const locale = useLocale();
-  const content = useIntlayer('app-header');
-  const common = useIntlayer('common');
+  const { t } = useTranslation();
   const isDashboardPage = pathname === '/' || /^\/[^/]+\/?$/.test(pathname ?? '');
   const isSettingsPage = /\/settings/.test(pathname ?? '');
   const [user, setUser] = useState<User | null>(null);
@@ -65,8 +63,8 @@ export function AppHeader() {
   // Get context-aware help URL and page name
   const helpInfo = getHelpUrl(pathname, searchParams.toString(), locale);
   const helpTooltip = helpInfo.pageName === 'User Guide' 
-    ? common.navigation.help.value
-    : common.navigation.helpFor.value.replace('{pageName}', helpInfo.pageName);
+    ? t("Help")
+    : t('Help for {{pageName}}', { pageName: helpInfo.pageName });
 
   // Check authentication status
   useEffect(() => {
@@ -93,25 +91,15 @@ export function AppHeader() {
     checkAuth();
   }, []); // Only check once on mount
 
-  const handleLocaleChange = (newLocale: string) => {
+  const handleLocaleChange = async (newLocale: string) => {
     if (newLocale === locale) return;
-    
-    // Set cookie
-    document.cookie = `${LOCALE_COOKIE_NAME}=${newLocale}; path=/; max-age=${365 * 24 * 60 * 60}; SameSite=Lax`;
-    
-    // Get current path without locale prefix
-    const currentPath = pathname || '';
-    let pathWithoutLocale = currentPath.replace(/^\/(en|de|fr|es|pt-BR)(\/|$)/, '/');
-    if (pathWithoutLocale === '/') {
-      pathWithoutLocale = '';
-    }
-    
-    // Preserve query parameters
-    const queryString = searchParams.toString();
-    const newPath = `/${newLocale}${pathWithoutLocale}${queryString ? `?${queryString}` : ''}`;
-    
-    // Redirect to new locale
-    window.location.href = newPath;
+
+    const normalized = newLocale.toLowerCase() === 'pt-br' ? 'pt-BR' : newLocale;
+    document.cookie = `${LOCALE_COOKIE_NAME}=${encodeURIComponent(normalized)}; path=/; max-age=${365 * 24 * 60 * 60}; SameSite=Lax`;
+
+    await loadLocale(normalized);
+    await i18n.changeLanguage(normalized);
+    router.refresh();
   };
 
   const handleLogout = async () => {
@@ -131,7 +119,7 @@ export function AppHeader() {
 
       if (response.ok) {
         setUser(null);
-        router.push(`/${locale}/login`);
+        router.push(`/login`);
       }
     } catch (error) {
       console.error('Logout error:', error);
@@ -141,7 +129,7 @@ export function AppHeader() {
   return (
     <div className="sticky top-0 z-50 w-full border-b border-x-[20px] border-solid border-b-border border-x-transparent bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="w-[95%] mx-auto flex flex-wrap items-center py-4 min-h-16">
-        <Link href={`/${locale}`} className="mr-6 flex items-center space-x-2">
+        <Link href="/" className="mr-6 flex items-center space-x-2">
           <div className="p-1">
             <Image
               src={DupliLogo}
@@ -158,11 +146,11 @@ export function AppHeader() {
         {!isDashboardPage && (
           <div className="flex items-center gap-2 ml-4">
             <Link 
-              href={`/${locale}`} 
+              href="/" 
               className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors"
             >
               <LayoutDashboard className="h-4 w-4" />
-              <span className="text-sm font-medium">{content.returnToDashboard.value}</span>
+              <span className="text-sm font-medium">{t("Return to Dashboard")}</span>
             </Link>
             {isSettingsPage && (
               <Button 
@@ -172,7 +160,7 @@ export function AppHeader() {
                 className="flex items-center gap-1"
               >
                 <ArrowLeft className="h-4 w-4 rtl-flip-icon" />
-                <span>{common.ui.back.value}</span>
+                <span>{t("Back")}</span>
               </Button>
             )}
           </div>
@@ -183,8 +171,8 @@ export function AppHeader() {
           <NtfyMessagesButton />
           <OpenServerConfigButton />
           <BackupCollectMenu />
-          <Link href={`/${locale}/settings`} className="ml-4">
-            <Button variant="outline" size="icon" title={common.navigation.settings.value}>
+          <Link href={`/settings`} className="ml-4">
+            <Button variant="outline" size="icon" title={t("Settings")}>
               <Settings className="h-4 w-4" />
             </Button>
           </Link>
@@ -214,7 +202,7 @@ export function AppHeader() {
                   <span className="text-sm font-medium">{user.username}</span>
                   {user.isAdmin && (
                     <span className="text-xs px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-600 dark:text-blue-400">
-                      {content.admin.value}
+                      {t("Admin")}
                     </span>
                   )}
                   <ChevronDown className="h-4 w-4 text-muted-foreground" />
@@ -223,27 +211,27 @@ export function AppHeader() {
               <DropdownMenuContent align="end" className="w-48" data-screenshot-target="user-menu">
                 <DropdownMenuItem onClick={() => setChangePasswordOpen(true)}>
                   <KeyRound className="h-4 w-4 mr-2" />
-                  {content.changePassword.value}
+                  {t("Change Password")}
                 </DropdownMenuItem>
                 {user.isAdmin && (
                   <>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => router.push(`/${locale}/settings?tab=users`)}>
+                    <DropdownMenuItem onClick={() => router.push(`/settings?tab=users`)}>
                       <Users className="h-4 w-4 mr-2" />
-                      {content.users.value}
+                      {t("Users")}
                     </DropdownMenuItem>
                   </>
                 )}
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => router.push(`/${locale}/settings?tab=audit`)}>
+                <DropdownMenuItem onClick={() => router.push(`/settings?tab=audit`)}>
                   <ScrollText className="h-4 w-4 mr-2" />
-                  {content.auditLog.value}
+                  {t("Audit Log")}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuSub>
                   <DropdownMenuSubTrigger>
                     <Languages className="h-4 w-4 mr-2" />
-                    {content.language.value}
+                    {t("Language")}
                   </DropdownMenuSubTrigger>
                   <DropdownMenuSubContent>
                     <DropdownMenuRadioGroup value={locale} onValueChange={handleLocaleChange}>
@@ -258,7 +246,7 @@ export function AppHeader() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout}>
                   <LogOut className="h-4 w-4 mr-2" />
-                  {common.navigation.logout.value}
+                  {t("Logout")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

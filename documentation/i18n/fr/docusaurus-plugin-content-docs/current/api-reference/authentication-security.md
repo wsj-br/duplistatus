@@ -1,54 +1,63 @@
+---
+translation_last_updated: '2026-04-17T23:59:39.724Z'
+source_file_mtime: '2026-04-10T18:19:13.212Z'
+source_file_hash: c9534dd52e365d0fa8362267d222bf25774890c9b7530524b456434c7f74b287
+translation_language: fr
+source_file_path: documentation/docs/api-reference/authentication-security.md
+translation_models:
+  - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
+---
+# Authentification et sécurité {#authentication-security}
 
+L'API utilise une combinaison d'authentification basée sur des sessions et de protection CSRF pour toutes les opérations d'écriture dans la base de données afin d'éviter les accès non autorisés et les attaques par déni de service potentielles. Les API externes (utilisées par Duplicati) restent non authentifiées pour des raisons de compatibilité.
 
-# Authentication & Security {#authentication-security}
+## Authentification basée sur les sessions {#session-based-authentication}
 
-The API uses a combination of session-based authentication and CSRF protection for all database write operations to prevent unauthorized access and potential denial-of-service attacks. External APIs (used by Duplicati) remain unauthenticated for compatibility.
+Les points de terminaison protégés nécessitent un cookie de session valide et un jeton CSRF. Le système de session assure une authentification sécurisée pour toutes les opérations protégées.
 
-## Session-Based Authentication {#session-based-authentication}
+### Gestion des sessions {#session-management}
+1. **Créer une session** : POST vers `/api/session` pour créer une nouvelle session
+2. **Obtenir un jeton CSRF** : GET `/api/csrf` pour obtenir un jeton CSRF pour la session
+3. **Inclure dans les requêtes** : Envoyer le cookie de session et le jeton CSRF avec les requêtes protégées
+4. **Valider la session** : GET `/api/session` pour vérifier si la session est toujours valide
+5. **Supprimer la session** : DELETE `/api/session` pour se déconnecter et effacer la session
 
-Protected endpoints require a valid session cookie and CSRF token. The session system provides secure authentication for all protected operations.
+### Protection CSRF {#csrf-protection}
+Toutes les opérations modifiant l'état nécessitent un jeton CSRF valide correspondant à la session en cours. Le jeton CSRF doit être inclus dans l'en-tête `X-CSRF-Token` pour les points de terminaison protégés.
 
-### Session Management {#session-management}
-1. **Create Session**: POST to `/api/session` to create a new session
-2. **Get CSRF Token**: GET `/api/csrf` to obtain a CSRF token for the session
-3. **Include in Requests**: Send session cookie and CSRF token with protected requests
-4. **Validate Session**: GET `/api/session` to check if session is still valid
-5. **Delete Session**: DELETE `/api/session` to logout and clear session
+### Points de terminaison protégés {#protected-endpoints}
+Tous les points de terminaison qui modifient les données de la base nécessitent une authentification de session et un jeton CSRF :
 
-### CSRF Protection {#csrf-protection}
-All state-changing operations require a valid CSRF token that matches the current session. The CSRF token must be included in the `X-CSRF-Token` header for protected endpoints.
+- **Gestion du serveur** : `/api/servers/:id` (PATCH, DELETE), `/api/servers/:id/server-url` (PATCH), `/api/servers/:id/password` (PATCH, GET)
+- **Gestion de la configuration** : `/api/configuration/email` (GET, POST, DELETE), `/api/configuration/unified` (GET), `/api/configuration/ntfy` (GET), `/api/configuration/notifications` (GET, POST), `/api/configuration/backup-settings` (POST), `/api/configuration/templates` (POST), `/api/configuration/overdue-tolerance` (GET, POST)
+- **Système de notification** : `/api/notifications/test` (POST)
+- **Configuration Cron** : `/api/cron-config` (GET, POST)
+- **Proxy Cron** : `/api/cron/*` (GET, POST) - transmet les requêtes au service cron
+- **Gestion des sessions** : `/api/session` (POST, GET, DELETE), `/api/csrf` (GET)
+- **Données des graphiques** : `/api/chart-data/*` (GET)
+- **Tableau de bord** : `/api/dashboard` (GET)
+- **Détails du serveur** : `/api/servers` (GET), `/api/servers/:id` (GET), `/api/detail/:serverId` (GET)
+- **Journal d'audit** : `/api/audit-log` (GET), `/api/audit-log/download` (GET), `/api/audit-log/filters` (GET), `/api/audit-log/retention` (PATCH), `/api/audit-log/cleanup` (POST) - administrateur requis pour les opérations d'écriture
+- **Gestion des utilisateurs** : `/api/users` (GET, POST, PATCH, DELETE) - administrateur requis
+- **Gestion de la base de données** : `/api/database/backup` (GET), `/api/database/restore` (POST) - administrateur requis
+- **Journaux de l'application** : `/api/application-logs` (GET), `/api/application-logs/export` (GET) - administrateur requis
+- **Collection de sauvegardes** : `/api/backups/collect` (POST) - nécessite une session et un jeton CSRF
+- **Synchronisation de l'horaire de sauvegarde** : `/api/backups/sync-schedule` (POST) - nécessite une session et un jeton CSRF
+- **Vérification en retard** : `/api/notifications/check-overdue` (POST) - nécessite une session et un jeton CSRF
+- **Effacer les horodatages en retard** : `/api/notifications/clear-overdue-timestamps` (POST) - nécessite une session et un jeton CSRF
 
-### Protected Endpoints {#protected-endpoints}
-All endpoints that modify database data require session authentication and CSRF token:
+### Points de terminaison non protégés {#unprotected-endpoints}
+Les API externes restent non authentifiées pour l'intégration avec Duplicati :
 
-- **Server Management**: `/api/servers/:id` (PATCH, DELETE), `/api/servers/:id/server-url` (PATCH), `/api/servers/:id/password` (PATCH, GET)
-- **Configuration Management**: `/api/configuration/email` (GET, POST, DELETE), `/api/configuration/unified` (GET), `/api/configuration/ntfy` (GET), `/api/configuration/notifications` (GET, POST), `/api/configuration/backup-settings` (POST), `/api/configuration/templates` (POST), `/api/configuration/overdue-tolerance` (GET, POST)
-- **Notification System**: `/api/notifications/test` (POST)
-- **Cron Configuration**: `/api/cron-config` (GET, POST)
-- **Cron Proxy**: `/api/cron/*` (GET, POST) - proxies requests to the cron service
-- **Session Management**: `/api/session` (POST, GET, DELETE), `/api/csrf` (GET)
-- **Chart Data**: `/api/chart-data/*` (GET)
-- **Dashboard**: `/api/dashboard` (GET)
-- **Server Details**: `/api/servers` (GET), `/api/servers/:id` (GET), `/api/detail/:serverId` (GET)
-- **Audit Log**: `/api/audit-log` (GET), `/api/audit-log/download` (GET), `/api/audit-log/filters` (GET), `/api/audit-log/retention` (PATCH), `/api/audit-log/cleanup` (POST) - admin required for write operations
-- **User Management**: `/api/users` (GET, POST, PATCH, DELETE) - admin required
-- **Database Management**: `/api/database/backup` (GET), `/api/database/restore` (POST) - admin required
-- **Application Logs**: `/api/application-logs` (GET), `/api/application-logs/export` (GET) - admin required
-- **Backup Collection**: `/api/backups/collect` (POST) - requires session and CSRF token
-- **Backup Schedule Sync**: `/api/backups/sync-schedule` (POST) - requires session and CSRF token
-- **Overdue Check**: `/api/notifications/check-overdue` (POST) - requires session and CSRF token
-- **Clear Overdue Timestamps**: `/api/notifications/clear-overdue-timestamps` (POST) - requires session and CSRF token
+- `/api/upload` - Téléversement des données de sauvegarde depuis Duplicati
+- `/api/lastbackup/:serverId` - Statut de la dernière sauvegarde
+- `/api/lastbackups/:serverId` - Statut des dernières sauvegardes
+- `/api/summary` - Données récapitulatives générales
+- `/api/health` - Point de terminaison de vérification d'état
 
-### Unprotected Endpoints {#unprotected-endpoints}
-External APIs remain unauthenticated for Duplicati integration:
+### Exemple d'utilisation (Session + CSRF) {#usage-example-session-csrf}
 
-- `/api/upload` - Backup data uploads from Duplicati
-- `/api/lastbackup/:serverId` - Latest backup status
-- `/api/lastbackups/:serverId` - Latest backups status
-- `/api/summary` - Overall summary data
-- `/api/health` - Health check endpoint
-
-### Usage Example (Session + CSRF) {#usage-example-session-csrf}
 ```typescript
 // 1. Create session
 const sessionResponse = await fetch('/api/session', { method: 'POST' });
@@ -75,21 +84,24 @@ const response = await fetch('/api/servers/server-id', {
 });
 ```
 
-## Authentication Endpoints {#authentication-endpoints}
+## Points de terminaison d'authentification {#authentication-endpoints}
 
-### Login - `/api/auth/login` {#login-apiauthlogin}
-- **Endpoint**: `/api/auth/login`
-- **Method**: POST
-- **Description**: Authenticates a user and creates a session. Supports account locking after failed attempts and password change requirements.
-- **Authentication**: Requires valid session and CSRF token (but no logged-in user)
-- **Request Body**:
+### Connexion - `/api/auth/login` {#login-apiauthlogin}
+- **Point de terminaison** : `/api/auth/login`
+- **Méthode** : POST
+- **Description** : Authentifie un utilisateur et crée une session. Prend en charge le verrouillage du compte après des tentatives infructueuses et les exigences de changement de mot de passe.
+- **Authentification** : Nécessite une session valide et un jeton CSRF (mais aucun utilisateur connecté)
+- **Corps de la requête** :
+
   ```json
   {
     "username": "admin",
     "password": "password123"
   }
   ```
-- **Response** (success):
+
+- **Réponse** (succès) :
+
   ```json
   {
     "success": true,
@@ -102,25 +114,27 @@ const response = await fetch('/api/servers/server-id', {
     "keyChanged": false
   }
   ```
-- **Error Responses**: All error responses include `error` (English message) and `errorCode` (stable code for client-side translation).
-  - `400`: Missing username or password — `errorCode: "REQUIRED_CREDENTIALS"`
-  - `401`: Invalid username or password — `errorCode: "INVALID_CREDENTIALS"`
-  - `403`: Account locked due to too many failed login attempts — `errorCode: "ACCOUNT_LOCKED"` (includes `lockedUntil`, `minutesRemaining`)
-  - `500`: Internal server error — `errorCode: "INTERNAL_ERROR"`
-  - `503`: Database not ready — `errorCode: "DATABASE_NOT_READY"`
-- **Notes**:
-  - Account is locked after 5 failed login attempts for 15 minutes
-  - Failed login attempts are tracked and logged
-  - Session cookie is automatically set in the response
-  - If user has `mustChangePassword` flag set, they should be redirected to change password page
-  - All login attempts (successful and failed) are logged to audit log
 
-### Logout - `/api/auth/logout` {#logout-apiauthlogout}
+- **Réponses d'erreur** : Toutes les réponses d'erreur incluent `error` (message en anglais) et `errorCode` (code stable pour la traduction côté client).
+  - `400` : Nom d'utilisateur ou mot de passe manquant — `errorCode: "REQUIRED_CREDENTIALS"`
+  - `401` : Nom d'utilisateur ou mot de passe invalide — `errorCode: "INVALID_CREDENTIALS"`
+  - `403` : Compte verrouillé en raison de trop nombreuses tentatives de connexion infructueuses — `errorCode: "ACCOUNT_LOCKED"` (inclut `lockedUntil`, `minutesRemaining`)
+  - `500` : Erreur interne du serveur — `errorCode: "INTERNAL_ERROR"`
+  - `503` : Base de données non prête — `errorCode: "DATABASE_NOT_READY"`
+- **Remarques** :
+  - Le compte est verrouillé après 5 tentatives de connexion infructueuses pendant 15 minutes
+  - Les tentatives de connexion infructueuses sont suivies et enregistrées
+  - Le cookie de session est automatiquement défini dans la réponse
+  - Si l'utilisateur a le drapeau `mustChangePassword` activé, il doit être redirigé vers la page de changement de mot de passe
+  - Toutes les tentatives de connexion (réussies et infructueuses) sont enregistrées dans le journal d'audit
+
+### Déconnexion - `/api/auth/logout` {#logout-apiauthlogout}
 - **Endpoint**: `/api/auth/logout`
-- **Method**: POST
-- **Description**: Logs out the current user and destroys their session.
-- **Authentication**: Requires valid session and CSRF token
-- **Response** (success):
+- **Méthode**: POST
+- **Description**: Déconnecte l'utilisateur actuel et détruit sa session.
+- **Authentification**: Nécessite une session valide et un jeton CSRF
+- **Réponse** (succès):
+
   ```json
   {
     "success": true,
@@ -128,20 +142,22 @@ const response = await fetch('/api/servers/server-id', {
     "successCode": "LOGGED_OUT"
   }
   ```
-- **Error Responses**: Include `error` and `errorCode` for client-side translation.
-  - `400`: No active session — `errorCode: "NO_ACTIVE_SESSION"`
-  - `500`: Internal server error — `errorCode: "INTERNAL_ERROR"`
-- **Notes**:
-  - Session cookie is cleared in the response
-  - Logout is logged to audit log
-  - Session is immediately invalidated
 
-### Get Current User - `/api/auth/me` {#get-current-user-apiauthme}
+- **Réponses d'erreur** : Inclure `error` et `errorCode` pour la traduction côté client.
+  - `400` : Aucune session active — `errorCode: "NO_ACTIVE_SESSION"`
+  - `500` : Erreur interne du serveur — `errorCode: "INTERNAL_ERROR"`
+- **Notes** :
+  - Le cookie de session est supprimé dans la réponse
+  - La déconnexion est enregistrée dans le journal d'audit
+  - La session est immédiatement invalidée
+
+### Obtenir l'utilisateur actuel - `/api/auth/me` {#get-current-user-apiauthme}
 - **Endpoint**: `/api/auth/me`
-- **Method**: GET
-- **Description**: Returns the current authenticated user information, or indicates if no user is logged in.
-- **Authentication**: Requires valid session (but no logged-in user required)
-- **Response** (authenticated):
+- **Méthode**: GET
+- **Description**: Renvoie les informations de l'utilisateur authentifié actuel, ou indique s'il n'y a pas d'utilisateur connecté.
+- **Authentification**: Nécessite une session valide (mais aucun utilisateur connecté n'est requis)
+- **Réponse** (authentifié):
+
   ```json
   {
     "authenticated": true,
@@ -153,34 +169,40 @@ const response = await fetch('/api/servers/server-id', {
     }
   }
   ```
-- **Response** (not authenticated):
+
+- **Réponse** (non authentifié):
+
   ```json
   {
     "authenticated": false,
     "user": null
   }
   ```
-- **Error Responses**: Include `error` and `errorCode` for client-side translation.
-  - `500`: Internal server error — `errorCode: "INTERNAL_ERROR"`
-- **Notes**:
-  - Can be called without a logged-in user (returns `authenticated: false`)
-  - Useful for checking authentication status on page load
 
-### Change Password - `/api/auth/change-password` {#change-password-apiauthchange-password}
+- **Réponses d'erreur** : Inclure `error` et `errorCode` pour la traduction côté client.
+  - `500` : Erreur interne du serveur — `errorCode: "INTERNAL_ERROR"`
+- **Notes** :
+  - Peut être appelé sans utilisateur connecté (renvoie `authenticated: false`)
+  - Utile pour vérifier l'état d'authentification au chargement de la page
+
+### Changer le mot de passe - `/api/auth/change-password` {#change-password-apiauthchange-password}
 - **Endpoint**: `/api/auth/change-password`
-- **Method**: POST
-- **Description**: Changes the password for the current authenticated user. If `mustChangePassword` is set, current password verification is skipped.
-- **Authentication**: Requires valid session and CSRF token (logged-in user required)
-- **Request Body**:
+- **Méthode**: POST
+- **Description**: Change le mot de passe de l'utilisateur authentifié actuel. Si `mustChangePassword` est défini, la vérification du mot de passe actuel est ignorée.
+- **Authentification**: Nécessite une session valide et un jeton CSRF (utilisateur connecté requis)
+- **Corps de la requête**:
+
   ```json
   {
     "currentPassword": "old-password",
     "newPassword": "new-secure-password"
   }
   ```
-  - `currentPassword`: Optional if `mustChangePassword` is true, required otherwise
-  - `newPassword`: Required, must meet password policy requirements
-- **Response** (success):
+
+- `currentPassword` : Facultatif si `mustChangePassword` est vrai, obligatoire sinon
+  - `newPassword` : Obligatoire, doit respecter les exigences de la politique de mot de passe
+- **Réponse** (succès):
+
   ```json
   {
     "success": true,
@@ -188,43 +210,47 @@ const response = await fetch('/api/servers/server-id', {
     "successCode": "PASSWORD_CHANGED"
   }
   ```
-- **Error Responses**: Include `error` and `errorCode` for client-side translation. Policy violation may include `validationErrors` (array of strings).
-  - `400`: Missing new password — `errorCode: "NEW_PASSWORD_REQUIRED"`
-  - `400`: Password policy violation — `errorCode: "POLICY_NOT_MET"` (may include `validationErrors`)
-  - `400`: New password same as current — `errorCode: "NEW_PASSWORD_SAME_AS_CURRENT"`
-  - `401`: Current password is incorrect — `errorCode: "CURRENT_PASSWORD_INCORRECT"`
-  - `404`: User not found — `errorCode: "USER_NOT_FOUND"`
-  - `500`: Internal server error — `errorCode: "INTERNAL_ERROR"`
-- **Notes**:
-  - New password must meet password policy requirements (length, complexity, etc.)
-  - If `mustChangePassword` flag is set, current password verification is skipped
-  - After successful password change, `mustChangePassword` flag is cleared
-  - Password changes are logged to audit log
-  - New password must be different from current password
 
-### Check Admin Must Change Password - `/api/auth/admin-must-change-password` {#check-admin-must-change-password-apiauthadmin-must-change-password}
+- **Réponses d'erreur** : Inclure `error` et `errorCode` pour la traduction côté client. Une violation de la politique peut inclure `validationErrors` (tableau de chaînes).
+  - `400` : Mot de passe manquant — `errorCode: "NEW_PASSWORD_REQUIRED"`
+  - `400` : Violation de la politique de mot de passe — `errorCode: "POLICY_NOT_MET"` (peut inclure `validationErrors`)
+  - `400` : Le nouveau mot de passe est identique au mot de passe actuel — `errorCode: "NEW_PASSWORD_SAME_AS_CURRENT"`
+  - `401` : Le mot de passe actuel est incorrect — `errorCode: "CURRENT_PASSWORD_INCORRECT"`
+  - `404` : Utilisateur non trouvé — `errorCode: "USER_NOT_FOUND"`
+  - `500` : Erreur interne du serveur — `errorCode: "INTERNAL_ERROR"`
+- **Notes** :
+  - Le nouveau mot de passe doit respecter les exigences de la politique de mot de passe (longueur, complexité, etc.)
+  - Si le drapeau `mustChangePassword` est défini, la vérification du mot de passe actuel est ignorée
+  - Après un changement de mot de passe réussi, le drapeau `mustChangePassword` est réinitialisé
+  - Les changements de mot de passe sont enregistrés dans le journal d'audit
+  - Le nouveau mot de passe doit être différent du mot de passe actuel
+
+### Vérifier si l'administrateur doit changer le mot de passe - `/api/auth/admin-must-change-password` {#check-admin-must-change-password-apiauthadmin-must-change-password}
 - **Endpoint**: `/api/auth/admin-must-change-password`
-- **Method**: GET
-- **Description**: Checks if the admin user must change their password. This endpoint is public (no authentication required) as it only returns a boolean flag.
-- **Response**:
+- **Méthode**: GET
+- **Description**: Vérifie si l'utilisateur administrateur doit changer son mot de passe. Cet endpoint est public (aucune authentification requise) car il ne renvoie qu'un indicateur booléen.
+- **Réponse**:
+
   ```json
   {
     "mustChangePassword": false
   }
   ```
-- **Error Responses**:
-  - `500`: Internal server error (returns `mustChangePassword: false` on error to avoid showing tip if there's a database issue)
-- **Notes**:
-  - Public endpoint, no authentication required
-  - Returns `false` if admin user doesn't exist
-  - Used to determine if password change tip should be shown
-  - On error, returns `false` to avoid showing tip if there's a database issue
 
-### Get Password Policy - `/api/auth/password-policy` {#get-password-policy-apiauthpassword-policy}
+- **Réponses d'erreur** :
+  - `500` : Erreur interne du serveur (renvoie `mustChangePassword: false` en cas d'erreur pour éviter d'afficher l'indication en cas de problème de base de données)
+- **Notes** :
+  - Endpoint public, aucune authentification requise
+  - Renvoie `false` si l'utilisateur administrateur n'existe pas
+  - Utilisé pour déterminer si l'indication de changement de mot de passe doit être affichée
+  - En cas d'erreur, renvoie `false` pour éviter d'afficher l'indication en cas de problème de base de données
+
+### Obtenir la politique de mot de passe - `/api/auth/password-policy` {#get-password-policy-apiauthpassword-policy}
 - **Endpoint**: `/api/auth/password-policy`
-- **Method**: GET
-- **Description**: Returns the current password policy configuration. This endpoint is public (no authentication required) as it's needed for frontend validation.
-- **Response**:
+- **Méthode**: GET
+- **Description**: Renvoie la configuration actuelle de la politique de mot de passe. Cet endpoint est public (aucune authentification requise) car il est nécessaire pour la validation côté frontend.
+- **Réponse**:
+
   ```json
   {
     "minLength": 8,
@@ -234,19 +260,20 @@ const response = await fetch('/api/servers/server-id', {
     "requireSpecialChars": false
   }
   ```
-- **Error Responses**: Include `error` and `errorCode` for client-side translation.
-  - `500`: Failed to retrieve password policy — `errorCode: "POLICY_RETRIEVE_FAILED"`
-- **Notes**:
-  - Public endpoint, no authentication required
-  - Used by frontend components to display password requirements and validate passwords before submission
-  - Policy is configured via environment variables (`PWD_ENFORCE`, `PWD_MIN_LEN`)
-  - Default password check (preventing use of default admin password) is always enforced regardless of policy settings
 
-### Auth API error and success codes (i18n) {#auth-api-error-and-success-codes-i18n}
+- **Réponses d'erreur** : Inclure `error` et `errorCode` pour la traduction côté client.
+  - `500` : Échec de la récupération de la politique de mot de passe — `errorCode: "POLICY_RETRIEVE_FAILED"`
+- **Notes** :
+  - Endpoint public, aucune authentification requise
+  - Utilisé par les composants frontend pour afficher les exigences de mot de passe et valider les mots de passe avant soumission
+  - La politique est configurée via des variables d'environnement (`PWD_ENFORCE`, `PWD_MIN_LEN`)
+  - La vérification par défaut (empêchant l'utilisation du mot de passe administrateur par défaut) est toujours appliquée indépendamment des paramètres de politique
 
-Auth endpoints return a stable `errorCode` (and, on success, `successCode`) in addition to the human-readable `error` or `message` field. The `error` and `message` values are in English. Clients should use the codes to look up localized strings so that the UI displays messages in the user's selected language.
+### Codes d'erreur et de succès de l'API Auth (i18n) {#auth-api-error-and-success-codes-i18n}
 
-| Endpoint | Success code | Error codes |
+Les points de terminaison d'authentification renvoient un `errorCode` stable (et, en cas de succès, un `successCode`) en plus du champ lisible par l'humain `error` ou `message`. Les valeurs `error` et `message` sont en anglais. Les clients doivent utiliser les codes pour rechercher les chaînes localisées afin que l'interface affiche les messages dans la langue sélectionnée par l'utilisateur.
+
+| Point de terminaison | Code de succès | Codes d'erreur |
 |----------|--------------|-------------|
 | `/api/auth/login` | — | `REQUIRED_CREDENTIALS`, `INVALID_CREDENTIALS`, `ACCOUNT_LOCKED`, `DATABASE_NOT_READY`, `INTERNAL_ERROR` |
 | `/api/auth/logout` | `LOGGED_OUT` | `NO_ACTIVE_SESSION`, `INTERNAL_ERROR` |
@@ -254,14 +281,14 @@ Auth endpoints return a stable `errorCode` (and, on success, `successCode`) in a
 | `/api/auth/change-password` | `PASSWORD_CHANGED` | `NEW_PASSWORD_REQUIRED`, `POLICY_NOT_MET`, `USER_NOT_FOUND`, `CURRENT_PASSWORD_INCORRECT`, `NEW_PASSWORD_SAME_AS_CURRENT`, `INTERNAL_ERROR` |
 | `/api/auth/password-policy` | — | `POLICY_RETRIEVE_FAILED` |
 
-### Error Responses {#error-responses}
-- `401 Unauthorized`: Invalid or missing session, expired session, or CSRF token validation failed
-- `403 Forbidden`: CSRF token validation failed or operation not allowed
+### Réponses d'erreur {#error-responses}
+- `401 Unauthorized` : Session invalide ou manquante, session expirée, ou échec de la validation du jeton CSRF
+- `403 Forbidden` : Échec de la validation du jeton CSRF ou opération non autorisée
 
 :::caution
- Don't expose the **duplistatus** server to the public internet. Use it in a secure network 
-(e.g., local LAN protected by a firewall).
+ N'exposez pas le serveur **duplistatus** à l'internet public. Utilisez-le dans un réseau sécurisé 
+(par exemple, un réseau local protégé par un pare-feu).
 
-Exposing the **duplistatus** interface to the public
- internet without proper security measures could lead to unauthorized access.
+Exposer l'interface **duplistatus** à l'internet public 
+sans mesures de sécurité adéquates pourrait entraîner un accès non autorisé.
 :::

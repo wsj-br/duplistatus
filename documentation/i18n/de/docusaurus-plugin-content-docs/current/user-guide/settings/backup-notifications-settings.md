@@ -1,9 +1,12 @@
 ---
-translation_last_updated: '2026-03-01T00:45:11.966Z'
-source_file_mtime: '2026-02-16T00:30:39.432Z'
-source_file_hash: 175a9e765f355f43
+translation_last_updated: '2026-04-18T00:03:40.160Z'
+source_file_mtime: '2026-03-05T22:33:28.423Z'
+source_file_hash: c28881ecd9af6c672fb4a386e56703be381997ef49fd8a5db83df90528d1376e
 translation_language: de
-source_file_path: user-guide/settings/backup-notifications-settings.md
+source_file_path: documentation/docs/user-guide/settings/backup-notifications-settings.md
+translation_models:
+  - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Backup-Benachrichtigungen {#backup-notifications}
 
@@ -90,11 +93,8 @@ Einzelne Sicherungen erben automatisch die Serverstandards, aber Sie können die
 
 **Vererbungsindikatoren:**
 
-- **Link icon** <IconButton icon="lucide:link" style={{border: 'none', padding: 0, color: '#3b82f6', background: 'transparent'}} /> in blue: Indicates the value is inherited from server defaults. Clicking the field will create an override for editing.
-- **Broken link icon** <IconButton icon="lucide:link-2-off" style={{border: 'none', padding: 0, color: '#3b82f6', background: 'transparent'}} /> in blue: Indicates the value has been overridden. Click the icon to revert to inheritance.
-
-- **Link-Symbol** <IconButton icon="lucide:link" style={{border: 'none', padding: 0, color: '#3b82f6', background: 'transparent'}} /> in Blau: Zeigt an, dass der Wert von den Server-Standardeinstellungen geerbt wird. Durch Klicken auf das Feld wird eine Außerkraftsetzung zum Bearbeiten erstellt.
-- **Unterbrochenes Link-Symbol** <IconButton icon="lucide:link-2-off" style={{border: 'none', padding: 0, color: '#3b82f6', background: 'transparent'}} /> in Blau: Zeigt an, dass der Wert außer Kraft gesetzt wurde. Klicken Sie auf das Symbol, um zur Vererbung zurückzukehren.
+- **Link-Symbol** <IconButton icon="lucide:link" style={{border: 'none', padding: 0, color: '#3b82f6', background: 'transparent'}} /> in Blau: Zeigt an, dass der Wert von den Server-Standardeinstellungen geerbt wird. Durch Klicken auf das Feld wird eine Überschreibung zum Bearbeiten erstellt.
+- **Unterbrochenes Link-Symbol** <IconButton icon="lucide:link-2-off" style={{border: 'none', padding: 0, color: '#3b82f6', background: 'transparent'}} /> in Blau: Zeigt an, dass der Wert überschrieben wurde. Klicken Sie auf das Symbol, um zur Vererbung zurückzukehren.
 
 **Verhalten zusätzlicher Ziele:**
 

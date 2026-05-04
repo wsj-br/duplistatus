@@ -1,9 +1,12 @@
 ---
-translation_last_updated: '2026-03-01T00:45:07.793Z'
-source_file_mtime: '2026-02-16T00:30:39.432Z'
-source_file_hash: c7c041a3840aa396
+translation_last_updated: '2026-04-18T00:03:47.948Z'
+source_file_mtime: '2026-03-05T22:33:28.423Z'
+source_file_hash: b978c78a610418d49df860a0680c231bce4f9a5f2690a3736ca40ae39b5ace0d
 translation_language: fr
-source_file_path: user-guide/settings/email-settings.md
+source_file_path: documentation/docs/user-guide/settings/email-settings.md
+translation_models:
+  - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # E-mail {#email}
 
@@ -11,17 +14,17 @@ source_file_path: user-guide/settings/email-settings.md
 
 ![Email Configuration](../../assets/screen-settings-email.png)
 
-| Paramètre                   | Description                                                      |
+| Paramètre | Description |
 |:------------------------|:-----------------------------------------------------------------|
-| **Hôte du serveur SMTP**    | Le serveur SMTP de votre fournisseur de messagerie (par exemple, `smtp.gmail.com`).      |
-| **Port du serveur SMTP**    | Numéro de port (généralement `25` pour SMTP simple, `587` pour STARTTLS, ou `465` pour SSL/TLS direct). |
-| **Type de connexion**     | Sélectionner entre SMTP simple, STARTTLS, ou SSL/TLS direct. Par défaut, SSL/TLS direct pour les nouvelles configurations. |
-| **Authentification SMTP** | Activer ou désactiver l'authentification SMTP. Quand désactivée, les champs nom d'utilisateur et mot de passe ne sont pas requis. |
-| **Nom d'utilisateur SMTP**       | Votre adresse e-mail ou nom d'utilisateur (requis quand l'authentification est activée). |
-| **Mot de passe SMTP**       | Votre mot de passe e-mail ou mot de passe spécifique à l'application (requis quand l'authentification est activée). |
-| **Nom de l'expéditeur**         | Nom d'affichage affiché comme expéditeur dans les notifications par e-mail (optionnel, par défaut « duplistatus »). |
-| **Adresse d'expéditeur**        | Adresse e-mail affichée comme expéditeur. Requise pour les connexions SMTP simple ou quand l'authentification est désactivée. Par défaut le nom d'utilisateur SMTP quand l'authentification est activée. Notez que certains fournisseurs de messagerie remplaceront l'« Adresse d'expéditeur » par le « Nom d'utilisateur du serveur SMTP ». |
-| **E-mail du destinataire**     | L'adresse e-mail pour recevoir les notifications. Doit être une adresse e-mail au format valide. |
+| **Serveur SMTP hôte** | Serveur SMTP de votre fournisseur de messagerie (par exemple, `smtp.gmail.com`). |
+| **Port du serveur SMTP** | Numéro de port (généralement `25` pour SMTP standard, `587` pour STARTTLS ou `465` pour SSL/TLS direct). |
+| **Type de connexion** | Sélectionnez entre SMTP standard, STARTTLS ou SSL/TLS direct. Par défaut, SSL/TLS direct est utilisé pour les nouvelles configurations. |
+| **Authentification SMTP** | Activez ou désactivez l'authentification SMTP. Lorsqu'elle est désactivée, les champs de nom d'utilisateur et de mot de passe ne sont pas requis. |
+| **Nom d'utilisateur SMTP** | Votre adresse e-mail ou nom d'utilisateur (requis si l'authentification est activée). |
+| **Mot de passe SMTP** | Votre mot de passe e-mail ou mot de passe spécifique à l'application (requis si l'authentification est activée). |
+| **Nom de l'expéditeur** | Nom affiché comme expéditeur dans les notifications par courriel (facultatif, valeur par défaut : "duplistatus"). |
+| **Adresse d'expédition** | Adresse e-mail affichée comme expéditeur. Requise pour les connexions SMTP standard ou lorsque l'authentification est désactivée. Par défaut, utilise le nom d'utilisateur SMTP lorsque l'authentification est activée. Notez que certains fournisseurs de messagerie remplaceront le `From Address` par le `SMTP Server Username`. |
+| **Courriel du destinataire** | Adresse e-mail qui recevra les notifications. Doit être au format d'adresse e-mail valide. |
 
 Une icône <IIcon2 icon="lucide:mail" color="green"/> verte à côté d'**E-mail** dans la barre latérale signifie que vos paramètres sont valides. Si l'icône est <IIcon2 icon="lucide:mail" color="yellow"/> jaune, vos paramètres ne sont pas valides ou ne sont pas configurés.
 

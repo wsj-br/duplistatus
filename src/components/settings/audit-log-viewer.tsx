@@ -1,7 +1,6 @@
 'use client';
-
+import { useTranslation } from "react-i18next";
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
-import { useIntlayer } from 'react-intlayer';
 import { useLocale } from '@/contexts/locale-context';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -62,8 +61,7 @@ interface AuditLogViewerProps {
 }
 
 export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewerProps) {
-  const content = useIntlayer('audit-log-viewer');
-  const common = useIntlayer('common');
+  const { t } = useTranslation();
   const { toast } = useToast();
   const locale = useLocale();
   const [logs, setLogs] = useState<AuditLog[]>([]);
@@ -158,15 +156,15 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
     } catch (error) {
       console.error('Error loading audit logs:', error);
       toast({
-        title: common.status.error,
-        description: content.failedToLoadAuditLogs,
+        title: t("Error"),
+        description: t("Failed to load audit logs"),
         variant: 'destructive',
       });
     } finally {
       setLoading(false);
       setIsLoadingMore(false);
     }
-  }, [startDate, endDate, username, action, category, status, loadedCount, initialLoadSize, batchSize, toast, common.status.error, content.failedToLoadAuditLogs]);
+  }, [startDate, endDate, username, action, category, status, loadedCount, initialLoadSize, batchSize, toast, t]);
 
   // Load more logs when scrolling
   const loadMoreLogs = useCallback(async () => {
@@ -235,14 +233,14 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
     } catch (error) {
       console.error('Error loading more audit logs:', error);
       toast({
-        title: 'Error',
-        description: 'Failed to load more audit logs',
+        title: t("Error"),
+        description: t("Failed to load more audit logs"),
         variant: 'destructive',
       });
     } finally {
       setIsLoadingMore(false);
     }
-  }, [logs.length, total, isLoadingMore, loading, loadedCount, batchSize, startDate, endDate, username, action, category, status, toast]);
+  }, [logs.length, total, isLoadingMore, loading, loadedCount, batchSize, startDate, endDate, username, action, category, status, toast, t]);
 
   // Initial load and filter changes
   useEffect(() => {
@@ -289,8 +287,8 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
       } catch (error) {
         console.error('Error loading filter values:', error);
         toast({
-          title: common.status.warning,
-          description: content.failedToLoadFilterValues,
+          title: t("Warning"),
+          description: t("Failed to load filter values. Using loaded records only."),
           variant: 'destructive',
         });
       } finally {
@@ -298,7 +296,7 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
       }
     };
     loadFilterValues();
-  }, [toast, common.status.warning, content.failedToLoadFilterValues]);
+  }, [toast, t]);
 
   // Handle download
   const handleDownload = async (format: 'csv' | 'json') => {
@@ -328,14 +326,14 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
       window.URL.revokeObjectURL(url);
 
       toast({
-        title: common.status.success,
-        description: content.auditLogDownloadedAs.value.replace('{format}', format.toUpperCase()),
+        title: t("Success"),
+        description: t("Audit log downloaded as {{format}}", { format: format.toUpperCase() }),
       });
     } catch (error) {
       console.error('Error downloading audit logs:', error);
       toast({
-        title: common.status.error,
-        description: content.failedToDownloadAuditLogs || 'Failed to download audit logs',
+        title: t("Error"),
+        description: t("Failed to download audit logs"),
         variant: 'destructive',
       });
     }
@@ -355,11 +353,11 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
   const getStatusBadge = (statusValue: string) => {
     switch (statusValue) {
       case 'success':
-        return <Badge className="bg-green-500/20 text-green-600 dark:text-green-400">{common.status.success.value}</Badge>;
+        return <Badge className="bg-green-500/20 text-green-600 dark:text-green-400">{t("Success")}</Badge>;
       case 'failure':
-        return <Badge className="bg-yellow-500/20 text-yellow-600 dark:text-yellow-400">{content.failure}</Badge>;
+        return <Badge className="bg-yellow-500/20 text-yellow-600 dark:text-yellow-400">{t("Failure")}</Badge>;
       case 'error':
-        return <Badge className="bg-red-500/20 text-red-600 dark:text-red-400">{common.status.error.value}</Badge>;
+        return <Badge className="bg-red-500/20 text-red-600 dark:text-red-400">{t("Error")}</Badge>;
       default:
         return <Badge>{statusValue}</Badge>;
     }
@@ -382,16 +380,16 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
     <div className="space-y-4" data-screenshot-target="settings-content-card">
       {/* Header with Refresh Button */}
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold">{content.auditLogViewer}</h2>
+        <h2 className="text-lg font-semibold">{t("Audit Log Viewer")}</h2>
         <Button 
           variant="outline" 
           size="sm" 
           onClick={() => loadLogs(true)}
           disabled={loading}
-          title={content.refreshAuditLogs}
+          title={t("Refresh audit logs")}
         >
           <RefreshCcw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-          {common.ui.refresh.value}
+          {t("Refresh")}
         </Button>
       </div>
 
@@ -400,25 +398,25 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-semibold flex items-center gap-2">
             <CalendarIcon className="h-4 w-4" />
-            {content.auditLogViewerFilters}
+            {t("Audit Log Viewer - Filters")}
           </h3>
           <div className="flex gap-2 items-center">
             <Button variant="outline" size="sm" onClick={resetFilters}>
-              {content.reset}
+              {t("Reset")}
             </Button>
             <Button variant="outline" size="sm" onClick={() => handleDownload('csv')}>
               <Download className="h-4 w-4 mr-2" />
-              {content.csv}
+              {t("CSV")}
             </Button>
             <Button variant="outline" size="sm" onClick={() => handleDownload('json')}>
               <Download className="h-4 w-4 mr-2" />
-              {content.json}
+              {t("JSON")}
             </Button>
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="start-date">{content.startDate}</Label>
+            <Label htmlFor="start-date">{t("Start Date")}</Label>
             <DatePicker
               id="start-date"
               value={startDate}
@@ -428,7 +426,7 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="end-date">{content.endDate}</Label>
+            <Label htmlFor="end-date">{t("End Date")}</Label>
             <DatePicker
               id="end-date"
               value={endDate}
@@ -438,26 +436,26 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="username">{content.username}</Label>
+            <Label htmlFor="username">{t("Username")}</Label>
             <Input
               id="username"
               value={username}
               onChange={(e) => {
                 setUsername(e.target.value);
               }}
-              placeholder={content.filterByUsername.value}
+              placeholder={t("Filter by username")}
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="action">{content.action}</Label>
+            <Label htmlFor="action">{t("Action")}</Label>
             <Select value={action} onValueChange={(value) => {
               setAction(value);
             }}>
               <SelectTrigger id="action">
-                <SelectValue placeholder={content.allActions.value} />
+                <SelectValue placeholder={t("All actions")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">{content.allActions}</SelectItem>
+                <SelectItem value="all">{t("All actions")}</SelectItem>
                 {filterValues.actions.map(act => (
                   <SelectItem key={act} value={act}>{act}</SelectItem>
                 ))}
@@ -465,15 +463,15 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
             </Select>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="category">{content.category}</Label>
+            <Label htmlFor="category">{t("Category")}</Label>
             <Select value={category} onValueChange={(value) => {
               setCategory(value);
             }}>
               <SelectTrigger id="category">
-                <SelectValue placeholder={content.allCategories.value} />
+                <SelectValue placeholder={t("All categories")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">{content.allCategories}</SelectItem>
+                <SelectItem value="all">{t("All categories")}</SelectItem>
                 {filterValues.categories.map(cat => (
                   <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                 ))}
@@ -481,15 +479,15 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
             </Select>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="status">{content.status}</Label>
+            <Label htmlFor="status">{t("Status")}</Label>
             <Select value={status} onValueChange={(value) => {
               setStatus(value);
             }}>
               <SelectTrigger id="status">
-                <SelectValue placeholder={content.allStatuses.value} />
+                <SelectValue placeholder={t("All statuses")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">{content.allStatuses}</SelectItem>
+                <SelectItem value="all">{t("All statuses")}</SelectItem>
                 {filterValues.statuses.map(st => (
                   <SelectItem key={st} value={st}>{st}</SelectItem>
                 ))}
@@ -501,9 +499,9 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
 
       {/* Results */}
       {loading ? (
-        <div className="text-center py-8 text-muted-foreground">{content.loadingAuditLogs}</div>
+        <div className="text-center py-8 text-muted-foreground">{t("Loading audit logs...")}</div>
       ) : logs.length === 0 ? (
-        <div className="text-center py-8 text-muted-foreground">{content.noAuditLogsFound}</div>
+        <div className="text-center py-8 text-muted-foreground">{t("No audit logs found")}</div>
       ) : (
         <div className="space-y-4">
           <div className="border rounded-md">
@@ -515,14 +513,14 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
                 <Table>
                   <TableHeader className="sticky top-0 z-20 bg-muted border-b-2 border-border shadow-sm">
                     <TableRow className="bg-muted">
-                      <TableHead className="bg-muted w-12 text-center">{content.tableNumber}</TableHead>
-                      <TableHead className="bg-muted">{content.timestamp}</TableHead>
-                      <TableHead className="bg-muted">{content.user}</TableHead>
-                      <TableHead className="bg-muted">{content.actionHeader}</TableHead>
-                      <TableHead className="bg-muted">{content.categoryHeader}</TableHead>
-                      <TableHead className="bg-muted">{content.statusHeader}</TableHead>
-                      <TableHead className="bg-muted">{content.target}</TableHead>
-                      <TableHead className="text-right bg-muted">{content.actions}</TableHead>
+                      <TableHead className="bg-muted w-12 text-center">{t("#")}</TableHead>
+                      <TableHead className="bg-muted">{t("Timestamp")}</TableHead>
+                      <TableHead className="bg-muted">{t("User")}</TableHead>
+                      <TableHead className="bg-muted">{t("Action")}</TableHead>
+                      <TableHead className="bg-muted">{t("Category")}</TableHead>
+                      <TableHead className="bg-muted">{t("Status")}</TableHead>
+                      <TableHead className="bg-muted">{t("Target")}</TableHead>
+                      <TableHead className="text-right bg-muted">{t("Actions")}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -537,7 +535,7 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
                             {formatRelativeTime(log.timestamp, undefined, locale)}
                           </div>
                         </TableCell>
-                        <TableCell>{log.username || 'System'}</TableCell>
+                        <TableCell>{log.username || t("System")}</TableCell>
                         <TableCell className="font-mono text-sm">{log.action}</TableCell>
                         <TableCell>{getCategoryBadge(log.category)}</TableCell>
                         <TableCell>{getStatusBadge(log.status)}</TableCell>
@@ -558,7 +556,7 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
                               setSelectedLog(log);
                               setDetailsDialogOpen(true);
                             }}
-                            title={content.viewDetails.value}
+                            title={t("View details")}
                           >
                             <Eye className="h-4 w-4" />
                           </Button>
@@ -573,7 +571,7 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
                           {isLoadingMore && (
                             <div className="flex items-center justify-center gap-2">
                               <Loader2 className="h-4 w-4 animate-spin" />
-                              <span className="text-sm text-muted-foreground">{content.loadingMore}</span>
+                              <span className="text-sm text-muted-foreground">{t("Loading more...")}</span>
                             </div>
                           )}
                         </TableCell>
@@ -584,7 +582,7 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
                     {logs.length >= total && logs.length > 0 && (
                       <TableRow>
                         <TableCell colSpan={8} className="text-center py-4 text-sm text-muted-foreground">
-                          {content.noMoreLogsToLoad}
+                          {t("No more logs to load")}
                         </TableCell>
                       </TableRow>
                     )}
@@ -599,9 +597,15 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
             <div className="flex items-center justify-between">
               <div className="text-sm text-muted-foreground">
                 {total > 0 ? (
-                  <>Loaded {Math.min(logs.length, total)} of {total} total ({Math.min(100, Math.round((Math.min(logs.length, total) / total) * 100))}% loaded)</>
+                  <>
+                    {t("Loaded {{loaded}} of {{total}} total ({{percentage}}% loaded)", {
+                      loaded: Math.min(logs.length, total),
+                      total,
+                      percentage: Math.min(100, Math.round((Math.min(logs.length, total) / total) * 100)),
+                    })}
+                  </>
                 ) : (
-                  <>No logs available</>
+                  <>{t("No logs available")}</>
                 )}
               </div>
               <div className="flex items-center gap-2">
@@ -615,7 +619,7 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
                   disabled={loading || logs.length === 0}
                 >
                   <ChevronLeft className="h-4 w-4" />
-                  Reset to Top
+                  {t("Reset to Top")}
                 </Button>
               </div>
             </div>
@@ -627,60 +631,62 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
       <Dialog open={detailsDialogOpen} onOpenChange={setDetailsDialogOpen}>
         <DialogContent className="sm:max-w-[600px] max-h-[80vh] flex flex-col p-0">
           <DialogHeader className="px-6 pt-6 pb-4 flex-shrink-0 border-b">
-            <DialogTitle>{content.auditLogDetails}</DialogTitle>
+            <DialogTitle>{t("Audit Log Details")}</DialogTitle>
             <DialogDescription>
-              {content.completeInformationForAuditLogEntry.value.replace('{id}', selectedLog?.id?.toString() || '')}
+              {t("Complete information for audit log entry #{{id}}", {
+                id: selectedLog?.id?.toString() || "",
+              })}
             </DialogDescription>
           </DialogHeader>
           {selectedLog && (
             <div className="space-y-4 px-6 pb-6 overflow-y-auto flex-1 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label className="text-xs text-muted-foreground">{content.timestampLabel}</Label>
+                  <Label className="text-xs text-muted-foreground">{t("Timestamp")}</Label>
                   <div className="text-sm">{formatSQLiteTimestamp(selectedLog.timestamp, locale)}</div>
                 </div>
                 <div>
-                  <Label className="text-xs text-muted-foreground">{content.statusLabel}</Label>
+                  <Label className="text-xs text-muted-foreground">{t("Status")}</Label>
                   <div>{getStatusBadge(selectedLog.status)}</div>
                 </div>
                 <div>
-                  <Label className="text-xs text-muted-foreground">{content.userLabel}</Label>
-                  <div className="text-sm">{selectedLog.username || content.system}</div>
+                  <Label className="text-xs text-muted-foreground">{t("User")}</Label>
+                  <div className="text-sm">{selectedLog.username || t("System")}</div>
                 </div>
                 <div>
-                  <Label className="text-xs text-muted-foreground">{content.categoryLabel}</Label>
+                  <Label className="text-xs text-muted-foreground">{t("Category")}</Label>
                   <div>{getCategoryBadge(selectedLog.category)}</div>
                 </div>
                 <div>
-                  <Label className="text-xs text-muted-foreground">{content.actionLabel}</Label>
+                  <Label className="text-xs text-muted-foreground">{t("Action")}</Label>
                   <div className="text-sm font-mono">{selectedLog.action}</div>
                 </div>
                 <div>
-                  <Label className="text-xs text-muted-foreground">{content.ipAddress}</Label>
+                  <Label className="text-xs text-muted-foreground">{t("IP Address")}</Label>
                   <div className="text-sm">{selectedLog.ipAddress || '—'}</div>
                 </div>
                 {selectedLog.targetType && (
                   <div>
-                    <Label className="text-xs text-muted-foreground">{content.targetType}</Label>
+                    <Label className="text-xs text-muted-foreground">{t("Target Type")}</Label>
                     <div className="text-sm">{selectedLog.targetType}</div>
                   </div>
                 )}
                 {selectedLog.targetId && (
                   <div>
-                    <Label className="text-xs text-muted-foreground">{content.targetId}</Label>
+                    <Label className="text-xs text-muted-foreground">{t("Target ID")}</Label>
                     <div className="text-sm font-mono">{selectedLog.targetId}</div>
                   </div>
                 )}
               </div>
               {selectedLog.userAgent && (
                 <div>
-                  <Label className="text-xs text-muted-foreground">{content.userAgent}</Label>
+                  <Label className="text-xs text-muted-foreground">{t("User Agent")}</Label>
                   <div className="text-sm break-all">{selectedLog.userAgent}</div>
                 </div>
               )}
               {selectedLog.details && Object.keys(selectedLog.details).length > 0 && (
                 <div>
-                  <Label className="text-xs text-muted-foreground">{content.details}</Label>
+                  <Label className="text-xs text-muted-foreground">{t("Details")}</Label>
                   <pre className="text-xs bg-muted p-3 rounded-md overflow-auto">
                     {JSON.stringify(selectedLog.details, null, 2)}
                   </pre>
@@ -688,7 +694,7 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
               )}
               {selectedLog.errorMessage && (
                 <div>
-                  <Label className="text-xs text-muted-foreground">{content.errorMessage}</Label>
+                  <Label className="text-xs text-muted-foreground">{t("Error Message")}</Label>
                   <div className="text-sm text-red-600 dark:text-red-400 break-all">
                     {selectedLog.errorMessage}
                   </div>

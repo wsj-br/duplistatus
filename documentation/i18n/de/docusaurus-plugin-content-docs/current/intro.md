@@ -1,9 +1,13 @@
 ---
-translation_last_updated: '2026-03-01T00:45:09.914Z'
-source_file_mtime: '2026-02-16T00:30:39.431Z'
-source_file_hash: 65a8594207f730f7
+translation_last_updated: '2026-04-18T00:02:56.062Z'
+source_file_mtime: '2026-04-10T18:19:13.216Z'
+source_file_hash: 18c3808b355ca85cf99e63f258dc6c18f79f738a87a5623a96e332a06ea24ee7
 translation_language: de
-source_file_path: intro.md
+source_file_path: documentation/docs/intro.md
+translation_models:
+  - anthropic/claude-3.5-haiku
+  - anthropic/claude-haiku-4.5
+  - 'nvidia/nemotron-nano-12b-v2-vl:free'
 ---
 # Willkommen bei duplistatus {#welcome-to-duplistatus}
 

@@ -1,9 +1,11 @@
 ---
-translation_last_updated: '2026-03-01T00:45:08.368Z'
-source_file_mtime: '2026-03-01T00:08:30.255Z'
-source_file_hash: 0fdfead3056820d5
+translation_last_updated: '2026-04-18T00:02:15.820Z'
+source_file_mtime: '2026-03-05T22:33:28.419Z'
+source_file_hash: 9d4cf0118b57183b62975b8e1557d2da7033073c6a7bd0b3131a0a0efa508862
 translation_language: de
-source_file_path: development/devel.md
+source_file_path: documentation/docs/development/devel.md
+translation_models:
+  - anthropic/claude-haiku-4.5
 ---
 # Am häufigsten verwendete Befehle {#most-used-commands}
 

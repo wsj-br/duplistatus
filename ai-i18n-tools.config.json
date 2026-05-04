@@ -1,0 +1,60 @@
+{
+  "sourceLocale": "en",
+  "targetLocales": ["de", "fr", "es", "pt-BR"],
+  "openrouter": {
+    "baseUrl": "https://openrouter.ai/api/v1",
+    "translationModels": [
+      "qwen/qwen3-235b-a22b-2507",
+      "openai/gpt-4o-mini",
+      "deepseek/deepseek-v3.2",
+      "anthropic/claude-3-haiku",
+      "qwen/qwen3.6-plus",
+      "anthropic/claude-3.5-haiku",
+      "openai/gpt-5.3-codex",
+      "anthropic/claude-sonnet-4.6",
+      "google/gemini-3-flash-preview"
+    ],
+    "maxTokens": 8192,
+    "temperature": 0.2
+  },
+  "features": {
+    "extractUIStrings": true,
+    "translateUIStrings": true,
+    "translateMarkdown": true,
+    "translateJSON": true,
+    "translateSVG": true
+  },
+  "glossary": {
+    "uiGlossary": "src/locales/strings.json",
+    "userGlossary": "documentation/glossary-user.csv"
+  },
+  "ui": {
+    "sourceRoots": ["src/"],
+    "stringsJson": "src/locales/strings.json",
+    "flatOutputDir": "src/locales/"
+  },
+  "cacheDir": ".translation-cache",
+  "documentations": [
+    {
+      "description": "Docusaurus docs site",
+      "contentPaths": ["documentation/docs"],
+      "outputDir": "documentation/i18n",
+      "jsonSource": "documentation/i18n/en",
+      "markdownOutput": {
+        "style": "docusaurus",
+        "docsRoot": "documentation/docs"
+      },
+      "addFrontmatter": true
+    }
+  ],
+  "svg": {
+    "sourcePath": "documentation/static/img",
+    "outputDir": "documentation/i18n",
+    "style": "nested"
+  },
+  "concurrency": 4,
+  "batchConcurrency": 4,
+  "batchSize": 20,
+  "maxBatchChars": 4096,
+  "uiLanguagesPath": "src/locales/ui-languages.json"
+}

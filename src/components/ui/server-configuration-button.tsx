@@ -1,5 +1,7 @@
+"use client";
+
+import { useTranslation } from "react-i18next";
 import React from 'react';
-import { useIntlayer } from 'react-intlayer';
 import { Button } from '@/components/ui/button';
 import { ServerIcon } from './server-icon';
 
@@ -27,7 +29,7 @@ export function ServerConfigurationButton({
   disabled = false,
   showText = false
 }: ServerConfigurationButtonProps) {
-  const content = useIntlayer('server-configuration-button');
+  const { t } = useTranslation();
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     
@@ -95,10 +97,21 @@ export function ServerConfigurationButton({
       onClick={handleClick}
       onContextMenu={handleContextMenu}
       disabled={isDisabled}
-      title={isDisabled ? content.titleNoUrl.value : (serverAlias ? content.titleWithAlias.value.replace('{serverAlias}', serverAlias).replace('{serverName}', serverName || '') : (serverName ? content.titleWithName.value.replace('{serverName}', serverName) : content.titleDefault.value))}
+      title={
+        isDisabled
+          ? t("No URL configured")
+          : serverAlias
+            ? t("Open {{serverAlias}}({{serverName}}) configuration (Right-click for old UI)", {
+                serverAlias,
+                serverName: serverName || "",
+              })
+            : serverName
+              ? t("Open {{serverName}} configuration (Right-click for old UI)", { serverName })
+              : t("Open Duplicati configuration (Right-click for old UI)")
+      }
     >
       <ServerIcon size={getIconSize()} className="mr-1" />
-      {showText && content.buttonText.value}
+      {showText && t("Duplicati configuration")}
     </Button>
   );
 }

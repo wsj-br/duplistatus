@@ -1,9 +1,13 @@
 ---
-translation_last_updated: '2026-03-01T00:45:09.051Z'
-source_file_mtime: '2026-03-01T00:09:27.997Z'
-source_file_hash: 6d8b0e530d4c1ecb
+translation_last_updated: '2026-04-18T14:28:11.434Z'
+source_file_mtime: '2026-04-18T14:26:06.971Z'
+source_file_hash: 5f21215bb0815be3623139b3b25d7c342d796fc468d95ff0bf0bc3ff6d32890b
 translation_language: de
-source_file_path: development/setup.md
+source_file_path: documentation/docs/development/setup.md
+translation_models:
+  - anthropic/claude-3.5-haiku
+  - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Entwicklungssetup {#development-setup}
 
@@ -166,14 +170,10 @@ Die Entwicklungsserver (`start:*`) bieten Hot-Module-Replacement für schnelle E
 - `pnpm cron:dev` - Starten des Cron-Service im Entwicklungsmodus mit Dateiüberwachung (Port 8667)
 - `pnpm cron:start-local` - Starten des Cron-Service lokal zum Testen (Port 8667)
 
-### Testskripte {#test-scripts}
-- `pnpm generate-test-data` - Testbackup-Daten generieren (erfordert --servers=N-Parameter)
-- `pnpm show-overdue-notifications` - Überfällige Benachrichtigungsinhalte anzeigen
-- `pnpm run-overdue-check` - Überfälligkeitsprüfung zu einem bestimmten Datum/Zeitpunkt ausführen
-- `pnpm test-cron-port` - Konnektivität des Cron-Service-Ports testen
-- `pnpm test-overdue-detection` - Logik zur Erkennung überfälliger Sicherungen testen
-- `pnpm validate-csv-export` - CSV-Export-Funktionalität validieren
-- `pnpm set-smtp-test-config` - SMTP-Testkonfiguration aus Umgebungsvariablen festlegen (siehe [Testskripte](test-scripts))
-- `pnpm test-smtp-connections` - SMTP-Verbindungstyp-Kompatibilität testen (siehe [Testskripte](test-scripts))
-- `pnpm test-entrypoint` - Docker-Entrypoint-Skript in lokaler Entwicklung testen (siehe [Testskripte](test-scripts))
-- `pnpm take-screenshots` - Screenshots für Dokumentation erstellen (siehe [Dokumentationstools](documentation-tools))
+### Test-Skripte {#test-scripts}
+- `pnpm generate-test-data` - Test-Sicherungsdaten generieren (erfordert --servers=N-Parameter)
+- `pnpm validate-csv-export` - CSV-Exportfunktionalität validieren
+- `pnpm test-entrypoint` - Docker-Entrypoint-Skript in der lokalen Entwicklung testen (siehe [Test-Skripte](test-scripts))
+- `pnpm take-screenshots` - Screenshots für die Dokumentation aufnehmen (siehe [Dokumentationswerkzeuge](documentation-tools))
+
+Überfällige Prüfungen, Cron-Systemprüfungen und SMTP-Tests erfolgen über die laufende Anwendung und `curl` (siehe [Test-Skripte](test-scripts)); die alten eigenständigen `pnpm`-Hilfsskripte dafür wurden entfernt.

@@ -1,5 +1,5 @@
 "use client";
-
+import { useTranslation } from "react-i18next";
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -23,7 +23,6 @@ import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { BackupCollectMenu } from '../backup-collect-menu';
 import { CollectAllButton } from '../ui/collect-all-button';
 import Link from 'next/link';
-import { useIntlayer } from 'react-intlayer';
 import { useLocale } from '@/contexts/locale-context';
 import { 
   getIntervalDisplay, 
@@ -58,8 +57,7 @@ interface ServerWithBackupAndSettings extends ServerWithBackup {
 }
 
 export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormProps) {
-  const content = useIntlayer('backup-monitoring-form');
-  const common = useIntlayer('common');
+  const { t } = useTranslation();
   const { toast } = useToast();
   const locale = useLocale();
   const { config, refreshConfigSilently, updateConfig } = useConfiguration();
@@ -87,40 +85,40 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
 
   // Notification frequency options - will be created inside component to use common
   const notificationFrequencyOptions = useMemo(() => [
-    { value: 'onetime' as NotificationFrequencyConfig, label: common.time.frequency.oneTime.value },
-    { value: 'every_day' as NotificationFrequencyConfig, label: common.time.frequency.everyDay.value },
-    { value: 'every_week' as NotificationFrequencyConfig, label: common.time.frequency.everyWeek.value },
-    { value: 'every_month' as NotificationFrequencyConfig, label: common.time.frequency.everyMonth.value },
-  ], [common]);
+    { value: 'onetime' as NotificationFrequencyConfig, label: t("One time") },
+    { value: 'every_day' as NotificationFrequencyConfig, label: t("Every day") },
+    { value: 'every_week' as NotificationFrequencyConfig, label: t("Every week") },
+    { value: 'every_month' as NotificationFrequencyConfig, label: t("Every month") },
+  ], [t]);
 
   // Create translated cron interval map
   const translatedCronIntervalMap = useMemo(() => {
     const labelMap: Record<CronInterval, string> = {
-      'disabled': common.time.intervals.disabled.value,
-      '1min': common.time.intervals['1min'].value,
-      '5min': common.time.intervals['5min'].value,
-      '10min': common.time.intervals['10min'].value,
-      '15min': common.time.intervals['15min'].value,
-      '20min': common.time.intervals['20min'].value,
-      '30min': common.time.intervals['30min'].value,
-      '1hour': common.time.intervals['1hour'].value,
-      '2hours': common.time.intervals['2hours'].value,
+      'disabled': t("Disabled"),
+      '1min': t("1 minute"),
+      '5min': t("5 minutes"),
+      '10min': t("10 minutes"),
+      '15min': t("15 minutes"),
+      '20min': t("20 minutes"),
+      '30min': t("30 minutes"),
+      '1hour': t("1 hour"),
+      '2hours': t("2 hours"),
     };
     return labelMap;
-  }, [common]);
+  }, [t]);
 
   const overdueToleranceOptions: { value: OverdueTolerance; label: string; milliseconds: number }[] = useMemo(() => [
-    { value: 'no_tolerance', label: common.time.tolerance.noTolerance.value, milliseconds: 0 },
-    { value: '5min', label: common.time.tolerance['5min'].value, milliseconds: 5 * 60 * 1000 },
-    { value: '15min', label: common.time.tolerance['15min'].value, milliseconds: 15 * 60 * 1000 },
-    { value: '30min', label: common.time.tolerance['30min'].value, milliseconds: 30 * 60 * 1000 },
-    { value: '1h', label: common.time.tolerance['1h'].value, milliseconds: 60 * 60 * 1000 },
-    { value: '2h', label: common.time.tolerance['2h'].value, milliseconds: 2 * 60 * 60 * 1000 },
-    { value: '4h', label: common.time.tolerance['4h'].value, milliseconds: 4 * 60 * 60 * 1000 },
-    { value: '6h', label: common.time.tolerance['6h'].value, milliseconds: 6 * 60 * 60 * 1000 },
-    { value: '12h', label: common.time.tolerance['12h'].value, milliseconds: 12 * 60 * 60 * 1000 },
-    { value: '1d', label: common.time.tolerance['1d'].value, milliseconds: 24 * 60 * 60 * 1000 },
-  ], [common]);
+    { value: 'no_tolerance', label: t("No tolerance"), milliseconds: 0 },
+    { value: '5min', label: t("5 min"), milliseconds: 5 * 60 * 1000 },
+    { value: '15min', label: t("15 min"), milliseconds: 15 * 60 * 1000 },
+    { value: '30min', label: t("30 min"), milliseconds: 30 * 60 * 1000 },
+    { value: '1h', label: t("1 hour"), milliseconds: 60 * 60 * 1000 },
+    { value: '2h', label: t("2 hours"), milliseconds: 2 * 60 * 60 * 1000 },
+    { value: '4h', label: t("4 hours"), milliseconds: 4 * 60 * 60 * 1000 },
+    { value: '6h', label: t("6 hours"), milliseconds: 6 * 60 * 60 * 1000 },
+    { value: '12h', label: t("12 hours"), milliseconds: 12 * 60 * 60 * 1000 },
+    { value: '1d', label: t("1 day"), milliseconds: 24 * 60 * 60 * 1000 },
+  ], [t]);
 
   // Create lookup map from the options array
   const toleranceByValue = Object.fromEntries(
@@ -299,7 +297,7 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
       if (!validation.isValid) {
         setValidationErrors(prev => ({
           ...prev,
-          [inputKey]: validation.error || content.invalidIntervalFormat
+          [inputKey]: validation.error || t("Invalid interval format")
         }));
       }
     }
@@ -339,7 +337,7 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
         // Set validation error and don't update
         setValidationErrors(prev => ({
           ...prev,
-          [inputKey]: content.pleaseEnterValidPositiveNumber
+          [inputKey]: t("Please enter a valid positive number")
         }));
         return;
       }
@@ -360,7 +358,7 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
         // Set validation error and don't update
         setValidationErrors(prev => ({
           ...prev,
-          [inputKey]: error instanceof Error ? error.message : content.invalidIntervalFormat
+          [inputKey]: error instanceof Error ? error.message : t("Invalid interval format")
         }));
         return;
       }
@@ -474,26 +472,27 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
 
       if (!response.ok) {
         if (response.status === 403) {
-          throw new Error(content.noPermissionToRunBackupChecks);
+          throw new Error(t("You do not have permission to run backup checks. Only administrators can perform this action."));
         }
-        const errorData = await response.json().catch(() => ({ error: content.failedToRunBackupCheck }));
-        throw new Error(errorData.error || content.failedToRunBackupCheck);
+        const errorData = await response.json().catch(() => ({ error: t("Failed to run backup check") }));
+        throw new Error(errorData.error || t("Failed to run backup check"));
       }
 
       const result = await response.json();
       toast({
-        title: content.backupCheckComplete,
-        description: content.checkedBackupsFoundNeedingAttention.value
-          .replace('{checked}', result.statistics.checkedBackups.toString())
-          .replace('{overdue}', result.statistics.overdueBackupsFound.toString())
-          .replace('{notifications}', result.statistics.notificationsSent.toString()),
+        title: t("Backup Check Complete"),
+        description: t("Checked {{checked}} backups, found {{overdue}} backups needing attention, sent {{notifications}} notifications.", {
+          checked: result.statistics.checkedBackups,
+          overdue: result.statistics.overdueBackupsFound,
+          notifications: result.statistics.notificationsSent,
+        }),
         duration: 2000,
       });
     } catch (error) {
       console.error('Error running backup check:', error instanceof Error ? error.message : String(error));
       toast({
-        title: common.status.error,
-        description: content.failedToRunBackupCheck,
+        title: t("Error"),
+        description: t("Failed to run backup check"),
         variant: "destructive",
         duration: 3000,
       });
@@ -519,24 +518,24 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
       try {
         await cronClient.reloadConfig();
         toast({
-          title: "Success",
-          description: "Overdue backup check interval updated successfully",
+          title: t("Success"),
+          description: t("Backup check interval updated successfully"),
           duration: 2000,
         });
       } catch (cronError) {
         // Cron service might not be running, but the config was saved successfully
         console.warn('Cron service not available, but configuration was saved:', cronError);
         toast({
-          title: "Success",
-          description: "Configuration saved successfully. Note: Cron service is not running - start it with 'npm run cron:start' to enable scheduled tasks.",
+          title: t("Success"),
+          description: t("Configuration saved successfully. Note: Cron service is not running - start it with 'npm run cron:start' to enable scheduled tasks."),
           duration: 2000,
         });
       }
     } catch (error) {
       console.error('Failed to update cron interval:', error instanceof Error ? error.message : String(error));
       toast({
-        title: "Error",
-        description: "Failed to update overdue backup check interval",
+        title: t("Error"),
+        description: t("Failed to update overdue backup check interval"),
         variant: "destructive",
         duration: 3000,
       });
@@ -558,10 +557,10 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
       
       if (!backupResponse.ok) {
         if (backupResponse.status === 403) {
-          throw new Error(content.noPermissionToModifySetting);
+          throw new Error(t("You do not have permission to modify this setting. Only administrators can change configurations."));
         }
-        const errorData = await backupResponse.json().catch(() => ({ error: content.failedToSaveBackupMonitoringSettings }));
-        throw new Error(errorData.error || content.failedToSaveBackupMonitoringSettings);
+        const errorData = await backupResponse.json().catch(() => ({ error: t("Failed to save backup monitoring settings") }));
+        throw new Error(errorData.error || t("Failed to save backup monitoring settings"));
       }
       
       // Dispatch custom event to notify other components about configuration change
@@ -571,15 +570,15 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
       await refreshConfigSilently();
       
       toast({
-        title: common.status.success,
-        description: content.backupMonitoringSettingsSaved,
+        title: t("Success"),
+        description: t("Backup monitoring settings saved successfully"),
         duration: 2000,
       });
     } catch (error) {
       console.error('Error saving settings:', error instanceof Error ? error.message : String(error));
       toast({
-        title: common.status.error,
-        description: content.failedToSaveBackupMonitoringSettings,
+        title: t("Error"),
+        description: t("Failed to save backup monitoring settings"),
         variant: "destructive",
         duration: 3000,
       });
@@ -602,7 +601,7 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
       });
       
       if (!backupResponse.ok) {
-        throw new Error(content.failedToSaveBackupMonitoringSettings);
+        throw new Error(t("Failed to save backup monitoring settings"));
       }
       
       // Dispatch custom event to notify other components about configuration change
@@ -618,26 +617,27 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
 
       if (!response.ok) {
         if (response.status === 403) {
-          throw new Error(content.noPermissionToRunBackupChecks);
+          throw new Error(t("You do not have permission to run backup checks. Only administrators can perform this action."));
         }
-        const errorData = await response.json().catch(() => ({ error: content.failedToRunBackupCheck }));
-        throw new Error(errorData.error || content.failedToRunBackupCheck);
+        const errorData = await response.json().catch(() => ({ error: t("Failed to run backup check") }));
+        throw new Error(errorData.error || t("Failed to run backup check"));
       }
 
       const result = await response.json();
       toast({
-        title: content.backupCheckComplete,
-        description: content.checkedBackupsFoundNeedingAttention.value
-          .replace('{checked}', result.statistics.checkedBackups.toString())
-          .replace('{overdue}', result.statistics.overdueBackupsFound.toString())
-          .replace('{notifications}', result.statistics.notificationsSent.toString()),
+        title: t("Backup Check Complete"),
+        description: t("Checked {{checked}} backups, found {{overdue}} backups needing attention, sent {{notifications}} notifications.", {
+          checked: result.statistics.checkedBackups,
+          overdue: result.statistics.overdueBackupsFound,
+          notifications: result.statistics.notificationsSent,
+        }),
         duration: 2000,
       });
     } catch (error) {
       console.error('Error running backup check:', error instanceof Error ? error.message : String(error));
       toast({
-        title: common.status.error,
-        description: content.failedToRunBackupCheck,
+        title: t("Error"),
+        description: t("Failed to run backup check"),
         variant: "destructive",
         duration: 3000,
       });
@@ -656,10 +656,10 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
       });
       if (!response.ok) throw new Error('Failed to update notification frequency');
       setNotificationFrequency(value);
-      toast({ title: common.status.success, description: content.notificationFrequencyUpdated, duration: 2000 });
+      toast({ title: t("Success"), description: t("Notification frequency updated."), duration: 2000 });
     } catch {
-      setNotificationFrequencyError(content.failedToUpdateNotificationFrequency);
-      toast({ title: common.status.error, description: content.failedToUpdateNotificationFrequency, variant: 'destructive', duration: 3000 });
+      setNotificationFrequencyError(t("Failed to update notification frequency"));
+      toast({ title: t("Error"), description: t("Failed to update notification frequency"), variant: 'destructive', duration: 3000 });
     } finally {
       setNotificationFrequencyLoading(false);
     }
@@ -681,8 +681,8 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
       }
       
       toast({
-        title: common.status.success,
-        description: content.backupToleranceUpdatedSuccessfully,
+        title: t("Success"),
+        description: t("Backup tolerance updated successfully."),
         duration: 2000
       });
     } catch (error) {
@@ -690,8 +690,8 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
       // Revert the optimistic update on error by refreshing from server
       await refreshConfigSilently();
       toast({
-        title: common.status.error,
-        description: content.failedToUpdateBackupTolerance,
+        title: t("Error"),
+        description: t("Failed to update backup tolerance"),
         variant: 'destructive',
         duration: 3000
       });
@@ -710,8 +710,8 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
       }
 
       toast({
-        title: common.status.success,
-        description: content.backupNotificationsReset,
+        title: t("Success"),
+        description: t("Backup notifications have been reset"),
         duration: 2000,
       });
 
@@ -720,8 +720,8 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
     } catch (error) {
       console.error('Error resetting backup notifications:', error instanceof Error ? error.message : String(error));
       toast({
-        title: common.status.error,
-        description: content.failedToResetBackupNotifications,
+        title: t("Error"),
+        description: t("Failed to reset backup notifications"),
         variant: "destructive",
         duration: 3000,
       });
@@ -754,19 +754,19 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
       
       // Prepare CSV headers
       const headers = [
-        content.csvGeneratedAt,
-        content.csvServerName,
-        content.csvServerId,
-        content.csvBackupName,
-        content.csvLastBackupCfg,
-        content.csvLastBackupCfgWeekday,
-        content.csvLastBackupDb,
-        content.csvNextRun,
-        content.csvNextRunWeekday,
-        content.csvNeedsAttention,
-        content.csvMonitoringEnabled,
-        content.csvExpectedInterval,
-        content.csvAllowedWeekdays
+        t("CSV Generated At"),
+        t("Server Name"),
+        t("Server ID"),
+        t("Backup Name"),
+        t("Last Backup (cfg)"),
+        t("Last Backup (cfg) Weekday"),
+        t("Last Backup (DB)"),
+        t("Next Run"),
+        t("Next Run Weekday"),
+        t("Needs Attention"),
+        t("Monitoring Enabled"),
+        t("Expected Interval"),
+        t("Allowed Weekdays")
       ];
 
       // Prepare CSV rows
@@ -851,15 +851,15 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
       URL.revokeObjectURL(url);
 
       toast({
-        title: common.status.success,
-        description: content.csvFileDownloadedSuccessfully,
+        title: t("Success"),
+        description: t("CSV file downloaded successfully"),
         duration: 2000,
       });
     } catch (error) {
       console.error('Error generating CSV:', error instanceof Error ? error.message : String(error));
       toast({
-        title: common.status.error,
-        description: content.failedToGenerateCsvFile,
+        title: t("Error"),
+        description: t("Failed to generate CSV file"),
         variant: "destructive",
         duration: 3000,
       });
@@ -925,9 +925,9 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
     <div className="space-y-6" data-screenshot-target="settings-content-card">
       <Card>
         <CardHeader>
-          <CardTitle>{content.configureBackupMonitoring}</CardTitle>
+          <CardTitle>{t("Configure Backup Monitoring")}</CardTitle>
           <CardDescription>
-            {content.configureBackupMonitoringDescription}
+            {t("Configure monitoring settings for each backup. Enable/disable backup monitoring, set the timeout period and notification frequency.")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -948,7 +948,7 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                   sortConfig={sortConfig} 
                   onSort={handleSort}
                 >
-                  {content.serverName}
+                  {t("Server Name")}
                 </SortableTableHead>
                 <SortableTableHead 
                   className="w-[120px] min-w-[90px]" 
@@ -956,7 +956,7 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                   sortConfig={sortConfig} 
                   onSort={handleSort}
                 >
-                  {content.backupName}
+                  {t("Backup Name")}
                 </SortableTableHead>
                 <SortableTableHead 
                   className="w-[140px] min-w-[120px]" 
@@ -964,7 +964,7 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                   sortConfig={sortConfig} 
                   onSort={handleSort}
                 >
-                  {content.nextRun}
+                  {t("Next Run")}
                 </SortableTableHead>
                 <SortableTableHead 
                   className="w-[130px] min-w-[110px]" 
@@ -972,7 +972,7 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                   sortConfig={sortConfig} 
                   onSort={handleSort}
                 >
-                  {content.backupMonitoring}
+                  {t("Backup Monitoring")}
                 </SortableTableHead>
                 <SortableTableHead 
                   className="w-[120px] min-w-[100px]" 
@@ -980,7 +980,7 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                   sortConfig={sortConfig} 
                   onSort={handleSort}
                 >
-                  {content.expectedBackupInterval}
+                  {t("Expected Backup Interval")}
                 </SortableTableHead>
                 <SortableTableHead 
                   className="w-[80px] min-w-[60px]" 
@@ -988,7 +988,7 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                   sortConfig={sortConfig} 
                   onSort={handleSort}
                 >
-                  {content.unit}
+                  {t("Unit")}
                 </SortableTableHead>
                 <SortableTableHead 
                   className="w-[200px] min-w-[180px]" 
@@ -996,7 +996,7 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                   sortConfig={sortConfig} 
                   onSort={handleSort}
                 >
-                  {content.allowedDays}
+                  {t("Allowed Days")}
                 </SortableTableHead>
               </TableRow>
             </TableHeader>
@@ -1076,13 +1076,13 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                                   {formatRelativeTime(server.nextRunDate, undefined, locale)}
                                 </>
                                : 
-                                content.notSet
+                                t("Not set")
                               }
                             </div>
                           </TooltipTrigger>
                           <TooltipContent>
                             <div className="text-xs">
-                              <div className="font-semibold mb-1">{content.lastBackup.value}</div>
+                              <div className="font-semibold mb-1">{t("Last Backup:")}</div>
                               {(() => {
                                 const backupKey = `${server.id}:${server.backupName}`;
                                 const lastBackupTimestamp = lastBackupTimestamps[backupKey];
@@ -1114,7 +1114,7 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                           className="data-[state=checked]:bg-blue-500"
                         />
                         <Label htmlFor={`backup-monitoring-${inputKey}`} className="text-xs">
-                          {backupSetting.overdueBackupCheckEnabled ? common.time.enabled.value : common.time.disabled.value}
+                          {backupSetting.overdueBackupCheckEnabled ? t("Enabled") : t("Disabled")}
                         </Label>
                       </div>
                     </TableCell>
@@ -1126,7 +1126,7 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                           value={inputValues[inputKey] ?? (server.isCustomInterval ? server.expectedInterval : server.displayInterval.toString())}
                           onChange={(e) => handleIntervalInputChangeById(server.id, server.backupName, e.target.value)}
                           onBlur={(e) => handleIntervalBlurById(server.id, server.backupName, e.target.value, server.displayUnit)}
-                          placeholder={server.isCustomInterval ? content.customIntervalPlaceholder.value : "1"}
+                          placeholder={server.isCustomInterval ? t("1D2h30m") : "1"}
                           disabled={!backupSetting.overdueBackupCheckEnabled}
                           className={`text-xs ${!backupSetting.overdueBackupCheckEnabled ? 'bg-muted text-muted-foreground' : ''} ${validationErrors[inputKey] ? 'border-red-500' : ''}`}
                         />
@@ -1146,13 +1146,13 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                           <SelectValue placeholder={server.displayUnit} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="custom">{content.custom.value}</SelectItem>
-                          <SelectItem value="Minutes">{common.time.minutes.value}</SelectItem>
-                          <SelectItem value="Hours">{common.time.hours.value}</SelectItem>
-                          <SelectItem value="Days">{common.time.days.value}</SelectItem>
-                          <SelectItem value="Weeks">{common.time.weeks.value}</SelectItem>
-                          <SelectItem value="Months">{common.time.months.value}</SelectItem>
-                          <SelectItem value="Years">{common.time.years.value}</SelectItem>
+                          <SelectItem value="custom">{t("Custom")}</SelectItem>
+                          <SelectItem value="Minutes">{t("Minute(s)")}</SelectItem>
+                          <SelectItem value="Hours">{t("Hour(s)")}</SelectItem>
+                          <SelectItem value="Days">{t("Day(s)")}</SelectItem>
+                          <SelectItem value="Weeks">{t("Week(s)")}</SelectItem>
+                          <SelectItem value="Months">{t("Month(s)")}</SelectItem>
+                          <SelectItem value="Years">{t("Year(s)")}</SelectItem>
                         </SelectContent>
                       </Select>
                     </TableCell>
@@ -1243,7 +1243,7 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                     
                     {/* Next Run - Card */}
                     <div className="space-y-1">
-                      <Label className="text-xs font-medium">{content.nextRun}</Label>
+                      <Label className="text-xs font-medium">{t("Next Run")}</Label>
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -1258,7 +1258,7 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                           </TooltipTrigger>
                           <TooltipContent>
                             <div className="text-xs">
-                              <div className="font-semibold mb-1">{content.lastBackup.value}</div>
+                              <div className="font-semibold mb-1">{t("Last Backup:")}</div>
                               {(() => {
                                 const backupKey = `${server.id}:${server.backupName}`;
                                 const lastBackupTimestamp = lastBackupTimestamps[backupKey];
@@ -1336,7 +1336,7 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                     
                     {/* Allowed Days - Card */}
                     <div className="space-y-1">
-                      <Label className="text-xs font-medium">{content.allowedDays}</Label>
+                      <Label className="text-xs font-medium">{t("Allowed Days")}</Label>
                       <div className="flex gap-1 flex-wrap">
                         {localeWeekDays.map((weekDay) => (
                           <Button
@@ -1369,7 +1369,7 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                 <Button onClick={() => {
                   handleSave();
                 }} disabled={isSaving} variant="gradient">
-                  {isSaving ? content.saving : content.saveBackupMonitoringSettings}
+                  {isSaving ? t("Saving...") : t("Save Backup Monitoring Settings")}
                 </Button>
                 <CollectAllButton
                   servers={(() => {
@@ -1397,8 +1397,8 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                   onCollectionStart={(showInstructionToast) => {
                     if (showInstructionToast) {
                       toast({
-                        title: content.startingCollection.value,
-                        description: content.collectingBackupLogs.value,
+                        title: t("Starting Collection"),
+                        description: t("Collecting backup logs from all configured servers..."),
                         duration: 4000,
                       });
                     }
@@ -1413,11 +1413,11 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                   onClick={handleDownloadCSV}
                   variant="outline"
                   size="sm"
-                  title={content.downloadBackupMonitoringDataAsCsv}
+                  title={t("Download backup monitoring data as CSV")}
                 >
                   <Download className="mr-1 h-3 w-3" />
-                  <span className="hidden sm:inline">{content.downloadCSV}</span>
-                  <span className="sm:hidden">{content.csv}</span>
+                  <span className="hidden sm:inline">{t("Download CSV")}</span>
+                  <span className="sm:hidden">{t("CSV")}</span>
                 </Button>
                 <Button 
                   onClick={handleTestOverdueBackups} 
@@ -1426,8 +1426,8 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                   size="sm"
                 >
                   <RefreshCw className="mr-1 h-3 w-3" />
-                  <span className="hidden sm:inline">{isTesting ? content.checking : content.checkNow}</span>
-                  <span className="sm:hidden">{isTesting ? "..." : content.check}</span>
+                  <span className="hidden sm:inline">{isTesting ? t("Checking...") : t("Check now")}</span>
+                  <span className="sm:hidden">{isTesting ? "..." : t("Check")}</span>
                 </Button>
                 <Button 
                   onClick={handleResetNotifications}
@@ -1436,8 +1436,8 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                   size="sm"
                 >
                   <TimerReset className="mr-1 h-3 w-3" />
-                  <span className="hidden sm:inline">{isResetting ? content.resetting : content.resetNotifications}</span>
-                  <span className="sm:hidden">{isResetting ? "..." : content.resetNotifications}</span>
+                  <span className="hidden sm:inline">{isResetting ? t("Resetting...") : t("Reset notifications")}</span>
+                  <span className="sm:hidden">{isResetting ? "..." : t("Reset notifications")}</span>
                 </Button>
               </div>
             </div>
@@ -1446,15 +1446,15 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <div className="flex flex-col">
                 <Label htmlFor="backup-tolerance" className="mb-2 text-sm">
-                  <span className="hidden sm:inline">{content.backupTolerance.value}</span>
-                  <span className="sm:hidden">{content.tolerance.value}</span>
+                  <span className="hidden sm:inline">{t("Backup tolerance:")}</span>
+                  <span className="sm:hidden">{t("Tolerance:")}</span>
                 </Label>
                 <Select
                   value={config?.overdue_tolerance || defaultOverdueTolerance}
                   onValueChange={(value: OverdueTolerance) => handleOverdueToleranceChange(value)}
                 >
                   <SelectTrigger id="backup-tolerance" className="w-full">
-                    <SelectValue placeholder={content.selectTolerance.value} />
+                    <SelectValue placeholder={t("Select tolerance")} />
                   </SelectTrigger>
                   <SelectContent>
                     {overdueToleranceOptions.map(option => (
@@ -1468,9 +1468,9 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
               
               <div className="flex flex-col">
                 <Label htmlFor="cron-interval" className="mb-2 text-sm">
-                  <span className="hidden lg:inline">{content.backupMonitoringInterval.value}</span>
-                  <span className="lg:hidden hidden sm:inline">{content.monitoringInterval.value}</span>
-                  <span className="sm:hidden">{content.interval.value}</span>
+                  <span className="hidden lg:inline">{t("Backup monitoring interval:")}</span>
+                  <span className="lg:hidden hidden sm:inline">{t("Monitoring interval:")}</span>
+                  <span className="sm:hidden">{t("Interval:")}</span>
                 </Label>
                 <Select
                   value={cronInterval}
@@ -1491,9 +1491,9 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
               
               <div className="flex flex-col">
                 <Label htmlFor="notification-frequency" className="mb-2 text-sm">
-                  <span className="hidden lg:inline">{content.notificationFrequency.value}</span>
-                  <span className="lg:hidden hidden sm:inline">{content.notificationFreq.value}</span>
-                  <span className="sm:hidden">{content.frequency.value}</span>
+                  <span className="hidden lg:inline">{t("Notification frequency:")}</span>
+                  <span className="lg:hidden hidden sm:inline">{t("Notification freq:")}</span>
+                  <span className="sm:hidden">{t("Frequency:")}</span>
                 </Label>
                 <Select
                   value={notificationFrequency}
@@ -1511,7 +1511,7 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                     ))}
                   </SelectContent>
                 </Select>
-                {notificationFrequencyLoading && <span className="text-xs text-muted-foreground mt-1">{content.loading}</span>}
+                {notificationFrequencyLoading && <span className="text-xs text-muted-foreground mt-1">{t("Loading...")}</span>}
                 {notificationFrequencyError && <span className="text-xs text-destructive mt-1">{notificationFrequencyError}</span>}
               </div>
             </div>

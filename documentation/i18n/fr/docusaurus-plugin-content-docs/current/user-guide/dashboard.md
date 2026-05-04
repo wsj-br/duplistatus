@@ -1,9 +1,12 @@
 ---
-translation_last_updated: '2026-03-01T00:45:07.197Z'
-source_file_mtime: '2026-02-16T00:30:39.431Z'
-source_file_hash: f6c6ca4ff4f10cd7
+translation_last_updated: '2026-04-18T00:03:13.601Z'
+source_file_mtime: '2026-03-05T22:33:28.423Z'
+source_file_hash: c5a21306a791b07d790b4dac459f51300cd7ee6d900b4fc4e92f7af705a8194a
 translation_language: fr
-source_file_path: user-guide/dashboard.md
+source_file_path: documentation/docs/user-guide/dashboard.md
+translation_models:
+  - anthropic/claude-haiku-4.5
+  - 'nvidia/nemotron-nano-12b-v2-vl:free'
 ---
 # Tableau de bord {#dashboard}
 

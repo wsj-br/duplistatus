@@ -1,9 +1,11 @@
 ---
-translation_last_updated: '2026-03-01T00:45:05.263Z'
-source_file_mtime: '2026-02-16T00:30:39.430Z'
-source_file_hash: 73f503de6e910445
+translation_last_updated: '2026-04-18T00:02:33.354Z'
+source_file_mtime: '2026-03-05T22:33:28.423Z'
+source_file_hash: 781281113de4e41e8ca020c5d122aaa0d1fe40599ea1612477312ced4f7eb83a
 translation_language: fr
-source_file_path: installation/environment-variables.md
+source_file_path: documentation/docs/installation/environment-variables.md
+translation_models:
+  - anthropic/claude-haiku-4.5
 ---
 # Variables d'environnement {#environment-variables}
 

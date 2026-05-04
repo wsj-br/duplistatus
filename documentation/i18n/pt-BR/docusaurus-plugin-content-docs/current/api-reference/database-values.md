@@ -1,6 +1,15 @@
-# Sample backup report (database values) {#database-values}
+---
+translation_last_updated: '2026-04-18T00:00:29.674Z'
+source_file_mtime: '2026-03-05T22:33:28.419Z'
+source_file_hash: ccf0b5d9282c57ab9d01796a3974e790ac31e069ecc8a6880cf29c92b410210a
+translation_language: pt-BR
+source_file_path: documentation/docs/api-reference/database-values.md
+translation_models:
+  - qwen/qwen3-235b-a22b-2507
+---
+# Relatório de backup de exemplo (valores do banco de dados) {#database-values}
 
-This document contains a sample of the JSON payload sent by Duplicati when using the `--send-http-url` option. It illustrates the structure and fields that duplistatus receives and persists. Some fields may be cleared or redacted in this example.
+Este documento contém um exemplo da carga útil JSON enviada pelo Duplicati ao usar a opção `--send-http-url`. Ele ilustra a estrutura e os campos que o duplistatus recebe e persiste. Alguns campos podem ser limpos ou omitidos neste exemplo.
 
 ```json
 {

@@ -1,9 +1,11 @@
 ---
-translation_last_updated: '2026-03-01T00:45:16.049Z'
-source_file_mtime: '2026-02-16T00:30:39.432Z'
-source_file_hash: 4bde5224faa7c371
+translation_last_updated: '2026-04-18T00:01:56.409Z'
+source_file_mtime: '2026-03-05T22:33:28.423Z'
+source_file_hash: b0db7a6f1e511ae6977971d8b2cdf4eefcdfa3aea287eea9bbbc2e84542c2144
 translation_language: es
-source_file_path: user-guide/settings/application-logs-settings.md
+source_file_path: documentation/docs/user-guide/settings/application-logs-settings.md
+translation_models:
+  - anthropic/claude-haiku-4.5
 ---
 # Logs de aplicación {#application-logs}
 

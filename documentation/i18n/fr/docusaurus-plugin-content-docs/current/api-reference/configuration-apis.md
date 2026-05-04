@@ -1,13 +1,21 @@
+---
+translation_last_updated: '2026-04-18T00:00:11.794Z'
+source_file_mtime: '2026-03-05T22:33:28.419Z'
+source_file_hash: 5e308885291fd834e969c761cd470e1b54c82eee0c672140c1203f8d9cfca674
+translation_language: fr
+source_file_path: documentation/docs/api-reference/configuration-apis.md
+translation_models:
+  - qwen/qwen3-235b-a22b-2507
+---
+# Gestion de la configuration {#configuration-management}
 
-
-# Configuration Management {#configuration-management}
-
-## Get Email Configuration - `/api/configuration/email` {#get-email-configuration-apiconfigurationemail}
+## Obtenir la configuration de messagerie - `/api/configuration/email` {#get-email-configuration-apiconfigurationemail}
 - **Endpoint**: `/api/configuration/email`
-- **Method**: GET
-- **Description**: Retrieves the current email notification configuration and whether email notifications are enabled/configured.
-- **Authentication**: Requires valid session and CSRF token
-- **Response** (configured):
+- **Méthode**: GET
+- **Description**: Récupère la configuration actuelle des notifications par courriel et indique si celles-ci sont activées/configurées.
+- **Authentification**: Nécessite une session valide et un jeton CSRF
+- **Réponse** (configuré) :
+
   ```json
   {
     "configured": true,
@@ -25,7 +33,9 @@
     "message": "Email is configured and ready to use."
   }
   ```
-- **Response** (not configured):
+
+- **Réponse** (non configuré) :
+
   ```json
   {
     "configured": false,
@@ -33,23 +43,25 @@
     "message": "Email is not configured. Please configure SMTP settings."
   }
   ```
-- **Error Responses**:
-  - `400`: Master key is invalid - All encrypted passwords and settings must be reconfigured
-  - `401`: Unauthorized - Invalid session or CSRF token
-  - `500`: Failed to get email configuration
-- **Notes**:
-  - Returns configuration without password for security
-  - Includes `hasPassword` field to indicate if password is set
-  - Includes `connectionType` (plain|starttls|ssl), `senderName`, `fromAddress`, and `requireAuth` fields
-  - Indicates if email notifications are available for test and production use
-  - Handles master key validation errors gracefully
 
-## Update Email Configuration - `/api/configuration/email` {#update-email-configuration-apiconfigurationemail}
+- **Réponses d'erreur** :
+  - `400` : La clé principale est invalide - Tous les mots de passe et paramètres chiffrés doivent être reconfigurés
+  - `401` : Non autorisé - Session ou jeton CSRF invalide
+  - `500` : Échec de la récupération de la configuration de messagerie
+- **Notes** :
+  - Retourne la configuration sans le mot de passe pour des raisons de sécurité
+  - Inclut le champ `hasPassword` pour indiquer si un mot de passe est défini
+  - Inclut les champs `connectionType` (plain|starttls|ssl), `senderName`, `fromAddress` et `requireAuth`
+  - Indique si les notifications par courriel sont disponibles pour les tests et l'utilisation en production
+  - Gère gracieusement les erreurs de validation de la clé principale
+
+## Mettre à jour la configuration de messagerie - `/api/configuration/email` {#update-email-configuration-apiconfigurationemail}
 - **Endpoint**: `/api/configuration/email`
-- **Method**: POST
-- **Description**: Updates the SMTP email notification configuration.
-- **Authentication**: Requires valid session and CSRF token
-- **Request Body**:
+- **Méthode**: POST
+- **Description**: Met à jour la configuration des notifications par courriel SMTP.
+- **Authentification**: Nécessite une session valide et un jeton CSRF
+- **Corps de la requête** :
+
   ```json
   {
     "host": "smtp.example.com",
@@ -60,49 +72,55 @@
     "mailto": "admin@example.com"
   }
   ```
-- **Response**:
+
+- **Réponse** :
+
   ```json
   {
     "success": true,
     "message": "SMTP configuration saved successfully"
   }
   ```
-- **Error Responses**:
-  - `400`: Missing required fields or invalid port number
-  - `401`: Unauthorized - Invalid session or CSRF token
-  - `500`: Failed to save SMTP configuration
-- **Notes**:
-  - All fields (host, port, username, password, mailto) are required
-  - Port must be a valid number between 1 and 65535
-  - Secure field is boolean (true for SSL/TLS)
-  - Password is managed separately through the password endpoint
 
-## Delete Email Configuration - `/api/configuration/email` {#delete-email-configuration-apiconfigurationemail}
+- **Réponses d'erreur** :
+  - `400` : Champs requis manquants ou numéro de port invalide
+  - `401` : Non autorisé - Session ou jeton CSRF invalide
+  - `500` : Échec de l'enregistrement de la configuration SMTP
+- **Notes** :
+  - Tous les champs (hôte, port, nom d'utilisateur, mot de passe, destinataire) sont requis
+  - Le port doit être un nombre valide entre 1 et 65535
+  - Le champ Secure est un booléen (true pour SSL/TLS)
+  - Le mot de passe est géré séparément via le point de terminaison dédié
+
+## Supprimer la configuration de messagerie - `/api/configuration/email` {#delete-email-configuration-apiconfigurationemail}
 - **Endpoint**: `/api/configuration/email`
-- **Method**: DELETE
-- **Description**: Deletes the SMTP email notification configuration.
-- **Authentication**: Requires valid session and CSRF token
-- **Response**:
+- **Méthode**: DELETE
+- **Description**: Supprime la configuration des notifications par courriel SMTP.
+- **Authentification**: Nécessite une session valide et un jeton CSRF
+- **Réponse** :
+
   ```json
   {
     "success": true,
     "message": "SMTP configuration deleted successfully"
   }
   ```
-- **Error Responses**:
-  - `401`: Unauthorized - Invalid Session or CSRF token
-  - `404`: No SMTP configuration found to delete
-  - `500`: Failed to delete SMTP configuration
-- **Notes**:
-  - This operation permanently removes the SMTP configuration
-  - Returns 404 if no configuration exists to delete
 
-## Update Email Password - `/api/configuration/email/password` {#update-email-password-apiconfigurationemailpassword}
+- **Réponses d'erreur** :
+  - `401` : Non autorisé - Session ou jeton CSRF invalide
+  - `404` : Aucune configuration SMTP trouvée à supprimer
+  - `500` : Échec de la suppression de la configuration SMTP
+- **Notes** :
+  - Cette opération supprime définitivement la configuration SMTP
+  - Retourne 404 si aucune configuration n'existe à supprimer
+
+## Mettre à jour le mot de passe de messagerie - `/api/configuration/email/password` {#update-email-password-apiconfigurationemailpassword}
 - **Endpoint**: `/api/configuration/email/password`
-- **Method**: PATCH
-- **Description**: Updates the email password for SMTP authentication.
-- **Authentication**: Requires valid session and CSRF token
-- **Request Body**:
+- **Méthode**: PATCH
+- **Description**: Met à jour le mot de passe de messagerie pour l'authentification SMTP.
+- **Authentification**: Nécessite une session valide et un jeton CSRF
+- **Corps de la requête** :
+
   ```json
   {
     "password": "new-password",
@@ -115,46 +133,52 @@
     }
   }
   ```
-- **Response**:
+
+- **Réponse** :
+
   ```json
   {
     "message": "Email password updated successfully"
   }
   ```
-- **Error Responses**:
-  - `400`: Password must be a string or missing required config fields
-  - `401`: Unauthorized - Invalid session or CSRF token
-  - `500`: Failed to update email password
-- **Notes**:
-  - Password can be an empty string to clear the password
-  - If no SMTP config exists, creates a minimal one from provided config
-  - Config parameter is required when no existing SMTP configuration exists
-  - Password is stored securely using encryption
 
-## Get Email Password CSRF Token - `/api/configuration/email/password` {#get-email-password-csrf-token-apiconfigurationemailpassword}
+- **Réponses d'erreur** :
+  - `400` : Le mot de passe doit être une chaîne de caractères ou des champs de configuration requis sont manquants
+  - `401` : Non autorisé - Session ou jeton CSRF invalide
+  - `500` : Échec de la mise à jour du mot de passe de messagerie
+- **Notes** :
+  - Le mot de passe peut être une chaîne vide pour effacer le mot de passe
+  - Si aucune configuration SMTP n'existe, en crée une minimale à partir de la configuration fournie
+  - Le paramètre config est requis lorsqu'aucune configuration SMTP existante n'est présente
+  - Le mot de passe est stocké de manière sécurisée à l'aide du chiffrement
+
+## Obtenir le jeton CSRF pour le mot de passe de messagerie - `/api/configuration/email/password` {#get-email-password-csrf-token-apiconfigurationemailpassword}
 - **Endpoint**: `/api/configuration/email/password`
-- **Method**: GET
-- **Description**: Retrieves a CSRF token for email password operations.
-- **Authentication**: Requires valid session
-- **Response**:
+- **Méthode**: GET
+- **Description**: Récupère un jeton CSRF pour les opérations liées au mot de passe de messagerie.
+- **Authentification**: Nécessite une session valide
+- **Réponse** :
+
   ```json
   {
     "csrfToken": "csrf-token-string"
   }
   ```
-- **Error Responses**:
-  - `401`: Invalid or expired session
-  - `500`: Failed to generate CSRF token
-- **Notes**:
-  - Returns CSRF token for use with password update operations
-  - Session must be valid to generate token
 
-## Get Unified Configuration - `/api/configuration/unified` {#get-unified-configuration-apiconfigurationunified}
+- **Réponses d'erreur** :
+  - `401` : Session invalide ou expirée
+  - `500` : Échec de la génération du jeton CSRF
+- **Notes** :
+  - Renvoie un jeton CSRF à utiliser avec les opérations de mise à jour du mot de passe
+  - La session doit être valide pour générer le jeton
+
+## Obtenir la configuration unifiée - `/api/configuration/unified` {#get-unified-configuration-apiconfigurationunified}
 - **Endpoint**: `/api/configuration/unified`
-- **Method**: GET
-- **Description**: Retrieves a unified configuration object containing all configuration data including cron settings, notification frequency, and servers with backups.
-- **Authentication**: Requires valid session and CSRF token
-- **Response**:
+- **Méthode**: GET
+- **Description**: Récupère un objet de configuration unifié contenant toutes les données de configuration, y compris les paramètres cron, la fréquence des notifications et les serveurs avec sauvegardes.
+- **Authentification**: Nécessite une session valide et un jeton CSRF
+- **Réponse** :
+
   ```json
   {
     "ntfy": {
@@ -232,21 +256,22 @@
     ]
   }
   ```
-- **Error Responses**:
-  - `500`: Server error fetching unified configuration
-- **Notes**:
-  - Returns all configuration data in a single response
-  - Includes cron settings, notification frequency, and servers with backups
-  - Email configuration includes `hasPassword` field but not the actual password
-  - Fetches all data in parallel for better performance
 
+- **Réponses d'erreur** :
+  - `500` : Erreur serveur lors de la récupération de la configuration unifiée
+- **Notes** :
+  - Retourne toutes les données de configuration dans une seule réponse
+  - Inclut les paramètres cron, la fréquence des notifications et les serveurs avec sauvegardes
+  - La configuration de messagerie inclut le champ `hasPassword` mais pas le mot de passe réel
+  - Récupère toutes les données en parallèle pour de meilleures performances
 
-## Get NTFY Configuration - `/api/configuration/ntfy` {#get-ntfy-configuration-apiconfigurationntfy}
+## Obtenir la configuration NTFY - `/api/configuration/ntfy` {#get-ntfy-configuration-apiconfigurationntfy}
 - **Endpoint**: `/api/configuration/ntfy`
-- **Method**: GET
-- **Description**: Retrieves the current NTFY configuration settings.
-- **Authentication**: Requires valid session and CSRF token
-- **Response**:
+- **Méthode**: GET
+- **Description**: Récupère les paramètres actuels de configuration NTFY.
+- **Authentification**: Nécessite une session valide et un jeton CSRF
+- **Réponse** :
+
   ```json
   {
     "ntfy": {
@@ -256,40 +281,44 @@
     }
   }
   ```
-- **Error Responses**:
-  - `401`: Unauthorized - Invalid session or CSRF token
-  - `500`: Failed to fetch NTFY configuration
-- **Notes**:
-  - Returns current NTFY configuration settings
-  - Used for notification system management
-  - Requires authentication for accessing configuration data
 
-## Get Notification Configuration - `/api/configuration/notifications` {#get-notification-configuration-apiconfigurationnotifications}
-- **Endpoint**: `/api/configuration/notifications`
-- **Method**: GET
-- **Description**: Retrieves the current notification frequency configuration.
-- **Authentication**: Requires valid session and CSRF token
-- **Response**:
+- **Réponses d'erreur** :
+  - `401` : Non autorisé - Session ou jeton CSRF non valide
+  - `500` : Échec de la récupération de la configuration NTFY
+- **Notes** :
+  - Renvoie les paramètres de configuration NTFY actuels
+  - Utilisé pour la gestion du système de notification
+  - Nécessite une authentification pour accéder aux données de configuration
+
+## Obtenir la configuration des notifications - `/api/configuration/notifications` {#get-notification-configuration-apiconfigurationnotifications}
+- **Point de terminaison** : `/api/configuration/notifications`
+- **Méthode** : GET
+- **Description** : Récupère la configuration actuelle de la fréquence des notifications.
+- **Authentification** : Nécessite une session valide et un jeton CSRF
+- **Réponse** :
+
   ```json
   {
     "value": "every_day"
   }
   ```
-- **Error Responses**:
-  - `401`: Unauthorized - Invalid session or CSRF token
-  - `500`: Failed to fetch config
-- **Notes**:
-  - Retrieves current notification frequency configuration
-  - Used for overdue backup notification management
-  - Returns one of: `"onetime"`, `"every_day"`, `"every_week"`, `"every_month"`
 
-## Update Notification Configuration - `/api/configuration/notifications` {#update-notification-configuration-apiconfigurationnotifications}
-- **Endpoint**: `/api/configuration/notifications`
-- **Method**: POST
-- **Description**: Updates notification configuration (NTFY settings or notification frequency).
-- **Authentication**: Requires valid session and CSRF token
-- **Request Body**:
-  For NTFY configuration:
+- **Réponses d'erreur** :
+  - `401` : Non autorisé - Session ou jeton CSRF non valide
+  - `500` : Échec de la récupération de la configuration
+- **Notes** :
+  - Récupère la configuration actuelle de la fréquence des notifications
+  - Utilisé pour la gestion des notifications de sauvegarde en retard
+  - Renvoie l'une des valeurs suivantes : `"onetime"`, `"every_day"`, `"every_week"`, `"every_month"`
+
+## Mettre à jour la configuration des notifications - `/api/configuration/notifications` {#update-notification-configuration-apiconfigurationnotifications}
+- **Point de terminaison** : `/api/configuration/notifications`
+- **Méthode** : POST
+- **Description** : Met à jour la configuration des notifications (paramètres NTFY ou fréquence des notifications).
+- **Authentification** : Nécessite une session valide et un jeton CSRF
+- **Corps de la requête** :
+  Pour la configuration NTFY :
+
   ```json
   {
     "ntfy": {
@@ -300,14 +329,18 @@
     }
   }
   ```
-  For notification frequency:
+
+Pour la fréquence des notifications :
+
   ```json
   {
     "value": "every_week"
   }
   ```
-- **Response**:
-  For NTFY configuration:
+
+- **Réponse** :
+  Pour la configuration NTFY :
+
   ```json
   {
     "message": "Notification config updated successfully",
@@ -319,33 +352,37 @@
     }
   }
   ```
-  For notification frequency:
+
+Pour la fréquence des notifications :
+
   ```json
   {
     "value": "every_week"
   }
   ```
-- **Available Values**: `"onetime"`, `"every_day"`, `"every_week"`, `"every_month"`
-- **Error Responses**:
-  - `401`: Unauthorized - Invalid session or CSRF token
-  - `400`: NTFY configuration is required or invalid value
-  - `500`: Server error updating notification configuration
-- **Notes**:
-  - Supports both NTFY configuration and notification frequency updates
-  - Updates only the NTFY configuration when ntfy field is provided
-  - Updates notification frequency when value field is provided
-  - Generates default topic if none provided
-  - Preserves existing configuration settings
-  - Uses `accessToken` field instead of separate username/password fields
-  - Validates notification frequency value against allowed options
-  - Affects how often overdue notifications are sent
 
-## Update Backup Settings - `/api/configuration/backup-settings` {#update-backup-settings-apiconfigurationbackup-settings}
-- **Endpoint**: `/api/configuration/backup-settings`
-- **Method**: POST
-- **Description**: Updates the backup notification settings for specific servers/backups.
-- **Authentication**: Requires valid session and CSRF token
-- **Request Body**:
+- **Valeurs disponibles** : `"onetime"`, `"every_day"`, `"every_week"`, `"every_month"`
+- **Réponses d'erreur** :
+  - `401` : Non autorisé - Session ou jeton CSRF non valide
+  - `400` : La configuration NTFY est requise ou la valeur est invalide
+  - `500` : Erreur serveur lors de la mise à jour de la configuration des notifications
+- **Notes** :
+  - Prend en charge la mise à jour de la configuration NTFY et de la fréquence des notifications
+  - Met à jour uniquement la configuration NTFY lorsque le champ ntfy est fourni
+  - Met à jour la fréquence des notifications lorsque le champ value est fourni
+  - Génère un sujet par défaut s'il n'est pas fourni
+  - Conserve les paramètres de configuration existants
+  - Utilise le champ `accessToken` au lieu des champs séparés nom d'utilisateur/mot de passe
+  - Valide la valeur de fréquence des notifications par rapport aux options autorisées
+  - Affecte la fréquence d'envoi des notifications en retard
+
+## Mettre à jour les paramètres de sauvegarde - `/api/configuration/backup-settings` {#update-backup-settings-apiconfigurationbackup-settings}
+- **Point de terminaison** : `/api/configuration/backup-settings`
+- **Méthode** : POST
+- **Description** : Met à jour les paramètres de notification de sauvegarde pour des serveurs/sauvegardes spécifiques.
+- **Authentification** : Nécessite une session valide et un jeton CSRF
+- **Corps de la requête** :
+
   ```json
   {
     "backupSettings": {
@@ -358,27 +395,31 @@
     }
   }
   ```
-- **Response**:
+
+- **Réponse** :
+
   ```json
   {
     "message": "Backup settings updated successfully"
   }
   ```
-- **Error Responses**:
-  - `401`: Unauthorized - Invalid session or CSRF token
-  - `400`: backupSettings is required
-  - `500`: Server error updating backup settings
-- **Notes**:
-  - Updates backup notification settings for specific servers/backups
-  - Cleans up overdue backup notifications for disabled backups
-  - Clears notifications when timeout settings change
 
-## Update Notification Templates - `/api/configuration/templates` {#update-notification-templates-apiconfigurationtemplates}
-- **Endpoint**: `/api/configuration/templates`
-- **Method**: POST
-- **Description**: Updates the notification templates.
-- **Authentication**: Requires valid session and CSRF token
-- **Request Body**:
+- **Réponses d'erreur** :
+  - `401` : Non autorisé - Session ou jeton CSRF non valide
+  - `400` : backupSettings est requis
+  - `500` : Erreur serveur lors de la mise à jour des paramètres de sauvegarde
+- **Notes** :
+  - Met à jour les paramètres de notification de sauvegarde pour des serveurs/sauvegardes spécifiques
+  - Nettoie les notifications de sauvegarde en retard pour les sauvegardes désactivées
+  - Efface les notifications lorsque les paramètres de temporisation changent
+
+## Mettre à jour les modèles de notification - `/api/configuration/templates` {#update-notification-templates-apiconfigurationtemplates}
+- **Point de terminaison** : `/api/configuration/templates`
+- **Méthode** : POST
+- **Description** : Met à jour les modèles de notification.
+- **Authentification** : Nécessite une session valide et un jeton CSRF
+- **Corps de la requête** :
+
   ```json
   {
     "templates": {
@@ -391,59 +432,68 @@
     }
   }
   ```
-- **Response**:
+
+- **Réponse** :
+
   ```json
   {
     "message": "Notification templates updated successfully"
   }
   ```
-- **Error Responses**:
-  - `401`: Unauthorized - Invalid session or CSRF token
-  - `400`: templates are required
-  - `500`: Server error updating notification templates
-- **Notes**:
-  - Updates notification templates for different backup statuses
-  - Preserves existing configuration settings
-  - Templates support variable substitution
 
-## Get Overdue Tolerance - `/api/configuration/overdue-tolerance` {#get-overdue-tolerance-apiconfigurationoverdue-tolerance}
-- **Endpoint**: `/api/configuration/overdue-tolerance`
-- **Method**: GET
-- **Description**: Retrieves the current overdue tolerance setting.
-- **Response**:
+- **Réponses d'erreur** :
+  - `401` : Non autorisé - Session ou jeton CSRF non valide
+  - `400` : Les modèles sont requis
+  - `500` : Erreur serveur lors de la mise à jour des modèles de notification
+- **Notes** :
+  - Met à jour les modèles de notification pour différents statuts de sauvegarde
+  - Conserve les paramètres de configuration existants
+  - Les modèles prennent en charge la substitution de variables
+
+## Obtenir la tolérance de retard - `/api/configuration/overdue-tolerance` {#get-overdue-tolerance-apiconfigurationoverdue-tolerance}
+- **Point de terminaison** : `/api/configuration/overdue-tolerance`
+- **Méthode** : GET
+- **Description** : Récupère le paramètre actuel de tolérance de retard.
+- **Réponse** :
+
   ```json
   {
     "overdue_tolerance": "1h"
   }
   ```
-- **Error Responses**:
-  - `500`: Failed to get overdue tolerance
-- **Notes**:
-  - Returns the current overdue tolerance setting
-  - Used for displaying current configuration
 
-## Update Overdue Tolerance - `/api/configuration/overdue-tolerance` {#update-overdue-tolerance-apiconfigurationoverdue-tolerance}
-- **Endpoint**: `/api/configuration/overdue-tolerance`
-- **Method**: POST
-- **Description**: Updates the overdue tolerance setting.
-- **Authentication**: Requires valid session and CSRF token
-- **Request Body**:
+- **Réponses d'erreur** :
+  - `500` : Échec de la récupération de la tolérance de retard
+- **Notes** :
+  - Renvoie le paramètre actuel de tolérance de retard
+  - Utilisé pour afficher la configuration actuelle
+
+## Mettre à jour la tolérance de retard - `/api/configuration/overdue-tolerance` {#update-overdue-tolerance-apiconfigurationoverdue-tolerance}
+- **Point de terminaison** : `/api/configuration/overdue-tolerance`
+- **Méthode** : POST
+- **Description** : Met à jour le paramètre de tolérance de retard.
+- **Authentification** : Nécessite une session valide et un jeton CSRF
+- **Corps de la requête** :
+
   ```json
   {
     "overdue_tolerance": "1h"
   }
   ```
-- **Response**:
+
+- **Réponse** :
+
   ```json
   {
     "message": "Overdue tolerance updated successfully"
   }
   ```
-- **Error Responses**:
-  - `401`: Unauthorized - Invalid session or CSRF token
-  - `400`: overdue_tolerance is required
-  - `500`: Server error updating overdue tolerance
-- **Notes**:
-  - Updates the overdue tolerance setting (accepts string format like "1h", "2h", etc.)
-  - Affects when backups are considered overdue
-  - Used by the overdue backup checker
+
+- **Réponses d'erreur** :
+  - `401` : Non autorisé - Session ou jeton CSRF non valide
+  - `400` : overdue_tolerance est requis
+  - `500` : Erreur du serveur lors de la mise à jour de la tolérance de retard
+- **Notes** :
+  - Met à jour le paramètre de tolérance de retard (accepte un format de chaîne comme « 1h », « 2h », etc.)
+  - Détermine quand les sauvegardes sont considérées comme en retard
+  - Utilisé par le vérificateur de sauvegarde en retard

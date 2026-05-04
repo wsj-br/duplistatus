@@ -1,69 +1,84 @@
+---
+translation_last_updated: '2026-04-18T00:00:41.589Z'
+source_file_mtime: '2026-03-05T22:33:28.419Z'
+source_file_hash: add8fe98b40a55c51fdd7af09ba7c836d54475b8283bbdebecbe17f2c6beb071
+translation_language: fr
+source_file_path: documentation/docs/api-reference/cron-service-apis.md
+translation_models:
+  - qwen/qwen3-235b-a22b-2507
+---
+# Gestion du service Cron {#cron-service-management}
 
-
-# Cron Service Management {#cron-service-management}
-
-## Get Cron Configuration - `/api/cron-config` {#get-cron-configuration-apicron-config}
+## Obtenir la configuration Cron - `/api/cron-config` {#get-cron-configuration-apicron-config}
 - **Endpoint**: `/api/cron-config`
-- **Method**: GET
-- **Description**: Retrieves the current cron service configuration.
-- **Authentication**: Requires valid session and CSRF token
-- **Response**:
+- **Méthode**: GET
+- **Description**: Récupère la configuration actuelle du service Cron.
+- **Authentification**: Nécessite une session valide et un jeton CSRF
+- **Réponse**:
+
   ```json
   {
     "cronExpression": "*/20 * * * *",
     "enabled": true
   }
   ```
-- **Error Responses**:
-  - `500`: Failed to get cron configuration
-- **Notes**:
-  - Returns current cron service configuration
-  - Includes cron expression and enabled status
-  - Used for cron service management
 
-## Update Cron Configuration - `/api/cron-config` {#update-cron-configuration-apicron-config}
+- **Réponses d'erreur** :
+  - `500` : Échec de la récupération de la configuration Cron
+- **Notes** :
+  - Retourne la configuration actuelle du service Cron
+  - Inclut l'expression Cron et le statut activé
+  - Utilisé pour la gestion du service Cron
+
+## Mettre à jour la configuration Cron - `/api/cron-config` {#update-cron-configuration-apicron-config}
 - **Endpoint**: `/api/cron-config`
-- **Method**: POST
-- **Description**: Updates the cron service configuration.
-- **Authentication**: Requires valid session and CSRF token
-- **Request Body**:
+- **Méthode**: POST
+- **Description**: Met à jour la configuration du service Cron.
+- **Authentification**: Nécessite une session valide et un jeton CSRF
+- **Corps de la requête**:
+
   ```json
   {
     "interval": "20min"
   }
   ```
-- **Response**:
+
+- **Réponse** :
+
   ```json
   {
     "success": true
   }
   ```
-- **Available Intervals**: `"disabled"`, `"1min"`, `"5min"`, `"10min"`, `"15min"`, `"20min"`, `"30min"`, `"1hour"`, `"2hours"`
-- **Error Responses**:
-  - `400`: Interval is required
-  - `500`: Failed to update cron configuration
-- **Notes**:
-  - Updates cron service configuration
-  - Validates interval against allowed options
-  - Affects overdue backup check frequency
 
-## Cron Service Proxy - `/api/cron/*` {#cron-service-proxy-apicron}
+- **Intervalles disponibles** : `"disabled"`, `"1min"`, `"5min"`, `"10min"`, `"15min"`, `"20min"`, `"30min"`, `"1hour"`, `"2hours"`
+- **Réponses d'erreur** :
+  - `400` : L'intervalle est requis
+  - `500` : Échec de la mise à jour de la configuration Cron
+- **Notes** :
+  - Met à jour la configuration du service Cron
+  - Valide l'intervalle par rapport aux options autorisées
+  - Affecte la fréquence de vérification des sauvegardes en retard
+
+## Proxy du service Cron - `/api/cron/*` {#cron-service-proxy-apicron}
 - **Endpoint**: `/api/cron/*`
-- **Method**: GET, POST
-- **Description**: Proxies requests to the cron service. This endpoint forwards all requests to the cron service running on a separate port.
-- **Authentication**: Requires valid session and CSRF token
-- **Parameters**:
-  - `*`: Any path that will be forwarded to the cron service
-- **Response**: Depends on the cron service endpoint being accessed
-- **Error Response** (503):
+- **Méthode**: GET, POST
+- **Description**: Transmet les requêtes au service Cron. Ce point de terminaison transfère toutes les requêtes au service Cron en cours d'exécution sur un port distinct.
+- **Authentification**: Nécessite une session valide et un jeton CSRF
+- **Paramètres** :
+  - `*` : Tout chemin qui sera transféré au service Cron
+- **Réponse** : Dépend du point de terminaison du service Cron accédé
+- **Réponse d'erreur** (503) :
+
   ```json
   {
     "error": "Cron service is not running",
     "message": "The cron service is not available. Please start it with: npm run cron:start"
   }
   ```
-- **Notes**:
-  - Proxies requests to the cron service
-  - Returns 503 if cron service is not available
-  - Supports both GET and POST methods
-  - Used for cron service management from the web interface
+
+- **Notes** :
+  - Transmet les requêtes au service Cron
+  - Retourne 503 si le service Cron n'est pas disponible
+  - Prend en charge les méthodes GET et POST
+  - Utilisé pour la gestion du service Cron depuis l'interface web

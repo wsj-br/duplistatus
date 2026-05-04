@@ -1,12 +1,10 @@
 "use client";
-
+import { useTranslation } from "react-i18next";
 import type { BackupStatus } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, XCircle, AlertTriangle, HelpCircle, AlertOctagon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { LucideIcon } from "lucide-react";
-import { useIntlayer } from 'react-intlayer';
-
 interface StatusBadgeProps {
   status: BackupStatus | 'N/A';
   onClick?: () => void;
@@ -21,8 +19,8 @@ interface StatusConfig {
 
 
 export function StatusBadge({ status, onClick }: StatusBadgeProps) {
-  const content = useIntlayer('status-badge');
-  
+  const { t } = useTranslation();
+
   const statusConfig: Record<BackupStatus | 'N/A', StatusConfig> = {
     Success: { icon: CheckCircle2, color: "bg-emerald-500 hover:bg-emerald-600", text: "text-emerald-50" },
     Unknown: { icon: HelpCircle, color: "bg-gray-400 hover:bg-gray-500", text: "text-gray-50" },
@@ -35,19 +33,19 @@ export function StatusBadge({ status, onClick }: StatusBadgeProps) {
   const getStatusLabel = (status: BackupStatus | 'N/A'): string => {
     switch (status) {
       case 'Success':
-        return content.success.value;
+        return t("Success");
       case 'Unknown':
-        return content.unknown.value;
+        return t("Unknown");
       case 'Warning':
-        return content.warning.value;
+        return t("Warning");
       case 'Error':
-        return content.error.value;
+        return t("Error");
       case 'Fatal':
-        return content.fatal.value;
+        return t("Fatal");
       case 'N/A':
-        return content.na.value;
+        return t("N/A");
       default:
-        return content.na.value;
+        return t("N/A");
     }
   };
 

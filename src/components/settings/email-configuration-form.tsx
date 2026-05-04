@@ -1,5 +1,5 @@
 "use client";
-
+import { useTranslation } from "react-i18next";
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,7 +11,6 @@ import { Switch } from '@/components/ui/switch';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { useConfiguration } from '@/contexts/configuration-context';
 import { TogglePasswordInput } from '@/components/ui/toggle-password-input';
-import { useIntlayer } from 'react-intlayer';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -49,8 +48,7 @@ interface EmailConfig {
 }
 
 export function EmailConfigurationForm() {
-  const content = useIntlayer('email-configuration-form');
-  const common = useIntlayer('common');
+  const { t } = useTranslation();
   const { toast } = useToast();
   const { config, refreshConfigSilently } = useConfiguration();
   const [emailConfig, setEmailConfig] = useState<EmailConfig>({
@@ -177,29 +175,29 @@ export function EmailConfigurationForm() {
     const missing: string[] = [];
     
     if (emailConfig.host.trim() === '') {
-      missing.push(content.smtpServerHostnameMissing);
+      missing.push(t("SMTP Server Hostname"));
     }
     
     if (emailConfig.port <= 0) {
-      missing.push(content.smtpServerPortMissing);
+      missing.push(t("SMTP Server Port"));
     }
     
     if (!isValidEmail(emailConfig.mailto)) {
-      missing.push(content.recipientEmailMissing);
+      missing.push(t("Recipient Email"));
     }
     
     // If authentication is required, check username and password
     if (emailConfig.requireAuth !== false) {
       if (emailConfig.username.trim() === '') {
-        missing.push(content.smtpServerUsernameMissing);
+        missing.push(t("SMTP Server Username"));
       }
       if (!emailConfig.hasPassword) {
-        missing.push(content.smtpServerPasswordMissing);
+        missing.push(t("SMTP Server Password"));
       }
     } else {
       // If authentication is not required, fromAddress is required
       if (!emailConfig.fromAddress || emailConfig.fromAddress.trim() === '' || !isValidEmail(emailConfig.fromAddress)) {
-        missing.push(content.fromAddressMissing);
+        missing.push(t("From Address"));
       }
     }
     
@@ -210,8 +208,8 @@ export function EmailConfigurationForm() {
     // Validate email formats before saving (but don't prevent saving)
     if (emailConfig.mailto && emailConfig.mailto.trim() !== '' && !isValidEmail(emailConfig.mailto)) {
       toast({
-        title: "Warning",
-        description: "Recipient email format may be invalid (must contain '@' symbol). Configuration will be saved anyway.",
+        title: t("Warning"),
+        description: t("Recipient email format may be invalid (must contain '@' symbol). Configuration will be saved anyway."),
         variant: "default",
         duration: 3000,
       });
@@ -221,16 +219,16 @@ export function EmailConfigurationForm() {
     if (emailConfig.requireAuth === false) {
       if (emailConfig.fromAddress && emailConfig.fromAddress.trim() !== '' && !isValidEmail(emailConfig.fromAddress)) {
         toast({
-          title: "Warning",
-          description: "From address format may be invalid (must contain '@' symbol). Configuration will be saved anyway.",
+          title: t("Warning"),
+          description: t("From address format may be invalid (must contain '@' symbol). Configuration will be saved anyway."),
           variant: "default",
           duration: 3000,
         });
       }
     } else if (emailConfig.fromAddress && emailConfig.fromAddress.trim() !== '' && !isValidEmail(emailConfig.fromAddress)) {
       toast({
-        title: "Warning",
-        description: "From address format may be invalid (must contain '@' symbol). Configuration will be saved anyway.",
+        title: t("Warning"),
+        description: t("From address format may be invalid (must contain '@' symbol). Configuration will be saved anyway."),
         variant: "default",
         duration: 3000,
       });
@@ -264,8 +262,8 @@ export function EmailConfigurationForm() {
       }
 
       toast({
-        title: content.settingsSaved,
-        description: content.smtpSettingsSavedSuccessfully,
+        title: t("Settings Saved"),
+        description: t("SMTP settings saved successfully!"),
         duration: 2000,
       });
       
@@ -274,8 +272,8 @@ export function EmailConfigurationForm() {
     } catch (error) {
       console.error('Error saving configuration:', error instanceof Error ? error.message : String(error));
       toast({
-        title: content.saveFailed,
-        description: error instanceof Error ? error.message : content.failedToSaveConfiguration,
+        title: t("Save Failed"),
+        description: error instanceof Error ? error.message : t("Failed to save configuration"),
         variant: "destructive",
         duration: 3000,
       });
@@ -288,8 +286,8 @@ export function EmailConfigurationForm() {
     // First validate the form
     if (!isValidEmail(emailConfig.mailto)) {
       toast({
-        title: content.validationError,
-        description: content.recipientEmailMustContainAt,
+        title: t("Validation Error"),
+        description: t("Recipient email must contain '@' symbol"),
         variant: "destructive",
         duration: 3000,
       });
@@ -300,8 +298,8 @@ export function EmailConfigurationForm() {
     if (emailConfig.requireAuth === false) {
       if (!emailConfig.fromAddress || emailConfig.fromAddress.trim() === '' || !isValidEmail(emailConfig.fromAddress)) {
         toast({
-          title: content.validationError,
-          description: content.fromAddressRequiredWhenAuthDisabled,
+          title: t("Validation Error"),
+          description: t("From address is required when authentication is disabled and must contain '@' symbol"),
           variant: "destructive",
           duration: 3000,
         });
@@ -309,8 +307,8 @@ export function EmailConfigurationForm() {
       }
     } else if (emailConfig.fromAddress && emailConfig.fromAddress.trim() !== '' && !isValidEmail(emailConfig.fromAddress)) {
       toast({
-        title: content.validationError,
-        description: content.fromAddressMustContainAt,
+        title: t("Validation Error"),
+        description: t("From address must contain '@' symbol"),
         variant: "destructive",
         duration: 3000,
       });
@@ -361,8 +359,8 @@ export function EmailConfigurationForm() {
         // Check for master key error
         if (errorData.masterKeyInvalid || (errorData.error && errorData.error.includes('Master key is invalid'))) {
           toast({
-            title: "Master Key Invalid",
-            description: "The master key is no longer valid. All encrypted passwords and settings must be reconfigured.",
+            title: t("Master Key Invalid"),
+            description: t("The master key is no longer valid. All encrypted passwords and settings must be reconfigured."),
             variant: "destructive",
             duration: 8000,
           });
@@ -373,15 +371,15 @@ export function EmailConfigurationForm() {
       }
 
       toast({
-        title: "Test Email Sent",
-        description: "Settings saved and test email sent successfully! Check your inbox.",
+        title: t("Test Email Sent"),
+        description: t("Settings saved and test email sent successfully! Check your inbox."),
         duration: 2000,
       });
     } catch (error) {
       console.error('Error sending test email:', error instanceof Error ? error.message : String(error));
       toast({
-        title: "Test Email Failed",
-        description: error instanceof Error ? error.message : "Failed to send test email",
+        title: t("Test Email Failed"),
+        description: error instanceof Error ? error.message : t("Failed to send test email"),
         variant: "destructive",
         duration: 3000,
       });
@@ -417,8 +415,8 @@ export function EmailConfigurationForm() {
       });
 
       toast({
-        title: content.settingsDeleted,
-        description: content.smtpSettingsDeletedSuccessfully,
+        title: t("Settings Deleted"),
+        description: t("SMTP settings have been deleted successfully."),
         duration: 2000,
       });
       
@@ -427,8 +425,8 @@ export function EmailConfigurationForm() {
     } catch (error) {
       console.error('Error deleting configuration:', error instanceof Error ? error.message : String(error));
       toast({
-        title: "Delete Failed",
-        description: error instanceof Error ? error.message : "Failed to delete configuration",
+        title: t("Delete Failed"),
+        description: error instanceof Error ? error.message : t("Failed to delete configuration"),
         variant: "destructive",
         duration: 3000,
       });
@@ -478,8 +476,8 @@ export function EmailConfigurationForm() {
     const saved = await saveCurrentConfigSilently();
     if (!saved) {
       toast({
-        title: content.warning,
-        description: content.failedToSaveCurrentConfiguration,
+        title: t("Warning"),
+        description: t("Failed to save current configuration. Your changes may be lost when changing password."),
         variant: "default",
         duration: 3000,
       });
@@ -493,8 +491,8 @@ export function EmailConfigurationForm() {
     // When password is visible, confirmation field is synced, so only check newPassword
     if (!newPassword || (!showPassword && !confirmPassword)) {
       toast({
-        title: common.status.error,
-        description: content.pleaseEnterBothPasswordFields,
+        title: t("Error"),
+        description: t("Please enter both password fields"),
         variant: "destructive",
         duration: 3000,
       });
@@ -504,8 +502,8 @@ export function EmailConfigurationForm() {
     // When password is visible, confirmation is synced, so they match
     if (!showPassword && newPassword !== confirmPassword) {
       toast({
-        title: common.status.error,
-        description: content.passwordsDoNotMatch,
+        title: t("Error"),
+        description: t("Passwords do not match"),
         variant: "destructive",
         duration: 3000,
       });
@@ -536,8 +534,8 @@ export function EmailConfigurationForm() {
 
       if (response.ok) {
         toast({
-          title: "Success",
-          description: "Email password updated successfully",
+          title: t("Success"),
+          description: t("Email password updated successfully"),
           duration: 3000,
         });
         setPasswordDialogOpen(false);
@@ -549,16 +547,16 @@ export function EmailConfigurationForm() {
         setEmailConfig(prev => ({ ...prev, hasPassword: true }));
       } else {
         toast({
-          title: common.status.error,
-          description: result.error || content.failedToUpdatePassword,
+          title: t("Error"),
+          description: result.error || t("Failed to update password"),
           variant: "destructive",
           duration: 3000,
         });
       }
     } catch (error) {
       toast({
-        title: common.status.error,
-        description: error instanceof Error ? error.message : content.failedToUpdatePassword,
+        title: t("Error"),
+        description: error instanceof Error ? error.message : t("Failed to update password"),
         variant: "destructive",
         duration: 3000,
       });
@@ -596,8 +594,8 @@ export function EmailConfigurationForm() {
 
       if (response.ok) {
         toast({
-          title: "Success",
-          description: "Email password deleted successfully",
+          title: t("Success"),
+          description: t("Email password deleted successfully"),
           duration: 3000,
         });
         setPasswordDialogOpen(false);
@@ -609,16 +607,16 @@ export function EmailConfigurationForm() {
         setEmailConfig(prev => ({ ...prev, hasPassword: false }));
       } else {
         toast({
-          title: common.status.error,
-          description: result.error || content.failedToDeletePassword,
+          title: t("Error"),
+          description: result.error || t("Failed to delete password"),
           variant: "destructive",
           duration: 3000,
         });
       }
     } catch (error) {
       toast({
-        title: common.status.error,
-        description: error instanceof Error ? error.message : content.failedToDeletePassword,
+        title: t("Error"),
+        description: error instanceof Error ? error.message : t("Failed to delete password"),
         variant: "destructive",
         duration: 3000,
       });
@@ -656,10 +654,10 @@ export function EmailConfigurationForm() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Mail className="w-5 h-5" />
-            {content.emailSettings}
+            {t("Email Settings")}
           </CardTitle>
           <CardDescription>
-            {content.descriptionFull}
+            {t("Configure SMTP settings for email notifications. Settings are stored securely in the database.")}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -668,9 +666,9 @@ export function EmailConfigurationForm() {
             <Alert className="bg-yellow-50 dark:bg-yellow-950/20 border-yellow-200 dark:border-yellow-800 flex items-start gap-6 [&>svg]:relative [&>svg]:left-0 [&>svg]:top-0 [&>svg~*]:pl-0">
               <AlertTriangle className="h-8 w-8 text-yellow-600 dark:text-yellow-500 flex-shrink-0 mt-3.5" />
               <AlertDescription className="text-white-800 dark:text-white-200">
-              <b>{content.emailNotificationsDisabled}</b> {content.completeRequiredFields}
+              <b>{t("Email notifications are disabled.")}</b> {t("Complete the required fields below to enable notifications.")}
               <br /><br />
-              <b>{content.important}</b> {content.alwaysTestSettings}
+              <b>{t("Important:")}</b> {t("Always test your settings to ensure emails are delivered successfully.")}
               </AlertDescription>
             </Alert>
           )}
@@ -680,29 +678,29 @@ export function EmailConfigurationForm() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="smtp-host">
-                  {content.smtpServerHostname}
-                  {emailConfig.host.trim() === '' && <span className="text-red-500 ml-1">{content.required}</span>}
+                  {t("SMTP Server Hostname")}
+                  {emailConfig.host.trim() === '' && <span className="text-red-500 ml-1">{t("(required)")}</span>}
                 </Label>
                 <Input
                   id="smtp-host"
                   type="text"
                   value={emailConfig.host}
                   onChange={(e) => handleInputChange('host', e.target.value)}
-                  placeholder={content.smtpHostPlaceholder.value}
+                  placeholder={t("smtp.your-domain.com")}
                 />
               </div>
               
               <div className="space-y-2">
                 <Label htmlFor="smtp-port">
-                  {content.smtpServerPort}
-                  {emailConfig.port <= 0 && <span className="text-red-500 ml-1">{content.required}</span>}
+                  {t("SMTP Server Port")}
+                  {emailConfig.port <= 0 && <span className="text-red-500 ml-1">{t("(required)")}</span>}
                 </Label>
                 <Input
                   id="smtp-port"
                   type="number"
                   value={emailConfig.port}
                   onChange={(e) => handleInputChange('port', parseInt(e.target.value) || 587)}
-                  placeholder={content.smtpPortPlaceholder.value}
+                  placeholder={t("587")}
                   min="1"
                   max="65535"
                 />
@@ -712,23 +710,23 @@ export function EmailConfigurationForm() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="smtp-username">
-                  {content.smtpServerUsername}
-                  {emailConfig.requireAuth !== false && emailConfig.username.trim() === '' && <span className="text-red-500 ml-1">{content.required}</span>}
+                  {t("SMTP Server Username")}
+                  {emailConfig.requireAuth !== false && emailConfig.username.trim() === '' && <span className="text-red-500 ml-1">{t("(required)")}</span>}
                 </Label>
                 <Input
                   id="smtp-username"
                   type="text"
                   value={emailConfig.username}
                   onChange={(e) => handleInputChange('username', e.target.value)}
-                  placeholder={content.smtpUsernamePlaceholder.value}
+                  placeholder={t("your-email@your-domain.com")}
                   disabled={emailConfig.requireAuth === false}
                 />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="smtp-password">
-                  {content.smtpServerPassword}
-                  {emailConfig.requireAuth !== false && !emailConfig.hasPassword && <span className="text-red-500 ml-1">{content.required}</span>}
+                  {t("SMTP Server Password")}
+                  {emailConfig.requireAuth !== false && !emailConfig.hasPassword && <span className="text-red-500 ml-1">{t("(required)")}</span>}
                 </Label>
                 <div className="flex items-center gap-2">
                   <Button
@@ -739,7 +737,7 @@ export function EmailConfigurationForm() {
                     className="flex items-center gap-2"
                   >
                     <KeyRound className="h-4 w-4" />
-                    {emailConfig.hasPassword ? content.changePassword : content.setPassword}
+                    {emailConfig.hasPassword ? t("Change Password") : t("Set Password")}
                   </Button>
                   <div className="flex items-center space-x-2">
                     <Switch
@@ -748,7 +746,7 @@ export function EmailConfigurationForm() {
                       onCheckedChange={(checked) => handleInputChange('requireAuth', checked)}
                     />
                     <Label htmlFor="smtp-require-auth" className="text-sm">
-                      {content.smtpRequiresAuth}
+                      {t("SMTP Server requires authentication")}
                     </Label>
                   </div>
                 </div>
@@ -758,20 +756,20 @@ export function EmailConfigurationForm() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="smtp-mailto">
-                  {content.recipientEmail}
-                  {!isValidEmail(emailConfig.mailto) && <span className="text-red-500 ml-1">{content.required}</span>}
+                  {t("Recipient Email")}
+                  {!isValidEmail(emailConfig.mailto) && <span className="text-red-500 ml-1">{t("(required)")}</span>}
                 </Label>
                 <Input
                   id="smtp-mailto"
                   type="email"
                   value={emailConfig.mailto}
                   onChange={(e) => handleInputChange('mailto', e.target.value)}
-                  placeholder={content.recipientEmailPlaceholder.value}
+                  placeholder={t("recipient@example.com")}
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="smtp-connection-type">{content.connectionType}</Label>
+                <Label htmlFor="smtp-connection-type">{t("Connection Type")}</Label>
                 <div className="flex rounded-md border border-input bg-background shadow-sm w-fit" role="group">
                   <button
                     type="button"
@@ -786,7 +784,7 @@ export function EmailConfigurationForm() {
                       }
                     `}
                   >
-                    {content.plainSmtp}
+                    {t("Plain SMTP")}
                   </button>
                   <button
                     type="button"
@@ -801,7 +799,7 @@ export function EmailConfigurationForm() {
                       }
                     `}
                   >
-                    {content.starttls}
+                    {t("STARTTLS")}
                   </button>
                   <button
                     type="button"
@@ -816,15 +814,15 @@ export function EmailConfigurationForm() {
                       }
                     `}
                   >
-                    {content.directSslTls}
+                    {t("Direct SSL/TLS")}
                   </button>
                 </div>
                 <p className="text-xs text-muted-foreground">
                   {emailConfig.connectionType === 'plain'
-                    ? content.plainSmtpDescription
+                    ? t("Plain SMTP connection without encryption (not recommended, use only for trusted networks).")
                     : emailConfig.connectionType === 'starttls'
-                    ? content.starttlsDescription
-                    : content.directSslTlsDescription
+                    ? t("STARTTLS connection (recommended for port 587). The connection will upgrade to TLS after initial handshake.")
+                    : t("Direct SSL/TLS connection (recommended for port 465). The connection is encrypted from the start.")
                   }
                 </p>
               </div>
@@ -832,26 +830,26 @@ export function EmailConfigurationForm() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="smtp-sender-name">{content.senderNameOptional}</Label>
+                <Label htmlFor="smtp-sender-name">{t("Sender Name (optional)")}</Label>
                 <Input
                   id="smtp-sender-name"
                   type="text"
                   value={emailConfig.senderName || ''}
                   onChange={(e) => handleInputChange('senderName', e.target.value)}
-                  placeholder={content.senderNamePlaceholder.value}
+                  placeholder={t("duplistatus")}
                 />
                 <p className="text-xs text-muted-foreground">
-                  {content.senderNameDescription}
+                  {t("Display name shown as the sender. Defaults to \"duplistatus\" if not set.")}
                 </p>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="smtp-from-address">
-                  {content.fromAddressLabel}{' '}
+                  {t("From Address")}{' '}
                   {emailConfig.requireAuth === false ? (
-                    <span className="text-red-500">{content.required}</span>
+                    <span className="text-red-500">{t("(required)")}</span>
                   ) : (
-                    <span>{content.optional}</span>
+                    <span>{t("(optional)")}</span>
                   )}
                 </Label>
                 <Input
@@ -859,17 +857,17 @@ export function EmailConfigurationForm() {
                   type="email"
                   value={emailConfig.fromAddress || ''}
                   onChange={(e) => handleInputChange('fromAddress', e.target.value)}
-                  placeholder={content.fromAddressPlaceholder.value}
+                  placeholder={t("noreply@your-domain.com")}
                   required={emailConfig.requireAuth === false}
                 />
                 <p className="text-xs text-muted-foreground">
                   {emailConfig.requireAuth === false ? (
                     <>
-                      {content.fromAddressRequiredDescription}
+                      {t("Email address shown as the sender. Required when authentication is disabled.")}
                     </>
                   ) : (
                     <>
-                      {content.fromAddressOptionalDescription}
+                      {t("Email address shown as the sender. Defaults to SMTP Server Username if not set. Note: Some email providers (like Gmail) will always use the SMTP Server Username instead of this value.")}
                     </>
                   )}
                 </p>
@@ -885,7 +883,7 @@ export function EmailConfigurationForm() {
               disabled={isSaving}
               className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700"
             >
-              {isSaving ? content.saving : content.saveSettings}
+              {isSaving ? t("Saving...") : t("Save Settings")}
             </Button>
             
             <Button
@@ -897,12 +895,12 @@ export function EmailConfigurationForm() {
               {isTesting ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  {content.sending}
+                  {t("Sending...")}
                 </>
               ) : (
                 <>
                   <Mail className="w-4 h-4" />
-                  {content.sendTestEmail}
+                  {t("Send Test Email")}
                 </>
               )}
             </Button>
@@ -915,23 +913,23 @@ export function EmailConfigurationForm() {
                   className="w-full sm:w-auto"
                 >
                   <Trash2 className="w-4 h-4 mr-2" />
-                  {isDeleting ? content.deleting : content.deleteSmtpSettings}
+                  {isDeleting ? t("Deleting...") : t("Delete SMTP Settings")}
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>{content.deleteSmtpSettingsTitle}</AlertDialogTitle>
+                <AlertDialogTitle>{t("Delete SMTP Settings")}</AlertDialogTitle>
                 <AlertDialogDescription>
-                  {content.deleteSmtpSettingsDescription}
+                  {t("Are you sure you want to delete the SMTP settings? This action cannot be undone and will remove all email notification settings.")}
                 </AlertDialogDescription>
               </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>{common.ui.cancel}</AlertDialogCancel>
+                  <AlertDialogCancel>{t("Cancel")}</AlertDialogCancel>
                   <AlertDialogAction
                     onClick={handleDeleteConfig}
                     className="bg-red-600 hover:bg-red-700"
                   >
-                    {content.deleteSettings}
+                    {t("Delete Settings")}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
@@ -944,32 +942,32 @@ export function EmailConfigurationForm() {
       <Dialog open={passwordDialogOpen} onOpenChange={handlePasswordDialogClose}>
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
-            <DialogTitle>{content.changeEmailPassword}</DialogTitle>
+            <DialogTitle>{t("Change Email Password")}</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="space-y-2">
               <Label htmlFor="new-password" className="text-sm font-medium">
-                {content.newPassword}
+                {t("New Password")}
               </Label>
               <TogglePasswordInput
                 ref={passwordInputRef}
                 id="new-password"
                 value={newPassword}
                 onChange={setNewPassword}
-                placeholder={content.enterNewPassword.value}
+                placeholder={t("Enter new password")}
                 showPassword={showPassword}
                 onTogglePassword={() => setShowPassword(!showPassword)}
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="confirm-password" className={`text-sm font-medium ${showPassword ? 'opacity-60' : ''}`}>
-                {content.confirmPassword}
+                {t("Confirm Password")}
               </Label>
               <TogglePasswordInput
                 id="confirm-password"
                 value={confirmPassword}
                 onChange={setConfirmPassword}
-                placeholder={content.confirmNewPassword.value}
+                placeholder={t("Confirm new password")}
                 className={!showPassword && newPassword && confirmPassword && newPassword !== confirmPassword ? 'border-red-500' : ''}
                 showPassword={showPassword}
                 onTogglePassword={() => setShowPassword(!showPassword)}
@@ -980,7 +978,7 @@ export function EmailConfigurationForm() {
               {!showPassword && newPassword && confirmPassword && newPassword !== confirmPassword && (
                 <p className="text-sm text-red-600 flex items-center gap-1">
                   <XCircle className="h-4 w-4" />
-                  {content.passwordsDoNotMatch}
+                  {t("Passwords do not match")}
                 </p>
               )}
             </div>
@@ -997,10 +995,10 @@ export function EmailConfigurationForm() {
                 {isDeletingPassword ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {content.deleting}
+                    {t("Deleting...")}
                   </>
                 ) : (
-                  content.deletePassword
+                  <>{t("Delete Password")}</>
                 )}
               </Button>
               <div className="flex gap-2">
@@ -1010,7 +1008,7 @@ export function EmailConfigurationForm() {
                   onClick={handlePasswordDialogClose}
                   disabled={isSavingPassword || isDeletingPassword}
                 >
-                  {common.ui.cancel}
+                  {t("Cancel")}
                 </Button>
                 <Button
                   type="button"
@@ -1021,10 +1019,10 @@ export function EmailConfigurationForm() {
                   {isSavingPassword ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      {content.saving}
+                      {t("Saving...")}
                     </>
                   ) : (
-                    content.savePassword
+                    <>{t("Save Password")}</>
                   )}
                 </Button>
               </div>

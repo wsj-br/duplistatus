@@ -1,9 +1,13 @@
 ---
-translation_last_updated: '2026-03-01T00:45:13.352Z'
-source_file_mtime: '2026-03-01T00:09:27.997Z'
-source_file_hash: 6d8b0e530d4c1ecb
+translation_last_updated: '2026-04-18T14:28:11.830Z'
+source_file_mtime: '2026-04-18T14:26:06.971Z'
+source_file_hash: 5f21215bb0815be3623139b3b25d7c342d796fc468d95ff0bf0bc3ff6d32890b
 translation_language: es
-source_file_path: development/setup.md
+source_file_path: documentation/docs/development/setup.md
+translation_models:
+  - anthropic/claude-3.5-haiku
+  - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Configuración de Desarrollo {#development-setup}
 
@@ -166,14 +170,10 @@ Los servidores de desarrollo (`start:*`) proporcionan reemplazo de módulos en c
 - `pnpm cron:dev` - Iniciar servicio cron en modo desarrollo con observación de archivos (puerto 8667)
 - `pnpm cron:start-local` - Iniciar servicio cron localmente para pruebas (puerto 8667)
 
-### Scripts de Prueba {#test-scripts}
-- `pnpm generate-test-data` - Generar datos de backup de prueba (requiere parámetro --servers=N)
-- `pnpm show-overdue-notifications` - Mostrar contenido de notificaciones retrasadas
-- `pnpm run-overdue-check` - Ejecutar verificación de retraso en una fecha/hora específica
-- `pnpm test-cron-port` - Probar conectividad del puerto de servicio cron
-- `pnpm test-overdue-detection` - Probar lógica de detección de backup retrasado
-- `pnpm validate-csv-export` - Validar funcionalidad de exportación CSV
-- `pnpm set-smtp-test-config` - Configurar prueba SMTP desde variables de entorno (ver [Scripts de Prueba](test-scripts))
-- `pnpm test-smtp-connections` - Probar compatibilidad cruzada de tipos de conexión SMTP (ver [Scripts de Prueba](test-scripts))
-- `pnpm test-entrypoint` - Probar script de punto de entrada de Docker en desarrollo local (ver [Scripts de Prueba](test-scripts))
-- `pnpm take-screenshots` - Tomar capturas de pantalla para documentación (ver [Herramientas de Documentación](documentation-tools))
+### Probar Scripts {#test-scripts}
+- `pnpm generate-test-data` - Generar datos de respaldo de prueba (requiere el parámetro --servers=N)
+- `pnpm validate-csv-export` - Validar la funcionalidad de exportación CSV
+- `pnpm test-entrypoint` - Probar el script de entrada de Docker en el desarrollo local (ver [Test Scripts](test-scripts))
+- `pnpm take-screenshots` - Tomar capturas de pantalla para la documentación (ver [Documentation Tools](documentation-tools))
+
+Las comprobaciones retrasadas, las comprobaciones de salud de cron y las pruebas de SMTP se realizan a través de la aplicación en ejecución y `curl` (ver [Test Scripts](test-scripts)); se eliminaron los antiguos ayudantes independientes `pnpm` para esos.

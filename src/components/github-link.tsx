@@ -1,10 +1,9 @@
 "use client";
+import { useTranslation } from "react-i18next";
 
 import Link from 'next/link';
-import { useIntlayer } from 'react-intlayer';
-
 export function GithubLink() {
-  const common = useIntlayer('common');
+  const { t } = useTranslation();
   return (
     <div className="text-xs text-muted-foreground hover:text-foreground transition-colors text-center">
       <Link 
@@ -12,7 +11,7 @@ export function GithubLink() {
         target="_blank" 
         rel="noopener noreferrer"
         className="inline-flex items-center gap-1"
-        aria-label={common.ui.viewSourceCodeOnGitHub.value}
+        aria-label={t("View source code on GitHub")}
       >
         <svg 
           height="16" 

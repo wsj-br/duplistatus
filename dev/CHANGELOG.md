@@ -5,9 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.3.2]
+**Instructions:** don't create new sections, be concise and only record user facing changes.
+
+
+## Unreleased
+
+
+### Added
+
+
+### Changed
+- **ESLint**: Ignore **`.intlayer/**`** (generated). Turn off React Compiler–specific **`react-hooks/*`** rules that flag common mount/sync/fetch patterns; remove obsolete **`eslint-disable-next-line react-hooks/set-state-in-effect`** comments (auto-fixed).
+- **Tooling**: **`scripts/upgrade-dependencies.sh`** aligns with the **ai-i18n-tools** upgrade flow: prefer **`source ./scripts/upgrade-dependencies.sh`** so **nvm** applies to the shell (**`CI=1`** or **`DUPLISTATUS_UPGRADE_ALLOW_EXEC=1`** when executing directly); **`scripts/upgrade-tools.sh`** upgrades nvm/Node LTS/globals; **`eslint-react-peers-allow-eslint10.js`** gates **`npm-check-updates`** so the ESLint stack is not bumped past React plugin peers; **`documentation/`** uses the **same workspace lockfile** as the app (no nested `--ignore-workspace` install).
+- **i18n**: **`SOURCE_LOCALE`** and **`LOCALE_COOKIE_NAME`** now live in **`src/i18n.ts`** (with **`SOURCE_LOCALE`** still matching **`ai-i18n-tools.config.json`**). Removed **`src/i18n/constants.ts`** and the **`src/i18n/`** folder; **`@/i18n`** imports expose those constants alongside the default i18next instance.
+- **UI copy / i18n**: Removed **`src/i18n/generated-hooks/`** and **`src/i18n/backup-detail-page-translations.ts`**. All UI strings use **`useTranslation().t('…')`** in client components or **`getServerI18n()`** / **`i18n.t('…')`** in Server Components (e.g. backup detail page). Regenerated **`src/locales/strings.json`** metadata via **`pnpm i18n:extract`**.
+- **UI copy / i18n**: Removed the shared `useCommonContent()` hook; shared labels (Cancel, Error, time ranges, etc.) now use **`useTranslation().t('…')` inline** at each call site. Deleted `src/i18n/generated-hooks/useCommonContent.ts`.
+- **i18n stack**: Replaced Intlayer (`.content.ts`, locale-prefixed routes) with **i18next** + **ai-i18n-tools** (`ai-i18n-tools.config.json` at repo root). UI strings use English keys in `t('…')` / generated hooks; flat JSON lives under `src/locales/`. App language is cookie-driven (no `/en/…` path segment); legacy URLs redirect via `src/proxy.ts`.
+- **Documentation translation**: Removed `documentation/scripts/translate/` and `translate.config.json`; `documentation/package.json` scripts delegate to root `pnpm i18n:*` commands. Glossary ties UI terms via `glossary.uiGlossary` → `src/locales/strings.json`; optional overrides in `documentation/glossary-user.csv`.
+- **Status labels in notifications**: `src/lib/status-translations.ts` reads the same flat locale JSON as the UI.
+- **Release notes**: Added documentation/docs/release-notes/1.3.2.md and linked it in the release notes sidebar (sidebars.ts).
+- **Documentation**: Updated Docker script names to match package.json: `docker-up` → `docker:up`, `docker-down` → `docker:down`, `docker-clean` → `docker:clean`, `docker-devel` → `docker:devel` in AGENTS.md and documentation/docs (setup.md, devel.md, release-management.md).
+- **Documentation**: Updated package versions to match package.json in AGENTS.md, documentation/docs/development/setup.md, documentation/docs/development/development-guidelines.md, and .cursor/rules/project-rule.mdc: pnpm 10.30.3, TypeScript ^5.9.3, Next.js ^16.1.6, React ^19.2.4, Tailwind CSS ^4.2.1, intlayer family ^8.1.8, lucide-react ^0.575.0, react-day-picker ^9.14.0, react-hook-form ^7.71.2, ESLint ^9.16.0, webpack ^5.105.3.
+
+### Deprecated
+
+
+### Removed
+
 
 ### Fixed
+- **Next.js 16 proxy**: Removed `src/middleware.ts` so only `src/proxy.ts` is used (avoids "middleware and proxy both detected" build error).
+- **Login logo import**: Corrected static import path to `public/images/duplistatus_logo.png` from `src/app/login/page.tsx`.
 - **pnpm install warnings**: Resolved three install-time warnings: (1) unmet peer `webpack@5.104.1` from `next-intlayer` > `@intlayer/webpack` (project has webpack 5.105.3) by adding `pnpm.peerDependencyRules.allowedVersions.webpack: "5"` in root `package.json`; (2) deprecated subdependencies `prebuild-install@7.1.3` (from better-sqlite3) and `whatwg-encoding@3.1.1` (from documentation > docusaurus-search-local > cheerio) by adding `pnpm.allowedDeprecatedVersions` for both so install runs without warnings.
 - **application-logs-viewer useEffect exhaustive-deps**: Resolved react-hooks/exhaustive-deps warning for the auto-scroll effect. `logData` is intentionally omitted from the dependency array so we only scroll when auto-scroll or selected file changes, not on every poll; new-line scrolling is handled in loadLogs. Added an eslint-disable-next-line with a short comment.
 - **Build warning vscode-languageserver-types (documentation)**: Suppressed Webpack "Critical dependency: require function is used in a way in which dependencies cannot be statically extracted" for transitive dependency `vscode-languageserver-types` (from intlayer-editor) in the **documentation** (Docusaurus) build via an inline plugin in `documentation/docusaurus.config.ts` that adds `ignoreWarnings`. The warning occurs during the docs build only, not the main app.
@@ -18,26 +46,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `minimatch >=3.1.4`: Fixes GHSA-3ppc-4f35-3m26 (ReDoS via repeated wildcards), GHSA-7r86-cg39-jmmj (combinatorial backtracking), and GHSA-23c5-xmqv-rm74 (nested extglobs backtracking) in documentation>@docusaurus/core>serve-handler>minimatch.
   - `serialize-javascript >=7.0.3`: Fixes GHSA-5c6j-r48x-rmvq (RCE via RegExp.flags and Date.prototype.toISOString()) in webpack>terser-webpack-plugin>serialize-javascript.
 
-### Fixed
-
-### Changed
-- **Release notes**: Added documentation/docs/release-notes/1.3.2.md and linked it in the release notes sidebar (sidebars.ts).
-- **Documentation**: Updated Docker script names to match package.json: `docker-up` → `docker:up`, `docker-down` → `docker:down`, `docker-clean` → `docker:clean`, `docker-devel` → `docker:devel` in AGENTS.md and documentation/docs (setup.md, devel.md, release-management.md).
-- **Documentation**: Updated package versions to match package.json in AGENTS.md, documentation/docs/development/setup.md, documentation/docs/development/development-guidelines.md, and .cursor/rules/project-rule.mdc: pnpm 10.30.3, TypeScript ^5.9.3, Next.js ^16.1.6, React ^19.2.4, Tailwind CSS ^4.2.1, intlayer family ^8.1.8, lucide-react ^0.575.0, react-day-picker ^9.14.0, react-hook-form ^7.71.2, ESLint ^9.16.0, webpack ^5.105.3.
-
-
-### Added
-
-### Changed
-
-### Fixed
 
 
 
-### Changed
 
 
-### Improved
 
-
-### Removed

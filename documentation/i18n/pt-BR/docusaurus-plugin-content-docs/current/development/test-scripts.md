@@ -1,13 +1,19 @@
 ---
-translation_last_updated: '2026-03-01T00:45:17.822Z'
-source_file_mtime: '2026-02-16T00:30:39.430Z'
-source_file_hash: 6f3df4c1ef3576bd
+translation_last_updated: '2026-04-18T14:28:17.067Z'
+source_file_mtime: '2026-04-18T14:26:03.387Z'
+source_file_hash: 1d2e30215eab8e6548c552a40d5a81eb9837ec96e1f22b22b2e39a0a757fe50a
 translation_language: pt-BR
-source_file_path: development/test-scripts.md
+source_file_path: documentation/docs/development/test-scripts.md
+translation_models:
+  - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Scripts de Teste {#test-scripts}
 
 O projeto inclui vários scripts de teste para ajudar no desenvolvimento e testes:
+
+> [!NOTE]
+> Legados auxiliares de raiz do repositório `pnpm` para depuração de backups atrasados, testes de matriz SMTP e verificações de porta do cron foram removidos. Use a interface do aplicativo (**Configurações → Monitoramento de Backup**), APIs HTTP autenticadas e `curl` contra o serviço cron conforme documentado abaixo.
 
 ## Gerar Dados de Testar {#generate-test-data}
 
@@ -42,54 +48,24 @@ pnpm generate-test-data --servers=30
 > Este script deleta todos os dados anteriores no banco de dados e os substitui por dados de teste.
 > Faça backup do seu banco de dados antes de executar este script.
 
-## Mostrar o conteúdo das notificações atrasadas (para depurar o sistema de notificações) {#show-the-overdue-notifications-contents-to-debug-notification-system}
+## Verificações de atraso e conectividade do cron (desenvolvimento) {#overdue-checks-and-cron-connectivity-development}
 
-```bash
-pnpm show-overdue-notifications
-```
+### Executar uma verificação de backup atrasado {#run-an-overdue-backup-check}
 
-## Executar verificação de atrasado em uma data/hora específica (para depurar o sistema de notificação) {#run-overdue-check-at-a-specific-datetime-to-debug-notification-system}
+Enquanto o aplicativo estiver em execução:
 
-```bash
-pnpm run-overdue-check "YYYY-MM-DD HH:MM:SS"
-``` 
+- **Interface do usuário (recomendado):** abra **Configurações → Monitoramento de Backup** e use **Testar backups atrasados**. Isso executa a mesma lógica do trabalho agendado por meio de `POST /api/notifications/check-overdue` autenticado.
 
-## Testar conectividade da porta do serviço cron {#test-cron-service-port-connectivity}
-
-Para testar a conectividade do serviço cron, você pode:
-
-1. Verificar se o serviço cron está em execução:
+### Saúde do serviço Cron {#cron-service-health}
 
 ```bash
 curl http://localhost:8667/health
-```
-
-2. Ou use os endpoints da API do serviço cron diretamente através da aplicação principal:
-
-```bash
 curl http://localhost:8666/api/cron/health
 ```
 
-3. Use o script de teste para verificar a conectividade da porta:
+### Simulando uma data ou hora específica {#simulating-a-specific-date-or-time}
 
-```bash
-pnpm test-cron-port
-```
-
-Este script testa a conectividade com a porta do serviço cron e fornece informações detalhadas sobre o status da conexão.
-
-## Testar detecção de atrasado {#test-overdue-detection}
-
-```bash
-pnpm test-overdue-detection
-```
-
-Este script testa a lógica de detecção de backup atrasado. Ele verifica:
-- Identificação de backup atrasado
-- Acionamento de notificações
-- Cálculos de data/hora para status de atraso
-
-Útil para depuração de sistemas de detecção e notificação de backup atrasado.
+Não há uma CLI integrada para injetar um tempo simulado "atual". Para o algoritmo e ideias de teste manual, consulte o arquivo do repositório `dev/OVERDUE_DETECTION_ALGORITHM.md` e a implementação em `src/lib/overdue-backup-checker.ts`.
 
 ## Validar exportação CSV {#validate-csv-export}
 
@@ -243,89 +219,9 @@ echo $?  # 0 = all passed, 1 = some failed
 >[!NOTE]
 > Este script usa internamente o script de teste de migração TypeScript (`test-migration.ts`). O script de teste valida a estrutura do banco de dados após a migração e garante a integridade dos dados.
 
-## Configurar Teste de SMTP {#set-smtp-test-configuration}
+## SMTP e e-mail (desenvolvimento) {#smtp-and-email-development}
 
-```bash
-pnpm set-smtp-test-config <connectionType>
-```
-
-Este script define a configuração de teste SMTP a partir de variáveis de ambiente. Ele aceita um parâmetro `connectionType` (`plain`, `starttls` ou `ssl`) e lê variáveis de ambiente correspondentes com prefixos (`PLAIN_`, `STARTTLS_`, `SSL_`) para atualizar a configuração SMTP no banco de dados.
-
-Para conexões simples, o script lê a variável de ambiente `PLAIN_SMTP_FROM` para definir o Endereço do remetente obrigatório. Isso facilita o teste de diferentes tipos de conexão SMTP sem atualizações manuais do banco de dados.
-
-**Uso:**
-
-```bash
-# Set Plain SMTP configuration
-PLAIN_SMTP_HOST=smtp.example.com \
-PLAIN_SMTP_PORT=25 \
-PLAIN_SMTP_FROM=noreply@example.com \
-pnpm set-smtp-test-config plain
-
-# Set STARTTLS configuration
-STARTTLS_SMTP_HOST=smtp.example.com \
-STARTTLS_SMTP_PORT=587 \
-STARTTLS_SMTP_USERNAME=user@example.com \
-STARTTLS_SMTP_PASSWORD=password \
-pnpm set-smtp-test-config starttls
-
-# Set Direct SSL/TLS configuration
-SSL_SMTP_HOST=smtp.example.com \
-SSL_SMTP_PORT=465 \
-SSL_SMTP_USERNAME=user@example.com \
-SSL_SMTP_PASSWORD=password \
-pnpm set-smtp-test-config ssl
-```
-
-**Requisitos:**
-- A aplicação deve estar em execução
-- As variáveis de ambiente devem ser definidas com o prefixo apropriado para o tipo de conexão
-- Para conexões simples, `PLAIN_SMTP_FROM` é obrigatório
-
-## Testar Tipo de conexão SMTP Cross-Compatibility {#test-smtp-connection-type-cross-compatibility}
-
-```bash
-pnpm test-smtp-connections
-```
-
-Este script realiza um teste abrangente de matriz 3x3 que valida se as configurações destinadas a um tipo de conexão funcionam corretamente com diferentes tipos de conexão. Para cada tipo de configuração base (plain, starttls, ssl), o script:
-
-1. Lê variáveis de ambiente com prefixos correspondentes (`PLAIN_*`, `STARTTLS_*`, `SSL_*`)
-2. Testa todos os três tipos de conexão modificando apenas o campo `connectionType`
-3. Envia emails de teste via API
-4. Registra resultados em formato de matriz
-5. Exibe uma tabela de resumo
-6. Salva resultados detalhados em `smtp-test-results.json`
-
-**Uso:**
-
-```bash
-# Set environment variables for all three connection types
-PLAIN_SMTP_HOST=smtp.example.com \
-PLAIN_SMTP_PORT=25 \
-PLAIN_SMTP_FROM=noreply@example.com \
-STARTTLS_SMTP_HOST=smtp.example.com \
-STARTTLS_SMTP_PORT=587 \
-STARTTLS_SMTP_USERNAME=user@example.com \
-STARTTLS_SMTP_PASSWORD=password \
-SSL_SMTP_HOST=smtp.example.com \
-SSL_SMTP_PORT=465 \
-SSL_SMTP_USERNAME=user@example.com \
-SSL_SMTP_PASSWORD=password \
-pnpm test-smtp-connections
-```
-
-**Requisitos:**
-- A aplicação deve estar em execução
-- Variáveis de ambiente devem ser definidas para todos os três tipos de conexão
-- O script valida a configuração sendo usada através de registros detalhados
-
-**Comportamento Esperado:**
-As configurações devem funcionar apenas com seu tipo de conexão pretendido (por exemplo, configuração simples funciona com connectionType simples, mas falha com STARTTLS/ssl).
-
-**Saída:**
-- Saída do console com uma tabela de resumo mostrando resultados dos testes
-- Arquivo `smtp-test-results.json` com resultados detalhados dos testes para cada combinação de configuração e tipo de conexão
+Configure o SMTP em **Configurações → E-mail** e use os fluxos internos de teste de e-mail e notificações. Os antigos scripts auxiliares `pnpm set-smtp-test-config` e `pnpm test-smtp-connections` foram removidos do repositório.
 
 ## Testar Script de Entrypoint Docker {#test-docker-entrypoint-script}
 

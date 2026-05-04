@@ -1,9 +1,12 @@
 ---
-translation_last_updated: '2026-03-01T00:45:16.140Z'
-source_file_mtime: '2026-02-16T00:30:39.432Z'
-source_file_hash: 2672cf118dec1a53
+translation_last_updated: '2026-04-18T00:01:59.440Z'
+source_file_mtime: '2026-03-05T22:33:28.423Z'
+source_file_hash: c41071b1ca07d5e1429c3ffe82eda783ae96f0bf0d8132f43f1e985f96153d9e
 translation_language: es
-source_file_path: user-guide/settings/backup-monitoring-settings.md
+source_file_path: documentation/docs/user-guide/settings/backup-monitoring-settings.md
+translation_models:
+  - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Monitoreo de Backups {#backup-monitoring}
 
@@ -35,11 +38,11 @@ Para obtener los mejores resultados, recopile logs de backup después de cambiar
 
 Estas configuraciones se aplican a todas las copias de seguridad:
 
-| Configuración                         | Descripción                                                                                                                                                                                                                                                                                                                             |
+| Setting                         | Description                                                                                                                                                                                                                                                                                                                             |
 |:--------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Tolerancia de backup**            | El período de gracia (tiempo extra permitido) agregado al tiempo de backup esperado antes de marcar como retrasado. El valor predeterminado es **1 hora**.                                                                                                                                                                                                             |
-| **Intervalo de monitoreo de backup** | Con qué frecuencia el sistema verifica si hay backups retrasados. El valor predeterminado es **5 minutos**.                                                                                                                                                                                                                                                            |
-| **Frecuencia de notificaciones**      | Con qué frecuencia enviar notificaciones de backup retrasado: <br/> **Una sola vez**: Enviar **solo una** notificación cuando el backup se retrase. <br/> `Cada día`: Enviar notificaciones **diarias** mientras esté retrasado (predeterminado). <br/> `Cada semana`: Enviar notificaciones **semanales** mientras esté retrasado. <br/> `Cada mes`: Enviar notificaciones **mensuales** mientras esté retrasado. |
+| **Backup Tolerance**            | El período de gracia (tiempo extra permitido) añadido al tiempo esperado de respaldo antes de marcarlo como atrasado. El valor predeterminado es **1 hora**.                                                                                                                                                                               |
+| **Backup Monitoring Interval** | Con qué frecuencia el sistema verifica la existencia de respaldos atrasados. El valor predeterminado es **5 minutos**.                                                                                                                                                                                                                   |
+| **Notification Frequency**      | Con qué frecuencia enviar notificaciones de retraso: <br/> **Una vez`: Send **just one** notification when the backup becomes overdue. <br/> `Todos los días`: Send **daily** notifications while overdue (default). <br/> `Cada semana`: Send **weekly** notifications while overdue. <br/> `Cada mes**: Envía notificaciones **mensuales** mientras haya retraso. |
 
 ## Acciones disponibles {#available-actions}
 

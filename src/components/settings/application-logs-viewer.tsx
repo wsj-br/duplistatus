@@ -1,7 +1,6 @@
 'use client';
-
+import { useTranslation } from "react-i18next";
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
-import { useIntlayer } from 'react-intlayer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -31,8 +30,7 @@ interface ApplicationLogsViewerProps {
 }
 
 export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
-  const content = useIntlayer('application-logs-viewer');
-  const common = useIntlayer('common');
+  const { t } = useTranslation();
   const { toast } = useToast();
   const [logData, setLogData] = useState<LogData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -63,7 +61,7 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
   // Helper: Get display name for a file
   const getFileDisplayName = (fileName: string): string => {
     if (isCurrentFile(fileName)) {
-      return content.current;
+      return t("Current");
     }
     // Extract the number from 'baseFileName.1' -> '.1'
     if (baseLogFileName && fileName.startsWith(baseLogFileName + '.')) {
@@ -161,8 +159,8 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
         // If there's a mismatch, don't display the wrong data - reload with correct file
         if (!silent) {
         toast({
-          title: common.status.error,
-          description: content.fileMismatch,
+          title: t("Error"),
+          description: t("File mismatch detected. Please refresh."),
           variant: 'destructive',
         });
         }
@@ -196,8 +194,8 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
       console.error('Error loading logs:', error);
       if (!silent) {
         toast({
-          title: 'Error',
-          description: error instanceof Error ? error.message : 'Failed to load logs',
+          title: t("Error"),
+          description: error instanceof Error ? error.message : t("Failed to load logs"),
           variant: 'destructive',
         });
       }
@@ -206,7 +204,7 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
         setLoading(false);
       }
     }
-  }, [selectedFile, tail, toast, autoScroll, baseLogFileName, isCurrentFile, common.status.error, content.fileMismatch]);
+  }, [selectedFile, tail, toast, autoScroll, baseLogFileName, isCurrentFile, t]);
 
   // Initial load and when filters change
   useEffect(() => {
@@ -274,14 +272,14 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
     try {
       await navigator.clipboard.writeText(filteredLogs.join('\n'));
       toast({
-        title: 'Success',
-        description: 'Logs copied to clipboard',
+        title: t("Success"),
+        description: t("Logs copied to clipboard"),
         duration: 2000,
       });
     } catch (error) {
         toast({
-          title: common.status.error,
-          description: content.failedToCopy,
+          title: t("Error"),
+          description: t("Failed to copy logs to clipboard"),
           variant: 'destructive',
         });
     }
@@ -316,15 +314,15 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
       window.URL.revokeObjectURL(url);
 
       toast({
-        title: common.status.success,
-        description: content.logsExported,
+        title: t("Success"),
+        description: t("Logs exported successfully"),
         duration: 2000,
       });
     } catch (error) {
       console.error('Error exporting logs:', error);
       toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to export logs',
+        title: t("Error"),
+        description: error instanceof Error ? error.message : t("Failed to export logs"),
         variant: 'destructive',
       });
     }
@@ -350,17 +348,17 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold flex items-center gap-2">
           <Terminal className="h-5 w-5" />
-          {content.title}
+          {t("Application Logs Viewer")}
         </h2>
         <Button 
           variant="outline" 
           size="sm" 
           onClick={() => loadLogs(false)}
           disabled={loading}
-          title={content.refreshLogs}
+          title={t("Refresh logs")}
         >
           <RefreshCcw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-          {content.refresh}
+          {t("Refresh")}
         </Button>
       </div>
 
@@ -370,7 +368,7 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
           {/* File Selector (rotated files) */}
           {logData && (
             <div className="space-y-2">
-              <Label htmlFor="file">File Version</Label>
+              <Label htmlFor="file">{t("File Version")}</Label>
               <Select value={selectedFile} onValueChange={setSelectedFile}>
                 <SelectTrigger id="file" className="w-auto min-w-[140px]">
                   <SelectValue />
@@ -388,13 +386,13 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
 
           {/* Search String Filter - 50% width, left-justified */}
           <div className="space-y-2 w-full md:w-1/2">
-            <Label htmlFor="search">Search</Label>
+            <Label htmlFor="search">{t("Search")}</Label>
             <div className="relative">
               <Input
                 id="search"
                 value={searchString}
                 onChange={(e) => setSearchString(e.target.value)}
-                placeholder="Filter by text (case-insensitive)"
+                placeholder={t("Filter by text (case-insensitive)")}
                 className="pr-10"
               />
               <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -403,7 +401,7 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
                     type="button"
                     onClick={() => setSearchString('')}
                     className="text-muted-foreground hover:text-foreground transition-colors"
-                    aria-label="Clear search"
+                    aria-label={t("Clear search")}
                   >
                     <X className="h-4 w-4" />
                   </button>
@@ -418,7 +416,7 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
           <div className="flex flex-col md:flex-row gap-4 ml-auto">
             {/* Line Count Selector - Second, smaller */}
             <div className="space-y-2">
-              <Label htmlFor="tail">Lines to Show</Label>
+              <Label htmlFor="tail">{t("Lines to Show")}</Label>
               <Select value={tail.toString()} onValueChange={(value) => setTail(parseInt(value, 10))}>
                 <SelectTrigger id="tail" className="w-auto min-w-[120px]">
                   <SelectValue />
@@ -435,7 +433,7 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
 
             {/* Auto-scroll Toggle - Third, smaller */}
             <div className="space-y-2">
-              <Label htmlFor="auto-scroll">{content.autoScroll}</Label>
+              <Label htmlFor="auto-scroll">{t("Auto-scroll")}</Label>
               <div className="flex items-center space-x-2 pt-2">
                 <Checkbox
                   id="auto-scroll"
@@ -443,7 +441,7 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
                   onCheckedChange={(checked: boolean) => setAutoScroll(checked === true)}
                 />
                 <Label htmlFor="auto-scroll" className="text-sm font-normal cursor-pointer whitespace-nowrap">
-                  {content.enableAutoScroll}
+                  {t("Enable auto-scroll")}
                 </Label>
               </div>
             </div>
@@ -454,27 +452,30 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
         <div className="flex gap-2 pt-2 border-t">
           <Button variant="outline" size="sm" onClick={handleCopy}>
             <Copy className="h-4 w-4 mr-2" />
-            {content.copy}
+            {t("Copy")}
           </Button>
           <Button variant="outline" size="sm" onClick={handleExport}>
             <Download className="h-4 w-4 mr-2" />
-            {content.download}
+            {t("Download")}
           </Button>
         </div>
       </div>
 
       {/* Log Display */}
       {loading ? (
-        <div className="text-center py-8 text-muted-foreground">{content.loadingLogs}</div>
+        <div className="text-center py-8 text-muted-foreground">{t("Loading logs...")}</div>
       ) : !logData || filteredLogs.length === 0 ? (
         <div className="text-center py-8 text-muted-foreground">
-          {logData && logData.logs ? content.noLogsMatch : content.noLogsAvailable}
+          {logData && logData.logs ? t("No logs match the current filters") : t("No logs available")}
         </div>
       ) : (
         <div className="border rounded-md">
           <div className="p-2 bg-muted/50 border-b text-sm text-muted-foreground flex items-center justify-between">
             <span>
-              {content.showingLines.value.replace('{filtered}', filteredLogs.length.toString()).replace('{total}', logData.lineCount.toString())}
+              {t("Showing {{filtered}} of {{total}} lines", {
+                filtered: filteredLogs.length,
+                total: logData.lineCount,
+              })}
               {logData.fileSize > 0 && ` (${(logData.fileSize / 1024).toFixed(2)} KB)`}
             </span>
             <div className="flex items-center gap-2">
@@ -483,7 +484,7 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
                 size="sm"
                 onClick={scrollToTop}
                 className="h-7 px-2"
-                title={content.scrollToTop.value}
+                title={t("Scroll to top")}
               >
                 <ArrowDownFromLine className="h-4 w-4" />
               
@@ -493,14 +494,14 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
                 size="sm"
                 onClick={scrollToBottom}
                 className="h-7 px-2"
-                title={content.scrollToBottom.value}
+                title={t("Scroll to bottom")}
               >
                 <ArrowDownToLine className="h-4 w-4" />
                
               </Button>
             </div>
             <span>
-              {content.lastModified} {new Date(logData.lastModified).toLocaleString()}
+              {t("Last modified:")} {new Date(logData.lastModified).toLocaleString()}
             </span>
           </div>
           <div

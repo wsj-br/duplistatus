@@ -396,14 +396,10 @@ To test the overdue detection algorithm:
    - Check color coding (green = future, red = overdue)
 
 3. **Run overdue check**:
-   ```bash
-   pnpm run check-overdue "2025-12-28T10:00:00"
-   ```
+   In the running app, open **Settings → Backup monitoring** and use **Test overdue backups** (or call authenticated `POST /api/notifications/check-overdue`). There is no bundled CLI for passing a simulated clock; use the implementation notes above if you need a custom date/time for experiments.
 
-4. **Show overdue notifications**:
-   ```bash
-   pnpm run show-overdue-notifications
-   ```
+4. **Inspect notifications / overdue state**:
+   Use the dashboard and settings UI, or inspect stored configuration and logs as appropriate for your environment. The old `pnpm` helper scripts for dumping notification state were removed from the repository.
 
 ## Version History
 

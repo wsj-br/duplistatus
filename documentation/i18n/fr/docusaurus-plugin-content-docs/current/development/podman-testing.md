@@ -1,9 +1,11 @@
 ---
-translation_last_updated: '2026-03-01T00:45:04.408Z'
-source_file_mtime: '2026-02-16T00:30:39.430Z'
-source_file_hash: 841b30d8ee97e362
+translation_last_updated: '2026-04-18T00:02:05.015Z'
+source_file_mtime: '2026-04-10T18:19:13.212Z'
+source_file_hash: f647338c95a160f5fa9c03468bfb314c8f97e5e5ab00f1264f67ab14f18b1589
 translation_language: fr
-source_file_path: development/podman-testing.md
+source_file_path: documentation/docs/development/podman-testing.md
+translation_models:
+  - anthropic/claude-haiku-4.5
 ---
 # Tests Podman {#podman-testing}
 

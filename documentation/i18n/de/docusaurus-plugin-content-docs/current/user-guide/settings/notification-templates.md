@@ -1,9 +1,12 @@
 ---
-translation_last_updated: '2026-03-01T00:45:12.167Z'
-source_file_mtime: '2026-02-16T00:30:39.432Z'
-source_file_hash: 28dda7829d88467c
+translation_last_updated: '2026-04-18T00:03:43.200Z'
+source_file_mtime: '2026-03-05T22:33:28.423Z'
+source_file_hash: 80141305b3c0238b589afcd457332db981c79b94ea2f13640c56b2203599bbd7
 translation_language: de
-source_file_path: user-guide/settings/notification-templates.md
+source_file_path: documentation/docs/user-guide/settings/notification-templates.md
+translation_models:
+  - anthropic/claude-3.5-haiku
+  - anthropic/claude-haiku-4.5
 ---
 # Vorlagen {#templates}
 

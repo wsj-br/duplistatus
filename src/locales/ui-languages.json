@@ -1,0 +1,32 @@
+[
+  {
+    "code": "en",
+    "label": "English",
+    "englishName": "English",
+    "direction": "ltr"
+  },
+  {
+    "code": "de",
+    "label": "Deutsch",
+    "englishName": "German",
+    "direction": "ltr"
+  },
+  {
+    "code": "fr",
+    "label": "Français",
+    "englishName": "French",
+    "direction": "ltr"
+  },
+  {
+    "code": "es",
+    "label": "Español",
+    "englishName": "Spanish",
+    "direction": "ltr"
+  },
+  {
+    "code": "pt-BR",
+    "label": "Português (BR)",
+    "englishName": "Portuguese (BR)",
+    "direction": "ltr"
+  }
+]

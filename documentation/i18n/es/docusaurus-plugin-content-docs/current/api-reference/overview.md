@@ -1,82 +1,88 @@
+---
+translation_last_updated: '2026-04-18T00:01:05.678Z'
+source_file_mtime: '2026-03-05T22:33:28.419Z'
+source_file_hash: fe4cf26fcdad9ea7ff5f3f4cb9f9533b46f148bea17589644eeef65398578b86
+translation_language: es
+source_file_path: documentation/docs/api-reference/overview.md
+translation_models:
+  - qwen/qwen3-235b-a22b-2507
+---
+# Resumen de la API {#api-overview}
 
-
-# API Overview {#api-overview}
-
-This document describes all available API endpoints for the duplistatus application. The API follows RESTful principles and provides comprehensive backup monitoring, notification management, and system administration capabilities.
+Este documento describe todos los puntos finales de la API disponibles para la aplicación duplistatus. La API sigue principios RESTful y proporciona capacidades completas de monitoreo de copias de seguridad, gestión de notificaciones y administración del sistema.
 
 :::note
-**English (EN):** The API documentation is available only in English.               <br/>
+**Español (ES):** La documentación de la API solo está disponible en inglés.        <br/>
+**Portuguese (PT-BR):** A documentação da API está disponível apenas em inglês.    
 **German (DE):** Die API-Dokumentation ist nur auf Englisch verfügbar.              <br/>
 **French (FR):** La documentation de l'API est disponible uniquement en anglais.    <br/>
-**Spanish (ES):** La documentación de la API solo está disponible en inglés.        <br/>
-**Portuguese (PT-BR):** A documentação da API está disponível apenas em inglês.    
+**English (EN):** The API documentation is available only in English.               <br/>
 :::
 
+## Estructura de la API {#api-structure}
 
-## API Structure {#api-structure}
+Para una referencia rápida de todos los puntos finales, consulte la [Lista de puntos finales de la API](api-endpoint-list).
 
-For a quick reference of all endpoints, see the [API Endpoint List](api-endpoint-list).
+La API está organizada en grupos lógicos:
+- **[APIs externas](external-apis)**: Datos resumidos, estado más reciente de la copia de seguridad y cargas de datos de copia de seguridad desde Duplicati
+- **[Operaciones principales](core-operations)**: Datos del panel, gestión del servidor e información detallada de la copia de seguridad
+- **[Datos de gráficos](chart-data-apis)**: Datos agregados y específicos del servidor en series temporales para visualización y análisis
+- **[Gestión de configuración](configuration-apis)**: Correo electrónico, notificaciones, configuración de copias de seguridad y configuración del sistema
+- **[Sistema de notificaciones](notification-apis)**: Pruebas de notificaciones, verificación de copias de seguridad retrasadas y gestión de notificaciones
+- **[Servicios Cron](cron-service-apis)**: Gestión de servicios Cron
+- **[Monitoreo y estado](monitoring-apis)**: Verificaciones de estado y monitoreo del estado
+- **[Administración](administration-apis)**: Mantenimiento de la base de datos, operaciones de limpieza y gestión del sistema
+- **[Gestión de sesiones](session-management-apis)**: Gestión de sesiones y creación de sesiones
+- **[Autenticación y seguridad](authentication-security)**: Autenticación y seguridad
 
-The API is organised into logical groups:
-- **[External APIs](external-apis)**: Summary data, latest backup status, and backup data uploads from Duplicati
-- **[Core Operations](core-operations)**: Dashboard data, server management, and detailed backup information
-- **[Chart Data](chart-data-apis)**: Aggregated and server-specific time-series data for visualisation and analytics
-- **[Configuration Management](configuration-apis)**: Email, notification, backup settings, and system configuration
-- **[Notification System](notification-apis)**: Notification testing, overdue backup checks, and notification management
-- **[Cron services](cron-service-apis)**: Cron service management
-- **[Monitoring & Health](monitoring-apis)**: Health checks and status monitoring
-- **[Administration](administration-apis)**: Database maintenance, cleanup operations, and system management
-- **[Session Management](session-management-apis)**: Session management and session creation
-- **[Authentication & Security](authentication-security)**: Authentication and security
+Para una referencia rápida de todos los puntos finales, consulte la [Lista de puntos finales de la API](api-endpoint-list).
 
-For a quick reference of all endpoints, see the [API Endpoint List](api-endpoint-list).
+## Formato de respuesta {#response-format}
 
-## Response Format {#response-format}
-
-All API responses are returned in JSON format with consistent error handling patterns. Successful responses typically include a `status` field, while error responses include `error` and `message` fields.
+Todas las respuestas de la API se devuelven en formato JSON con patrones consistentes de manejo de errores. Las respuestas exitosas incluyen típicamente un campo `status`, mientras que las respuestas de error incluyen los campos `error` y `message`.
 
 ---
 
-## Error Handling {#error-handling}
+## Manejo de errores {#error-handling}
 
-All endpoints follow a consistent error handling pattern:
+Todos los puntos finales siguen un patrón consistente de manejo de errores:
 
-- **400 Bad Request**: Invalid request data or missing required fields
-- **401 Unauthorized**: Invalid or missing session, expired session, or CSRF token validation failed
-- **403 Forbidden**: Operation not allowed (e.g., backup deletion in production) or CSRF token validation failed
-- **404 Not Found**: Resource not found
-- **409 Conflict**: Duplicate data (for upload endpoints)
-- **500 Internal Server Error**: Server-side errors with detailed error messages
-- **503 Service Unavailable**: Health check failures, database connection issues, or cron service unavailable
+- **400 Solicitud incorrecta**: Datos de solicitud inválidos o campos obligatorios faltantes
+- **401 No autorizado**: Sesión inválida o faltante, sesión expirada o falla en la validación del token CSRF
+- **403 Prohibido**: Operación no permitida (por ejemplo, eliminación de copia de seguridad en producción) o falla en la validación del token CSRF
+- **404 No encontrado**: Recurso no encontrado
+- **409 Conflicto**: Datos duplicados (para puntos finales de carga)
+- **500 Error interno del servidor**: Errores del lado del servidor con mensajes detallados
+- **503 Servicio no disponible**: Fallas en verificaciones de estado, problemas de conexión a la base de datos o servicio cron no disponible
 
-Error responses include:
-- `error`: Human-readable error message
-- `message`: Technical error details (in development mode)
-- `stack`: Error stack trace (in development mode)
-- `timestamp`: When the error occurred
+Las respuestas de error incluyen:
+- `error`: Mensaje de error legible para humanos
+- `message`: Detalles técnicos del error (en modo desarrollo)
+- `stack`: Traza del error (en modo desarrollo)
+- `timestamp`: Cuándo ocurrió el error
 
-## Data Type Notes {#data-type-notes}
+## Notas sobre tipos de datos {#data-type-notes}
 
-### Message Arrays {#message-arrays}
-The `messages_array`, `warnings_array`, and `errors_array` fields are stored as JSON strings in the database and returned as arrays in the API responses. These contain the actual log messages, warnings, and errors from Duplicati backup operations.
+### Arrays de mensajes {#message-arrays}
+Los campos `messages_array`, `warnings_array` y `errors_array` se almacenan como cadenas JSON en la base de datos y se devuelven como arrays en las respuestas de la API. Estos contienen los mensajes reales de registro, advertencias y errores de las operaciones de copia de seguridad de Duplicati.
 
-### Available Backups {#available-backups}
-The `available_backups` field contains an array of backup version timestamps (in ISO format) that are available for restoration. This is extracted from the backup log messages.
+### Copias de seguridad disponibles {#available-backups}
+El campo `available_backups` contiene un array de marcas de tiempo de versiones de copia de seguridad (en formato ISO) disponibles para restauración. Esto se extrae de los mensajes de registro de la copia de seguridad.
 
-### Duration Fields {#duration-fields}
-- `duration`: Human-readable format (e.g., "00:38:31")
-- `duration_seconds`: Raw duration in seconds
-- `durationInMinutes`: Duration converted to minutes for charting purposes
+### Campos de duración {#duration-fields}
+- `duration`: Formato legible para humanos (por ejemplo, "00:38:31")
+- `duration_seconds`: Duración bruta en segundos
+- `durationInMinutes`: Duración convertida a minutos con fines de representación gráfica
 
-### File Size Fields {#file-size-fields}
-All file size fields are returned in bytes as numbers, not formatted strings. The frontend is responsible for converting these to human-readable formats (KB, MB, GB, etc.).
+### Campos de tamaño de archivo {#file-size-fields}
+Todos los campos de tamaño de archivo se devuelven en bytes como números, no como cadenas formateadas. La interfaz es responsable de convertir estos valores a formatos legibles (KB, MB, GB, etc.).
 
 <br/>
 
 :::caution
- Don't expose the **duplistatus** server to the public internet. Use it in a secure network 
-(e.g., local LAN protected by a firewall).
+ No exponga el servidor **duplistatus** a Internet público. Úselo en una red segura 
+(por ejemplo, una LAN local protegida por un firewall).
 
-Exposing the **duplistatus** interface to the public
- internet without proper security measures could lead to unauthorized access.
+Exponer la interfaz **duplistatus** a Internet público 
+sin medidas de seguridad adecuadas podría provocar acceso no autorizado.
 :::

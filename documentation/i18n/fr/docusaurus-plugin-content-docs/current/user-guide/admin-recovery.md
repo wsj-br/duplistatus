@@ -1,9 +1,11 @@
 ---
-translation_last_updated: '2026-03-01T00:45:06.998Z'
-source_file_mtime: '2026-02-16T00:30:39.431Z'
-source_file_hash: 091dcbb5c0bb63c5
+translation_last_updated: '2026-04-18T00:03:11.417Z'
+source_file_mtime: '2026-03-05T22:33:28.423Z'
+source_file_hash: 715719058387c53e24d6ec27814f20fb52349ff40f5e59310d6965344bb8f16a
 translation_language: fr
-source_file_path: user-guide/admin-recovery.md
+source_file_path: documentation/docs/user-guide/admin-recovery.md
+translation_models:
+  - anthropic/claude-haiku-4.5
 ---
 # Récupération du compte Admin {#admin-account-recovery}
 

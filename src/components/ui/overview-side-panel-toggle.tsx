@@ -1,6 +1,5 @@
 "use client";
-
-import { useIntlayer } from 'react-intlayer';
+import { useTranslation } from "react-i18next";
 import { SquareMenu, ChartLine } from "lucide-react";
 import { useServerSelection } from "@/contexts/server-selection-context";
 import { Button } from "@/components/ui/button";
@@ -11,7 +10,7 @@ interface OverviewSidePanelToggleProps {
 }
 
 export function OverviewSidePanelToggle({ className }: OverviewSidePanelToggleProps) {
-  const content = useIntlayer('overview-side-panel-toggle');
+  const { t } = useTranslation();
   const { state, setOverviewSidePanel } = useServerSelection();
   const { overviewSidePanel } = state;
 
@@ -20,7 +19,7 @@ export function OverviewSidePanelToggle({ className }: OverviewSidePanelTogglePr
     setOverviewSidePanel(newPanel);
   };
 
-  const titleText = overviewSidePanel === 'status' ? content.switchToChart.value : content.switchToStatus.value;
+  const titleText = overviewSidePanel === 'status' ? t("Switch to chart view") : t("Switch to status view");
 
   return (
     <Button

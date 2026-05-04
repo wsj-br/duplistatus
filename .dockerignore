@@ -41,7 +41,6 @@ production.yml
 # Exclude testing/development scripts but keep build-required scripts
 scripts/generate-test-data.ts
 scripts/test-*.ts
-scripts/set-smtp-test-config.ts
 scripts/take-screenshots.ts
 scripts/clean-*.sh
 scripts/compare-versions.sh

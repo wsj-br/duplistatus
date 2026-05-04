@@ -1,9 +1,12 @@
 ---
-translation_last_updated: '2026-03-01T00:45:08.089Z'
-source_file_mtime: '2026-02-16T00:30:39.432Z'
-source_file_hash: e98421b0542e0de6
+translation_last_updated: '2026-04-18T00:03:52.459Z'
+source_file_mtime: '2026-03-05T22:33:28.423Z'
+source_file_hash: 1b216d0be72a0dca0f6061ab7464800febcf29632cfc6c148b164a42a62b165d
 translation_language: fr
-source_file_path: user-guide/troubleshooting.md
+source_file_path: documentation/docs/user-guide/troubleshooting.md
+translation_models:
+  - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Dépannage {#troubleshooting}
 
@@ -26,7 +29,7 @@ source_file_path: user-guide/troubleshooting.md
 
 ### Les nouvelles sauvegardes ne s'affichent pas {#new-backups-not-showing}
 
-Si vous voyez des avertissements du serveur Duplicati comme « HTTP Response request failed for: » et « Failed to send message: System.Net.Http.HttpRequestException: », et que les nouvelles sauvegardes n'apparaissent pas dans le tableau de bord ou l'historique des sauvegardes :
+Si vous voyez des avertissements du serveur Duplicati tels que `HTTP Response request failed for:` et `Failed to send message: System.Net.Http.HttpRequestException:`, et que les nouvelles sauvegardes n'apparaissent pas dans le tableau de bord ou dans l'historique des sauvegardes :
 
 - **Vérifier la Configuration Duplicati** : Confirmer que Duplicati est configuré correctement pour envoyer des données à **duplistatus**. Vérifier les paramètres d'URL HTTP dans Duplicati.
 - **Vérifier la Connectivité Réseau** : S'assurer que le serveur Duplicati peut se connecter au serveur **duplistatus**. Confirmer que le port est correct (par défaut : `9666`).

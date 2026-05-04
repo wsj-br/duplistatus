@@ -1,5 +1,5 @@
 "use client";
-
+import { useTranslation } from "react-i18next";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { RotateCcw } from "lucide-react";
@@ -7,9 +7,6 @@ import { useGlobalRefresh } from "@/contexts/global-refresh-context";
 import { useConfig } from "@/contexts/config-context";
 import { useToast } from "@/components/ui/use-toast";
 import { usePathname } from "next/navigation";
-import { useLocale } from "@/contexts/locale-context";
-import { useIntlayer } from 'react-intlayer';
-
 // Helper function to remove locale prefix from pathname (e.g., /en/detail/123 -> /detail/123)
 function removeLocalePrefix(pathname: string | null): string {
   if (!pathname) return '/';
@@ -29,23 +26,22 @@ interface AutoRefreshButtonProps {
 
 const AutoRefreshButton = ({ className, isEnabled, interval, onToggle, progress, isLoading = false }: AutoRefreshButtonProps) => {
   const router = useRouter();
-  const locale = useLocale();
-  const content = useIntlayer('global-refresh-controls');
+  const { t } = useTranslation();
 
   // Handle right-click to open settings page on display tab
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    router.push(`/${locale}/settings?tab=display`);
+    router.push(`/settings?tab=display`);
   };
 
   // Format interval text
   const getIntervalText = () => {
     if (interval < 1) {
       const seconds = interval * 60;
-      return `${seconds} ${content.seconds.value}`;
+      return `${seconds} ${t("sec")}`;
     }
-    return `${interval} ${content.minutes.value}`;
+    return `${interval} ${t("min")}`;
   };
 
   return (
@@ -69,14 +65,14 @@ const AutoRefreshButton = ({ className, isEnabled, interval, onToggle, progress,
         }`}
         onClick={onToggle}
         onContextMenu={handleContextMenu}
-        title={isEnabled ? content.disableTooltip.value : content.enableTooltip.value}
+        title={isEnabled ? t("Disable auto-refresh (Right-click for Display Settings)") : t("Enable auto-refresh (Right-click for Display Settings)")}
       >
         {!isEnabled ? (
-          content.autoRefreshDisabled.value
+          t("Auto-refresh (disabled)")
         ) : isLoading ? (
-          content.autoRefreshLoading.value
+          t("Auto-refresh (loading)")
         ) : (
-          content.autoRefreshEnabled.value.replace('{interval}', getIntervalText())
+          t("Auto-refresh ({{interval}})", { interval: getIntervalText() })
         )}
       </button>
     </div>
@@ -84,11 +80,11 @@ const AutoRefreshButton = ({ className, isEnabled, interval, onToggle, progress,
 };
 
 export function GlobalRefreshControls() {
+  const { t } = useTranslation();
   const { state, refreshDashboard, refreshDetail, toggleAutoRefresh, getCurrentPageType } = useGlobalRefresh();
   const { autoRefreshInterval } = useConfig();
   const { toast } = useToast();
   const pathname = usePathname();
-  const content = useIntlayer('global-refresh-controls');
   
   const [progress, setProgress] = useState(0);
   const [timeRemaining, setTimeRemaining] = useState(autoRefreshInterval * 60); // Convert minutes to seconds
@@ -96,7 +92,7 @@ export function GlobalRefreshControls() {
   // Calculate progress based on time remaining
   useEffect(() => {
     if (!state.isEnabled) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setProgress(0);
       return;
     }
@@ -109,7 +105,7 @@ export function GlobalRefreshControls() {
   // Reset timer when pathname changes (page navigation)
   useEffect(() => {
     if (state.isEnabled) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setTimeRemaining(state.interval * 60);
       setProgress(0);
     }
@@ -137,7 +133,7 @@ export function GlobalRefreshControls() {
   // Reset timer when refresh happens
   useEffect(() => {
     if (state.lastRefresh) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setTimeRemaining(state.interval * 60);
     }
   }, [state.lastRefresh, state.interval]);
@@ -159,8 +155,8 @@ export function GlobalRefreshControls() {
     } catch (error) {
       console.error('Refresh failed:', error);
       toast({
-        title: content.refreshFailed.value,
-        description: content.refreshFailedDescription.value,
+        title: t("Refresh Failed"),
+        description: t("Failed to refresh data. Please try again."),
         variant: "destructive",
         duration: 3000,
       });
@@ -190,7 +186,7 @@ export function GlobalRefreshControls() {
       <button
         onClick={handleManualRefresh}
         disabled={isLoading}
-        title={content.refreshNow.value}
+        title={t("Refresh now")}
         className="h-[38px] px-3 rounded-md text-sm transition-colors flex items-center justify-center bg-background hover:bg-accent hover:text-accent-foreground rounded-r-none border-r-0 disabled:pointer-events-none disabled:opacity-50"
       >
         {isLoading ? (

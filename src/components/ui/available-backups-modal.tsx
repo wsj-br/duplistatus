@@ -1,7 +1,7 @@
 "use client";
-
+import type { TFunction } from "i18next";
 import React, { useState, useMemo, createContext, useContext, useCallback } from "react";
-import { useIntlayer } from 'react-intlayer';
+import { useTranslation } from "react-i18next";
 import { useLocale } from '@/contexts/locale-context';
 import { History } from "lucide-react";
 import { formatRelativeTime } from "@/lib/utils";
@@ -47,10 +47,19 @@ interface ModalContextType {
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
+const AvailableBackupsTContext = createContext<TFunction | null>(null);
+
+function useAvailableBackupsT(): TFunction {
+  const t = useContext(AvailableBackupsTContext);
+  if (!t) {
+    throw new Error("useAvailableBackupsT must be used within AvailableBackupsModalProvider");
+  }
+  return t;
+}
+
 // Global modal component that will be rendered in the layout
 const GlobalAvailableBackupsModal = React.memo(() => {
-  const content = useIntlayer('available-backups-modal');
-  const common = useIntlayer('common');
+  const t = useAvailableBackupsT();
   const locale = useLocale();
   const { modalState, closeModal } = useModalContext();
 
@@ -115,7 +124,7 @@ const GlobalAvailableBackupsModal = React.memo(() => {
         >
           <DialogHeader className="pb-3 leading-8">
             <DialogTitle>
-            {content.title}    <br/> <br/>
+            {t("Available Backup Versions")}    <br/> <br/>
 
               <span className="font-medium text-muted-foreground">{modalState.serverAlias || modalState.serverName}</span>
               {modalState.serverAlias && modalState.serverName !== modalState.serverAlias && (
@@ -137,9 +146,9 @@ const GlobalAvailableBackupsModal = React.memo(() => {
             <Table>
               <TableHeader>
                 <TableRow className="border-b">
-                  <TableCell className="font-medium text-blue-400 font-bold w-16 py-2 px-3">{content.version}</TableCell>
-                  <TableCell className="font-medium text-blue-400 font-bold py-2 px-3">{content.created}</TableCell>
-                  <TableCell className="font-medium text-blue-400 font-bold py-2 px-3">{content.age}</TableCell>
+                  <TableCell className="font-medium text-blue-400 font-bold w-16 py-2 px-3">{t("Version")}</TableCell>
+                  <TableCell className="font-medium text-blue-400 font-bold py-2 px-3">{t("Created")}</TableCell>
+                  <TableCell className="font-medium text-blue-400 font-bold py-2 px-3">{t("Age")}</TableCell>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -169,6 +178,7 @@ const GlobalAvailableBackupsModal = React.memo(() => {
 GlobalAvailableBackupsModal.displayName = 'GlobalAvailableBackupsModal';
 
 export const AvailableBackupsModalProvider = ({ children }: { children: React.ReactNode }) => {
+  const { t } = useTranslation();
   const [modalState, setModalState] = useState<ModalState>({
     isOpen: false,
     availableBackups: [],
@@ -196,8 +206,10 @@ export const AvailableBackupsModalProvider = ({ children }: { children: React.Re
 
   return (
     <ModalContext.Provider value={{ modalState, openModal, closeModal }}>
-      {children}
-      <GlobalAvailableBackupsModal />
+      <AvailableBackupsTContext.Provider value={t}>
+        {children}
+        <GlobalAvailableBackupsModal />
+      </AvailableBackupsTContext.Provider>
     </ModalContext.Provider>
   );
 };
@@ -246,8 +258,7 @@ interface AvailableBackupsIconProps {
 }
 
 export function AvailableBackupsIcon({ availableBackups, currentBackupDate, serverName, serverAlias, serverNote, backupName, onIconClick, count }: AvailableBackupsIconProps) {
-  const content = useIntlayer('available-backups-modal');
-  const common = useIntlayer('common');
+  const t = useAvailableBackupsT();
   const locale = useLocale();
   const hasAvailableBackups = availableBackups && availableBackups.length > 0;
   
@@ -272,7 +283,7 @@ export function AvailableBackupsIcon({ availableBackups, currentBackupDate, serv
               </button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>{content.clickToView}</p>
+              <p>{t("Click to view available versions")}</p>
             </TooltipContent>
           </Tooltip>
         ) : (
@@ -281,7 +292,7 @@ export function AvailableBackupsIcon({ availableBackups, currentBackupDate, serv
               <History className="h-4 w-4 text-gray-400 opacity-30 cursor-help" />
             </TooltipTrigger>
             <TooltipContent>
-              <p>{content.versionInfoNotReceived}</p>
+              <p>{t("Version info not received")}</p>
             </TooltipContent>
           </Tooltip>
         )}

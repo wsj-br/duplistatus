@@ -62,32 +62,26 @@ export async function requireServerAuth(): Promise<ServerAuthContext> {
     : pathname;
   const redirectUrl = encodeURIComponent(currentUrl);
 
-  // Extract locale from pathname (e.g. /en/settings -> en) for locale-prefixed login redirect
-  const localeMatch = pathname.match(/^\/([^/]+)/);
-  const locale = localeMatch && ["en", "de", "fr", "es", "pt-BR"].includes(localeMatch[1])
-    ? localeMatch[1]
-    : "en";
-
   if (!sessionId) {
-    redirect(`/${locale}/login?redirect=${redirectUrl}`);
+    redirect(`/login?redirect=${redirectUrl}`);
   }
 
   // Validate session
   const isValid = await validateSession(sessionId);
   if (!isValid) {
-    redirect(`/${locale}/login?redirect=${redirectUrl}`);
+    redirect(`/login?redirect=${redirectUrl}`);
   }
 
   // Get user ID from session
   const userId = getUserIdFromSession(sessionId);
   if (!userId) {
-    redirect(`/${locale}/login?redirect=${redirectUrl}`);
+    redirect(`/login?redirect=${redirectUrl}`);
   }
 
   // If dbOps is still not available, redirect to login
   if (!dbOpsReady) {
     console.warn('[Auth Server] dbOps not available after waiting, redirecting to login');
-    redirect(`/${locale}/login?redirect=${redirectUrl}`);
+    redirect(`/login?redirect=${redirectUrl}`);
   }
 
   // Import dbOps
@@ -103,14 +97,14 @@ export async function requireServerAuth(): Promise<ServerAuthContext> {
   } | undefined;
 
   if (!user) {
-    redirect(`/${locale}/login?redirect=${redirectUrl}`);
+    redirect(`/login?redirect=${redirectUrl}`);
   }
 
   // Check if user is locked
   if (user.locked_until) {
     const lockExpiry = new Date(user.locked_until);
     if (lockExpiry > new Date()) {
-      redirect(`/${locale}/login?redirect=${redirectUrl}`);
+      redirect(`/login?redirect=${redirectUrl}`);
     }
   }
 

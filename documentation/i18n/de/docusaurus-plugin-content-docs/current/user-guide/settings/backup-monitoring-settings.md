@@ -1,9 +1,12 @@
 ---
-translation_last_updated: '2026-03-01T00:45:11.869Z'
-source_file_mtime: '2026-02-16T00:30:39.432Z'
-source_file_hash: 2672cf118dec1a53
+translation_last_updated: '2026-04-18T00:03:36.691Z'
+source_file_mtime: '2026-03-05T22:33:28.423Z'
+source_file_hash: c41071b1ca07d5e1429c3ffe82eda783ae96f0bf0d8132f43f1e985f96153d9e
 translation_language: de
-source_file_path: user-guide/settings/backup-monitoring-settings.md
+source_file_path: documentation/docs/user-guide/settings/backup-monitoring-settings.md
+translation_models:
+  - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Sicherungsüberwachung {#backup-monitoring}
 
@@ -35,11 +38,11 @@ Um optimale Ergebnisse zu erzielen, sammeln Sie Backup-Protokolle, nachdem Sie d
 
 Diese Einstellungen gelten für alle Sicherungen:
 
-| Einstellung                         | Beschreibung                                                                                                                                                                                                                                                                                                                             |
+| Setting                         | Description                                                                                                                                                                                                                                                                                                                             |
 |:--------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Sicherungstoleranz**            | Die Kulanzfrist (zusätzlich gewährte Zeit), die zur erwarteten Sicherungszeit hinzugefügt wird, bevor sie als überfällig markiert wird. Der Standard ist **1 Stunde**.                                                                                                                                                                                                             |
-| **Sicherungsüberwachungsintervall** | Wie oft das System auf überfällige Sicherungen prüft. Der Standard ist **5 Minuten**.                                                                                                                                                                                                                                            |
-| **Benachrichtigungshäufigkeit**      | Wie oft Benachrichtigungen über überfällige Sicherungen gesendet werden: <br/> **Einmalig**: Senden Sie **nur eine** Benachrichtigung, wenn die Sicherung überfällig wird. <br/> `Täglich`: Senden Sie **tägliche** Benachrichtigungen während der Überfälligkeit (Standard). <br/> `Wöchentlich`: Senden Sie **wöchentliche** Benachrichtigungen während der Überfälligkeit. <br/> `Monatlich`: Senden Sie **monatliche** Benachrichtigungen während der Überfälligkeit. |
+| **Backup Tolerance**            | Die Nachfrist (zusätzliche Zeit), die zur erwarteten Sicherungszeit hinzugefügt wird, bevor eine Sicherung als überfällig markiert wird. Der Standardwert ist **1 Stunde**.                                                                                                                                                             |
+| **Backup Monitoring Interval** | Wie oft das System auf überfällige Sicherungen überprüft wird. Der Standardwert ist **5 Minuten**.                                                                                                                                                                                                                                          |
+| **Notification Frequency**      | Wie oft überfällige Benachrichtigungen gesendet werden sollen: <br/> **Einmalig`: Send **just one** notification when the backup becomes overdue. <br/> `Täglich`: Send **daily** notifications while overdue (default). <br/> `Wöchentlich`: Send **weekly** notifications while overdue. <br/> `Monatlich**: Sendet **monatlich** Benachrichtigungen, solange die Sicherung überfällig ist. |
 
 ## Verfügbare Aktionen {#available-actions}
 

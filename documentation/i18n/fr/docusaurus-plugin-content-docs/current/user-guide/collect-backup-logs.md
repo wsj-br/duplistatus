@@ -1,9 +1,11 @@
 ---
-translation_last_updated: '2026-03-01T00:45:07.108Z'
-source_file_mtime: '2026-02-16T00:30:39.431Z'
-source_file_hash: f960ed5694a25582
+translation_last_updated: '2026-04-18T00:03:12.692Z'
+source_file_mtime: '2026-03-05T22:33:28.423Z'
+source_file_hash: 2db4ee85ae548cd4dcb93017bf40bcb7ae364551fa85c0d545995b8020fc0989
 translation_language: fr
-source_file_path: user-guide/collect-backup-logs.md
+source_file_path: documentation/docs/user-guide/collect-backup-logs.md
+translation_models:
+  - anthropic/claude-haiku-4.5
 ---
 # Collecter les journaux de sauvegarde {#collect-backup-logs}
 

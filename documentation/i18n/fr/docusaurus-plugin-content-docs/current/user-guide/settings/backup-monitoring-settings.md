@@ -1,9 +1,12 @@
 ---
-translation_last_updated: '2026-03-01T00:45:07.513Z'
-source_file_mtime: '2026-02-16T00:30:39.432Z'
-source_file_hash: 2672cf118dec1a53
+translation_last_updated: '2026-04-18T00:03:33.303Z'
+source_file_mtime: '2026-03-05T22:33:28.423Z'
+source_file_hash: c41071b1ca07d5e1429c3ffe82eda783ae96f0bf0d8132f43f1e985f96153d9e
 translation_language: fr
-source_file_path: user-guide/settings/backup-monitoring-settings.md
+source_file_path: documentation/docs/user-guide/settings/backup-monitoring-settings.md
+translation_models:
+  - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Surveillance des sauvegardes {#backup-monitoring}
 
@@ -37,9 +40,9 @@ Ces paramètres s'appliquent à toutes les sauvegardes :
 
 | Paramètre                         | Description                                                                                                                                                                                                                                                                                                                             |
 |:--------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Tolérance de sauvegarde**            | Le délai de grâce (temps supplémentaire autorisé) ajouté à l'heure de sauvegarde attendue avant de marquer comme en retard. La valeur par défaut est **1 heure**.                                                                                                                                                                                                             |
-| **Intervalle de surveillance de sauvegarde** | La fréquence à laquelle le système vérifie les sauvegardes en retard. La valeur par défaut est **5 minutes**.                                                                                                                                                                                                                                                            |
-| **Fréquence des notifications**      | La fréquence d'envoi des notifications de retard : <br/> **Une seule fois** : Envoyer **une seule** notification lorsque la sauvegarde est en retard. <br/> `Chaque jour` : Envoyer des notifications **quotidiennes** en cas de retard (par défaut). <br/> `Chaque semaine` : Envoyer des notifications **hebdomadaires** en cas de retard. <br/> `Chaque mois` : Envoyer des notifications **mensuelles** en cas de retard. |
+| **Tolérance de sauvegarde**            | La période de grâce (temps supplémentaire autorisé) ajoutée au temps de sauvegarde prévu avant de la marquer comme en retard. La valeur par défaut est **1 heure**.                                                                                                                                                                                                             |
+| **Intervalle de surveillance des sauvegardes** | À quelle fréquence le système vérifie les sauvegardes en retard. La valeur par défaut est **5 minutes**.                                                                                                                                                                                                                                                            |
+| **Fréquence des notifications**      | À quelle fréquence envoyer les notifications de retard : <br/> **Une fois`: Send **just one** notification when the backup becomes overdue. <br/> `Tous les jours`: Send **daily** notifications while overdue (default). <br/> `Toutes les semaines`: Send **weekly** notifications while overdue. <br/> `Tous les mois**: Envoyer des notifications **mensuelles** tant que la sauvegarde est en retard. |
 
 ## Actions disponibles {#available-actions}
 

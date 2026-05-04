@@ -1,9 +1,12 @@
 ---
-translation_last_updated: '2026-03-01T00:45:16.925Z'
-source_file_mtime: '2026-02-16T00:30:39.430Z'
-source_file_hash: 21d21cb01acea43b
+translation_last_updated: '2026-04-18T00:01:28.544Z'
+source_file_mtime: '2026-03-05T22:33:28.419Z'
+source_file_hash: 7ae9caaab786ec8555b935e6f620849c63b3901e51b46497fc1544693a64ddb7
 translation_language: pt-BR
-source_file_path: development/database.md
+source_file_path: documentation/docs/development/database.md
+translation_models:
+  - anthropic/claude-3.5-haiku
+  - anthropic/claude-haiku-4.5
 ---
 # Esquema de Banco de Dados {#database-schema}
 

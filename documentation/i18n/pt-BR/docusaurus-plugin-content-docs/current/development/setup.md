@@ -1,9 +1,13 @@
 ---
-translation_last_updated: '2026-03-01T00:45:17.646Z'
-source_file_mtime: '2026-03-01T00:09:27.997Z'
-source_file_hash: 6d8b0e530d4c1ecb
+translation_last_updated: '2026-04-18T14:28:12.757Z'
+source_file_mtime: '2026-04-18T14:26:06.971Z'
+source_file_hash: 5f21215bb0815be3623139b3b25d7c342d796fc468d95ff0bf0bc3ff6d32890b
 translation_language: pt-BR
-source_file_path: development/setup.md
+source_file_path: documentation/docs/development/setup.md
+translation_models:
+  - anthropic/claude-3.5-haiku
+  - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Configuração de Desenvolvimento {#development-setup}
 
@@ -166,14 +170,10 @@ Os servidores de desenvolvimento (`start:*`) fornecem substituição de módulo 
 - `pnpm cron:dev` - Iniciar serviço cron em modo de desenvolvimento com observação de arquivos (porta 8667)
 - `pnpm cron:start-local` - Iniciar serviço cron localmente para testes (porta 8667)
 
-### Scripts de Teste {#test-scripts}
-- `pnpm generate-test-data` - Gerar dados de backup de teste (requer parâmetro --servers=N)
-- `pnpm show-overdue-notifications` - Mostrar conteúdo de notificações atrasadas
-- `pnpm run-overdue-check` - Executar verificação de atraso em uma data/hora específica
-- `pnpm test-cron-port` - Testar conectividade da porta de serviço cron
-- `pnpm test-overdue-detection` - Testar lógica de detecção de backup atrasado
+### Testar Scripts {#test-scripts}
+- `pnpm generate-test-data` - Gerar dados de backup de teste (requer o parâmetro --servers=N)
 - `pnpm validate-csv-export` - Validar funcionalidade de exportação CSV
-- `pnpm set-smtp-test-config` - Definir configuração de teste SMTP a partir de variáveis de ambiente (ver [Scripts de Teste](test-scripts))
-- `pnpm test-smtp-connections` - Testar compatibilidade cruzada de tipo de conexão SMTP (ver [Scripts de Teste](test-scripts))
-- `pnpm test-entrypoint` - Testar script de entrypoint do Docker no desenvolvimento local (ver [Scripts de Teste](test-scripts))
-- `pnpm take-screenshots` - Capturar screenshots para documentação (ver [Ferramentas de Documentação](documentation-tools))
+- `pnpm test-entrypoint` - Testar script de entrada do Docker no desenvolvimento local (consulte [Test Scripts](test-scripts))
+- `pnpm take-screenshots` - Tirar capturas de tela para documentação (consulte [Documentation Tools](documentation-tools))
+
+Verificações Atrasado, verificações de saúde do cron e testes SMTP são feitos através do aplicativo em execução e `curl` (consulte [Test Scripts](test-scripts)); os antigos auxiliares autônomos `pnpm` para esses foram removidos.

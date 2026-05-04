@@ -1,7 +1,7 @@
 "use client";
-
+import type { TFunction } from "i18next";
+import { useTranslation } from "react-i18next";
 import { useState, useEffect, useRef, memo, useCallback } from 'react';
-import { useIntlayer } from 'react-intlayer';
 import { 
   Line, 
   ComposedChart,
@@ -39,6 +39,8 @@ interface MetricsChartsPanelProps {
   chartData?: ChartDataPoint[];
 }
 
+type MetricsChartsPanelCoreProps = MetricsChartsPanelProps & { t: TFunction };
+
 // Use existing library function for duration formatting
 const formatDuration = (minutes: number): string => {
   // Extract just HH:MM from the HH:MM:SS format for chart display
@@ -71,41 +73,41 @@ const formatBytesForYAxis = (bytes: number, locale: string = 'en'): string => {
 };
 
 
-// Configuration for each chart type - labels will be set dynamically using content
-const getChartMetrics = (content: ReturnType<typeof useIntlayer<'metrics-charts-panel'>>, locale: string) => [
+// Configuration for each chart type - labels from t('English')
+const getChartMetrics = (t: TFunction, locale: string) => [
   { 
     key: 'uploadedSize', 
-    label: content.chartLabelUploadedSize.value, 
+    label: t("Uploaded Size"), 
     formatter: (v: number) => formatBytes(v, locale),
     color: "#3b82f6" // Blue
   },
   { 
     key: 'duration', 
-    label: content.chartLabelDuration.value, 
+    label: t("Duration"), 
     formatter: formatDuration,
     color: "#10b981" // Green
   },
   { 
     key: 'fileCount', 
-    label: content.chartLabelFileCount.value, 
+    label: t("File Count"), 
     formatter: (v: number) => formatInteger(v, locale),
     color: "#f59e0b" // Amber
   },
   { 
     key: 'fileSize', 
-    label: content.chartLabelFileSize.value, 
+    label: t("File Size"), 
     formatter: (v: number) => formatBytes(v, locale),
     color: "#ef4444" // Red
   },
   { 
     key: 'storageSize', 
-    label: content.chartLabelStorageSize.value, 
+    label: t("Storage Size"), 
     formatter: (v: number) => formatBytes(v, locale),
     color: "#8b5cf6" // Purple
   },
   { 
     key: 'backupVersions', 
-    label: content.chartLabelAvailableVersions.value, 
+    label: t("Available Versions"), 
     formatter: (v: number) => formatInteger(v, locale),
     color: "#06b6d4" // Cyan
   }
@@ -345,12 +347,11 @@ function SmallMetricChart({
 }
 
 function MetricsChartsPanelCore({
+  t,
   serverId,
   backupName,
   chartData: externalChartData, // Use external chart data if provided
-}: MetricsChartsPanelProps) {
-  const content = useIntlayer('metrics-charts-panel');
-  const common = useIntlayer('common');
+}: MetricsChartsPanelCoreProps) {
   const { chartTimeRange } = useConfig();
   const { state: globalRefreshState } = useGlobalRefresh();
   const locale = useLocale();
@@ -495,7 +496,7 @@ function MetricsChartsPanelCore({
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       setError(errorMessage);
       toast({
-        title: content.errorLoading.value,
+        title: t("Error loading chart data"),
         description: errorMessage,
         variant: "destructive",
         duration: 3000
@@ -504,7 +505,7 @@ function MetricsChartsPanelCore({
       isLoadingRef.current = false;
       setIsLoading(false);
     }
-  }, [serverId, backupName, startDate, endDate, toast, content.errorLoading.value]);
+  }, [serverId, backupName, startDate, endDate, toast, t]);
 
   // Fetch data only when API parameters actually change and no external data is provided
   useEffect(() => {
@@ -571,33 +572,33 @@ function MetricsChartsPanelCore({
       if (backupName) {
         baseText += `:${backupName}`;
       } else {
-        baseText += content.allBackups.value;
+        baseText += t(" (all backups)");
       }
     } else {
-      baseText = content.allServersAndBackups.value;
+      baseText = t("All Servers & Backups");
     }
     
     // Convert chartTimeRange to display label
     const getTimeRangeLabel = (timeRange: string) => {
       switch (timeRange) {
         case '24 hours':
-          return common.time.last24Hours.value;
+          return t("Last 24 Hours");
         case '7 days':
-          return common.time.lastWeek.value;
+          return t("Last week");
         case '2 weeks':
-          return common.time.last2Weeks.value;
+          return t("Last 2 weeks");
         case '1 month':
-          return common.time.lastMonth.value;
+          return t("Last month");
         case '3 months':
-          return common.time.lastQuarter.value;
+          return t("Last quarter");
         case '6 months':
-          return common.time.lastSemester.value;
+          return t("Last semester");
         case '1 year':
-          return common.time.lastYear.value;
+          return t("Last Year");
         case '2 years':
-          return common.time.last2Years.value;
+          return t("Last 2 years");
         case 'All data':
-          return common.time.allAvailableData.value;
+          return t("All available data");
         default:
           return timeRange;
       }
@@ -621,7 +622,7 @@ function MetricsChartsPanelCore({
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center text-muted-foreground">
             <FileBarChart2 className="h-8 w-8 mx-auto mb-2 animate-pulse" />
-            <p className="text-xs">{content.loading.value}</p>
+            <p className="text-xs">{t("Loading chart data...")}</p>
           </div>
         </div>
       )}
@@ -631,7 +632,7 @@ function MetricsChartsPanelCore({
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center text-destructive">
             <FileBarChart2 className="h-8 w-8 mx-auto mb-2 opacity-50" />
-            <p className="text-xs">{content.errorLoading.value}</p>
+            <p className="text-xs">{t("Error loading chart data")}</p>
           </div>
         </div>
       )}
@@ -639,7 +640,7 @@ function MetricsChartsPanelCore({
       {/* Charts - Responsive grid layout: 1 column mobile/small, 3 columns medium/large */}
       {!isLoading && !error && chartData.length > 0 && (
         <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 ${useContentBasedHeight ? 'auto-rows-auto' : 'auto-rows-fr'} items-stretch gap-2 sm:gap-3 pb-2 flex-1 min-h-0 overflow-hidden`}>
-          {getChartMetrics(content, locale).map((metric) => (
+          {getChartMetrics(t, locale).map((metric) => (
             <SmallMetricChart
               key={metric.key}
               data={chartData}
@@ -657,7 +658,7 @@ function MetricsChartsPanelCore({
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center text-muted-foreground">
             <FileBarChart2 className="h-8 w-8 mx-auto mb-2 opacity-50" />
-            <p className="text-xs">{content.noDataAvailable.value}</p>
+            <p className="text-xs">{t("No data available")}</p>
           </div>
         </div>
       )}
@@ -671,7 +672,8 @@ const MemoizedChartsCore = memo(MetricsChartsPanelCore, (prevProps, nextProps) =
   // Only re-render if there are actual changes in the data we care about
   
   // Compare basic props
-  if (prevProps.serverId !== nextProps.serverId ||
+  if (prevProps.t !== nextProps.t ||
+      prevProps.serverId !== nextProps.serverId ||
       prevProps.backupName !== nextProps.backupName) {
     return false; // Props changed, re-render
   }
@@ -698,7 +700,7 @@ export const MetricsChartsPanel = ({
   backupName,
   chartData
 }: MetricsChartsPanelProps) => {
-  const content = useIntlayer('metrics-charts-panel');
+  const { t } = useTranslation();
   
   return (
     <div className="flex flex-col p-3 h-full min-h-0 min-w-0 overflow-hidden" data-screenshot-target="metrics-chart">
@@ -706,13 +708,14 @@ export const MetricsChartsPanel = ({
       <div className="flex items-center justify-between mb-1 flex-shrink-0">
         <div className="flex items-center gap-2">
           <FileBarChart2 className="h-4 w-4 text-blue-600" />
-          <h2 className="text-sm font-semibold">{content.title.value}</h2>
+          <h2 className="text-sm font-semibold">{t("Metrics")}</h2>
         </div>
         {/* <RefreshTimeDisplay /> */}
       </div>
 
       {/* Memoized charts component */}
       <MemoizedChartsCore 
+        t={t}
         serverId={serverId}
         backupName={backupName}
         chartData={chartData}

@@ -1,5 +1,6 @@
-// src/components/dashboard/dashboard-table.tsx
 "use client";
+import { useTranslation } from "react-i18next";
+// src/components/dashboard/dashboard-table.tsx
 
 import type { ServerSummary } from "@/lib/types";
 import type { NotificationEvent } from "@/lib/types";
@@ -34,8 +35,6 @@ import { getUserLocalStorageItem, setUserLocalStorageItem } from "@/lib/user-loc
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { useRef } from "react";
 import { useLocale } from "@/contexts/locale-context";
-import { useIntlayer } from 'react-intlayer';
-
 interface DashboardTableProps {
   servers: ServerSummary[];
 }
@@ -83,9 +82,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
   const locale = useLocale();
   const { handleAvailableBackupsClick } = useAvailableBackupsModal();
   const currentUser = useCurrentUser();
-  const content = useIntlayer('dashboard-table');
-  const common = useIntlayer('common');
-  
+  const { t } = useTranslation();
   // Initialize with persisted sort config from localStorage
   // We'll load user-specific config after user is available
   const [sortConfig, setSortConfig] = useState<SortConfig>({ column: '', direction: 'asc' });
@@ -95,7 +92,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
   // Load user-specific sort config when user is available
   useEffect(() => {
     if (typeof window === 'undefined') {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setIsLoaded(true);
       return;
     }
@@ -221,7 +218,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
 
   const handleServerNameClick = (serverId: string, e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent the row click from firing
-    router.push(`/${locale}/detail/${serverId}`);
+    router.push(`/detail/${serverId}`);
   };
 
   const handleRowClick = (serverId: string, backupName: string | null) => {
@@ -229,20 +226,20 @@ export function DashboardTable({ servers }: DashboardTableProps) {
     if (backupName) {
       queryParams.set('backup', backupName);
     }
-    router.push(`/${locale}/detail/${serverId}?${queryParams.toString()}`);
+    router.push(`/detail/${serverId}?${queryParams.toString()}`);
   };
 
   const handleStatusBadgeClick = (serverId: string, backupId: string | null, e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent the row click from firing
     if (backupId) {
-      router.push(`/${locale}/detail/${serverId}/backup/${backupId}`);
+      router.push(`/detail/${serverId}/backup/${backupId}`);
     }
   };
 
   const handleNotificationIconClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent the row click from firing
     // Navigate to settings page with backup notifications tab active
-    router.push(`/${locale}/settings?tab=notifications`);
+    router.push(`/settings?tab=notifications`);
   };
 
   return (
@@ -254,48 +251,48 @@ export function DashboardTable({ servers }: DashboardTableProps) {
             <TableHeader>
               <TableRow>
                 <SortableTableHead column="name" sortConfig={sortConfig} onSort={handleSort}>
-                  {content.servers.serverName.value}
+                  {t("Server Name")}
                 </SortableTableHead>
               <SortableTableHead column="backupName" sortConfig={sortConfig} onSort={handleSort}>
-                  {content.servers.backupName.value}
+                  {t("Backup Name")}
                 </SortableTableHead>
                 <SortableTableHead column="isBackupOverdue" sortConfig={sortConfig} onSort={handleSort} align="center">
                   {(() => {
-                    const overdueNextRun = content.servers.overdueNextRun.value;
+                    const overdueNextRun = t("Overdue / Next run");
                     if (typeof overdueNextRun !== 'string') {
                       return overdueNextRun || '';
                     }
                     const parts = overdueNextRun.split(' / ');
                     return parts.length === 2 ? (
-                      <>{parts[0]} / <span className="text-green-500">{content.nextRun.value}</span></>
+                      <>{parts[0]} / <span className="text-green-500">{t("Next run")}</span></>
                     ) : (
                       overdueNextRun
                     );
                   })()}
                 </SortableTableHead>
                 <SortableTableHead column="lastBackupListCount" sortConfig={sortConfig} onSort={handleSort} align="center">
-                  {content.servers.availableVersions.value}
+                  {t("Available Versions")}
                 </SortableTableHead>
                 <SortableTableHead column="backupCount" sortConfig={sortConfig} onSort={handleSort} align="center">
-                  {content.servers.backupCount.value}
+                  {t("Backup Count")}
                 </SortableTableHead>
                 <SortableTableHead column="lastBackupDate" sortConfig={sortConfig} onSort={handleSort}>
-                  {content.servers.lastBackupDate.value}
+                  {t("Last Backup Date")}
                 </SortableTableHead>
                 <SortableTableHead column="lastBackupStatus" sortConfig={sortConfig} onSort={handleSort}>
-                  {content.servers.lastBackupStatus.value}
+                  {t("Last Backup Status")}
                 </SortableTableHead>
                 <SortableTableHead column="lastBackupDuration" sortConfig={sortConfig} onSort={handleSort} align="right">
-                  {content.backups.duration.value}
+                  {t("Duration")}
                 </SortableTableHead>
                 <SortableTableHead column="warnings" sortConfig={sortConfig} onSort={handleSort} align="center">
-                  {content.backups.warnings.value}
+                  {t("Warnings")}
                 </SortableTableHead>
                 <SortableTableHead column="errors" sortConfig={sortConfig} onSort={handleSort} align="center">
-                  {content.backups.errors.value}
+                  {t("Errors")}
                 </SortableTableHead>
                 <SortableTableHead column="notification" sortConfig={sortConfig} onSort={handleSort} align="center">
-                  {content.servers.settingsActions.value}
+                  {t("Settings/Actions")}
                 </SortableTableHead>
               </TableRow>
             </TableHeader>
@@ -307,13 +304,13 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                       <div className="text-center space-y-3">
                         <HardDrive className="h-12 w-12 text-muted-foreground mx-auto" />
                         <div className="space-y-1">
-                          <h3 className="text-lg font-semibold text-muted-foreground">{content.servers.noServersFound}</h3>
+                          <h3 className="text-lg font-semibold text-muted-foreground">{t("No servers found")}</h3>
                           <p className="text-sm text-muted-foreground">
-                            {content.servers.collectDataMessage}{" "}
+                            {t("Collect data for your first server by clicking on")}{" "}
                             <span className="inline-flex items-center">
-                              <Download className="inline w-4 h-4 mx-1" aria-label={common.ui.download} />
+                              <Download className="inline w-4 h-4 mx-1" aria-label={t("Download")} />
                             </span>{" "}
-                            {content.servers.collectBackupsLogs} in the toolbar.
+                            {t("(Collect backups logs)")} in the toolbar.
                           </p>
                         </div>
                       </div>
@@ -348,25 +345,25 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                       {server.isBackupOverdue ? (
                         <Tooltip>
                           <TooltipTrigger>
-                            <div className="text-red-400 text-xs">⚠️ {server.expectedBackupDate !== "N/A" ? formatRelativeTime(server.expectedBackupDate, undefined, locale) : server.expectedBackupElapsed} {content.overdue.value}</div>
+                            <div className="text-red-400 text-xs">⚠️ {server.expectedBackupDate !== "N/A" ? formatRelativeTime(server.expectedBackupDate, undefined, locale) : server.expectedBackupElapsed} {t("overdue")}</div>
                           </TooltipTrigger>
                           <TooltipContent>
                             <div className="space-y-1">
-                              <div><span>{content.checked.value}</span> <span className="text-muted-foreground">{server.lastOverdueCheck !== "N/A" ? formatDateTime(server.lastOverdueCheck, locale) + " (" + formatRelativeTime(server.lastOverdueCheck, undefined, locale) + ")"  	 : "N/A"}</span></div>
-                              <div><span>{content.lastBackupLabel.value}</span> <span className="text-muted-foreground">{server.lastBackupDate !== "N/A" ? formatDateTime(server.lastBackupDate, locale) + " (" + formatRelativeTime(server.lastBackupDate, undefined, locale) + ")" : "N/A"}</span></div>
-                              <div><span>{content.expectedBackup.value}</span> <span className="text-muted-foreground">{server.expectedBackupDate !== "N/A" ? formatDateTime(server.expectedBackupDate, locale) + " (" + formatRelativeTime(server.expectedBackupDate, undefined, locale) + ")" : "N/A"}</span></div>
-                              <div><span>{content.lastNotification.value}</span> <span className="text-muted-foreground">{server.lastNotificationSent !== "N/A" ? formatDateTime(server.lastNotificationSent, locale) + " (" + formatRelativeTime(server.lastNotificationSent, undefined, locale) + ")" : "N/A"}</span></div>
+                              <div><span>{t("Checked:")}</span> <span className="text-muted-foreground">{server.lastOverdueCheck !== "N/A" ? formatDateTime(server.lastOverdueCheck, locale) + " (" + formatRelativeTime(server.lastOverdueCheck, undefined, locale) + ")"  	 : "N/A"}</span></div>
+                              <div><span>{t("Last backup:")}</span> <span className="text-muted-foreground">{server.lastBackupDate !== "N/A" ? formatDateTime(server.lastBackupDate, locale) + " (" + formatRelativeTime(server.lastBackupDate, undefined, locale) + ")" : "N/A"}</span></div>
+                              <div><span>{t("Expected backup:")}</span> <span className="text-muted-foreground">{server.expectedBackupDate !== "N/A" ? formatDateTime(server.expectedBackupDate, locale) + " (" + formatRelativeTime(server.expectedBackupDate, undefined, locale) + ")" : "N/A"}</span></div>
+                              <div><span>{t("Last notification:")}</span> <span className="text-muted-foreground">{server.lastNotificationSent !== "N/A" ? formatDateTime(server.lastNotificationSent, locale) + " (" + formatRelativeTime(server.lastNotificationSent, undefined, locale) + ")" : "N/A"}</span></div>
 
                               <div className="border-t pt-2 flex items-center gap-2">
                                 <button 
                                   className="text-xs flex items-center gap-1 hover:text-blue-500 transition-colors px-2 py-1 rounded"
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    router.push(`/${locale}/settings?tab=monitoring`);
+                                    router.push(`/settings?tab=monitoring`);
                                   }}
                                 >
                                   <Settings className="h-3 w-3" />
-                                  <span>{content.backupConfiguration.value}</span>
+                                  <span>{t("Monitoring configuration")}</span>
                                 </button>
                                 <ServerConfigurationButton 
                                   className="text-xs !p-1" 
@@ -481,13 +478,13 @@ export function DashboardTable({ servers }: DashboardTableProps) {
               <div className="text-center space-y-3">
                 <HardDrive className="h-12 w-12 text-muted-foreground mx-auto" />
                 <div className="space-y-1">
-                  <h3 className="text-lg font-semibold text-muted-foreground">{content.servers.noServersFound.value}</h3>
+                  <h3 className="text-lg font-semibold text-muted-foreground">{t("No servers found")}</h3>
                   <p className="text-sm text-muted-foreground">
-                    {content.servers.collectDataMessage.value}{" "}
+                    {t("Collect data for your first server by clicking on")}{" "}
                     <span className="inline-flex items-center">
-                      <Download className="inline w-4 h-4 mx-1" aria-label={common.ui.download} />
+                      <Download className="inline w-4 h-4 mx-1" aria-label={t("Download")} />
                     </span>{" "}
-                    {content.servers.collectBackupsLogs.value} in the toolbar.
+                    {t("(Collect backups logs)")} in the toolbar.
                   </p>
                 </div>
               </div>
@@ -519,7 +516,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                       <StatusBadge status={server.lastBackupStatus} />
                     </div>
                     {server.isBackupOverdue ? (
-                      <div className="text-red-400 text-xs">⚠️ {server.expectedBackupDate !== "N/A" ? formatRelativeTime(server.expectedBackupDate, undefined, locale) : server.expectedBackupElapsed} {content.overdue.value}</div>
+                      <div className="text-red-400 text-xs">⚠️ {server.expectedBackupDate !== "N/A" ? formatRelativeTime(server.expectedBackupDate, undefined, locale) : server.expectedBackupElapsed} {t("overdue")}</div>
                     ) : (
                       server.expectedBackupDate !== "N/A" && (
                         <div className="text-green-400 text-xs">
@@ -535,7 +532,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                 <div className="grid grid-cols-2 gap-3">
                   {/* Row 1 */}
                   <div className="space-y-1">
-                    <Label className="text-xs text-muted-foreground">{content.servers.availableVersions.value}</Label>
+                    <Label className="text-xs text-muted-foreground">{t("Available Versions")}</Label>
                     <div className="flex justify-start">
                       <AvailableBackupsIcon
                         availableBackups={server.availableBackups}
@@ -549,13 +546,13 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                   </div>
                   
                   <div className="space-y-1">
-                    <Label className="text-xs text-muted-foreground">{content.servers.backupCount.value}</Label>
+                    <Label className="text-xs text-muted-foreground">{t("Backup Count")}</Label>
                     <div className="text-sm">{server.backupCount}</div>
                   </div>
 
                   {/* Row 2 */}
                   <div className="space-y-1">
-                    <Label className="text-xs text-muted-foreground">{content.lastBackup.value}</Label>
+                    <Label className="text-xs text-muted-foreground">{t("Last Backup")}</Label>
                     <div className="text-sm">
                       {server.lastBackupDate !== "N/A" ? (
                         <>
@@ -569,25 +566,25 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                   </div>
                   
                   <div className="space-y-1">
-                    <Label className="text-xs text-muted-foreground">{content.backups.duration.value}</Label>
+                    <Label className="text-xs text-muted-foreground">{t("Duration")}</Label>
                     <div className="text-sm">{server.lastBackupDuration}</div>
                   </div>
 
                   {/* Row 3 */}
                   <div className="space-y-1">
-                    <Label className="text-xs text-muted-foreground">{content.backups.warnings.value}</Label>
+                    <Label className="text-xs text-muted-foreground">{t("Warnings")}</Label>
                     <div className="text-sm">{server.warnings}</div>
                   </div>
                   
                   <div className="space-y-1">
-                    <Label className="text-xs text-muted-foreground">{content.backups.errors.value}</Label>
+                    <Label className="text-xs text-muted-foreground">{t("Errors")}</Label>
                     <div className="text-sm">{server.errors}</div>
                   </div>
                 </div>
 
                 {/* Settings Row */}
                 <div className="space-y-1">
-                  <Label className="text-xs text-muted-foreground">{content.settings.value}</Label>
+                  <Label className="text-xs text-muted-foreground">{t("Settings")}</Label>
                   <div className="flex items-center gap-1">
                     <div className="h-9 px-3 flex items-center justify-center mr-1">
                       {server.notificationEvent ? (
@@ -598,7 +595,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                           {getNotificationIcon(server.notificationEvent)}
                         </div>
                       ) : (
-                        <div className="text-xs text-muted-foreground">{content.off.value}</div>
+                        <div className="text-xs text-muted-foreground">{t("Off")}</div>
                       )}
                     </div>
                     <BackupCollectMenu
@@ -624,12 +621,12 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                 {/* Overdue Information (if applicable) */}
                 {server.isBackupOverdue && (
                   <div className="space-y-1 border-t pt-3">
-                    <Label className="text-xs text-muted-foreground">{content.overdueDetails.value}</Label>
+                    <Label className="text-xs text-muted-foreground">{t("Overdue Details")}</Label>
                     <div className="text-xs space-y-1">
-                      <div><span className="font-medium">{content.checked.value}</span> <span className="text-muted-foreground">{server.lastOverdueCheck !== "N/A" ? formatDateTime(server.lastOverdueCheck, locale) + " (" + formatRelativeTime(server.lastOverdueCheck, undefined, locale) + ")" : "N/A"}</span></div>
-                      <div><span className="font-medium">{content.lastBackupLabel.value}</span> <span className="text-muted-foreground">{server.lastBackupDate !== "N/A" ? formatDateTime(server.lastBackupDate, locale) + " (" + formatRelativeTime(server.lastBackupDate, undefined, locale) + ")" : "N/A"}</span></div>
-                      <div><span className="font-medium">{content.expectedBackup.value}</span> <span className="text-muted-foreground">{server.expectedBackupDate !== "N/A" ? formatDateTime(server.expectedBackupDate, locale) + " (" + formatRelativeTime(server.expectedBackupDate, undefined, locale) + ")" : "N/A"}</span></div>
-                      <div><span className="font-medium">{content.lastNotification.value}</span> <span className="text-muted-foreground">{server.lastNotificationSent !== "N/A" ? formatDateTime(server.lastNotificationSent, locale) + " (" + formatRelativeTime(server.lastNotificationSent, undefined, locale) + ")" : "N/A"}</span></div>
+                      <div><span className="font-medium">{t("Checked:")}</span> <span className="text-muted-foreground">{server.lastOverdueCheck !== "N/A" ? formatDateTime(server.lastOverdueCheck, locale) + " (" + formatRelativeTime(server.lastOverdueCheck, undefined, locale) + ")" : "N/A"}</span></div>
+                      <div><span className="font-medium">{t("Last backup:")}</span> <span className="text-muted-foreground">{server.lastBackupDate !== "N/A" ? formatDateTime(server.lastBackupDate, locale) + " (" + formatRelativeTime(server.lastBackupDate, undefined, locale) + ")" : "N/A"}</span></div>
+                      <div><span className="font-medium">{t("Expected backup:")}</span> <span className="text-muted-foreground">{server.expectedBackupDate !== "N/A" ? formatDateTime(server.expectedBackupDate, locale) + " (" + formatRelativeTime(server.expectedBackupDate, undefined, locale) + ")" : "N/A"}</span></div>
+                      <div><span className="font-medium">{t("Last notification:")}</span> <span className="text-muted-foreground">{server.lastNotificationSent !== "N/A" ? formatDateTime(server.lastNotificationSent, locale) + " (" + formatRelativeTime(server.lastNotificationSent, undefined, locale) + ")" : "N/A"}</span></div>
                     </div>
                     <div className="flex gap-2 pt-2">
                       <Button 
@@ -637,12 +634,12 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                         variant="outline"
                         onClick={(e) => {
                           e.stopPropagation();
-                          router.push(`/${locale}/settings?tab=monitoring`);
+                          router.push(`/settings?tab=monitoring`);
                         }}
                         className="flex-1"
                       >
                         <Settings className="h-3 w-3 mr-1" />
-                        {content.backupConfiguration.value}
+                        {t("Monitoring configuration")}
                       </Button>
                     </div>
                   </div>
@@ -656,7 +653,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                     onClick={() => handleRowClick(server.serverId, server.backupName)}
                     className="w-full"
                   >
-                    {content.backups.viewDetails}
+                    {t("View Details")}
                   </Button>
                 </div>
               </div>

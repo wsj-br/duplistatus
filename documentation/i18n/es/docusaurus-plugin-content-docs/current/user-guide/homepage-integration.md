@@ -1,9 +1,11 @@
 ---
-translation_last_updated: '2026-03-01T00:45:15.904Z'
-source_file_mtime: '2026-02-16T00:30:39.431Z'
-source_file_hash: 5b8fdae17a34ff83
+translation_last_updated: '2026-04-18T00:01:55.817Z'
+source_file_mtime: '2026-03-05T22:33:28.423Z'
+source_file_hash: 8efefb8f939cbc3b9a58126712fb1659e1356bd9e2e0b8461051ae715c91cd58
 translation_language: es
-source_file_path: user-guide/homepage-integration.md
+source_file_path: documentation/docs/user-guide/homepage-integration.md
+translation_models:
+  - anthropic/claude-haiku-4.5
 ---
 # Integración de la Página de Inicio (Opcional) {#homepage-integration-optional}
 

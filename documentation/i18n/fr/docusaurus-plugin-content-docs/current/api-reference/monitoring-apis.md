@@ -1,12 +1,20 @@
+---
+translation_last_updated: '2026-04-18T00:01:05.424Z'
+source_file_mtime: '2026-03-05T22:33:28.419Z'
+source_file_hash: ccd50e5fe2f6be70227afc5ce46c99b7ce52a87df5184098f4d303683bd9e6c6
+translation_language: fr
+source_file_path: documentation/docs/api-reference/monitoring-apis.md
+translation_models:
+  - qwen/qwen3-235b-a22b-2507
+---
+# Surveillance et état de santé {#monitoring-health}
 
+## Vérification de l'état de santé - `/api/health` {#health-check-apihealth}
+- **Point de terminaison** : `/api/health`
+- **Méthode** : GET
+- **Description** : Vérifie l'état de santé de l'application et de la base de données.
+- **Réponse** (sain) :
 
-# Monitoring & Health {#monitoring-health}
-
-## Health Check - `/api/health` {#health-check-apihealth}
-- **Endpoint**: `/api/health`
-- **Method**: GET
-- **Description**: Checks the health status of the application and database.
-- **Response** (healthy):
   ```json
   {
     "status": "healthy",
@@ -25,7 +33,8 @@
   }
   ```
 
-- **Response** (degraded):
+- **Réponse** (dégradé) :
+
   ```json
   {
     "status": "degraded",
@@ -49,7 +58,8 @@
   }
   ```
 
-- **Error Response** (503):
+- **Réponse d'erreur** (503) :
+
   ```json
   {
     "status": "unhealthy",
@@ -59,12 +69,13 @@
     "timestamp": "2024-03-20T10:00:00Z"
   }
   ```
-- **Notes**: 
-  - Returns 200 status for healthy systems
-  - Returns 503 status for unhealthy systems or prepared statement failures
-  - Includes `preparedStatementsError` field when prepared statements fail
-  - Includes `initializationError` field when database initialization fails
-  - Includes `connectionHealthError` and `connectionDetails` when connection health checks fail
-  - Stack trace only included in development mode
-  - Tests basic database connection, prepared statements, initialization status, and connection health
-  - Provides comprehensive health diagnostics for troubleshooting
+
+- **Notes** : 
+  - Retourne le statut 200 pour les systèmes sains
+  - Retourne le statut 503 pour les systèmes défaillants ou en cas d'échec des instructions préparées
+  - Inclut le champ `preparedStatementsError` en cas d'échec des instructions préparées
+  - Inclut le champ `initializationError` en cas d'échec de l'initialisation de la base de données
+  - Inclut les champs `connectionHealthError` et `connectionDetails` en cas d'échec des vérifications de santé de la connexion
+  - La trace de pile n'est incluse qu'en mode développement
+  - Teste la connexion de base à la base de données, les instructions préparées, l'état d'initialisation et la santé de la connexion
+  - Fournit des diagnostics complets de l'état de santé pour le dépannage

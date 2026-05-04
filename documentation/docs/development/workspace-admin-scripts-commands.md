@@ -51,14 +51,15 @@ ncu --upgrade
 pnpm update
 ```
 
-Or use the automated script:
+Or use the automated script (prefer **`source`** so **nvm** applies to your current shell; for **CI** or non-interactive runs use `CI=1` or `DUPLISTATUS_UPGRADE_ALLOW_EXEC=1`):
 ```bash
-./scripts/upgrade-dependencies.sh
+source ./scripts/upgrade-dependencies.sh
 ```
 
 The `upgrade-dependencies.sh` script automates the entire dependency upgrade process:
-- Updates `package.json` with latest versions using `npm-check-updates`
-- Updates the pnpm lockfile and installs updated dependencies
+- Sources tool setup via `upgrade-tools.sh` (nvm / Node LTS, global `pnpm`, `npm-check-updates`, `doctoc`)
+- Updates root and `documentation/package.json` using `npm-check-updates` (with an optional ESLint peer gate so `eslint` and React plugin bumps stay compatible)
+- Updates the workspace pnpm lockfile and installs dependencies
 - Updates the browserslist database
 - Checks for vulnerabilities using `pnpm audit`
 - Automatically fixes vulnerabilities using `pnpm audit fix`

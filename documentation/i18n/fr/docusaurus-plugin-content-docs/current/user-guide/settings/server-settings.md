@@ -1,9 +1,11 @@
 ---
-translation_last_updated: '2026-03-01T00:45:07.927Z'
-source_file_mtime: '2026-02-16T00:30:39.432Z'
-source_file_hash: d44a1138f5ac3300
+translation_last_updated: '2026-04-18T00:03:49.667Z'
+source_file_mtime: '2026-03-05T22:33:28.423Z'
+source_file_hash: 3f2e9249dca9757c8c95acf36f66841a560491d15f0f0d1ecb24826a5628f983
 translation_language: fr
-source_file_path: user-guide/settings/server-settings.md
+source_file_path: documentation/docs/user-guide/settings/server-settings.md
+translation_models:
+  - anthropic/claude-haiku-4.5
 ---
 # Serveur {#server}
 

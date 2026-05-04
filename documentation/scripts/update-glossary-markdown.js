@@ -19,9 +19,9 @@ function updateGlossaryMarkdown(contribFile, glossaryTable) {
   
   const newGlossarySection = `## Glossary
 
-> **Note**: This glossary is automatically generated from intlayer dictionaries to ensure consistency between the application and documentation translations.
+> **Note**: UI terminology for documentation translation is driven by \`src/locales/strings.json\` via \`ai-i18n-tools.config.json\` (\`glossary.uiGlossary\`).
 
-> **To regenerate**: Run \`pnpm run translate:glossary-ui\` from the \`documentation/\` directory. This will update the glossary CSV file and this markdown table.
+> **To regenerate**: Run \`pnpm i18n:extract\` at the repo root, then \`pnpm i18n:glossary-generate\` if you need a fresh \`glossary-user.csv\` template.
 
 ${glossaryTable}
 

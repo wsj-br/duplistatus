@@ -1,9 +1,12 @@
 ---
-translation_last_updated: '2026-03-01T00:45:20.275Z'
-source_file_mtime: '2026-02-16T00:30:39.431Z'
-source_file_hash: 7e6c92db0c087a07
+translation_last_updated: '2026-04-18T00:02:13.395Z'
+source_file_mtime: '2026-03-05T22:33:28.423Z'
+source_file_hash: 7f1ad94e72ddcb48fabe92e299d8c28fb2389e1baa6f8c654c62370d3dd6d02e
 translation_language: pt-BR
-source_file_path: user-guide/duplicati-configuration.md
+source_file_path: documentation/docs/user-guide/duplicati-configuration.md
+translation_models:
+  - anthropic/claude-haiku-4.5
+  - 'stepfun/step-3.5-flash:free'
 ---
 # Configuração do Duplicati {#duplicati-configuration}
 

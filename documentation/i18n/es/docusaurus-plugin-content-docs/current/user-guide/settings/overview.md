@@ -1,9 +1,12 @@
 ---
-translation_last_updated: '2026-03-01T00:45:16.532Z'
-source_file_mtime: '2026-02-16T00:30:39.432Z'
-source_file_hash: a99398581e24b09c
+translation_last_updated: '2026-04-18T00:02:00.979Z'
+source_file_mtime: '2026-03-05T22:33:28.423Z'
+source_file_hash: dc89e934e23da96d8dd5ae8649ddfb3cae07d187b7ddd14bff332845a24ef50e
 translation_language: es
-source_file_path: user-guide/settings/overview.md
+source_file_path: documentation/docs/user-guide/settings/overview.md
+translation_models:
+  - anthropic/claude-3.5-haiku
+  - anthropic/claude-haiku-4.5
 ---
 # Resumen {#overview}
 

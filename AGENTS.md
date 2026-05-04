@@ -17,7 +17,7 @@ This file documents essential information for AI agents working in the duplistat
 | Tailwind CSS | ^4.2.1 |
 | pnpm | >=10.24.0 (packageManager: pnpm@10.30.3) |
 | SQLite | better-sqlite3 ^12.6.2 |
-| intlayer | ^8.1.8 (i18n) |
+| i18n | i18next + react-i18next; **ai-i18n-tools** (extract + OpenRouter translate for UI + docs + SVG) |
 
 ## Architecture
 
@@ -41,11 +41,10 @@ This file documents essential information for AI agents working in the duplistat
 - **Migrations**: Handled automatically in `src/lib/db-migrations.ts`
 
 ### Internationalization (i18n)
-- **Library**: intlayer
-- **Supported locales**: en, de, fr, es, pt-BR
-- **Default**: en-GB (English)
-- **Translation files**: `.content.ts` files next to components
-- **Access pattern**: `content.key.value` (always use `.value` property)
+- **Runtime**: i18next (`src/i18n.ts`, `I18nProvider` in root layout). Client components use **`useTranslation()` + `t('Exact English phrase')`** at the point of use (English source string = key). Server Components and other non-React code use **`getServerI18n()`** from `src/lib/i18n-server.ts` and **`i18n.t('…')`** with the same literal keys. **Do not** add feature-level wrapper hooks or shared “content” objects for UI strings — **`ai-i18n-tools extract`** scans literal `t('…')` in `src/`.
+- **Catalog / flat bundles**: `src/locales/strings.json`, `de.json`, `fr.json`, `es.json`, `pt-BR.json` (updated via `pnpm i18n:extract` and translate commands).
+- **Config**: `ai-i18n-tools.config.json` at repo root (`sourceLocale`: `en`, `targetLocales`, UI roots, Docusaurus paths, glossary, `cacheDir`).
+- **URLs**: No locale prefix in app routes; language is stored (e.g. `NEXT_LOCALE` cookie) and applied with `loadLocale` + `i18n.changeLanguage`. Legacy `/{locale}/…` URLs are redirected at the edge (see `src/proxy.ts`).
 
 ## Essential Commands
 
@@ -56,10 +55,9 @@ pnpm install              # Install dependencies (enforced via preinstall)
 # Development
 pnpm dev                  # Start Next.js dev server on port 8666
 pnpm cron:dev             # Start cron service in watch mode on port 8667
-pnpm dev:with-editor      # Start with intlayer editor enabled
 
 # Build & Production
-pnpm build                # Production build (runs intlayer build + next build)
+pnpm build                # Production build (next build; pre-checks in scripts/pre-checks.sh)
 pnpm start                # Production server on port 9666
 pnpm cron:start           # Start cron service in production mode
 
@@ -77,32 +75,40 @@ pnpm docker:up            # Build and start Docker containers
 pnpm docker:down          # Stop Docker containers
 pnpm docker:clean         # Clean Docker resources
 
-# Translation (documentation)
-pnpm translate            # Translate documentation (runs docs + SVG translation)
-pnpm translate:svg        # Translate SVG files only
-pnpm translate:glossary-ui  # Generate UI glossary from intlayer
+# i18n (repo root — OpenRouter: set OPENROUTER_API_KEY)
+pnpm i18n:extract         # Scan t('…') and update strings catalog
+pnpm i18n:sync            # Sync per ai-i18n-tools
+pnpm i18n:translate       # translate-ui + translate-svg + translate-docs
+pnpm i18n:translate:ui
+pnpm i18n:translate:svg
+pnpm i18n:translate:docs
+pnpm i18n:status
+pnpm i18n:editor          # ai-i18n-tools editor (if used)
+pnpm i18n:glossary-generate
+
+# Documentation package (delegates to root for translate)
+cd documentation && pnpm translate   # same as pnpm i18n:translate at root
 ```
 
 ## Code Organization
 
 ```
 src/
-├── app/                    # Next.js App Router
+├── app/                    # Next.js App Router (no locale segment)
 │   ├── api/                # API routes
-│   ├── [locale]/           # Localized pages
-│   ├── layout.tsx          # Root layout
+│   ├── layout.tsx          # Root layout (I18nProvider, locale context)
 │   └── page.tsx            # Root page
 ├── components/             # React components
 │   ├── ui/                 # Base UI components (shadcn/ui)
-│   ├── *.content.ts        # Translation files (next to components)
 │   └── *.tsx               # Component files
+├── i18n/
+│   └── generated-hooks/    # use*Content() hooks (English keys → t())
+├── locales/                # strings.json + per-locale flat JSON
 ├── contexts/               # React contexts
 │   ├── locale-context.tsx
 │   ├── theme-context.tsx
 │   └── ...
 ├── hooks/                  # Custom React hooks
-│   ├── use-toast.ts
-│   └── ...
 ├── lib/                    # Shared utilities
 │   ├── db.ts               # Database access
 │   ├── types.ts            # TypeScript interfaces
@@ -110,12 +116,11 @@ src/
 │   ├── notifications.ts    # Notification logic
 │   └── ...
 └── cron-service/           # Background cron service
-    ├── index.ts            # Entry point
-    └── service.ts          # Task scheduling logic
 
 data/                       # Data directory (SQLite, keys)
 documentation/              # Docusaurus documentation
 scripts/                    # Build and utility scripts
+ai-i18n-tools.config.json   # i18n tooling (UI + docs + SVG)
 ```
 
 ## Code Conventions
@@ -126,43 +131,11 @@ scripts/                    # Build and utility scripts
 - **Imports**: Use `@/` alias for src imports
 - **Path mapping**: `@/*` → `./src/*`
 
-### Component Structure
-```typescript
-// Component with translations
-'use client';
-import { useIntlayer } from 'react-intlayer';
-import content from './component-name.content.ts';
-
-export function ComponentName() {
-  const { keyName } = useIntlayer('component-key');
-  return <div>{keyName.value}</div>;
-}
-```
-
-### Translation Pattern (CRITICAL)
-- **Always use `.value`**: `content.title.value`
-- **Never use `String()`**: Wrong: `String(content.title)`
-- **Content files**: Place `.content.ts` next to component
-- **Key format**: `component-name` (kebab-case)
-- **Locales supported**: en, de, fr, es, pt-BR
-
-Example `.content.ts`:
-```typescript
-import { t, type Dictionary } from 'intlayer';
-
-export default {
-  key: 'component-name',
-  content: {
-    title: t({
-      en: 'English text',
-      de: 'German text',
-      fr: 'French text',
-      es: 'Spanish text',
-      'pt-BR': 'Portuguese text'
-    }),
-  },
-} satisfies Dictionary;
-```
+### Translations (UI)
+- **Default**: **`const { t } = useTranslation()`** and inline **`t('…')`** next to labels, toasts, and `aria-*` text.
+- **Optional**: **`useXxxContent()`** from `src/i18n/generated-hooks/` for a large feature module (many strings in one place) — still built from `t('English')` per key, not a separate “common” indirection.
+- **Interpolation**: i18next format `{{name}}` with `t('…', { name: value })`.
+- **Server / notifications**: use `getServerI18n()` / shared bundles (`src/lib/i18n-server.ts`, `src/lib/status-translations.ts`) so labels align with UI JSON.
 
 ### Database Access
 - **Always use** functions from `src/lib/db.ts`
@@ -177,11 +150,9 @@ export default {
 
 ## Important Gotchas
 
-### 1. Intlayer Translations
-- Access strings via `.value` property: `content.title.value`
-- For server components: use `useIntlayer` from `next-intlayer/server` (not a real hook despite name)
-- Build intlayer before running: `pnpm intlayer build`
-- Editor runs on port 8000 by default
+### 1. i18n
+- Run **`pnpm i18n:extract`** after adding or changing `t('…')` strings so `strings.json` stays current.
+- Documentation and SVG translation use the same **`ai-i18n-tools.config.json`**; glossary UI terms come from **`glossary.uiGlossary`** → `src/locales/strings.json`.
 
 ### 2. Database Security
 - `data/.duplistatus.key` must have 0400 permissions
@@ -246,7 +217,7 @@ export async function POST(request: NextRequest) {
 
 ### Error Codes
 - APIs return `errorCode` strings for i18n (not hardcoded messages)
-- Map codes to translations in `.content.ts` files
+- Map codes to user-facing strings via the same translation pipeline as the UI
 - Examples: `INVALID_CREDENTIALS`, `DATABASE_NOT_READY`, `INTERNAL_ERROR`
 
 ## Git Commit Guidelines
@@ -267,8 +238,8 @@ export async function POST(request: NextRequest) {
 
 - **Location**: `documentation/` (Docusaurus site)
 - **Languages**: Full docs in en, de, fr, es, pt-BR
-- **Translation workflow**: `pnpm translate` (OpenRouter API)
-- **Update only English**: When modifying docs, only update `./documentation/docs/` (English), translations handled automatically
+- **Translation**: `ai-i18n-tools` from repo root; from `documentation/`, `pnpm translate` calls the root scripts
+- **Update only English**: When modifying docs, only update `./documentation/docs/` (English); translated files under `documentation/i18n/` are produced by the tooling
 
 ## Key Files Reference
 
@@ -280,7 +251,7 @@ export async function POST(request: NextRequest) {
 | `src/lib/notifications.ts` | NTFY and email notifications |
 | `src/lib/cron-client.ts` | Cron service client |
 | `next.config.ts` | Next.js + Webpack configuration |
-| `intlayer.config.ts` | i18n configuration |
+| `ai-i18n-tools.config.json` | i18n extract/translate configuration |
 | `eslint.config.mjs` | ESLint rules |
 | `dev/CHANGELOG.md` | Change tracking (REQUIRED updates) |
 
@@ -289,16 +260,16 @@ export async function POST(request: NextRequest) {
 - **Duplicati servers**: POST to `/api/upload` with JSON backup reports
 - **NTFY notifications**: Configurable per-backup via `NtfyConfig`
 - **SMTP email**: Optional email notifications with multiple connection types (plain, STARTTLS, SSL)
-- **OpenRouter**: Used for documentation translation (requires `OPENROUTER_API_KEY`)
+- **OpenRouter**: Used by ai-i18n-tools for machine translation (requires `OPENROUTER_API_KEY`)
 
 ## Troubleshooting Resources
 
 - Check `dev/CHANGELOG.md` for recent changes and fixes
-- Review existing `.content.ts` files for translation patterns
+- See `documentation/docs/development/translation-workflow.md` and `ai-i18n-tools.config.json`
 - See `src/lib/` for reusable utility functions
 - Cron service: Check `src/cron-service/README.md`
 
 ---
 
-**Last Updated**: Generated from codebase analysis
-**Version**: 1.3.1
+**Last Updated**: 2026-04 (ai-i18n-tools migration)
+**Version**: 1.3.2

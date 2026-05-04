@@ -1,9 +1,11 @@
 ---
-translation_last_updated: '2026-03-01T00:45:20.995Z'
-source_file_mtime: '2026-02-16T00:30:39.432Z'
-source_file_hash: 024e5533adc1b9d9
+translation_last_updated: '2026-04-18T00:02:18.797Z'
+source_file_mtime: '2026-03-05T22:33:28.423Z'
+source_file_hash: b1f073fc756bf469acd698513daa0acf449968820b163817769bb58e9e84a91a
 translation_language: pt-BR
-source_file_path: user-guide/settings/user-management-settings.md
+source_file_path: documentation/docs/user-guide/settings/user-management-settings.md
+translation_models:
+  - anthropic/claude-haiku-4.5
 ---
 # Usuários {#users}
 

@@ -1,7 +1,6 @@
 "use client";
-
+import { useTranslation } from "react-i18next";
 import { useState, useEffect, useRef } from 'react';
-import { useIntlayer } from 'react-intlayer';
 import { ServerDetailsContent } from "@/components/server-details/server-details-content";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
@@ -32,9 +31,7 @@ interface DetailAutoRefreshProps {
 }
 
 export function DetailAutoRefresh({ initialData }: DetailAutoRefreshProps) {
-  const common = useIntlayer('common');
-  const api = useIntlayer('api');
-  const content = useIntlayer('detail-auto-refresh');
+  const { t } = useTranslation();
   const [data, setData] = useState<DetailData>(initialData);
   const [lastError, setLastError] = useState<string | null>(null);
   const [lastRefreshTime, setLastRefreshTime] = useState<Date>(new Date());
@@ -82,7 +79,7 @@ export function DetailAutoRefresh({ initialData }: DetailAutoRefreshProps) {
         setLastError(errorMessage);
         
         toast({
-          title: common.status.error,
+          title: t("Error"),
           description: `Failed to refresh detail data: ${errorMessage}`,
           variant: "destructive",
           duration: 3000,
@@ -95,7 +92,7 @@ export function DetailAutoRefresh({ initialData }: DetailAutoRefreshProps) {
     if (!state.isRefreshing && !state.pageSpecificLoading.detail && !state.refreshInProgress && state.lastRefresh) {
       fetchData();
     }
-  }, [state.isRefreshing, state.pageSpecificLoading.detail, state.refreshInProgress, state.lastRefresh, serverId, toast, common.status.error]);
+  }, [state.isRefreshing, state.pageSpecificLoading.detail, state.refreshInProgress, state.lastRefresh, serverId, toast, t]);
 
   return (
     <div className="flex flex-col gap-8">
@@ -104,7 +101,7 @@ export function DetailAutoRefresh({ initialData }: DetailAutoRefreshProps) {
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            {api.errors.failedToUpdateDetailData.value}: {lastError}
+            {t("Failed to update detail data")}: {lastError}
           </AlertDescription>
         </Alert>
       )}

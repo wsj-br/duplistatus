@@ -20,7 +20,7 @@
 - Test data generation: `pnpm generate-test-data --servers=N`
 - Notification testing: `/api/notifications/test` endpoint
 - Cron health checks: `curl http://localhost:8667/health` or `curl http://localhost:8666/api/cron/health`
-- Overdue backup testing: `pnpm run-overdue-check`
+- Overdue backup testing: **Settings → Backup monitoring** (**Test overdue backups**), or `POST /api/notifications/check-overdue` with authentication
 - Development mode: verbose logging and JSON file storage
 - Database maintenance: use maintenance menu for cleanup operations
 - Pre-checks: `scripts/pre-checks.sh` for troubleshooting startup issues
@@ -48,13 +48,12 @@
 - date-fns ^4.1.0, uuid ^13.0.0
 - express ^5.2.1 (cron service), node-cron ^4.2.1
 - nodemailer ^8.0.1, qrcode ^1.5.4
-- intlayer ^8.1.8, next-intlayer ^8.1.8, react-intlayer ^8.1.8, @intlayer/editor-react ^8.1.8, @intlayer/swc ^8.1.8
+- ai-i18n-tools ^1.x, i18next ^26.x, react-i18next ^17.x (UI + docs translation pipeline)
 
 ### Type Checking & Linting {#type-checking-linting}
 - TypeScript ^5.9.3
 - TSX ^4.21.0
 - ESLint ^9.16.0 (via `next lint`)
-- intlayer-editor ^8.1.8
 - webpack ^5.105.3
 
 ### Build & Deployment {#build-deployment}

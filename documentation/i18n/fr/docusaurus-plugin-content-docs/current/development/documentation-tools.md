@@ -1,9 +1,13 @@
 ---
-translation_last_updated: '2026-03-01T00:45:04.189Z'
-source_file_mtime: '2026-02-16T00:30:39.430Z'
-source_file_hash: aa56e5210f4a05de
+translation_last_updated: '2026-04-18T00:02:04.080Z'
+source_file_mtime: '2026-04-16T19:05:20.242Z'
+source_file_hash: aacb7a55a7f698c594a6d4209ac3a2a778a9c67d8748263d409ff4762f869c92
 translation_language: fr
-source_file_path: development/documentation-tools.md
+source_file_path: documentation/docs/development/documentation-tools.md
+translation_models:
+  - anthropic/claude-3.5-haiku
+  - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Outils de Documentation {#documentation-tools}
 
@@ -32,8 +36,7 @@ documentation/
 ├── static/            # Static assets (images, files)
 ├── docusaurus.config.ts  # Docusaurus configuration
 ├── sidebars.ts        # Sidebar navigation configuration
-├── package.json       # Dependencies and scripts
-└── .intlayer/         # Intlayer generated UI translation files (auto-generated)
+└── package.json       # Dependencies and scripts
 ```
 
 ### Internationalisation (i18n) {#internationalization-i18n}
@@ -45,7 +48,7 @@ La documentation utilise le système d'internationalisation intégré de Docusau
 - **Traductions de l'interface** : `i18n/{locale}/docusaurus-theme-classic/*.json` et autres fichiers JSON
 - **Captures d'écran localisées** : `i18n/{locale}/docusaurus-plugin-content-docs/current/**/assets`, générées par `pnpm take-screenhots` dans le répertoire de base.
 
-La commande `pnpm write-translations` extrait les chaînes de l'interface (à partir du thème Docusaurus et des composants personnalisés) dans des fichiers de traduction JSON. Le script `pnpm translate` utilise l'IA pour traduire à la fois la documentation markdown et les fichiers JSON de l'interface.
+La commande `pnpm write-translations` extrait les chaînes d'interface utilisateur (du thème Docusaurus et des composants personnalisés) dans des fichiers de traduction JSON. Le script `pnpm translate` (depuis `documentation/`, délègue au répertoire racine du dépôt) exécute **ai-i18n-tools** pour traduire les fichiers markdown, JSON et SVGs selon `ai-i18n-tools.config.json`.
 
 :::important
 Modifiez uniquement les fichiers dans `docs/` et les fichiers JSON source dans `i18n/en/`. Les fichiers markdown traduits dans `i18n/{autres-locales}/` sont générés automatiquement et ne doivent pas être modifiés manuellement.
@@ -67,34 +70,26 @@ La documentation utilise un système de traduction alimenté par l'IA pour tradu
 
 ### Fonctionnement de la traduction {#how-translation-works}
 
-1. **Extraction des chaînes de l'interface** : `pnpm write-translations` extrait les chaînes traduisibles de l'interface Docusaurus et des composants personnalisés dans des fichiers JSON dans `i18n/en/`
-2. **Traduction du contenu** : `pnpm translate` utilise OpenRouter AI pour traduire :
-   - Fichiers markdown de `docs/` → `i18n/{locale}/docusaurus-plugin-content-docs/current/`
-   - Chaînes de l'interface JSON de `i18n/en/` → `i18n/{locale}/`
-   - Fichiers SVG de `static/img/duplistatus*.svg` (traduit le texte à l'intérieur des SVG et les exporte en PNG via Inkscape)
-
-3. **Compilation** : `pnpm build` génère du HTML statique pour toutes les locales dans `build/` (un sous-répertoire par locale)
+1. **Chaînes d'interface Docusaurus** : `pnpm write-translations` extrait les chaînes du thème et personnalisées dans `i18n/en/*.json`.
+2. **Traduction par IA** (OpenRouter ; configuration dans **`ai-i18n-tools.config.json`** à la racine du dépôt) : depuis `documentation/`, `pnpm translate` exécute le script racine `i18n:translate` (chaînes d'interface, SVGs et fichiers markdown/JSON Docusaurus) vers `documentation/i18n/` et `src/locales/` selon la configuration.
+3. **Construction** : `pnpm build` génère le HTML statique pour toutes les langues sous `documentation/build/`.
 
 ### Exécution de la traduction {#running-translation}
 
 ```bash
 cd documentation
-pnpm translate                       # Translate everything to all locales
-pnpm translate --force               # force the translation of all files
-pnpm translate --locale fr           # Translate only to French
-pnpm translate --no-svg              # Skip SVG translation
-pnpm translate --path docs/intro.md  # Translate specific file
-pnpm translate:status                # Show the status of translation of all files
+pnpm translate          # Same as repo root: i18n:translate (ui + svg + docs)
+pnpm translate:docs
+pnpm translate:svg
+pnpm translate:ui
+pnpm translate:status
 ```
 
-Pour des options détaillées, la gestion du cache, le dépannage et le système de glossaire, consultez [Workflow de Traduction](translation-workflow.md).
+Les indicateurs CLI sont définis par **ai-i18n-tools** ; exécutez `pnpm exec ai-i18n-tools --help` depuis la racine du dépôt ou consultez [Translation Workflow](translation-workflow.md).
 
 ### Remplacements manuels de traduction {#manual-translation-overrides}
 
-Si vous devez ajuster manuellement une traduction :
-1. ajoutez les termes à `glossary-user.csv`
-2. supprimez les entrées du cache pour ces termes en utilisant [l'outil d'édition de cache web](translation-workflow.md#manual-review-of-the-cache)
-3. relancez la traduction avec `pnpm translate --force`
+Modifiez **`documentation/glossary-user.csv`** (et éventuellement effacez les entrées obsolètes sous **`.translation-cache/`** à la racine du dépôt), puis relancez la commande `pnpm translate:*` correspondante.
 
 ## Commandes courantes {#common-commands}
 
@@ -141,8 +136,7 @@ Cela sert le site construit à partir du répertoire `documentation/build`.
 
 - `pnpm clear` - Effacer le cache de Docusaurus
 - `pnpm typecheck` - Exécuter la vérification des types TypeScript
-- `pnpm write-heading-ids` - Générer des identifiants de titre au format interne de Docusaurus (ne modifie pas les fichiers markdown)
-- `pnpm heading-ids` - Ajouter des identifiants d'ancrage explicites `{#id}` à tous les titres markdown (modifie les fichiers ; garantit des identifiants cohérents entre les traductions)
+- `pnpm write-heading-ids` - Écrire des ancres de titre explicites `{#id}` dans le markdown selon les règles Docusaurus (à lancer depuis `documentation/` ; liens stables entre les traductions)
 
 ## Génération de README.md {#generating-readmemd}
 
@@ -271,7 +265,7 @@ Pour le workflow de traduction complet (gestion du glossaire, traduction par IA,
 1. Créez un nouveau fichier `.md` dans `documentation/docs/` (ou un sous-répertoire)
 2. Ajoutez-le à la barre latérale dans `documentation/sidebars.ts`
 3. Exécutez `pnpm write-translations` pour mettre à jour la structure des fichiers de traduction
-4. Exécutez `pnpm heading-ids` pour générer les identifiants de titre (ancres)
+4. Exécutez `pnpm write-heading-ids` pour générer les identifiants de titre (ancres)
 5. Exécutez `pnpm translate` pour traduire la nouvelle page dans tous les paramètres régionaux
 6. Construire et tester : `pnpm build`
 

@@ -1,7 +1,6 @@
 'use client';
-
+import { useTranslation } from "react-i18next";
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useIntlayer } from 'react-intlayer';
 import { useLocale } from '@/contexts/locale-context';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -64,8 +63,7 @@ interface UserManagementFormProps {
 }
 
 export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
-  const content = useIntlayer('user-management-form');
-  const common = useIntlayer('common');
+  const { t } = useTranslation();
   const { toast } = useToast();
   const locale = useLocale();
   const passwordPolicy = usePasswordPolicy();
@@ -100,14 +98,14 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
     } catch (error) {
       console.error('Error loading users:', error);
       toast({
-        title: common.status.error,
-        description: content.failedToLoadUsers,
+        title: t("Error"),
+        description: t("Failed to load users"),
         variant: 'destructive',
       });
     } finally {
       setLoading(false);
     }
-  }, [toast, common.status.error, content.failedToLoadUsers]);
+  }, [toast, t]);
 
   useEffect(() => {
     loadUsers();
@@ -196,16 +194,16 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
     );
   }, [passwordRequirements, formAutoGeneratePassword, passwordPolicy]);
 
-  // Password requirement labels from content
+  // Password requirement labels
   const passwordRequirementLabels = useMemo(() => {
     if (!passwordPolicy) return null;
     return {
-      minLength: String(content.atLeastXCharactersLong).replace('{minLength}', String(passwordPolicy.minLength ?? 8)),
-      uppercase: content.containsUppercaseLetter,
-      lowercase: content.containsLowercaseLetter,
-      number: content.containsNumber,
+      minLength: t("At least {{minLength}} characters long", { minLength: passwordPolicy.minLength ?? 8 }),
+      uppercase: t("Contains at least one uppercase letter (A-Z)"),
+      lowercase: t("Contains at least one lowercase letter (a-z)"),
+      number: t("Contains at least one number (0-9)"),
     };
-  }, [passwordPolicy, content]);
+  }, [passwordPolicy, t]);
 
   // Requirement item component (defined inside to avoid recreation warnings)
   const RequirementItem = useCallback(({ met, label }: { met: boolean; label: string }) => (
@@ -232,8 +230,8 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
   const handleCreate = async () => {
     if (!formUsername.trim()) {
       toast({
-        title: common.status.error,
-        description: content.usernameRequired,
+        title: t("Error"),
+        description: t("Username is required"),
         variant: 'destructive',
       });
       return;
@@ -241,8 +239,8 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
 
     if (!formAutoGeneratePassword && !formPassword.trim()) {
       toast({
-        title: common.status.error,
-        description: content.passwordRequiredWhenNotAutoGenerating,
+        title: t("Error"),
+        description: t("Password is required when not auto-generating"),
         variant: 'destructive',
       });
       return;
@@ -308,20 +306,20 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || content.failedToUpdateUser);
+        throw new Error(error.error || t("Failed to update user"));
       }
 
       toast({
-        title: common.status.success,
-        description: content.userUpdatedSuccessfully,
+        title: t("Success"),
+        description: t("User updated successfully"),
       });
       setEditDialogOpen(false);
       resetForm();
       loadUsers();
     } catch (error) {
       toast({
-        title: common.status.error,
-        description: error instanceof Error ? error.message : content.failedToUpdateUser,
+        title: t("Error"),
+        description: error instanceof Error ? error.message : t("Failed to update user"),
         variant: 'destructive',
       });
     } finally {
@@ -377,7 +375,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || content.failedToResetPassword);
+        throw new Error(error.error || t("Failed to reset password"));
       }
 
       const data = await response.json();
@@ -386,8 +384,8 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
       loadUsers();
     } catch (error) {
       toast({
-        title: common.status.error,
-        description: error instanceof Error ? error.message : content.failedToResetPassword,
+        title: t("Error"),
+        description: error instanceof Error ? error.message : t("Failed to reset password"),
         variant: 'destructive',
       });
     } finally {
@@ -437,10 +435,10 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <ColoredIcon icon={UserCog} color="blue" size="md" />
-            {content.title}
+            {t("User Management")}
           </CardTitle>
           <CardDescription>
-            {content.description}
+            {t("Manage application users and permissions")}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -448,7 +446,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
             <div className="flex items-center gap-2 flex-1 max-w-sm">
               <Search className="h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder={content.searchUsers.value}
+                placeholder={t("Search users...")}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="max-w-sm"
@@ -459,7 +457,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
               setCreateDialogOpen(true);
             }}>
               <Plus className="h-4 w-4 mr-2" />
-              {content.addUser}
+              {t("Add User")}
             </Button>
           </div>
 
@@ -482,7 +480,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                   onSort={handleSort}
                   className="bg-muted"
                 >
-                  {content.username}
+                  {t("Username")}
                 </SortableTableHead>
                 <SortableTableHead 
                   column="isAdmin" 
@@ -490,7 +488,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                   onSort={handleSort}
                   className="bg-muted"
                 >
-                  {content.role}
+                  {t("Role")}
                 </SortableTableHead>
                 <SortableTableHead 
                   column="lastLoginAt" 
@@ -498,7 +496,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                   onSort={handleSort}
                   className="bg-muted"
                 >
-                  {content.lastLogin}
+                  {t("Last Login")}
                 </SortableTableHead>
                 <SortableTableHead 
                   column="updatedAt" 
@@ -506,7 +504,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                   onSort={handleSort}
                   className="bg-muted"
                 >
-                  {content.lastUpdate}
+                  {t("Last Update")}
                 </SortableTableHead>
                 <SortableTableHead 
                   column="createdAt" 
@@ -514,7 +512,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                   onSort={handleSort}
                   className="bg-muted"
                 >
-                  {content.created}
+                  {t("Created")}
                 </SortableTableHead>
                 <SortableTableHead 
                   column="isLocked" 
@@ -522,9 +520,9 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                   onSort={handleSort}
                   className="bg-muted"
                 >
-                  {content.status}
+                  {t("Status")}
                 </SortableTableHead>
-                <TableHead className="text-right bg-muted">{content.actions}</TableHead>
+                <TableHead className="text-right bg-muted">{t("Actions")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -534,11 +532,11 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                   <TableCell>
                     {user.isAdmin ? (
                       <span className="px-2 py-1 rounded-full text-xs bg-blue-500/20 text-blue-600 dark:text-blue-400">
-                        {content.admin}
+                        {t("Admin")}
                       </span>
                     ) : (
                       <span className="px-2 py-1 rounded-full text-xs bg-muted text-muted-foreground">
-                        {content.user}
+                        {t("User")}
                       </span>
                     )}
                   </TableCell>
@@ -551,7 +549,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                         </div>
                       </>
                     ) : (
-                      <span className="text-muted-foreground">{content.never}</span>
+                      <span className="text-muted-foreground">{t("Never")}</span>
                     )}
                   </TableCell>
                   <TableCell>
@@ -568,9 +566,9 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                   </TableCell>
                   <TableCell>
                     {user.isLocked ? (
-                      <span className="text-red-600 dark:text-red-400">{content.locked}</span>
+                      <span className="text-red-600 dark:text-red-400">{t("Locked")}</span>
                     ) : user.mustChangePassword ? (
-                      <span className="text-yellow-600 dark:text-yellow-400">{content.mustChangePassword}</span>
+                      <span className="text-yellow-600 dark:text-yellow-400">{t("Must Change Password")}</span>
                     ) : (
                       <span className="text-muted-foreground">—</span>
                     )}
@@ -581,7 +579,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                         variant="ghost"
                         size="icon"
                         onClick={() => openEditDialog(user)}
-                        title={content.editUserTitle}
+                        title={t("Edit user")}
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
@@ -592,7 +590,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                           setSelectedUser(user);
                           handlePasswordReset();
                         }}
-                        title={content.resetPasswordTitle}
+                        title={t("Reset password")}
                       >
                         <KeyRound className="h-4 w-4" />
                       </Button>
@@ -603,10 +601,10 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                           onClick={() => openDeleteDialog(user)}
                           title={
                             isUserLastAdmin(user.id) 
-                              ? content.cannotDeleteLastAdmin
+                              ? t("Cannot delete the last admin account")
                               : user.isAdmin 
-                              ? content.deleteAdminUserWarning
-                              : content.deleteUserTitle
+                              ? t("Delete admin user (warning: this is an admin account)")
+                              : t("Delete user")
                           }
                           className={
                             isUserLastAdmin(user.id)
@@ -654,7 +652,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                         variant="ghost"
                         size="icon"
                         onClick={() => openEditDialog(user)}
-                        title={content.editUserTitle}
+                        title={t("Edit user")}
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
@@ -665,7 +663,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                           setSelectedUser(user);
                           handlePasswordReset();
                         }}
-                        title={content.resetPasswordTitle}
+                        title={t("Reset password")}
                       >
                         <KeyRound className="h-4 w-4" />
                       </Button>
@@ -676,10 +674,10 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                           onClick={() => openDeleteDialog(user)}
                           title={
                             isUserLastAdmin(user.id) 
-                              ? content.cannotDeleteLastAdmin
+                              ? t("Cannot delete the last admin account")
                               : user.isAdmin 
-                              ? content.deleteAdminUserWarning
-                              : content.deleteUserTitle
+                              ? t("Delete admin user (warning: this is an admin account)")
+                              : t("Delete user")
                           }
                           className={
                             isUserLastAdmin(user.id)
@@ -764,19 +762,19 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
       <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>{content.createNewUser}</DialogTitle>
+            <DialogTitle>{t("Create New User")}</DialogTitle>
             <DialogDescription>
-              {content.createNewUserDescription}
+              {t("Create a new user account. You can auto-generate a secure password or set a custom one.")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="create-username">{content.usernameLabel}</Label>
+              <Label htmlFor="create-username">{t("Username")}</Label>
               <Input
                 id="create-username"
                 value={formUsername}
                 onChange={(e) => setFormUsername(e.target.value)}
-                placeholder={content.enterUsername.value}
+                placeholder={t("Enter username")}
                 disabled={formLoading}
               />
             </div>
@@ -794,7 +792,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                   disabled={formLoading}
                 />
                 <Label htmlFor="auto-generate" className="cursor-pointer">
-                  {content.autoGenerateSecurePassword}
+                  {t("Auto-generate secure password")}
                 </Label>
               </div>
               {!formAutoGeneratePassword && (
@@ -803,11 +801,11 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                     id="create-password"
                     value={formPassword}
                     onChange={setFormPassword}
-                    placeholder={content.enterPassword.value}
+                    placeholder={t("Enter password")}
                     disabled={formLoading}
                   />
                   <div className="space-y-2 rounded-md bg-muted p-3">
-                    <div className="text-sm font-semibold mb-2">{content.passwordRequirements}</div>
+                    <div className="text-sm font-semibold mb-2">{t("Password Requirements:")}</div>
                     <div className="space-y-1.5">
                       {passwordPolicy && passwordRequirementLabels && (
                         <>
@@ -849,7 +847,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                   disabled={formLoading}
                 />
                 <Label htmlFor="create-is-admin" className="cursor-pointer">
-                  {content.adminUser}
+                  {t("Admin user")}
                 </Label>
               </div>
             </div>
@@ -862,7 +860,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                   disabled={formLoading}
                 />
                 <Label htmlFor="create-require-password-change" className="cursor-pointer">
-                  {content.requirePasswordChangeOnFirstLogin}
+                  {t("Require password change on first login")}
                 </Label>
               </div>
             </div>
@@ -872,10 +870,10 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
               setCreateDialogOpen(false);
               resetForm();
             }} disabled={formLoading}>
-              {content.cancel}
+              {t("Cancel")}
             </Button>
             <Button onClick={handleCreate} disabled={formLoading || !isCreateFormValid}>
-              {formLoading ? content.creating : content.createUser}
+              {formLoading ? t("Creating...") : t("Create User")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -946,24 +944,26 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{content.deleteUserDialog}</AlertDialogTitle>
+            <AlertDialogTitle>{t("Delete User")}</AlertDialogTitle>
             <AlertDialogDescription>
-              {String(content.deleteUserDescription).replace('{username}', selectedUser?.username || '')}
+              {t("Are you sure you want to delete user {{username}}? This action cannot be undone.", {
+                username: selectedUser?.username ?? "",
+              })}
               {selectedUser?.isAdmin && (
                 <span className="block mt-2 text-yellow-600 dark:text-yellow-400">
-                  {content.warningThisIsAdminUser}
+                  {t("Warning: This is an admin user.")}
                 </span>
               )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={formLoading}>{content.cancel}</AlertDialogCancel>
+            <AlertDialogCancel disabled={formLoading}>{t("Cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
               disabled={formLoading}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {formLoading ? content.deleting : content.delete}
+              {formLoading ? t("Deleting...") : t("Delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -973,19 +973,19 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
       <Dialog open={passwordResetDialogOpen} onOpenChange={setPasswordResetDialogOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>{content.passwordReset}</DialogTitle>
+            <DialogTitle>{t("Password Reset")}</DialogTitle>
             <DialogDescription>
               {selectedUser 
-                ? content.passwordResetDescription.value.replace('{username}', selectedUser.username)
-                : content.passwordResetDescriptionGeneric}
+                ? t("A new temporary password has been generated for {{username}}.", { username: selectedUser.username })
+                : t("A new temporary password has been generated for the user.")}
               <br />
-              <strong className="text-destructive">{content.copyPasswordNow}</strong>
+              <strong className="text-destructive">{t("Copy this password now - it will not be shown again!")}</strong>
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             {tempPassword && (
               <div className="space-y-2">
-                <Label>{content.temporaryPassword}</Label>
+                <Label>{t("Temporary Password")}</Label>
                 <div className="flex items-center gap-2">
                   <Input
                     value={tempPassword}
@@ -996,7 +996,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                     variant="outline"
                     size="icon"
                     onClick={copyPassword}
-                    title={content.copyPassword}
+                    title={t("Copy password")}
                   >
                     {copiedPassword ? (
                       <Check className="h-4 w-4 text-green-600" />
@@ -1006,7 +1006,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                   </Button>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  {content.userWillBeRequiredToChangePassword}
+                  {t("The user will be required to change this password on first login.")}
                 </p>
               </div>
             )}
@@ -1021,7 +1021,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                 loadUsers();
               }
             }}>
-              {content.close}
+              {t("Close")}
             </Button>
           </DialogFooter>
         </DialogContent>

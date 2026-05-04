@@ -1,5 +1,6 @@
 "use client";
-
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -26,42 +27,40 @@ import { NotificationTemplate, SUPPORTED_TEMPLATE_LANGUAGES, type SupportedTempl
 import { defaultNotificationTemplates, getDefaultNotificationTemplate } from '@/lib/default-config';
 import { getUserLocalStorageItem, setUserLocalStorageItem } from '@/lib/user-local-storage';
 import { useCurrentUser } from '@/hooks/use-current-user';
-import { useIntlayer } from 'react-intlayer';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 
-// Helper function to create template variables - will be used inside component with content
-const createTemplateVariables = (content: any) => [
-  { name: 'server_name', description: content.variableServerName.value },
-  { name: 'server_alias', description: content.variableServerAlias.value },
-  { name: 'server_note', description: content.variableServerNote.value },
-  { name: 'server_url', description: content.variableServerUrl.value },
-  { name: 'backup_name', description: content.variableBackupName.value },
-  { name: 'backup_date', description: content.variableBackupDate.value },
-  { name: 'status', description: content.variableStatus.value },
-  { name: 'messages_count', description: content.variableMessagesCount.value },
-  { name: 'warnings_count', description: content.variableWarningsCount.value },
-  { name: 'errors_count', description: content.variableErrorsCount.value },
-  { name: 'log_text', description: content.variableLogText.value },
-  { name: 'duration', description: content.variableDuration.value },
-  { name: 'file_count', description: content.variableFileCount.value },
-  { name: 'file_size', description: content.variableFileSize.value },
-  { name: 'uploaded_size', description: content.variableUploadedSize.value },
-  { name: 'storage_size', description: content.variableStorageSize.value },
-  { name: 'available_versions', description: content.variableAvailableVersions.value },
+const createTemplateVariables = (t: TFunction) => [
+  { name: 'server_name', description: t("Name of the server") },
+  { name: 'server_alias', description: t("Alias of the server (server_name if not set)") },
+  { name: 'server_note', description: t("Note of the server") },
+  { name: 'server_url', description: t("URL of the Duplicati server") },
+  { name: 'backup_name', description: t("Name of the backup") },
+  { name: 'backup_date', description: t("Date/time of the backup") },
+  { name: 'status', description: t("Backup status (Success, Failed, etc.)") },
+  { name: 'messages_count', description: t("Number of messages") },
+  { name: 'warnings_count', description: t("Number of warnings") },
+  { name: 'errors_count', description: t("Number of errors") },
+  { name: 'log_text', description: t("Log text messages (warnings and errors)") },
+  { name: 'duration', description: t("Backup duration") },
+  { name: 'file_count', description: t("Number of files processed") },
+  { name: 'file_size', description: t("Total file size") },
+  { name: 'uploaded_size', description: t("Size of uploaded data") },
+  { name: 'storage_size', description: t("Storage size used") },
+  { name: 'available_versions', description: t("Number of available versions") },
 ];
 
-const createTemplateVariablesOverdueBackup = (content: any) => [
-  { name: 'server_name', description: content.variableServerName.value },
-  { name: 'server_alias', description: content.variableServerAlias.value },
-  { name: 'server_note', description: content.variableServerNote.value },
-  { name: 'server_url', description: content.variableServerUrl.value },
-  { name: 'backup_name', description: content.variableBackupName.value },
-  { name: 'last_backup_date', description: content.variableLastBackupDate.value },
-  { name: 'last_elapsed', description: content.variableLastElapsed.value },
-  { name: 'expected_date', description: content.variableExpectedDate.value },
-  { name: 'expected_elapsed', description: content.variableExpectedElapsed.value },
-  { name: 'backup_interval', description: content.variableBackupInterval.value },
-  { name: 'overdue_tolerance', description: content.variableOverdueTolerance.value },
+const createTemplateVariablesOverdueBackup = (t: TFunction) => [
+  { name: 'server_name', description: t("Name of the server") },
+  { name: 'server_alias', description: t("Alias of the server (server_name if not set)") },
+  { name: 'server_note', description: t("Note of the server") },
+  { name: 'server_url', description: t("URL of the Duplicati server") },
+  { name: 'backup_name', description: t("Name of the backup") },
+  { name: 'last_backup_date', description: t("Date/time of the last backup") },
+  { name: 'last_elapsed', description: t("Time ago since the last backup") },
+  { name: 'expected_date', description: t("Date/time when the backup was expected") },
+  { name: 'expected_elapsed', description: t("Time elapsed since the expected backup date") },
+  { name: 'backup_interval', description: t("Backup interval string (e.g., \"1D\", \"2W\", \"1M\")") },
+  { name: 'overdue_tolerance', description: t("Configured overdue tolerance (1 hour, 1 day, etc.)") },
 ];
 
 interface NotificationTemplatesFormProps {
@@ -92,7 +91,7 @@ const TemplateEditor = ({
   onFieldFocus,
   activeTab,
   createRefCallback,
-  content,
+  t,
 }: { 
   templateType: 'success' | 'warning' | 'overdueBackup';
   template: NotificationTemplate;
@@ -110,14 +109,14 @@ const TemplateEditor = ({
   onFieldFocus: (field: keyof NotificationTemplate) => void;
   activeTab: 'success' | 'warning' | 'overdue';
   createRefCallback: (key: string) => (el: HTMLInputElement | HTMLTextAreaElement | null) => void;
-  content: any;
+  t: TFunction;
 }) => {
   // Determine which variable list to use based on active tab
   const variablesList = useMemo(() => {
     return activeTab === 'overdue' 
-      ? createTemplateVariablesOverdueBackup(content)
-      : createTemplateVariables(content);
-  }, [activeTab, content]);
+      ? createTemplateVariablesOverdueBackup(t)
+      : createTemplateVariables(t);
+  }, [activeTab, t]);
 
   return (
     <Card>
@@ -130,7 +129,7 @@ const TemplateEditor = ({
           <div className="flex flex-col sm:flex-row justify-end-safe items-start sm:items-center gap-2">
             <Select value={selectedVariable} onValueChange={setSelectedVariable}>
               <SelectTrigger className="w-full sm:w-80">
-                <SelectValue placeholder={content.selectVariable.value} />
+                <SelectValue placeholder={t("Select variable...")} />
               </SelectTrigger>
               <SelectContent>
                 {variablesList.map((variable) => (
@@ -151,7 +150,7 @@ const TemplateEditor = ({
               className="flex items-center gap-1 w-full sm:w-auto"
             >
               <ClipboardPaste className="h-4 w-4" />
-              {content.insert}
+              {t("Insert")}
             </Button>
           </div>
         </div>
@@ -161,13 +160,13 @@ const TemplateEditor = ({
           <div className="space-y-2">
             <Label htmlFor={`${templateType}-title`} className="flex items-center gap-2">
               <ColoredIcon icon={Type} color="blue" size="sm" />
-              {content.titleLabel}
+              {t("Title")}
             </Label>
             <Input
               id={`${templateType}-title`}
               value={template.title || ''}
               onChange={(e) => updateTemplate(templateType, 'title', e.target.value)}
-              placeholder={content.enterNotificationTitle.value}
+              placeholder={t("Enter notification title")}
               ref={createRefCallback(`${templateType}-title`)}
               onFocus={() => onFieldFocus('title')}
             />
@@ -176,7 +175,7 @@ const TemplateEditor = ({
           <div className="space-y-2">
             <Label htmlFor={`${templateType}-priority`} className="flex items-center gap-2">
               <ColoredIcon icon={Star} color="yellow" size="sm" />
-              {content.priority}
+              {t("Priority")}
             </Label>
             <Select
               value={template.priority || 'default'}
@@ -186,11 +185,11 @@ const TemplateEditor = ({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="max">{content.priorityMax.value}</SelectItem>
-                <SelectItem value="high">{content.priorityHigh.value}</SelectItem>
-                <SelectItem value="default">{content.priorityDefault.value}</SelectItem>
-                <SelectItem value="low">{content.priorityLow.value}</SelectItem>
-                <SelectItem value="min">{content.priorityMin.value}</SelectItem>
+                <SelectItem value="max">{t("Max/Urgent")}</SelectItem>
+                <SelectItem value="high">{t("High")}</SelectItem>
+                <SelectItem value="default">{t("Default")}</SelectItem>
+                <SelectItem value="low">{t("Low")}</SelectItem>
+                <SelectItem value="min">{t("Min")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -198,7 +197,7 @@ const TemplateEditor = ({
           <div className="space-y-2">
             <Label htmlFor={`${templateType}-tags`} className="flex items-center gap-2">
               <ColoredIcon icon={Tag} color="green" size="sm" />
-              {content.tags}
+              {t("Tags (comma separated)")}
             </Label>
             <Input
               id={`${templateType}-tags`}
@@ -214,19 +213,19 @@ const TemplateEditor = ({
         <div className="space-y-2">
           <Label htmlFor={`${templateType}-message`} className="flex items-center gap-2">
             <ColoredIcon icon={MessageSquare} color="purple" size="sm" />
-            {content.messageTemplate}
+            {t("Message Template")}
           </Label>
           <Textarea
             ref={createRefCallback(`${templateType}-message`)}
             id={`${templateType}-message`}
             value={template.message || ''}
             onChange={(e) => updateTemplate(templateType, 'message', e.target.value)}
-            placeholder={content.enterMessageTemplate.value}
+            placeholder={t("Enter your message template using variables like {{server_name}}, {{backup_name}}, {{status}}, etc.")}
             className="min-h-[262px]"
             onFocus={() => onFieldFocus('message')}
           />
           <p className="text-sm text-muted-foreground">
-            {content.tipInsertVariable.value}
+            {t("Tip: to insert a variable, place your cursor where you want it, choose the variable, and click 'Insert'.")}
           </p>
         </div>
       </CardContent>
@@ -235,8 +234,31 @@ const TemplateEditor = ({
 };
 
 export function NotificationTemplatesForm({ templates, onSave, onSendTest }: NotificationTemplatesFormProps) {
-  const content = useIntlayer('notification-templates-form');
-  const common = useIntlayer('common');
+  const { t } = useTranslation();
+
+  const templateLanguageName = (lang: SupportedTemplateLanguage) => {
+    switch (lang) {
+      case "en":
+        return t("English");
+      case "de":
+        return t("German");
+      case "fr":
+        return t("French");
+      case "es":
+        return t("Spanish");
+      case "pt-BR":
+        return t("Portuguese (Brazil)");
+      default:
+        return lang;
+    }
+  };
+
+  const notificationTemplateTitleForTab = (tab: "success" | "warning" | "overdue") =>
+    tab === "success"
+      ? t("Success Notification Template")
+      : tab === "warning"
+        ? t("Warning/Error Notification Template")
+        : t("Overdue Backup Notification Template");
   const { toast } = useToast();
   const currentUser = useCurrentUser();
   const [formData, setFormData] = useState(() => {
@@ -352,8 +374,8 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
 
       toast({
         duration: 2000,
-        title: common.status.success,
-        description: content.templateSettingsSavedSuccessfully,
+        title: t("Success"),
+        description: t("Template settings saved successfully"),
       });
 
       // Notify other components that configuration has been saved
@@ -364,8 +386,8 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
       setTemplateLanguage(previousLanguage);
       toast({
         duration: 3000,
-        title: common.status.error,
-        description: content.failedToSaveTemplateSettings,
+        title: t("Error"),
+        description: t("Failed to save template settings"),
         variant: "destructive",
       });
     }
@@ -407,15 +429,15 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
       await onSave(formData);
       toast({
         duration: 2000,
-        title: common.status.success,
-        description: content.templateSettingsSavedSuccessfully,
+        title: t("Success"),
+        description: t("Template settings saved successfully"),
       });
     } catch (error) {
       console.error('Error saving templates:', error instanceof Error ? error.message : String(error));
-      const errorMessage = error instanceof Error ? error.message : content.failedToSaveTemplateSettings;
+      const errorMessage = error instanceof Error ? error.message : t("Failed to save template settings");
       toast({
         duration: 3000,
-        title: common.status.error,
+        title: t("Error"),
         description: errorMessage,
         variant: "destructive",
       });
@@ -442,15 +464,17 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
       await onSendTest(testTemplate);
       toast({
         duration: 2000,
-        title: common.status.success,
-        description: content.testNotificationSentUsing.value.replace('{template}', content[`${activeTab}TemplateTitle`].value),
+        title: t("Success"),
+        description: t("Test notification sent using {{template}} template", {
+          template: notificationTemplateTitleForTab(activeTab),
+        }),
       });
     } catch (error) {
       console.error('Error sending test notification:', error instanceof Error ? error.message : String(error));
-      const errorMessage = error instanceof Error ? error.message : content.failedToSendTestNotification;
+      const errorMessage = error instanceof Error ? error.message : t("Failed to send test notification");
       toast({
         duration: 3000,
-        title: common.status.error,
+        title: t("Error"),
         description: errorMessage,
         variant: "destructive",
       });
@@ -489,15 +513,17 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
 
       toast({
         duration: 2000,
-        title: content.resetToDefault,
-        description: content.templateResetToDefault.value.replace('{template}', content[`${activeTab}TemplateTitle`].value),
+        title: t("Reset this template to default"),
+        description: t("{{template}} template has been reset to default values", {
+          template: notificationTemplateTitleForTab(activeTab),
+        }),
       });
     } catch (error) {
       console.error('Failed to reset template:', error);
       toast({
         duration: 3000,
-        title: common.status.error,
-        description: content.failedToResetTemplate,
+        title: t("Error"),
+        description: t("Failed to reset template"),
         variant: "destructive",
       });
     } finally {
@@ -511,7 +537,7 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
 
   const confirmResetAllToDefault = async () => {
     setIsResetAllDialogOpen(false);
-    const languageName = content.templateLanguage.options[templateLanguage].value;
+    const languageName = templateLanguageName(templateLanguage);
 
     setIsSaving(true);
     try {
@@ -541,15 +567,15 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
 
       toast({
         duration: 3000,
-        title: content.resetAllToDefault,
-        description: content.allTemplatesResetToDefault.value.replace('{language}', languageName),
+        title: t("Reset all to default"),
+        description: t("All templates have been reset to {{language}} defaults", { language: languageName }),
       });
     } catch (error) {
       console.error('Failed to reset all templates:', error);
       toast({
         duration: 3000,
-        title: common.status.error,
-        description: content.failedToResetAllTemplates,
+        title: t("Error"),
+        description: t("Failed to reset all templates"),
         variant: "destructive",
       });
     } finally {
@@ -563,17 +589,17 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
         <TabsList className="grid w-full grid-cols-1 md:grid-cols-3 h-auto">
           <TabsTrigger value="success" className="text-xs md:text-sm py-2 px-3 flex items-center gap-2">
             <CheckCircle className="h-4 w-4" />
-            {content.successTab}
+            {t("Success")}
           </TabsTrigger>
           <TabsTrigger value="warning" className="text-xs md:text-sm py-2 px-3 flex items-center gap-2">
             <AlertTriangle className="h-4 w-4" />
-            <span className="hidden md:inline">{content.warningTab}</span>
-            <span className="md:hidden">{content.warningTabShort}</span>
+            <span className="hidden md:inline">{t("Warning/Error")}</span>
+            <span className="md:hidden">{t("Warning")}</span>
           </TabsTrigger>
           <TabsTrigger value="overdue" className="text-xs md:text-sm py-2 px-3 flex items-center gap-2">
             <Clock className="h-4 w-4" />
-            <span className="hidden md:inline">{content.overdueTab}</span>
-            <span className="md:hidden">{content.overdueTabShort}</span>
+            <span className="hidden md:inline">{t("Overdue Backup")}</span>
+            <span className="md:hidden">{t("Overdue")}</span>
           </TabsTrigger>
         </TabsList>
 
@@ -581,10 +607,10 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
           <TemplateEditor
             templateType="success"
             template={formData.success}
-            title={content.successTemplateTitle.value}
-            description={content.successTemplateDescription.value}
+            title={t("Success Notification Template")}
+            description={t("Template used when backups complete successfully")}
             selectedVariable={selectedVariable}
-            content={content}
+            t={t}
             setSelectedVariable={setSelectedVariable}
             insertVariable={insertVariable}
             updateTemplate={updateTemplate}
@@ -599,10 +625,10 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
           <TemplateEditor
             templateType="warning"
             template={formData.warning}
-            title={content.warningTemplateTitle.value}
-            description={content.warningTemplateDescription.value}
+            title={t("Warning/Error Notification Template")}
+            description={t("Template used when backups complete with warnings or errors")}
             selectedVariable={selectedVariable}
-            content={content}
+            t={t}
             setSelectedVariable={setSelectedVariable}
             insertVariable={insertVariable}
             updateTemplate={updateTemplate}
@@ -617,10 +643,10 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
           <TemplateEditor
             templateType="overdueBackup"
             template={formData.overdueBackup}
-            title={content.overdueTemplateTitle.value}
-            description={content.overdueTemplateDescription.value}
+            title={t("Overdue Backup Notification Template")}
+            description={t("Template used when expected backups are overdue based on the configured interval")}
             selectedVariable={selectedVariable}
-            content={content}
+            t={t}
             setSelectedVariable={setSelectedVariable}
             insertVariable={insertVariable}
             updateTemplate={updateTemplate}
@@ -636,7 +662,7 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
         {/* Left side: All buttons */}
         <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
           <Button onClick={handleSave} disabled={isSaving} variant="gradient" className="w-full sm:w-auto">
-            {isSaving ? content.saving : content.saveTemplateSettings}
+            {isSaving ? t("Saving...") : t("Save Template Settings")}
           </Button>
           {onSendTest && (
             <Button
@@ -646,8 +672,8 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
               className="flex items-center gap-2 w-full sm:w-auto"
             >
               <Send className="h-4 w-4" />
-              <span className="hidden sm:inline">{isSendingTest ? content.sending : content.sendTestNotification}</span>
-              <span className="sm:hidden">{isSendingTest ? content.sending : content.sendTest}</span>
+              <span className="hidden sm:inline">{isSendingTest ? t("Sending...") : t("Send Test Notification")}</span>
+              <span className="sm:hidden">{isSendingTest ? t("Sending...") : t("Send Test")}</span>
             </Button>
           )}
           <Button
@@ -656,8 +682,8 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
             className="flex items-center gap-2 w-full sm:w-auto"
           >
             <RotateCcw className="h-4 w-4" />
-            <span className="hidden sm:inline">{content.resetToDefault}</span>
-            <span className="sm:hidden">{content.reset}</span>
+            <span className="hidden sm:inline">{t("Reset this template to default")}</span>
+            <span className="sm:hidden">{t("Reset")}</span>
           </Button>
           <Button
             onClick={handleResetAllToDefault}
@@ -665,21 +691,21 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
             className="flex items-center gap-2 w-full sm:w-auto"
           >
             <RotateCcw className="h-4 w-4" />
-            {content.resetAllToDefault}
+            {t("Reset all to default")}
           </Button>
         </div>
 
         {/* Right side: Language selector with tooltip */}
         <div className="flex items-start sm:items-center gap-2 w-full sm:w-auto">
           <div className="flex items-center gap-2">
-            <Label htmlFor="template-language-select">{content.templateLanguage.label.value}</Label>
+            <Label htmlFor="template-language-select">{t("Template Language")}</Label>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Info className="h-4 w-4 text-muted-foreground cursor-help" />
                 </TooltipTrigger>
                 <TooltipContent side="top" className="max-w-sm">
-                  <p>{content.templateLanguage.description.value}</p>
+                  <p>{t("Language for default notification templates. Changing this does not affect already customized templates. If you are changing languages, you need to use the reset buttons to load the new language defaults.")}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -695,7 +721,7 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
             <SelectContent>
               {SUPPORTED_TEMPLATE_LANGUAGES.map((lang) => (
                 <SelectItem key={lang} value={lang}>
-                  {content.templateLanguage.options[lang].value}
+                  {templateLanguageName(lang)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -707,15 +733,17 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
       <AlertDialog open={isResetSingleDialogOpen} onOpenChange={setIsResetSingleDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{content.resetToDefault}</AlertDialogTitle>
+            <AlertDialogTitle>{t("Reset this template to default")}</AlertDialogTitle>
             <AlertDialogDescription>
-              {content.resetConfirm.value.replaceAll('{language}', content.templateLanguage.options[templateLanguage].value)}
+              {t("Reset template to default? This will use the {{language}} default template.", {
+                language: templateLanguageName(templateLanguage),
+              })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{common.ui.cancel.value}</AlertDialogCancel>
+            <AlertDialogCancel>{t("Cancel")}</AlertDialogCancel>
             <AlertDialogAction onClick={confirmResetToDefault}>
-              {content.resetToDefault}
+              {t("Reset this template to default")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -725,15 +753,17 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
       <AlertDialog open={isResetAllDialogOpen} onOpenChange={setIsResetAllDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{content.resetAllToDefault}</AlertDialogTitle>
+            <AlertDialogTitle>{t("Reset all to default")}</AlertDialogTitle>
             <AlertDialogDescription>
-              {content.resetAllConfirm.value.replaceAll('{language}', content.templateLanguage.options[templateLanguage].value)}
+              {t("Reset all templates to default in {{language}}? This will replace all template messages and titles with the {{language}} defaults.", {
+                language: templateLanguageName(templateLanguage),
+              })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{common.ui.cancel.value}</AlertDialogCancel>
+            <AlertDialogCancel>{t("Cancel")}</AlertDialogCancel>
             <AlertDialogAction onClick={confirmResetAllToDefault}>
-              {content.resetAllToDefault}
+              {t("Reset all to default")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

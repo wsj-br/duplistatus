@@ -70,8 +70,13 @@ run.log*
 next-env.d.ts
 .genkit/*
 
-# intlayer - auto-generated files
+# legacy intlayer output (optional)
 .intlayer/
+
+# ai-i18n-tools translation cache
+.translation-cache/
+!.translation-cache/cache.db
+
 
 # environment variables
 .env*

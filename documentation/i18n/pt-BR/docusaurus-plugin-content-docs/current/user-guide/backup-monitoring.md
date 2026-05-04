@@ -1,9 +1,11 @@
 ---
-translation_last_updated: '2026-03-01T00:45:20.118Z'
-source_file_mtime: '2026-02-16T00:30:39.431Z'
-source_file_hash: f8701b469fe3932d
+translation_last_updated: '2026-04-18T00:02:12.705Z'
+source_file_mtime: '2026-03-05T22:33:28.423Z'
+source_file_hash: 74e68a394e4fc2ec0fae355e9467377c4f1bde23f973fd6555e67a0ca86af518
 translation_language: pt-BR
-source_file_path: user-guide/backup-monitoring.md
+source_file_path: documentation/docs/user-guide/backup-monitoring.md
+translation_models:
+  - anthropic/claude-haiku-4.5
 ---
 import { ZoomMermaid } from '@site/src/components/ZoomMermaid';
 

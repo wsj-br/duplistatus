@@ -1,5 +1,5 @@
 "use client";
-
+import { useTranslation } from "react-i18next";
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,8 +19,6 @@ import { useConfiguration } from '@/contexts/configuration-context';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { getCSRFToken, authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { TogglePasswordInput } from '@/components/ui/toggle-password-input';
-import { useIntlayer } from 'react-intlayer';
-
 interface ServerSettingsFormProps {
   serverAddresses: ServerAddress[];
 }
@@ -36,8 +34,7 @@ interface ServerConnectionWithStatus extends ServerAddress {
 }
 
 export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps) {
-  const content = useIntlayer('server-settings-form');
-  const common = useIntlayer('common');
+  const { t } = useTranslation();
   const { toast } = useToast();
   const { refreshConfigSilently } = useConfiguration();
   const [connections, setConnections] = useState<ServerConnectionWithStatus[]>([]);
@@ -282,8 +279,8 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
   const testConnection = async (serverId: string, serverUrl: string) => {
     if (!serverUrl || serverUrl.trim() === '') {
       toast({
-        title: common.status.error,
-        description: content.pleaseEnterServerUrl,
+        title: t("Error"),
+        description: t("Please enter a server URL to test"),
         variant: "destructive",
         duration: 3000,
       });
@@ -292,8 +289,8 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
 
     if (!isValidUrl(serverUrl)) {
       toast({
-        title: common.status.error,
-        description: content.pleaseEnterValidUrl,
+        title: t("Error"),
+        description: t("Please enter a valid URL"),
         variant: "destructive",
         duration: 3000,
       });
@@ -328,15 +325,15 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
 
       if (!result.success) {
         toast({
-          title: content.connectionFailed,
+          title: t("Connection Failed"),
           description: result.message,
           variant: "destructive",
           duration: 5000,
         });
       } else {
         toast({
-          title: content.connectionSuccessful,
-          description: content.serverConnectionTestPassed,
+          title: t("Connection Successful"),
+          description: t("Server connection test passed"),
           duration: 3000,
         });
       }
@@ -350,8 +347,8 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
       }));
 
       toast({
-        title: content.connectionTestFailed,
-        description: error instanceof Error ? error.message : common.status.unknown,
+        title: t("Connection Test Failed"),
+        description: error instanceof Error ? error.message : t("Unknown"),
         variant: "destructive",
         duration: 5000,
       });
@@ -366,8 +363,8 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
       
       if (connectionsWithUrls.length === 0) {
         toast({
-          title: content.noUrlsToTest,
-          description: content.noServerUrlsConfigured,
+          title: t("No URLs to Test"),
+          description: t("No server URLs are configured to test"),
           variant: "destructive",
           duration: 3000,
         });
@@ -436,17 +433,18 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
       });
       
       toast({
-        title: content.connectionTestsComplete,
-        description: content.testedConnections.value
-          .replace('{count}', String(connectionsWithUrls.length))
-          .replace('{success}', String(successCount))
-          .replace('{failed}', String(failureCount)),
+        title: t("Connection Tests Complete"),
+        description: t("Tested {{count}} connections: {{success}} successful, {{failed}} failed", {
+          count: connectionsWithUrls.length,
+          success: successCount,
+          failed: failureCount,
+        }),
         duration: 5000,
       });
     } catch {
       toast({
-        title: common.status.error,
-        description: content.failedToTestAllConnections,
+        title: t("Error"),
+        description: t("Failed to test all connections"),
         variant: "destructive",
         duration: 3000,
       });
@@ -458,8 +456,8 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
   const handleSave = async () => {
     if (hasInvalidUrls) {
       toast({
-        title: content.validationError,
-        description: content.pleaseFixInvalidUrls,
+        title: t("Validation Error"),
+        description: t("Please fix invalid URLs before saving"),
         variant: "destructive",
         duration: 3000,
       });
@@ -510,15 +508,15 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
       window.dispatchEvent(new CustomEvent('configuration-saved'));
 
       toast({
-        title: common.status.success,
-        description: content.serverDetailsUpdated,
+        title: t("Success"),
+        description: t("Server details updated successfully"),
         duration: 3000,
       });
 
     } catch (error) {
       toast({
-        title: common.status.error,
-        description: error instanceof Error ? error.message : content.failedToSaveServerDetails,
+        title: t("Error"),
+        description: error instanceof Error ? error.message : t("Failed to save server details"),
         variant: "destructive",
         duration: 5000,
       });
@@ -573,8 +571,8 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
       // Form reset is handled by useEffect watching passwordDialogOpen
     } catch {
       toast({
-        title: common.status.error,
-        description: content.failedToInitializePasswordChange,
+        title: t("Error"),
+        description: t("Failed to initialize password change"),
         variant: "destructive",
         duration: 3000,
       });
@@ -585,8 +583,8 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
     // When password is visible, confirmation field is synced, so only check newPassword
     if (!newPassword || (!showPassword && !confirmPassword)) {
       toast({
-        title: common.status.error,
-        description: content.pleaseEnterBothPasswordFields,
+        title: t("Error"),
+        description: t("Please enter both password fields"),
         variant: "destructive",
         duration: 3000,
       });
@@ -596,8 +594,8 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
     // When password is visible, confirmation is synced, so they match
     if (!showPassword && newPassword !== confirmPassword) {
       toast({
-        title: common.status.error,
-        description: content.passwordsDoNotMatch,
+        title: t("Error"),
+        description: t("Passwords do not match"),
         variant: "destructive",
         duration: 3000,
       });
@@ -619,8 +617,8 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
 
       if (response.ok) {
         toast({
-          title: common.status.success,
-          description: content.passwordUpdatedSuccessfully,
+          title: t("Success"),
+          description: t("Password updated successfully"),
           duration: 3000,
         });
         setPasswordDialogOpen(false);
@@ -667,8 +665,8 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
 
       if (response.ok) {
         toast({
-          title: common.status.success,
-          description: content.passwordDeletedSuccessfully,
+          title: t("Success"),
+          description: t("Password deleted successfully"),
           duration: 3000,
         });
         setPasswordDialogOpen(false);
@@ -681,16 +679,16 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
         window.dispatchEvent(new CustomEvent('configuration-saved'));
       } else {
         toast({
-          title: common.status.error,
-          description: result.error || content.failedToDeletePassword,
+          title: t("Error"),
+          description: result.error || t("Failed to delete password"),
           variant: "destructive",
           duration: 3000,
         });
       }
     } catch (error) {
       toast({
-        title: common.status.error,
-        description: error instanceof Error ? error.message : content.failedToDeletePassword,
+        title: t("Error"),
+        description: error instanceof Error ? error.message : t("Failed to delete password"),
         variant: "destructive",
         duration: 3000,
       });
@@ -729,13 +727,13 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
           <div className="flex items-center gap-3">
             <ColoredIcon icon={Server} color="green" size="lg" />
             <div>
-              <CardTitle>{content.serverAddresses}</CardTitle>
-              <CardDescription className="mt-1">{content.noServersFound}</CardDescription>
+              <CardTitle>{t("Server Addresses")}</CardTitle>
+              <CardDescription className="mt-1">{t("No servers found")}</CardDescription>
             </div>
           </div>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground">{content.noServersRegistered}</p>
+          <p className="text-muted-foreground">{t("No servers have been registered yet.")}</p>
         </CardContent>
       </Card>
     );
@@ -748,9 +746,9 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
           <div className="flex items-center gap-3">
             <ColoredIcon icon={Server} color="green" size="lg" />
             <div>
-              <CardTitle>{content.configureServerSettings}</CardTitle>
+              <CardTitle>{t("Configure Server Settings")}</CardTitle>
               <CardDescription className="mt-1">
-                {content.configureServerSettingsDescription}
+                {t("Configure an optional alias or name for each server. You can also add a descriptive note. Next, provide the web interface address for each server and test the connection to ensure it's accessible.")}
               </CardDescription>
             </div>
           </div>
@@ -767,7 +765,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                     sortConfig={sortConfig} 
                     onSort={handleSort}
                   >
-                    {content.serverName}
+                    {t("Server Name")}
                   </SortableTableHead>
                   <SortableTableHead 
                     className="w-[200px] min-w-[100px]" 
@@ -775,7 +773,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                     sortConfig={sortConfig} 
                     onSort={handleSort}
                   >
-                    {content.alias}
+                    {t("Alias")}
                   </SortableTableHead>
                   <SortableTableHead 
                     className="w-[300px] min-w-[150px]" 
@@ -783,7 +781,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                     sortConfig={sortConfig} 
                     onSort={handleSort}
                   >
-                    {content.note}
+                    {t("Note")}
                   </SortableTableHead>
                   <SortableTableHead 
                     className="w-[250px] min-w-[150px]" 
@@ -791,7 +789,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                     sortConfig={sortConfig} 
                     onSort={handleSort}
                   >
-                    {content.webInterfaceAddress}
+                    {t("Web Interface Address (URL)")}
                   </SortableTableHead>
                   <SortableTableHead 
                     className="w-[150px] min-w-[120px]" 
@@ -799,10 +797,10 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                     sortConfig={sortConfig} 
                     onSort={handleSort}
                   >
-                    {content.status}
+                    {t("Status")}
                   </SortableTableHead>
                   <TableCell className="w-[120px] min-w-[120px]">
-                    {content.actions}
+                    {t("Actions")}
                   </TableCell>
                 </TableRow>
               </TableHeader>
@@ -819,7 +817,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                             size="sm"
                             className="h-auto p-0 hover:bg-transparent"
                             onClick={() => handlePasswordButtonClick(connection.id, connection.name)}
-                            title={content.clickToChangePassword}
+                            title={t("Click to change password")}
                           >
                             <KeyRound className="h-3 w-3 text-blue-400"/>
                           </Button>
@@ -833,7 +831,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                           type="text"
                           value={connection.alias || ''}
                           onChange={(e) => handleAliasChange(connection.id, e.target.value)}
-                          placeholder={content.serverAliasPlaceholder.value}
+                          placeholder={t("Server alias")}
                           className="text-xs"
                         />
                       </div>
@@ -845,7 +843,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                           type="text"
                           value={connection.note || ''}
                           onChange={(e) => handleNoteChange(connection.id, e.target.value)}
-                          placeholder={content.notesPlaceholder.value}
+                          placeholder={t("Notes about this server")}
                           className="text-xs"
                         />
                       </div>
@@ -868,12 +866,12 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                               testConnection(connection.id, connection.server_url);
                             }
                           }}
-                          placeholder={content.urlPlaceholder.value}
+                          placeholder={t("https://server:8200")}
                           className={`text-xs ${!isValidUrl(connection.server_url) ? 'border-red-500' : ''}`}
                         />
                         {!isValidUrl(connection.server_url) && (
                           <div className="text-xs text-red-600">
-                            {content.invalidUrl}
+                            {t("Invalid URL")}
                           </div>
                         )}
                       </div>
@@ -886,14 +884,14 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                           {(() => {
                             const statusToDisplay = connection.connectionStatus;
                             
-                            if (statusToDisplay === 'success') return content.connected;
-                            if (statusToDisplay === 'collected') return content.collected;
-                            if (statusToDisplay === 'failed') return content.failed;
-                            if (statusToDisplay === 'testing') return content.testing;
-                            if (statusToDisplay === 'collecting') return content.collecting;
-                            if (statusToDisplay === 'need_url') return content.missingUrl;
-                            if (statusToDisplay === 'need_password') return content.missingPassword;
-                            if (statusToDisplay === 'need_url_and_password') return content.missingUrlAndPassword;
+                            if (statusToDisplay === 'success') return t("Connected");
+                            if (statusToDisplay === 'collected') return t("Collected");
+                            if (statusToDisplay === 'failed') return t("Failed");
+                            if (statusToDisplay === 'testing') return t("Testing...");
+                            if (statusToDisplay === 'collecting') return t("Collecting...");
+                            if (statusToDisplay === 'need_url') return t("Missing URL");
+                            if (statusToDisplay === 'need_password') return t("Missing Password");
+                            if (statusToDisplay === 'need_url_and_password') return t("Missing URL & Password");
                             return '';
                           })()}
                         </span>
@@ -911,7 +909,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                           className="px-2"
                         >
                           <Play className="h-3 w-3" />
-                          <span className="hidden sm:inline ml-1">{content.test}</span>
+                          <span className="hidden sm:inline ml-1">{t("Test")}</span>
                         </Button>
                         <ServerConfigurationButton
                           serverUrl={connection.server_url}
@@ -938,7 +936,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                           size="sm"
                           onClick={() => handlePasswordButtonClick(connection.id, connection.name)}
                           className="px-2"
-                          title={content.changePassword}
+                          title={t("Change Password")}
                         >
                           <RectangleEllipsis className="h-3 w-3" />
                         </Button>
@@ -966,7 +964,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                           size="sm"
                           className="h-auto p-0 hover:bg-transparent"
                           onClick={() => handlePasswordButtonClick(connection.id, connection.name)}
-                          title={content.clickToChangePassword}
+                          title={t("Click to change password")}
                         >
                           <KeyRound className="h-3 w-3 text-orange-500" />
                         </Button>
@@ -978,13 +976,13 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                   <div className="space-y-1">
                     <Label className="text-xs font-medium flex items-center gap-1">
                       <ColoredIcon icon={User} color="blue" size="sm" />
-                      {content.alias}
+                      {t("Alias")}
                     </Label>
                     <Input
                       type="text"
                       value={connection.alias}
                       onChange={(e) => handleAliasChange(connection.id, e.target.value)}
-                      placeholder={content.serverAliasPlaceholder.value}
+                      placeholder={t("Server alias")}
                       className="text-xs"
                     />
                   </div>
@@ -993,13 +991,13 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                   <div className="space-y-1">
                     <Label className="text-xs font-medium flex items-center gap-1">
                       <ColoredIcon icon={FileText} color="green" size="sm" />
-                      {content.note}
+                      {t("Note")}
                     </Label>
                     <Input
                       type="text"
                       value={connection.note}
                       onChange={(e) => handleNoteChange(connection.id, e.target.value)}
-                      placeholder={content.additionalNotesPlaceholder.value}
+                      placeholder={t("Additional notes")}
                       className="text-xs"
                     />
                   </div>
@@ -1008,7 +1006,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                   <div className="space-y-1">
                     <Label className="text-xs font-medium flex items-center gap-1">
                       <ColoredIcon icon={Globe} color="purple" size="sm" />
-                      {content.webInterfaceAddress}
+                      {t("Web Interface Address (URL)")}
                     </Label>
                     <div className="flex flex-col space-y-1">
                       <Input
@@ -1026,12 +1024,12 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                             testConnection(connection.id, connection.server_url);
                           }
                         }}
-                        placeholder={content.urlPlaceholder.value}
+                        placeholder={t("https://server:8200")}
                         className={`text-xs ${!isValidUrl(connection.server_url) ? 'border-red-500' : ''}`}
                       />
                       {!isValidUrl(connection.server_url) && (
                         <div className="text-xs text-red-600">
-                          {content.invalidUrl}
+                          {t("Invalid URL")}
                         </div>
                       )}
                     </div>
@@ -1039,22 +1037,22 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                   
                   {/* Status */}
                   <div className="space-y-1">
-                    <Label className="text-xs font-medium">{content.status}</Label>
+                    <Label className="text-xs font-medium">{t("Status")}</Label>
                     <div className="flex items-center space-x-2">
                       {getConnectionIcon(connection.connectionStatus)}
                       <span className="text-xs">
                         {(() => {
                           const statusToDisplay = connection.connectionStatus;
                           
-                          if (statusToDisplay === 'success') return content.connected;
-                          if (statusToDisplay === 'collected') return content.collected;
-                          if (statusToDisplay === 'failed') return content.failed;
-                          if (statusToDisplay === 'testing') return content.testing;
-                          if (statusToDisplay === 'collecting') return content.collecting;
-                          if (statusToDisplay === 'need_url') return content.missingUrl;
-                          if (statusToDisplay === 'need_password') return content.missingPassword;
-                          if (statusToDisplay === 'need_url_and_password') return content.missingUrlAndPassword;
-                          return content.unknown;
+                          if (statusToDisplay === 'success') return t("Connected");
+                          if (statusToDisplay === 'collected') return t("Collected");
+                          if (statusToDisplay === 'failed') return t("Failed");
+                          if (statusToDisplay === 'testing') return t("Testing...");
+                          if (statusToDisplay === 'collecting') return t("Collecting...");
+                          if (statusToDisplay === 'need_url') return t("Missing URL");
+                          if (statusToDisplay === 'need_password') return t("Missing Password");
+                          if (statusToDisplay === 'need_url_and_password') return t("Missing URL & Password");
+                          return t("Unknown");
                         })()}
                       </span>
                     </div>
@@ -1062,7 +1060,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                   
                   {/* Actions */}
                   <div className="space-y-1">
-                    <Label className="text-xs font-medium">{content.actions}</Label>
+                    <Label className="text-xs font-medium">{t("Actions")}</Label>
                     <div className="flex flex-col gap-2">
                       <Button
                         type="button"
@@ -1073,7 +1071,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                         className="w-full text-blue-600 hover:text-blue-700"
                       >
                         <Play className="h-3 w-3 mr-1" />
-                        {content.test}
+                        {t("Test")}
                       </Button>
                       <Button
                         type="button"
@@ -1083,7 +1081,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                         className="w-full"
                       >
                         <RectangleEllipsis className="h-3 w-3 mr-1" />
-                        {content.changePassword}
+                        {t("Change Password")}
                       </Button>
                       <ServerConfigurationButton
                         serverUrl={connection.server_url}
@@ -1123,10 +1121,10 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                 {isSaving ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {content.saving}
+                    {t("Saving...")}
                   </>
                 ) : (
-                  content.saveChanges
+                  t("Save Changes")
                 )}
               </Button>
               <Button
@@ -1137,14 +1135,14 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                 {isTestingAll ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    <span className="hidden sm:inline">{content.testingAll}</span>
-                    <span className="sm:hidden">{content.testing}</span>
+                    <span className="hidden sm:inline">{t("Testing All...")}</span>
+                    <span className="sm:hidden">{t("Testing...")}</span>
                   </>
                 ) : (
                   <>
                     <FastForward className="h-4 w-4" />
-                    <span className="hidden sm:inline">{content.testAll}</span>
-                    <span className="sm:hidden">{content.testAll}</span>
+                    <span className="hidden sm:inline">{t("Test All")}</span>
+                    <span className="sm:hidden">{t("Test All")}</span>
                   </>
                 )}
               </Button>
@@ -1157,8 +1155,8 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                 onCollectionStart={(showInstructionToast) => {
                   if (showInstructionToast) {
                     toast({
-                      title: content.startingCollection.value,
-                      description: content.collectingBackupLogs.value,
+                      title: t("Starting Collection"),
+                      description: t("Collecting backup logs from all configured servers..."),
                       duration: 4000,
                     });
                   }
@@ -1188,37 +1186,37 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
       <Dialog open={passwordDialogOpen} onOpenChange={handlePasswordDialogClose}>
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
-            <DialogTitle>{content.changePasswordToAccess}</DialogTitle>
+            <DialogTitle>{t("Change Password to Access Duplicati Server")}</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="space-y-2">
               <Label htmlFor="server-name" className="text-sm font-medium">
-                {content.server} {selectedServerName}
+                {t("Server:")} {selectedServerName}
               </Label>
             </div>
             <div className="space-y-2">
               <Label htmlFor="new-password" className="text-sm font-medium">
-                {content.newPassword}
+                {t("New Password")}
               </Label>
               <TogglePasswordInput
                 ref={passwordInputRef}
                 id="new-password"
                 value={newPassword}
                 onChange={setNewPassword}
-                placeholder={content.enterNewPassword.value}
+                placeholder={t("Enter new password")}
                 showPassword={showPassword}
                 onTogglePassword={() => setShowPassword(!showPassword)}
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="confirm-password" className={`text-sm font-medium ${showPassword ? 'opacity-60' : ''}`}>
-                {content.confirmPassword}
+                {t("Confirm Password")}
               </Label>
               <TogglePasswordInput
                 id="confirm-password"
                 value={confirmPassword}
                 onChange={setConfirmPassword}
-                placeholder={content.confirmNewPassword.value}
+                placeholder={t("Confirm new password")}
                 className={!showPassword && newPassword && confirmPassword && newPassword !== confirmPassword ? 'border-red-500' : ''}
                 showPassword={showPassword}
                 onTogglePassword={() => setShowPassword(!showPassword)}
@@ -1229,7 +1227,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
               {!showPassword && newPassword && confirmPassword && newPassword !== confirmPassword && (
                 <p className="text-sm text-red-600 flex items-center gap-1">
                   <XCircle className="h-4 w-4" />
-                  {content.passwordsDoNotMatch}
+                  {t("Passwords do not match")}
                 </p>
               )}
             </div>
@@ -1246,10 +1244,10 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                 {isDeletingPassword ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {content.deleting}
+                    {t("Deleting...")}
                   </>
                 ) : (
-                  content.deletePassword
+                  t("Delete Password")
                 )}
               </Button>
               <div className="flex gap-2">
@@ -1259,7 +1257,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                   onClick={handlePasswordDialogClose}
                   disabled={isDeletingPassword || isSavingPassword}
                 >
-                  {common.ui.cancel}
+                  {t("Cancel")}
                 </Button>
                 <Button
                   type="button"
@@ -1270,10 +1268,10 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                   {isSavingPassword ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      {content.saving}
+                      {t("Saving...")}
                     </>
                   ) : (
-                    content.savePassword
+                    t("Save Password")
                   )}
                 </Button>
               </div>

@@ -1,9 +1,11 @@
 ---
-translation_last_updated: '2026-03-01T00:45:13.890Z'
-source_file_mtime: '2026-02-16T00:30:39.430Z'
-source_file_hash: da5148730ecb385b
+translation_last_updated: '2026-04-18T00:01:45.859Z'
+source_file_mtime: '2026-03-05T22:33:28.423Z'
+source_file_hash: f8c4464625015170ba865f56f24e9f8d1dcde28efa05628f7e79b30cc230240c
 translation_language: es
-source_file_path: installation/duplicati-server-configuration.md
+source_file_path: documentation/docs/installation/duplicati-server-configuration.md
+translation_models:
+  - anthropic/claude-haiku-4.5
 ---
 # Configuración del Servidor Duplicati (Requerido) {#duplicati-server-configuration-required}
 

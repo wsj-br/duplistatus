@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "react-i18next";
 
 import { useMemo, memo } from 'react';
 import type { BackupStatus, ServerSummary } from "@/lib/types";
@@ -15,8 +16,6 @@ import { useConfig } from "@/contexts/config-context";
 import { getStatusSortValue } from "@/lib/sort-utils";
 import { ServerConfigurationButton } from "@/components/ui/server-configuration-button";
 import { BackupTooltipContent } from "@/components/ui/backup-tooltip-content";
-import { useIntlayer } from 'react-intlayer';
-
 // Default card size constants
 const DEFAULT_MIN_CARD_WIDTH = 270;  // Minimum width of a card in pixels
 const DEFAULT_MAX_CARD_WIDTH = 330;  // Maximum width of a card in pixels
@@ -138,8 +137,7 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
   const serverStatus = getServerStatus(server);
   const router = useRouter();
   const locale = useLocale();
-  const content = useIntlayer('overview-cards');
-  const common = useIntlayer('common');
+  const { t } = useTranslation();
 
   const handleCardClick = () => {
     onSelect(server.id);
@@ -163,7 +161,7 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                router.push(`/${locale}/detail/${server.id}`);
+                router.push(`/detail/${server.id}`);
               }}
               className="flex items-center hover:text-blue-600 transition-colors duration-200 cursor-pointer"
               title={`${server.alias ? server.name : ''}${server.alias && server.note ? '\n': ''}${server.note ? server.note : ''}`}
@@ -186,7 +184,7 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
           <section className="flex flex-col items-center">
             <div className="flex items-center gap-1 text-muted-foreground text-xs mb-1">
               <Database className="h-3 w-3" />
-              <span>{content.files}</span>
+              <span>{t("Files")}</span>
             </div>
             <p className="font-semibold text-sm">
               {server.totalFileCount > 0 ? formatInteger(server.totalFileCount, locale) : 'N/A'}
@@ -195,7 +193,7 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
           <section className="flex flex-col items-center">
             <div className="flex items-center gap-1 text-muted-foreground text-xs mb-1">
               <HardDrive className="h-3 w-3" />
-              <span>{content.size}</span>
+              <span>{t("Size")}</span>
             </div>
             <p className="font-semibold text-sm">
               {server.totalFileSize > 0 ? formatBytes(server.totalFileSize, locale) : 'N/A'}
@@ -204,7 +202,7 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
           <section className="flex flex-col items-center">
             <div className="flex items-center gap-1 text-muted-foreground text-xs mb-1">
               <Server className="h-3 w-3" />
-              <span>{content.storage}</span>
+              <span>{t("Storage")}</span>
             </div>
             <p className="font-semibold text-sm">
               {server.totalStorageSize > 0 ? formatBytes(server.totalStorageSize, locale) : 'N/A'}
@@ -213,7 +211,7 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
           <section className="flex flex-col items-center">
             <div className="flex items-center gap-1 text-muted-foreground text-xs mb-1">
               <Calendar className="h-3 w-3" />
-              <span>{content.last}</span>
+              <span>{t("Last")}</span>
             </div>
             <div className="font-semibold text-xs">
               {server.lastBackupDate !== "N/A" ? (
@@ -236,7 +234,7 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
 
         {/* Backup List - Each backup job on its own row */}
         <section className="space-y-0.5 flex-1 flex flex-col mt-auto">
-          <h3 className="text-xs text-muted-foreground font-medium">{content.backups}</h3>
+          <h3 className="text-xs text-muted-foreground font-medium">{t("Backups:")}</h3>
           {server.backupInfo.length > 0 ? (
             <div className="flex-1 flex flex-col divide-y divide-border/30">
               {server.backupInfo.map((backupJob, index) => (
@@ -247,7 +245,7 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
                       data-screenshot-trigger="backup-item"
                       onClick={(e) => {
                         e.stopPropagation();
-                        router.push(`/${locale}/detail/${server.id}?backup=${encodeURIComponent(backupJob.name)}`);
+                        router.push(`/detail/${server.id}?backup=${encodeURIComponent(backupJob.name)}`);
                       }}
                     >
                       {/* Backup job name */}
@@ -320,7 +318,7 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
               ))}
             </div>
           ) : (
-            <div className="text-xs text-muted-foreground italic">{content.noBackupJobsAvailable}</div>
+            <div className="text-xs text-muted-foreground italic">{t("No backup jobs available")}</div>
           )}
         </section>
       </CardContent>
@@ -350,8 +348,7 @@ export const OverviewCards = memo(function OverviewCards({
   minGapVertical = DEFAULT_MIN_GAP_VERTICAL
 }: OverviewCardsProps) {
   const { dashboardCardsSortOrder } = useConfig();
-  const content = useIntlayer('overview-cards');
-  const common = useIntlayer('common');
+  const { t } = useTranslation();
 
   // Remove duplicates by server ID, sort based on configuration, and memoize to prevent unnecessary re-renders
   const uniqueServers = useMemo(() => {
@@ -404,13 +401,13 @@ export const OverviewCards = memo(function OverviewCards({
           <CardContent className="text-center space-y-4 py-8">
             <ColoredIcon icon={HardDrive} color="gray" size="lg" className="h-16 w-16 mx-auto" />
             <div className="space-y-2">
-              <h3 className="text-lg font-semibold text-muted-foreground">{content.noServersFound}</h3>
+              <h3 className="text-lg font-semibold text-muted-foreground">{t("No servers found")}</h3>
               <p className="text-sm text-muted-foreground">
-                {content.collectDataMessage}{" "}
+                {t("Collect data for your first server by clicking on")}{" "}
                 <span className="inline-flex items-center">
                   <ColoredIcon icon={Download} color="blue" size="sm" className="mx-1" />
                 </span>{" "}
-                {content.collectBackupsLogs} in the toolbar.
+                {t("(Collect backups logs)")} in the toolbar.
               </p>
             </div>
           </CardContent>

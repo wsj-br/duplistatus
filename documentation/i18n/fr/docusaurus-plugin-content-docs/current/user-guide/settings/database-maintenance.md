@@ -1,9 +1,11 @@
 ---
-translation_last_updated: '2026-03-01T00:45:07.726Z'
-source_file_mtime: '2026-02-16T00:30:39.432Z'
-source_file_hash: 462b7eda950bd23d
+translation_last_updated: '2026-04-18T00:03:35.471Z'
+source_file_mtime: '2026-03-05T22:33:28.423Z'
+source_file_hash: 6fadb27aa2b2898a91a2c277aa6ef2a380feb63069ba823e7cdf1943df204b51
 translation_language: fr
-source_file_path: user-guide/settings/database-maintenance.md
+source_file_path: documentation/docs/user-guide/settings/database-maintenance.md
+translation_models:
+  - anthropic/claude-haiku-4.5
 ---
 # Maintenance de la base de données {#database-maintenance}
 

@@ -1,5 +1,6 @@
 "use client";
-
+import type { TFunction } from "i18next";
+import { useTranslation } from "react-i18next";
 import { useState, useEffect, useRef, memo, useCallback } from 'react';
 import { 
   Line, 
@@ -20,7 +21,6 @@ import type { ChartDataPoint } from "@/lib/types";
 import { useToast } from "@/components/ui/use-toast";
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { useGlobalRefresh } from "@/contexts/global-refresh-context";
-import { useIntlayer } from 'react-intlayer';
 import { useLocale } from "@/contexts/locale-context";
 import { formatDateTime, formatDate } from "@/lib/date-format";
 import { formatInteger, formatBytes as formatBytesLocale } from "@/lib/number-format";
@@ -38,6 +38,8 @@ interface OverviewChartsPanelProps {
   // Add chartData prop to receive data directly from parent
   chartData?: ChartDataPoint[];
 }
+
+type OverviewChartsPanelCoreProps = OverviewChartsPanelProps & { t: TFunction };
 
 // Use existing library function for duration formatting
 const formatDuration = (minutes: number): string => {
@@ -70,8 +72,6 @@ const formatBytesForYAxis = (bytes: number, locale: string = 'en'): string => {
   }
 };
 
-
-// Note: Chart metrics configuration is now inside the component to use useIntlayer
 
 // Custom tooltip component for Recharts
 const CustomTooltip = ({ active, payload, label, metricKey, locale }: {
@@ -307,33 +307,32 @@ function OverviewMetricChart({
 }
 
 function OverviewChartsPanelCore({ 
+  t,
   serverId,
   backupName,
   chartData: externalChartData, // Use external chart data if provided
-}: OverviewChartsPanelProps) {
+}: OverviewChartsPanelCoreProps) {
   
   const { chartTimeRange } = useConfig();
   const { state: globalRefreshState } = useGlobalRefresh();
-  const content = useIntlayer('overview-charts-panel');
-  const common = useIntlayer('common');
   const locale = useLocale();
   
   // Configuration for overview charts - only 3 metrics
   const overviewChartMetrics = [
     { 
       key: 'duration', 
-      label: content.backupDuration, 
+      label: t("Backup Duration"), 
       formatter: formatDuration,
       color: "#10b981" // Green
     },
     { 
       key: 'fileSize', 
-      label: content.fileSize, 
+      label: t("File Size"), 
       color: "#ef4444" // Red
     },
     { 
       key: 'storageSize', 
-      label: content.storageSize, 
+      label: t("Storage Size"), 
       color: "#8b5cf6" // Purple
     }
   ];
@@ -457,7 +456,7 @@ function OverviewChartsPanelCore({
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       setError(errorMessage);
       toast({
-        title: content.errorLoadingChartData,
+        title: t("Error loading chart data"),
         description: errorMessage,
         variant: "destructive",
         duration: 3000
@@ -466,7 +465,7 @@ function OverviewChartsPanelCore({
       isLoadingRef.current = false;
       setIsLoading(false);
     }
-  }, [serverId, backupName, startDate, endDate, toast, content.errorLoadingChartData]);
+  }, [serverId, backupName, startDate, endDate, toast, t]);
 
   // Fetch data only when API parameters actually change and no external data is provided
   useEffect(() => {
@@ -533,33 +532,33 @@ function OverviewChartsPanelCore({
       if (backupName) {
         baseText += `:${backupName}`;
       } else {
-        baseText += ' (all backups)';
+        baseText += t(" (all backups)");
       }
     } else {
-      baseText = 'All Servers & Backups';
+      baseText = t("All Servers & Backups");
     }
     
     // Convert chartTimeRange to display label
     const getTimeRangeLabel = (timeRange: string) => {
       switch (timeRange) {
         case '24 hours':
-          return 'Last 24 hours';
+          return t("Last 24 Hours");
         case '7 days':
-          return 'Last week';
+          return t("Last week");
         case '2 weeks':
-          return 'Last 2 weeks';
+          return t("Last 2 weeks");
         case '1 month':
-          return 'Last month';
+          return t("Last month");
         case '3 months':
-          return 'Last quarter';
+          return t("Last quarter");
         case '6 months':
-          return 'Last semester';
+          return t("Last semester");
         case '1 year':
-          return 'Last year';
+          return t("Last Year");
         case '2 years':
-          return 'Last 2 years';
+          return t("Last 2 years");
         case 'All data':
-          return 'All available data';
+          return t("All available data");
         default:
           return timeRange;
       }
@@ -583,7 +582,7 @@ function OverviewChartsPanelCore({
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center text-muted-foreground">
             <FileBarChart2 className="h-8 w-8 mx-auto mb-2 animate-pulse" />
-            <p className="text-xs">{content.loadingChartData}</p>
+            <p className="text-xs">{t("Loading chart data...")}</p>
           </div>
         </div>
       )}
@@ -593,7 +592,7 @@ function OverviewChartsPanelCore({
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center text-destructive">
             <FileBarChart2 className="h-8 w-8 mx-auto mb-2 opacity-50" />
-            <p className="text-xs">{content.errorLoadingChartData}</p>
+            <p className="text-xs">{t("Error loading chart data")}</p>
           </div>
         </div>
       )}
@@ -620,7 +619,7 @@ function OverviewChartsPanelCore({
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center text-muted-foreground">
             <FileBarChart2 className="h-8 w-8 mx-auto mb-2 opacity-50" />
-            <p className="text-xs">No data available</p>
+            <p className="text-xs">{t("No data available")}</p>
           </div>
         </div>
       )}
@@ -634,7 +633,8 @@ const MemoizedOverviewChartsCore = memo(OverviewChartsPanelCore, (prevProps, nex
   // Only re-render if there are actual changes in the data we care about
   
   // Compare basic props
-  if (prevProps.serverId !== nextProps.serverId ||
+  if (prevProps.t !== nextProps.t ||
+      prevProps.serverId !== nextProps.serverId ||
       prevProps.backupName !== nextProps.backupName) {
     return false; // Props changed, re-render
   }
@@ -661,6 +661,7 @@ export const OverviewChartsPanel = ({
   backupName,
   chartData
 }: OverviewChartsPanelProps) => {
+  const { t } = useTranslation();
   
   return (
     <div className="flex flex-col p-3 h-full min-h-0 min-w-0 overflow-hidden">
@@ -668,12 +669,13 @@ export const OverviewChartsPanel = ({
       <div className="flex items-center justify-between mb-1 flex-shrink-0">
         <div className="flex items-center gap-2">
           <FileBarChart2 className="h-4 w-4 text-blue-600" />
-          <h2 className="text-sm font-semibold">Metrics</h2>
+          <h2 className="text-sm font-semibold">{t("Metrics")}</h2>
         </div>
       </div>
 
       {/* Memoized charts component */}
       <MemoizedOverviewChartsCore 
+        t={t}
         serverId={serverId}
         backupName={backupName}
         chartData={chartData}

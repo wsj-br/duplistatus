@@ -1,9 +1,12 @@
 ---
-translation_last_updated: '2026-03-01T00:45:05.355Z'
-source_file_mtime: '2026-02-16T00:30:39.430Z'
-source_file_hash: 5182562d16f18184
+translation_last_updated: '2026-04-18T00:02:33.549Z'
+source_file_mtime: '2026-03-05T22:33:28.423Z'
+source_file_hash: 837ff8a2eae0a48ed5b1298115447eb5f025e020cf32dee7ae20d8849e656bc0
 translation_language: fr
-source_file_path: installation/https-setup.md
+source_file_path: documentation/docs/installation/https-setup.md
+translation_models:
+  - anthropic/claude-haiku-4.5
+  - google/gemma-3-27b-it
 ---
 # Configuration HTTPS (Optionnel) {#https-setup-optional}
 

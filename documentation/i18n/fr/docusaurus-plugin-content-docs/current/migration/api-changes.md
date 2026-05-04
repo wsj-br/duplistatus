@@ -1,9 +1,11 @@
 ---
-translation_last_updated: '2026-03-01T00:45:05.710Z'
-source_file_mtime: '2026-02-16T00:30:39.431Z'
-source_file_hash: 7de89d625f466245
+translation_last_updated: '2026-04-18T00:02:34.849Z'
+source_file_mtime: '2026-03-05T22:33:28.423Z'
+source_file_hash: a9c3dbba0383c39fc8db237418ff7690073036337de033ffbb314ff7f3dc230e
 translation_language: fr
-source_file_path: migration/api-changes.md
+source_file_path: documentation/docs/migration/api-changes.md
+translation_models:
+  - anthropic/claude-haiku-4.5
 ---
 # Modifications incompatibles avec les versions antérieures de l'API {#api-breaking-changes}
 

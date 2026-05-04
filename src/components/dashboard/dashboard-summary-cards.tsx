@@ -1,5 +1,6 @@
-// src/components/dashboard/dashboard-summary-cards.tsx
 "use client";
+import { useTranslation } from "react-i18next";
+// src/components/dashboard/dashboard-summary-cards.tsx
 
 import type { OverallSummary } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,8 +18,6 @@ import {
 import { useServerSelection } from "@/contexts/server-selection-context";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { setUserLocalStorageItem } from "@/lib/user-local-storage";
-import { useIntlayer } from 'react-intlayer';
-
 interface DashboardSummaryCardsProps {
   summary: OverallSummary;
   onViewModeChange?: (viewMode: 'table' | 'overview') => void;
@@ -33,13 +32,12 @@ export function DashboardSummaryCards({
   const { state: serverSelectionState, setViewMode } = useServerSelection();
   const { viewMode } = serverSelectionState;
   const currentUser = useCurrentUser();
-  const content = useIntlayer('dashboard-summary-cards');
-  const common = useIntlayer('common');
+  const { t } = useTranslation();
   const locale = useLocale();
   
   const viewModeTooltipsTexts = {
-    overview: content.overviewView,
-    table: content.tableView,
+    overview: t("overview"),
+    table: t("table view"),
   };
 
   // Handle view mode toggle - cycle through available view modes
@@ -59,42 +57,42 @@ export function DashboardSummaryCards({
   const summaryItems = [
     {
       id: 'totalServers',
-      title: content.totalServers,
+      title: t("Total Servers"),
       value: formatInteger(summary.totalServers, locale),
       icon: <ColoredIcon icon={HardDrive} color="blue" size="lg" />,
       "data-ai-hint": "server computer",
     },
     {
       id: 'totalBackupJobs',
-      title: content.totalBackupJobs,
+      title: t("Total Backup Jobs"),
       value: formatInteger(summary.totalBackups, locale),
       icon: <ColoredIcon icon={Archive} color="green" size="lg" />,
       "data-ai-hint": "archive box",
     },
     {
       id: 'totalBackupRuns',
-      title: content.totalBackupRuns,
+      title: t("Total Backup Runs"),
       value: formatInteger(summary.totalBackupsRuns, locale),
       icon: <ColoredIcon icon={Archive} color="purple" size="lg" />,
       "data-ai-hint": "archive box",
     },
     {
       id: 'totalBackupSize',
-      title: content.totalBackupSize,
+      title: t("Total Backup Size"),
       value: formatBytes(summary.totalBackupSize, locale),
       icon: <ColoredIcon icon={FileSearch} color="yellow" size="lg" />,
       "data-ai-hint": "file search",
     },
     {
       id: 'totalStorageUsed',
-      title: content.totalStorageUsed,
+      title: t("Total Storage Used"),
       value: formatBytes(summary.totalStorageUsed, locale),
       icon: <ColoredIcon icon={Database} color="blue" size="lg" />,
       "data-ai-hint": "database storage",
     },
     {
       id: 'totalUploadedSize',
-      title: content.totalUploadedSize,
+      title: t("Total Uploaded Size"),
       value: formatBytes(summary.totalUploadedSize, locale),
       icon: <ColoredIcon icon={UploadCloud} color="blue" size="lg" />,
       "data-ai-hint": "cloud upload",
@@ -102,7 +100,7 @@ export function DashboardSummaryCards({
     // Only show Overdue Backups card when not in overview mode
     ...(viewMode !== 'overview' ? [{
       id: 'overdueBackups',
-      title: content.overdueBackups,
+      title: t("Overdue Backups"),
       value: formatInteger(summary.overdueBackupsCount, locale),
       icon: summary.overdueBackupsCount > 0 ? (
         <ColoredIcon icon={AlertTriangle} color="red" size="lg" />
@@ -154,7 +152,7 @@ export function DashboardSummaryCards({
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>{common.ui.show} {(() => {
+                <p>{t("Show")} {(() => {
                   const currentIndex = availableViewModes.indexOf(viewMode);
                   const nextIndex = (currentIndex + 1) % availableViewModes.length;
                   const nextViewMode = availableViewModes[nextIndex];

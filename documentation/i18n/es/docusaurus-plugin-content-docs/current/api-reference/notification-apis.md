@@ -1,14 +1,22 @@
+---
+translation_last_updated: '2026-04-18T00:00:48.464Z'
+source_file_mtime: '2026-03-05T22:33:28.419Z'
+source_file_hash: c9fa1157e8f98ef3d8071252f75634990ea86aa2c6de3db3a16b0f911b7a2789
+translation_language: es
+source_file_path: documentation/docs/api-reference/notification-apis.md
+translation_models:
+  - qwen/qwen3-235b-a22b-2507
+---
+# Sistema de notificaciones {#notification-system}
 
-
-# Notification System {#notification-system}
-
-## Test Notification - `/api/notifications/test` {#test-notification-apinotificationstest}
+## Notificación de prueba - `/api/notifications/test` {#test-notification-apinotificationstest}
 - **Endpoint**: `/api/notifications/test`
-- **Method**: POST
-- **Description**: Send test notifications (simple, template-based, or email) to verify notification configuration.
-- **Authentication**: Requires valid session and CSRF token
-- **Request Body**:
-  For simple test:
+- **Método**: POST
+- **Descripción**: Enviar notificaciones de prueba (simples, basadas en plantilla o por correo electrónico) para verificar la configuración de notificaciones.
+- **Autenticación**: Requiere sesión válida y token CSRF
+- **Cuerpo de la solicitud**:
+  Para prueba simple:
+
     ```json
     {
       "type": "simple",
@@ -19,7 +27,9 @@
       }
     }
     ```
-  For template test:
+
+Para prueba de plantilla:
+
     ```json
     {
       "type": "template",
@@ -36,20 +46,26 @@
       }
     }
     ```
-  For email test:
+
+Para prueba de correo electrónico:
+
     ```json
     {
       "type": "email"
     }
     ```
-- **Response**:
-  For simple test:
+
+- **Respuesta**:
+  Para prueba simple:
+
   ```json
   {
     "message": "Test notification sent successfully"
   }
   ```
-  For template test:
+
+Para prueba de plantilla:
+
   ```json
   {
     "success": true,
@@ -57,40 +73,44 @@
     "channels": ["NTFY", "Email"]
   }
   ```
-  For email test:
+
+Para prueba de correo electrónico:
+
   ```json
   {
     "message": "Test email sent successfully"
   }
   ```
-  The test email content displays:
-  - SMTP server hostname and port
-  - Connection type (Plain SMTP, STARTTLS, or Direct SSL/TLS)
-  - SMTP authentication requirement status
-  - SMTP username (only shown when authentication is required)
-  - Recipient email address
-  - From address and sender name used for the email
-  - Test timestamp
-- **Error Responses**:
-  - `401`: Unauthorized - Invalid session or CSRF token
-  - `400`: NTFY configuration is required, invalid configuration, or email not configured
-  - `500`: Failed to send test notification with error details
-- **Notes**:
-  - Supports simple test messages, template-based notifications, and email tests
-  - Template testing uses sample data to replace template variables
-  - Includes timestamp in the test message
-  - Validates NTFY URL and topic before sending
-  - Uses `accessToken` field for authentication
-  - For template tests, sends notifications to both NTFY and email (if configured)
-  - Email tests require SMTP configuration to be set up
-  - The test email endpoint clears the request cache before reading SMTP configuration, ensuring that external scripts can update the configuration and have it immediately reflected in test emails
 
-## Check Overdue Backups - `/api/notifications/check-overdue` {#check-overdue-backups-apinotificationscheck-overdue}
+El contenido del correo electrónico de prueba muestra:
+  - Nombre de host y puerto del servidor SMTP
+  - Tipo de conexión (SMTP plano, STARTTLS o SSL/TLS directo)
+  - Estado del requisito de autenticación SMTP
+  - Nombre de usuario SMTP (solo se muestra cuando se requiere autenticación)
+  - Dirección de correo electrónico del destinatario
+  - Dirección de origen y nombre del remitente utilizados para el correo
+  - Marca de tiempo de la prueba
+- **Respuestas de error**:
+  - `401`: No autorizado - Sesión o token CSRF inválido
+  - `400`: Se requiere configuración de NTFY, configuración inválida o correo electrónico no configurado
+  - `500`: No se pudo enviar la notificación de prueba con detalles del error
+- **Notas**:
+  - Admite mensajes de prueba simples, notificaciones basadas en plantilla y pruebas por correo electrónico
+  - La prueba de plantilla utiliza datos de ejemplo para reemplazar las variables de la plantilla
+  - Incluye marca de tiempo en el mensaje de prueba
+  - Valida la URL y el tema de NTFY antes de enviar
+  - Usa el campo `accessToken` para autenticación
+  - Para pruebas de plantilla, envía notificaciones tanto a NTFY como por correo electrónico (si está configurado)
+  - Las pruebas por correo requieren que la configuración SMTP esté establecida
+  - El endpoint de correo de prueba borra la caché de solicitudes antes de leer la configuración SMTP, asegurando que los scripts externos puedan actualizar la configuración y que se refleje inmediatamente en los correos de prueba
+
+## Verificar respaldos atrasados - `/api/notifications/check-overdue` {#check-overdue-backups-apinotificationscheck-overdue}
 - **Endpoint**: `/api/notifications/check-overdue`
-- **Method**: POST
-- **Description**: Manually triggers the overdue backup check and sends notifications.
-- **Authentication**: Requires valid session and CSRF token
-- **Response**:
+- **Método**: POST
+- **Descripción**: Dispara manualmente la verificación de respaldos atrasados y envía notificaciones.
+- **Autenticación**: Requiere sesión válida y token CSRF
+- **Respuesta**:
+
   ```json
   {
     "message": "Overdue backup check completed",
@@ -102,27 +122,30 @@
     }
   }
   ```
-- **Error Responses**:
-  - `500`: Failed to check for overdue backups
-- **Notes**:
-  - Manually triggers overdue backup check
-  - Returns statistics about the check process
-  - Sends notifications for overdue backups found
 
-## Clear Overdue Timestamps - `/api/notifications/clear-overdue-timestamps` {#clear-overdue-timestamps-apinotificationsclear-overdue-timestamps}
+- **Respuestas de error**:
+  - `500`: No se pudo verificar la existencia de respaldos atrasados
+- **Notas**:
+  - Dispara manualmente la verificación de respaldos atrasados
+  - Devuelve estadísticas sobre el proceso de verificación
+  - Envía notificaciones para los respaldos atrasados encontrados
+
+## Borrar marcas de tiempo de respaldos atrasados - `/api/notifications/clear-overdue-timestamps` {#clear-overdue-timestamps-apinotificationsclear-overdue-timestamps}
 - **Endpoint**: `/api/notifications/clear-overdue-timestamps`
-- **Method**: POST
-- **Description**: Clears all overdue backup notification timestamps, allowing notifications to be sent again.
-- **Authentication**: Requires valid session and CSRF token
-- **Response**:
+- **Método**: POST
+- **Descripción**: Borra todas las marcas de tiempo de notificación de respaldos atrasados, permitiendo que las notificaciones se envíen nuevamente.
+- **Autenticación**: Requiere sesión válida y token CSRF
+- **Respuesta**:
+
   ```json
   {
     "message": "Overdue backup notification timestamps cleared successfully"
   }
   ```
-- **Error Responses**:
-  - `500`: Failed to clear overdue backup timestamps
-- **Notes**:
-  - Clears all overdue backup notification timestamps
-  - Allows notifications to be sent again
-  - Useful for testing notification system
+
+- **Respuestas de error**:
+  - `500`: No se pudieron borrar las marcas de tiempo de respaldos atrasados
+- **Notas**:
+  - Borra todas las marcas de tiempo de notificación de respaldos atrasados
+  - Permite que las notificaciones se envíen nuevamente
+  - Útil para probar el sistema de notificaciones

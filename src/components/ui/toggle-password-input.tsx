@@ -1,11 +1,10 @@
 "use client";
+import { useTranslation } from "react-i18next";
 
 import { useState, useRef, useEffect, forwardRef } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Eye, EyeOff } from 'lucide-react';
-import { useIntlayer } from 'react-intlayer';
-
 interface TogglePasswordInputProps {
   id: string;
   value: string;
@@ -34,7 +33,7 @@ export const TogglePasswordInput = forwardRef<HTMLInputElement, TogglePasswordIn
   syncValue,
   passwordInputRef
 }, ref) {
-  const common = useIntlayer('common');
+  const { t } = useTranslation();
   // Use controlled mode if showPassword and onTogglePassword are provided, otherwise use internal state
   const [internalShowPassword, setInternalShowPassword] = useState(false);
   const isControlled = controlledShowPassword !== undefined && onTogglePassword !== undefined;
@@ -142,7 +141,7 @@ export const TogglePasswordInput = forwardRef<HTMLInputElement, TogglePasswordIn
         onMouseDown={(e) => e.preventDefault()}
         disabled={disabled}
         tabIndex={-1}
-        aria-label={showPassword ? common.ui.hidePassword.value : common.ui.showPassword.value}
+        aria-label={showPassword ? t("Hide password") : t("Show password")}
       >
         {showPassword ? (
           <EyeOff className="h-4 w-4 text-muted-foreground" />

@@ -1,9 +1,11 @@
 ---
-translation_last_updated: '2026-03-01T00:45:20.070Z'
-source_file_mtime: '2026-02-16T00:30:39.431Z'
-source_file_hash: ded48f8ac20cea97
+translation_last_updated: '2026-04-18T00:02:12.574Z'
+source_file_mtime: '2026-03-05T22:33:28.423Z'
+source_file_hash: c4dde05981ada21800990adcdda2efbb6881d3b1d7ae4921922c4c12ca813552
 translation_language: pt-BR
-source_file_path: user-guide/backup-metrics.md
+source_file_path: documentation/docs/user-guide/backup-metrics.md
+translation_models:
+  - anthropic/claude-haiku-4.5
 ---
 # Métricas de Backup {#backup-metrics}
 

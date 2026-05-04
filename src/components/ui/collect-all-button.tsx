@@ -1,5 +1,6 @@
 "use client";
-
+import type { TFunction } from "i18next";
+import { useTranslation } from "react-i18next";
 import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
@@ -7,7 +8,6 @@ import { useGlobalRefresh } from '@/contexts/global-refresh-context';
 import { useConfiguration } from '@/contexts/configuration-context';
 import { ServerAddress } from '@/lib/types';
 import { Loader2, Import } from 'lucide-react';
-import { useIntlayer } from 'react-intlayer';
 import { 
   collectFromMultipleServers, 
   getEligibleServers, 
@@ -17,7 +17,7 @@ import type { CollectionSummary } from '@/lib/bulk-collection';
 
 function formatCollectionSummaryFromContent(
   summary: CollectionSummary,
-  content: ReturnType<typeof useIntlayer<'collect-all-button'>>
+  t: TFunction,
 ): { title: string; description: string; variant: 'default' | 'destructive' } {
   const {
     totalServers,
@@ -27,32 +27,48 @@ function formatCollectionSummaryFromContent(
     totalErrors,
     failedServerNames,
   } = summary;
-  const replace = (s: string) =>
-    s
-      .replace('{successfulCollections}', String(successfulCollections))
-      .replace('{totalProcessed}', String(totalProcessed))
-      .replace('{totalSkipped}', String(totalSkipped))
-      .replace('{totalErrors}', String(totalErrors))
-      .replace('{totalServers}', String(totalServers))
-      .replace('{failedServerNames}', failedServerNames.join(', '));
 
   if (successfulCollections === totalServers) {
     return {
-      title: content.summaryAllSuccessTitle.value,
-      description: replace(content.summaryAllSuccessDescription.value),
+      title: t("All Collections Successful"),
+      description: t(
+        "Collected from {{successfulCollections}} servers. Processed: {{totalProcessed}}, Skipped: {{totalSkipped}}, Errors: {{totalErrors}}",
+        {
+          successfulCollections,
+          totalProcessed,
+          totalSkipped,
+          totalErrors,
+        },
+      ),
       variant: 'default',
     };
   }
   if (successfulCollections > 0) {
     return {
-      title: content.summaryPartialTitle.value,
-      description: replace(content.summaryPartialDescription.value),
+      title: t("Partial Collection Success"),
+      description: t(
+        "Successfully collected from {{successfulCollections}}/{{totalServers}} servers. Processed: {{totalProcessed}}, Skipped: {{totalSkipped}}, Errors: {{totalErrors}}. Failed servers: {{failedServerNames}}",
+        {
+          successfulCollections,
+          totalServers,
+          totalProcessed,
+          totalSkipped,
+          totalErrors,
+          failedServerNames: failedServerNames.join(', '),
+        },
+      ),
       variant: 'default',
     };
   }
   return {
-    title: content.summaryFailedTitle.value,
-    description: replace(content.summaryFailedDescription.value),
+    title: t("Collection Failed"),
+    description: t(
+      'Failed to collect from all {{totalServers}} servers: {{failedServerNames}}. Check individual server configurations.',
+      {
+        totalServers,
+        failedServerNames: failedServerNames.join(', '),
+      },
+    ),
     variant: 'destructive',
   };
 }
@@ -92,13 +108,13 @@ export function CollectAllButton({
   dynamicPassword,
   autoTrigger = false
 }: CollectAllButtonProps) {
+  const { t } = useTranslation();
   const [isCollecting, setIsCollecting] = useState(false);
   const [collectionProgress, setCollectionProgress] = useState(0);
   const [hasAutoTriggered, setHasAutoTriggered] = useState(false);
   const { toast, removeToast } = useToast();
   const { refreshDashboard } = useGlobalRefresh();
   const { refreshConfigSilently } = useConfiguration();
-  const content = useIntlayer('collect-all-button');
 
   // Get eligible servers using library function
   const eligibleServers = getEligibleServers(servers, dynamicMode);
@@ -145,8 +161,8 @@ export function CollectAllButton({
     if (eligibleServers.length === 0) {
       if (showInstructionToast) {
         toast({
-          title: content.noEligibleServers.value,
-          description: content.noEligibleServersDescription.value,
+          title: t("No Eligible Servers"),
+          description: t("No servers with passwords and valid URLs found to collect from"),
           variant: "destructive",
           duration: 3000,
         });
@@ -171,7 +187,7 @@ export function CollectAllButton({
       });
 
       // Show summary toast (using translated content)
-      const { title, description, variant } = formatCollectionSummaryFromContent(summary, content);
+      const { title, description, variant } = formatCollectionSummaryFromContent(summary, t);
       if (showInstructionToast) {
         toast({
           title,
@@ -184,11 +200,15 @@ export function CollectAllButton({
       // Show additional toast with instructions for partial or complete failures
       if (summary.failedCollections > 0 && showInstructionToast) {
         const errorDescription = summary.successfulCollections > 0
-          ? content.serverErrorsDetectedDescriptionWithStatus.value
-          : content.serverErrorsDetectedDescription.value;
-        
+          ? t(
+              'Check server(s) settings and password and if the server is up and running, then try again. Click "Collect All" to show which server is with error (column Status)',
+            )
+          : t(
+              'Check server(s) settings and password and if the server is up and running, then try again. Click "Collect All" to show which server is with error',
+            );
+
         const instructionToast = toast({
-          title: content.serverErrorsDetected.value,
+          title: t("Server Errors Detected"),
           description: errorDescription,
           action: (
             <Button
@@ -200,7 +220,7 @@ export function CollectAllButton({
               }}
               className="underline hover:no-underline"
             >
-              {content.serversSettings.value}
+              {t("Servers settings")}
             </Button>
           ),
           variant: "destructive",
@@ -218,8 +238,8 @@ export function CollectAllButton({
       
       if (showInstructionToast) {
         toast({
-          title: content.collectionError.value,
-          description: `${content.collectionErrorDescription.value}: ${errorMessage}`,
+          title: t("Collection Error"),
+          description: `${t("An unexpected error occurred during collection")}: ${errorMessage}`,
           variant: "destructive",
           duration: 4000,
         });
@@ -246,7 +266,7 @@ export function CollectAllButton({
     dynamicMode, 
     dynamicPort, 
     dynamicPassword,
-    content
+    t,
   ]);
 
   // Auto-trigger collection when autoTrigger is true and servers are available
@@ -264,16 +284,16 @@ export function CollectAllButton({
 
   const isDisabled = disabled || isCollecting || eligibleServers.length === 0;
 
-  const tooltip = eligibleServers.length === 0 
-    ? content.noServersTooltip.value
-    : content.tooltip.value;
+  const tooltip = eligibleServers.length === 0
+    ? t("No servers with passwords configured")
+    : t("Collect backups from all configured servers");
 
   const collectingText = showText && isCollecting
-    ? `${content.collecting.value} ${Math.round(collectionProgress)}%`
+    ? `${t("Collecting...")} ${Math.round(collectionProgress)}%`
     : null;
 
   const collectAllText = showText && !isCollecting
-    ? `${content.collectAll.value} (${eligibleServers.length})`
+    ? `${t("Collect All")} (${eligibleServers.length})`
     : null;
 
   return (

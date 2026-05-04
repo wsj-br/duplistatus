@@ -1,5 +1,5 @@
 "use client";
-
+import { useTranslation } from "react-i18next";
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { ColoredIcon } from '@/components/ui/colored-icon';
@@ -20,8 +20,6 @@ import { DisplaySettingsForm } from '@/components/settings/display-settings-form
 import { DatabaseMaintenanceForm } from '@/components/settings/database-maintenance-form';
 import { ApplicationLogsViewer } from '@/components/settings/application-logs-viewer';
 import { getUserLocalStorageItem, setUserLocalStorageItem } from '@/lib/user-local-storage';
-import { useIntlayer } from 'react-intlayer';
-
 interface SettingsPageClientProps {
   currentUser: {
     id: string;
@@ -30,11 +28,11 @@ interface SettingsPageClientProps {
 }
 
 export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
+  const { t } = useTranslation();
   const searchParams = useSearchParams();
   const router = useRouter();
   const { toast } = useToast();
   const { config, loading, refreshConfigSilently, updateConfig } = useConfiguration();
-  const content = useIntlayer('settings-page-client');
   const [activeSection, setActiveSection] = useState<string>('notifications');
   const [lastServerListHash, setLastServerListHash] = useState<string>('');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(() => {
@@ -95,8 +93,8 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
       refreshServerListOnly().then(() => {
         setLastServerListHash(currentServerListHash);
         toast({
-          title: content.toasts.serverListUpdated.value,
-          description: content.toasts.serverListUpdatedDescription.value,
+          title: t("Server List Updated"),
+          description: t("New servers detected and added to the list"),
           duration: 3000
         });
       }).catch((error) => {
@@ -126,8 +124,8 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
             await refreshServerListOnly();
             setLastServerListHash(freshServerListHash);
             toast({
-              title: content.toasts.serverListUpdated.value,
-              description: content.toasts.serverListUpdatedDescription.value,
+              title: t("Server List Updated"),
+              description: t("New servers detected and added to the list"),
               duration: 3000
             });
           }
@@ -155,8 +153,8 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
           await refreshServerListOnly();
           setLastServerListHash(freshServerListHash);
           toast({
-            title: content.toasts.serverListUpdated.value,
-            description: content.toasts.serverListUpdatedDescription.value,
+            title: t("Server List Updated"),
+            description: t("New servers detected and added to the list"),
             duration: 3000
           });
         }
@@ -304,7 +302,7 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
     return (
       <div className="flex items-center justify-center py-8">
         <div className="text-center">
-          <div className="text-lg font-medium">{content.states.loadingConfiguration}</div>
+          <div className="text-lg font-medium">{t("Loading configuration...")}</div>
         </div>
       </div>
     );
@@ -314,7 +312,7 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
     return (
       <div className="flex items-center justify-center py-8">
         <div className="text-center">
-          <div className="text-lg font-medium text-red-600">{content.states.noConfigurationAvailable}</div>
+          <div className="text-lg font-medium text-red-600">{t("No configuration available")}</div>
         </div>
       </div>
     );
@@ -331,13 +329,13 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
             <div className={`flex items-center w-full gap-3 ${isSidebarCollapsed ? 'justify-center' : 'justify-between'}`}>
               <div className={`flex items-center gap-3 min-w-0 ${isSidebarCollapsed ? 'justify-center' : ''}`}>
                 <ColoredIcon icon={Settings} color="blue" size="md" />
-                <h2 className={`text-lg font-semibold truncate whitespace-nowrap overflow-hidden transition-all duration-300 ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{content.sidebar.header}</h2>
+                <h2 className={`text-lg font-semibold truncate whitespace-nowrap overflow-hidden transition-all duration-300 ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{t("Settings")}</h2>
               </div>
               {!isSidebarCollapsed && (
                 <button
                   onClick={toggleSidebar}
                   className="p-1.5 rounded-md hover:bg-accent transition-colors flex-shrink-0"
-                  aria-label={content.sidebar.collapseSidebar.value}
+                  aria-label={t("Collapse sidebar")}
                 >
                   <PanelLeftClose className="h-4 w-4" />
                 </button>
@@ -347,7 +345,7 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
               <button
                 onClick={toggleSidebar}
                 className="absolute top-1/2 -translate-y-1/2 right-2 p-1.5 rounded-md hover:bg-accent transition-colors flex-shrink-0"
-                aria-label={content.sidebar.expandSidebar.value}
+                aria-label={t("Expand sidebar")}
               >
                 <PanelLeftOpen className="h-4 w-4" />
               </button>
@@ -357,7 +355,7 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
           <div className={`p-4 space-y-4 ${isSidebarCollapsed ? 'px-2' : 'px-4'}`}>
               {/* Notifications Group */}
               <div>
-                <div className={`px-2 py-1.5 text-xs font-semibold text-muted-foreground whitespace-nowrap overflow-hidden transition-all duration-300 ${isSidebarCollapsed ? 'text-center max-w-full' : ''}`}>{content.sidebar.groups.notifications}</div>
+                <div className={`px-2 py-1.5 text-xs font-semibold text-muted-foreground whitespace-nowrap overflow-hidden transition-all duration-300 ${isSidebarCollapsed ? 'text-center max-w-full' : ''}`}>{t("Notifications")}</div>
                 <div className="space-y-1">
                   <button
                     onClick={() => handleSectionChange('notifications')}
@@ -366,10 +364,10 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                         ? 'bg-accent text-accent-foreground'
                         : 'hover:bg-accent/50'
                     }`}
-                    title={isSidebarCollapsed ? content.sidebar.items.backupNotifications.value : undefined}
+                    title={isSidebarCollapsed ? t("Backup Notifications") : undefined}
                   >
                     <Bell className="h-4 w-4 flex-shrink-0" />
-                    <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'notifications' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{content.sidebar.items.backupNotifications}</span>
+                    <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'notifications' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{t("Backup Notifications")}</span>
                   </button>
                   <button
                     onClick={() => handleSectionChange('monitoring')}
@@ -378,10 +376,10 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                         ? 'bg-accent text-accent-foreground'
                         : 'hover:bg-accent/50'
                     }`}
-                    title={isSidebarCollapsed ? content.sidebar.items.backupMonitoring.value : undefined}
+                    title={isSidebarCollapsed ? t("Backup Monitoring") : undefined}
                   >
                     <AlertTriangle className="h-4 w-4 flex-shrink-0" />
-                    <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'monitoring' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{content.sidebar.items.backupMonitoring}</span>
+                    <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'monitoring' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{t("Backup Monitoring")}</span>
                   </button>
                   <button
                     onClick={() => handleSectionChange('templates')}
@@ -390,17 +388,17 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                         ? 'bg-accent text-accent-foreground'
                         : 'hover:bg-accent/50'
                     }`}
-                    title={isSidebarCollapsed ? content.sidebar.items.templates.value : undefined}
+                    title={isSidebarCollapsed ? t("Templates") : undefined}
                   >
                     <FileText className="h-4 w-4 flex-shrink-0" />
-                    <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'templates' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{content.sidebar.items.templates}</span>
+                    <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'templates' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{t("Templates")}</span>
                   </button>
                 </div>
               </div>
 
               {/* Integrations Group */}
               <div>
-                <div className={`px-2 py-1.5 text-xs font-semibold text-muted-foreground whitespace-nowrap overflow-hidden transition-all duration-300 ${isSidebarCollapsed ? 'text-center max-w-full' : ''}`}>{content.sidebar.groups.integrations}</div>
+                <div className={`px-2 py-1.5 text-xs font-semibold text-muted-foreground whitespace-nowrap overflow-hidden transition-all duration-300 ${isSidebarCollapsed ? 'text-center max-w-full' : ''}`}>{t("Integrations")}</div>
                 <div className="space-y-1">
                   <button
                     onClick={() => handleSectionChange('ntfy')}
@@ -409,10 +407,10 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                         ? 'bg-accent text-accent-foreground'
                         : 'hover:bg-accent/50'
                     }`}
-                    title={isSidebarCollapsed ? content.sidebar.items.ntfy.value : undefined}
+                    title={isSidebarCollapsed ? t("NTFY") : undefined}
                   >
                     <MessageSquare className={`h-4 w-4 flex-shrink-0 ${isNtfyConfigValid() ? 'text-green-600' : 'text-yellow-500'}`} />
-                    <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'ntfy' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{content.sidebar.items.ntfy}</span>
+                    <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'ntfy' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{t("NTFY")}</span>
                   </button>
                   <button
                     onClick={() => handleSectionChange('email')}
@@ -421,17 +419,17 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                         ? 'bg-accent text-accent-foreground'
                         : 'hover:bg-accent/50'
                     }`}
-                    title={isSidebarCollapsed ? content.sidebar.items.email.value : undefined}
+                    title={isSidebarCollapsed ? t("Email") : undefined}
                   >
                     <Mail className={`h-4 w-4 flex-shrink-0 ${isEmailConfigValid() ? 'text-green-600' : 'text-yellow-500'}`} />
-                    <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'email' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{content.sidebar.items.email}</span>
+                    <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'email' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{t("Email")}</span>
                   </button>
                 </div>
               </div>
 
               {/* System Group */}
               <div>
-                <div className={`px-2 py-1.5 text-xs font-semibold text-muted-foreground whitespace-nowrap overflow-hidden transition-all duration-300 ${isSidebarCollapsed ? 'text-center max-w-full' : ''}`}>{content.sidebar.groups.system}</div>
+                <div className={`px-2 py-1.5 text-xs font-semibold text-muted-foreground whitespace-nowrap overflow-hidden transition-all duration-300 ${isSidebarCollapsed ? 'text-center max-w-full' : ''}`}>{t("System")}</div>
                 <div className="space-y-1">
                   <button
                     onClick={() => handleSectionChange('server')}
@@ -440,10 +438,10 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                         ? 'bg-accent text-accent-foreground'
                         : 'hover:bg-accent/50'
                     }`}
-                    title={isSidebarCollapsed ? content.sidebar.items.servers.value : undefined}
+                    title={isSidebarCollapsed ? t("Servers") : undefined}
                   >
                     <Server className="h-4 w-4 flex-shrink-0" />
-                    <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'server' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{content.sidebar.items.servers}</span>
+                    <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'server' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{t("Servers")}</span>
                   </button>
                   <button
                     onClick={() => handleSectionChange('display')}
@@ -452,10 +450,10 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                         ? 'bg-accent text-accent-foreground'
                         : 'hover:bg-accent/50'
                     }`}
-                    title={isSidebarCollapsed ? content.sidebar.items.display.value : undefined}
+                    title={isSidebarCollapsed ? t("Display Settings") : undefined}
                   >
                     <MonitorCog className="h-4 w-4 flex-shrink-0" />
-                    <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'display' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{content.sidebar.items.display}</span>
+                    <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'display' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{t("Display Settings")}</span>
                   </button>
                   {currentUser?.isAdmin && (
                     <button
@@ -465,10 +463,10 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                           ? 'bg-accent text-accent-foreground'
                           : 'hover:bg-accent/50'
                       }`}
-                      title={isSidebarCollapsed ? content.sidebar.items.databaseMaintenance.value : undefined}
+                      title={isSidebarCollapsed ? t("Database Maintenance") : undefined}
                     >
                       <Database className="h-4 w-4 flex-shrink-0" />
-                      <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'database-maintenance' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{content.sidebar.items.databaseMaintenance}</span>
+                      <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'database-maintenance' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{t("Database Maintenance")}</span>
                     </button>
                   )}
                   {currentUser?.isAdmin && (
@@ -479,10 +477,10 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                           ? 'bg-accent text-accent-foreground'
                           : 'hover:bg-accent/50'
                       }`}
-                      title={isSidebarCollapsed ? content.sidebar.items.users.value : undefined}
+                      title={isSidebarCollapsed ? t("Users") : undefined}
                     >
                       <Users className="h-4 w-4 flex-shrink-0" />
-                      <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'users' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{content.sidebar.items.users}</span>
+                      <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'users' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{t("Users")}</span>
                     </button>
                   )}
                   <button
@@ -492,10 +490,10 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                         ? 'bg-accent text-accent-foreground'
                         : 'hover:bg-accent/50'
                     }`}
-                    title={isSidebarCollapsed ? content.sidebar.items.auditLog.value : undefined}
+                    title={isSidebarCollapsed ? t("Audit Log") : undefined}
                   >
                     <ScrollText className="h-4 w-4 flex-shrink-0" />
-                    <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'audit' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{content.sidebar.items.auditLog}</span>
+                    <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'audit' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{t("Audit Log")}</span>
                   </button>
                   {currentUser?.isAdmin && (
                     <button
@@ -505,10 +503,10 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                           ? 'bg-accent text-accent-foreground'
                           : 'hover:bg-accent/50'
                       }`}
-                      title={isSidebarCollapsed ? content.sidebar.items.auditLogRetention.value : undefined}
+                      title={isSidebarCollapsed ? t("Audit Log Retention") : undefined}
                     >
                       <Clock className="h-4 w-4 flex-shrink-0" />
-                      <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'audit-retention' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{content.sidebar.items.auditLogRetention}</span>
+                      <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'audit-retention' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{t("Audit Log Retention")}</span>
                     </button>
                   )}
                   {currentUser?.isAdmin && (
@@ -519,10 +517,10 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                           ? 'bg-accent text-accent-foreground'
                           : 'hover:bg-accent/50'
                       }`}
-                      title={isSidebarCollapsed ? content.sidebar.items.applicationLogs.value : undefined}
+                      title={isSidebarCollapsed ? t("Application Logs") : undefined}
                     >
                       <Terminal className="h-4 w-4 flex-shrink-0" />
-                      <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'application-logs' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{content.sidebar.items.applicationLogs}</span>
+                      <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'application-logs' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{t("Application Logs")}</span>
                     </button>
                   )}
                 </div>
@@ -533,7 +531,7 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                 <div className="mt-16 px-3">
                   <div className="rounded-md bg-muted/50 px-3 py-2 border border-border/50">
                     <p className="text-xs text-muted-foreground">
-                      {content.sidebar.nonAdminNotice}
+                      {t("Note: Settings are read-only. Some features like test notifications remain available.")}
                     </p>
                   </div>
                 </div>

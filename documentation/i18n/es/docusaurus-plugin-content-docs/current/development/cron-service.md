@@ -1,9 +1,12 @@
 ---
-translation_last_updated: '2026-03-01T00:45:12.440Z'
-source_file_mtime: '2026-02-16T00:30:39.430Z'
-source_file_hash: 5ce1c81347ec9e1a
+translation_last_updated: '2026-04-18T00:01:13.239Z'
+source_file_mtime: '2026-03-05T22:33:28.419Z'
+source_file_hash: d96b8a208e1a506c80e1a45e3190044bd8a8d6b789fda92a5bc3d91cec00ef2f
 translation_language: es
-source_file_path: development/cron-service.md
+source_file_path: documentation/docs/development/cron-service.md
+translation_models:
+  - anthropic/claude-3.5-haiku
+  - anthropic/claude-haiku-4.5
 ---
 # Servicio Cron {#cron-service}
 

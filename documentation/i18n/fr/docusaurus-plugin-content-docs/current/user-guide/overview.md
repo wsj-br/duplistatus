@@ -1,9 +1,14 @@
 ---
-translation_last_updated: '2026-03-01T00:45:07.343Z'
-source_file_mtime: '2026-02-16T00:30:39.432Z'
-source_file_hash: 741b3ef6371412ec
+translation_last_updated: '2026-04-18T00:03:15.268Z'
+source_file_mtime: '2026-03-05T22:33:28.423Z'
+source_file_hash: 7771f9d86a84f69538824b04174596c096a83c31c5860e9ced75eb272db5cfd5
 translation_language: fr
-source_file_path: user-guide/overview.md
+source_file_path: documentation/docs/user-guide/overview.md
+translation_models:
+  - anthropic/claude-3.5-haiku
+  - anthropic/claude-haiku-4.5
+  - 'nvidia/nemotron-nano-12b-v2-vl:free'
+  - 'stepfun/step-3.5-flash:free'
 ---
 # Vue d'ensemble {#overview}
 

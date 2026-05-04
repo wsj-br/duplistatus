@@ -4,6 +4,9 @@
 
 The project includes several test scripts to help with development and testing:
 
+> [!NOTE]
+> Legacy repository-root `pnpm` helpers for overdue debugging, SMTP matrix testing, and cron port checks were removed. Use the application UI (**Settings → Backup monitoring**), authenticated HTTP APIs, and `curl` against the cron service as documented below.
+
 ## Generate Test Data {#generate-test-data}
 
 ```bash
@@ -35,51 +38,24 @@ pnpm generate-test-data --servers=30
 > This script deletes all previous data in the database and replaces it with test data.
 > Back up your database before running this script.
 
-## Show the overdue notifications contents (to debug notification system) {#show-the-overdue-notifications-contents-to-debug-notification-system}
+## Overdue checks and cron connectivity (development) {#overdue-checks-and-cron-connectivity-development}
 
-```bash
-pnpm show-overdue-notifications
-```
+### Run an overdue backup check {#run-an-overdue-backup-check}
 
-## Run overdue-check at a specific date/time (to debug notification system) {#run-overdue-check-at-a-specific-datetime-to-debug-notification-system}
+While the app is running:
 
-```bash
-pnpm run-overdue-check "YYYY-MM-DD HH:MM:SS"
-``` 
+- **UI (recommended):** open **Settings → Backup monitoring** and use **Test overdue backups**. That runs the same logic as the scheduled job via authenticated `POST /api/notifications/check-overdue`.
 
-## Test cron service port connectivity {#test-cron-service-port-connectivity}
+### Cron service health {#cron-service-health}
 
-To test cron service connectivity, you can:
-
-1. Check if the cron service is running:
 ```bash
 curl http://localhost:8667/health
-```
-
-2. Or use the cron service API endpoints directly through the main application:
-```bash
 curl http://localhost:8666/api/cron/health
 ```
 
-3. Use the test script to verify port connectivity:
-```bash
-pnpm test-cron-port
-```
+### Simulating a specific date or time {#simulating-a-specific-date-or-time}
 
-This script tests the connectivity to the cron service port and provides detailed information about the connection status.
-
-## Test overdue detection {#test-overdue-detection}
-
-```bash
-pnpm test-overdue-detection
-```
-
-This script tests the overdue backup detection logic. It verifies:
-- Overdue backup identification
-- Notification triggering
-- Date/time calculations for overdue status
-
-Useful for debugging overdue backup detection and notification systems.
+There is no bundled CLI for injecting a simulated “current” time. For the algorithm and manual testing ideas, see the repository file `dev/OVERDUE_DETECTION_ALGORITHM.md` and the implementation in `src/lib/overdue-backup-checker.ts`.
 
 ## Validate CSV export {#validate-csv-export}
 
@@ -231,87 +207,9 @@ echo $?  # 0 = all passed, 1 = some failed
 >[!NOTE]
 > This script uses the TypeScript migration test script (`test-migration.ts`) internally. The test script validates the database structure after migration and ensures data integrity.
 
-## Set SMTP Test Configuration {#set-smtp-test-configuration}
+## SMTP and email (development) {#smtp-and-email-development}
 
-```bash
-pnpm set-smtp-test-config <connectionType>
-```
-
-This script sets SMTP test configuration from environment variables. It accepts a `connectionType` parameter (`plain`, `starttls`, or `ssl`) and reads corresponding environment variables with prefixes (`PLAIN_`, `STARTTLS_`, `SSL_`) to update the SMTP configuration in the database.
-
-For plain connections, the script reads `PLAIN_SMTP_FROM` environment variable to set the required From Address. This facilitates testing different SMTP connection types without manual database updates.
-
-**Usage:**
-```bash
-# Set Plain SMTP configuration
-PLAIN_SMTP_HOST=smtp.example.com \
-PLAIN_SMTP_PORT=25 \
-PLAIN_SMTP_FROM=noreply@example.com \
-pnpm set-smtp-test-config plain
-
-# Set STARTTLS configuration
-STARTTLS_SMTP_HOST=smtp.example.com \
-STARTTLS_SMTP_PORT=587 \
-STARTTLS_SMTP_USERNAME=user@example.com \
-STARTTLS_SMTP_PASSWORD=password \
-pnpm set-smtp-test-config starttls
-
-# Set Direct SSL/TLS configuration
-SSL_SMTP_HOST=smtp.example.com \
-SSL_SMTP_PORT=465 \
-SSL_SMTP_USERNAME=user@example.com \
-SSL_SMTP_PASSWORD=password \
-pnpm set-smtp-test-config ssl
-```
-
-**Requirements:**
-- The application must be running
-- Environment variables must be set with the appropriate prefix for the connection type
-- For plain connections, `PLAIN_SMTP_FROM` is required
-
-## Test SMTP Connection Type Cross-Compatibility {#test-smtp-connection-type-cross-compatibility}
-
-```bash
-pnpm test-smtp-connections
-```
-
-This script performs a comprehensive 3x3 matrix test that validates whether configurations meant for one connection type work correctly with different connection types. For each base configuration type (plain, starttls, ssl), the script:
-
-1. Reads environment variables with corresponding prefixes (`PLAIN_*`, `STARTTLS_*`, `SSL_*`)
-2. Tests all three connection types by modifying only the `connectionType` field
-3. Sends test emails via the API
-4. Records results in a matrix format
-5. Displays a summary table
-6. Saves detailed results to `smtp-test-results.json`
-
-**Usage:**
-```bash
-# Set environment variables for all three connection types
-PLAIN_SMTP_HOST=smtp.example.com \
-PLAIN_SMTP_PORT=25 \
-PLAIN_SMTP_FROM=noreply@example.com \
-STARTTLS_SMTP_HOST=smtp.example.com \
-STARTTLS_SMTP_PORT=587 \
-STARTTLS_SMTP_USERNAME=user@example.com \
-STARTTLS_SMTP_PASSWORD=password \
-SSL_SMTP_HOST=smtp.example.com \
-SSL_SMTP_PORT=465 \
-SSL_SMTP_USERNAME=user@example.com \
-SSL_SMTP_PASSWORD=password \
-pnpm test-smtp-connections
-```
-
-**Requirements:**
-- The application must be running
-- Environment variables must be set for all three connection types
-- The script validates the configuration being used through detailed logging
-
-**Expected Behavior:**
-Configurations should only work with their intended connection type (e.g., plain config works with plain connectionType but fails with starttls/ssl).
-
-**Output:**
-- Console output with a summary table showing test results
-- `smtp-test-results.json` file with detailed test results for each configuration and connection type combination
+Configure SMTP under **Settings → Email** and use the in-app email test and notification flows. The former `pnpm set-smtp-test-config` and `pnpm test-smtp-connections` helper scripts were removed from the repository.
 
 ## Test Docker Entrypoint Script {#test-docker-entrypoint-script}
 

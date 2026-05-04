@@ -1,9 +1,13 @@
 ---
-translation_last_updated: '2026-03-01T00:45:17.027Z'
-source_file_mtime: '2026-03-01T00:09:33.538Z'
-source_file_hash: 24e59da35ba78059
+translation_last_updated: '2026-04-18T14:28:09.732Z'
+source_file_mtime: '2026-04-18T14:26:07.191Z'
+source_file_hash: b2a61a9c45db956c0f6d1fffcaa03aee962a6571671dd2bfeb4aeb1dd5be7a8d
 translation_language: pt-BR
-source_file_path: development/development-guidelines.md
+source_file_path: documentation/docs/development/development-guidelines.md
+translation_models:
+  - anthropic/claude-3.5-haiku
+  - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Referência de Desenvolvimento {#development-reference}
 
@@ -26,11 +30,11 @@ source_file_path: development/development-guidelines.md
 
 - Geração de dados de teste: `pnpm generate-test-data --servers=N`
 - Teste de notificações: endpoint `/api/notifications/test`
-- Verificações de saúde do Cron: `curl http://localhost:8667/health` ou `curl http://localhost:8666/api/cron/health`
-- Teste de backup atrasado: `pnpm run-overdue-check`
-- Modo de desenvolvimento: registro detalhado e armazenamento em arquivo JSON
+- Verificações de saúde do cron: `curl http://localhost:8667/health` ou `curl http://localhost:8666/api/cron/health`
+- Teste de backups atrasados: **Configurações → Monitoramento de Backup** (**Testar backups atrasados**), ou `POST /api/notifications/check-overdue` com autenticação
+- Modo de desenvolvimento: registro detalhado e armazenamento em arquivos JSON
 - Manutenção do banco de dados: use o menu de manutenção para operações de limpeza
-- Pré-verificações: `scripts/pre-checks.sh` para solucionar problemas de inicialização
+- Pré-verificações: `scripts/pre-checks.sh` para solução de problemas de inicialização
 
 ## Referências de Desenvolvimento {#development-references}
 
@@ -55,13 +59,12 @@ source_file_path: development/development-guidelines.md
 - date-fns ^4.1.0, uuid ^13.0.0
 - express ^5.2.1 (serviço cron), node-cron ^4.2.1
 - nodemailer ^8.0.1, qrcode ^1.5.4
-- intlayer ^8.1.8, next-intlayer ^8.1.8, react-intlayer ^8.1.8, @intlayer/editor-react ^8.1.8, @intlayer/swc ^8.1.8
+- ai-i18n-tools ^1.x, i18next ^26.x, react-i18next ^17.x (pipeline de tradução para UI + docs)
 
-### Verificação de Tipo e Linting {#type-checking-linting}
+### Verificação de Tipos e Análise de Código {#type-checking-linting}
 - TypeScript ^5.9.3
 - TSX ^4.21.0
 - ESLint ^9.16.0 (via `next lint`)
-- intlayer-editor ^8.1.8
 - webpack ^5.105.3
 
 ### Compilação e Implantação {#build-deployment}

@@ -1,14 +1,22 @@
+---
+translation_last_updated: '2026-04-18T00:01:00.655Z'
+source_file_mtime: '2026-03-05T22:33:28.419Z'
+source_file_hash: 70fe731fa22f714de94b93df446dee4ca4dc1f5683c22bc93eb52b2e03dd77d4
+translation_language: fr
+source_file_path: documentation/docs/api-reference/external-apis.md
+translation_models:
+  - qwen/qwen3-235b-a22b-2507
+---
+# API externes {#external-apis}
 
+Ces points de terminaison sont conçus pour être utilisés par d'autres applications et intégrations, par exemple [Homepage](../user-guide/homepage-integration.md).
 
-# External APIs {#external-apis}
+## Obtenir le résumé général - `/api/summary` {#get-overall-summary-apisummary}
+- **Endpoint** : `/api/summary`
+- **Méthode** : GET
+- **Description** : Récupère un résumé de toutes les opérations de sauvegarde sur tous les serveurs.
+- **Réponse** :
 
-These endpoints are designed for use by other applications and integrations, for instance [Homepage](../user-guide/homepage-integration.md).
-
-## Get Overall Summary - `/api/summary` {#get-overall-summary-apisummary}
-- **Endpoint**: `/api/summary`
-- **Method**: GET
-- **Description**: Retrieves a summary of all backup operations across all servers.
-- **Response**:
   ```json
   {
     "totalServers": 3,
@@ -21,28 +29,30 @@ These endpoints are designed for use by other applications and integrations, for
     "secondsSinceLastBackup": 7200
   }
   ```
-- **Error Responses**:
-  - `500`: Server error fetching summary data
-- **Notes**:
-  - In version 0.5.x, the field `totalBackupedSize` was replaced by `totalBackupSize`
-  - In version 0.7.x, the field `totalMachines` was replaced by `totalServers`
-  - The field `overdueBackupsCount` shows the number of currently overdue backups
-  - The field `secondsSinceLastBackup` shows the time in seconds since the last backup across all servers
-  - Returns fallback response with zeros if data fetching fails
-  - **Note**: For internal dashboard use, consider using `/api/dashboard` which includes this data plus additional information
 
-## Get Latest Backup - `/api/lastbackup/:serverId` {#get-latest-backup-apilastbackupserverid}
-- **Endpoint**: `/api/lastbackup/:serverId`
-- **Method**: GET
-- **Description**: Retrieves the latest backup information for a specific server.
-- **Parameters**:
-  - `serverId`: the server identifier (ID or name)
+- **Réponses d'erreur** :
+  - `500` : Erreur du serveur lors de la récupération des données de synthèse
+- **Notes** :
+  - Dans la version 0.5.x, le champ `totalBackupedSize` a été remplacé par `totalBackupSize`
+  - Dans la version 0.7.x, le champ `totalMachines` a été remplacé par `totalServers`
+  - Le champ `overdueBackupsCount` indique le nombre de sauvegardes actuellement en retard
+  - Le champ `secondsSinceLastBackup` indique le temps en secondes depuis la dernière sauvegarde sur tous les serveurs
+  - Retourne une réponse de secours avec des valeurs nulles si la récupération des données échoue
+  - **Note** : Pour une utilisation interne du tableau de bord, envisagez d'utiliser `/api/dashboard`, qui inclut ces données ainsi que des informations supplémentaires
+
+## Obtenir la dernière sauvegarde - `/api/lastbackup/:serverId` {#get-latest-backup-apilastbackupserverid}
+- **Endpoint** : `/api/lastbackup/:serverId`
+- **Méthode** : GET
+- **Description** : Récupère les informations de la dernière sauvegarde pour un serveur spécifique.
+- **Paramètres** :
+  - `serverId` : l'identifiant du serveur (ID ou nom)
 
 :::note
-The server identifier has to be URL Encoded.
+L'identifiant du serveur doit être encodé en URL.
 :::
-  
-- **Response**:
+
+- **Réponse** :
+
   ```json
   {
     "server": {
@@ -77,27 +87,29 @@ The server identifier has to be URL Encoded.
     "status": 200
   }
   ```
-- **Error Responses**:
-  - `404`: Server not found
-  - `500`: Internal server error
-- **Notes**:
-  - In version 0.7.x, the response object key changed from `machine` to `server`
-  - Server identifier can be either ID or name
-  - Returns null for latest_backup if no backups exist
-  - Includes cache control headers to prevent caching
 
-## Get Latest Backups - `/api/lastbackups/:serverId` {#get-latest-backups-apilastbackupsserverid}
-- **Endpoint**: `/api/lastbackups/:serverId`
-- **Method**: GET
-- **Description**: Retrieves the latest backup information for all configured backups (e.g. 'Files', 'Databases') on a specific server.
-- **Parameters**:
-  - `serverId`: the server identifier (ID or name)
+- **Réponses d'erreur** :
+  - `404` : Serveur non trouvé
+  - `500` : Erreur interne du serveur
+- **Notes** :
+  - Dans la version 0.7.x, la clé de l'objet de réponse est passée de `machine` à `server`
+  - L'identifiant du serveur peut être soit l'ID, soit le nom
+  - Retourne null pour latest_backup s'il n'existe aucune sauvegarde
+  - Inclut des en-têtes de contrôle de cache pour empêcher la mise en cache
+
+## Obtenir les dernières sauvegardes - `/api/lastbackups/:serverId` {#get-latest-backups-apilastbackupsserverid}
+- **Endpoint** : `/api/lastbackups/:serverId`
+- **Méthode** : GET
+- **Description** : Récupère les informations de la dernière sauvegarde pour toutes les sauvegardes configurées (par exemple 'Fichiers', 'Bases de données') sur un serveur spécifique.
+- **Paramètres** :
+  - `serverId` : l'identifiant du serveur (ID ou nom)
 
 :::note
-The server identifier has to be URL Encoded.
+L'identifiant du serveur doit être encodé en URL.
 :::
-  
-- **Response**:
+
+- **Réponse** :
+
   ```json
   {
     "server": {
@@ -158,43 +170,46 @@ The server identifier has to be URL Encoded.
     "status": 200
   }
   ```
-- **Error Responses**:
-  - `404`: Server not found
-  - `500`: Internal server error
-- **Notes**:
-  - In version 0.7.x, the response object key changed from `machine` to `server`, and the field `backup_types_count` was renamed to `backup_jobs_count`
-  - Server identifier can be either ID or name
-  - Returns latest backup for each backup job (backup_name) that the server has
-  - Unlike `/api/lastbackup/:serverId` which returns only the single most recent backup of the server (independ of backup job)
-  - Includes cache control headers to prevent caching
 
-## Upload Backup Data - `/api/upload` {#upload-backup-data-apiupload}
-- **Endpoint**: `/api/upload`
-- **Method**: POST
-- **Description**: Uploads backup operation data for a server. Supports duplicate backup run detection and sends notifications.
-- **Request Body**: JSON sent by Duplicati with the following options:
+- **Réponses d'erreur** :
+  - `404` : Serveur non trouvé
+  - `500` : Erreur interne du serveur
+- **Notes** :
+  - Dans la version 0.7.x, la clé de l'objet de réponse est passée de `machine` à `server`, et le champ `backup_types_count` a été renommé en `backup_jobs_count`
+  - L'identifiant du serveur peut être soit l'ID, soit le nom
+  - Retourne la dernière sauvegarde pour chaque tâche de sauvegarde (backup_name) que possède le serveur
+  - Contrairement à `/api/lastbackup/:serverId` qui retourne uniquement la sauvegarde la plus récente du serveur (indépendamment de la tâche de sauvegarde)
+  - Inclut des en-têtes de contrôle de cache pour empêcher la mise en cache
+
+## Téléverser les données de sauvegarde - `/api/upload` {#upload-backup-data-apiupload}
+- **Endpoint** : `/api/upload`
+- **Méthode** : POST
+- **Description** : Téléverse les données d'opération de sauvegarde pour un serveur. Prend en charge la détection des doublons de sauvegarde et envoie des notifications.
+- **Corps de la requête** : JSON envoyé par Duplicati avec les options suivantes :
 
   ```bash
   --send-http-url=http://my.local.server:9666/api/upload
   --send-http-result-output-format=Json
   --send-http-log-level=Information
   ```
-  
-- **Response**: 
+
+- **Réponse** :
+
   ```json
   {
     "success": true
   }
   ```
-- **Error Responses**:
-  - `400`: Missing required fields in Extra or Data sections, or invalid MainOperation
-  - `409`: Duplicate backup data (ignored)
-  - `500`: Server error processing backup data
-- **Notes**:
-  - Only processes backup operations (MainOperation must be "Backup")
-  - Validates required fields in Extra section: machine-id, machine-name, backup-name, backup-id
-  - Validates required fields in Data section: ParsedResult, BeginTime, Duration
-  - Automatically detects duplicate backup runs and returns 409 status
-  - Sends notifications after successful backup insertion (if configured)
-  - Logs request data to a file in the `data` directory in the root of the project in development mode for debugging
-  - Uses transaction for data consistency
+
+- **Réponses d'erreur** :
+  - `400` : Champs requis manquants dans les sections Extra ou Data, ou MainOperation non valide
+  - `409` : Données de sauvegarde en double (ignorées)
+  - `500` : Erreur du serveur lors du traitement des données de sauvegarde
+- **Notes** :
+  - Ne traite que les opérations de sauvegarde (MainOperation doit être "Backup")
+  - Valide les champs requis dans la section Extra : machine-id, machine-name, backup-name, backup-id
+  - Valide les champs requis dans la section Data : ParsedResult, BeginTime, Duration
+  - Détecte automatiquement les exécutions de sauvegarde en double et retourne un statut 409
+  - Envoie des notifications après une insertion réussie de la sauvegarde (si configuré)
+  - Enregistre les données de la requête dans un fichier du répertoire `data` à la racine du projet en mode développement, à des fins de débogage
+  - Utilise une transaction pour assurer la cohérence des données

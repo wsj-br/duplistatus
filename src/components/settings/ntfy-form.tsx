@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import { useTranslation } from "react-i18next";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -13,16 +14,13 @@ import QRCode from 'qrcode';
 import { NtfyConfig } from '@/lib/types';
 import { NtfyQrModal } from '@/components/ui/ntfy-qr-modal';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
-import { useIntlayer } from 'react-intlayer';
-
 interface NtfyFormProps {
   config: NtfyConfig;
   onSave: (config: NtfyConfig) => Promise<{ ntfy?: NtfyConfig } | void>;
 }
 
 export function NtfyForm({ config, onSave }: NtfyFormProps) {
-  const content = useIntlayer('ntfy-form');
-  const common = useIntlayer('common');
+  const { t } = useTranslation();
   const { toast } = useToast();
   const [formData, setFormData] = useState<NtfyConfig>(config);
   const [isSaving, setIsSaving] = useState(false);
@@ -38,8 +36,8 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
   const generateQrCode = async () => {
     if (!formData.url || !formData.topic) {
       toast({
-        title: content.validationError.value,
-        description: content.pleaseEnterBothUrlAndTopic.value,
+        title: t("Validation Error"),
+        description: t("Please enter both NTFY URL and Topic before generating QR code"),
         variant: "destructive",
         duration: 3000,
       });
@@ -75,8 +73,8 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
     } catch (error) {
       console.error('Error generating QR code:', error);
       toast({
-        title: content.qrCodeGenerationFailed.value,
-        description: content.failedToGenerateQrCode.value,
+        title: t("QR Code Generation Failed"),
+        description: t("Failed to generate QR code. Please try again."),
         variant: "destructive",
         duration: 3000,
       });
@@ -104,8 +102,8 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
   const handleTestMessage = async () => {
     if (!formData.url || !formData.topic) {
       toast({
-        title: content.validationError.value,
-        description: content.pleaseEnterBothUrlAndTopicForTest.value,
+        title: t("Validation Error"),
+        description: t("Please enter both NTFY URL and Topic before testing"),
         variant: "destructive",
         duration: 3000,
       });
@@ -124,19 +122,19 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || content.failedToSendTestNotification.value);
+        throw new Error(errorData.error || t("Failed to send test notification"));
       }
 
       toast({
-        title: content.testSuccessful.value,
-        description: content.testNotificationSentSuccessfully.value,
+        title: t("Test Successful"),
+        description: t("Test notification sent successfully! Check your device."),
         duration: 2000,
       });
     } catch (error) {
       console.error('Error sending test notification:', error instanceof Error ? error.message : String(error));
       toast({
-        title: content.testFailed.value,
-        description: error instanceof Error ? error.message : content.failedToSendTestNotification.value,
+        title: t("Test Failed"),
+        description: error instanceof Error ? error.message : t("Failed to send test notification"),
         variant: "destructive",
         duration: 3000,
       });
@@ -152,11 +150,11 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
           <div className="flex items-center gap-3">
             <ColoredIcon icon={MessageSquare} color="blue" size="lg" />
             <div>
-              <CardTitle>{content.title.value}</CardTitle>
+              <CardTitle>{t("NTFY Configuration")}</CardTitle>
               <CardDescription className="mt-1">
-                {content.description.value}
+                {t("Configure NTFY push notification settings")}
                 {' '}
-                {content.cardDescLearnMore.value}
+                {t("Learn more about NTFY at")}
                 {' '}
                 <a 
                   href="https://docs.ntfy.sh/" 
@@ -166,16 +164,16 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
                 >
                   docs.ntfy.sh
                 </a>
-                {' '}{content.cardDescAnd.value}{' '}
+                {' '}{t("and")}{' '}
                 <a 
                   href="https://docs.ntfy.sh/subscribe/phone/" 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="text-primary hover:underline"
                 >
-                  {content.cardDescHere.value}
+                  {t("here")}
                 </a>
-                {' '}{content.cardDescSubscribe.value}
+                {' '}{t("to subscribe to your topic in your phone.")}
               </CardDescription>
             </div>
           </div>
@@ -184,40 +182,41 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
           <div className="space-y-2">
             <Label htmlFor="ntfy-url" className="flex items-center gap-2">
               <ColoredIcon icon={Globe} color="blue" size="sm" />
-              {content.ntfyUrl.value}
+              {t("NTFY URL")}
             </Label>
             <Input
               id="ntfy-url"
               value={formData.url || ''}
               onChange={(e) => handleInputChange('url', e.target.value)}
-              placeholder={content.ntfyUrlPlaceholder.value}
+              placeholder={t("https://ntfy.sh/")}
               type="url"
             />
             <p className="text-sm text-muted-foreground">
-              {content.ntfyUrlDescPrefix.value} <a href="https://ntfy.sh/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">https://ntfy.sh/</a>
+              {t("The URL of your NTFY server. Defaults to")}{' '}
+              <a href="https://ntfy.sh/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">https://ntfy.sh/</a>
             </p>
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="ntfy-topic" className="flex items-center gap-2">
               <ColoredIcon icon={MessageSquare} color="green" size="sm" />
-              {content.ntfyTopic.value}
+              {t("NTFY Topic")}
             </Label>
             <Input
               id="ntfy-topic"
               value={formData.topic || ''}
               onChange={(e) => handleInputChange('topic', e.target.value)}
-              placeholder={content.ntfyTopicPlaceholder.value}
+              placeholder={t("duplistatus-my-notification-topic")}
             />
             <p className="text-sm text-muted-foreground">
-                {content.ntfyTopicDescription.value}{' '}
+                {t("Leave empty to automatically generate a random name when you save. You can view this topic at")}{' '}
                 <a
-                  href={`https://ntfy.sh/${formData.topic || content.ntfyTopicPlaceholder.value}`}
+                  href={`https://ntfy.sh/${formData.topic || "duplistatus-my-notification-topic"}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-primary hover:underline"
                 >
-                  https://ntfy.sh/{formData.topic || content.ntfyTopicPlaceholder.value}
+                  https://ntfy.sh/{formData.topic || t("duplistatus-my-notification-topic")}
                 </a>.
             </p>
           </div>
@@ -225,24 +224,24 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
           <div className="space-y-2">
             <Label htmlFor="ntfy-access-token" className="flex items-center gap-2">
               <ColoredIcon icon={Key} color="yellow" size="sm" />
-              {content.ntfyAccessTokenOptional.value}
+              {t("NTFY Access Token (Optional)")}
             </Label>
             <TogglePasswordInput
               id="ntfy-access-token"
               value={formData.accessToken || ''}
               onChange={(value) => handleInputChange('accessToken', value)}
-              placeholder={content.ntfyAccessTokenPlaceholder.value}
+              placeholder={t("Enter your NTFY access token")}
             />
             <p className="text-sm text-muted-foreground">
-            {content.ntfyAccessTokenDescPrefix.value}{' '}
+            {t("If your NTFY server requires authentication, please enter your access token. For more details, refer to the")}{' '}
               <a 
                 href="https://docs.ntfy.sh/config/#access-tokens" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-primary hover:underline"
               >
-                {content.ntfyAccessTokenDescLink.value}
-              </a>  {content.ntfyAccessTokenDescSuffix.value}
+                {t("NTFY authentication")}
+              </a>  {t("documentation.")}
             </p>
           </div>
 
@@ -253,7 +252,7 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
               variant="gradient"
               className="w-full sm:w-auto"
             >
-              {isSaving ? content.saving.value : content.saveSettings.value}
+              {isSaving ? t("Saving...") : t("Save Settings")}
             </Button>
 
             <Button
@@ -265,12 +264,12 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
               {isTesting ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  {content.sending.value}
+                  {t("Sending...")}
                 </>
               ) : (
                 <>
                   <SendHorizonal className="w-4 h-4" />
-                  {content.sendTestMessage.value}
+                  {t("Send Test Message")}
                 </>
               )}
             </Button>
@@ -281,7 +280,7 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
               className="w-full sm:w-auto"
             >
               <QrCode className="w-4 h-4 mr-2" />
-              {content.configureDevice.value}
+              {t("Configure Device")}
             </Button>
 
           </div>

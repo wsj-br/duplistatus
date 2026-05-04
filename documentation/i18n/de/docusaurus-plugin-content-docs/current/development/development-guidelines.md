@@ -1,9 +1,13 @@
 ---
-translation_last_updated: '2026-03-01T00:45:08.414Z'
-source_file_mtime: '2026-03-01T00:09:33.538Z'
-source_file_hash: 24e59da35ba78059
+translation_last_updated: '2026-04-18T14:28:09.216Z'
+source_file_mtime: '2026-04-18T14:26:07.191Z'
+source_file_hash: b2a61a9c45db956c0f6d1fffcaa03aee962a6571671dd2bfeb4aeb1dd5be7a8d
 translation_language: de
-source_file_path: development/development-guidelines.md
+source_file_path: documentation/docs/development/development-guidelines.md
+translation_models:
+  - anthropic/claude-3.5-haiku
+  - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Entwicklungsreferenz {#development-reference}
 
@@ -24,13 +28,13 @@ source_file_path: development/development-guidelines.md
 
 ## Testen & Debugging {#testing-debugging}
 
-- Testdatengenerierung: `pnpm generate-test-data --servers=N`
-- Benachrichtigungen testen: `/api/notifications/test` Endpunkt
-- Cron-Integritätsprüfungen: `curl http://localhost:8667/health` oder `curl http://localhost:8666/api/cron/health`
-- Überfällige Sicherung testen: `pnpm run-overdue-check`
-- Entwicklungsmodus: ausführliches Logging und JSON-Dateispeicherung
+- Testdatenerzeugung: `pnpm generate-test-data --servers=N`
+- Benachrichtigungstest: `/api/notifications/test`-Endpunkt
+- Cron-Statusüberprüfungen: `curl http://localhost:8667/health` oder `curl http://localhost:8666/api/cron/health`
+- Test überfälliger Backups: **Einstellungen → Backup-Überwachung** (**Überfällige Sicherungen testen**) oder `POST /api/notifications/check-overdue` mit Authentifizierung
+- Entwicklungsmodus: ausführliche Protokollierung und Speicherung in JSON-Dateien
 - Datenbankwartung: Wartungsmenü für Bereinigungsvorgänge verwenden
-- Vorchecks: `scripts/pre-checks.sh` zur Fehlerbehebung bei Startproblemen
+- Vorabprüfungen: `scripts/pre-checks.sh` zur Fehlerbehebung bei Startproblemen
 
 ## Entwicklungsreferenzen {#development-references}
 
@@ -44,7 +48,7 @@ source_file_path: development/development-guidelines.md
 - Node.js >=24.12.0
 - pnpm >=10.24.0 (packageManager: pnpm@10.30.3)
 
-### Kern-Frameworks und Bibliotheken {#core-frameworks-libraries}
+### Kernframeworks und Bibliotheken {#core-frameworks-libraries}
 - Next.js ^16.1.6 (App Router)
 - React ^19.2.4 & React-DOM ^19.2.4
 - Radix UI (@radix-ui/react-*): ^1.1.8 - ^2.2.6 (accordion ^1.2.12, alert-dialog ^1.1.15, avatar ^1.1.11, checkbox ^1.3.3, dialog ^1.1.15, dropdown-menu ^2.1.16, label ^2.1.8, menubar ^1.1.16, popover ^1.1.15, progress ^1.1.8, radio-group ^1.3.8, scroll-area ^1.2.10, select ^2.2.6, separator ^1.1.8, slider ^1.3.6, slot ^1.2.4, switch ^1.2.6, tabs ^1.1.13, toast ^1.2.15, tooltip ^1.2.8)
@@ -53,15 +57,14 @@ source_file_path: development/development-guidelines.md
 - Recharts ^3.7.0, react-day-picker ^9.14.0, react-hook-form ^7.71.2, react-datepicker ^9.1.0
 - lucide-react ^0.575.0, clsx ^2.1.1, class-variance-authority ^0.7.1
 - date-fns ^4.1.0, uuid ^13.0.0
-- express ^5.2.1 (Cron-Service), node-cron ^4.2.1
+- express ^5.2.1 (cron service), node-cron ^4.2.1
 - nodemailer ^8.0.1, qrcode ^1.5.4
-- intlayer ^8.1.8, next-intlayer ^8.1.8, react-intlayer ^8.1.8, @intlayer/editor-react ^8.1.8, @intlayer/swc ^8.1.8
+- ai-i18n-tools ^1.x, i18next ^26.x, react-i18next ^17.x (UI + docs translation pipeline)
 
-### Typprüfung und Linting {#type-checking-linting}
+### Typüberprüfung und Linting {#type-checking-linting}
 - TypeScript ^5.9.3
 - TSX ^4.21.0
 - ESLint ^9.16.0 (via `next lint`)
-- intlayer-editor ^8.1.8
 - webpack ^5.105.3
 
 ### Build & Deployment {#build-deployment}

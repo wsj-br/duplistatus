@@ -1,14 +1,22 @@
+---
+translation_last_updated: '2026-04-18T00:01:35.528Z'
+source_file_mtime: '2026-03-05T22:33:28.419Z'
+source_file_hash: c9fa1157e8f98ef3d8071252f75634990ea86aa2c6de3db3a16b0f911b7a2789
+translation_language: de
+source_file_path: documentation/docs/api-reference/notification-apis.md
+translation_models:
+  - qwen/qwen3-235b-a22b-2507
+---
+# Benachrichtigungssystem {#notification-system}
 
-
-# Notification System {#notification-system}
-
-## Test Notification - `/api/notifications/test` {#test-notification-apinotificationstest}
+## Testbenachrichtigung - `/api/notifications/test` {#test-notification-apinotificationstest}
 - **Endpoint**: `/api/notifications/test`
-- **Method**: POST
-- **Description**: Send test notifications (simple, template-based, or email) to verify notification configuration.
-- **Authentication**: Requires valid session and CSRF token
-- **Request Body**:
-  For simple test:
+- **Methode**: POST
+- **Beschreibung**: Sendet Testbenachrichtigungen (einfach, templatebasiert oder E-Mail), um die Benachrichtigungskonfiguration zu überprüfen.
+- **Authentifizierung**: Gültige Sitzung und CSRF-Token erforderlich
+- **Anfrageinhalt**:
+  Für einfachen Test:
+
     ```json
     {
       "type": "simple",
@@ -19,7 +27,9 @@
       }
     }
     ```
-  For template test:
+
+Für Template-Test:
+
     ```json
     {
       "type": "template",
@@ -36,20 +46,26 @@
       }
     }
     ```
-  For email test:
+
+Für E-Mail-Test:
+
     ```json
     {
       "type": "email"
     }
     ```
-- **Response**:
-  For simple test:
+
+- **Antwort**:
+  Für einfachen Test:
+
   ```json
   {
     "message": "Test notification sent successfully"
   }
   ```
-  For template test:
+
+Für Template-Test:
+
   ```json
   {
     "success": true,
@@ -57,40 +73,44 @@
     "channels": ["NTFY", "Email"]
   }
   ```
-  For email test:
+
+Für E-Mail-Test:
+
   ```json
   {
     "message": "Test email sent successfully"
   }
   ```
-  The test email content displays:
-  - SMTP server hostname and port
-  - Connection type (Plain SMTP, STARTTLS, or Direct SSL/TLS)
-  - SMTP authentication requirement status
-  - SMTP username (only shown when authentication is required)
-  - Recipient email address
-  - From address and sender name used for the email
-  - Test timestamp
-- **Error Responses**:
-  - `401`: Unauthorized - Invalid session or CSRF token
-  - `400`: NTFY configuration is required, invalid configuration, or email not configured
-  - `500`: Failed to send test notification with error details
-- **Notes**:
-  - Supports simple test messages, template-based notifications, and email tests
-  - Template testing uses sample data to replace template variables
-  - Includes timestamp in the test message
-  - Validates NTFY URL and topic before sending
-  - Uses `accessToken` field for authentication
-  - For template tests, sends notifications to both NTFY and email (if configured)
-  - Email tests require SMTP configuration to be set up
-  - The test email endpoint clears the request cache before reading SMTP configuration, ensuring that external scripts can update the configuration and have it immediately reflected in test emails
 
-## Check Overdue Backups - `/api/notifications/check-overdue` {#check-overdue-backups-apinotificationscheck-overdue}
+Der Inhalt der Test-E-Mail zeigt Folgendes an:
+  - SMTP-Server-Hostname und Port
+  - Verbindungstyp (Einfaches SMTP, STARTTLS oder Direkte SSL/TLS)
+  - Status der SMTP-Authentifizierungsanforderung
+  - SMTP-Benutzername (nur angezeigt, wenn Authentifizierung erforderlich ist)
+  - Empfänger-E-Mail-Adresse
+  - Absenderadresse und Name, der für die E-Mail verwendet wird
+  - Test-Zeitstempel
+- **Fehlerantworten**:
+  - `401`: Nicht autorisiert – Ungültige Sitzung oder CSRF-Token
+  - `400`: NTFY-Konfiguration erforderlich, ungültige Konfiguration oder E-Mail nicht konfiguriert
+  - `500`: Testbenachrichtigung konnte nicht gesendet werden, mit Fehlerdetails
+- **Hinweise**:
+  - Unterstützt einfache Testnachrichten, templatebasierte Benachrichtigungen und E-Mail-Tests
+  - Beim Template-Test werden Beispieldaten verwendet, um Template-Variablen zu ersetzen
+  - Enthält Zeitstempel in der Testnachricht
+  - Überprüft NTFY-URL und Thema vor dem Senden
+  - Verwendet `accessToken`-Feld für die Authentifizierung
+  - Bei Template-Tests werden Benachrichtigungen sowohl an NTFY als auch an E-Mail gesendet (falls konfiguriert)
+  - E-Mail-Tests erfordern eine eingerichtete SMTP-Konfiguration
+  - Der Test-E-Mail-Endpunkt löscht den Anfragecache vor dem Lesen der SMTP-Konfiguration, sodass externe Skripte die Konfiguration aktualisieren können und diese sofort in Test-E-Mails berücksichtigt wird
+
+## Überprüfung überfälliger Sicherungen - `/api/notifications/check-overdue` {#check-overdue-backups-apinotificationscheck-overdue}
 - **Endpoint**: `/api/notifications/check-overdue`
-- **Method**: POST
-- **Description**: Manually triggers the overdue backup check and sends notifications.
-- **Authentication**: Requires valid session and CSRF token
-- **Response**:
+- **Methode**: POST
+- **Beschreibung**: Löst manuell die Überprüfung auf überfällige Sicherungen aus und sendet Benachrichtigungen.
+- **Authentifizierung**: Gültige Sitzung und CSRF-Token erforderlich
+- **Antwort**:
+
   ```json
   {
     "message": "Overdue backup check completed",
@@ -102,27 +122,30 @@
     }
   }
   ```
-- **Error Responses**:
-  - `500`: Failed to check for overdue backups
-- **Notes**:
-  - Manually triggers overdue backup check
-  - Returns statistics about the check process
-  - Sends notifications for overdue backups found
 
-## Clear Overdue Timestamps - `/api/notifications/clear-overdue-timestamps` {#clear-overdue-timestamps-apinotificationsclear-overdue-timestamps}
+- **Fehlerantworten**:
+  - `500`: Überprüfung auf überfällige Sicherungen fehlgeschlagen
+- **Hinweise**:
+  - Löst manuell die Überprüfung auf überfällige Sicherungen aus
+  - Gibt Statistiken über den Überprüfungsprozess zurück
+  - Sendet Benachrichtigungen für gefundene überfällige Sicherungen
+
+## Überfällige Zeitstempel löschen - `/api/notifications/clear-overdue-timestamps` {#clear-overdue-timestamps-apinotificationsclear-overdue-timestamps}
 - **Endpoint**: `/api/notifications/clear-overdue-timestamps`
-- **Method**: POST
-- **Description**: Clears all overdue backup notification timestamps, allowing notifications to be sent again.
-- **Authentication**: Requires valid session and CSRF token
-- **Response**:
+- **Methode**: POST
+- **Beschreibung**: Löscht alle Zeitstempel für überfällige Sicherungsbenachrichtigungen, sodass Benachrichtigungen erneut gesendet werden können.
+- **Authentifizierung**: Gültige Sitzung und CSRF-Token erforderlich
+- **Antwort**:
+
   ```json
   {
     "message": "Overdue backup notification timestamps cleared successfully"
   }
   ```
-- **Error Responses**:
-  - `500`: Failed to clear overdue backup timestamps
-- **Notes**:
-  - Clears all overdue backup notification timestamps
-  - Allows notifications to be sent again
-  - Useful for testing notification system
+
+- **Fehlerantworten**:
+  - `500`: Löschen der Zeitstempel für überfällige Sicherungen fehlgeschlagen
+- **Hinweise**:
+  - Löscht alle Zeitstempel für überfällige Sicherungsbenachrichtigungen
+  - Ermöglicht erneutes Senden von Benachrichtigungen
+  - Nützlich zum Testen des Benachrichtigungssystems
