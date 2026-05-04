@@ -76,7 +76,7 @@
     "next": "^16.2.3",
     "next-intlayer": "^8.1.8",
     "node-cron": "^4.2.1",
-    "nodemailer": "^8.0.4",
+    "nodemailer": "^8.0.5",
     "qrcode": "^1.5.4",
     "react": "^19.2.4",
     "react-datepicker": "^9.1.0",
