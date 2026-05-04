@@ -73,7 +73,7 @@
     "express": "^5.2.1",
     "intlayer": "^8.1.8",
     "lucide-react": "^0.575.0",
-    "next": "^16.1.7",
+    "next": "^16.2.3",
     "next-intlayer": "^8.1.8",
     "node-cron": "^4.2.1",
     "nodemailer": "^8.0.5",
