@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:01:54.886Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:21:14.394Z'
+source_file_mtime: '2026-05-06T23:18:51.430Z'
 source_file_hash: c4dde05981ada21800990adcdda2efbb6881d3b1d7ae4921922c4c12ca813552
 translation_language: es
 source_file_path: documentation/docs/user-guide/backup-metrics.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Métricas de Backup {#backup-metrics}
 
@@ -16,12 +17,12 @@ Se muestra un gráfico de métricas de backup a lo largo del tiempo tanto en el 
 
 ![Backup Metrics](../assets/screen-metrics.png)
 
-- **Tamaño cargado**: Cantidad total de datos enviados/transmitidos durante los backups desde el servidor Duplicati al destino (almacenamiento local, FTP, proveedor en la nube, ...) por día.
-- **Duración**: La duración total de todos los backups recibidos por día en HH:MM.
-- **Cantidad de archivos**: La suma del contador de cantidad de archivos recibido para todos los backups por día.
-- **Tamaño de archivos**: La suma del tamaño de archivos reportado por el servidor Duplicati para todos los backups recibidos por día.
-- **Tamaño de almacenamiento**: La suma del tamaño de almacenamiento usado en el destino de backup reportado por el servidor Duplicati por día.
-- **Versiones disponibles**: La suma de todas las versiones disponibles para todos los backups por día.
+- **Tamaño subido**: Cantidad total de datos cargados/transmitidos durante las copias de seguridad desde el servidor Duplicati al destino (almacenamiento local, FTP, proveedor en la nube, ...) por día.
+- **Duración**: La duración total de todas las copias de seguridad recibidas por día en HH:MM.
+- **Cantidad de archivos**: La suma del contador de cantidad de archivos recibido para todas las copias de seguridad por día.
+- **Tamaño del archivo**: La suma del tamaño de archivo informado por el servidor Duplicati para todas las copias de seguridad recibidas por día.
+- **Tamaño de almacenamiento**: La suma del espacio de almacenamiento utilizado en el destino de la copia de seguridad informado por el servidor Duplicati por día.
+- **Versiones disponibles**: La suma de todas las versiones disponibles para todas las copias de seguridad por día.
 
 :::note
 Puede utilizar el control [Configuración de pantalla](settings/display-settings.md) para configurar el rango de tiempo del gráfico.

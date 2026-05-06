@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:01:28.962Z'
-source_file_mtime: '2026-03-05T22:33:28.419Z'
+translation_last_updated: '2026-05-06T23:19:50.230Z'
+source_file_mtime: '2026-05-06T23:18:51.406Z'
 source_file_hash: 9d4cf0118b57183b62975b8e1557d2da7033073c6a7bd0b3131a0a0efa508862
 translation_language: pt-BR
 source_file_path: documentation/docs/development/devel.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Comandos mais utilizados {#most-used-commands}
 
@@ -73,10 +74,10 @@ Ou manualmente:
 ./scripts/clean-docker.sh
 ```
 
-Este script realiza uma limpeza completa do Docker, que é útil para:
+Este script realiza uma limpeza completa do Docker, o que é útil para:
 - Liberar espaço em disco
-- Remover artefatos antigos/não utilizados do Docker
-- Limpar após sessões de desenvolvimento ou testes
+- Remover artefatos antigos/sem uso do Docker
+- Fazer a limpeza após sessões de desenvolvimento ou testes
 - Manter um ambiente Docker limpo
 
 ## Criar uma imagem de desenvolvimento (para testar localmente ou com Podman) {#create-a-development-image-to-test-locally-or-with-podman}

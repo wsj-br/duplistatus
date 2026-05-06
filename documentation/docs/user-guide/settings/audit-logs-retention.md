@@ -13,4 +13,4 @@ Configure how long audit logs are retained before automatic cleanup.
 
 - **Range**: 30 to 365 days
 - **Automatic Cleanup**: Runs daily at 02:00 UTC (not configurable)
-- **Manual Cleanup**: Available via API for administrators (see [Cleanup Audit Logs](../../api-reference/administration-apis.md#cleanup-audit-logs-apiaudit-logcleanup))
+- **Manual Cleanup**: Available via API for administrators (see [Cleanup Audit Logs](../../api-reference/administration-apis.md#cleanup-audit-logs---apiaudit-logcleanup))

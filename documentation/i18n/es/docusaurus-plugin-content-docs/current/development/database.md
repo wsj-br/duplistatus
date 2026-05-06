@@ -1,12 +1,13 @@
 ---
-translation_last_updated: '2026-04-18T00:01:13.802Z'
-source_file_mtime: '2026-03-05T22:33:28.419Z'
-source_file_hash: 7ae9caaab786ec8555b935e6f620849c63b3901e51b46497fc1544693a64ddb7
+translation_last_updated: '2026-05-06T23:19:50.641Z'
+source_file_mtime: '2026-05-06T23:18:51.394Z'
+source_file_hash: df66022aefa103713391937aaf3a13f7b727d815f252518c6028f2e35c7e5e28
 translation_language: es
 source_file_path: documentation/docs/development/database.md
 translation_models:
   - anthropic/claude-3.5-haiku
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Esquema de Base de Datos {#database-schema}
 
@@ -27,11 +28,11 @@ duplistatus utiliza un sistema de migración automatizado para gestionar cambios
 
 Las siguientes son versiones históricas de migración que llevaron la base de datos a su estado actual:
 
-- **Schema v1.0** (Aplicación v0.6.x y anteriores): Esquema de base de datos inicial con tablas de máquinas y backups
-- **Schema v2.0** (Aplicación v0.7.x): Se añadieron columnas faltantes y tabla de configuraciones
-- **Schema v3.0** (Aplicación v0.7.x): Se renombró la tabla de máquinas a servidores, se añadió columna server_url
-- **Schema v3.1** (Aplicación v0.8.x): Se mejoraron los campos de datos de backup, se añadió columna server_password
-- **Schema v4.0** (Aplicación v0.9.x / v1.0.x): Se añadió Control de Acceso de Usuarios (tablas users, sessions, audit_log)
+- **Esquema v1.0** (Aplicación v0.6.x y anteriores): Esquema inicial de la base de datos con tablas de máquinas y copias de seguridad
+- **Esquema v2.0** (Aplicación v0.7.x): Se agregaron columnas faltantes y la tabla de configuraciones
+- **Esquema v3.0** (Aplicación v0.7.x): Se cambió el nombre de la tabla de máquinas a servidores, se agregó la columna server_url
+- **Esquema v3.1** (Aplicación v0.8.x): Se mejoraron los campos de datos de copia de seguridad, se agregó la columna server_password
+- **Esquema v4.0** (Aplicación v0.9.x / v1.0.x): Se agregó el control de acceso de usuarios (tablas users, sessions, audit_log)
 
 La versión actual de la aplicación (v1.3.x) utiliza **Schema v4.0** como la última versión del esquema de base de datos.
 
@@ -50,13 +51,13 @@ Almacena información sobre los servidores Duplicati que se están monitoreando.
 
 #### Campos {#fields}
 
-| Campo            | Tipo             | Descripción                           |
-|------------------|------------------|------------------------------------|
+| Campo             | Tipo             | Descripción                        |
+|-------------------|------------------|------------------------------------|
 | `id`              | TEXT PRIMARY KEY | Identificador único del servidor           |
-| `name`            | TEXT NOT NULL    | Nombre del servidor desde Duplicati         |
+| `name`            | TEXT NOT NULL    | Nombre del servidor de Duplicati         |
 | `server_url`      | TEXT             | URL del servidor Duplicati               |
 | `alias`           | TEXT             | Nombre descriptivo definido por el usuario         |
-| `note`            | TEXT             | Notas/Descripción definidas por el usuario     |
+| `note`            | TEXT             | Notas o descripción definida por el usuario     |
 | `server_password` | TEXT             | Contraseña del servidor para autenticación |
 | `created_at`      | DATETIME         | Marca de tiempo de creación del servidor          |
 
@@ -68,81 +69,81 @@ Almacena datos de operaciones de backup recibidos de servidores Duplicati.
 
 | Campo              | Tipo              | Descripción                                    |
 |--------------------|-------------------|------------------------------------------------|
-| `id`               | TEXT PRIMARY KEY  | Identificador único de backup                  |
-| `server_id`        | TEXT NOT NULL     | Referencia a la tabla de servidores            |
-| `backup_name`      | TEXT NOT NULL     | Nombre del trabajo de backup                   |
-| `backup_id`        | TEXT NOT NULL     | ID de backup de Duplicati                      |
-| `date`             | DATETIME NOT NULL | Hora de ejecución del backup                   |
-| `status`           | TEXT NOT NULL     | Estado del backup (Éxito, Advertencia, Error, Fatal) |
-| `duration_seconds` | INTEGER NOT NULL  | Duración en segundos                           |
-| `size`             | INTEGER           | Tamaño de archivos de origen                   |
-| `uploaded_size`    | INTEGER           | Tamaño de datos enviados                       |
-| `examined_files`   | INTEGER           | Número de archivos examinados                  |
-| `warnings`         | INTEGER           | Número de advertencias                         |
-| `errors`           | INTEGER           | Número de errores                              |
-| `created_at`       | DATETIME          | Marca de tiempo de creación del registro       |
+| `id`               | TEXT PRIMARY KEY  | Identificador único de la copia de seguridad                       |
+| `server_id`        | TEXT NOT NULL     | Referencia a la tabla de servidores                     |
+| `backup_name`      | TEXT NOT NULL     | Nombre del trabajo de respaldo                                |
+| `backup_id`        | TEXT NOT NULL     | ID de respaldo de Duplicati                       |
+| `date`             | DATETIME NOT NULL | Hora de ejecución del respaldo                          |
+| `status`           | TEXT NOT NULL     | Estado del respaldo (Éxito, Advertencia, Error, Fatal) |
+| `duration_seconds` | INTEGER NOT NULL  | Duración en segundos                            |
+| `size`             | INTEGER           | Tamaño de los archivos de origen                           |
+| `uploaded_size`    | INTEGER           | Tamaño de los datos subidos                          |
+| `examined_files`   | INTEGER           | Número de archivos examinados                       |
+| `warnings`         | INTEGER           | Número de advertencias                             |
+| `errors`           | INTEGER           | Número de errores                               |
+| `created_at`       | DATETIME          | Marca de tiempo de creación del registro                      |
 
 #### Matrices de Mensajes (Almacenamiento JSON) {#message-arrays-json-storage}
 
-| Campo              | Tipo | Descripción                                    |
-|---------------------|------|------------------------------------------------|
-| `messages_array`    | TEXT | Array JSON de mensajes de registro             |
-| `warnings_array`    | TEXT | Array JSON de mensajes de advertencia          |
-| `errors_array`      | TEXT | Array JSON de mensajes de error                |
-| `available_backups` | TEXT | Array JSON de versiones de backup disponibles |
+| Campo               | Tipo | Descripción                             |
+|---------------------|------|-----------------------------------------|
+| `messages_array`    | TEXT | Matriz JSON de mensajes de registro              |
+| `warnings_array`    | TEXT | Matriz JSON de mensajes de advertencia          |
+| `errors_array`      | TEXT | Matriz JSON de mensajes de error            |
+| `available_backups` | TEXT | Matriz JSON de versiones de respaldo disponibles |
 
 #### Campos de Operación de Archivos {#file-operation-fields}
 
-| Campo                 | Tipo    | Descripción                          |
-|-----------------------|---------|--------------------------------------|
-| `examined_files`      | INTEGER | Archivos examinados durante backup   |
-| `opened_files`        | INTEGER | Archivos abiertos para backup        |
-| `added_files`         | INTEGER | Archivos nuevos añadidos a backup    |
-| `modified_files`      | INTEGER | Archivos modificados en backup       |
-| `deleted_files`       | INTEGER | Archivos eliminados de backup        |
-| `deleted_folders`     | INTEGER | Carpetas eliminadas de backup        |
-| `added_folders`       | INTEGER | Carpetas añadidas a backup           |
-| `modified_folders`    | INTEGER | Carpetas modificadas en backup       |
-| `not_processed_files` | INTEGER | Archivos no procesados               |
-| `too_large_files`     | INTEGER | Archivos demasiado grandes para procesar |
-| `files_with_error`    | INTEGER | Archivos con errores                 |
-| `added_symlinks`      | INTEGER | Enlaces simbólicos añadidos          |
-| `modified_symlinks`   | INTEGER | Enlaces simbólicos modificados       |
-| `deleted_symlinks`    | INTEGER | Enlaces simbólicos eliminados        |
+| Campo                 | Tipo    | Descripción                  |
+|-----------------------|---------|------------------------------|
+| `examined_files`      | INTEGER | Archivos examinados durante el respaldo |
+| `opened_files`        | INTEGER | Archivos abiertos para respaldo      |
+| `added_files`         | INTEGER | Archivos nuevos agregados a la copia de seguridad    |
+| `modified_files`      | INTEGER | Archivos modificados en la copia de seguridad     |
+| `deleted_files`       | INTEGER | Archivos eliminados de la copia de seguridad    |
+| `deleted_folders`     | INTEGER | Carpetas eliminadas de la copia de seguridad  |
+| `added_folders`       | INTEGER | Carpetas agregadas a la copia de seguridad      |
+| `modified_folders`    | INTEGER | Carpetas modificadas en la copia de seguridad   |
+| `not_processed_files` | INTEGER | Archivos no procesados          |
+| `too_large_files`     | INTEGER | Archivos demasiado grandes para procesar   |
+| `files_with_error`    | INTEGER | Archivos con errores            |
+| `added_symlinks`      | INTEGER | Enlaces simbólicos agregados         |
+| `modified_symlinks`   | INTEGER | Enlaces simbólicos modificados      |
+| `deleted_symlinks`    | INTEGER | Enlaces simbólicos eliminados       |
 
 #### Campos de Tamaño de archivos {#file-size-fields}
 
 | Campo                    | Tipo    | Descripción                          |
 |--------------------------|---------|--------------------------------------|
-| `size_of_examined_files` | INTEGER | Tamaño de archivos examinados durante el backup |
-| `size_of_opened_files`   | INTEGER | Tamaño de archivos abiertos para el backup      |
-| `size_of_added_files`    | INTEGER | Tamaño de archivos nuevos añadidos al backup    |
-| `size_of_modified_files` | INTEGER | Tamaño de archivos modificados en el backup     |
+| `size_of_examined_files` | INTEGER | Tamaño de los archivos examinados durante la copia de seguridad |
+| `size_of_opened_files`   | INTEGER | Tamaño de los archivos abiertos para la copia de seguridad      |
+| `size_of_added_files`    | INTEGER | Tamaño de los archivos nuevos agregados a la copia de seguridad    |
+| `size_of_modified_files` | INTEGER | Tamaño de los archivos modificados en la copia de seguridad     |
 
 #### Campos de Estado de Operación {#operation-status-fields}
 
 | Campo                    | Tipo              | Descripción                    |
 |--------------------------|-------------------|--------------------------------|
-| `parsed_result`          | TEXT NOT NULL     | Resultado de operación analizado |
-| `main_operation`         | TEXT NOT NULL     | Tipo de operación principal    |
-| `interrupted`            | BOOLEAN           | Si el backup fue interrumpido  |
-| `partial_backup`         | BOOLEAN           | Si el backup fue parcial       |
-| `dryrun`                 | BOOLEAN           | Si el backup fue una ejecución de prueba |
-| `version`                | TEXT              | Versión de Duplicati utilizada |
-| `begin_time`             | DATETIME NOT NULL | Hora de inicio del backup      |
-| `end_time`               | DATETIME NOT NULL | Hora de fin del backup         |
-| `warnings_actual_length` | INTEGER           | Cantidad real de advertencias  |
-| `errors_actual_length`   | INTEGER           | Cantidad real de errores       |
-| `messages_actual_length` | INTEGER           | Cantidad real de mensajes      |
+| `parsed_result`          | TEXT NOT NULL     | Resultado de la operación analizado        |
+| `main_operation`         | TEXT NOT NULL     | Tipo principal de operación            |
+| `interrupted`            | BOOLEAN           | Indica si la copia de seguridad se interrumpió |
+| `partial_backup`         | BOOLEAN           | Indica si la copia de seguridad fue parcial     |
+| `dryrun`                 | BOOLEAN           | Indica si la copia de seguridad fue una prueba (dry run)   |
+| `version`                | TEXT              | Versión de Duplicati utilizada         |
+| `begin_time`             | DATETIME NOT NULL | Hora de inicio de la copia de seguridad              |
+| `end_time`               | DATETIME NOT NULL | Hora de finalización de la copia de seguridad                |
+| `warnings_actual_length` | INTEGER           | Cantidad real de advertencias          |
+| `errors_actual_length`   | INTEGER           | Cantidad real de errores            |
+| `messages_actual_length` | INTEGER           | Cantidad real de mensajes          |
 
 #### Campos de Estadísticas del Backend {#backend-statistics-fields}
 
 | Campo                            | Tipo     | Descripción                       |
 |----------------------------------|----------|-----------------------------------|
 | `bytes_downloaded`               | INTEGER  | Bytes descargados del destino |
-| `known_file_size`                | INTEGER  | Tamaño de archivos conocido en el destino    |
-| `last_backup_date`               | DATETIME | Fecha del último backup en el destino   |
-| `backup_list_count`              | INTEGER  | Número de versiones de backup         |
+| `known_file_size`                | INTEGER  | Tamaño del archivo conocido en el destino    |
+| `last_backup_date`               | DATETIME | Fecha del último respaldo en el destino   |
+| `backup_list_count`              | INTEGER  | Número de versiones de copia de seguridad         |
 | `reported_quota_error`           | BOOLEAN  | Error de cuota reportado              |
 | `reported_quota_warning`         | BOOLEAN  | Advertencia de cuota reportada            |
 | `backend_main_operation`         | TEXT     | Operación principal del backend            |
@@ -158,26 +159,26 @@ Almacena datos de operaciones de backup recibidos de servidores Duplicati.
 
 Almacena la configuración de la aplicación.
 
-#### Campos {#fields}
+#### Campos {#fields-1}
 
 | Campo   | Tipo                      | Descripción                |
 |---------|---------------------------|----------------------------|
-| `key`   | TEXT PRIMARY KEY NOT NULL | Clave de configuración     |
+| `key`   | TEXT PRIMARY KEY NOT NULL | Clave de configuración          |
 | `value` | TEXT                      | Valor de configuración (JSON) |
 
 #### Claves de Configuración Comunes {#common-configuration-keys}
 
 - `email_config`: Configuración de notificaciones por correo electrónico
 - `ntfy_config`: Configuración de notificaciones NTFY
-- `overdue_tolerance`: Configuración de tolerancia de backup retrasado
+- `overdue_tolerance`: Configuración de tolerancia para copia de seguridad retrasada
 - `notification_templates`: Plantillas de mensajes de notificación
-- `audit_retention_days`: Período de retención del log de auditoría (por defecto: 90 días)
+- `audit_retention_days`: Periodo de retención del registro de auditoría (por defecto: 90 días)
 
 ### Tabla de Versión de Base de Datos {#database-version-table}
 
 Realiza un seguimiento de la versión del esquema de la base de datos con fines de migración.
 
-#### Campos {#fields}
+#### Campos {#fields-2}
 
 | Campo        | Tipo             | Descripción                |
 |--------------|------------------|----------------------------|
@@ -188,59 +189,59 @@ Realiza un seguimiento de la versión del esquema de la base de datos con fines 
 
 Almacena información de cuenta de usuario para autenticación y control de acceso.
 
-#### Campos {#fields}
+#### Campos {#fields-3}
 
 | Campo                   | Tipo                 | Descripción                         |
 |-------------------------|----------------------|-------------------------------------|
-| `id`                    | TEXT PRIMARY KEY     | Identificador único de usuario      |
-| `username`              | TEXT UNIQUE NOT NULL | Nombre de usuario para iniciar sesión |
-| `password_hash`         | TEXT NOT NULL        | Contraseña cifrada con Bcrypt       |
-| `is_admin`              | BOOLEAN NOT NULL     | Si el usuario tiene privilegios de admin |
-| `must_change_password`  | BOOLEAN              | Si el cambio de contraseña es requerido |
-| `created_at`            | DATETIME             | Marca de tiempo de creación de cuenta |
-| `updated_at`            | DATETIME             | Marca de tiempo de última actualización |
-| `last_login_at`         | DATETIME             | Marca de tiempo del último inicio de sesión exitoso |
-| `last_login_ip`         | TEXT                 | Dirección IP del último inicio de sesión |
-| `failed_login_attempts` | INTEGER              | Recuento de intentos de inicio de sesión fallidos |
-| `locked_until`          | DATETIME             | Expiración del bloqueo de cuenta (si está bloqueado) |
+| `id`                    | TEXT PRIMARY KEY     | Identificador único del usuario              |
+| `username`              | TEXT UNIQUE NOT NULL | Nombre de usuario para inicio de sesión                  |
+| `password_hash`         | TEXT NOT NULL        | Contraseña hasheada con Bcrypt              |
+| `is_admin`              | BOOLEAN NOT NULL     | Si el usuario tiene privilegios de administrador   |
+| `must_change_password`  | BOOLEAN              | Si se requiere el cambio de contraseña |
+| `created_at`            | DATETIME             | Marca de tiempo de creación de la cuenta          |
+| `updated_at`            | DATETIME             | Marca de tiempo de la última actualización               |
+| `last_login_at`         | DATETIME             | Marca de tiempo del último inicio de sesión exitoso     |
+| `last_login_ip`         | TEXT                 | Dirección IP del último inicio de sesión            |
+| `failed_login_attempts` | INTEGER              | Cantidad de intentos fallidos de inicio de sesión      |
+| `locked_until`          | DATETIME             | Expiración del bloqueo de la cuenta (si está bloqueada) |
 
 ### Tabla de Sesiones {#sessions-table}
 
 Almacena datos de sesión del usuario para autenticación y seguridad.
 
-#### Campos {#fields}
+#### Campos {#fields-4}
 
-| Campo            | Tipo              | Descripción                                                      |
-|------------------|-------------------|------------------------------------------------------------------|
-| `id`             | TEXT PRIMARY KEY  | Identificador de sesión                                          |
-| `user_id`        | TEXT              | Referencia a la tabla de usuarios (anulable para sesiones no autenticadas) |
-| `created_at`     | DATETIME          | Marca de tiempo de creación de sesión                            |
-| `last_accessed`  | DATETIME          | Marca de tiempo de última acceso                                 |
-| `expires_at`     | DATETIME NOT NULL | Marca de tiempo de expiración de sesión                          |
-| `ip_address`     | TEXT              | Dirección IP de origen de sesión                                 |
-| `user_agent`     | TEXT              | Cadena de agente de usuario                                      |
-| `csrf_token`     | TEXT              | Token CSRF para la sesión                                        |
-| `csrf_expires_at`| DATETIME          | Expiración de token CSRF                                         |
+| Campo             | Tipo              | Descripción                                                      |
+|-------------------|-------------------|------------------------------------------------------------------|
+| `id`              | TEXT PRIMARY KEY  | Identificador de la sesión                                               |
+| `user_id`         | TEXT              | Referencia a la tabla de usuarios (nulo para sesiones no autenticadas) |
+| `created_at`      | DATETIME          | Marca de tiempo de creación de la sesión                                       |
+| `last_accessed`   | DATETIME          | Marca de tiempo del último acceso                                            |
+| `expires_at`      | DATETIME NOT NULL | Marca de tiempo de expiración de la sesión                                     |
+| `ip_address`      | TEXT              | Dirección IP de origen de la sesión                                     |
+| `user_agent`    | TEXT                              | Cadena del agente de usuario                                                 |
+| `csrf_token`      | TEXT              | Token CSRF para la sesión                                       |
+| `csrf_expires_at` | DATETIME          | Expiración del token CSRF |
 
 ### Log de Auditoría {#audit-log-table}
 
 Almacena un registro de auditoría de acciones de usuario y eventos del sistema.
 
-#### Campos {#fields}
+#### Campos {#fields-5}
 
 | Campo           | Tipo                              | Descripción                                                       |
 |-----------------|-----------------------------------|-------------------------------------------------------------------|
-| `id`            | INTEGER PRIMARY KEY AUTOINCREMENT | Identificador único de entrada del log de auditoría                                 |
+| `id`            | INTEGER PRIMARY KEY AUTOINCREMENT | Identificador único de la entrada en el registro de auditoría                                 |
 | `timestamp`     | DATETIME                          | Marca de tiempo del evento                                                   |
-| `user_id`       | TEXT                              | Referencia a la tabla de usuarios (anulable)                       |
+| `user_id`       | TEXT                              | Referencia a la tabla de usuarios (nullable)                               |
 | `username`      | TEXT                              | Nombre de usuario en el momento de la acción                                        |
 | `action`        | TEXT NOT NULL                     | Acción realizada                                                  |
-| `category`      | TEXT NOT NULL                     | Categoría de la acción (p. ej., 'authentication', 'settings', 'backup') |
-| `target_type`   | TEXT                              | Tipo de objetivo (p. ej., 'server', 'backup', 'user')                 |
-| `target_id`     | TEXT                              | Identificador del objetivo                                              |
+| `category`      | TEXT NOT NULL                     | Categoría de la acción (por ejemplo, 'authentication', 'settings', 'backup') |
+| `target_type`   | TEXT                              | Tipo de destino (por ejemplo, 'server', 'backup', 'user')                 |
+| `target_id`     | TEXT                              | Identificador del destino                                              |
 | `details`       | TEXT                              | Detalles adicionales (JSON)                                         |
 | `ip_address`    | TEXT                              | Dirección IP del solicitante                                           |
-| `user_agent`    | TEXT                              | Cadena de agente de usuario                                                 |
+| `user_agent`    | TEXT                              | Cadena del agente de usuario                                                 |
 | `status`        | TEXT NOT NULL                     | Estado de la acción ('success', 'failure', 'error')                  |
 | `error_message` | TEXT                              | Mensaje de error si la acción falló                                    |
 
@@ -249,12 +250,12 @@ Almacena un registro de auditoría de acciones de usuario y eventos del sistema.
 ### Almacenamiento de Sesiones Respaldado por Base de Datos {#database-backed-session-storage}
 
 Las sesiones se almacenan en la base de datos con respaldo en memoria:
-- **Almacenamiento Principal**: Tabla de sesiones respaldada por base de datos
+- **Almacenamiento principal**: Tabla de sesiones respaldada por base de datos
 - **Respaldo**: Almacenamiento en memoria (soporte heredado o casos de error)
-- **ID de Sesión**: Cadena aleatoria criptográficamente segura
-- **Vencimiento**: Tiempo de espera agotado configurable
+- **ID de sesión**: Cadena aleatoria criptográficamente segura
+- **Expiración**: Tiempo de espera de sesión configurable
 - **Protección CSRF**: Protección contra falsificación de solicitudes entre sitios
-- **Limpieza Automática**: Las sesiones vencidas se eliminan automáticamente
+- **Limpieza automática**: Las sesiones expiradas se eliminan automáticamente
 
 ### Puntos finales de la API de sesión {#session-api-endpoints}
 
@@ -267,26 +268,26 @@ Las sesiones se almacenan en la base de datos con respaldo en memoria:
 
 La base de datos incluye varios índices para un rendimiento óptimo de las consultas:
 
-- **Claves Primarias**: Todos los tablas tienen índices de clave primaria
-- **Claves Foráneas**: Referencias de Servidor en tabla de backups, referencias de Usuario en sesiones y audit_log
-- **Optimización de Consultas**: Índices en campos consultados frecuentemente
-- **Índices de Fecha**: Índices en campos de fecha para consultas basadas en tiempo
-- **Índices de Usuario**: Índice de nombre de usuario para búsquedas rápidas de usuarios
-- **Índices de Sesión**: Índices de expiración e ID de usuario para gestión de sesiones
-- **Índices de Auditoría**: Índices de marca de tiempo, ID de usuario, acción, categoría y estado para consultas de auditoría
+- **Claves primarias**: Todas las tablas tienen índices de clave primaria
+- **Claves externas**: Referencias de servidores en la tabla de copias de seguridad, referencias de usuarios en sesiones y registro_de_auditoría
+- **Optimización de consultas**: Índices en campos consultados con frecuencia
+- **Índices de fecha**: Índices en campos de fecha para consultas basadas en tiempo
+- **Índices de usuario**: Índice de nombre de usuario para búsquedas rápidas de usuarios
+- **Índices de sesión**: Índices de expiración y user_id para la gestión de sesiones
+- **Índices de auditoría**: Índices de marca de tiempo, user_id, acción, categoría y estado para consultas de auditoría
 
 ## Relaciones {#relationships}
 
-- **Servidores → Backups**: Relación uno a muchos
+- **Servidores → Copias de seguridad**: Relación uno a muchos
 - **Usuarios → Sesiones**: Relación uno a muchos (las sesiones pueden existir sin usuarios)
-- **Usuarios → Log de Auditoría**: Relación uno a muchos (las entradas de auditoría pueden existir sin usuarios)
-- **Backups → Mensajes**: Arreglos JSON incrustados
-- **Configuraciones**: Almacenamiento de clave-valor
+- **Usuarios → Registro de auditoría**: Relación uno a muchos (las entradas de auditoría pueden existir sin usuarios)
+- **Copias de seguridad → Mensajes**: Arrays JSON incrustados
+- **Configuraciones**: Almacenamiento clave-valor
 
 ## Tipos de Datos {#data-types}
 
-- **TEXT**: Datos de cadena, matrices JSON
-- **INTEGER**: Datos numéricos, recuentos de archivos, tamaños
+- **TEXT**: Datos de cadena, arrays JSON
+- **INTEGER**: Datos numéricos, conteos de archivos, tamaños
 - **REAL**: Números de punto flotante, duraciones
 - **DATETIME**: Datos de marca de tiempo
 - **BOOLEAN**: Valores verdadero/falso

@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:02:13.959Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:22:21.053Z'
+source_file_mtime: '2026-05-06T23:18:51.430Z'
 source_file_hash: 6e8a3cb53bff96ec8defba9ae5c4fd654bfcf4c5249b42c64faab1e60cc2bc68
 translation_language: pt-BR
 source_file_path: documentation/docs/user-guide/server-details.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Detalhes do Servidor {#server-details}
 
@@ -17,12 +18,12 @@ Clicar em um servidor do painel abre uma página com uma lista de backups para e
 
 Esta seção mostra estatísticas para todos os backups no servidor ou um backup único selecionado.
 
-- **TOTAL DE TRABALHOS DE BACKUP**: Número total de trabalhos de backup configurados neste servidor.
-- **TOTAL DE EXECUÇÕES DE BACKUP**: Número total de execuções de backup realizadas (conforme relatado pelo servidor Duplicati).
-- **VERSÕES DISPONÍVEIS**: Número de versões disponíveis (conforme relatado pelo servidor Duplicati).
-- **DURAÇÃO MÉDIA**: Duração média (média aritmética) dos backups registrada no banco de dados **duplistatus**.
+- **TOTAL DE TAREFAS DE BACKUP**: Número total de tarefas de backup configuradas neste servidor.
+- **TOTAL DE EXECUÇÕES DE BACKUP**: Número total de execuções de backup realizadas (conforme informado pelo servidor Duplicati).
+- **VERSÕES DISPONÍVEIS**: Número de versões disponíveis (conforme informado pelo servidor Duplicati).
+- **DURAÇÃO MÉDIA**: Duração média (média aritmética) dos backups registrados no banco de dados **duplistatus**.
 - **TAMANHO DO ÚLTIMO BACKUP**: Tamanho dos arquivos de origem do último log de backup recebido.
-- **ARMAZENAMENTO TOTAL USADO**: Armazenamento usado no destino de backup, conforme relatado no último log de backup.
+- **ARMazenamento TOTAL UTILIZADO**: Armazenamento utilizado no destino do backup, conforme informado no último log de backup.
 - **TOTAL ENVIADO**: Soma de todos os dados enviados registrados no banco de dados **duplistatus**.
 
 Se este backup ou qualquer um dos backups no servidor (quando **Todos os backups** está selecionado) está atrasado, uma mensagem aparece abaixo do resumo.
@@ -39,12 +40,12 @@ Esta tabela lista os logs de backup para o servidor selecionado.
 
 ![Backup History](../assets/screen-backup-history.png)
 
-- **Nome do backup**: O nome do backup no servidor Duplicati.
+- **Nome do Backup**: O nome do backup no servidor Duplicati.
 - **Data**: A data e hora do backup e o tempo decorrido desde a última atualização da tela.
-- **Status**: O status do backup (Sucesso, Aviso, Erro, Fatal).
+- **Status**: O status do backup (Sucesso, Aviso, Erro, Grave).
 - **Avisos/Erros**: O número de avisos/erros relatados no log do backup.
-- **Versões disponíveis**: O número de versões de backup disponíveis no destino do backup. Se o ícone estiver esmaecido, informações detalhadas não foram recebidas.
-- **Quantidade de arquivos, Tamanho dos arquivos, Tamanho enviado, Duração, Tamanho de armazenamento**: Valores conforme relatado pelo servidor Duplicati.
+- **Versões Disponíveis**: O número de versões de backup disponíveis no destino do backup. Se o ícone estiver acinzentado, as informações detalhadas não foram recebidas.
+- **Contagem de Arquivos, Tamanho do Arquivo, Tamanho Enviado, Duração, Tamanho do Armazenamento**: Valores conforme informados pelo servidor Duplicati.
 
 :::tip Tips
 • Use o menu suspenso na seção **Histórico de backups** para selecionar **Todos os backups** ou um backup específico para este servidor.
@@ -67,12 +68,12 @@ Clicar em um badge de status no Painel (visualização de tabela) ou em qualquer
 
 ![Backup Details](../assets/screen-backup-detail.png)
 
-- **Detalhes do servidor**: nome do servidor, alias e nota.
-- **Informações do backup**: A data e hora do backup e seu ID.
-- **Estatísticas do backup**: Um resumo dos contadores, tamanhos e duração relatados.
-- **Resumo do log**: O número de mensagens relatadas.
-- **Versões disponíveis**: Uma lista de versões disponíveis (exibida apenas se as informações foram recebidas nos logs).
-- **Mensagens/Avisos/Erros**: Os logs de execução completos. O subtítulo indica se o log foi truncado pelo servidor Duplicati.
+- **Detalhes do servidor**: nome do servidor, apelido e observação.
+- **Informações do Backup**: A data e hora do backup e seu ID.
+- **Estatísticas do Backup**: Um resumo dos contadores, tamanhos e duração informados.
+- **Resumo do Log**: O número de mensagens relatadas.
+- **Versões Disponíveis**: Uma lista das versões disponíveis (exibida apenas se a informação foi recebida nos logs).
+- **Mensagens/Avisos/Erros**: Os logs completos de execução. O subtítulo indica se o log foi truncado pelo servidor Duplicati.
 
 <br/>
 

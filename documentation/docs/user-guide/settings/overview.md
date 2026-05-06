@@ -2,7 +2,7 @@
 
 # Overview {#overview}
 
-The Settings page offers a unified interface for configuring all aspects of **duplistatus**. You can access it by clicking the <IconButton icon="lucide:settings" /> **Settings** button in the [Application Toolbar](../overview#application-toolbar). Note that regular users will see a simplified menu with fewer options compared to administrators.
+The Settings page offers a unified interface for configuring all aspects of **duplistatus**. You can access it by clicking the <IconButton icon="lucide:settings" /> **Settings** button in the [Application Toolbar](../overview.md#application-toolbar). Note that regular users will see a simplified menu with fewer options compared to administrators.
 
 
 

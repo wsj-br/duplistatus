@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:02:29.111Z'
-source_file_mtime: '2026-03-05T22:33:28.419Z'
+translation_last_updated: '2026-05-06T23:20:17.213Z'
+source_file_mtime: '2026-05-06T23:18:51.406Z'
 source_file_hash: 9b48c57e8f83d8e1ba3814a476ddf8a28c68c08305ee07ca77c3b30516e8a027
 translation_language: de
 source_file_path: documentation/docs/development/how-i-build-with-ai.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Wie ich diese Anwendung mit KI-Tools erstellt habe {#how-i-build-this-application-using-ai-tools}
 
@@ -162,10 +163,10 @@ Ich habe nur den Ausgangspunkt eingefügt, da ich nicht alle verwendeten Eingabe
 
 # Notizen {#notes}
 
-- Einige Modelle können beim Beheben von Fehlern steckenbleiben. „claude-3.5" und „claude-4" sind normalerweise besser, aber manchmal müssen Sie ein anderes Modell versuchen (GPT, Gemini usw.).
-Verwenden Sie bei komplexen Fehlern oder Problemen einen Prompt zur Analyse möglicher Ursachen des Fehlers, anstatt einfach um eine Behebung zu bitten.
-- Verwenden Sie bei komplexen Änderungen einen Prompt zur Erstellung eines Plans und bitten Sie dann den KI-Agent, diesen umzusetzen. Dies funktioniert immer besser.
-- Seien Sie spezifisch bei Änderungen des Quellcodes. Wählen Sie wenn möglich den relevanten Teil des Codes im Editor aus und drücken Sie Strg+L, um ihn als Kontext in den Chat einzubeziehen.
-- Beziehen Sie sich auch auf die Datei, die Sie im Chat erwähnen, um dem KI-Agent zu helfen, sich auf den relevanten Teil des Codes zu konzentrieren und Änderungen in anderen Teilen des Codes zu vermeiden.
-- Ich habe die Tendenz, den KI-Agent zu vermenschlichen, da dieser beständig „wir", „unser Code" und „möchten Sie, dass ich..." verwendet. Dies dient auch dazu, meine Überlebenschancen zu verbessern, falls (oder [wenn](https://ai-2027.com/)) Skynet bewusst wird und der Terminator erfunden wird.
-- Verwenden Sie manchmal [Gemini](https://gemini.google.com/app), [Deepseek](https://chat.deepseek.com/), [ChatGPT](https://chat.openai.com/), [Manus](https://manus.im/app),... um Prompts mit besseren Anweisungen für den KI-Agent zu generieren.
+- Manche Modelle können beim Beheben von Fehlern stecken bleiben. "claude-3.5" und "claude-4" sind in der Regel besser, aber manchmal muss man ein anderes Modell versuchen (GPT, Gemini, etc.).
+Bei komplexen Fehlern oder Fehlermeldungen verwenden Sie einen Prompt, um mögliche Ursachen des Fehlers zu analysieren, anstatt einfach nur zu bitten, ihn zu beheben.
+- Bei komplexen Änderungen verwenden Sie einen Prompt, um einen Plan zu erstellen, und bitten Sie dann den KI-Agenten, diesen umzusetzen. Das funktioniert immer besser.
+- Seien Sie spezifisch, wenn Sie den Quellcode ändern. Markieren Sie nach Möglichkeit den relevanten Teil des Codes im Editor und drücken Sie Strg+L, um ihn als Kontext in den Chat einzubinden.
+- Geben Sie außerdem einen Hinweis auf die Datei, auf die Sie im Chat Bezug nehmen, um den KI-Agenten dabei zu unterstützen, sich auf den relevanten Teil des Codes zu konzentrieren und zu verhindern, dass Änderungen an anderen Stellen vorgenommen werden.
+- Ich neige dazu, den KI-Agenten zu vermenschlichen, da er beharrlich Ausdrücke wie 'wir', 'unser Code' und 'Möchten Sie, dass ich...' verwendet. Dies dient auch dazu, meine Überlebenschancen zu verbessern, falls (oder [wenn](https://ai-2027.com/)) Skynet bewusst wird und der Terminator erfunden wird.
+- Manchmal verwenden Sie [Gemini](https://gemini.google.com/app), [Deepseek](https://chat.deepseek.com/), [ChatGPT](https://chat.openai.com/), [Manus](https://manus.im/app),..., um Prompts mit besseren Anweisungen für den KI-Agenten zu generieren.

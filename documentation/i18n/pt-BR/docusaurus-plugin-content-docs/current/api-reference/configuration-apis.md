@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-04-18T00:00:00.385Z'
-source_file_mtime: '2026-03-05T22:33:28.419Z'
-source_file_hash: 5e308885291fd834e969c761cd470e1b54c82eee0c672140c1203f8d9cfca674
+translation_last_updated: '2026-05-06T23:19:29.427Z'
+source_file_mtime: '2026-05-06T23:18:51.418Z'
+source_file_hash: 92de20237e937c17944b837bfeae8ee1ff73d8f798d555278795e7a4b1be3864
 translation_language: pt-BR
 source_file_path: documentation/docs/api-reference/configuration-apis.md
 translation_models:
@@ -9,10 +9,10 @@ translation_models:
 ---
 # Gerenciamento de Configuração {#configuration-management}
 
-## Obter Configuração de E-mail - `/api/configuration/email` {#get-email-configuration-apiconfigurationemail}
+## Obter Configuração de E-mail - `/api/configuration/email` {#get-email-configuration---apiconfigurationemail}
 - **Endpoint**: `/api/configuration/email`
 - **Método**: GET
-- **Descrição**: Recupera a configuração atual das notificações por e-mail e se as notificações por e-mail estão habilitadas/configuradas.
+- **Descrição**: Recupera a configuração atual de notificações por e-mail e se as notificações por e-mail estão habilitadas/configuradas.
 - **Autenticação**: Requer sessão válida e token CSRF
 - **Resposta** (configurado):
 
@@ -53,12 +53,12 @@ translation_models:
   - Inclui o campo `hasPassword` para indicar se a senha está definida
   - Inclui os campos `connectionType` (plain|starttls|ssl), `senderName`, `fromAddress` e `requireAuth`
   - Indica se as notificações por e-mail estão disponíveis para uso em testes e produção
-  - Trata erros de validação de chave mestra com elegância
+  - Trata erros de validação da chave mestra de forma adequada
 
-## Atualizar Configuração de E-mail - `/api/configuration/email` {#update-email-configuration-apiconfigurationemail}
+## Atualizar Configuração de E-mail - `/api/configuration/email` {#update-email-configuration---apiconfigurationemail}
 - **Endpoint**: `/api/configuration/email`
 - **Método**: POST
-- **Descrição**: Atualiza a configuração de notificação por e-mail SMTP.
+- **Descrição**: Atualiza a configuração de notificações por e-mail SMTP.
 - **Autenticação**: Requer sessão válida e token CSRF
 - **Corpo da Requisição**:
 
@@ -89,13 +89,13 @@ translation_models:
 - **Notas**:
   - Todos os campos (host, porta, nome de usuário, senha, mailto) são obrigatórios
   - A porta deve ser um número válido entre 1 e 65535
-  - O campo secure é booleano (verdadeiro para SSL/TLS)
-  - A senha é gerenciada separadamente através do endpoint de senha
+  - O campo Secure é booleano (verdadeiro para SSL/TLS)
+  - A senha é gerenciada separadamente por meio do endpoint de senha
 
-## Excluir Configuração de E-mail - `/api/configuration/email` {#delete-email-configuration-apiconfigurationemail}
+## Excluir Configuração de E-mail - `/api/configuration/email` {#delete-email-configuration---apiconfigurationemail}
 - **Endpoint**: `/api/configuration/email`
 - **Método**: DELETE
-- **Descrição**: Exclui a configuração de notificação por e-mail SMTP.
+- **Descrição**: Exclui a configuração de notificações por e-mail SMTP.
 - **Autenticação**: Requer sessão válida e token CSRF
 - **Resposta**:
 
@@ -114,7 +114,7 @@ translation_models:
   - Esta operação remove permanentemente a configuração SMTP
   - Retorna 404 se nenhuma configuração existir para exclusão
 
-## Atualizar Senha de E-mail - `/api/configuration/email/password` {#update-email-password-apiconfigurationemailpassword}
+## Atualizar Senha de E-mail - `/api/configuration/email/password` {#update-email-password---apiconfigurationemailpassword}
 - **Endpoint**: `/api/configuration/email/password`
 - **Método**: PATCH
 - **Descrição**: Atualiza a senha de e-mail para autenticação SMTP.
@@ -143,16 +143,16 @@ translation_models:
   ```
 
 - **Respostas de Erro**:
-  - `400`: A senha deve ser uma string ou faltam campos de configuração obrigatórios
+  - `400`: A senha deve ser uma string ou estão faltando campos obrigatórios na configuração
   - `401`: Não autorizado - Sessão ou token CSRF inválido
   - `500`: Falha ao atualizar a senha de e-mail
 - **Notas**:
   - A senha pode ser uma string vazia para limpar a senha
-  - Se nenhuma configuração SMTP existir, cria uma mínima com base na configuração fornecida
-  - O parâmetro config é obrigatório quando não existe configuração SMTP existente
+  - Se nenhuma configuração SMTP existir, cria uma configuração mínima com base na configuração fornecida
+  - O parâmetro Config é obrigatório quando não existe uma configuração SMTP existente
   - A senha é armazenada com segurança usando criptografia
 
-## Obter Token CSRF da Senha de E-mail - `/api/configuration/email/password` {#get-email-password-csrf-token-apiconfigurationemailpassword}
+## Obter Token CSRF da Senha de E-mail - `/api/configuration/email/password` {#get-email-password-csrf-token---apiconfigurationemailpassword}
 - **Endpoint**: `/api/configuration/email/password`
 - **Método**: GET
 - **Descrição**: Recupera um token CSRF para operações de senha de e-mail.
@@ -172,7 +172,7 @@ translation_models:
   - Retorna token CSRF para uso em operações de atualização de senha
   - A sessão deve ser válida para gerar o token
 
-## Obter Configuração Unificada - `/api/configuration/unified` {#get-unified-configuration-apiconfigurationunified}
+## Obter Configuração Unificada - `/api/configuration/unified` {#get-unified-configuration---apiconfigurationunified}
 - **Endpoint**: `/api/configuration/unified`
 - **Método**: GET
 - **Descrição**: Recupera um objeto de configuração unificada contendo todos os dados de configuração, incluindo configurações de cron, frequência de notificação e servidores com backups.
@@ -261,14 +261,14 @@ translation_models:
   - `500`: Erro do servidor ao buscar a configuração unificada
 - **Notas**:
   - Retorna todos os dados de configuração em uma única resposta
-  - Inclui configurações de cron, frequência de notificação e servidores com backups
-  - A configuração de e-mail inclui o campo `hasPassword` mas não a senha real
+  - Inclui configurações de cron, frequência de notificações e servidores com backups
+  - A configuração de e-mail inclui o campo `hasPassword`, mas não a senha real
   - Busca todos os dados em paralelo para melhor desempenho
 
-## Obter Configuração do NTFY - `/api/configuration/ntfy` {#get-ntfy-configuration-apiconfigurationntfy}
+## Obter Configuração do NTFY - `/api/configuration/ntfy` {#get-ntfy-configuration---apiconfigurationntfy}
 - **Endpoint**: `/api/configuration/ntfy`
 - **Método**: GET
-- **Descrição**: Recupera as configurações atuais da configuração do NTFY.
+- **Descrição**: Recupera as configurações atuais de configuração do NTFY.
 - **Autenticação**: Requer sessão válida e token CSRF
 - **Resposta**:
 
@@ -287,13 +287,13 @@ translation_models:
   - `500`: Falha ao buscar a configuração do NTFY
 - **Notas**:
   - Retorna as configurações atuais da configuração do NTFY
-  - Usado para gerenciamento do sistema de notificações
+  - Utilizado para gerenciamento do sistema de notificações
   - Requer autenticação para acessar os dados de configuração
 
-## Obter Configuração de Notificação - `/api/configuration/notifications` {#get-notification-configuration-apiconfigurationnotifications}
+## Obter Configuração de Notificação - `/api/configuration/notifications` {#get-notification-configuration---apiconfigurationnotifications}
 - **Endpoint**: `/api/configuration/notifications`
 - **Método**: GET
-- **Descrição**: Recupera a configuração atual da frequência de notificação.
+- **Descrição**: Recupera a configuração atual de frequência de notificação.
 - **Autenticação**: Requer sessão válida e token CSRF
 - **Resposta**:
 
@@ -307,11 +307,11 @@ translation_models:
   - `401`: Não autorizado - Sessão inválida ou token CSRF
   - `500`: Falha ao buscar a configuração
 - **Notas**:
-  - Recupera a configuração atual da frequência de notificação
-  - Usado para gerenciamento de notificações de backup atrasado
-  - Retorna um dos: `"onetime"`, `"every_day"`, `"every_week"`, `"every_month"`
+  - Recupera a configuração atual da frequência de notificações
+  - Utilizado para gerenciamento de notificações de backup atrasado
+  - Retorna um dos valores: `"onetime"`, `"every_day"`, `"every_week"`, `"every_month"`
 
-## Atualizar Configuração de Notificação - `/api/configuration/notifications` {#update-notification-configuration-apiconfigurationnotifications}
+## Atualizar Configuração de Notificação - `/api/configuration/notifications` {#update-notification-configuration---apiconfigurationnotifications}
 - **Endpoint**: `/api/configuration/notifications`
 - **Método**: POST
 - **Descrição**: Atualiza a configuração de notificação (configurações do NTFY ou frequência de notificação).
@@ -364,19 +364,19 @@ Para frequência de notificação:
 - **Valores Disponíveis**: `"onetime"`, `"every_day"`, `"every_week"`, `"every_month"`
 - **Respostas de Erro**:
   - `401`: Não autorizado - Sessão inválida ou token CSRF
-  - `400`: Configuração do NTFY obrigatória ou valor inválido
+  - `400`: Configuração do NTFY é obrigatória ou valor inválido
   - `500`: Erro do servidor ao atualizar a configuração de notificação
 - **Notas**:
-  - Suporta atualizações da configuração do NTFY e da frequência de notificação
+  - Suporta atualizações tanto da configuração do NTFY quanto da frequência de notificação
   - Atualiza apenas a configuração do NTFY quando o campo ntfy é fornecido
   - Atualiza a frequência de notificação quando o campo value é fornecido
   - Gera um tópico padrão se nenhum for fornecido
   - Mantém as configurações existentes
   - Usa o campo `accessToken` em vez de campos separados de nome de usuário/senha
   - Valida o valor da frequência de notificação contra as opções permitidas
-  - Afeta com que frequência as notificações atrasadas são enviadas
+  - Afeta a frequência com que as notificações de atraso são enviadas
 
-## Atualizar Configurações de Backup - `/api/configuration/backup-settings` {#update-backup-settings-apiconfigurationbackup-settings}
+## Atualizar Configurações de Backup - `/api/configuration/backup-settings` {#update-backup-settings---apiconfigurationbackup-settings}
 - **Endpoint**: `/api/configuration/backup-settings`
 - **Método**: POST
 - **Descrição**: Atualiza as configurações de notificação de backup para servidores/backups específicos.
@@ -411,9 +411,9 @@ Para frequência de notificação:
 - **Notas**:
   - Atualiza as configurações de notificação de backup para servidores/backups específicos
   - Limpa notificações de backup atrasado para backups desativados
-  - Limpa notificações quando as configurações de tempo limite mudam
+  - Limpa notificações quando as configurações de tempo limite são alteradas
 
-## Atualizar Modelos de Notificação - `/api/configuration/templates` {#update-notification-templates-apiconfigurationtemplates}
+## Atualizar Modelos de Notificação - `/api/configuration/templates` {#update-notification-templates---apiconfigurationtemplates}
 - **Endpoint**: `/api/configuration/templates`
 - **Método**: POST
 - **Descrição**: Atualiza os modelos de notificação.
@@ -450,10 +450,10 @@ Para frequência de notificação:
   - Mantém as configurações existentes
   - Os modelos suportam substituição de variáveis
 
-## Obter Tolerância de Atraso - `/api/configuration/overdue-tolerance` {#get-overdue-tolerance-apiconfigurationoverdue-tolerance}
+## Obter Tolerância de Atraso - `/api/configuration/overdue-tolerance` {#get-overdue-tolerance---apiconfigurationoverdue-tolerance}
 - **Endpoint**: `/api/configuration/overdue-tolerance`
 - **Método**: GET
-- **Descrição**: Recupera a configuração atual da tolerância de atraso.
+- **Descrição**: Recupera a configuração atual de tolerância de atraso.
 - **Resposta**:
 
   ```json
@@ -465,13 +465,13 @@ Para frequência de notificação:
 - **Respostas de Erro**:
   - `500`: Falha ao obter a tolerância de atraso
 - **Notas**:
-  - Retorna a configuração atual da tolerância de atraso
-  - Usado para exibir a configuração atual
+  - Retorna a configuração atual de tolerância de atraso
+  - Utilizado para exibir a configuração atual
 
-## Atualizar Tolerância de Atraso - `/api/configuration/overdue-tolerance` {#update-overdue-tolerance-apiconfigurationoverdue-tolerance}
+## Atualizar Tolerância de Atraso - `/api/configuration/overdue-tolerance` {#update-overdue-tolerance---apiconfigurationoverdue-tolerance}
 - **Endpoint**: `/api/configuration/overdue-tolerance`
 - **Método**: POST
-- **Descrição**: Atualiza a configuração da tolerância de atraso.
+- **Descrição**: Atualiza a configuração de tolerância de atraso.
 - **Autenticação**: Requer sessão válida e token CSRF
 - **Corpo da Requisição**:
 
@@ -490,7 +490,7 @@ Para frequência de notificação:
   ```
 
 - **Respostas de Erro**:
-  - `401`: Não autorizado - Sessão inválida ou token CSRF
+  - `401`: Não autorizado - Sessão inválida ou token CSRF inválido
   - `400`: overdue_tolerance é obrigatório
   - `500`: Erro do servidor ao atualizar a tolerância de atraso
 - **Notas**:

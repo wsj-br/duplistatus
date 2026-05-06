@@ -15,7 +15,7 @@
 - **Scripts**: Utility scripts in `scripts/` directory
 - **Security**: CSRF protection in `src/lib/csrf-middleware.ts`, use `withCSRF` middleware for protected endpoints
 
-## Testing & Debugging {#testing-debugging}
+## Testing & Debugging {#testing--debugging}
 
 - Test data generation: `pnpm generate-test-data --servers=N`
 - Notification testing: `/api/notifications/test` endpoint
@@ -31,16 +31,16 @@
 - Database schema: See [Database Schema](database)
 - Follow patterns in `src/lib/db-utils.ts` for database operations
 
-## Frameworks & Libraries {#frameworks-libraries}
+## Frameworks & Libraries {#frameworks--libraries}
 
-### Runtime & Package Management {#runtime-package-management}
+### Runtime & Package Management {#runtime--package-management}
 - Node.js >=24.12.0
 - pnpm >=10.24.0 (packageManager: pnpm@10.30.3)
 
-### Core Frameworks & Libraries {#core-frameworks-libraries}
+### Core Frameworks & Libraries {#core-frameworks--libraries}
 - Next.js ^16.1.6 (App Router)
 - React ^19.2.4 & React-DOM ^19.2.4
-- Radix UI (@radix-ui/react-*): ^1.1.8 - ^2.2.6 (accordion ^1.2.12, alert-dialog ^1.1.15, avatar ^1.1.11, checkbox ^1.3.3, dialog ^1.1.15, dropdown-menu ^2.1.16, label ^2.1.8, menubar ^1.1.16, popover ^1.1.15, progress ^1.1.8, radio-group ^1.3.8, scroll-area ^1.2.10, select ^2.2.6, separator ^1.1.8, slider ^1.3.6, slot ^1.2.4, switch ^1.2.6, tabs ^1.1.13, toast ^1.2.15, tooltip ^1.2.8)
+- Radix UI (`@radix-ui/react-*`): ^1.1.8 - ^2.2.6 (accordion ^1.2.12, alert-dialog ^1.1.15, avatar ^1.1.11, checkbox ^1.3.3, dialog ^1.1.15, dropdown-menu ^2.1.16, label ^2.1.8, menubar ^1.1.16, popover ^1.1.15, progress ^1.1.8, radio-group ^1.3.8, scroll-area ^1.2.10, select ^2.2.6, separator ^1.1.8, slider ^1.3.6, slot ^1.2.4, switch ^1.2.6, tabs ^1.1.13, toast ^1.2.15, tooltip ^1.2.8)
 - Tailwind CSS ^4.2.1 + tailwindcss-animate ^1.0.7
 - Better-sqlite3 ^12.6.2
 - Recharts ^3.7.0, react-day-picker ^9.14.0, react-hook-form ^7.71.2, react-datepicker ^9.1.0
@@ -50,13 +50,13 @@
 - nodemailer ^8.0.1, qrcode ^1.5.4
 - ai-i18n-tools ^1.x, i18next ^26.x, react-i18next ^17.x (UI + docs translation pipeline)
 
-### Type Checking & Linting {#type-checking-linting}
+### Type Checking & Linting {#type-checking--linting}
 - TypeScript ^5.9.3
 - TSX ^4.21.0
 - ESLint ^9.16.0 (via `next lint`)
 - webpack ^5.105.3
 
-### Build & Deployment {#build-deployment}
+### Build & Deployment {#build--deployment}
 - Next.js standalone output (`output: 'standalone'`) with container entrypoint starting `server.js`
 - Docker (node:alpine base) with multi-architecture builds (AMD64, ARM64)
 - GitHub Actions workflows for CI/CD

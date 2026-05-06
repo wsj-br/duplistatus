@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-04-17T23:59:33.416Z'
-source_file_mtime: '2026-03-05T22:33:28.419Z'
-source_file_hash: e8daf2dcb7456f01747c2576f18ec55fa9ca80d2816091104bc8cdef9ae84fb7
+translation_last_updated: '2026-05-06T23:19:25.406Z'
+source_file_mtime: '2026-05-06T23:18:51.418Z'
+source_file_hash: 801b44af6c628cbca7fddeda42e36809574297c98d475cd678e689dddabadc31
 translation_language: es
 source_file_path: documentation/docs/api-reference/chart-data-apis.md
 translation_models:
@@ -9,10 +9,10 @@ translation_models:
 ---
 # Datos del gráfico {#chart-data}
 
-## Obtener datos agregados del gráfico - `/api/chart-data/aggregated` {#get-aggregated-chart-data-apichart-dataaggregated}
+## Obtener datos agregados del gráfico - `/api/chart-data/aggregated` {#get-aggregated-chart-data---apichart-dataaggregated}
 - **Endpoint**: `/api/chart-data/aggregated`
-- **Método**: GET
-- **Descripción**: Recupera datos agregados del gráfico con filtrado opcional por rango de tiempo.
+- **Method**: GET
+- **Description**: Recupera datos agregados del gráfico con filtrado opcional por rango de tiempo.
 - **Parámetros de consulta**:
   - `startDate` (opcional): Fecha de inicio para filtrado (formato ISO)
   - `endDate` (opcional): Fecha de finalización para filtrado (formato ISO)
@@ -35,16 +35,16 @@ translation_models:
 
 - **Respuestas de error**:
   - `400`: Parámetros de fecha no válidos
-  - `500`: Error del servidor al recuperar los datos del gráfico
+  - `500`: Error del servidor al obtener los datos del gráfico
 - **Notas**:
   - Admite filtrado por rango de tiempo con los parámetros startDate y endDate
   - Valida el formato de fecha antes del procesamiento
   - Devuelve datos agregados de todos los servidores
 
-## Obtener datos del gráfico del servidor - `/api/chart-data/server/:serverId` {#get-server-chart-data-apichart-dataserverserverid}
+## Obtener datos del gráfico del servidor - `/api/chart-data/server/:serverId` {#get-server-chart-data---apichart-dataserverserverid}
 - **Endpoint**: `/api/chart-data/server/:serverId`
-- **Método**: GET
-- **Descripción**: Recupera los datos del gráfico para un servidor específico con filtrado opcional por rango de tiempo.
+- **Method**: GET
+- **Description**: Recupera datos del gráfico para un servidor específico con filtrado opcional por rango de tiempo.
 - **Parámetros**:
   - `serverId`: el identificador del servidor
 - **Parámetros de consulta**:
@@ -69,16 +69,16 @@ translation_models:
 
 - **Respuestas de error**:
   - `400`: Parámetros de fecha no válidos
-  - `500`: Error del servidor al recuperar los datos del gráfico
+  - `500`: Error del servidor al obtener los datos del gráfico
 - **Notas**:
   - Admite filtrado por rango de tiempo con los parámetros startDate y endDate
   - Valida el formato de fecha antes del procesamiento
   - Devuelve los datos del gráfico para un servidor específico
 
-## Obtener datos del gráfico de respaldo del servidor - `/api/chart-data/server/:serverId/backup/:backupName` {#get-server-backup-chart-data-apichart-dataserverserveridbackupbackupname}
+## Obtener datos del gráfico de copia de seguridad del servidor - `/api/chart-data/server/:serverId/backup/:backupName` {#get-server-backup-chart-data---apichart-dataserverserveridbackupbackupname}
 - **Endpoint**: `/api/chart-data/server/:serverId/backup/:backupName`
-- **Método**: GET
-- **Descripción**: Recupera los datos del gráfico para un servidor y respaldo específicos con filtrado opcional por rango de tiempo.
+- **Method**: GET
+- **Description**: Recupera datos del gráfico para un servidor y una copia de seguridad específicos con filtrado opcional por rango de tiempo.
 - **Parámetros**:
   - `serverId`: el identificador del servidor
   - `backupName`: el nombre del respaldo (codificado en URL)
@@ -104,7 +104,7 @@ translation_models:
 
 - **Respuestas de error**:
   - `400`: Parámetros de fecha no válidos
-  - `500`: Error del servidor al recuperar los datos del gráfico
+  - `500`: Error del servidor al obtener los datos del gráfico
 - **Notas**:
   - Admite filtrado por rango de tiempo con los parámetros startDate y endDate
   - Valida el formato de fecha antes del procesamiento

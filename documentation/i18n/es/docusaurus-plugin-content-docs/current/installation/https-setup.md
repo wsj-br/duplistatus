@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:01:46.140Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:20:08.906Z'
+source_file_mtime: '2026-05-06T23:18:51.418Z'
 source_file_hash: 837ff8a2eae0a48ed5b1298115447eb5f025e020cf32dee7ae20d8849e656bc0
 translation_language: es
 source_file_path: documentation/docs/installation/https-setup.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Configuración HTTPS (Opcional) {#https-setup-optional}
 
@@ -124,8 +125,8 @@ Después de configurar HTTPS, recuerde actualizar la configuración del servidor
 
 :::tip
 
-- Reemplaza `your-domain.com` con tu nombre de dominio real
-- Asegúrate de que el registro DNS A de tu dominio apunte a la dirección IP de tu servidor
+- Reemplace `your-domain.com` con su nombre de dominio real
+- Asegúrese de que el registro DNS A de su dominio apunte a la dirección IP de su servidor
 - Ambas soluciones renovarán automáticamente los certificados SSL
-- Considera configurar un firewall para permitir solo tráfico HTTP/HTTPS
+- Considere configurar un firewall para permitir únicamente tráfico HTTP/HTTPS
 :::

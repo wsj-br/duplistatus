@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:03:43.554Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:22:14.003Z'
+source_file_mtime: '2026-05-06T23:18:51.446Z'
 source_file_hash: 3bd58d9cbad231e20c93f90d5f2904a572e10982cc151b37c80613510401bb52
 translation_language: de
 source_file_path: documentation/docs/user-guide/settings/ntfy-settings.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
   - 'stepfun/step-3.5-flash:free'
 ---
 # NTFY {#ntfy}
@@ -14,10 +15,10 @@ translation_models:
 
 ![Ntfy settings](../../assets/screen-settings-ntfy.png)
 
-| Einstellung           | Beschreibung                                                                                                                                   |
+| Einstellung               | Beschreibung                                                                                                                                   |
 |:----------------------|:----------------------------------------------------------------------------------------------------------------------------------------------|
-| **NTFY-URL**          | Die URL Ihres NTFY-Servers (Standard ist der öffentliche Server `https://ntfy.sh/`).                                                                      |
-| **NTFY-Thema**        | Ein eindeutiger Bezeichner für Ihre Benachrichtigungen. Das System generiert automatisch ein zufälliges Thema, wenn das Feld leer gelassen wird, oder Sie können Ihr eigenes angeben. |
+| **NTFY-URL**          | Die URL Ihres NTFY-Servers (Standard ist der öffentliche `https://ntfy.sh/`).                                                                      |
+| **NTFY-Thema**        | Ein eindeutiger Bezeichner für Ihre Benachrichtigungen. Das System generiert automatisch ein zufälliges Thema, wenn dieses Feld leer bleibt, oder Sie können ein eigenes angeben. |
 | **NTFY-Zugriffstoken** | Ein optionales Zugriffstoken für authentifizierte NTFY-Server. Lassen Sie dieses Feld leer, wenn Ihr Server keine Authentifizierung erfordert.               |
 
 <br/>
@@ -29,9 +30,9 @@ Wenn die Konfiguration nicht gültig ist, werden die NTFY-Kontrollkästchen auf 
 
 | Schaltfläche                                                                | Beschreibung                                                                                                  |
 |:----------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------|
-| <IconButton label="Einstellungen speichern" />                                  | Speichern Sie alle Änderungen an den NTFY-Einstellungen.                                                                  |
-| <IconButton icon="lucide:send-horizontal" label="Testnachricht senden"/> | Senden Sie eine Testnachricht an Ihren NTFY-Server, um Ihre Konfiguration zu überprüfen.                                         |
-| <IconButton icon="lucide:qr-code" label="Gerät konfigurieren"/>          | Zeigt einen QR-Code an, mit dem Sie Ihr Mobilgerät oder Ihren Desktop schnell für NTFY-Benachrichtigungen konfigurieren können. |
+| <IconButton label="Save Settings" />                                  | Speichern Sie alle Änderungen an den NTFY-Einstellungen.                                                                  |
+| <IconButton icon="lucide:send-horizontal" label="Send Test Message"/> | Senden Sie eine Testnachricht an Ihren NTFY-Server, um Ihre Konfiguration zu überprüfen.                                         |
+| <IconButton icon="lucide:qr-code" label="Configure Device"/>          | Zeigen Sie einen QR-Code an, mit dem Sie Ihr Mobilgerät oder Ihren Desktop schnell für NTFY-Benachrichtigungen konfigurieren können. |
 
 ## Gerätekonfiguration {#device-configuration}
 

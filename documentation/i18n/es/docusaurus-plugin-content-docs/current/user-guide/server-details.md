@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:01:56.299Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:21:19.296Z'
+source_file_mtime: '2026-05-06T23:18:51.430Z'
 source_file_hash: 6e8a3cb53bff96ec8defba9ae5c4fd654bfcf4c5249b42c64faab1e60cc2bc68
 translation_language: es
 source_file_path: documentation/docs/user-guide/server-details.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Detalles del Servidor {#server-details}
 
@@ -17,13 +18,13 @@ Al hacer clic en un servidor desde el panel de control se abre una página con u
 
 Esta sección muestra estadísticas para todas las copias de seguridad en el servidor o un backup individual seleccionado.
 
-- **TOTAL DE TRABAJOS DE BACKUP**: Número total de trabajos de backup configurados en este servidor.
-- **TOTAL DE EJECUCIONES DE BACKUP**: Número total de ejecuciones de backup realizadas (según lo reportado por el servidor Duplicati).
-- **VERSIONES DISPONIBLES**: Número de versiones disponibles (según lo reportado por el servidor Duplicati).
-- **PROMEDIO DE DURACIÓN**: Duración promedio (media) de los backups registrada en la base de datos **duplistatus**.
-- **TAMAÑO DEL ÚLTIMO BACKUP**: Tamaño de los archivos de origen del último registro de backup recibido.
-- **ALMACENAMIENTO TOTAL USADO**: Almacenamiento usado en el destino de backup, según lo reportado en el último registro de backup.
-- **TOTAL ENVIADO**: Suma de todos los datos enviados registrados en la base de datos **duplistatus**.
+- **TOTAL BACKUP JOBS**: Número total de trabajos de respaldo configurados en este servidor.
+- **TOTAL BACKUP RUNS**: Número total de ejecuciones de respaldo realizadas (según informado por el servidor Duplicati).
+- **AVAILABLE VERSIONS**: Número de versiones disponibles (según informado por el servidor Duplicati).
+- **AVG DURATION**: Duración promedio (media) de los respaldos registrados en la base de datos **duplistatus**.
+- **LAST BACKUP SIZE**: Tamaño de los archivos fuente del último registro de respaldo recibido.
+- **TOTAL STORAGE USED**: Almacenamiento utilizado en el destino del respaldo, según informado en el último registro de respaldo.
+- **TOTAL UPLOADED**: Suma de todos los datos subidos registrados en la base de datos **duplistatus**.
 
 Si este backup o cualquiera de los backups en el servidor (cuando **Todas las copias de seguridad** está seleccionado) está retrasado, aparece un mensaje debajo del resumen.
 
@@ -39,12 +40,12 @@ Esta tabla enumera los logs de backup para el servidor seleccionado.
 
 ![Backup History](../assets/screen-backup-history.png)
 
-- **Nombre de backup**: El nombre del backup en el servidor Duplicati.
-- **Fecha**: La marca de tiempo del backup y el tiempo transcurrido desde la última actualización de pantalla.
-- **Estado**: El estado del backup (Éxito, Advertencia, Error, Fatal).
-- **Advertencias/Errores**: El número de advertencias/errores reportados en el registro del backup.
-- **Versiones disponibles**: El número de versiones de backup disponibles en el destino del backup. Si el icono está deshabilitado, no se recibió información detallada.
-- **Cantidad de archivos, Tamaño de archivos, Tamaño cargado, Duración, Tamaño de almacenamiento**: Valores según lo reportado por el servidor Duplicati.
+- **Backup Name**: Nombre del respaldo en el servidor Duplicati.
+- **Date**: Marca de tiempo del respaldo y el tiempo transcurrido desde la última actualización de pantalla.
+- **Status**: Estado del respaldo (Éxito, Advertencia, Error, Fatal).
+- **Warnings/Errors**: Número de advertencias/errores reportados en el registro del respaldo.
+- **Available Versions**: Número de versiones disponibles del respaldo en el destino. Si el icono está en gris, no se recibió información detallada.
+- **File Count, File Size, Uploaded Size, Duration, Storage Size**: Valores según informados por el servidor Duplicati.
 
 :::tip Tips
 • Utilice el menú desplegable en la sección **Historial de backups** para seleccionar **Todas las copias de seguridad** o un backup específico para este servidor.
@@ -67,12 +68,12 @@ Al hacer clic en una insignia de estado en el panel de control (vista de tabla) 
 
 ![Backup Details](../assets/screen-backup-detail.png)
 
-- **Detalles del servidor**: nombre del servidor, alias y nota.
-- **Información del backup**: la marca de tiempo del backup y su ID.
-- **Estadísticas del backup**: un resumen de los contadores, tamaños y duración reportados.
-- **Resumen del registro**: el número de mensajes reportados.
-- **Versiones disponibles**: una lista de versiones disponibles (solo se muestra si la información se recibió en los logs).
-- **Mensajes/Advertencias/Errores**: los logs de ejecución completos. El subtítulo indica si el log fue truncado por el servidor de Duplicati.
+- **Server details**: nombre del servidor, alias y nota.
+- **Backup Information**: Marca de tiempo del respaldo y su ID.
+- **Backup Statistics**: Resumen de contadores, tamaños y duración informados.
+- **Log Summary**: Número de mensajes reportados.
+- **Available Versions**: Lista de versiones disponibles (solo se muestra si la información fue recibida en los registros).
+- **Messages/Warnings/Errors**: Registros completos de ejecución. El subtítulo indica si el registro fue truncado por el servidor Duplicati.
 
 <br/>
 

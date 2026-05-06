@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:02:18.797Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:22:24.079Z'
+source_file_mtime: '2026-05-06T23:18:51.446Z'
 source_file_hash: b1f073fc756bf469acd698513daa0acf449968820b163817769bb58e9e84a91a
 translation_language: pt-BR
 source_file_path: documentation/docs/user-guide/settings/user-management-settings.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Usuários {#users}
 
@@ -29,24 +30,24 @@ Você pode acessar a seção Gerenciamento de usuários de duas formas:
 
 ## Criando um Novo Usuário {#creating-a-new-user}
 
-1. Clique no botão <IconButton icon="lucide:plus" label="Adicionar usuário"/>
-2. Digite os detalhes do usuário:
-   - **Nome de usuário**: Deve ter 3-50 caracteres, ser único e não diferenciar maiúsculas de minúsculas
-   - **Admin**: Verificar para conceder privilégios de administrador
-   - **Exigir alteração de senha**: Verificar para forçar a alteração de senha no primeiro login
-   - **Senha**: 
-     - Opção 1: Verificar "Gerar senha automaticamente" para criar uma senha temporária segura
-     - Opção 2: Desmarcar e digitar uma senha personalizada
-3. Clique em <IconButton icon="lucide:user-plus" label="Criar usuário" />.
+1. Clique no botão <IconButton icon="lucide:plus" label="Add User"/>
+2. Insira os detalhes do usuário:
+   - **Nome de usuário**: Deve ter entre 3 e 50 caracteres, ser único e sem diferenciar maiúsculas e minúsculas
+   - **Administrador**: Marque para conceder privilégios de administrador
+   - **Exigir Alteração de Senha**: Marque para forçar a alteração da senha no primeiro login
+   - **Senha**:
+     - Opção 1: Marque "Gerar senha automaticamente" para criar uma senha temporária segura
+     - Opção 2: Desmarque e insira uma senha personalizada
+3. Clique em <IconButton icon="lucide:user-plus" label="Create User" />.
 
 ## Editando um Usuário {#editing-a-user}
 
-1. Clique no ícone <IconButton icon="lucide:edit" /> editar ao lado do usuário
-2. Modifique qualquer um dos seguintes:
+1. Clique no ícone de edição <IconButton icon="lucide:edit" /> ao lado do usuário
+2. Modifique qualquer um dos seguintes itens:
    - **Nome de usuário**: Altere o nome de usuário (deve ser único)
-   - **Admin**: Alterne os privilégios de administrador
+   - **Administrador**: Alterne os privilégios de administrador
    - **Exigir Alteração de Senha**: Alterne o requisito de alteração de senha
-3. Clique em <IconButton icon="lucide:check" label="Salvar alterações" />.
+3. Clique em <IconButton icon="lucide:check" label="Save Changes" />.
 
 ## Redefinindo uma Senha de Usuário {#resetting-a-user-password}
 

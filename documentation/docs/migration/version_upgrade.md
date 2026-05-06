@@ -79,10 +79,10 @@ If you need to restore your database from a previous backup, follow the steps be
 Stop the container before restoring the database to prevent file corruption.
 :::
 
-##### For Linux Users {#for-linux-users}
+##### For Linux Users {#for-linux-users-1}
 The easiest way to restore is to "push" the backup file back into the container's internal storage path.
 
-###### Using Docker or Podman: {#using-docker-or-podman}
+###### Using Docker or Podman: {#using-docker-or-podman-1}
 
 ```bash
 # stop the container
@@ -95,7 +95,7 @@ docker cp ./duplistatus-backup.db duplistatus:/app/data/backups.db
 docker start duplistatus
 ```
 
-##### For Windows Users {#for-windows-users}
+##### For Windows Users {#for-windows-users-1}
 If you are using Docker Desktop, you can perform the restore via the GUI or PowerShell.
 
 ###### Option A: Use Docker Desktop (GUI) {#option-a-use-docker-desktop-gui}
@@ -109,7 +109,7 @@ Rename the imported file to exactly backups.db if it has a timestamp in the name
 
 Restart the container.
 
-###### Option B: Use PowerShell {#option-b-use-powershell}
+###### Option B: Use PowerShell {#option-b-use-powershell-1}
 
 ```powershell
 # Copy the file from your Desktop back into the container
@@ -120,7 +120,7 @@ docker start duplistatus
 ```
 
 
-##### If You Use Bind Mounts {#if-you-use-bind-mounts}
+##### If You Use Bind Mounts {#if-you-use-bind-mounts-1}
 If you are using a local folder mapped to the container, you don't need any special commands.
 
 1. Stop the container.
@@ -196,14 +196,14 @@ See [Admin Recovery Guide](../user-guide/admin-recovery.md) for details.
 
 ### Upgrading to Version 0.8.x {#upgrading-to-version-08x}
 
-#### What Changes Automatically {#what-changes-automatically}
+#### What Changes Automatically {#what-changes-automatically-1}
 
 - Database schema updated to v3.1
 - Master key generated for encryption (stored in `.duplistatus.key`)
 - Sessions invalidated (new CSRF-protected sessions created)
 - Passwords encrypted using new system
 
-#### What You Must Do {#what-you-must-do}
+#### What You Must Do {#what-you-must-do-1}
 
 1. **Update notification templates** if you customised them:
    - Replace `{backup_interval_value}` and `{backup_interval_type}` with `{backup_interval}`
@@ -216,13 +216,13 @@ See [Admin Recovery Guide](../user-guide/admin-recovery.md) for details.
 
 ### Upgrading to Version 0.7.x {#upgrading-to-version-07x}
 
-#### What Changes Automatically {#what-changes-automatically}
+#### What Changes Automatically {#what-changes-automatically-2}
 
 - `machines` table renamed to `servers`
 - `machine_id` fields renamed to `server_id`
 - New fields added: `alias`, `notes`, `created_at`, `updated_at`
 
-#### What You Must Do {#what-you-must-do}
+#### What You Must Do {#what-you-must-do-2}
 
 1. **Update external API integrations**:
    - Change `totalMachines` → `totalServers` in `/api/summary`

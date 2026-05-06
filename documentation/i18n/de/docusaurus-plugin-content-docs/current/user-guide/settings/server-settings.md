@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:03:44.310Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:22:14.968Z'
+source_file_mtime: '2026-05-06T23:18:51.446Z'
 source_file_hash: 3f2e9249dca9757c8c95acf36f66841a560491d15f0f0d1ecb24826a5628f983
 translation_language: de
 source_file_path: documentation/docs/user-guide/settings/server-settings.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Server {#server}
 
@@ -13,14 +14,14 @@ Sie können hier einen alternativen Namen (Alias) für Ihre Server, einen Hinwei
 
 ![server settings](../../assets/screen-settings-server.png)
 
-| Einstellung                     | Beschreibung                                                                                                                                                                                  |
-|:--------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Servername**                  | Servername, der im Duplicati-Server konfiguriert ist. Ein <IIcon2 icon="lucide:key-round" color="#42A5F5"/> wird angezeigt, wenn ein Passwort für den Server festgelegt ist.                |
-| **Alias**                       | Ein Spitzname oder benutzerfreundlicher Name Ihres Servers. Wann Sie den Mauszeiger über einen Alias bewegen, wird dessen Name angezeigt; in einigen Fällen wird zur Verdeutlichung der Alias und der Name in Klammern angezeigt. |
-| **Hinweis**                     | Freitext zur Beschreibung der Serverfunktionalität, des Installationsortes oder anderer Informationen. Wann konfiguriert, wird er neben dem Namen oder Alias des Servers angezeigt.           |
-| **Web-Interface-Adresse (URL)** | Konfigurieren Sie die URL für den Zugriff auf die Benutzeroberfläche des Duplicati-Servers. Sowohl `HTTP`- als auch `HTTPS`-URLs werden unterstützt.                                       |
-| **Status**                      | Zeigt die Ergebnisse von Test- oder Backup-Protokoll-Sammlungsprotokollen an                                                                                                                 |
-| **Aktionen**                    | Sie können den Server testen, die Duplicati-Schnittstelle öffnen, Protokolle sammeln und ein Passwort festlegen. Weitere Details finden Sie unten.                                          |
+| Einstellung                         | Beschreibung                                                                                                                                                                                  |
+|:--------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------|
+| **Servername**                 | Servername, der im Duplicati-Server konfiguriert ist. Ein <IIcon2 icon="lucide:key-round" color="#42A5F5"/> wird angezeigt, wenn ein Passwort für den Server festgelegt ist.                                         |
+| **Alias**                       | Ein Spitzname oder menschenlesbarer Name Ihres Servers. Beim Überfahren eines Alias wird dessen Name angezeigt; in einigen Fällen wird zur Klarheit sowohl der Alias als auch der Name in Klammern angezeigt. |
+| **Hinweis**                        | Freier Text zur Beschreibung der Serverfunktionalität, des Installationsorts oder anderer Informationen. Wenn konfiguriert, wird er neben dem Namen oder Alias des Servers angezeigt.                 |
+| **Web-Interface-Adresse (URL)** | Konfigurieren Sie die URL für den Zugriff auf die Duplicati-Server-Benutzeroberfläche. Sowohl `HTTP` als auch `HTTPS` URLs werden unterstützt.                                                                                           |
+| **Status**                      | Zeigt die Ergebnisse des Verbindungstests oder der gesammelten Backup-Logs an                                                                                                                                              |
+| **Aktionen**                     | Sie können die Verbindung testen, die Duplicati-Benutzeroberfläche öffnen, Logs sammeln und ein Passwort festlegen. Weitere Details finden Sie unten.                                                                                         |
 
 <br/>
 
@@ -32,12 +33,12 @@ Wenn die Web-Interface-Adresse (URL) nicht konfiguriert ist, wird die Schaltflä
 
 ## Verfügbare Aktionen für jeden Server {#available-actions-for-each-server}
 
-| Button                                                                                                      | Beschreibung                                                             |
+| Schaltfläche                                                                                                      | Beschreibung                                                             |
 |:------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------|
-| <IconButton icon="lucide:play" label="Test"/>                                                               | Testen Sie die Verbindung zum Duplicati-Server.                            |
-| <SvgButton svgFilename="duplicati_logo.svg" />                                                              | Öffnen Sie die Weboberfläche des Duplicati-Servers in einem neuen Browser-Tab.         |
-| <IconButton icon="lucide:download" />                                                                       | Backup-Protokolle vom Duplicati-Server sammeln.                          |
-| <IconButton icon="lucide:rectangle-ellipsis" /> &nbsp; or <IIcon2 icon="lucide:key-round" color="#42A5F5"/> | Ändern oder legen Sie ein Passwort für den Duplicati-Server fest, um Sicherungen zu sammeln. |
+| <IconButton icon="lucide:play" label="Test"/>                                                               | Testet die Verbindung zum Duplicati-Server.                            |
+| <SvgButton svgFilename="duplicati_logo.svg" />                                                              | Öffnet die Web-Benutzeroberfläche des Duplicati-Servers in einem neuen Browser-Tab.         |
+| <IconButton icon="lucide:download" />                                                                       | Sammelt Backup-Logs vom Duplicati-Server.                          |
+| <IconButton icon="lucide:rectangle-ellipsis" /> &nbsp; oder <IIcon2 icon="lucide:key-round" color="#42A5F5"/> | Ändert oder legt ein Passwort für den Duplicati-Server zum Sammeln von Backups fest. |
 
 <br/>
 
@@ -54,10 +55,10 @@ Das Passwort wird verschlüsselt in der Datenbank gespeichert und wird nie in de
 
 ## Verfügbare Aktionen für alle Server {#available-actions-for-all-servers}
 
-| Button                                                     | Beschreibung                                                    |
-|:-----------------------------------------------------------|:---------------------------------------------------------------|
-| <IconButton label="Änderungen speichern" />                | Speichern Sie die an den Servereinstellungen vorgenommenen Änderungen. |
-| <IconButton icon="lucide:fast-forward" label="Alle testen"/>  | Testen Sie die Verbindung zu allen Duplicati-Servern.          |
-| <IconButton icon="lucide:import" label="Alle sammeln (#)"/> | Sammeln Sie Backup-Protokolle von allen Duplicati-Servern.    |
+| Schaltfläche                                                     | Beschreibung                                     |
+|:-----------------------------------------------------------|:------------------------------------------------|
+| <IconButton label="Änderungen speichern" />                        | Speichert die Änderungen an den Servereinstellungen.   |
+| <IconButton icon="lucide:fast-forward" label="Alle testen"/>  | Testet die Verbindung zu allen Duplicati-Servern.   |
+| <IconButton icon="lucide:import" label="Alle sammeln (#)"/> | Sammelt Backup-Logs von allen Duplicati-Servern. |
 
 <br/>

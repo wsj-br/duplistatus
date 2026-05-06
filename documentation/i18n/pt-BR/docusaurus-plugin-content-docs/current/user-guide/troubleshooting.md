@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:02:19.120Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
-source_file_hash: 1b216d0be72a0dca0f6061ab7464800febcf29632cfc6c148b164a42a62b165d
+translation_last_updated: '2026-05-06T23:22:27.940Z'
+source_file_mtime: '2026-05-06T23:18:51.430Z'
+source_file_hash: 561c33c1aa4c9a64d87a028ff06a261a2d66fc0342313d2513077cd2a35a957c
 translation_language: pt-BR
 source_file_path: documentation/docs/user-guide/troubleshooting.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Solução de Problemas {#troubleshooting}
 
@@ -14,17 +15,17 @@ translation_models:
 - Verificar se a porta 9666 está acessível
 - Verificar logs do container: `docker logs duplistatus`
 
-### Não há dados de backup {#no-backup-data}
-- Verificar configuração do servidor Duplicati
-- Verificar conectividade de rede entre servidores
-- Revisar logs do duplistatus para erros
-- Garantir que os trabalhos de backup estejam em execução
+### Sem Dados de Backup {#no-backup-data}
+- Verificar a configuração do servidor Duplicati
+- Verificar a conectividade de rede entre os servidores
+- Revisar os logs do duplistatus em busca de erros
+- Certifique-se de que os trabalhos de backup estão em execução
 
-### Notificações Não Funcionando {#notifications-not-working}
-- Verificar configuração de notificação
-- Verificar conectividade do servidor NTFY (se estiver usando NTFY)
-- Testar Configurações de Notificação
-- Verificar logs de notificação
+### Notificações Não Estão Funcionando {#notifications-not-working}
+- Verificar a configuração das notificações
+- Verificar a conectividade com o servidor NTFY (se estiver usando NTFY)
+- Testar as configurações de notificação
+- Verifique os logs das notificações
 
 ### Novos Backups Não Aparecem {#new-backups-not-showing}
 
@@ -72,7 +73,7 @@ Se a coleta manual do log de backup falhar:
 
 Verifique também a configuração de DNS dentro do container (veja mais em [DNS Configuration for Podman Containers](../installation/installation.md#configuring-dns-for-podman-containers))
 
-### Atualizar de uma versão anterior (antes de 0.9.x) e não conseguir fazer login {#upgrade-from-an-earlier-version-09x-and-cant-login}
+### Atualização de uma versão anterior (anterior à 0.9.x) e não é possível fazer login {#upgrade-from-an-earlier-version-before-09x-and-cant-login}
 
 **duplistatus** desde a versão 0.9.x requer autenticação de usuário. Uma conta `admin` padrão é criada automaticamente ao instalar a aplicação pela primeira vez ou ao atualizar de uma versão anterior:
     - nome de usuário: `admin`
@@ -91,34 +92,34 @@ Se você perdeu sua senha de administrador ou foi bloqueado de sua conta:
 
 Quando migrar de versões anteriores ou criar um backup do banco de dados:
 
-**Se você está executando a versão 1.2.1 ou posterior:**
-- Use a função de backup do banco de dados integrada em [Configurações → Manutenção do banco de dados](user-guide/settings/database-maintenance.md)
-- Selecione seu formato preferido (.db ou .sql) e clique em **Baixar backup**
-- O arquivo de backup será baixado para seu computador
-- Consulte [Manutenção do banco de dados](settings/database-maintenance.md#database-backup) para instruções detalhadas
+**Se você estiver executando a versão 1.2.1 ou posterior:**
+- Use a função integrada de backup do banco de dados em [Configurações → Manutenção do Banco de Dados](user-guide/settings/database-maintenance.md)
+- Selecione o formato desejado (.db ou .sql) e clique em **Baixar Backup**
+- O arquivo de backup será baixado para o seu computador
+- Consulte [Manutenção do Banco de Dados](settings/database-maintenance.md#database-backup) para instruções detalhadas
 
 **Se você está executando uma versão anterior à 1.2.1:**
 - Você precisará fazer um backup manual. Consulte o [Guia de Migração](../migration/version_upgrade.md#backing-up-your-database-before-migration) para mais informações.
 
 Se você ainda tiver problemas, tente as seguintes etapas:
 
-1.  **Inspecione os Logs da Aplicação**: Se estiver usando Docker, execute `docker logs <container-name>` para revisar informações detalhadas de erro.
-2.  **Valide as Configurações**: Verifique novamente todas as configurações na sua ferramenta de gerenciamento de contêiner (Docker, Portainer, Podman, etc.) incluindo portas, rede e permissões.
-3.  **Verifique a Conectividade de Rede**: Confirme que todas as conexões de rede estão estáveis.
-4.  **Verifique o Serviço Cron**: Certifique-se de que o serviço cron está sendo executado junto com a aplicação principal. Verifique os logs de ambos os serviços.
-5.  **Consulte a Documentação**: Consulte o Guia de Instalação e o README para obter mais informações.
-6.  **Relate Problemas**: Se o problema persistir, envie um problema detalhado no [repositório GitHub duplistatus](https://github.com/wsj-br/duplistatus/issues).
+1.  **Inspecionar Logs da Aplicação**: Se estiver usando Docker, execute `docker logs <container-name>` para revisar informações detalhadas de erro.
+2.  **Validar Configuração**: Verifique novamente todas as configurações em sua ferramenta de gerenciamento de contêineres (Docker, Portainer, Podman, etc.), incluindo portas, rede e permissões.
+3.  **Verificar Conectividade de Rede**: Confirme que todas as conexões de rede estão estáveis.
+4.  **Verificar Serviço Cron**: Certifique-se de que o serviço cron está em execução junto com a aplicação principal. Verifique os logs de ambos os serviços.
+5.  **Consultar Documentação**: Consulte o Guia de Instalação e o README para mais informações.
+6.  **Relatar Problemas**: Se o problema persistir, envie um relato detalhado no [repositório duplistatus no GitHub](https://github.com/wsj-br/duplistatus/issues).
 
 <br/>
 
 # Recursos Adicionais {#additional-resources}
 
 - **Guia de Instalação**: [Guia de Instalação](../installation/installation.md)
-- **Documentação Duplicati**: [docs.duplicati.com](https://docs.duplicati.com)
+- **Documentação do Duplicati**: [docs.duplicati.com](https://docs.duplicati.com)
 - **Documentação da API**: [Referência da API](../api-reference/overview.md)
 - **Repositório GitHub**: [wsj-br/duplistatus](https://github.com/wsj-br/duplistatus)
 - **Guia de Desenvolvimento**: [Guia de Desenvolvimento](../development/setup.md)
-- **Esquema de Banco de Dados**: [Documentação do Banco de Dados](../development/database)
+- **Esquema do Banco de Dados**: [Documentação do Banco de Dados](../development/database)
 
 ### Suporte {#support}
 - **GitHub Issues**: [Relatar bugs ou solicitar recursos](https://github.com/wsj-br/duplistatus/issues)

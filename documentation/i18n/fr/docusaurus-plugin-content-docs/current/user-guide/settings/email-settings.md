@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-04-18T00:03:47.948Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:21:52.542Z'
+source_file_mtime: '2026-05-06T23:18:51.442Z'
 source_file_hash: b978c78a610418d49df860a0680c231bce4f9a5f2690a3736ca40ae39b5ace0d
 translation_language: fr
 source_file_path: documentation/docs/user-guide/settings/email-settings.md
@@ -14,17 +14,17 @@ translation_models:
 
 ![Email Configuration](../../assets/screen-settings-email.png)
 
-| Paramètre | Description |
+| Paramètre                 | Description                                                      |
 |:------------------------|:-----------------------------------------------------------------|
-| **Serveur SMTP hôte** | Serveur SMTP de votre fournisseur de messagerie (par exemple, `smtp.gmail.com`). |
-| **Port du serveur SMTP** | Numéro de port (généralement `25` pour SMTP standard, `587` pour STARTTLS ou `465` pour SSL/TLS direct). |
-| **Type de connexion** | Sélectionnez entre SMTP standard, STARTTLS ou SSL/TLS direct. Par défaut, SSL/TLS direct est utilisé pour les nouvelles configurations. |
-| **Authentification SMTP** | Activez ou désactivez l'authentification SMTP. Lorsqu'elle est désactivée, les champs de nom d'utilisateur et de mot de passe ne sont pas requis. |
-| **Nom d'utilisateur SMTP** | Votre adresse e-mail ou nom d'utilisateur (requis si l'authentification est activée). |
-| **Mot de passe SMTP** | Votre mot de passe e-mail ou mot de passe spécifique à l'application (requis si l'authentification est activée). |
-| **Nom de l'expéditeur** | Nom affiché comme expéditeur dans les notifications par courriel (facultatif, valeur par défaut : "duplistatus"). |
-| **Adresse d'expédition** | Adresse e-mail affichée comme expéditeur. Requise pour les connexions SMTP standard ou lorsque l'authentification est désactivée. Par défaut, utilise le nom d'utilisateur SMTP lorsque l'authentification est activée. Notez que certains fournisseurs de messagerie remplaceront le `From Address` par le `SMTP Server Username`. |
-| **Courriel du destinataire** | Adresse e-mail qui recevra les notifications. Doit être au format d'adresse e-mail valide. |
+| **Nom d'hôte du serveur SMTP**    | Le serveur SMTP de votre fournisseur de messagerie (par exemple, `smtp.gmail.com`).      |
+| **Port du serveur SMTP**    | Numéro de port (généralement `25` pour SMTP standard, `587` pour STARTTLS ou `465` pour SSL/TLS direct). |
+| **Type de connexion**     | Sélectionnez entre SMTP standard, STARTTLS ou SSL/TLS direct. Par défaut, SSL/TLS direct pour les nouvelles configurations. |
+| **Authentification SMTP** | Activez ou désactivez l'authentification SMTP. Lorsqu'elle est désactivée, les champs nom d'utilisateur et mot de passe ne sont pas requis. |
+| **Nom d'utilisateur SMTP**       | Votre adresse e-mail ou nom d'utilisateur (requis si l'authentification est activée). |
+| **Mot de passe SMTP**       | Votre mot de passe e-mail ou un mot de passe spécifique à l'application (requis si l'authentification est activée). |
+| **Nom de l'expéditeur**         | Nom affiché comme expéditeur dans les notifications par courriel (facultatif, valeur par défaut : "duplistatus"). |
+| **Adresse d'expédition**        | Adresse e-mail affichée comme expéditeur. Requise pour les connexions SMTP standard ou lorsque l'authentification est désactivée. Par défaut, utilise le nom d'utilisateur SMTP si l'authentification est activée. Notez que certains fournisseurs de messagerie remplaceront `From Address` par `SMTP Server Username`. |
+| **Courriel du destinataire**     | Adresse e-mail qui recevra les notifications. Doit être au format d'adresse e-mail valide. |
 
 Une icône <IIcon2 icon="lucide:mail" color="green"/> verte à côté d'**E-mail** dans la barre latérale signifie que vos paramètres sont valides. Si l'icône est <IIcon2 icon="lucide:mail" color="yellow"/> jaune, vos paramètres ne sont pas valides ou ne sont pas configurés.
 
@@ -39,7 +39,7 @@ Lorsque la configuration n'est pas entièrement configurée, une boîte d'alerte
 | Bouton                                                           | Description                                              |
 |:-----------------------------------------------------------------|:---------------------------------------------------------|
 | <IconButton label="Enregistrer les paramètres" />                             | Enregistrer les modifications apportées aux paramètres NTFY.              |
-| <IconButton icon="lucide:mail" label="Envoyer un e-mail de test"/>         | Envoie un message e-mail de test en utilisant la configuration SMTP. L'e-mail de test affiche le nom d'hôte du serveur SMTP, le port, le type de connexion, le statut d'authentification, le nom d'utilisateur (le cas échéant), l'e-mail du destinataire, l'adresse d'expéditeur, le nom de l'expéditeur et l'horodatage du test. |
+| <IconButton icon="lucide:mail" label="Envoyer un courriel de test"/>         | Envoie un courriel de test en utilisant la configuration SMTP. Le courriel de test affiche le nom d'hôte du serveur SMTP, le port, le type de connexion, l'état d'authentification, le nom d'utilisateur (le cas échéant), le courriel du destinataire, l'adresse d'expédition, le nom de l'expéditeur et l'horodatage du test. |
 | <IconButton icon="lucide:trash-2" label="Supprimer les paramètres SMTP"/> | Supprimer / Effacer la configuration SMTP.                   |
 
 <br/>
@@ -63,7 +63,7 @@ Lorsque la configuration n'est pas entièrement configurée, une boîte d'alerte
 - Type de connexion : STARTTLS pour le port 587, SSL/TLS direct pour le port 465
 - Nom d'utilisateur : Votre adresse Gmail
 - Mot de passe : Utilisez un mot de passe d'application (pas votre mot de passe habituel). Générez-en un sur https://myaccount.google.com/apppasswords
-- Authentification : Requis
+- Authentification : Requise
 
 **Outlook/Hotmail :**
 
@@ -72,7 +72,7 @@ Lorsque la configuration n'est pas entièrement configurée, une boîte d'alerte
 - Type de connexion : STARTTLS
 - Nom d'utilisateur : Votre adresse e-mail Outlook
 - Mot de passe : Votre mot de passe de compte
-- Authentification : Requis
+- Authentification : Requise
 
 **Yahoo Mail :**
 
@@ -80,13 +80,13 @@ Lorsque la configuration n'est pas entièrement configurée, une boîte d'alerte
 - Port : `587`
 - Type de connexion : STARTTLS
 - Nom d'utilisateur : Votre adresse e-mail Yahoo
-- Mot de passe : Utiliser un mot de passe d'application
-- Authentification : Requis
+- Mot de passe : Utilisez un mot de passe d'application
+- Authentification : Requise
 
 ### Meilleures pratiques de sécurité {#security-best-practices}
 
 - Envisagez d'utiliser un compte e-mail dédié pour les notifications
- - Testez votre configuration en utilisant le bouton « Envoyer un e-mail de test »
+ - Testez votre configuration à l'aide du bouton « Envoyer un e-mail de test »
  - Les paramètres sont chiffrés et stockés de manière sécurisée dans la base de données
  - **Utilisez des connexions chiffrées** - STARTTLS et SSL/TLS direct sont recommandés pour une utilisation en production
- - Les connexions SMTP simple (port 25) sont disponibles pour les réseaux locaux de confiance, mais ne sont pas recommandées pour une utilisation en production sur des réseaux non fiables
+ - Les connexions SMTP standard (port 25) sont disponibles pour les réseaux locaux de confiance, mais ne sont pas recommandées pour une utilisation en production sur des réseaux non fiables

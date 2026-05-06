@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:02:52.888Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:20:30.607Z'
+source_file_mtime: '2026-05-06T23:18:51.418Z'
 source_file_hash: f8c4464625015170ba865f56f24e9f8d1dcde28efa05628f7e79b30cc230240c
 translation_language: de
 source_file_path: documentation/docs/installation/duplicati-server-configuration.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Duplicati Server-Konfiguration (erforderlich) {#duplicati-server-configuration-required}
 
@@ -25,12 +26,12 @@ Wenden Sie diese Konfiguration auf jeden Ihrer Duplicati-Server an:
 
 2. **Konfigurieren Sie die Sicherungsergebnisberichterstellung:** Wählen Sie auf der Duplicati-Konfigurationsseite `Settings` aus und fügen Sie im Abschnitt `Default Options` die folgenden Optionen ein. Ersetzen Sie „my.local.server" durch Ihren Servernamen oder Ihre IP-Adresse, auf dem **duplistatus** ausgeführt wird.
 
-| Erweiterte Option                | Wert                                     |
+| Erweiterte Option | Wert |
     | -------------------------------- | ---------------------------------------- |
-    | `send-http-url`                  | `http://my.local.server:9666/api/upload` |
-    | `send-http-result-output-format` | `Json`                                   |
-    | `send-http-log-level`            | `Information`                            |
-    | `send-http-max-log-lines`        | `0`                                      |
+    | `send-http-url` | `http://my.local.server:9666/api/upload` |
+    | `send-http-result-output-format` | `Json` |
+    | `send-http-log-level` | `Information` |
+    | `send-http-max-log-lines` | `0` |
 
 Alternativ können Sie auf `Edit as text` klicken und die folgenden Zeilen kopieren, wobei Sie `my.local.server` durch Ihre tatsächliche Serveradresse ersetzen.
 

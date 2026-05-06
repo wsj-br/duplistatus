@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-04-18T00:01:38.315Z'
-source_file_mtime: '2026-03-05T22:33:28.419Z'
-source_file_hash: fe4cf26fcdad9ea7ff5f3f4cb9f9533b46f148bea17589644eeef65398578b86
+translation_last_updated: '2026-05-06T23:19:38.455Z'
+source_file_mtime: '2026-05-06T23:18:51.418Z'
+source_file_hash: 55f7e22ce3b1fa4868b6c112f9ed098fc3c8bf99e832fc930106cbc887815c77
 translation_language: fr
 source_file_path: documentation/docs/api-reference/overview.md
 translation_models:
@@ -24,16 +24,16 @@ Ce document décrit tous les points de terminaison API disponibles pour l'applic
 Pour une référence rapide de tous les points de terminaison, consultez la [liste des points de terminaison de l'API](api-endpoint-list).
 
 L'API est organisée en groupes logiques :
-- **[API externes](external-apis)** : Données récapitulatives, dernier statut de sauvegarde et chargement des données de sauvegarde depuis Duplicati
-- **[Opérations principales](core-operations)** : Données du tableau de bord, gestion du serveur et informations détaillées sur les sauvegardes
-- **[Données de graphiques](chart-data-apis)** : Données chronologiques agrégées et spécifiques au serveur pour la visualisation et l'analyse
-- **[Gestion de la configuration](configuration-apis)** : E-mail, notifications, paramètres de sauvegarde et configuration du système
-- **[Système de notification](notification-apis)** : Test des notifications, vérification des sauvegardes en retard et gestion des notifications
-- **[Services Cron](cron-service-apis)** : Gestion des services Cron
-- **[Surveillance et état de santé](monitoring-apis)** : Vérifications d'état et surveillance du statut
-- **[Administration](administration-apis)** : Maintenance de la base de données, opérations de nettoyage et gestion du système
-- **[Gestion des sessions](session-management-apis)** : Gestion des sessions et création de session
-- **[Authentification et sécurité](authentication-security)** : Authentification et sécurité
+- [**API externes**](external-apis) : Données récapitulatives, statut de la dernière sauvegarde et chargement des données de sauvegarde depuis Duplicati
+- [**Opérations principales**](core-operations) : Données du tableau de bord, gestion du serveur et informations détaillées sur les sauvegardes
+- [**Données de graphiques**](chart-data-apis) : Données chronologiques agrégées ou spécifiques au serveur, destinées à la visualisation et à l'analyse
+- [**Gestion de la configuration**](configuration-apis) : E-mail, notifications, paramètres de sauvegarde et configuration du système
+- [**Système de notifications**](notification-apis) : Test des notifications, vérification des sauvegardes en retard et gestion des notifications
+- [**Services Cron**](cron-service-apis) : Gestion des services Cron
+- [**Surveillance et état de santé**](monitoring-apis) : Vérifications d'intégrité et surveillance du statut
+- [**Administration**](administration-apis) : Maintenance de la base de données, opérations de nettoyage et gestion du système
+- [**Gestion des sessions**](session-management-apis) : Gestion des sessions et création de session
+- [**Authentification et sécurité**](authentication-security) : Authentification et sécurité
 
 Pour une référence rapide de tous les points de terminaison, consultez la [liste des points de terminaison de l'API](api-endpoint-list).
 
@@ -47,18 +47,18 @@ Toutes les réponses de l'API sont renvoyées au format JSON avec des modèles d
 
 Tous les points de terminaison suivent un modèle de gestion des erreurs cohérent :
 
-- **400 Mauvaise requête** : Données de requête invalides ou champs requis manquants
+- **400 Demande incorrecte** : Données de demande invalides ou champs requis manquants
 - **401 Non autorisé** : Session invalide ou manquante, session expirée, ou échec de la validation du jeton CSRF
-- **403 Interdit** : Opération non autorisée (par exemple, suppression de sauvegarde en production) ou échec de la validation du jeton CSRF
-- **404 Introuvable** : Ressource non trouvée
+- **403 Interdit** : Opération non autorisée (par exemple, suppression d'une sauvegarde en production) ou échec de la validation du jeton CSRF
+- **404 Introuvable** : Ressource introuvable
 - **409 Conflit** : Données en double (pour les points de terminaison de chargement)
-- **500 Erreur interne du serveur** : Erreurs côté serveur avec messages d'erreur détaillés
-- **503 Service indisponible** : Échec des vérifications d'état, problèmes de connexion à la base de données ou service Cron indisponible
+- **500 Erreur interne du serveur** : Erreurs côté serveur accompagnées de messages d'erreur détaillés
+- **503 Service indisponible** : Échec des vérifications d'intégrité, problèmes de connexion à la base de données ou service Cron indisponible
 
 Les réponses d'erreur incluent :
-- `error` : Message d'erreur lisible par l'homme
+- `error` : Message d'erreur lisible par l'utilisateur
 - `message` : Détails techniques de l'erreur (en mode développement)
-- `stack` : Trace de la pile d'erreur (en mode développement)
+- `stack` : Pile d'appels de l'erreur (en mode développement)
 - `timestamp` : Quand l'erreur s'est produite
 
 ## Remarques sur les types de données {#data-type-notes}

@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:03:40.160Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:22:08.479Z'
+source_file_mtime: '2026-05-06T23:18:51.430Z'
 source_file_hash: c28881ecd9af6c672fb4a386e56703be381997ef49fd8a5db83df90528d1376e
 translation_language: de
 source_file_path: documentation/docs/user-guide/settings/backup-notifications-settings.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - deepseek/deepseek-v3.2
   - qwen/qwen3-235b-a22b-2507
 ---
 # Backup-Benachrichtigungen {#backup-notifications}
@@ -14,11 +15,11 @@ Verwenden Sie diese Einstellungen, um Benachrichtigungen zu senden, wenn ein [ne
 
 ![Backup alerts](../../assets/screen-settings-notifications.png)
 
-Die Tabelle der Backup-Benachrichtigungen ist nach Server organisiert. Das Anzeigeformat hängt davon ab, wie viele Sicherungen ein Server hat:
-- **Mehrere Sicherungen**: Zeigt eine Server-Kopfzeile mit einzelnen Sicherungszeilen darunter an. Klicken Sie auf die Server-Kopfzeile, um die Sicherungsliste zu erweitern oder zu reduzieren.
-- **Einzelne Sicherung**: Zeigt eine **zusammengeführte Zeile** mit blauem linkem Rand an:
-  -  **Servername : Sicherungsname**, wenn kein Server-Alias konfiguriert ist, oder
-  - **Server-Alias (Servername) : Sicherungsname**, wenn dieser konfiguriert ist.
+Die Tabelle für Sicherungshinweise ist nach Servern organisiert. Das Anzeigeformat hängt davon ab, wie viele Sicherungen ein Server besitzt:
+- **Mehrere Sicherungen**: Zeigt eine Kopfzeile für den Server mit einzelnen Zeilen für jede Sicherung darunter an. Klicken Sie auf die Server-Kopfzeile, um die Liste der Sicherungen ein- oder auszuklappen.
+- **Einzelne Sicherung**: Zeigt eine **zusammengeführte Zeile** mit blauer linker Begrenzung an, die Folgendes anzeigt:
+  -  **Servername : Sicherungsname**, falls kein Server-Alias konfiguriert ist, oder
+  - **Server-Alias (Servername) : Sicherungsname**, falls konfiguriert.
 
 Diese Seite verfügt über eine Automatisches-Speichern-Funktion. Alle Änderungen, die Sie vornehmen, werden automatisch gespeichert.
 
@@ -34,7 +35,7 @@ Verwenden Sie das Feld **Nach Servername filtern** oben auf der Seite, um schnel
 
 | Einstellung                       | Beschreibung                                               | Standardwert |
 | :---------------------------- | :-------------------------------------------------------- | :------------ |
-| **Benachrichtigungsereignisse**       | Konfigurieren Sie, wann Benachrichtigungen für neue Sicherungsprotokolle gesendet werden sollen. | **Warnungen**    |
+| **Benachrichtigungsereignisse**       | Legen Sie fest, wann Benachrichtigungen für neue Sicherungsprotokolle gesendet werden. | **Warnungen**    |
 | **NTFY**                      | Aktivieren oder deaktivieren Sie NTFY-Benachrichtigungen für diese Sicherung.     | **Aktiviert**     |
 | **E-Mail**                     | Aktivieren oder deaktivieren Sie E-Mail-Benachrichtigungen für diese Sicherung.    | **Aktiviert**    |
 
@@ -67,14 +68,14 @@ Wenn kein Symbol angezeigt wird, hat der Server oder die Sicherung keine zusätz
 
 Sie können Standard-Zusätzliche Ziele auf der Serverebene konfigurieren, die alle Sicherungen auf diesem Server automatisch erben.
 
-1. Navigieren Sie zu [Einstellungen → Backup-Benachrichtigungen](backup-notifications-settings.md).
-2. Die Tabelle ist nach Server gruppiert, mit separaten Server-Kopfzeilen, die den Servernamen, den Alias und die Anzahl der Sicherungen anzeigen.
-   - **Hinweis**: Bei Servern mit nur einer Sicherung wird stattdessen eine zusammengeführte Zeile angezeigt. Server-Standardeinstellungen können nicht direkt aus zusammengeführten Zeilen konfiguriert werden. Wenn Sie Server-Standardeinstellungen für einen Server mit einer Sicherung konfigurieren müssen, können Sie dies tun, indem Sie vorübergehend eine weitere Sicherung zu diesem Server hinzufügen, oder die zusätzlichen Ziele der Sicherung erben automatisch von vorhandenen Server-Standardeinstellungen.
-3. Klicken Sie auf eine beliebige Stelle in einer Server-Zeile, um den Abschnitt **Standard-Zusätzliche Ziele für diesen Server** zu erweitern.
+1. Navigieren Sie zu [Einstellungen → Sicherungshinweise](backup-notifications-settings.md).
+2. Die Tabelle ist nach Servern gruppiert, wobei separate Kopfzeilen für jeden Server den Servernamen, Alias und die Anzahl der Sicherungen anzeigen.
+   - **Hinweis**: Bei Servern mit nur einer Sicherung wird eine zusammengeführte Zeile anstelle einer separaten Server-Kopfzeile angezeigt. Standards auf Serverebene können nicht direkt über zusammengeführte Zeilen konfiguriert werden. Wenn Sie Serverstandards für einen Server mit nur einer Sicherung konfigurieren möchten, können Sie temporär eine weitere Sicherung hinzufügen oder die zusätzlichen Ziele der Sicherung erben automatisch von vorhandenen Serverstandards.
+3. Klicken Sie beliebig in eine Serverzeile, um den Abschnitt **Standardmäßige zusätzliche Ziele für diesen Server** zu erweitern.
 4. Konfigurieren Sie die folgenden Standardeinstellungen:
-   - **Benachrichtigungsereignis**: Wählen Sie, welche Ereignisse Benachrichtigungen an die zusätzlichen Ziele auslösen (**alle**, **Warnungen**, **Fehler** oder **aus**).
-   - **Zusätzliche E-Mails**: Geben Sie eine oder mehrere E-Mail-Adressen (durch Kommas getrennt) ein, die Benachrichtigungen für alle Sicherungen auf diesem Server erhalten. Klicken Sie auf die Schaltfläche <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} />, um eine Test-E-Mail an die Adressen im Feld zu senden.
-   - **Zusätzliches NTFY-Thema**: Geben Sie einen benutzerdefinierten NTFY-Themennamen ein, unter dem Benachrichtigungen für alle Sicherungen auf diesem Server veröffentlicht werden. Klicken Sie auf die Schaltfläche <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} />, um eine Test-Benachrichtigung an das Thema zu senden, oder klicken Sie auf die Schaltfläche <IconButton icon="lucide:qr-code" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} />, um einen QR-Code für das Thema anzuzeigen und Ihr Gerät so zu konfigurieren, dass es Benachrichtigungen erhält.
+   - **Benachrichtigungsereignis**: Wählen Sie aus, bei welchen Ereignissen Benachrichtigungen an die zusätzlichen Ziele gesendet werden (**alle**, **Warnungen**, **Fehler** oder **Aus**).
+   - **Zusätzliche E-Mails**: Geben Sie eine oder mehrere E-Mail-Adressen (durch Komma getrennt) ein, die Benachrichtigungen für alle Sicherungen auf diesem Server erhalten sollen. Klicken Sie auf die Schaltfläche mit dem <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} />-Symbol, um eine Test-E-Mail an die angegebenen Adressen zu senden.
+   - **Zusätzliches NTFY-Thema**: Geben Sie einen benutzerdefinierten NTFY-Themennamen ein, an den Benachrichtigungen für alle Sicherungen auf diesem Server veröffentlicht werden. Klicken Sie auf die Schaltfläche mit dem <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} />-Symbol, um eine Testbenachrichtigung an das Thema zu senden, oder klicken Sie auf die Schaltfläche mit dem <IconButton icon="lucide:qr-code" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} />-Symbol, um einen QR-Code für das Thema anzuzeigen, um Ihr Gerät zur Benachrichtigungsempfangskonfiguration einzurichten.
 
 **Server-Standardverwaltung:**
 
@@ -85,11 +86,11 @@ Sie können Standard-Zusätzliche Ziele auf der Serverebene konfigurieren, die a
 
 Einzelne Sicherungen erben automatisch die Serverstandards, aber Sie können diese für bestimmte Sicherungsaufträge außer Kraft setzen.
 
-1. Klicken Sie auf eine beliebige Stelle in einer Sicherungszeile, um den Abschnitt **Zusätzliche Ziele** zu erweitern.
+1. Klicken Sie beliebig in eine Sicherungszeile, um den Abschnitt **Zusätzliche Ziele** zu erweitern.
 2. Konfigurieren Sie die folgenden Einstellungen:
-   - **Benachrichtigungsereignis**: Wählen Sie, welche Ereignisse Benachrichtigungen an die zusätzlichen Ziele auslösen (**alle**, **Warnungen**, **Fehler** oder **aus**).
-   - **Zusätzliche E-Mails**: Geben Sie eine oder mehrere E-Mail-Adressen (durch Kommas getrennt) ein, die zusätzlich zum globalen Empfänger Benachrichtigungen erhalten. Klicken Sie auf die Schaltfläche <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} />, um eine Test-E-Mail an die Adressen im Feld zu senden.
-   - **Zusätzliches NTFY-Thema**: Geben Sie einen benutzerdefinierten NTFY-Themennamen ein, unter dem Benachrichtigungen zusätzlich zum Standard-Thema veröffentlicht werden. Klicken Sie auf die Schaltfläche <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} />, um eine Test-Benachrichtigung an das Thema zu senden, oder klicken Sie auf die Schaltfläche <IconButton icon="lucide:qr-code" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} />, um einen QR-Code für das Thema anzuzeigen und Ihr Gerät so zu konfigurieren, dass es Benachrichtigungen erhält.
+   - **Benachrichtigungsereignis**: Wählen Sie aus, bei welchen Ereignissen Benachrichtigungen an die zusätzlichen Ziele gesendet werden (**alle**, **Warnungen**, **Fehler** oder **Aus**).
+   - **Zusätzliche E-Mails**: Geben Sie eine oder mehrere E-Mail-Adressen (durch Komma getrennt) ein, die zusätzlich zum globalen Empfänger Benachrichtigungen erhalten. Klicken Sie auf die Schaltfläche mit dem <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} />-Symbol, um eine Test-E-Mail an die Adressen im Feld zu senden.
+   - **Zusätzliches NTFY-Thema**: Geben Sie einen benutzerdefinierten NTFY-Themennamen ein, an den Benachrichtigungen zusätzlich zum Standardthema veröffentlicht werden. Klicken Sie auf die Schaltfläche mit dem <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} />-Symbol, um eine Testbenachrichtigung an das Thema zu senden, oder klicken Sie auf die Schaltfläche mit dem <IconButton icon="lucide:qr-code" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} />-Symbol, um einen QR-Code für das Thema anzuzeigen, um Ihr Gerät zur Benachrichtigungsempfangskonfiguration einzurichten.
 
 **Vererbungsindikatoren:**
 
@@ -111,18 +112,18 @@ Sie können zusätzliche Zieleinstellungen für mehrere Sicherungen gleichzeitig
 
 ![Bulk edit dialog](../../assets/screen-settings-notifications-bulk.png)
 
-1. Navigieren Sie zu [Einstellungen → Backup-Benachrichtigungen](backup-notifications-settings.md).
+1. Navigieren Sie zu [Einstellungen → Sicherungshinweise](backup-notifications-settings.md).
 2. Verwenden Sie die Kontrollkästchen in der ersten Spalte, um die Sicherungen oder Server auszuwählen, die Sie bearbeiten möchten.
    - Verwenden Sie das Kontrollkästchen in der Kopfzeile, um alle sichtbaren Sicherungen auszuwählen oder abzuwählen.
    - Sie können den Filter verwenden, um die Liste vor der Auswahl einzugrenzen.
-3. Sobald Sicherungen ausgewählt sind, wird eine Massenaktionsleiste angezeigt, die die Anzahl der ausgewählten Sicherungen anzeigt.
-4. Klicken Sie auf **Massenbearbeitung**, um das Bearbeitungsdialogfeld zu öffnen.
-5. Konfigurieren Sie die Einstellungen für zusätzliche Ziele:
+3. Sobald Sicherungen ausgewählt sind, wird eine Sammelaktionsleiste angezeigt, die die Anzahl der ausgewählten Sicherungen zeigt.
+4. Klicken Sie auf **Sammelbearbeitung**, um den Bearbeitungsdialog zu öffnen.
+5. Konfigurieren Sie die zusätzlichen Zielseinstellungen:
    - **Benachrichtigungsereignis**: Legen Sie das Benachrichtigungsereignis für alle ausgewählten Sicherungen fest.
-   - **Zusätzliche E-Mails**: Geben Sie E-Mail-Adressen (durch Kommas getrennt) ein, um sie auf alle ausgewählten Sicherungen anzuwenden.
-   - **Zusätzliches NTFY-Thema**: Geben Sie einen NTFY-Themennamen ein, um ihn auf alle ausgewählten Sicherungen anzuwenden.
-   - Test-Schaltflächen sind im Massenbearbeitungsdialogfeld verfügbar, um E-Mail-Adressen und NTFY-Themen vor der Anwendung auf mehrere Sicherungen zu überprüfen.
-6. Klicken Sie auf **Speichern**, um die Einstellungen auf alle ausgewählten Sicherungen anzuwenden.
+-   **Zusätzliche E-Mails**: Geben Sie E-Mail-Adressen (kommagetrennt) ein, die auf alle ausgewählten Backups angewendet werden sollen.
+-   **Zusätzliches NTFY-Thema**: Geben Sie einen NTFY-Themennamen ein, der auf alle ausgewählten Backups angewendet werden soll.
+-   Im Dialogfeld für die Sammelbearbeitung stehen Test-Schaltflächen zur Verfügung, um E-Mail-Adressen und NTFY-Themen zu überprüfen, bevor sie auf mehrere Backups angewendet werden.
+6. Klicken Sie auf **Speichern**, um die Einstellungen auf alle ausgewählten Backups anzuwenden.
 
 **Massenlöschung:**
 

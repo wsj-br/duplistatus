@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:03:44.810Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:22:17.182Z'
+source_file_mtime: '2026-05-06T23:18:51.446Z'
 source_file_hash: b1f073fc756bf469acd698513daa0acf449968820b163817769bb58e9e84a91a
 translation_language: de
 source_file_path: documentation/docs/user-guide/settings/user-management-settings.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Benutzer {#users}
 
@@ -31,21 +32,21 @@ Sie können auf den Bereich Benutzerverwaltung auf zwei Arten zugreifen:
 
 1. Klicken Sie auf die Schaltfläche <IconButton icon="lucide:plus" label="Benutzer hinzufügen"/>
 2. Geben Sie die Benutzerdetails ein:
-   - **Benutzername**: Muss 3–50 Zeichen lang, eindeutig und Groß-/Kleinschreibung-insensitiv sein
-   - **Admin**: Prüfen, um Administratorrechte zu gewähren
-   - **Passwortänderung erforderlich**: Prüfen, um eine Passwortänderung beim ersten Anmelden zu erzwingen
-   - **Passwort**: 
-     - Option 1: Prüfen Sie „Passwort automatisch generieren", um ein sicheres temporäres Passwort zu erstellen
-     - Option 2: Deaktivieren Sie diese Option und geben Sie ein benutzerdefiniertes Passwort ein
+   - **Benutzername**: Muss 3–50 Zeichen lang sein, eindeutig und ohne Beachtung der Groß-/Kleinschreibung
+   - **Administrator**: Aktivieren Sie das Kontrollkästchen, um Administratorrechte zu vergeben
+   - **Passwortänderung erforderlich**: Aktivieren Sie das Kontrollkästchen, um die Passwortänderung beim ersten Anmelden zu erzwingen
+   - **Passwort**:
+     - Option 1: Aktivieren Sie "Passwort automatisch generieren", um ein sicheres temporäres Passwort zu erstellen
+     - Option 2: Deaktivieren Sie die Option und geben Sie ein benutzerdefiniertes Passwort ein
 3. Klicken Sie auf <IconButton icon="lucide:user-plus" label="Benutzer erstellen" />.
 
 ## Benutzer bearbeiten {#editing-a-user}
 
-1. Klicken Sie auf das <IconButton icon="lucide:edit" /> Bearbeitungssymbol neben dem Benutzer
-2. Ändern Sie eines der folgenden Elemente:
+1. Klicken Sie auf das <IconButton icon="lucide:edit" />-Bearbeitungssymbol neben dem Benutzer
+2. Ändern Sie eine der folgenden Angaben:
    - **Benutzername**: Ändern Sie den Benutzernamen (muss eindeutig sein)
-   - **Admin**: Administratorrechte umschalten
-   - **Passwortänderung erforderlich**: Anforderung zur Passwortänderung umschalten
+   - **Administrator**: Aktivieren oder deaktivieren Sie Administratorrechte
+   - **Passwortänderung erforderlich**: Aktivieren oder deaktivieren Sie die Anforderung zur Passwortänderung
 3. Klicken Sie auf <IconButton icon="lucide:check" label="Änderungen speichern" />.
 
 ## Passwort eines Benutzers zurücksetzen {#resetting-a-user-password}

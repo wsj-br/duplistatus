@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-04-18T00:01:05.678Z'
-source_file_mtime: '2026-03-05T22:33:28.419Z'
-source_file_hash: fe4cf26fcdad9ea7ff5f3f4cb9f9533b46f148bea17589644eeef65398578b86
+translation_last_updated: '2026-05-06T23:19:45.033Z'
+source_file_mtime: '2026-05-06T23:18:51.418Z'
+source_file_hash: 55f7e22ce3b1fa4868b6c112f9ed098fc3c8bf99e832fc930106cbc887815c77
 translation_language: es
 source_file_path: documentation/docs/api-reference/overview.md
 translation_models:
@@ -24,16 +24,16 @@ Este documento describe todos los puntos finales de la API disponibles para la a
 Para una referencia rápida de todos los puntos finales, consulte la [Lista de puntos finales de la API](api-endpoint-list).
 
 La API está organizada en grupos lógicos:
-- **[APIs externas](external-apis)**: Datos resumidos, estado más reciente de la copia de seguridad y cargas de datos de copia de seguridad desde Duplicati
-- **[Operaciones principales](core-operations)**: Datos del panel, gestión del servidor e información detallada de la copia de seguridad
-- **[Datos de gráficos](chart-data-apis)**: Datos agregados y específicos del servidor en series temporales para visualización y análisis
-- **[Gestión de configuración](configuration-apis)**: Correo electrónico, notificaciones, configuración de copias de seguridad y configuración del sistema
-- **[Sistema de notificaciones](notification-apis)**: Pruebas de notificaciones, verificación de copias de seguridad retrasadas y gestión de notificaciones
-- **[Servicios Cron](cron-service-apis)**: Gestión de servicios Cron
-- **[Monitoreo y estado](monitoring-apis)**: Verificaciones de estado y monitoreo del estado
-- **[Administración](administration-apis)**: Mantenimiento de la base de datos, operaciones de limpieza y gestión del sistema
-- **[Gestión de sesiones](session-management-apis)**: Gestión de sesiones y creación de sesiones
-- **[Autenticación y seguridad](authentication-security)**: Autenticación y seguridad
+- [**APIs externas**](external-apis): Datos resumidos, estado más reciente de la copia de seguridad y cargas de datos de copia de seguridad desde Duplicati
+- [**Operaciones principales**](core-operations): Datos del panel, gestión del servidor e información detallada de la copia de seguridad
+- [**Datos de gráficos**](chart-data-apis): Datos agregados y específicos del servidor en series temporales para visualización y análisis
+- [**Gestión de configuración**](configuration-apis): Correo electrónico, notificaciones, configuración de copias de seguridad y configuración del sistema
+- [**Sistema de notificaciones**](notification-apis): Pruebas de notificaciones, verificaciones de copias de seguridad retrasadas y gestión de notificaciones
+- [**Servicios Cron**](cron-service-apis): Gestión de servicios Cron
+- [**Supervisión y estado**](monitoring-apis): Comprobaciones de estado y supervisión del estado
+- [**Administración**](administration-apis): Mantenimiento de la base de datos, operaciones de limpieza y gestión del sistema
+- [**Gestión de sesiones**](session-management-apis): Gestión de sesiones y creación de sesiones
+- [**Autenticación y seguridad**](authentication-security): Autenticación y seguridad
 
 Para una referencia rápida de todos los puntos finales, consulte la [Lista de puntos finales de la API](api-endpoint-list).
 
@@ -47,13 +47,13 @@ Todas las respuestas de la API se devuelven en formato JSON con patrones consist
 
 Todos los puntos finales siguen un patrón consistente de manejo de errores:
 
-- **400 Solicitud incorrecta**: Datos de solicitud inválidos o campos obligatorios faltantes
-- **401 No autorizado**: Sesión inválida o faltante, sesión expirada o falla en la validación del token CSRF
-- **403 Prohibido**: Operación no permitida (por ejemplo, eliminación de copia de seguridad en producción) o falla en la validación del token CSRF
+- **400 Solicitud incorrecta**: Datos de solicitud no válidos o campos obligatorios faltantes
+- **401 No autorizado**: Sesión no válida o faltante, sesión expirada o falló la validación del token CSRF
+- **403 Prohibido**: Operación no permitida (por ejemplo, eliminación de copia de seguridad en producción) o falló la validación del token CSRF
 - **404 No encontrado**: Recurso no encontrado
-- **409 Conflicto**: Datos duplicados (para puntos finales de carga)
-- **500 Error interno del servidor**: Errores del lado del servidor con mensajes detallados
-- **503 Servicio no disponible**: Fallas en verificaciones de estado, problemas de conexión a la base de datos o servicio cron no disponible
+- **409 Conflicto**: Datos duplicados (para puntos de acceso de carga)
+- **500 Error interno del servidor**: Errores del lado del servidor con mensajes de error detallados
+- **503 Servicio no disponible**: Fallos en la comprobación de estado, problemas de conexión a la base de datos o servicio Cron no disponible
 
 Las respuestas de error incluyen:
 - `error`: Mensaje de error legible para humanos

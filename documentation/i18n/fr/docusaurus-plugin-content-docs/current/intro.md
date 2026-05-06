@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-04-18T00:02:34.324Z'
-source_file_mtime: '2026-04-10T18:19:13.216Z'
+translation_last_updated: '2026-05-06T23:20:03.478Z'
+source_file_mtime: '2026-05-06T23:18:51.394Z'
 source_file_hash: 18c3808b355ca85cf99e63f258dc6c18f79f738a87a5623a96e332a06ea24ee7
 translation_language: fr
 source_file_path: documentation/docs/intro.md
@@ -8,6 +8,7 @@ translation_models:
   - anthropic/claude-3.5-haiku
   - anthropic/claude-haiku-4.5
   - 'nvidia/nemotron-nano-12b-v2-vl:free'
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Bienvenue sur duplistatus {#welcome-to-duplistatus}
 
@@ -16,14 +17,14 @@ translation_models:
 ## Fonctionnalités {#features}
 
 - **Configuration rapide** : Déploiement simple en conteneur, avec des images disponibles sur Docker Hub et GitHub.
-- **Tableau de bord unifié** : Affichage du statut de sauvegarde, de l'historique et des détails pour tous les serveurs en un seul endroit.
+- **Tableau de bord unifié** : Affichez le statut des sauvegardes, l'historique et les détails pour tous les serveurs au même endroit.
 - **Surveillance des sauvegardes** : Vérification automatisée et alertes pour les sauvegardes planifiées en retard.
 - **Visualisation des données et journaux** : Graphiques interactifs et collecte automatique des journaux à partir des serveurs Duplicati.
-- **Notifications et alertes** : Support intégré de NTFY et SMTP pour les alertes de sauvegarde, y compris les notifications de sauvegardes en retard.
-- **Contrôle d'accès utilisateur et sécurité** : Système d'authentification sécurisé avec contrôle d'accès basé sur les rôles (rôles Admin/Utilisateur), politiques de mot de passe configurables, protection contre le verrouillage de compte et gestion complète des utilisateurs.
-- **Journalisation d'audit** : Piste d'audit complète de tous les changements système et actions utilisateur avec filtrage avancé, capacités d'export et périodes de rétention configurables.
-- **Visualiseur de journaux d'application** : Interface réservée aux administrateurs pour afficher, rechercher et exporter les journaux d'application directement depuis l'interface web avec capacités de surveillance en temps réel.
-- **Support multilingue** : Interface et documentation disponibles en anglais, français, allemand, espagnol et portugais brésilien.
+- **Notifications et alertes** : Prise en charge intégrée de NTFY et du courrier électronique SMTP pour les alertes de sauvegarde, y compris les notifications de sauvegardes en retard.
+- **Contrôle d'accès et sécurité des utilisateurs** : Système d'authentification sécurisé avec contrôle d'accès basé sur les rôles (rôles Administrateur/Utilisateur), politiques de mot de passe configurables, protection contre le verrouillage de compte et gestion complète des utilisateurs.
+- **Journalisation d'audit** : Journal complet de toutes les modifications du système et des actions des utilisateurs, avec des filtres avancés, des fonctionnalités d'exportation et des périodes de rétention configurables.
+- **Visionneuse des journaux d'application** : Interface réservée aux administrateurs pour afficher, rechercher et exporter les journaux d'application directement depuis l'interface web, avec des capacités de surveillance en temps réel.
+- **Prise en charge multilingue** : Interface et documentation disponibles en anglais, français, allemand, espagnol et portugais brésilien.
 
 ## Installation {#installation}
 

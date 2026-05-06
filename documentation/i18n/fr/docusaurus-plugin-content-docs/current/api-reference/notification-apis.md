@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-04-18T00:01:18.892Z'
-source_file_mtime: '2026-03-05T22:33:28.419Z'
-source_file_hash: c9fa1157e8f98ef3d8071252f75634990ea86aa2c6de3db3a16b0f911b7a2789
+translation_last_updated: '2026-05-06T23:19:38.200Z'
+source_file_mtime: '2026-05-06T23:18:51.418Z'
+source_file_hash: e4cf34f832ca3ceb70addd63ee65ede46d3ff7cfd213775d5722e5c02b50f44d
 translation_language: fr
 source_file_path: documentation/docs/api-reference/notification-apis.md
 translation_models:
@@ -9,11 +9,11 @@ translation_models:
 ---
 # Système de notifications {#notification-system}
 
-## Notification de test - `/api/notifications/test` {#test-notification-apinotificationstest}
-- **Endpoint**: `/api/notifications/test`
-- **Méthode**: POST
-- **Description**: Envoyer des notifications de test (simples, basées sur un modèle ou par e-mail) pour vérifier la configuration des notifications.
-- **Authentification**: Nécessite une session valide et un jeton CSRF
+## Tester la notification - `/api/notifications/test` {#test-notification---apinotificationstest}
+- **Endpoint** : `/api/notifications/test`
+- **Méthode** : POST
+- **Description** : Envoyer des notifications de test (simples, basées sur un modèle ou par courrier électronique) pour vérifier la configuration des notifications.
+- **Authentification** : Nécessite une session valide et un jeton CSRF
 - **Corps de la requête** :
   Pour un test simple :
 
@@ -82,33 +82,33 @@ Pour un test d'e-mail :
   }
   ```
 
-Le contenu de l'e-mail de test affiche :
+Le contenu du courrier de test affiche :
   - Le nom d'hôte et le port du serveur SMTP
   - Le type de connexion (SMTP standard, STARTTLS ou SSL/TLS direct)
-  - Le statut de la demande d'authentification SMTP
+  - L'état de la nécessité d'authentification SMTP
   - Le nom d'utilisateur SMTP (affiché uniquement si l'authentification est requise)
   - L'adresse e-mail du destinataire
-  - L'adresse d'expédition et le nom de l'expéditeur utilisés pour l'e-mail
+  - L'adresse d'expédition et le nom de l'expéditeur utilisés pour le courrier
   - L'horodatage du test
 - **Réponses d'erreur** :
   - `401` : Non autorisé - Session ou jeton CSRF invalide
   - `400` : La configuration NTFY est requise, la configuration est invalide ou l'e-mail n'est pas configuré
-  - `500` : Échec de l'envoi de la notification de test avec les détails de l'erreur
+  - `500` : Échec de l'envoi de la notification de test avec détails de l'erreur
 - **Notes** :
-  - Prend en charge les messages de test simples, les notifications basées sur un modèle et les tests d'e-mail
+  - Prend en charge les messages de test simples, les notifications basées sur un modèle et les tests par courrier électronique
   - Le test de modèle utilise des données d'exemple pour remplacer les variables du modèle
   - Inclut un horodatage dans le message de test
   - Valide l'URL NTFY et le sujet avant l'envoi
   - Utilise le champ `accessToken` pour l'authentification
-  - Pour les tests de modèle, envoie des notifications à la fois vers NTFY et par e-mail (si configuré)
-  - Les tests d'e-mail nécessitent une configuration SMTP préalablement définie
-  - Le point de terminaison d'e-mail de test efface le cache de requête avant de lire la configuration SMTP, garantissant ainsi que les scripts externes peuvent mettre à jour la configuration et que celle-ci soit immédiatement prise en compte dans les e-mails de test
+  - Pour les tests de modèle, envoie des notifications à la fois vers NTFY et par courrier électronique (si configuré)
+  - Les tests par courrier électronique nécessitent une configuration SMTP préalablement définie
+  - Le point de terminaison de test par courrier électronique efface le cache de requête avant de lire la configuration SMTP, garantissant ainsi que des scripts externes peuvent mettre à jour la configuration et que celle-ci soit immédiatement prise en compte dans les courriers de test
 
-## Vérifier les sauvegardes en retard - `/api/notifications/check-overdue` {#check-overdue-backups-apinotificationscheck-overdue}
-- **Endpoint**: `/api/notifications/check-overdue`
-- **Méthode**: POST
-- **Description**: Déclenche manuellement la vérification des sauvegardes en retard et envoie des notifications.
-- **Authentification**: Nécessite une session valide et un jeton CSRF
+## Vérifier les sauvegardes en retard - `/api/notifications/check-overdue` {#check-overdue-backups---apinotificationscheck-overdue}
+- **Endpoint** : `/api/notifications/check-overdue`
+- **Méthode** : POST
+- **Description** : Déclenche manuellement la vérification des sauvegardes en retard et envoie les notifications.
+- **Authentification** : Nécessite une session valide et un jeton CSRF
 - **Réponse** :
 
   ```json
@@ -130,11 +130,11 @@ Le contenu de l'e-mail de test affiche :
   - Renvoie des statistiques sur le processus de vérification
   - Envoie des notifications pour les sauvegardes en retard détectées
 
-## Effacer les horodatages des sauvegardes en retard - `/api/notifications/clear-overdue-timestamps` {#clear-overdue-timestamps-apinotificationsclear-overdue-timestamps}
-- **Endpoint**: `/api/notifications/clear-overdue-timestamps`
-- **Méthode**: POST
-- **Description**: Efface tous les horodatages des notifications de sauvegardes en retard, permettant ainsi de renvoyer les notifications.
-- **Authentification**: Nécessite une session valide et un jeton CSRF
+## Effacer les horodatages des sauvegardes en retard - `/api/notifications/clear-overdue-timestamps` {#clear-overdue-timestamps---apinotificationsclear-overdue-timestamps}
+- **Endpoint** : `/api/notifications/clear-overdue-timestamps`
+- **Méthode** : POST
+- **Description** : Efface tous les horodatages des notifications de sauvegarde en retard, permettant ainsi d'envoyer à nouveau les notifications.
+- **Authentification** : Nécessite une session valide et un jeton CSRF
 - **Réponse** :
 
   ```json

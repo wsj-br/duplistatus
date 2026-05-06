@@ -1,12 +1,13 @@
 ---
-translation_last_updated: '2026-04-18T00:02:33.959Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:20:03.089Z'
+source_file_mtime: '2026-05-06T23:18:51.418Z'
 source_file_hash: ff45fe5f2dea04589c6b35a872a2fbb19c0c49b4c33a0951774e8556326297c0
 translation_language: fr
 source_file_path: documentation/docs/installation/installation.md
 translation_models:
   - anthropic/claude-3.5-haiku
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Guide d'Installation {#installation-guide}
 
@@ -92,13 +93,13 @@ volumes:
 
 ### Option 3 : Utilisation des piles Portainer (référentiel GitHub) {#option-3-using-portainer-stacks-github-repository}
 
-1. Dans [Portainer](https://docs.portainer.io/user/docker/stacks), accédez à « Piles » et cliquez sur « Ajouter une pile ».
-2. Nommez votre pile (par exemple, « duplistatus »).
-3. Choisissez « Méthode de construction » comme « Dépôt ».
-4. Entrez l'URL du dépôt : `https://github.com/wsj-br/duplistatus.git`
-5. Dans le champ « Chemin du compose », entrez : `production.yml`
-6. (optionnel) Définissez les variables d'environnement `TZ`, `LANG`, `PWD_ENFORCE` et `PWD_MIN_LEN` dans la section « Variables d'environnement ». Consultez la section [Fuseau horaire](./configure-tz.md) pour plus de détails sur la façon d'ajuster le fuseau horaire et le format des nombres/dates/heures.
-6. Cliquez sur « Déployer la pile ».
+1. Dans [Portainer](https://docs.portainer.io/user/docker/stacks), accédez à "Piles" et cliquez sur "Ajouter une pile".
+2. Nommez votre pile (par exemple, "duplistatus").
+3. Choisissez la "Méthode de création" comme "Dépôt".
+4. Saisissez l'URL du dépôt : `https://github.com/wsj-br/duplistatus.git`
+5. Dans le champ "Chemin du fichier Compose", saisissez : `production.yml`
+6. (facultatif) Définissez les variables d'environnement `TZ`, `LANG`, `PWD_ENFORCE` et `PWD_MIN_LEN` dans la section "Variables d'environnement". Consultez la section [Fuseau horaire](./configure-tz.md) pour plus de détails sur la façon d'ajuster le fuseau horaire et le format des nombres, dates et heures. 
+6. Cliquez sur "Déployer la pile".
 
 ### Option 4 : Utilisation de Docker CLI {#option-4-using-docker-cli}
 
@@ -261,12 +262,12 @@ podman pod rm -f duplistatus-pod
 
 ## Configuration Essentielle {#essential-configuration}
 
-1. Configurez vos [serveurs Duplicati](duplicati-server-configuration.md) pour envoyer les messages de journaux de sauvegarde à duplistatus (requis).
+1. Configurez vos [serveurs Duplicati](duplicati-server-configuration.md) pour envoyer les messages des journaux de sauvegarde à duplistatus (requis).
 2. Connectez-vous à duplistatus – consultez les instructions dans le [Guide de l'utilisateur](../user-guide/overview.md#accessing-the-dashboard).
-3. Collectez les journaux de sauvegarde initiaux – utilisez la fonctionnalité [Collecter les journaux de sauvegarde](../user-guide/collect-backup-logs.md) pour remplir la base de données avec les données de sauvegarde historiques de tous vos serveurs Duplicati. Cela met également à jour automatiquement les intervalles de surveillance de sauvegarde en fonction de la configuration de chaque serveur.
-4. Configurez les paramètres du serveur – configurez les alias de serveur et les notes dans [Paramètres → Serveur](../user-guide/settings/server-settings.md) pour rendre votre tableau de bord plus informatif.
+3. Collectez les journaux de sauvegarde initiaux – utilisez la fonctionnalité [Collecter les journaux de sauvegarde](../user-guide/collect-backup-logs.md) pour remplir la base de données avec les données historiques des sauvegardes provenant de tous vos serveurs Duplicati. Cela met également à jour automatiquement les intervalles de surveillance des sauvegardes en fonction de la configuration de chaque serveur.
+4. Configurez les paramètres du serveur – définissez des alias et des notes pour les serveurs dans [Paramètres → Serveur](../user-guide/settings/server-settings.md) afin de rendre votre tableau de bord plus informatif.
 5. Configurez les paramètres NTFY – configurez les notifications via NTFY dans [Paramètres → NTFY](../user-guide/settings/ntfy-settings.md).
-6. Configurez les paramètres e-mail – configurez les notifications par e-mail dans [Paramètres → E-mail](../user-guide/settings/email-settings.md).
-7. Configurez les notifications de sauvegarde – configurez les notifications par sauvegarde ou par serveur dans [Paramètres → Notifications de sauvegarde](../user-guide/settings/backup-notifications-settings.md).
+6. Configurez les paramètres e-mail – configurez les notifications par courriel dans [Paramètres → E-mail](../user-guide/settings/email-settings.md).
+7. Configurez les notifications de sauvegarde – configurez des notifications par sauvegarde ou par serveur dans [Paramètres → Notifications de sauvegarde](../user-guide/settings/backup-notifications-settings.md).
 
 Consultez les sections suivantes pour configurer les paramètres optionnels tels que le fuseau horaire, le format des nombres et HTTPS.

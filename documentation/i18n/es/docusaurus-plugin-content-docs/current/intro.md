@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-04-18T00:01:46.955Z'
-source_file_mtime: '2026-04-10T18:19:13.216Z'
+translation_last_updated: '2026-05-06T23:20:09.686Z'
+source_file_mtime: '2026-05-06T23:18:51.394Z'
 source_file_hash: 18c3808b355ca85cf99e63f258dc6c18f79f738a87a5623a96e332a06ea24ee7
 translation_language: es
 source_file_path: documentation/docs/intro.md
@@ -8,6 +8,7 @@ translation_models:
   - anthropic/claude-3.5-haiku
   - anthropic/claude-haiku-4.5
   - 'nvidia/nemotron-nano-12b-v2-vl:free'
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Bienvenido a duplistatus {#welcome-to-duplistatus}
 
@@ -15,15 +16,15 @@ translation_models:
 
 ## Características {#features}
 
-- **Configuración rápida**: Implementación sencilla en contenedores, con imágenes disponibles en Docker Hub y GitHub.
-- **Panel de control unificado**: Vea el estado del backup, historial y detalles de todos los servidores en un solo lugar.
-- **Monitoreo de backups**: Verificación automatizada y alertas para backups programados retrasados.
-- **Visualización de datos y Logs**: Gráficos interactivos y recopilación automática de logs desde servidores Duplicati.
-- **Notificaciones y Alertas**: Soporte integrado de NTFY y correo electrónico SMTP para alertas de backup, incluidas notificaciones de backups retrasados.
-- **Control de acceso de usuarios y Seguridad**: Sistema de autenticación seguro con control de acceso basado en roles (roles Admin/Usuario), políticas de contraseña configurables, protección de bloqueo de cuenta y gestión completa de usuarios.
-- **Registro de auditoría**: Registro de auditoría completo de todos los cambios del sistema y acciones de usuarios con filtrado avanzado, capacidades de exportación y períodos de retención configurables.
-- **Visor de Logs de aplicación**: Interfaz solo para administradores para ver, buscar y exportar logs de aplicación directamente desde la interfaz web con capacidades de monitoreo en tiempo real.
-- **Soporte multiidioma**: Interfaz y documentación disponibles en inglés, francés, alemán, español y portugués brasileño.
+- **Configuración rápida**: Despliegue sencillo mediante contenedores, con imágenes disponibles en Docker Hub y GitHub.
+- **Panel unificado**: Visualice el estado, historial y detalles de las copias de seguridad de todos los servidores en un solo lugar.
+- **Monitoreo de Copias de Seguridad**: Verificación y alertas automatizadas para copias de seguridad programadas atrasadas.
+- **Visualización de datos y registros**: Gráficos interactivos y recolección automática de registros desde servidores Duplicati.
+- **Notificaciones y alertas**: Soporte integrado para NTFY y correo electrónico SMTP para alertas de copias de seguridad, incluyendo notificaciones de copias de seguridad atrasadas.
+- **Control de acceso y seguridad de usuarios**: Sistema de autenticación seguro con control de acceso basado en roles (roles Administrador/Usuario), políticas de contraseñas configurables, protección contra bloqueo de cuentas y gestión completa de usuarios.
+- **Registro de auditoría**: Registro completo de todos los cambios del sistema y acciones de los usuarios con filtros avanzados, capacidades de exportación y períodos de retención configurables.
+- **Visor de registros de la aplicación**: Interfaz exclusiva para administradores que permite ver, buscar y exportar registros de la aplicación directamente desde la interfaz web, con capacidades de monitoreo en tiempo real.
+- **Soporte multilingüe**: Interfaz y documentación disponibles en inglés, francés, alemán, español y portugués brasileño.
 
 ## Instalación {#installation}
 

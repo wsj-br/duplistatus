@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-04-18T00:00:06.293Z'
-source_file_mtime: '2026-03-05T22:33:28.419Z'
-source_file_hash: d1370e091997b367954229cb55bb2ceeb6fa286bbe8c84b48a906d0d5678dee2
+translation_last_updated: '2026-05-06T23:19:35.399Z'
+source_file_mtime: '2026-05-06T23:18:51.418Z'
+source_file_hash: 71a70ebe58920eba7ffc9c0087432da38e19bacac8c69249ecddce48e51cdce2
 translation_language: es
 source_file_path: documentation/docs/api-reference/core-operations.md
 translation_models:
@@ -9,11 +9,11 @@ translation_models:
 ---
 # Operaciones principales {#core-operations}
 
-## Obtener datos del panel (consolidado) - `/api/dashboard` {#get-dashboard-data-consolidated-apidashboard}
+## Obtener datos del panel (consolidado) - `/api/dashboard` {#get-dashboard-data-consolidated---apidashboard}
 - **Endpoint**: `/api/dashboard`
 - **Method**: GET
-- **Description**: Recupera todos los datos del panel en una única respuesta consolidada, incluyendo resúmenes de servidores, resumen general y datos del gráfico.
-- **Response**:
+- **Description**: Recupera todos los datos del panel en una única respuesta consolidada, incluyendo resúmenes de servidores, resumen general y datos de gráficos.
+- **Respuesta**:
 
   ```json
   {
@@ -63,24 +63,24 @@ translation_models:
   }
   ```
 
-- **Error Responses**:
+- **Respuestas de error**:
   - `500`: Error del servidor al obtener los datos del panel
-- **Notes**:
+- **Notas**:
   - Este endpoint consolida el endpoint anterior `/api/servers-summary` (que ha sido eliminado)
   - El campo `overallSummary` contiene los mismos datos que `/api/summary` (que se mantiene para aplicaciones externas)
   - El campo `chartData` contiene los mismos datos que `/api/chart-data/aggregated` (que aún existe para acceso directo)
-  - Proporciona un mejor rendimiento al reducir múltiples llamadas API a una única solicitud
+  - Ofrece un mejor rendimiento al reducir múltiples llamadas API a una única solicitud
   - Todos los datos se recuperan en paralelo para un rendimiento óptimo
   - El campo `secondsSinceLastBackup` muestra el tiempo en segundos desde la última copia de seguridad en todos los servidores
 
-## Obtener todos los servidores - `/api/servers` {#get-all-servers-apiservers}
+## Obtener todos los servidores - `/api/servers` {#get-all-servers---apiservers}
 - **Endpoint**: `/api/servers`
 - **Method**: GET
-- **Description**: Recupera una lista de todos los servidores con su información básica. Opcionalmente incluye información de copia de seguridad.
-- **Authentication**: Requiere sesión válida y token CSRF
-- **Query Parameters**:
+- **Description**: Recupera una lista de todos los servidores con su información básica. Opcionalmente puede incluir información de copias de seguridad.
+- **Autenticación**: Requiere sesión válida y token CSRF
+- **Parámetros de consulta**:
   - `includeBackups` (opcional): Establecer a `true` para incluir información de copia de seguridad para cada servidor
-- **Response** (sin parámetros):
+- **Respuesta** (sin parámetros):
 
   ```json
   [
@@ -109,27 +109,27 @@ translation_models:
   ]
   ```
 
-- **Error Responses**:
+- **Respuestas de error**:
   - `401`: No autorizado - Sesión o token CSRF inválido
-  - `500`: Error del servidor al obtener servidores
-- **Notes**:
-  - Devuelve información del servidor incluyendo campos de alias y nota
+  - `500`: Error del servidor al obtener los servidores
+- **Notas**:
+  - Devuelve información del servidor incluyendo los campos de alias y nota
   - Cuando `includeBackups=true`, devuelve combinaciones de servidor-copia de seguridad con URLs y estado de contraseña
   - Consolida el endpoint anterior `/api/servers-with-backups` (que ha sido eliminado)
   - Se utiliza para selección, visualización y configuración de servidores
-  - Incluye el campo `hasPassword` para indicar si el servidor tiene contraseña almacenada
+  - Incluye el campo `hasPassword` para indicar si el servidor tiene una contraseña almacenada
 
-## Obtener detalles del servidor - `/api/servers/:id` {#get-server-details-apiserversid}
+## Obtener detalles del servidor - `/api/servers/:id` {#get-server-details---apiserversid}
 - **Endpoint**: `/api/servers/:id`
 - **Method**: GET
-- **Description**: Recupera información sobre un servidor específico. Puede devolver información básica del servidor o información detallada que incluye copias de seguridad y datos del gráfico.
-- **Authentication**: Requiere sesión válida y token CSRF
-- **Parameters**:
+- **Description**: Recupera información sobre un servidor específico. Puede devolver información básica del servidor o información detallada que incluye copias de seguridad y datos de gráficos.
+- **Autenticación**: Requiere sesión válida y token CSRF
+- **Parámetros**:
   - `id`: el identificador del servidor
-- **Query Parameters**:
+- **Parámetros de consulta**:
   - `includeBackups` (opcional): Establecer a `true` para incluir datos de copia de seguridad
   - `includeChartData` (opcional): Establecer a `true` para incluir datos del gráfico
-- **Response** (sin parámetros):
+- **Respuesta** (sin parámetros):
 
   ```json
   {
@@ -159,23 +159,23 @@ translation_models:
   }
   ```
 
-- **Error Responses**:
+- **Respuestas de error**:
   - `401`: No autorizado - Sesión o token CSRF inválido
   - `404`: Servidor no encontrado
-  - `500`: Error del servidor al obtener detalles del servidor
-- **Notes**:
+  - `500`: Error del servidor al obtener los detalles del servidor
+- **Notas**:
   - Devuelve información básica del servidor cuando no se proporcionan parámetros de consulta
   - Establecer cualquiera de `includeBackups` o `includeChartData` a `true` devuelve todos los datos del servidor, incluyendo copias de seguridad y chartData
-  - Se utiliza para configuración del servidor y vistas de detalle
+  - Se utiliza para vistas de configuración y detalles del servidor
 
-## Actualizar servidor - `/api/servers/:id` {#update-server-apiserversid}
+## Actualizar servidor - `/api/servers/:id` {#update-server---apiserversid}
 - **Endpoint**: `/api/servers/:id`
 - **Method**: PATCH
 - **Description**: Actualiza los detalles del servidor, incluyendo alias, nota y URL del servidor.
-- **Authentication**: Requiere sesión válida y token CSRF
-- **Parameters**:
+- **Autenticación**: Requiere sesión válida y token CSRF
+- **Parámetros**:
   - `id`: el identificador del servidor
-- **Request Body**:
+- **Cuerpo de la solicitud**:
 
   ```json
   {
@@ -197,21 +197,21 @@ translation_models:
   }
   ```
 
-- **Error Responses**:
+- **Respuestas de error**:
   - `401`: No autorizado - Sesión o token CSRF inválido
   - `404`: Servidor no encontrado
   - `500`: Error del servidor durante la actualización
-- **Notes**:
+- **Notas**:
   - Actualiza el alias, nota y URL del servidor
   - Todos los campos son opcionales
   - Se permiten cadenas vacías para todos los campos
 
-## Eliminar servidor - `/api/servers/:id` {#delete-server-apiserversid}
+## Eliminar servidor - `/api/servers/:id` {#delete-server---apiserversid}
 - **Endpoint**: `/api/servers/:id`
 - **Method**: DELETE
 - **Description**: Elimina un servidor y todas sus copias de seguridad asociadas.
-- **Authentication**: Requiere sesión válida y token CSRF
-- **Parameters**:
+- **Autenticación**: Requiere una sesión válida y token CSRF
+- **Parámetros**:
   - `id`: el identificador del servidor
 
 - **Respuesta**:
@@ -227,21 +227,21 @@ translation_models:
   }
   ```
 
-- **Error Responses**:
+- **Respuestas de error**:
   - `401`: No autorizado - Sesión o token CSRF inválido
   - `404`: Servidor no encontrado
   - `500`: Error del servidor durante la eliminación
-- **Notes**: 
+- **Notas**:
   - Esta operación es irreversible
-  - Todos los datos de copia de seguridad asociados al servidor se eliminarán permanentemente
+  - Todos los datos de copias de seguridad asociados al servidor se eliminarán permanentemente
   - El registro del servidor también será eliminado
-  - Devuelve el número de copias de seguridad y servidores eliminados
+  - Devuelve la cantidad de copias de seguridad y servidores eliminados
 
-## Obtener datos del servidor con información retrasada - `/api/detail/:serverId` {#get-server-data-with-overdue-info-apidetailserverid}
+## Obtener datos del servidor con información de retraso - `/api/detail/:serverId` {#get-server-data-with-overdue-info---apidetailserverid}
 - **Endpoint**: `/api/detail/:serverId`
 - **Method**: GET
-- **Description**: Recupera información detallada del servidor, incluido el estado de copia de seguridad retrasada.
-- **Parameters**:
+- **Description**: Recupera información detallada del servidor, incluyendo el estado de copias de seguridad retrasadas.
+- **Parámetros**:
   - `serverId`: el identificador del servidor
 
 - **Respuesta**:
@@ -268,20 +268,20 @@ translation_models:
   }
   ```
 
-- **Error Responses**:
+- **Respuestas de error**:
   - `404`: Servidor no encontrado
   - `500`: Error del servidor al obtener los detalles del servidor
-- **Notes**:
-  - Devuelve datos del servidor con información de copia de seguridad retrasada
+- **Notas**:
+  - Devuelve los datos del servidor con información sobre copias de seguridad retrasadas
   - Incluye detalles y marcas de tiempo de copias de seguridad retrasadas
   - Se utiliza para la gestión y supervisión de copias de seguridad retrasadas
 
-## Obtener servidores duplicados - `/api/servers/duplicates` {#get-duplicate-servers-apiserversduplicates}
+## Obtener servidores duplicados - `/api/servers/duplicates` {#get-duplicate-servers---apiserversduplicates}
 - **Endpoint**: `/api/servers/duplicates`
 - **Method**: GET
-- **Description**: Recupera una lista de servidores duplicados según el ID de máquina. Los servidores duplicados son aquellos que comparten el mismo ID de máquina pero se almacenan como registros separados en la base de datos.
-- **Authentication**: Requiere sesión válida, token CSRF y acceso de administrador
-- **Response**:
+- **Description**: Recupera una lista de servidores duplicados basada en el ID de máquina. Los servidores duplicados son aquellos que comparten el mismo ID de máquina pero se almacenan como registros separados en la base de datos.
+- **Autenticación**: Requiere sesión válida, token CSRF y acceso de administrador
+- **Respuesta**:
 
   ```json
   [
@@ -307,23 +307,23 @@ translation_models:
   ]
   ```
 
-- **Error Responses**:
+- **Respuestas de error**:
   - `401`: No autorizado - Sesión o token CSRF inválido
   - `403`: Se requiere acceso de administrador
   - `500`: Error del servidor al obtener servidores duplicados
-- **Notes**:
+- **Notas**:
   - Solo los administradores pueden acceder a este endpoint
   - Devuelve grupos de servidores que comparten el mismo ID de máquina
   - Cada grupo contiene todos los servidores con el mismo ID de máquina
   - Se utiliza para identificar y fusionar registros duplicados de servidores
-  - Incluye detalles del servidor y conteo de copias de seguridad para cada duplicado
+  - Incluye detalles del servidor y conteos de copias de seguridad para cada duplicado
 
-## Fusionar servidores - `/api/servers/merge` {#merge-servers-apiserversmerge}
+## Fusionar servidores - `/api/servers/merge` {#merge-servers---apiserversmerge}
 - **Endpoint**: `/api/servers/merge`
 - **Method**: POST
-- **Description**: Fusiona múltiples servidores en un servidor destino. Todas las copias de seguridad de los servidores de origen se transfieren al servidor destino, y los servidores de origen se eliminan.
-- **Authentication**: Requiere sesión válida, token CSRF y acceso de administrador
-- **Request Body**:
+- **Description**: Fusiona múltiples servidores en un servidor destino. Todas las copias de seguridad de los servidores origen se transfieren al servidor destino, y los servidores origen se eliminan.
+- **Autenticación**: Requiere sesión válida, token CSRF y acceso de administrador
+- **Cuerpo de la solicitud**:
 
   ```json
   {
@@ -341,12 +341,12 @@ translation_models:
   }
   ```
 
-- **Error Responses**:
-  - `400`: Cuerpo de solicitud inválido, campos obligatorios faltantes, o el servidor destino está en la lista de servidores a fusionar
+- **Respuestas de error**:
+  - `400`: Cuerpo de solicitud inválido, faltan campos requeridos, o el servidor destino está en la lista de servidores a fusionar
   - `401`: No autorizado - Sesión o token CSRF inválido
   - `403`: Se requiere acceso de administrador
   - `500`: Error del servidor durante la operación de fusión
-- **Notes**:
+- **Notas**:
   - Solo los administradores pueden realizar operaciones de fusión
   - El servidor destino no debe estar en la lista de servidores a fusionar
   - Todas las copias de seguridad de los servidores de origen se transfieren al servidor destino
@@ -354,4 +354,4 @@ translation_models:
   - Esta operación es irreversible
   - Se utiliza para consolidar registros duplicados de servidores
   - Valida que oldServerIds sea un array no vacío
-  - Valida que targetServerId esté proporcionado y sea una cadena
+  - Valida que targetServerId esté presente y sea una cadena

@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-04-18T00:01:35.528Z'
-source_file_mtime: '2026-03-05T22:33:28.419Z'
-source_file_hash: c9fa1157e8f98ef3d8071252f75634990ea86aa2c6de3db3a16b0f911b7a2789
+translation_last_updated: '2026-05-06T23:19:54.269Z'
+source_file_mtime: '2026-05-06T23:18:51.418Z'
+source_file_hash: e4cf34f832ca3ceb70addd63ee65ede46d3ff7cfd213775d5722e5c02b50f44d
 translation_language: de
 source_file_path: documentation/docs/api-reference/notification-apis.md
 translation_models:
@@ -9,12 +9,12 @@ translation_models:
 ---
 # Benachrichtigungssystem {#notification-system}
 
-## Testbenachrichtigung - `/api/notifications/test` {#test-notification-apinotificationstest}
-- **Endpoint**: `/api/notifications/test`
+## Testbenachrichtigung - `/api/notifications/test` {#test-notification---apinotificationstest}
+- **Endpunkt**: `/api/notifications/test`
 - **Methode**: POST
-- **Beschreibung**: Sendet Testbenachrichtigungen (einfach, templatebasiert oder E-Mail), um die Benachrichtigungskonfiguration zu überprüfen.
-- **Authentifizierung**: Gültige Sitzung und CSRF-Token erforderlich
-- **Anfrageinhalt**:
+- **Beschreibung**: Sendet Testbenachrichtigungen (einfach, vorlagenbasiert oder per E-Mail), um die Benachrichtigungskonfiguration zu überprüfen.
+- **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
+- **Anforderungstext**:
   Für einfachen Test:
 
     ```json
@@ -88,27 +88,27 @@ Der Inhalt der Test-E-Mail zeigt Folgendes an:
   - Status der SMTP-Authentifizierungsanforderung
   - SMTP-Benutzername (nur angezeigt, wenn Authentifizierung erforderlich ist)
   - Empfänger-E-Mail-Adresse
-  - Absenderadresse und Name, der für die E-Mail verwendet wird
+  - Absenderadresse und Name des Absenders für die E-Mail
   - Test-Zeitstempel
 - **Fehlerantworten**:
   - `401`: Nicht autorisiert – Ungültige Sitzung oder CSRF-Token
-  - `400`: NTFY-Konfiguration erforderlich, ungültige Konfiguration oder E-Mail nicht konfiguriert
+  - `400`: NTFY-Konfiguration ist erforderlich, ungültige Konfiguration oder E-Mail nicht konfiguriert
   - `500`: Testbenachrichtigung konnte nicht gesendet werden, mit Fehlerdetails
 - **Hinweise**:
-  - Unterstützt einfache Testnachrichten, templatebasierte Benachrichtigungen und E-Mail-Tests
-  - Beim Template-Test werden Beispieldaten verwendet, um Template-Variablen zu ersetzen
+  - Unterstützt einfache Testnachrichten, vorlagenbasierte Benachrichtigungen und E-Mail-Tests
+  - Bei der Vorlagenprüfung werden Beispieldaten verwendet, um Vorlagenvariablen zu ersetzen
   - Enthält Zeitstempel in der Testnachricht
   - Überprüft NTFY-URL und Thema vor dem Senden
-  - Verwendet `accessToken`-Feld für die Authentifizierung
-  - Bei Template-Tests werden Benachrichtigungen sowohl an NTFY als auch an E-Mail gesendet (falls konfiguriert)
+  - Verwendet das `accessToken`-Feld für die Authentifizierung
+  - Sendet bei Vorlagentests Benachrichtigungen sowohl an NTFY als auch per E-Mail (falls konfiguriert)
   - E-Mail-Tests erfordern eine eingerichtete SMTP-Konfiguration
-  - Der Test-E-Mail-Endpunkt löscht den Anfragecache vor dem Lesen der SMTP-Konfiguration, sodass externe Skripte die Konfiguration aktualisieren können und diese sofort in Test-E-Mails berücksichtigt wird
+  - Der Test-E-Mail-Endpunkt löscht den Anforderungscache vor dem Lesen der SMTP-Konfiguration, sodass externe Skripte die Konfiguration aktualisieren können und diese sofort in den Test-E-Mails berücksichtigt werden
 
-## Überprüfung überfälliger Sicherungen - `/api/notifications/check-overdue` {#check-overdue-backups-apinotificationscheck-overdue}
-- **Endpoint**: `/api/notifications/check-overdue`
+## Überfällige Sicherungen prüfen - `/api/notifications/check-overdue` {#check-overdue-backups---apinotificationscheck-overdue}
+- **Endpunkt**: `/api/notifications/check-overdue`
 - **Methode**: POST
-- **Beschreibung**: Löst manuell die Überprüfung auf überfällige Sicherungen aus und sendet Benachrichtigungen.
-- **Authentifizierung**: Gültige Sitzung und CSRF-Token erforderlich
+- **Beschreibung**: Löst manuell die Prüfung auf überfällige Sicherungen aus und sendet Benachrichtigungen.
+- **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
 - **Antwort**:
 
   ```json
@@ -130,11 +130,11 @@ Der Inhalt der Test-E-Mail zeigt Folgendes an:
   - Gibt Statistiken über den Überprüfungsprozess zurück
   - Sendet Benachrichtigungen für gefundene überfällige Sicherungen
 
-## Überfällige Zeitstempel löschen - `/api/notifications/clear-overdue-timestamps` {#clear-overdue-timestamps-apinotificationsclear-overdue-timestamps}
-- **Endpoint**: `/api/notifications/clear-overdue-timestamps`
+## Überfällige Zeitstempel löschen - `/api/notifications/clear-overdue-timestamps` {#clear-overdue-timestamps---apinotificationsclear-overdue-timestamps}
+- **Endpunkt**: `/api/notifications/clear-overdue-timestamps`
 - **Methode**: POST
-- **Beschreibung**: Löscht alle Zeitstempel für überfällige Sicherungsbenachrichtigungen, sodass Benachrichtigungen erneut gesendet werden können.
-- **Authentifizierung**: Gültige Sitzung und CSRF-Token erforderlich
+- **Beschreibung**: Löscht alle Zeitstempel für Benachrichtigungen zu überfälligen Sicherungen, sodass Benachrichtigungen erneut gesendet werden können.
+- **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
 - **Antwort**:
 
   ```json
@@ -146,6 +146,6 @@ Der Inhalt der Test-E-Mail zeigt Folgendes an:
 - **Fehlerantworten**:
   - `500`: Löschen der Zeitstempel für überfällige Sicherungen fehlgeschlagen
 - **Hinweise**:
-  - Löscht alle Zeitstempel für überfällige Sicherungsbenachrichtigungen
+  - Löscht alle Zeitstempel für Benachrichtigungen über überfällige Sicherungen
   - Ermöglicht erneutes Senden von Benachrichtigungen
   - Nützlich zum Testen des Benachrichtigungssystems

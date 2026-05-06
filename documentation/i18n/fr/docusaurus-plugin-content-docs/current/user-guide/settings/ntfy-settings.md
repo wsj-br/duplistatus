@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:03:48.836Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:21:54.466Z'
+source_file_mtime: '2026-05-06T23:18:51.446Z'
 source_file_hash: 3bd58d9cbad231e20c93f90d5f2904a572e10982cc151b37c80613510401bb52
 translation_language: fr
 source_file_path: documentation/docs/user-guide/settings/ntfy-settings.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
   - 'stepfun/step-3.5-flash:free'
 ---
 # NTFY {#ntfy}
@@ -14,11 +15,11 @@ translation_models:
 
 ![Ntfy settings](../../assets/screen-settings-ntfy.png)
 
-| Paramètre             | Description                                                                                                                                   |
+| Paramètre               | Description                                                                                                                                   |
 |:----------------------|:----------------------------------------------------------------------------------------------------------------------------------------------|
-| **URL NTFY**          | L'URL de votre serveur NTFY (par défaut le serveur public `https://ntfy.sh/`).                                                                      |
-| **Sujet NTFY**        | Un identifiant unique pour vos notifications. Le système générera automatiquement un sujet aléatoire s'il est laissé vide, ou vous pouvez spécifier le vôtre. |
-| **Jeton d'accès NTFY** | Un jeton d'accès optionnel pour les serveurs NTFY authentifiés. Laissez ce champ vide si votre serveur ne nécessite pas d'authentification.               |
+| **URL NTFY**          | L'URL de votre serveur NTFY (par défaut, le `https://ntfy.sh/` public).                                                                      |
+| **Sujet NTFY**        | Un identifiant unique pour vos notifications. Le système générera automatiquement un sujet aléatoire si ce champ est laissé vide, ou vous pouvez spécifier le vôtre. |
+| **Jeton d'accès NTFY** | Un jeton d'accès facultatif pour les serveurs NTFY authentifiés. Laissez ce champ vide si votre serveur ne nécessite pas d'authentification.               |
 
 <br/>
 
@@ -29,9 +30,9 @@ Quand la configuration n'est pas valide, les cases à cocher NTFY dans l'onglet 
 
 | Bouton                                                                | Description                                                                                                  |
 |:----------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------|
-| <IconButton label="Enregistrer les paramètres" />                                  | Enregistrez les modifications apportées aux paramètres NTFY.                                                                  |
-| <IconButton icon="lucide:send-horizontal" label="Envoyer un message de test"/> | Envoyez un message de test à votre serveur NTFY pour vérifier votre configuration.                                         |
-| <IconButton icon="lucide:qr-code" label="Configurer l'appareil"/>          | Affiche un code QR qui vous permet de configurer rapidement votre appareil mobile ou ordinateur de bureau pour les notifications NTFY. |
+| <IconButton label="Enregistrer les paramètres" />                                  | Enregistrer les modifications apportées aux paramètres NTFY.                                                                  |
+| <IconButton icon="lucide:send-horizontal" label="Envoyer le message de test"/> | Envoyer un message de test à votre serveur NTFY pour vérifier votre configuration.                                         |
+| <IconButton icon="lucide:qr-code" label="Configurer l'appareil"/>          | Afficher un code QR qui vous permet de configurer rapidement votre appareil mobile ou votre ordinateur pour les notifications NTFY. |
 
 ## Configuration de l'appareil {#device-configuration}
 

@@ -1,16 +1,17 @@
 ---
-translation_last_updated: '2026-04-18T00:02:18.507Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
-source_file_hash: dc89e934e23da96d8dd5ae8649ddfb3cae07d187b7ddd14bff332845a24ef50e
+translation_last_updated: '2026-05-06T23:22:23.682Z'
+source_file_mtime: '2026-05-06T23:18:51.446Z'
+source_file_hash: af7b88f75713fa0f5d7ea772ace5440dcf8f228e28102abda5f00ecd6477596e
 translation_language: pt-BR
 source_file_path: documentation/docs/user-guide/settings/overview.md
 translation_models:
   - anthropic/claude-3.5-haiku
   - anthropic/claude-haiku-4.5
+  - deepseek/deepseek-v3.2
 ---
 # Visão Geral {#overview}
 
-A página de Configurações oferece uma interface unificada para configurar todos os aspectos do **duplistatus**. Você pode acessá-la clicando no botão <IconButton icon="lucide:settings" /> **Configurações** na [Barra de ferramentas da aplicação](../overview#application-toolbar). Observe que usuários regulares verão um menu simplificado com menos opções em comparação com administradores.
+A página de Configurações oferece uma interface unificada para configurar todos os aspectos do **duplistatus**. Você pode acessá-la clicando no botão <IconButton icon="lucide:settings" /> **Configurações** na [Barra de Ferramentas do Aplicativo](../overview.md#application-toolbar). Observação: usuários regulares verão um menu simplificado com menos opções em comparação com os administradores.
 
 ## Visão do Administrador {#administrator-view}
 

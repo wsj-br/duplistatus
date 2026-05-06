@@ -1,12 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:02:14.847Z'
-source_file_mtime: '2026-03-05T22:33:28.419Z'
+translation_last_updated: '2026-05-06T23:20:00.534Z'
+source_file_mtime: '2026-05-06T23:18:51.394Z'
 source_file_hash: d96b8a208e1a506c80e1a45e3190044bd8a8d6b789fda92a5bc3d91cec00ef2f
 translation_language: de
 source_file_path: documentation/docs/development/cron-service.md
 translation_models:
-  - anthropic/claude-3.5-haiku
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Cron-Dienst {#cron-service}
 
@@ -32,15 +32,15 @@ pnpm cron:start-local
 
 Der Cron-Service läuft auf einem separaten Port (8667 in der Entwicklung, 9667 in der Produktion) und verwaltet geplante Aufgaben wie überfällige Backup-Benachrichtigungen. Der Port kann mithilfe der Umgebungsvariablen `CRON_PORT` konfiguriert werden.
 
-Der Cron-Dienst umfasst:
-- **Gesundheitsprüfungs-Endpunkt**: `/health` - Gibt Dienstatus und aktive Aufgaben zurück
-- **Manuelle Aufgabenauslösung**: `POST /trigger/:taskName` - Manuelles Ausführen geplanter Aufgaben
-- **Aufgabenverwaltung**: `POST /start/:taskName` und `POST /stop/:taskName` - Steuerung einzelner Aufgaben
-- **Konfigurationsneuladen**: `POST /reload-config` - Konfiguration aus Datenbank neu laden
-- **Automatischer Neustart**: Der Dienst startet automatisch neu, wenn er abstürzt (verwaltet durch `docker-entrypoint.sh` in Docker-Bereitstellungen)
-- **Beobachtungsmodus**: Entwicklungsmodus mit Dateiüberwachung für automatische Neustarts bei Codeänderungen
-- **Überwachung überfälliger Sicherungen**: Automatische Prüfung und Benachrichtigung von überfälligen Sicherungen (läuft standardmäßig alle 5 Minuten)
-- **Audit-Log-Bereinigung**: Automatische Bereinigung alter Audit-Log-Einträge (täglich um 2 Uhr UTC)
+Der Cron-Service umfasst:
+- **Health-Check-Endpunkt**: `/health` – Gibt den Service-Status und aktive Aufgaben zurück
+- **Manuelle Aufgaben-Auslösung**: `POST /trigger/:taskName` – Geplante Aufgaben manuell ausführen
+- **Aufgabenverwaltung**: `POST /start/:taskName` und `POST /stop/:taskName` – Einzelne Aufgaben steuern
+- **Konfigurationsneuladen**: `POST /reload-config` – Lädt die Konfiguration aus der Datenbank neu
+- **Automatischer Neustart**: Der Service startet automatisch neu, falls er abstürzt (wird bei Docker-Deployments von `docker-entrypoint.sh` verwaltet)
+- **Watch-Modus**: Der Entwicklungsmodus beinhaltet das Überwachen von Dateiänderungen für automatische Neustarts bei Code-Änderungen
+- **Überwachung überfälliger Sicherungen**: Automatische Prüfung und Benachrichtigung bei überfälligen Sicherungen (standardmäßig alle 5 Minuten)
+- **Bereinigung des Audit-Logs**: Automatische Bereinigung alter Audit-Log-Einträge (täglich um 2 Uhr UTC)
 - **Flexible Planung**: Konfigurierbare Cron-Ausdrücke für verschiedene Aufgaben
 - **Datenbankintegration**: Nutzt dieselbe SQLite-Datenbank wie die Hauptanwendung
-- **RESTful-API**: Vollständige API zur Dienstverwaltung und -überwachung
+- **RESTful-API**: Vollständige API zur Serviceverwaltung und -überwachung

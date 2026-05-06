@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:02:00.850Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:21:27.003Z'
+source_file_mtime: '2026-05-06T23:18:51.446Z'
 source_file_hash: 3bd58d9cbad231e20c93f90d5f2904a572e10982cc151b37c80613510401bb52
 translation_language: es
 source_file_path: documentation/docs/user-guide/settings/ntfy-settings.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
   - 'stepfun/step-3.5-flash:free'
 ---
 # NTFY {#ntfy}
@@ -14,11 +15,11 @@ translation_models:
 
 ![Ntfy settings](../../assets/screen-settings-ntfy.png)
 
-| Configuración         | Descripción                                                                                                                                   |
+| Configuración               | Descripción                                                                                                                                   |
 |:----------------------|:----------------------------------------------------------------------------------------------------------------------------------------------|
-| **URL NTFY**          | La URL de su servidor NTFY (por defecto es el público `https://ntfy.sh/`).                                                                      |
-| **Tema NTFY**        | Un identificador único para sus notificaciones. El sistema generará automáticamente un tema aleatorio si se deja vacío, o puede especificar el suyo. |
-| **Token de acceso NTFY** | Un token de acceso opcional para servidores NTFY autenticados. Deje este campo en blanco si su servidor no requiere autenticación.               |
+| **URL de NTFY**          | La URL de tu servidor NTFY (por defecto, el `https://ntfy.sh/` público).                                                                      |
+| **Tema NTFY**        | Un identificador único para tus notificaciones. El sistema generará automáticamente un tema aleatorio si se deja vacío, o puedes especificar uno propio. |
+| **Token de acceso NTFY** | Un token de acceso opcional para servidores NTFY autenticados. Deja este campo en blanco si tu servidor no requiere autenticación.               |
 
 <br/>
 
@@ -29,9 +30,9 @@ Cuando la configuración no es válida, las casillas de verificación de NTFY en
 
 | Botón                                                                | Descripción                                                                                                  |
 |:----------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------|
-| <IconButton label="Guardar configuración" />                                  | Guarde los cambios realizados en la configuración de NTFY.                                                                  |
-| <IconButton icon="lucide:send-horizontal" label="Enviar mensaje de prueba"/> | Envíe un mensaje de prueba a su servidor NTFY para verificar su configuración.                                         |
-| <IconButton icon="lucide:qr-code" label="Configurar dispositivo"/>          | Muestre un código QR que le permite configurar rápidamente su dispositivo móvil o escritorio para notificaciones NTFY. |
+| <IconButton label="Guardar configuración" />                                  | Guardar cualquier cambio realizado en la configuración de NTFY.                                                                  |
+| <IconButton icon="lucide:send-horizontal" label="Enviar mensaje de prueba"/> | Enviar un mensaje de prueba a tu servidor NTFY para verificar tu configuración.                                         |
+| <IconButton icon="lucide:qr-code" label="Configurar dispositivo"/>          | Mostrar un código QR que te permite configurar rápidamente tu dispositivo móvil o escritorio para recibir notificaciones NTFY. |
 
 ## Configuración del dispositivo {#device-configuration}
 

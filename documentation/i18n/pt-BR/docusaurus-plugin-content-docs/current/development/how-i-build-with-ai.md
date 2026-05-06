@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:01:41.713Z'
-source_file_mtime: '2026-03-05T22:33:28.419Z'
+translation_last_updated: '2026-05-06T23:19:58.918Z'
+source_file_mtime: '2026-05-06T23:18:51.406Z'
 source_file_hash: 9b48c57e8f83d8e1ba3814a476ddf8a28c68c08305ee07ca77c3b30516e8a027
 translation_language: pt-BR
 source_file_path: documentation/docs/development/how-i-build-with-ai.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Como construí esta aplicação usando ferramentas de IA {#how-i-build-this-application-using-ai-tools}
 
@@ -162,10 +163,10 @@ Incluí apenas o ponto de partida, pois não registrei todos os prompts utilizad
 
 # Notas {#notes}
 
-- Alguns modelos podem ficar presos ao corrigir bugs. "claude-3.5" e "claude-4" geralmente são melhores, mas às vezes você precisa tentar outro modelo (GPT, Gemini, etc.).
-Para bugs ou erros complexos, use um prompt para analisar possíveis causas do erro em vez de simplesmente pedir para corrigi-lo.
-- Ao fazer modificações complexas, use um prompt para criar um plano e depois peça ao agente de IA para implementá-lo. Isso sempre funciona melhor.
+- Alguns modelos podem travar ao corrigir bugs. "claude-3.5" e "claude-4" geralmente são melhores, mas às vezes é necessário tentar outro modelo (GPT, Gemini, etc.).
+Para bugs ou erros complexos, use um prompt para analisar as possíveis causas do erro em vez de simplesmente pedir para corrigi-lo.
+- Ao fazer modificações complexas, use um prompt para criar um plano e depois peça ao agente de IA que o implemente. Isso sempre funciona melhor.
 - Seja específico ao alterar o código-fonte. Se possível, selecione a parte relevante do código no editor e pressione Ctrl+L para incluí-la no chat como contexto.
-- Também inclua uma referência ao arquivo que você está mencionando no chat para ajudar o agente de IA a focar na parte relevante do código e evitar fazer alterações em outras partes do código.
-- Tenho a tendência de antropomorfizar o agente de IA dado que ele persistentemente usa 'nós', 'nosso código' e 'gostaria que eu...'. Isso também é para melhorar minhas chances de sobrevivência caso (ou [quando](https://ai-2027.com/)) Skynet se torne consciente e o Exterminador seja inventado.
+- Inclua também uma referência ao arquivo que você está mencionando no chat para ajudar o agente de IA a se concentrar na parte relevante do código e evitar alterações em outras partes.
+- Tenho a tendência de antropomorfizar o agente de IA, já que ele persistentemente usa 'nós', 'nosso código' e 'você gostaria que eu...'. Isso também é para melhorar minhas chances de sobrevivência caso (ou [quando](https://ai-2027.com/)) o Skynet se torne senciente e o Exterminador seja inventado.
 - Às vezes, use [Gemini](https://gemini.google.com/app), [Deepseek](https://chat.deepseek.com/), [ChatGPT](https://chat.openai.com/), [Manus](https://manus.im/app),... para gerar prompts com instruções melhores para o agente de IA.

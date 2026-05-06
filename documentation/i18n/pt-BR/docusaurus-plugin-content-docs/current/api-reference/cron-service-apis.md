@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-04-18T00:00:28.056Z'
-source_file_mtime: '2026-03-05T22:33:28.419Z'
-source_file_hash: add8fe98b40a55c51fdd7af09ba7c836d54475b8283bbdebecbe17f2c6beb071
+translation_last_updated: '2026-05-06T23:19:37.292Z'
+source_file_mtime: '2026-05-06T23:18:51.410Z'
+source_file_hash: 7c32932a05e97b219f02f1a9f4ad7679394276ba0d2e6bfdc0ae29f85dada19b
 translation_language: pt-BR
 source_file_path: documentation/docs/api-reference/cron-service-apis.md
 translation_models:
@@ -9,10 +9,10 @@ translation_models:
 ---
 # Gerenciamento do Serviço Cron {#cron-service-management}
 
-## Obter Configuração do Cron - `/api/cron-config` {#get-cron-configuration-apicron-config}
+## Obter Configuração do Cron - `/api/cron-config` {#get-cron-configuration---apicron-config}
 - **Endpoint**: `/api/cron-config`
 - **Método**: GET
-- **Descrição**: Recupera a configuração atual do serviço cron.
+- **Descrição**: Recupera a configuração atual do serviço de cron.
 - **Autenticação**: Requer sessão válida e token CSRF
 - **Resposta**:
 
@@ -28,12 +28,12 @@ translation_models:
 - **Notas**:
   - Retorna a configuração atual do serviço cron
   - Inclui expressão cron e status habilitado
-  - Usado para gerenciamento do serviço cron
+  - Utilizado para gerenciamento do serviço cron
 
-## Atualizar Configuração do Cron - `/api/cron-config` {#update-cron-configuration-apicron-config}
+## Atualizar Configuração do Cron - `/api/cron-config` {#update-cron-configuration---apicron-config}
 - **Endpoint**: `/api/cron-config`
 - **Método**: POST
-- **Descrição**: Atualiza a configuração do serviço cron.
+- **Descrição**: Atualiza a configuração do serviço de cron.
 - **Autenticação**: Requer sessão válida e token CSRF
 - **Corpo da Requisição**:
 
@@ -60,10 +60,10 @@ translation_models:
   - Valida o intervalo com base nas opções permitidas
   - Afeta a frequência da verificação de backup atrasado
 
-## Proxy do Serviço Cron - `/api/cron/*` {#cron-service-proxy-apicron}
+## Proxy do Serviço de Cron - `/api/cron/*` {#cron-service-proxy---apicron}
 - **Endpoint**: `/api/cron/*`
 - **Método**: GET, POST
-- **Descrição**: Encaminha requisições ao serviço cron. Este endpoint encaminha todas as requisições ao serviço cron em execução em uma porta separada.
+- **Descrição**: Proxies de solicitações para o serviço de cron. Este endpoint encaminha todas as solicitações para o serviço de cron em execução em uma porta separada.
 - **Autenticação**: Requer sessão válida e token CSRF
 - **Parâmetros**:
   - `*`: Qualquer caminho que será encaminhado ao serviço cron
@@ -81,4 +81,4 @@ translation_models:
   - Encaminha requisições ao serviço cron
   - Retorna 503 se o serviço cron não estiver disponível
   - Suporta os métodos GET e POST
-  - Usado para gerenciamento do serviço cron pela interface web
+  - Utilizado para gerenciamento do serviço cron pela interface web

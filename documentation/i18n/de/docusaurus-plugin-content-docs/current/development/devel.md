@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:02:15.820Z'
-source_file_mtime: '2026-03-05T22:33:28.419Z'
+translation_last_updated: '2026-05-06T23:20:06.632Z'
+source_file_mtime: '2026-05-06T23:18:51.406Z'
 source_file_hash: 9d4cf0118b57183b62975b8e1557d2da7033073c6a7bd0b3131a0a0efa508862
 translation_language: de
 source_file_path: documentation/docs/development/devel.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Am häufigsten verwendete Befehle {#most-used-commands}
 
@@ -73,11 +74,11 @@ Oder manuell:
 ./scripts/clean-docker.sh
 ```
 
-Dieses Skript führt eine vollständige Docker-Bereinigung durch, die nützlich ist für:
+Dieses Skript führt eine vollständige Docker-Bereinigung durch, was nützlich ist für:
 - Freigabe von Speicherplatz
-- Entfernung alter/ungenutzter Docker-Artefakte
-- Bereinigung nach Entwicklungs- oder Testsitzungen
-- Wartung einer sauberen Docker-Umgebung
+- Entfernen alter oder ungenutzter Docker-Artefakte
+- Aufräumen nach Entwicklungs- oder Testphasen
+- Beibehaltung einer sauberen Docker-Umgebung
 
 ## Entwicklungsimage erstellen (zum lokalen Testen oder mit Podman) {#create-a-development-image-to-test-locally-or-with-podman}
 

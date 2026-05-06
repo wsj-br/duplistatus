@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:03:28.303Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:22:01.372Z'
+source_file_mtime: '2026-05-06T23:18:51.430Z'
 source_file_hash: 74e68a394e4fc2ec0fae355e9467377c4f1bde23f973fd6555e67a0ca86af518
 translation_language: de
 source_file_path: documentation/docs/user-guide/backup-monitoring.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 import { ZoomMermaid } from '@site/src/components/ZoomMermaid';
 
@@ -19,13 +20,13 @@ In der Benutzeroberfläche werden überfällige Sicherungen mit einem Warnsymbol
 
 **Funktionsweise:**
 
-| **Schritt** | **Wert**                     | **Beschreibung**                                        | **Beispiel**       |
-|:----------:|:----------------------------|:--------------------------------------------------------|:-------------------|
-|     1      | **Letzte Sicherung**        | Der Zeitstempel der letzten erfolgreichen Sicherung.   | `2024-01-01 08:00` |
-|     2      | **Erwartetes Intervall**    | Die konfigurierte Sicherungshäufigkeit.                | `1 day`            |
-|     3      | **Berechnete nächste Sicherung** | `Letzte Sicherung` + `Erwartetes Intervall`            | `2024-01-02 08:00` |
-|     4      | **Toleranz**                | Der konfigurierte Kulanzbereich (zusätzlich gewährte Zeit). | `1 hour`           |
-|     5      | **Erwartete nächste Sicherung** | `Berechnete nächste Sicherung` + `Toleranz`            | `2024-01-02 09:00` |
+| **Schritt** | **Wert**                  | **Beschreibung**                                   | **Beispiel**        |
+|:--------:|:---------------------------|:--------------------------------------------------|:-------------------|
+|    1     | **Letzte Sicherung**            | Der Zeitstempel der letzten erfolgreichen Sicherung.      | `2024-01-01 08:00` |
+|    2     | **Erwartetes Intervall**      | Die konfigurierte Sicherungshäufigkeit.                  | `1 day`            |
+|    3     | **Berechnete nächste Sicherung** | `Last Backup` + `Expected Interval`               | `2024-01-02 08:00` |
+|    4     | **Toleranz**              | Die konfigurierte Toleranzzeit (zusätzliche erlaubte Zeit). | `1 hour`           |
+|    5     | **Erwartete nächste Sicherung**   | `Calculated Next Backup` + `Tolerance`            | `2024-01-02 09:00` |
 
 Eine Sicherung wird als **überfällig** betrachtet, wenn die aktuelle Zeit später als die `Expected Next Backup`-Zeit liegt.
 

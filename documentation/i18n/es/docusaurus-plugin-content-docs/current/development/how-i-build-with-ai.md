@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:01:26.004Z'
-source_file_mtime: '2026-03-05T22:33:28.419Z'
+translation_last_updated: '2026-05-06T23:19:55.930Z'
+source_file_mtime: '2026-05-06T23:18:51.406Z'
 source_file_hash: 9b48c57e8f83d8e1ba3814a476ddf8a28c68c08305ee07ca77c3b30516e8a027
 translation_language: es
 source_file_path: documentation/docs/development/how-i-build-with-ai.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Cómo construí esta aplicación utilizando herramientas de IA {#how-i-build-this-application-using-ai-tools}
 
@@ -162,10 +163,10 @@ Solo incluí el punto de partida ya que no registré todos los indicadores utili
 
 # Notas {#notes}
 
-- Algunos modelos pueden quedarse atascados al corregir errores. "claude-3.5" y "claude-4" suelen ser mejores, pero a veces tiene que probar otro modelo (GPT, Gemini, etc.).
-Para errores o problemas complejos, utilice un prompt para analizar las posibles causas del error en lugar de simplemente pedir que lo corrija.
-- Al realizar modificaciones complejas, utilice un prompt para crear un plan y luego pida al agente de IA que lo implemente. Esto siempre funciona mejor.
-- Sea específico al cambiar el código fuente. Si es posible, seleccione la parte relevante del código en el editor y presione Ctrl+L para incluirla en el chat como contexto.
-- Incluya también una referencia al archivo que menciona en el chat para ayudar al agente de IA a enfocarse en la parte relevante del código y evitar realizar cambios en otras partes del código.
-- Tengo la tendencia a antropomorfizar el agente de IA dado que utiliza persistentemente "nosotros", "nuestro código" y "¿le gustaría que...?". Esto también es para mejorar mis probabilidades de supervivencia en caso de que (o [cuándo](https://ai-2027.com/)) Skynet se vuelva consciente y se invente Terminator.
-- A veces, utilice [Gemini](https://gemini.google.com/app), [Deepseek](https://chat.deepseek.com/), [ChatGPT](https://chat.openai.com/), [Manus](https://manus.im/app),... para generar prompts con mejores instrucciones para el agente de IA.
+- Algunos modelos pueden quedarse atascados al corregir errores. "claude-3.5" y "claude-4" suelen funcionar mejor, pero a veces hay que probar con otro modelo (GPT, Gemini, etc.).
+Para errores o fallos complejos, utiliza un prompt para analizar las posibles causas del error en lugar de simplemente pedir que lo corrija.
+- Al realizar modificaciones complejas, utiliza un prompt para crear un plan y luego pide al agente de IA que lo implemente. Esto siempre funciona mejor.
+- Sé específico al cambiar el código fuente. Si es posible, selecciona la parte relevante del código en el editor y presiona Ctrl+L para incluirla en el chat como contexto.
+- Incluye también una referencia al archivo que estás mencionando en el chat para ayudar al agente de IA a centrarse en la parte relevante del código y evitar realizar cambios en otras partes.
+- Tengo la tendencia de antropomorfizar al agente de IA dado que persistentemente usa 'nosotros', 'nuestro código' y '¿te gustaría que yo...?'. Esto también es para mejorar mis posibilidades de supervivencia en caso de que (o [cuándo](https://ai-2027.com/)) Skynet adquiera conciencia y se invente el Terminator.
+- A veces, utiliza [Gemini](https://gemini.google.com/app), [Deepseek](https://chat.deepseek.com/), [ChatGPT](https://chat.openai.com/), [Manus](https://manus.im/app),... para generar prompts con mejores instrucciones para el agente de IA.

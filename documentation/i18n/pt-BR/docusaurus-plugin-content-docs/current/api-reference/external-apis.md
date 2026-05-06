@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-04-18T00:00:44.901Z'
-source_file_mtime: '2026-03-05T22:33:28.419Z'
-source_file_hash: 70fe731fa22f714de94b93df446dee4ca4dc1f5683c22bc93eb52b2e03dd77d4
+translation_last_updated: '2026-05-06T23:19:39.468Z'
+source_file_mtime: '2026-05-06T23:18:51.410Z'
+source_file_hash: 59b045e2f0ca88a7be16ce8ed6d2ae4476eed38416d4d0284b2f590183c45b81
 translation_language: pt-BR
 source_file_path: documentation/docs/api-reference/external-apis.md
 translation_models:
@@ -11,10 +11,10 @@ translation_models:
 
 Esses endpoints são projetados para uso por outras aplicações e integrações, por exemplo [Homepage](../user-guide/homepage-integration.md).
 
-## Obter Resumo Geral - `/api/summary` {#get-overall-summary-apisummary}
+## Obter Resumo Geral - `/api/summary` {#get-overall-summary---apisummary}
 - **Endpoint**: `/api/summary`
-- **Método**: GET
-- **Descrição**: Recupera um resumo de todas as operações de backup em todos os servidores.
+- **Method**: GET
+- **Description**: Recupera um resumo de todas as operações de backup em todos os servidores.
 - **Resposta**:
 
   ```json
@@ -37,13 +37,13 @@ Esses endpoints são projetados para uso por outras aplicações e integrações
   - Na versão 0.7.x, o campo `totalMachines` foi substituído por `totalServers`
   - O campo `overdueBackupsCount` mostra o número de backups atualmente atrasados
   - O campo `secondsSinceLastBackup` mostra o tempo em segundos desde o último backup em todos os servidores
-  - Retorna resposta de fallback com zeros se a busca de dados falhar
-  - **Observação**: Para uso interno do painel, considere usar `/api/dashboard`, que inclui esses dados mais informações adicionais
+  - Retorna resposta de contingência com zeros se a busca de dados falhar
+  - **Observação**: Para uso interno no painel, considere usar `/api/dashboard`, que inclui esses dados mais informações adicionais
 
-## Obter Último Backup - `/api/lastbackup/:serverId` {#get-latest-backup-apilastbackupserverid}
+## Obter Último Backup - `/api/lastbackup/:serverId` {#get-latest-backup---apilastbackupserverid}
 - **Endpoint**: `/api/lastbackup/:serverId`
-- **Método**: GET
-- **Descrição**: Recupera as informações do último backup para um servidor específico.
+- **Method**: GET
+- **Description**: Recupera as informações do último backup para um servidor específico.
 - **Parâmetros**:
   - `serverId`: o identificador do servidor (ID ou nome)
 
@@ -94,13 +94,13 @@ O identificador do servidor deve ser codificado em URL.
 - **Notas**:
   - Na versão 0.7.x, a chave do objeto de resposta mudou de `machine` para `server`
   - O identificador do servidor pode ser ID ou nome
-  - Retorna null para latest_backup se não existirem backups
+  - Retorna null para latest_backup se não houver backups
   - Inclui cabeçalhos de controle de cache para evitar armazenamento em cache
 
-## Obter Últimos Backups - `/api/lastbackups/:serverId` {#get-latest-backups-apilastbackupsserverid}
+## Obter Últimos Backups - `/api/lastbackups/:serverId` {#get-latest-backups---apilastbackupsserverid}
 - **Endpoint**: `/api/lastbackups/:serverId`
-- **Método**: GET
-- **Descrição**: Recupera as informações dos últimos backups para todos os backups configurados (por exemplo, 'Arquivos', 'Bancos de Dados') em um servidor específico.
+- **Method**: GET
+- **Description**: Recupera as informações dos últimos backups para todos os backups configurados (por exemplo, 'Arquivos', 'Bancos de Dados') em um servidor específico.
 - **Parâmetros**:
   - `serverId`: o identificador do servidor (ID ou nome)
 
@@ -178,13 +178,13 @@ O identificador do servidor deve ser codificado em URL.
   - Na versão 0.7.x, a chave do objeto de resposta mudou de `machine` para `server`, e o campo `backup_types_count` foi renomeado para `backup_jobs_count`
   - O identificador do servidor pode ser ID ou nome
   - Retorna o último backup para cada tarefa de backup (backup_name) que o servidor possui
-  - Diferente de `/api/lastbackup/:serverId`, que retorna apenas o backup mais recente do servidor (independente da tarefa de backup)
+  - Diferentemente de `/api/lastbackup/:serverId`, que retorna apenas o backup mais recente do servidor (independente da tarefa de backup)
   - Inclui cabeçalhos de controle de cache para evitar armazenamento em cache
 
-## Enviar Dados de Backup - `/api/upload` {#upload-backup-data-apiupload}
+## Enviar Dados de Backup - `/api/upload` {#upload-backup-data---apiupload}
 - **Endpoint**: `/api/upload`
-- **Método**: POST
-- **Descrição**: Envia dados da operação de backup para um servidor. Suporta detecção de execuções duplicadas de backup e envia notificações.
+- **Method**: POST
+- **Description**: Envia dados da operação de backup para um servidor. Suporta detecção de execuções duplicadas de backup e envia notificações.
 - **Corpo da Requisição**: JSON enviado pelo Duplicati com as seguintes opções:
 
   ```bash
@@ -202,7 +202,7 @@ O identificador do servidor deve ser codificado em URL.
   ```
 
 - **Respostas de Erro**:
-  - `400`: Campos obrigatórios ausentes nas seções Extra ou Data, ou MainOperation inválida
+  - `400`: Campos obrigatórios ausentes nas seções Extra ou Data, ou MainOperation inválido
   - `409`: Dados de backup duplicados (ignorados)
   - `500`: Erro do servidor ao processar dados de backup
 - **Notas**:

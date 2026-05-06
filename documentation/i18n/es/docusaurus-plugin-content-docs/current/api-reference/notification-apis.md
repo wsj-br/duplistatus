@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-04-18T00:00:48.464Z'
-source_file_mtime: '2026-03-05T22:33:28.419Z'
-source_file_hash: c9fa1157e8f98ef3d8071252f75634990ea86aa2c6de3db3a16b0f911b7a2789
+translation_last_updated: '2026-05-06T23:19:44.785Z'
+source_file_mtime: '2026-05-06T23:18:51.418Z'
+source_file_hash: e4cf34f832ca3ceb70addd63ee65ede46d3ff7cfd213775d5722e5c02b50f44d
 translation_language: es
 source_file_path: documentation/docs/api-reference/notification-apis.md
 translation_models:
@@ -9,10 +9,10 @@ translation_models:
 ---
 # Sistema de notificaciones {#notification-system}
 
-## Notificación de prueba - `/api/notifications/test` {#test-notification-apinotificationstest}
-- **Endpoint**: `/api/notifications/test`
+## Probar notificación - `/api/notifications/test` {#test-notification---apinotificationstest}
+- **Punto de conexión**: `/api/notifications/test`
 - **Método**: POST
-- **Descripción**: Enviar notificaciones de prueba (simples, basadas en plantilla o por correo electrónico) para verificar la configuración de notificaciones.
+- **Descripción**: Envía notificaciones de prueba (simples, basadas en plantilla o por correo electrónico) para verificar la configuración de notificaciones.
 - **Autenticación**: Requiere sesión válida y token CSRF
 - **Cuerpo de la solicitud**:
   Para prueba simple:
@@ -82,7 +82,7 @@ Para prueba de correo electrónico:
   }
   ```
 
-El contenido del correo electrónico de prueba muestra:
+El contenido del correo de prueba muestra:
   - Nombre de host y puerto del servidor SMTP
   - Tipo de conexión (SMTP plano, STARTTLS o SSL/TLS directo)
   - Estado del requisito de autenticación SMTP
@@ -95,17 +95,17 @@ El contenido del correo electrónico de prueba muestra:
   - `400`: Se requiere configuración de NTFY, configuración inválida o correo electrónico no configurado
   - `500`: No se pudo enviar la notificación de prueba con detalles del error
 - **Notas**:
-  - Admite mensajes de prueba simples, notificaciones basadas en plantilla y pruebas por correo electrónico
+  - Admite mensajes de prueba simples, notificaciones basadas en plantilla y pruebas de correo electrónico
   - La prueba de plantilla utiliza datos de ejemplo para reemplazar las variables de la plantilla
   - Incluye marca de tiempo en el mensaje de prueba
   - Valida la URL y el tema de NTFY antes de enviar
   - Usa el campo `accessToken` para autenticación
   - Para pruebas de plantilla, envía notificaciones tanto a NTFY como por correo electrónico (si está configurado)
-  - Las pruebas por correo requieren que la configuración SMTP esté establecida
-  - El endpoint de correo de prueba borra la caché de solicitudes antes de leer la configuración SMTP, asegurando que los scripts externos puedan actualizar la configuración y que se refleje inmediatamente en los correos de prueba
+  - Las pruebas de correo requieren que la configuración SMTP esté establecida
+  - El punto final del correo de prueba borra la caché de solicitudes antes de leer la configuración SMTP, asegurando que los scripts externos puedan actualizar la configuración y que se refleje inmediatamente en los correos de prueba
 
-## Verificar respaldos atrasados - `/api/notifications/check-overdue` {#check-overdue-backups-apinotificationscheck-overdue}
-- **Endpoint**: `/api/notifications/check-overdue`
+## Verificar respaldos atrasados - `/api/notifications/check-overdue` {#check-overdue-backups---apinotificationscheck-overdue}
+- **Punto de conexión**: `/api/notifications/check-overdue`
 - **Método**: POST
 - **Descripción**: Dispara manualmente la verificación de respaldos atrasados y envía notificaciones.
 - **Autenticación**: Requiere sesión válida y token CSRF
@@ -130,10 +130,10 @@ El contenido del correo electrónico de prueba muestra:
   - Devuelve estadísticas sobre el proceso de verificación
   - Envía notificaciones para los respaldos atrasados encontrados
 
-## Borrar marcas de tiempo de respaldos atrasados - `/api/notifications/clear-overdue-timestamps` {#clear-overdue-timestamps-apinotificationsclear-overdue-timestamps}
-- **Endpoint**: `/api/notifications/clear-overdue-timestamps`
+## Borrar marcas de tiempo de respaldo retrasado - `/api/notifications/clear-overdue-timestamps` {#clear-overdue-timestamps---apinotificationsclear-overdue-timestamps}
+- **Punto de conexión**: `/api/notifications/clear-overdue-timestamps`
 - **Método**: POST
-- **Descripción**: Borra todas las marcas de tiempo de notificación de respaldos atrasados, permitiendo que las notificaciones se envíen nuevamente.
+- **Descripción**: Borra todas las marcas de tiempo de notificación de respaldo atrasado, permitiendo que las notificaciones se envíen nuevamente.
 - **Autenticación**: Requiere sesión válida y token CSRF
 - **Respuesta**:
 

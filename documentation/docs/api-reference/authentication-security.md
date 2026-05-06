@@ -48,7 +48,7 @@ External APIs remain unauthenticated for Duplicati integration:
 - `/api/summary` - Overall summary data
 - `/api/health` - Health check endpoint
 
-### Usage Example (Session + CSRF) {#usage-example-session-csrf}
+### Usage Example (Session + CSRF) {#usage-example-session--csrf}
 ```typescript
 // 1. Create session
 const sessionResponse = await fetch('/api/session', { method: 'POST' });
@@ -77,7 +77,7 @@ const response = await fetch('/api/servers/server-id', {
 
 ## Authentication Endpoints {#authentication-endpoints}
 
-### Login - `/api/auth/login` {#login-apiauthlogin}
+### Login - `/api/auth/login` {#login---apiauthlogin}
 - **Endpoint**: `/api/auth/login`
 - **Method**: POST
 - **Description**: Authenticates a user and creates a session. Supports account locking after failed attempts and password change requirements.
@@ -115,7 +115,7 @@ const response = await fetch('/api/servers/server-id', {
   - If user has `mustChangePassword` flag set, they should be redirected to change password page
   - All login attempts (successful and failed) are logged to audit log
 
-### Logout - `/api/auth/logout` {#logout-apiauthlogout}
+### Logout - `/api/auth/logout` {#logout---apiauthlogout}
 - **Endpoint**: `/api/auth/logout`
 - **Method**: POST
 - **Description**: Logs out the current user and destroys their session.
@@ -136,7 +136,7 @@ const response = await fetch('/api/servers/server-id', {
   - Logout is logged to audit log
   - Session is immediately invalidated
 
-### Get Current User - `/api/auth/me` {#get-current-user-apiauthme}
+### Get Current User - `/api/auth/me` {#get-current-user---apiauthme}
 - **Endpoint**: `/api/auth/me`
 - **Method**: GET
 - **Description**: Returns the current authenticated user information, or indicates if no user is logged in.
@@ -166,7 +166,7 @@ const response = await fetch('/api/servers/server-id', {
   - Can be called without a logged-in user (returns `authenticated: false`)
   - Useful for checking authentication status on page load
 
-### Change Password - `/api/auth/change-password` {#change-password-apiauthchange-password}
+### Change Password - `/api/auth/change-password` {#change-password---apiauthchange-password}
 - **Endpoint**: `/api/auth/change-password`
 - **Method**: POST
 - **Description**: Changes the password for the current authenticated user. If `mustChangePassword` is set, current password verification is skipped.
@@ -202,7 +202,7 @@ const response = await fetch('/api/servers/server-id', {
   - Password changes are logged to audit log
   - New password must be different from current password
 
-### Check Admin Must Change Password - `/api/auth/admin-must-change-password` {#check-admin-must-change-password-apiauthadmin-must-change-password}
+### Check Admin Must Change Password - `/api/auth/admin-must-change-password` {#check-admin-must-change-password---apiauthadmin-must-change-password}
 - **Endpoint**: `/api/auth/admin-must-change-password`
 - **Method**: GET
 - **Description**: Checks if the admin user must change their password. This endpoint is public (no authentication required) as it only returns a boolean flag.
@@ -220,7 +220,7 @@ const response = await fetch('/api/servers/server-id', {
   - Used to determine if password change tip should be shown
   - On error, returns `false` to avoid showing tip if there's a database issue
 
-### Get Password Policy - `/api/auth/password-policy` {#get-password-policy-apiauthpassword-policy}
+### Get Password Policy - `/api/auth/password-policy` {#get-password-policy---apiauthpassword-policy}
 - **Endpoint**: `/api/auth/password-policy`
 - **Method**: GET
 - **Description**: Returns the current password policy configuration. This endpoint is public (no authentication required) as it's needed for frontend validation.

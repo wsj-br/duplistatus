@@ -42,6 +42,14 @@ const config: Config = {
       onBrokenMarkdownLinks: 'warn',
       onBrokenMarkdownImages: 'warn',
     },
+    // future.v4 enables mdx1CompatDisabledByDefault, which turns off heading ID
+    // compat unless set here — without it, `{#id}` is invalid MDX and the build
+    // fails. See https://docusaurus.io/docs/markdown-features/toc#heading-ids
+    mdx1Compat: {
+      comments: true,
+      admonitions: true,
+      headingIds: true,
+    },
   },
 
   // Internationalization configuration for multi-language support

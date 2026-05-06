@@ -22,15 +22,15 @@ The documentation uses Docusaurus i18n with English as the default locale. Sourc
 
 From inside `documentation/`, the same flows are wired as `pnpm translate` → root `i18n:translate`, plus `pnpm translate:docs`, `translate:ui`, `translate:svg`, `translate:status`, `i18n:extract`, `i18n:sync`.
 
-## Glossary {#glossary-management}
+## Glossary {#glossary}
 
 - **UI terminology** for documentation is driven by `glossary.uiGlossary` in `ai-i18n-tools.config.json`, pointing at `src/locales/strings.json` (the catalog produced by `pnpm i18n:extract`).
 - **Overrides** live in `documentation/glossary-user.csv` (`glossary.userGlossary` in config). See the [ai-i18n-tools glossary docs](https://github.com/wsj-br/ai-i18n-tools/blob/main/docs/GETTING_STARTED.md) for column format.
 - Generate a CSV template: `pnpm i18n:glossary-generate` (root).
 
-## Cache {#cache-management}
+## Cache {#cache}
 
-Translation cache for ai-i18n-tools is under **`.translation-cache/`** at the repo root (`cacheDir` in `ai-i18n-tools.config.json`). It is gitignored. Use `pnpm i18n:status` and the CLI’s `--force` / cache flags per [ai-i18n-tools](https://github.com/wsj-br/ai-i18n-tools) documentation when you need a full refresh.
+Translation cache for ai-i18n-tools is under `.translation-cache/` at the repo root (`cacheDir` in `ai-i18n-tools.config.json`). It is gitignored. Use `pnpm i18n:status` and the CLI’s `--force` / cache flags per [ai-i18n-tools](https://github.com/wsj-br/ai-i18n-tools) documentation when you need a full refresh.
 
 ## Heading IDs and anchors {#heading-ids-and-anchors}
 
@@ -45,22 +45,22 @@ cd documentation
 pnpm write-heading-ids
 ```
 
-## Ignore lists {#ignore-files}
+## Ignore lists {#ignore-lists}
 
-Use **`.translate-ignore`** at the repo root (same idea as `.gitignore`) for paths the doc translator should skip, if you add one for your workflow.
+Use `.translate-ignore` at the repo root (same idea as `.gitignore`) for paths the doc translator should skip, if you add one for your workflow.
 
-## Docusaurus theme JSON {#ui-strings-translation-json}
+## Docusaurus theme JSON {#docusaurus-theme-json}
 
 `pnpm write-translations` extracts Docusaurus UI strings into `documentation/i18n/en/`. The **ai-i18n-tools** `translate-docs` step (with `markdownOutput.style: "docusaurus"`) fills translated JSON under each locale alongside markdown, per `ai-i18n-tools.config.json`.
 
 ## Troubleshooting {#troubleshooting}
 
-- **`OPENROUTER_API_KEY` not set** — export it or add to `.env.local` at the repo root.
+- `OPENROUTER_API_KEY` **not set** — export it or add to `.env.local` at the repo root.
 - **Model / quality** — adjust `openrouter.translationModels` and related options in `ai-i18n-tools.config.json`.
 - **Glossary** — edit `documentation/glossary-user.csv` or regenerate UI strings and re-run extract + translate.
 
-## Adding a new language {#adding-new-languages}
+## Adding a new language {#adding-a-new-language}
 
 1. Add the locale to Docusaurus `i18n.locales` and `localeConfigs` in `documentation/docusaurus.config.ts`.
-2. Add the same locale to `targetLocales` in **`ai-i18n-tools.config.json`** (repo root).
+2. Add the same locale to `targetLocales` in `ai-i18n-tools.config.json` (repo root).
 3. Run `pnpm i18n:generate-ui-languages` at the root, then `pnpm i18n:extract` / translate commands as needed.

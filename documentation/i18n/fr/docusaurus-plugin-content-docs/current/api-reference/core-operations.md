@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-04-18T00:00:32.526Z'
-source_file_mtime: '2026-03-05T22:33:28.419Z'
-source_file_hash: d1370e091997b367954229cb55bb2ceeb6fa286bbe8c84b48a906d0d5678dee2
+translation_last_updated: '2026-05-06T23:19:30.236Z'
+source_file_mtime: '2026-05-06T23:18:51.418Z'
+source_file_hash: 71a70ebe58920eba7ffc9c0087432da38e19bacac8c69249ecddce48e51cdce2
 translation_language: fr
 source_file_path: documentation/docs/api-reference/core-operations.md
 translation_models:
@@ -9,10 +9,10 @@ translation_models:
 ---
 # Opérations principales {#core-operations}
 
-## Obtenir les données du tableau de bord (consolidées) - `/api/dashboard` {#get-dashboard-data-consolidated-apidashboard}
-- **Point de terminaison** : `/api/dashboard`
+## Obtenir les données du tableau de bord (consolidées) - `/api/dashboard` {#get-dashboard-data-consolidated---apidashboard}
+- **Endpoint** : `/api/dashboard`
 - **Méthode** : GET
-- **Description** : Récupère toutes les données du tableau de bord dans une seule réponse consolidée, incluant les résumés des serveurs, le résumé général et les données du graphique.
+- **Description** : Récupère toutes les données du tableau de bord dans une seule réponse consolidée, incluant les résumés des serveurs, le résumé général et les données des graphiques.
 - **Réponse** :
 
   ```json
@@ -66,15 +66,15 @@ translation_models:
 - **Réponses d'erreur** :
   - `500` : Erreur serveur lors de la récupération des données du tableau de bord
 - **Notes** :
-  - Ce point de terminaison consolide l'ancien point de terminaison `/api/servers-summary` (qui a été supprimé)
+  - Cet endpoint consolide l'ancien endpoint `/api/servers-summary` (qui a été supprimé)
   - Le champ `overallSummary` contient les mêmes données que `/api/summary` (conservé pour les applications externes)
-  - Le champ `chartData` contient les mêmes données que `/api/chart-data/aggregated` (qui existe toujours pour un accès direct)
+  - Le champ `chartData` contient les mêmes données que `/api/chart-data/aggregated` (toujours disponible pour un accès direct)
   - Offre de meilleures performances en réduisant plusieurs appels API à une seule requête
   - Toutes les données sont récupérées en parallèle pour des performances optimales
-  - Le champ `secondsSinceLastBackup` indique le temps en secondes depuis la dernière sauvegarde sur tous les serveurs
+  - Le champ `secondsSinceLastBackup` indique le temps en secondes depuis la dernière sauvegarde sur l'ensemble des serveurs
 
-## Obtenir tous les serveurs - `/api/servers` {#get-all-servers-apiservers}
-- **Point de terminaison** : `/api/servers`
+## Obtenir tous les serveurs - `/api/servers` {#get-all-servers---apiservers}
+- **Endpoint** : `/api/servers`
 - **Méthode** : GET
 - **Description** : Récupère une liste de tous les serveurs avec leurs informations de base. Inclut éventuellement les informations de sauvegarde.
 - **Authentification** : Nécessite une session valide et un jeton CSRF
@@ -115,14 +115,14 @@ translation_models:
 - **Notes** :
   - Renvoie les informations du serveur, y compris les champs d'alias et de note
   - Lorsque `includeBackups=true`, renvoie les combinaisons serveur-sauvegarde avec les URL et le statut du mot de passe
-  - Consolide l'ancien point de terminaison `/api/servers-with-backups` (qui a été supprimé)
+  - Consolide l'ancien endpoint `/api/servers-with-backups` (qui a été supprimé)
   - Utilisé pour la sélection, l'affichage et la configuration des serveurs
   - Inclut le champ `hasPassword` pour indiquer si le serveur possède un mot de passe enregistré
 
-## Obtenir les détails du serveur - `/api/servers/:id` {#get-server-details-apiserversid}
-- **Point de terminaison** : `/api/servers/:id`
+## Obtenir les détails du serveur - `/api/servers/:id` {#get-server-details---apiserversid}
+- **Endpoint** : `/api/servers/:id`
 - **Méthode** : GET
-- **Description** : Récupère des informations sur un serveur spécifique. Peut renvoyer des informations de base ou des informations détaillées incluant les sauvegardes et les données du graphique.
+- **Description** : Récupère des informations sur un serveur spécifique. Peut renvoyer les informations de base du serveur ou des informations détaillées incluant les sauvegardes et les données des graphiques.
 - **Authentification** : Nécessite une session valide et un jeton CSRF
 - **Paramètres** :
   - `id` : l'identifiant du serveur
@@ -161,17 +161,17 @@ translation_models:
 
 - **Réponses d'erreur** :
   - `401` : Non autorisé - Session ou jeton CSRF invalide
-  - `404` : Serveur non trouvé
+  - `404` : Serveur introuvable
   - `500` : Erreur serveur lors de la récupération des détails du serveur
 - **Notes** :
-  - Renvoie les informations de base du serveur lorsque aucun paramètre de requête n'est fourni
+  - Renvoie les informations basiques du serveur lorsqu'aucun paramètre de requête n'est fourni
   - Définir `includeBackups` ou `includeChartData` sur `true` renvoie toutes les données du serveur, y compris les sauvegardes et chartData
   - Utilisé pour les paramètres et les vues détaillées du serveur
 
-## Mettre à jour le serveur - `/api/servers/:id` {#update-server-apiserversid}
-- **Point de terminaison** : `/api/servers/:id`
+## Mettre à jour le serveur - `/api/servers/:id` {#update-server---apiserversid}
+- **Endpoint** : `/api/servers/:id`
 - **Méthode** : PATCH
-- **Description** : Met à jour les détails du serveur, y compris l'alias, la note et l'URL du serveur.
+- **Description** : Met à jour les détails du serveur, notamment l'alias, la note et l'URL du serveur.
 - **Authentification** : Nécessite une session valide et un jeton CSRF
 - **Paramètres** :
   - `id` : l'identifiant du serveur
@@ -199,15 +199,15 @@ translation_models:
 
 - **Réponses d'erreur** :
   - `401` : Non autorisé - Session ou jeton CSRF invalide
-  - `404` : Serveur non trouvé
+  - `404` : Serveur introuvable
   - `500` : Erreur serveur lors de la mise à jour
 - **Notes** :
   - Met à jour l'alias, la note et l'URL du serveur
   - Tous les champs sont facultatifs
   - Les chaînes vides sont autorisées pour tous les champs
 
-## Supprimer le serveur - `/api/servers/:id` {#delete-server-apiserversid}
-- **Point de terminaison** : `/api/servers/:id`
+## Supprimer le serveur - `/api/servers/:id` {#delete-server---apiserversid}
+- **Endpoint** : `/api/servers/:id`
 - **Méthode** : DELETE
 - **Description** : Supprime un serveur et toutes ses sauvegardes associées.
 - **Authentification** : Nécessite une session valide et un jeton CSRF
@@ -229,7 +229,7 @@ translation_models:
 
 - **Réponses d'erreur** :
   - `401` : Non autorisé - Session ou jeton CSRF invalide
-  - `404` : Serveur non trouvé
+  - `404` : Serveur introuvable
   - `500` : Erreur serveur lors de la suppression
 - **Notes** : 
   - Cette opération est irréversible
@@ -237,11 +237,11 @@ translation_models:
   - L'enregistrement du serveur lui-même sera également supprimé
   - Renvoie le nombre de sauvegardes et de serveurs supprimés
 
-## Obtenir les données du serveur avec informations en retard - `/api/detail/:serverId` {#get-server-data-with-overdue-info-apidetailserverid}
-- **Endpoint**: `/api/detail/:serverId`
-- **Method**: GET
-- **Description**: Récupère les informations détaillées sur le serveur, y compris le statut des sauvegardes en retard.
-- **Parameters**:
+## Obtenir les données du serveur avec informations en retard - `/api/detail/:serverId` {#get-server-data-with-overdue-info---apidetailserverid}
+- **Endpoint** : `/api/detail/:serverId`
+- **Méthode** : GET
+- **Description** : Récupère des informations détaillées sur le serveur, y compris le statut des sauvegardes en retard.
+- **Paramètres** :
   - `serverId` : l'identifiant du serveur
 
 - **Réponse** :
@@ -269,19 +269,19 @@ translation_models:
   ```
 
 - **Réponses d'erreur** :
-  - `404` : Serveur non trouvé
-  - `500` : Erreur du serveur lors de la récupération des détails du serveur
+  - `404` : Serveur introuvable
+  - `500` : Erreur serveur lors de la récupération des détails du serveur
 - **Notes** :
   - Renvoie les données du serveur avec les informations sur les sauvegardes en retard
   - Inclut les détails et horodatages des sauvegardes en retard
   - Utilisé pour la gestion et la surveillance des sauvegardes en retard
 
-## Obtenir les serveurs en double - `/api/servers/duplicates` {#get-duplicate-servers-apiserversduplicates}
-- **Endpoint**: `/api/servers/duplicates`
-- **Method**: GET
-- **Description**: Récupère une liste des serveurs en double basée sur l'identifiant machine. Les serveurs en double sont des serveurs qui partagent le même identifiant machine mais sont stockés comme des enregistrements séparés dans la base de données.
-- **Authentication** : Nécessite une session valide, un jeton CSRF et un accès administrateur
-- **Response** :
+## Obtenir les serveurs en double - `/api/servers/duplicates` {#get-duplicate-servers---apiserversduplicates}
+- **Endpoint** : `/api/servers/duplicates`
+- **Méthode** : GET
+- **Description** : Récupère une liste des serveurs en double basée sur l'ID machine. Les serveurs en double sont des serveurs qui partagent le même ID machine mais sont stockés comme des enregistrements distincts dans la base de données.
+- **Authentification** : Nécessite une session valide, un jeton CSRF et un accès administrateur
+- **Réponse** :
 
   ```json
   [
@@ -310,20 +310,20 @@ translation_models:
 - **Réponses d'erreur** :
   - `401` : Non autorisé - Session ou jeton CSRF invalide
   - `403` : Accès administrateur requis
-  - `500` : Erreur du serveur lors de la récupération des serveurs en double
+  - `500` : Erreur serveur lors de la récupération des serveurs en double
 - **Notes** :
-  - Seuls les administrateurs peuvent accéder à cet endpoint
-  - Renvoie des groupes de serveurs qui partagent le même identifiant machine
-  - Chaque groupe contient tous les serveurs ayant le même identifiant machine
+  - Seuls les administrateurs peuvent accéder à ce point de terminaison
+  - Renvoie des groupes de serveurs qui partagent le même ID machine
+  - Chaque groupe contient tous les serveurs ayant le même ID machine
   - Utilisé pour identifier et fusionner les enregistrements de serveurs en double
-  - Inclut les détails du serveur et le nombre de sauvegardes pour chaque doublon
+  - Inclut les détails des serveurs et les nombres de sauvegardes pour chaque doublon
 
-## Fusionner les serveurs - `/api/servers/merge` {#merge-servers-apiserversmerge}
-- **Endpoint**: `/api/servers/merge`
-- **Method**: POST
-- **Description**: Fusionne plusieurs serveurs en un serveur cible. Toutes les sauvegardes des serveurs sources sont transférées vers le serveur cible, et les serveurs sources sont supprimés.
-- **Authentication** : Nécessite une session valide, un jeton CSRF et un accès administrateur
-- **Request Body** :
+## Fusionner les serveurs - `/api/servers/merge` {#merge-servers---apiserversmerge}
+- **Endpoint** : `/api/servers/merge`
+- **Méthode** : POST
+- **Description** : Fusionne plusieurs serveurs dans un serveur cible. Toutes les sauvegardes des serveurs sources sont transférées vers le serveur cible, et les serveurs sources sont supprimés.
+- **Authentification** : Nécessite une session valide, un jeton CSRF et un accès administrateur
+- **Corps de la requête** :
 
   ```json
   {
@@ -342,16 +342,16 @@ translation_models:
   ```
 
 - **Réponses d'erreur** :
-  - `400` : Corps de requête invalide, champs requis manquants, ou le serveur cible figure dans la liste des serveurs à fusionner
+  - `400` : Corps de requête invalide, champs requis manquants, ou serveur cible figurant dans la liste des serveurs à fusionner
   - `401` : Non autorisé - Session ou jeton CSRF invalide
   - `403` : Accès administrateur requis
-  - `500` : Erreur du serveur pendant l'opération de fusion
+  - `500` : Erreur serveur pendant l'opération de fusion
 - **Notes** :
   - Seuls les administrateurs peuvent effectuer des opérations de fusion
   - Le serveur cible ne doit pas figurer dans la liste des serveurs à fusionner
   - Toutes les sauvegardes des serveurs sources sont transférées vers le serveur cible
   - Les serveurs sources sont supprimés après une fusion réussie
   - Cette opération est irréversible
-  - Utilisée pour consolider les enregistrements de serveurs en double
+  - Utilisé pour consolider les enregistrements de serveurs en double
   - Valide que oldServerIds est un tableau non vide
   - Valide que targetServerId est fourni et est une chaîne de caractères

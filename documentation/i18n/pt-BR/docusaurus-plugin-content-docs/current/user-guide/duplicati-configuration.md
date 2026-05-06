@@ -1,16 +1,17 @@
 ---
-translation_last_updated: '2026-04-18T00:02:13.395Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
-source_file_hash: 7f1ad94e72ddcb48fabe92e299d8c28fb2389e1baa6f8c654c62370d3dd6d02e
+translation_last_updated: '2026-05-06T23:22:20.383Z'
+source_file_mtime: '2026-05-06T23:18:51.430Z'
+source_file_hash: ba54f9487a2894080dee40e174c35d9fcf1630e84c5ba9b08d4c4d2989626a61
 translation_language: pt-BR
 source_file_path: documentation/docs/user-guide/duplicati-configuration.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
   - 'stepfun/step-3.5-flash:free'
 ---
 # Configuração do Duplicati {#duplicati-configuration}
 
-O botão <SvgButton svgFilename="duplicati_logo.svg" /> na [Barra de Ferramentas da Aplicação](overview#application-toolbar) abre a interface web do Servidor Duplicati em uma nova aba.
+O botão <SvgButton svgFilename="duplicati_logo.svg" /> na [Barra de Ferramentas do Aplicativo](overview.md#application-toolbar) abre a interface da web do servidor Duplicati em uma nova aba.
 
 Você pode selecionar um servidor na lista suspensa. Se você já tiver selecionado um servidor (clicando em seu cartão) ou estiver visualizando seus detalhes, o botão abrirá a Configuração do Duplicati desse servidor específico diretamente.
 

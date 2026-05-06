@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-04-18T00:00:53.261Z'
-source_file_mtime: '2026-03-05T22:33:28.419Z'
-source_file_hash: add8fe98b40a55c51fdd7af09ba7c836d54475b8283bbdebecbe17f2c6beb071
+translation_last_updated: '2026-05-06T23:19:44.114Z'
+source_file_mtime: '2026-05-06T23:18:51.410Z'
+source_file_hash: 7c32932a05e97b219f02f1a9f4ad7679394276ba0d2e6bfdc0ae29f85dada19b
 translation_language: de
 source_file_path: documentation/docs/api-reference/cron-service-apis.md
 translation_models:
@@ -9,10 +9,10 @@ translation_models:
 ---
 # Cron-Dienstverwaltung {#cron-service-management}
 
-## Cron-Konfiguration abrufen - `/api/cron-config` {#get-cron-configuration-apicron-config}
+## Cron-Konfiguration abrufen - `/api/cron-config` {#get-cron-configuration---apicron-config}
 - **Endpoint**: `/api/cron-config`
 - **Methode**: GET
-- **Beschreibung**: Ruft die aktuelle Konfiguration des Cron-Dienstes ab.
+- **Beschreibung**: Ruft die aktuelle Cron-Dienstkonfiguration ab.
 - **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
 - **Antwort**:
 
@@ -30,12 +30,12 @@ translation_models:
   - Enthält Cron-Ausdruck und Aktivierungsstatus
   - Wird für die Verwaltung des Cron-Dienstes verwendet
 
-## Cron-Konfiguration aktualisieren - `/api/cron-config` {#update-cron-configuration-apicron-config}
+## Cron-Konfiguration aktualisieren - `/api/cron-config` {#update-cron-configuration---apicron-config}
 - **Endpoint**: `/api/cron-config`
 - **Methode**: POST
-- **Beschreibung**: Aktualisiert die Konfiguration des Cron-Dienstes.
+- **Beschreibung**: Aktualisiert die Cron-Dienstkonfiguration.
 - **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
-- **Anfrage-Body**:
+- **Anforderungstext**:
 
   ```json
   {
@@ -60,13 +60,13 @@ translation_models:
   - Überprüft das Intervall anhand der zulässigen Optionen
   - Beeinflusst die Häufigkeit der Überprüfung auf verspätete Sicherungen
 
-## Cron-Dienst-Proxy - `/api/cron/*` {#cron-service-proxy-apicron}
+## Cron-Dienst-Proxy - `/api/cron/*` {#cron-service-proxy---apicron}
 - **Endpoint**: `/api/cron/*`
 - **Methode**: GET, POST
-- **Beschreibung**: Leitet Anfragen an den Cron-Dienst weiter. Dieser Endpunkt leitet alle Anfragen an den auf einem separaten Port laufenden Cron-Dienst weiter.
-- **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
+- **Beschreibung**: Leitet Anfragen an den Cron-Dienst weiter. Dieser Endpoint leitet alle Anfragen an den Cron-Dienst weiter, der auf einem separaten Port läuft.
+- **Authentifizierung**: Gültige Sitzung und CSRF-Token erforderlich
 - **Parameter**:
-  - `*`: Jeder Pfad, der an den Cron-Dienst weitergeleitet wird
+  - `*`: Beliebiger Pfad, der an den Cron-Dienst weitergeleitet wird
 - **Antwort**: Hängt vom jeweils aufgerufenen Endpunkt des Cron-Dienstes ab
 - **Fehlerantwort** (503):
 

@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-04-18T00:02:14.749Z'
-source_file_mtime: '2026-03-05T22:33:28.419Z'
-source_file_hash: dcaa22d702c5a5e8506cf1be74b453ae66a255a11f09d5d169b57e890ae439c2
+translation_last_updated: '2026-05-06T23:20:00.374Z'
+source_file_mtime: '2026-05-06T23:18:51.418Z'
+source_file_hash: f5c3284d1b0dd52ad80889d6741763f8018a5228b0673d443a4e02b03cf60f8e
 translation_language: de
 source_file_path: documentation/docs/api-reference/session-management-apis.md
 translation_models:
@@ -9,8 +9,8 @@ translation_models:
 ---
 # Sitzungsverwaltung {#session-management}
 
-## Sitzung erstellen - `/api/session` {#create-session-apisession}
-- **Endpoint**: `/api/session`
+## Sitzung erstellen - `/api/session` {#create-session---apisession}
+- **Endpunkt**: `/api/session`
 - **Methode**: POST
 - **Beschreibung**: Erstellt eine neue Sitzung für den Benutzer.
 - **Antwort**:
@@ -23,14 +23,14 @@ translation_models:
   ```
 
 - **Fehlerantworten**:
-  - `500`: Fehlgeschlagen, Sitzung zu erstellen
+  - `500`: Fehlgeschlagen beim Erstellen der Sitzung
 - **Hinweise**:
-  - Erstellt eine neue Sitzung mit 24-Stunden-Ablauf
+  - Erstellt eine neue Sitzung mit einer Gültigkeitsdauer von 24 Stunden
   - Setzt ein HTTP-only-Sitzungs-Cookie
   - Erforderlich für den Zugriff auf geschützte Endpunkte
 
-## Sitzung prüfen - `/api/session` {#validate-session-apisession}
-- **Endpoint**: `/api/session`
+## Sitzung überprüfen - `/api/session` {#validate-session---apisession}
+- **Endpunkt**: `/api/session`
 - **Methode**: GET
 - **Beschreibung**: Überprüft eine vorhandene Sitzung.
 - **Antwort** (gültig):
@@ -53,13 +53,13 @@ translation_models:
 
 - **Fehlerantworten**:
   - `401`: Kein Sitzungs-Cookie oder Sitzungs-ID vorhanden
-  - `500`: Fehlgeschlagen, Sitzung zu validieren
+  - `500`: Fehlgeschlagen beim Überprüfen der Sitzung
 - **Hinweise**:
-  - Prüft, ob das Sitzungs-Cookie existiert und gültig ist
+  - Prüft, ob das Sitzungs-Cookie vorhanden ist und gültig
   - Gibt die Sitzungs-ID zurück, falls gültig
 
-## Sitzung löschen - `/api/session` {#delete-session-apisession}
-- **Endpoint**: `/api/session`
+## Sitzung löschen - `/api/session` {#delete-session---apisession}
+- **Endpunkt**: `/api/session`
 - **Methode**: DELETE
 - **Beschreibung**: Löscht die aktuelle Sitzung (Abmelden).
 - **Antwort**:
@@ -71,13 +71,13 @@ translation_models:
   ```
 
 - **Fehlerantworten**:
-  - `500`: Fehlgeschlagen, Sitzung zu löschen
+  - `500`: Fehlgeschlagen beim Löschen der Sitzung
 - **Hinweise**:
-  - Löscht die Sitzung vom Server und Client
+  - Entfernt die Sitzung vom Server und Client
   - Entfernt das Sitzungs-Cookie
 
-## CSRF-Token abrufen - `/api/csrf` {#get-csrf-token-apicsrf}
-- **Endpoint**: `/api/csrf`
+## CSRF-Token abrufen - `/api/csrf` {#get-csrf-token---apicsrf}
+- **Endpunkt**: `/api/csrf`
 - **Methode**: GET
 - **Beschreibung**: Generiert ein CSRF-Token für die aktuelle Sitzung.
 - **Antwort**:
@@ -91,8 +91,8 @@ translation_models:
 
 - **Fehlerantworten**:
   - `401`: Keine Sitzung gefunden oder ungültige/abgelaufene Sitzung
-  - `500`: Fehlgeschlagen, CSRF-Token zu generieren
+  - `500`: Fehlgeschlagen beim Generieren des CSRF-Tokens
 - **Hinweise**:
   - Erfordert eine gültige Sitzung
-  - CSRF-Token ist für alle statusändernden Operationen erforderlich
+  - Das CSRF-Token ist für alle statusändernden Operationen erforderlich
   - Das Token ist an die aktuelle Sitzung gebunden

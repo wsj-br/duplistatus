@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:03:12.692Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
-source_file_hash: 2db4ee85ae548cd4dcb93017bf40bcb7ae364551fa85c0d545995b8020fc0989
+translation_last_updated: '2026-05-06T23:21:42.927Z'
+source_file_mtime: '2026-05-06T23:18:51.430Z'
+source_file_hash: 82c01b068ec14a08bbafa65059c1ef8cd15f0aa41b743bd14c4313857a0dbc97
 translation_language: fr
 source_file_path: documentation/docs/user-guide/collect-backup-logs.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Collecter les journaux de sauvegarde {#collect-backup-logs}
 
@@ -15,7 +16,7 @@ translation_models:
 
 ### Collecte manuelle {#manual-collection}
 
-1.  Cliquez sur l'icône <IconButton icon="lucide:download" /> **Collecter les journaux de sauvegarde** dans la [Barre d'outils de l'application](overview#application-toolbar).
+1.  Cliquez sur l'icône <IconButton icon="lucide:download" /> **Collecter les journaux de sauvegarde** dans la [barre d'outils de l'application](overview.md#application-toolbar).
 
 ![Collect Backup Logs Popup](../assets/screen-collect-button-popup.png)
 
@@ -53,12 +54,12 @@ Vous pouvez également utiliser le bouton <IconButton icon="lucide:import" label
 ## Comment fonctionne le processus de collecte {#how-the-collection-process-works}
 
 - **duplistatus** détecte automatiquement le meilleur protocole de connexion et se connecte au serveur Duplicati spécifié.
-- Il récupère l'historique des sauvegardes, les informations de journaux et les paramètres de sauvegarde (pour la surveillance des sauvegardes).
+- Il récupère l'historique des sauvegardes, les informations des journaux et les paramètres de sauvegarde (pour la surveillance des sauvegardes).
 - Tous les journaux déjà présents dans la base de données **duplistatus** sont ignorés.
 - Les nouvelles données sont traitées et stockées dans la base de données locale.
 - L'URL utilisée (avec le protocole détecté) sera stockée ou mise à jour dans la base de données locale.
-- Si l'option de téléchargement est sélectionnée, elle téléchargera les données JSON collectées. Le nom du fichier sera dans ce format : `[serverName]_collected_[Timestamp].json`. L'horodatage utilise le format de date ISO 8601 (YYYY-MM-DDTHH:MM:SS).
-- Le tableau de bord se met à jour pour refléter les nouvelles informations.
+- Si l'option de téléchargement est sélectionnée, les données JSON collectées seront téléchargées. Le nom du fichier aura le format suivant : `[serverName]_collected_[Timestamp].json`. L'horodatage utilise le format de date ISO 8601 (AAAA-MM-JJTHH:MM:SS).
+- Le tableau de bord est mis à jour pour refléter les nouvelles informations.
 
 ## Dépannage des problèmes de collection {#troubleshooting-collection-issues}
 

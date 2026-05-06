@@ -1,12 +1,13 @@
 ---
-translation_last_updated: '2026-04-18T00:02:51.698Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
-source_file_hash: b9dfcfd3eb168aae0a90e7ccbb98d8283697df3cd211d0b0a7892295130d6f0a
+translation_last_updated: '2026-05-06T23:20:29.218Z'
+source_file_mtime: '2026-05-06T23:18:51.394Z'
+source_file_hash: 6582520a51466f9784b01b1236c4ba689c2b3989be1150eed15fadd8137decab
 translation_language: de
 source_file_path: documentation/docs/development/workspace-admin-scripts-commands.md
 translation_models:
   - anthropic/claude-3.5-haiku
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Workspace-Admin-Skripte und -Befehle {#workspace-admin-scripts-commands}
 
@@ -27,7 +28,7 @@ Bereinigt die Datenbank, indem alle Daten entfernt werden, während das Datenban
 scripts/clean-workspace.sh
 ```
 
-Entfernt alle Build-Artefakte, das node_modules-Verzeichnis und andere generierte Dateien, um einen sauberen Zustand zu gewährleisten. Dies ist nützlich, wenn Sie eine Neuinstallation durchführen oder Abhängigkeitsprobleme beheben müssen. Der Befehl wird Folgendes löschen:
+Entfernt alle Build-Artefakte, das Verzeichnis node_modules und andere generierte Dateien, um einen sauberen Zustand sicherzustellen. Dies ist nützlich, wenn Sie eine Neuinstallation durchführen oder Abhängigkeitsprobleme beheben müssen. Der Befehl löscht:
 - `node_modules/`-Verzeichnis
 - `.next/`-Build-Verzeichnis
 - `dist/`-Verzeichnis
@@ -39,8 +40,8 @@ Entfernt alle Build-Artefakte, das node_modules-Verzeichnis und andere generiert
 - `documentation/.docusaurus`, `.cache`, `.cache-*`, `build`, `node_modules`, `pnpm-lock.yaml`
 - `.genkit/`-Verzeichnis
 - `*.tsbuildinfo`-Dateien
-- pnpm Store-Cache (über `pnpm store prune`)
-- Docker-Build-Cache und Systembereinigung (Images, Netzwerke, Volumes)
+- pnpm-Store-Cache (über `pnpm store prune`)
+- Docker-Build-Cache und Systempruning (Images, Netzwerke, Volumes)
 
 ## Docker Compose und Docker-Umgebung bereinigen {#clean-docker-compose-and-docker-environment}
 
@@ -48,11 +49,11 @@ Entfernt alle Build-Artefakte, das node_modules-Verzeichnis und andere generiert
 scripts/clean-docker.sh
 ```
 
-Führen Sie eine vollständige Docker-Bereinigung durch, die nützlich ist für:
+Führt eine vollständige Docker-Bereinigung durch, was nützlich ist für:
 - Freigabe von Speicherplatz
-- Entfernung alter/ungenutzter Docker-Artefakte
-- Bereinigung nach Entwicklungs- oder Testsitzungen
-- Wartung einer sauberen Docker-Umgebung
+- Entfernen alter/nicht verwendeter Docker-Artefakte
+- Bereinigung nach Entwicklungs- oder Testphasen
+- Beibehaltung einer sauberen Docker-Umgebung
 
 ## Aktualisieren Sie die Pakete auf die neueste Version {#update-the-packages-to-the-latest-version}
 
@@ -63,19 +64,20 @@ ncu --upgrade
 pnpm update
 ```
 
-Oder verwenden Sie das automatisierte Skript:
+Oder verwenden Sie das automatisierte Skript (bevorzugt `source`, damit **nvm** auf Ihre aktuelle Shell angewendet wird; für **CI** oder nicht-interaktive Ausführungen verwenden Sie `CI=1` oder `DUPLISTATUS_UPGRADE_ALLOW_EXEC=1`):
 
 ```bash
-./scripts/upgrade-dependencies.sh
+source ./scripts/upgrade-dependencies.sh
 ```
 
-Das Skript `upgrade-dependencies.sh` automatisiert den gesamten Abhängigkeits-Upgrade-Prozess:
-- Aktualisiert `package.json` mit den neuesten Versionen mithilfe von `npm-check-updates`
-- Aktualisiert die pnpm-Sperrdatei und installiert aktualisierte Abhängigkeiten
-- Aktualisiert die browserslist-Datenbank
-- Prüft auf Sicherheitslücken mithilfe von `pnpm audit`
+Das `upgrade-dependencies.sh`-Skript automatisiert den gesamten Prozess der Abhängigkeitsaktualisierung:
+- Lädt die Tool-Setup-Konfiguration über `upgrade-tools.sh` (nvm / Node LTS, globale `pnpm`, `npm-check-updates`, `doctoc`)
+- Aktualisiert Root und `documentation/package.json` mithilfe von `npm-check-updates` (mit optionalem ESLint-Peer-Gate, damit `eslint`- und React-Plugin-Aktualisierungen kompatibel bleiben)
+- Aktualisiert die Workspace-pnpm-Lockdatei und installiert Abhängigkeiten
+- Aktualisiert die Browserslist-Datenbank
+- Überprüft auf Sicherheitslücken mithilfe von `pnpm audit`
 - Behebt Sicherheitslücken automatisch mithilfe von `pnpm audit fix`
-- Prüft erneut auf Sicherheitslücken nach der Behebung, um die Fixes zu bestätigen
+- Überprüft erneut auf Sicherheitslücken nach der Behebung, um die Korrektheit zu verifizieren
 
 Dieses Skript bietet einen vollständigen Workflow zum Aktualisieren und Sichern von Abhängigkeiten.
 
@@ -91,13 +93,13 @@ pnpm depcheck
 ./scripts/update-version.sh
 ```
 
-Dieses Skript aktualisiert automatisch Versionsinformationen über mehrere Dateien hinweg, um sie synchron zu halten. Es:
+Dieses Skript aktualisiert automatisch Versionsinformationen in mehreren Dateien, um sie synchron zu halten. Es:
 - Extrahiert die Version aus `package.json`
-- Aktualisiert die `.env`-Datei mit der `VERSION`-Variable (erstellt sie, falls sie nicht vorhanden ist)
+- Aktualisiert die `.env`-Datei mit der `VERSION`-Variable (erstellt sie, falls nicht vorhanden)
 - Aktualisiert die `Dockerfile` mit der `VERSION`-Variable (falls vorhanden)
-- Aktualisiert das Versionfeld in `documentation/package.json` (falls vorhanden)
+- Aktualisiert das Versionsfeld in `documentation/package.json` (falls vorhanden)
 - Aktualisiert nur, wenn sich die Version geändert hat
-- Gibt Rückmeldung zu jeder Operation
+- Gibt Rückmeldung zu jeder Aktion
 
 ## Pre-checks-Skript {#pre-checks-script}
 
@@ -117,11 +119,11 @@ Dieses Skript wird automatisch durch `pnpm dev`, `pnpm build` und `pnpm start-lo
 ./scripts/ensure-key-file.sh
 ```
 
-Dieses Skript stellt sicher, dass die Datei `.duplistatus.key` im Verzeichnis `data` vorhanden ist. Es:
-- Erstellt das Verzeichnis `data`, falls es nicht existiert
-- Generiert eine neue 32-Byte-Zufallsschlüsseldatei, falls diese fehlt
-- Setzt die Dateiberechtigungen auf 0400 (Lesezugriff nur für Besitzer)
-- Behebt Berechtigungen, falls diese fehlerhaft sind
+Dieses Skript stellt sicher, dass die `.duplistatus.key`-Datei im `data`-Verzeichnis vorhanden ist. Es:
+- Erstellt das `data`-Verzeichnis, falls es nicht existiert
+- Generiert eine neue 32-Byte-Zufallsschlüsseldatei, falls nicht vorhanden
+- Setzt die Dateiberechtigungen auf 0400 (nur Lesen für den Besitzer)
+- Behebt Berechtigungen, falls diese falsch sind
 
 Die Schlüsseldatei wird für kryptografische Operationen in der Anwendung verwendet.
 
@@ -131,12 +133,12 @@ Die Schlüsseldatei wird für kryptografische Operationen in der Anwendung verwe
 ./admin-recovery <username> <new-password>
 ```
 
-Dieses Skript ermöglicht die Wiederherstellung von Admin-Konten, falls diese gesperrt oder das Passwort vergessen wurde. Es:
+Dieses Skript ermöglicht die Wiederherstellung von Administrator-Konten, falls der Zugriff gesperrt ist oder das Passwort vergessen wurde. Es:
 - Setzt das Passwort für den angegebenen Benutzer zurück
 - Entsperrt das Konto, falls es gesperrt war
 - Setzt den Zähler für fehlgeschlagene Anmeldeversuche zurück
-- Löscht das Flag „Passwort muss geändert werden"
-- Validiert, dass das Passwort die Sicherheitsanforderungen erfüllt
+- Entfernt die Kennung „Passwort muss geändert werden“
+- Überprüft, ob das Passwort die Sicherheitsanforderungen erfüllt
 - Protokolliert die Aktion im Audit-Log
 
 **Beispiel:**
@@ -167,12 +169,12 @@ Nützlich zum Synchronisieren von Anwendungsbildern mit Dokumentationsbildern.
 ./scripts/compare-versions.sh
 ```
 
-Dieses Skript vergleicht Versionen zwischen Ihrer Entwicklungsumgebung und einem laufenden Docker-Container. Es:
-- Vergleicht SQLite-Versionen nur nach Hauptversion (z. B. 3.45.1 vs 3.51.1 werden als kompatibel betrachtet, angezeigt als "✅ (major)")
-- Vergleicht Node-, npm- und duplistatus-Versionen exakt (müssen genau übereinstimmen)
+Dieses Skript vergleicht die Versionen zwischen Ihrer Entwicklungsumgebung und einem laufenden Docker-Container. Es:
+- Vergleicht SQLite-Versionen nur nach Hauptversion (z. B. werden 3.45.1 und 3.51.1 als kompatibel betrachtet und als „✅ (major)“ angezeigt)
+- Vergleicht Node-, npm- und Duplistatus-Versionen exakt (müssen genau übereinstimmen)
 - Zeigt eine formatierte Tabelle mit allen Versionsvergleichen an
-- Bietet eine Zusammenfassung mit farbcodierten Ergebnissen (✅ für Übereinstimmungen, ❌ für Abweichungen)
-- Beendet sich mit Code 0, wenn alle Versionen übereinstimmen, mit Code 1 bei Abweichungen
+- Gibt eine Zusammenfassung mit farbcodierten Ergebnissen aus (✅ für Übereinstimmungen, ❌ für Abweichungen)
+- Beendet sich mit Exit-Code 0, wenn alle Versionen übereinstimmen, andernfalls mit Code 1
 
 **Anforderungen:**
 - Docker-Container mit dem Namen `duplistatus` muss ausgeführt werden

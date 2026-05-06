@@ -61,7 +61,7 @@ The documentation uses an AI-powered translation system to translate both conten
 ### How Translation Works {#how-translation-works}
 
 1. **Docusaurus UI strings**: `pnpm write-translations` extracts theme/custom strings into `i18n/en/*.json`.
-2. **AI translation** (OpenRouter; config in **`ai-i18n-tools.config.json`** at the repo root): from `documentation/`, `pnpm translate` runs the root `i18n:translate` script (UI strings, SVGs, and Docusaurus markdown/JSON) into `documentation/i18n/` and `src/locales/` as configured.
+2. **AI translation** (OpenRouter; config in `ai-i18n-tools.config.json` at the repo root): from `documentation/`, `pnpm translate` runs the root `i18n:translate` script (UI strings, SVGs, and Docusaurus markdown/JSON) into `documentation/i18n/` and `src/locales/` as configured.
 3. **Build**: `pnpm build` generates static HTML for all locales under `documentation/build/`.
 
 ### Running Translation {#running-translation}
@@ -79,7 +79,7 @@ CLI flags are defined by **ai-i18n-tools**; run `pnpm exec ai-i18n-tools --help`
 
 ### Manual Translation Overrides {#manual-translation-overrides}
 
-Edit **`documentation/glossary-user.csv`** (and optionally clear stale entries under **`.translation-cache/`** at the repo root), then re-run the relevant `pnpm translate:*` command.
+Edit `documentation/glossary-user.csv` (and optionally clear stale entries under `.translation-cache/` at the repo root), then re-run the relevant `pnpm translate:*` command.
 
 ## Common Commands {#common-commands}
 
@@ -266,7 +266,7 @@ For the complete translation workflow (glossary management, AI translation, cach
 - **Downloads/PDFs**: Place in `documentation/static/` and reference with `/filename.pdf`
 - **Per-locale assets**: If an asset needs to be locale-specific (e.g., screenshots), place it in `documentation/i18n/{locale}/docusaurus-plugin-content-docs/current/assets/`
 
-### Build & Test {#build-test}
+### Build & Test {#build--test}
 
 ```bash
 cd documentation

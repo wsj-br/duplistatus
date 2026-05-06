@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-04-18T00:00:32.736Z'
-source_file_mtime: '2026-03-05T22:33:28.419Z'
-source_file_hash: 70fe731fa22f714de94b93df446dee4ca4dc1f5683c22bc93eb52b2e03dd77d4
+translation_last_updated: '2026-05-06T23:19:40.437Z'
+source_file_mtime: '2026-05-06T23:18:51.410Z'
+source_file_hash: 59b045e2f0ca88a7be16ce8ed6d2ae4476eed38416d4d0284b2f590183c45b81
 translation_language: es
 source_file_path: documentation/docs/api-reference/external-apis.md
 translation_models:
@@ -11,10 +11,10 @@ translation_models:
 
 Estos endpoints están diseñados para ser utilizados por otras aplicaciones e integraciones, por ejemplo [Homepage](../user-guide/homepage-integration.md).
 
-## Obtener resumen general - `/api/summary` {#get-overall-summary-apisummary}
+## Obtener resumen general - `/api/summary` {#get-overall-summary---apisummary}
 - **Endpoint**: `/api/summary`
-- **Método**: GET
-- **Descripción**: Recupera un resumen de todas las operaciones de copia de seguridad en todos los servidores.
+- **Method**: GET
+- **Description**: Recupera un resumen de todas las operaciones de copia de seguridad en todos los servidores.
 - **Respuesta**:
 
   ```json
@@ -35,15 +35,15 @@ Estos endpoints están diseñados para ser utilizados por otras aplicaciones e i
 - **Notas**:
   - En la versión 0.5.x, el campo `totalBackupedSize` fue reemplazado por `totalBackupSize`
   - En la versión 0.7.x, el campo `totalMachines` fue reemplazado por `totalServers`
-  - El campo `overdueBackupsCount` muestra el número de copias de seguridad atrasadas actualmente
-  - El campo `secondsSinceLastBackup` muestra el tiempo en segundos desde la última copia de seguridad en todos los servidores
-  - Devuelve una respuesta de respaldo con ceros si falla la obtención de datos
+  - El campo `overdueBackupsCount` muestra el número de respaldos actualmente atrasados
+  - El campo `secondsSinceLastBackup` muestra el tiempo en segundos desde el último respaldo en todos los servidores
+  - Devuelve una respuesta alternativa con ceros si falla la obtención de datos
   - **Nota**: Para uso interno del panel, considere usar `/api/dashboard`, que incluye estos datos más información adicional
 
-## Obtener última copia de seguridad - `/api/lastbackup/:serverId` {#get-latest-backup-apilastbackupserverid}
+## Obtener última copia de seguridad - `/api/lastbackup/:serverId` {#get-latest-backup---apilastbackupserverid}
 - **Endpoint**: `/api/lastbackup/:serverId`
-- **Método**: GET
-- **Descripción**: Recupera la información de la última copia de seguridad para un servidor específico.
+- **Method**: GET
+- **Description**: Recupera la información de la última copia de seguridad para un servidor específico.
 - **Parámetros**:
   - `serverId`: el identificador del servidor (ID o nombre)
 
@@ -93,14 +93,14 @@ El identificador del servidor debe estar codificado en URL.
   - `500`: Error interno del servidor
 - **Notas**:
   - En la versión 0.7.x, la clave del objeto de respuesta cambió de `machine` a `server`
-  - El identificador del servidor puede ser el ID o el nombre
-  - Devuelve null para latest_backup si no existen copias de seguridad
+  - El identificador del servidor puede ser ID o nombre
+  - Devuelve null para latest_backup si no existen respaldos
   - Incluye cabeceras de control de caché para evitar el almacenamiento en caché
 
-## Obtener últimas copias de seguridad - `/api/lastbackups/:serverId` {#get-latest-backups-apilastbackupsserverid}
+## Obtener últimas copias de seguridad - `/api/lastbackups/:serverId` {#get-latest-backups---apilastbackupsserverid}
 - **Endpoint**: `/api/lastbackups/:serverId`
-- **Método**: GET
-- **Descripción**: Recupera la información de la última copia de seguridad para todas las copias de seguridad configuradas (por ejemplo, 'Archivos', 'Bases de datos') en un servidor específico.
+- **Method**: GET
+- **Description**: Recupera la información de la última copia de seguridad para todas las copias de seguridad configuradas (por ejemplo, 'Archivos', 'Bases de datos') en un servidor específico.
 - **Parámetros**:
   - `serverId`: el identificador del servidor (ID o nombre)
 
@@ -176,15 +176,15 @@ El identificador del servidor debe estar codificado en URL.
   - `500`: Error interno del servidor
 - **Notas**:
   - En la versión 0.7.x, la clave del objeto de respuesta cambió de `machine` a `server`, y el campo `backup_types_count` fue renombrado a `backup_jobs_count`
-  - El identificador del servidor puede ser el ID o el nombre
-  - Devuelve la última copia de seguridad para cada trabajo de copia de seguridad (backup_name) que tenga el servidor
-  - A diferencia de `/api/lastbackup/:serverId`, que devuelve solo la copia de seguridad más reciente del servidor (independientemente del trabajo de copia)
+  - El identificador del servidor puede ser ID o nombre
+  - Devuelve el último respaldo para cada trabajo de respaldo (backup_name) que tenga el servidor
+  - A diferencia de `/api/lastbackup/:serverId`, que devuelve solo el respaldo más reciente del servidor (independientemente del trabajo de respaldo)
   - Incluye cabeceras de control de caché para evitar el almacenamiento en caché
 
-## Subir datos de copia de seguridad - `/api/upload` {#upload-backup-data-apiupload}
+## Subir datos de copia de seguridad - `/api/upload` {#upload-backup-data---apiupload}
 - **Endpoint**: `/api/upload`
-- **Método**: POST
-- **Descripción**: Sube datos de operación de copia de seguridad para un servidor. Admite la detección de ejecuciones duplicadas de copias de seguridad y envía notificaciones.
+- **Method**: POST
+- **Description**: Sube los datos de la operación de copia de seguridad para un servidor. Admite la detección de ejecuciones duplicadas de copias de seguridad y envía notificaciones.
 - **Cuerpo de la solicitud**: JSON enviado por Duplicati con las siguientes opciones:
 
   ```bash
@@ -203,13 +203,13 @@ El identificador del servidor debe estar codificado en URL.
 
 - **Respuestas de error**:
   - `400`: Faltan campos requeridos en las secciones Extra o Data, o MainOperation no válida
-  - `409`: Datos duplicados de copia de seguridad (ignorados)
-  - `500`: Error del servidor al procesar los datos de copia de seguridad
+  - `409`: Datos de respaldo duplicados (ignorados)
+  - `500`: Error del servidor al procesar los datos de respaldo
 - **Notas**:
-  - Solo procesa operaciones de copia de seguridad (MainOperation debe ser "Backup")
+  - Solo procesa operaciones de respaldo (MainOperation debe ser "Backup")
   - Valida los campos requeridos en la sección Extra: machine-id, machine-name, backup-name, backup-id
   - Valida los campos requeridos en la sección Data: ParsedResult, BeginTime, Duration
-  - Detecta automáticamente ejecuciones duplicadas de copias de seguridad y devuelve el estado 409
-  - Envía notificaciones tras la inserción exitosa de la copia de seguridad (si está configurado)
+  - Detecta automáticamente ejecuciones duplicadas de respaldo y devuelve el estado 409
+  - Envía notificaciones tras la inserción exitosa del respaldo (si está configurado)
   - Registra los datos de la solicitud en un archivo en el directorio `data` en la raíz del proyecto en modo desarrollo para depuración
-  - Usa transacción para garantizar la consistencia de los datos
+  - Usa transacciones para garantizar la consistencia de los datos

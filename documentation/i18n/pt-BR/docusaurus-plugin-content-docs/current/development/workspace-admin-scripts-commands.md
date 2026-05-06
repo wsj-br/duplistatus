@@ -1,12 +1,13 @@
 ---
-translation_last_updated: '2026-04-18T00:02:02.636Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
-source_file_hash: b9dfcfd3eb168aae0a90e7ccbb98d8283697df3cd211d0b0a7892295130d6f0a
+translation_last_updated: '2026-05-06T23:20:12.303Z'
+source_file_mtime: '2026-05-06T23:18:51.394Z'
+source_file_hash: 6582520a51466f9784b01b1236c4ba689c2b3989be1150eed15fadd8137decab
 translation_language: pt-BR
 source_file_path: documentation/docs/development/workspace-admin-scripts-commands.md
 translation_models:
   - anthropic/claude-3.5-haiku
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Scripts e Comandos do Admin do Workspace {#workspace-admin-scripts-commands}
 
@@ -27,7 +28,7 @@ Limpa o banco de dados removendo todos os dados enquanto preserva o esquema e a 
 scripts/clean-workspace.sh
 ```
 
-Remove todos os artefatos de build, diretório node_modules e outros arquivos gerados para garantir um estado limpo. Isso é útil quando você precisa realizar uma instalação nova ou resolver problemas de dependências. O comando excluirá:
+Remove todos os artefatos de build, o diretório node_modules e outros arquivos gerados para garantir um estado limpo. Isso é útil quando você precisa realizar uma nova instalação ou resolver problemas de dependência. O comando excluirá:
 - Diretório `node_modules/`
 - Diretório de build `.next/`
 - Diretório `dist/`
@@ -39,7 +40,7 @@ Remove todos os artefatos de build, diretório node_modules e outros arquivos ge
 - `documentation/.docusaurus`, `.cache`, `.cache-*`, `build`, `node_modules`, `pnpm-lock.yaml`
 - Diretório `.genkit/`
 - Arquivos `*.tsbuildinfo`
-- Cache de store do pnpm (via `pnpm store prune`)
+- Cache do armazenamento pnpm (via `pnpm store prune`)
 - Cache de build do Docker e limpeza do sistema (imagens, redes, volumes)
 
 ## Limpar Docker Compose e ambiente Docker {#clean-docker-compose-and-docker-environment}
@@ -48,9 +49,9 @@ Remove todos os artefatos de build, diretório node_modules e outros arquivos ge
 scripts/clean-docker.sh
 ```
 
-Realizar uma limpeza completa do Docker, que é útil para:
+Realiza uma limpeza completa do Docker, o que é útil para:
 - Liberar espaço em disco
-- Remover artefatos antigos/não utilizados do Docker
+- Remover artefatos antigos/sem uso do Docker
 - Limpar após sessões de desenvolvimento ou testes
 - Manter um ambiente Docker limpo
 
@@ -63,19 +64,20 @@ ncu --upgrade
 pnpm update
 ```
 
-Ou use o script automatizado:
+Ou use o script automatizado (prefira `source` para que o **nvm** seja aplicado ao seu shell atual; para **CI** ou execuções não interativas, use `CI=1` ou `DUPLISTATUS_UPGRADE_ALLOW_EXEC=1`):
 
 ```bash
-./scripts/upgrade-dependencies.sh
+source ./scripts/upgrade-dependencies.sh
 ```
 
 O script `upgrade-dependencies.sh` automatiza todo o processo de atualização de dependências:
-- Atualiza `package.json` com as versões mais recentes usando `npm-check-updates`
-- Atualiza o arquivo de bloqueio do pnpm e instala as dependências atualizadas
+- Carrega a configuração de ferramentas via `upgrade-tools.sh` (nvm / Node LTS, `pnpm` global, `npm-check-updates`, `doctoc`)
+- Atualiza o root e `documentation/package.json` usando `npm-check-updates` (com uma verificação opcional do peer do ESLint para garantir compatibilidade entre atualizações do `eslint` e do plugin React)
+- Atualiza o arquivo de bloqueio pnpm do workspace e instala as dependências
 - Atualiza o banco de dados do browserslist
 - Verifica vulnerabilidades usando `pnpm audit`
 - Corrige automaticamente vulnerabilidades usando `pnpm audit fix`
-- Verifica novamente vulnerabilidades após a correção para confirmar os ajustes
+- Reverifica vulnerabilidades após a correção para confirmar que foram resolvidas
 
 Este script fornece um fluxo de trabalho completo para manter as dependências atualizadas e seguras.
 
@@ -91,12 +93,12 @@ pnpm depcheck
 ./scripts/update-version.sh
 ```
 
-Este script atualiza automaticamente informações de versão em múltiplos arquivos para mantê-los sincronizados. Ele:
+Este script atualiza automaticamente as informações de versão em vários arquivos para mantê-los sincronizados. Ele:
 - Extrai a versão de `package.json`
-- Atualiza o arquivo `.env` com a variável `VERSION` (cria-a se não existir)
+- Atualiza o arquivo `.env` com a variável `VERSION` (cria o arquivo se não existir)
 - Atualiza o `Dockerfile` com a variável `VERSION` (se existir)
-- Atualiza o campo de versão em `documentation/package.json` (se existir)
-- Atualiza apenas se a versão foi alterada
+- Atualiza o campo de versão do `documentation/package.json` (se existir)
+- Atualiza apenas se a versão tiver mudado
 - Fornece feedback sobre cada operação
 
 ## Script de pré-verificações {#pre-checks-script}
@@ -119,9 +121,9 @@ Este script é chamado automaticamente por `pnpm dev`, `pnpm build` e `pnpm star
 
 Este script garante que o arquivo `.duplistatus.key` exista no diretório `data`. Ele:
 - Cria o diretório `data` se não existir
-- Gera um novo arquivo de chave aleatória de 32 bytes se estiver faltando
+- Gera um novo arquivo de chave aleatória de 32 bytes se estiver ausente
 - Define as permissões do arquivo como 0400 (somente leitura para o proprietário)
-- Corrige as permissões se estiverem incorretas
+- Corrige permissões se estiverem incorretas
 
 O arquivo de chave é usado para operações criptográficas na aplicação.
 
@@ -131,13 +133,13 @@ O arquivo de chave é usado para operações criptográficas na aplicação.
 ./admin-recovery <username> <new-password>
 ```
 
-Este script permite a recuperação de contas admin se bloqueadas ou com senha esquecida. Ele:
+Este script permite a recuperação de contas de administrador caso haja bloqueio ou esquecimento de senha. Ele:
 - Redefine a senha para o usuário especificado
-- Desbloqueia a conta se ela estava bloqueada
-- Redefine o contador de tentativas de login falhadas
-- Limpa a flag "Deve alterar a senha"
+- Desbloqueia a conta se estiver bloqueada
+- Redefine o contador de tentativas de login falhas
+- Limpa a flag "deve alterar senha"
 - Valida se a senha atende aos requisitos de segurança
-- Registra a ação no Log de Auditoria
+- Registra a ação no registro de auditoria
 
 **Exemplo:**
 
@@ -168,11 +170,11 @@ Copia arquivos de imagem de `documentation/static/img` para seus locais apropria
 ```
 
 Este script compara versões entre seu ambiente de desenvolvimento e um contêiner Docker em execução. Ele:
-- Compara versões do SQLite apenas pela versão principal (por exemplo, 3.45.1 vs 3.51.1 são consideradas compatíveis, mostradas como "✅ (major)")
-- Compara versões do Node, npm e duplistatus exatamente (devem corresponder exatamente)
+- Compara versões do SQLite apenas por versão principal (por exemplo, 3.45.1 vs 3.51.1 são consideradas compatíveis, mostradas como "✅ (principal)")
+- Compara exatamente as versões do Node, npm e Duplistatus (devem coincidir exatamente)
 - Exibe uma tabela formatada mostrando todas as comparações de versão
-- Fornece um resumo com resultados codificados por cores (✅ para correspondências, ❌ para incompatibilidades)
-- Sai com código 0 se todas as versões corresponderem, 1 se houver incompatibilidades
+- Fornece um resumo com resultados codificados por cores (✅ para correspondências, ❌ para divergências)
+- Encerra com código 0 se todas as versões coincidirem, 1 se houver divergências
 
 **Requisitos:**
 - O container Docker nomeado `duplistatus` deve estar em execução

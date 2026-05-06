@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:02:57.558Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
-source_file_hash: a9c3dbba0383c39fc8db237418ff7690073036337de033ffbb314ff7f3dc230e
+translation_last_updated: '2026-05-06T23:20:35.742Z'
+source_file_mtime: '2026-05-06T23:18:51.410Z'
+source_file_hash: 8b9a230f64fd786725b53f2231596f7426ccf84e8ad7352af80d2f9b7a86410c
 translation_language: de
 source_file_path: documentation/docs/migration/api-changes.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Rückwärts-inkompatible API-Änderungen {#api-breaking-changes}
 
@@ -43,12 +44,12 @@ Externe API-Endpunkte werden zur Gewährleistung der Rückwärtskompatibilität 
 
 Version 0.9.x führt Authentifizierung ein und erfordert, dass sich alle Benutzer anmelden. Beim Upgrade von Version 0.8.x:
 
-1. **Authentifizierung erforderlich**: Alle Seiten und internen API-Endpunkte erfordern jetzt Authentifizierung
-2. **Standard-Admin-Konto**: Ein Standard-Admin-Konto wird automatisch erstellt:
+1. **Authentifizierung erforderlich**: Alle Seiten und internen API-Endpunkte erfordern nun eine Authentifizierung
+2. **Standard-Administrator-Konto**: Ein Standard-Administrator-Konto wird automatisch erstellt:
    - Benutzername: `admin`
-   - Passwort: `Duplistatus09` (muss beim ersten Anmelden geändert werden)
-3. **Sitzungsentwertung**: Alle bestehenden Sitzungen werden entwertet
-4. **Externer API-Zugriff**: Externe API-Endpunkte (`/api/summary`, `/api/lastbackup`, `/api/lastbackups`, `/api/upload`) bleiben unauthentifiziert für Kompatibilität mit Integrationen und Duplicati
+   - Passwort: `Duplistatus09` (muss beim ersten Login geändert werden)
+3. **Sitzungsungültigkeitserklärung**: Alle bestehenden Sitzungen werden ungültig
+4. **Zugriff auf externe API**: Externe API-Endpunkte (`/api/summary`, `/api/lastbackup`, `/api/lastbackups`, `/api/upload`) bleiben zur Kompatibilität mit Integrationen und Duplicati unauthentifiziert
 
 ### Version 0.8.x {#version-08x}
 
@@ -80,9 +81,9 @@ Version 0.7.x führt mehrere Breaking Changes bei externen API-Endpunkten ein, d
 
 ##### Feldumbenennung {#field-renaming}
 
-- **`totalMachines`** → **`totalServers`** im `/api/summary` Endpunkt
-- **`machine`** → **`server`** in API-Antwortobjekten
-- **`backup_types_count`** → **`backup_jobs_count`** im `/api/lastbackups/{serverId}` Endpunkt
+- `totalMachines` → `totalServers` im `/api/summary`-Endpunkt
+- `machine` → `server` in API-Antwortobjekten
+- `backup_types_count` → `backup_jobs_count` im `/api/lastbackups/{serverId}`-Endpunkt
 
 ##### Änderungen an Endpunkt-Pfaden {#endpoint-path-changes}
 
@@ -236,8 +237,8 @@ Wenn Sie von einer Version vor 0.7.x aktualisieren, führen Sie diese Schritte a
 - **Version 0.9.x**: Vollständig abwärtskompatibel mit der API-Struktur von 0.8.x
 - **Version 0.8.x**: Vollständig abwärtskompatibel mit der API-Struktur von 0.7.x
 - **Version 0.7.x**: Nicht abwärtskompatibel mit Versionen vor 0.7.x
-  - Alte Feldnamen funktionieren nicht
-  - Alte Endpunkt-Pfade funktionieren nicht
+  - Alte Feldnamen funktionieren nicht mehr
+  - Alte Endpunkt-Pfade funktionieren nicht mehr
 
 ### Zukünftige Unterstützung {#future-support}
 
@@ -249,19 +250,19 @@ Wenn Sie von einer Version vor 0.7.x aktualisieren, führen Sie diese Schritte a
 
 Die folgenden externen API-Endpunkte werden aus Gründen der Abwärtskompatibilität beibehalten und bleiben unauthentifiziert:
 
-| Endpoint | Method | Beschreibung | Breaking Changes |
+| Endpunkt | Methode | Beschreibung | Breaking Changes |
 |----------|--------|-------------|------------------|
-| `/api/summary` | GET | Gesamtübersicht von Sicherungsvorgängen | 0.7.x: `totalMachines` → `totalServers` |
-| `/api/lastbackup/{serverId}` | GET | Neueste Sicherung für einen Server | 0.7.x: `machine` → `server` |
-| `/api/lastbackups/{serverId}` | GET | Neueste Sicherungen für alle Sicherungsaufträge | 0.7.x: `machine` → `server`, `backup_types_count` → `backup_jobs_count` |
-| `/api/upload` | POST | Hochladen von Sicherungsdaten von Duplicati | Nein Breaking Changes |
+| `/api/summary` | GET | Gesamtübersicht der Sicherungsvorgänge | 0.7.x: `totalMachines` → `totalServers` |
+| `/api/lastbackup/{serverId}` | GET | Letzte Sicherung für einen Server | 0.7.x: `machine` → `server` |
+| `/api/lastbackups/{serverId}` | GET | Letzte Sicherungen für alle Sicherungsaufträge | 0.7.x: `machine` → `server`, `backup_types_count` → `backup_jobs_count` |
+| `/api/upload` | POST | Sicherungsdaten von Duplicati hochladen | Keine Breaking Changes |
 
 ## Hilfe? {#need-help}
 
 Wenn Sie Hilfe beim Aktualisieren Ihrer Integration benötigen:
 
-- **API Reference**: Prüfen Sie die [API Reference](../api-reference/overview.md) für aktuelle Endpoint-Dokumentation
-- **External APIs**: Siehe [External APIs](../api-reference/external-apis.md) für detaillierte Endpoint-Dokumentation
-- **Migration Guide**: Lesen Sie das [Migration Guide](version_upgrade.md) für allgemeine Migrationsinformationen
-- **Release Notes**: Lesen Sie versionsspezifische [Release Notes](../release-notes/0.8.x.md) für zusätzlichen Kontext
-- **Support**: Öffnen Sie ein Issue auf [GitHub](https://github.com/wsj-br/duplistatus/issues) für Support
+- **API-Referenz**: Überprüfen Sie die [API-Referenz](../api-reference/overview.md) für die aktuelle Endpunktdokumentation
+- **Externe APIs**: Siehe [Externe APIs](../api-reference/external-apis.md) für detaillierte Endpunktdokumentation
+- **Migrationsanleitung**: Lesen Sie die [Migrationsanleitung](version_upgrade.md) für allgemeine Migrationsinformationen
+- **Versionshinweise**: Prüfen Sie die versionsbezogenen [Versionshinweise](../release-notes/0.8.x.md) für zusätzlichen Kontext
+- **Support**: Öffnen Sie ein Ticket auf [GitHub](https://github.com/wsj-br/duplistatus/issues) für Unterstützung

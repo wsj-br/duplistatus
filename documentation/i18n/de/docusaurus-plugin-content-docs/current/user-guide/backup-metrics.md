@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:03:27.937Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:22:00.938Z'
+source_file_mtime: '2026-05-06T23:18:51.430Z'
 source_file_hash: c4dde05981ada21800990adcdda2efbb6881d3b1d7ae4921922c4c12ca813552
 translation_language: de
 source_file_path: documentation/docs/user-guide/backup-metrics.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Sicherungs-Metriken {#backup-metrics}
 
@@ -16,12 +17,12 @@ Ein Diagramm von Sicherungsmetriken im Zeitverlauf wird sowohl auf dem Dashboard
 
 ![Backup Metrics](../assets/screen-metrics.png)
 
-- **Hochgeladene Größe**: Gesamtmenge der während Sicherungen vom Duplicati-Server zum Ziel (lokaler Speicherplatz, FTP, Cloud-Anbieter, ...) pro Tag hochgeladenen/übertragenen Daten.
-- **Dauer**: Die Gesamtdauer aller pro Tag empfangenen Sicherungen in HH:MM.
-- **Dateianzahl**: Die Summe der Dateianzahl-Zähler, die für alle pro Tag empfangenen Sicherungen ermittelt wurde.
-- **Dateigröße**: Die Summe der vom Duplicati-Server für alle pro Tag empfangenen Sicherungen gemeldeten Dateigröße.
-- **Speichergröße**: Die Summe der vom Duplicati-Server pro Tag gemeldeten, am Sicherungsziel verwendeten Speichergröße.
-- **Verfügbare Versionen**: Die Summe aller verfügbaren Versionen für alle Sicherungen pro Tag.
+- **Hochgeladene Größe**: Gesamte Menge an Daten, die täglich vom Duplicati-Server zur Sicherungsziel (lokaler Speicher, FTP, Cloud-Anbieter, ...) hochgeladen/übertragen wurden.
+- **Dauer**: Die Gesamtdauer aller täglich empfangenen Sicherungen in HH:MM.
+- **Anzahl der Dateien**: Die Summe der für alle täglichen Sicherungen empfangenen Dateianzahl-Zähler.
+- **Dateigröße**: Die Summe der vom Duplicati-Server für alle täglichen Sicherungen gemeldeten Dateigrößen.
+- **Speichergröße**: Die Summe des vom Duplicati-Server täglich gemeldeten genutzten Speicherplatzes am Sicherungsziel.
+- **Verfügbare Versionen**: Die Summe aller verfügbaren Versionen für alle täglichen Sicherungen.
 
 :::note
 Sie können die [Anzeigeeinstellungen](settings/display-settings.md) verwenden, um den Zeitbereich für das Diagramm zu konfigurieren.

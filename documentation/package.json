@@ -16,7 +16,7 @@
     "clear": "docusaurus clear",
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
-    "write-heading-ids": "docusaurus write-heading-ids",
+    "write-heading-ids": "docusaurus write-heading-ids --syntax mdx-comment",
     "typecheck": "tsc",
     "lint": "eslint .",
     "translate": "pnpm -C .. run i18n:translate",
@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@docusaurus/core": "^3.10.1",
+    "@docusaurus/faster": "^3.10.1",
     "@docusaurus/plugin-client-redirects": "^3.10.1",
     "@docusaurus/preset-classic": "^3.10.1",
     "@docusaurus/theme-common": "^3.10.1",
@@ -40,8 +41,8 @@
     "clsx": "^2.1.1",
     "docusaurus-plugin-image-zoom": "^3.0.1",
     "prism-react-renderer": "^2.4.1",
-    "react": "^19.2.5",
-    "react-dom": "^19.2.5",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
     "remark-github-alerts": "^0.1.1"
   },
   "devDependencies": {
@@ -49,7 +50,7 @@
     "@docusaurus/tsconfig": "3.10.1",
     "@docusaurus/types": "3.10.1",
     "eslint": "^9.39.4",
-    "eslint-config-next": "16.2.4",
+    "eslint-config-next": "16.2.5",
     "typescript": "~6.0.3"
   },
   "browserslist": {

@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:02:17.721Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:22:22.457Z'
+source_file_mtime: '2026-05-06T23:18:51.446Z'
 source_file_hash: 6fadb27aa2b2898a91a2c277aa6ef2a380feb63069ba823e7cdf1943df204b51
 translation_language: pt-BR
 source_file_path: documentation/docs/user-guide/settings/database-maintenance.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Manutenção do banco de dados {#database-maintenance}
 
@@ -54,7 +55,7 @@ Restaure seu banco de dados a partir de um arquivo de backup criado anteriorment
 
 - Um backup de segurança do banco de dados atual é criado automaticamente antes da restauração
 - O banco de dados atual é substituído pelo arquivo de backup
-- Todas as sessões são limpas por segurança (usuários devem entrar novamente)
+- Todas as sessões são limpas por segurança (os usuários devem entrar novamente)
 - A integridade do banco de dados é verificada após a restauração
 - Todos os caches são limpos para garantir dados atualizados
 
@@ -159,14 +160,14 @@ Detectar e mesclar servidores duplicados que têm o mesmo nome, mas IDs diferent
 
 Isso pode ocorrer quando o `machine-id` do Duplicati muda após uma atualização ou reinstalação. Servidores duplicados são exibidos apenas quando existem. Se nenhum duplicado for detectado, a seção exibirá uma mensagem indicando que todos os servidores têm nomes únicos.
 
-1.  Navegue para [Configurações → Manutenção do banco de dados](database-maintenance.md).
-2.  Se servidores duplicados forem detectados, uma seção **Mesclar servidores duplicados** aparecerá.
+1.  Navegue até [Configurações → Manutenção do Banco de Dados](database-maintenance.md).
+2.  Se servidores duplicados forem detectados, uma seção **Mesclar Servidores Duplicados** será exibida.
 3.  Revise a lista de grupos de servidores duplicados:
     - Cada grupo mostra servidores com o mesmo nome, mas IDs diferentes
-    - O **Servidor de destino** (mais recente pela data de criação) é destacado
-    - **IDs de servidores antigos** que serão mesclados são listados separadamente
+    - O **Servidor Destino** (mais recente pela data de criação) é destacado
+    - Os **IDs de Servidores Antigos** que serão mesclados são listados separadamente
 4.  Selecione os grupos de servidores que deseja mesclar marcando a caixa de seleção ao lado de cada grupo.
-5.  Clique em <IconButton icon="lucide:git-merge" label="Mesclar servidores selecionados" />.
+5.  Clique em <IconButton icon="lucide:git-merge" label="Mesclar Servidores Selecionados" />.
 6.  Confirme a ação na caixa de diálogo.
 
 **Processo de Mesclagem:**

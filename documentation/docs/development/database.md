@@ -150,7 +150,7 @@ Stores backup operation data received from Duplicati servers.
 
 Stores application configuration settings.
 
-#### Fields {#fields}
+#### Fields {#fields-1}
 
 | Field   | Type                      | Description                |
 |---------|---------------------------|----------------------------|
@@ -169,7 +169,7 @@ Stores application configuration settings.
 
 Tracks database schema version for migration purposes.
 
-#### Fields {#fields}
+#### Fields {#fields-2}
 
 | Field        | Type             | Description                |
 |--------------|------------------|----------------------------|
@@ -180,7 +180,7 @@ Tracks database schema version for migration purposes.
 
 Stores user account information for authentication and access control.
 
-#### Fields {#fields}
+#### Fields {#fields-3}
 
 | Field                   | Type                 | Description                         |
 |-------------------------|----------------------|-------------------------------------|
@@ -200,7 +200,7 @@ Stores user account information for authentication and access control.
 
 Stores user session data for authentication and security.
 
-#### Fields {#fields}
+#### Fields {#fields-4}
 
 | Field             | Type              | Description                                                      |
 |-------------------|-------------------|------------------------------------------------------------------|
@@ -218,7 +218,7 @@ Stores user session data for authentication and security.
 
 Stores audit trail of user actions and system events.
 
-#### Fields {#fields}
+#### Fields {#fields-5}
 
 | Field           | Type                              | Description                                                       |
 |-----------------|-----------------------------------|-------------------------------------------------------------------|

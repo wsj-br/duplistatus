@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:02:04.622Z'
-source_file_mtime: '2026-03-05T22:33:28.419Z'
+translation_last_updated: '2026-05-06T23:19:52.270Z'
+source_file_mtime: '2026-05-06T23:18:51.406Z'
 source_file_hash: 9b48c57e8f83d8e1ba3814a476ddf8a28c68c08305ee07ca77c3b30516e8a027
 translation_language: fr
 source_file_path: documentation/docs/development/how-i-build-with-ai.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Comment j'ai construit cette application en utilisant les outils d'IA {#how-i-build-this-application-using-ai-tools}
 
@@ -162,10 +163,10 @@ J'ai inclus uniquement le point de départ car je n'ai pas enregistré tous les 
 
 # Notes {#notes}
 
-- Certains modèles peuvent se bloquer lors de la correction de bogues. « claude-3.5 » et « claude-4 » sont généralement meilleurs, mais parfois vous devez essayer un autre modèle (GPT, Gemini, etc.).
+- Certains modèles peuvent rester bloqués lors de la correction de bogues. « claude-3.5 » et « claude-4 » sont généralement meilleurs, mais parfois vous devez essayer un autre modèle (GPT, Gemini, etc.).
 Pour les bogues ou erreurs complexes, utilisez une invite pour analyser les causes possibles de l'erreur au lieu de simplement demander de la corriger.
-- Quand vous effectuez des modifications complexes, utilisez une invite pour créer un plan, puis demandez à l'agent IA de l'implémenter. Cela fonctionne toujours mieux.
-- Soyez précis quand vous modifiez le code source. Si possible, sélectionnez la partie pertinente du code dans l'éditeur et appuyez sur Ctrl+L pour l'inclure dans le chat en tant que contexte.
-- Incluez également une référence au fichier que vous mentionnez dans le chat pour aider l'agent IA à se concentrer sur la partie pertinente du code et éviter de faire des modifications dans d'autres parties du code.
-- J'ai tendance à anthropomorphiser l'agent IA étant donné qu'il utilise persistamment « nous », « notre code » et « aimeriez-vous que je... ». Ceci est également pour améliorer mes chances de survie au cas où (ou [quand](https://ai-2027.com/)) Skynet deviendrait conscient et que le Terminator soit inventé.
-- Parfois, utilisez [Gemini](https://gemini.google.com/app), [Deepseek](https://chat.deepseek.com/), [ChatGPT](https://chat.openai.com/), [Manus](https://manus.im/app),... pour générer des invites avec de meilleures instructions pour l'agent IA.
+- Lorsque vous effectuez des modifications complexes, utilisez une invite pour créer un plan, puis demandez à l'agent IA de le mettre en œuvre. Cela fonctionne toujours mieux.
+- Soyez précis lors de la modification du code source. Si possible, sélectionnez la partie pertinente du code dans l'éditeur et appuyez sur Ctrl+L pour l'inclure dans la discussion comme contexte.
+- Incluez également une référence au fichier que vous mentionnez dans la discussion afin d'aider l'agent IA à se concentrer sur la partie pertinente du code et à éviter d'apporter des modifications dans d'autres parties du code.
+- J'ai tendance à anthropomorphiser l'agent IA, car il utilise systématiquement « nous », « notre code » et « voulez-vous que je... ». C'est aussi pour améliorer mes chances de survie au cas où (ou [quand](https://ai-2027.com/)) Skynet deviendrait conscient et que le Terminator serait inventé.
+- Parfois, utilisez [Gemini](https://gemini.google.com/app), [Deepseek](https://chat.deepseek.com/), [ChatGPT](https://chat.openai.com/), [Manus](https://manus.im/app),... pour générer des invites avec de meilleures instructions destinées à l'agent IA.

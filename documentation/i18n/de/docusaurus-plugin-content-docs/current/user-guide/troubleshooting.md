@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:03:45.775Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
-source_file_hash: 1b216d0be72a0dca0f6061ab7464800febcf29632cfc6c148b164a42a62b165d
+translation_last_updated: '2026-05-06T23:22:24.452Z'
+source_file_mtime: '2026-05-06T23:18:51.430Z'
+source_file_hash: 561c33c1aa4c9a64d87a028ff06a261a2d66fc0342313d2513077cd2a35a957c
 translation_language: de
 source_file_path: documentation/docs/user-guide/troubleshooting.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Fehlerbehebung {#troubleshooting}
 
@@ -15,16 +16,16 @@ translation_models:
 - Prüfen Sie die Container-Protokolle: `docker logs duplistatus`
 
 ### Keine Sicherungsdaten {#no-backup-data}
-- Bestätigen Sie die Duplicati-Serverkonfiguration
-- Prüfen Sie die Netzwerkkonnektivität zwischen Servern
-- Überprüfen Sie duplistatus-Protokolle auf Fehler
-- Stellen Sie sicher, dass Sicherungsaufträge ausgeführt werden
+- Duplicati-Serverkonfiguration überprüfen
+- Netzwerkkonnektivität zwischen Servern überprüfen
+- duplistatus-Logs auf Fehler überprüfen
+- Stellen Sie sicher, dass die Backup-Jobs ausgeführt werden
 
 ### Benachrichtigungen funktionieren nicht {#notifications-not-working}
-- Benachrichtigungskonfiguration prüfen
-- NTFY-Server-Konnektivität bestätigen (falls NTFY verwendet wird)
+- Benachrichtigungskonfiguration überprüfen
+- NTFY-Serververbindung überprüfen (wenn NTFY verwendet wird)
 - Benachrichtigungseinstellungen testen
-- Benachrichtigungsprotokolle prüfen
+- Überprüfen Sie die Benachrichtigungs-Logs
 
 ### Neue Sicherungen werden nicht angezeigt {#new-backups-not-showing}
 
@@ -72,7 +73,7 @@ Wenn die manuelle Sicherungsprotokollerfassung fehlschlägt:
 
 Prüfen Sie auch die DNS-Konfiguration im Container (siehe [DNS-Konfiguration für Podman-Container](../installation/installation.md#configuring-dns-for-podman-containers))
 
-### Upgrade von einer früheren Version (vor 0.9.x) und kann sich nicht anmelden {#upgrade-from-an-earlier-version-09x-and-cant-login}
+### Upgrade von einer früheren Version (vor 0.9.x) und Anmeldung nicht möglich {#upgrade-from-an-earlier-version-before-09x-and-cant-login}
 
 **duplistatus** ab Version 0.9.x erfordert Benutzerauthentifizierung. Ein Standard-`admin`-Konto wird automatisch erstellt, wenn die Anwendung zum ersten Mal installiert oder von einer früheren Version aktualisiert wird:
     - Benutzername: `admin`
@@ -91,10 +92,10 @@ Wenn Sie Ihr Administratorpasswort verloren haben oder aus Ihrem Konto gesperrt 
 
 Beim Migrieren von vorherigen Versionen oder beim Erstellen einer Datenbanksicherung:
 
-**Wenn Sie Version 1.2.1 oder später ausführen:**
-- Verwenden Sie die integrierte Datenbanksicherungsfunktion in [Einstellungen → Datenbankwartung](user-guide/settings/database-maintenance.md)
-- Wählen Sie Ihr bevorzugtes Format (.db oder .sql) und klicken Sie auf **Sicherung herunterladen**
-- Die Sicherungsdatei wird auf Ihren Computer heruntergeladen
+**Wenn Sie Version 1.2.1 oder höher verwenden:**
+- Verwenden Sie die integrierte Datenbank-Backup-Funktion unter [Einstellungen → Datenbankwartung](user-guide/settings/database-maintenance.md)
+- Wählen Sie das gewünschte Format (.db oder .sql) und klicken Sie auf **Backup herunterladen**
+- Die Backup-Datei wird auf Ihren Computer heruntergeladen
 - Siehe [Datenbankwartung](settings/database-maintenance.md#database-backup) für detaillierte Anweisungen
 
 **Wenn Sie eine Version vor 1.2.1 ausführen:**
@@ -102,12 +103,12 @@ Beim Migrieren von vorherigen Versionen oder beim Erstellen einer Datenbanksiche
 
 Wenn Sie weiterhin Probleme haben, versuchen Sie die folgenden Schritte:
 
-1.  **Anwendungsprotokolle prüfen**: Bei Verwendung von Docker führen Sie `docker logs <container-name>` aus, um detaillierte Fehlerinformationen zu überprüfen.
-2.  **Konfiguration validieren**: Überprüfen Sie alle Konfigurationseinstellungen in Ihrem Container-Verwaltungstool (Docker, Portainer, Podman usw.) doppelt, einschließlich Ports, Netzwerk und Berechtigungen.
-3.  **Netzwerkkonnektivität bestätigen**: Bestätigen Sie, dass alle Netzwerkverbindungen stabil sind. 
-4.  **Cron-Dienst prüfen**: Stellen Sie sicher, dass der Cron-Dienst zusammen mit der Hauptanwendung ausgeführt wird. Überprüfen Sie die Protokolle für beide Dienste.
-5.  **Dokumentation konsultieren**: Weitere Informationen finden Sie im Installationshandbuch und in der README-Datei.
-6.  **Probleme melden**: Wenn das Problem weiterhin besteht, reichen Sie bitte ein detailliertes Problem im [duplistatus GitHub-Repository](https://github.com/wsj-br/duplistatus/issues) ein.
+1.  **Anwendungsprotokolle überprüfen**: Wenn Docker verwendet wird, führen Sie `docker logs <container-name>` aus, um detaillierte Fehlerinformationen anzuzeigen.
+2.  **Konfiguration überprüfen**: Überprüfen Sie alle Konfigurationseinstellungen in Ihrem Container-Verwaltungstool (Docker, Portainer, Podman usw.), einschließlich Ports, Netzwerk und Berechtigungen.
+3.  **Netzwerkverbindung prüfen**: Stellen Sie sicher, dass alle Netzwerkverbindungen stabil sind.
+4.  **Cron-Dienst überprüfen**: Stellen Sie sicher, dass der Cron-Dienst neben der Hauptanwendung läuft. Überprüfen Sie die Logs beider Dienste.
+5.  **Dokumentation konsultieren**: Weitere Informationen finden Sie im Installationsleitfaden und der README.
+6.  **Probleme melden**: Wenn das Problem weiterhin besteht, melden Sie es bitte detailliert im [duplistatus GitHub-Repository](https://github.com/wsj-br/duplistatus/issues).
 
 <br/>
 
@@ -117,7 +118,7 @@ Wenn Sie weiterhin Probleme haben, versuchen Sie die folgenden Schritte:
 - **Duplicati-Dokumentation**: [docs.duplicati.com](https://docs.duplicati.com)
 - **API-Dokumentation**: [API-Referenz](../api-reference/overview.md)
 - **GitHub-Repository**: [wsj-br/duplistatus](https://github.com/wsj-br/duplistatus)
-- **Entwicklungsleitfaden**: [Entwicklungsleitfaden](../development/setup.md)
+- **Entwicklerhandbuch**: [Entwicklerhandbuch](../development/setup.md)
 - **Datenbankschema**: [Datenbankdokumentation](../development/database)
 
 ### Unterstützung {#support}

@@ -51,7 +51,7 @@ ncu --upgrade
 pnpm update
 ```
 
-Or use the automated script (prefer **`source`** so **nvm** applies to your current shell; for **CI** or non-interactive runs use `CI=1` or `DUPLISTATUS_UPGRADE_ALLOW_EXEC=1`):
+Or use the automated script (prefer `source` so **nvm** applies to your current shell; for **CI** or non-interactive runs use `CI=1` or `DUPLISTATUS_UPGRADE_ALLOW_EXEC=1`):
 ```bash
 source ./scripts/upgrade-dependencies.sh
 ```

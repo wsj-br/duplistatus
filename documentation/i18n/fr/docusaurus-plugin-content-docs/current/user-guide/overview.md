@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-04-18T00:03:15.268Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:21:45.805Z'
+source_file_mtime: '2026-05-06T23:18:51.430Z'
 source_file_hash: 7771f9d86a84f69538824b04174596c096a83c31c5860e9ced75eb272db5cfd5
 translation_language: fr
 source_file_path: documentation/docs/user-guide/overview.md
@@ -8,6 +8,7 @@ translation_models:
   - anthropic/claude-3.5-haiku
   - anthropic/claude-haiku-4.5
   - 'nvidia/nemotron-nano-12b-v2-vl:free'
+  - qwen/qwen3-235b-a22b-2507
   - 'stepfun/step-3.5-flash:free'
 ---
 # Vue d'ensemble {#overview}
@@ -18,12 +19,12 @@ Bienvenue dans le guide utilisateur duplistatus. Ce document complet fournit des
 
 duplistatus est un puissant tableau de bord de surveillance conçu spécifiquement pour les systèmes de sauvegarde Duplicati. Il fournit :
 
-- Surveillance centralisée de plusieurs serveurs Duplicati depuis une interface unique
-- Suivi en temps réel du statut de toutes les opérations de sauvegarde
-- Détection automatique des sauvegardes en retard avec des alertes configurables
-- Métriques complètes et visualisation des performances de sauvegarde
+- Surveillance centralisée de plusieurs serveurs Duplicati depuis une seule interface
+- Suivi en temps réel de l'état de toutes les opérations de sauvegarde
+- Détection automatique des sauvegardes en retard avec alertes configurables
+- Indicateurs complets et visualisation des performances des sauvegardes
 - Système de notification flexible via NTFY et e-mail
-- Support multilingue (anglais, français, allemand, espagnol et portugais brésilien).
+- Prise en charge multilingue (anglais, français, allemand, espagnol et portugais brésilien).
 
 ## Installation {#installation}
 
@@ -35,9 +36,9 @@ Après une installation réussie, accédez à l'interface web duplistatus en sui
 
 1. Ouvrez votre navigateur web préféré
 2. Accédez à `http://your-server-ip:9666`
-   - Remplacez `your-server-ip` par l'adresse IP réelle ou le nom d'hôte de votre serveur duplistatus
+   - Remplacez `your-server-ip` par l'adresse IP ou le nom d'hôte réel de votre serveur duplistatus
    - Le port par défaut est `9666`
-3. Une page de connexion vous sera présentée.
+3. Une page de connexion s'affichera.
 
 Utilisez ces identifiants pour la première utilisation (ou après une mise à niveau à partir de versions antérieures à 0.9.x) :
     - nom d'utilisateur : `admin`
@@ -55,14 +56,14 @@ duplistatus fournit un tableau de bord intuitif pour surveiller les opérations 
 
 L'interface utilisateur est organisée en plusieurs sections clés pour offrir une expérience de surveillance claire et complète :
 
-1. [Barre d'outils de l'application](#application-toolbar): Accès rapide aux fonctions et configurations essentielles
-2. [Résumé du tableau de bord](dashboard.md#dashboard-summary): Statistiques de vue d'ensemble pour tous les serveurs surveillés
+1. [Barre d'outils de l'application](#application-toolbar) : Accès rapide aux fonctions et configurations essentielles
+2. [Résumé du tableau de bord](dashboard.md#dashboard-summary) : Statistiques générales pour tous les serveurs surveillés
 3. Vue d'ensemble des serveurs : [Disposition en cartes](dashboard.md#cards-layout) ou [disposition en tableau](dashboard.md#table-layout) affichant le statut le plus récent de toutes les sauvegardes
-4. [Détails des retards](dashboard.md#overdue-details): Avertissements visuels pour les sauvegardes en retard avec informations détaillées au survol
-5. [Versions de sauvegarde disponibles](dashboard.md#available-backup-versions): Cliquez sur l'icône bleue pour afficher les versions de sauvegarde disponibles à la destination
-6. [Métriques de sauvegarde](backup-metrics.md): Graphiques interactifs affichant les performances de sauvegarde au fil du temps
-7. [Détails du serveur](server-details.md): Liste complète des sauvegardes enregistrées pour des serveurs spécifiques, incluant des statistiques détaillées
-8. [Détails de la sauvegarde](server-details.md#backup-details): Informations approfondies pour les sauvegardes individuelles, incluant les journaux d'exécution, les avertissements et les erreurs
+4. [Détails du retard](dashboard.md#overdue-details) : Avertissements visuels pour les sauvegardes en retard, avec des informations détaillées au survol
+5. [Versions de sauvegarde disponibles](dashboard.md#available-backup-versions) : Cliquez sur l'icône bleue pour afficher les versions de sauvegarde disponibles à la destination
+6. [Indicateurs de sauvegarde](backup-metrics.md) : Graphiques interactifs affichant les performances des sauvegardes dans le temps
+7. [Détails du serveur](server-details.md) : Liste complète des sauvegardes enregistrées pour des serveurs spécifiques, incluant des statistiques détaillées
+8. [Détails de la sauvegarde](server-details.md#backup-details) : Informations approfondies sur des sauvegardes individuelles, incluant les journaux d'exécution, les avertissements et les erreurs
 
 ## Barre d'outils de l'application {#application-toolbar}
 
@@ -72,14 +73,14 @@ La barre d'outils de l'application fournit un accès pratique aux fonctions et p
 
 | Bouton                                                                                                                                           | Description                                                                                                                                                                  |
 |--------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| <IconButton icon="lucide:rotate-ccw" /> &nbsp; Actualiser l'écran                                                                                    | Exécuter une actualisation manuelle immédiate de toutes les données                                                                                                                       |
-| <IconButton label="Actualisation auto" />                                                                                                              | Activer ou désactiver la fonctionnalité d'actualisation automatique. Configurer dans [Paramètres d'affichage](settings/display-settings.md) <br/> _Clic droit_ pour ouvrir la page des paramètres d'affichage           |
-| <SvgButton svgFilename="ntfy.svg" /> &nbsp; Ouvrir NTFY                                                                                            | Accéder au site web ntfy.sh pour votre sujet de notification configuré. <br/> _Clic droit_ pour afficher un code QR permettant de configurer votre appareil pour recevoir des notifications de duplistatus. |
-| <SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Configuration Duplicati](duplicati-configuration.md)       | Ouvrir l'interface web du serveur Duplicati sélectionné <br/> _Clic droit_ pour ouvrir l'interface utilisateur Duplicati legacy (`/ngax`) dans un nouvel onglet                                                                                                                           |
-| <IconButton icon="lucide:download" href="collect-backup-logs" /> &nbsp; [Collecter les journaux](collect-backup-logs.md)                                   | Se connecter aux serveurs Duplicati et récupérer les journaux de sauvegarde <br/> _Clic droit_ pour collecter les journaux de tous les serveurs configurés                                                         |
-| <IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [Paramètres](settings/backup-notifications-settings.md) | Configurer les notifications, la surveillance, le serveur SMTP et les modèles de notification                                                                                 |
-| <IconButton icon="lucide:user" label="nom d'utilisateur" />                                                                                               | Afficher l'utilisateur connecté, le type d'utilisateur (`Admin`, `Utilisateur`), cliquer pour ouvrir le menu utilisateur (inclut la sélection de langue). Plus d'informations dans [Gestion des utilisateurs](settings/user-management-settings.md)                               |
-| <IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; Guide utilisateur                                                                    | Ouvrir le [Guide utilisateur](overview.md) à la section pertinente pour la page actuellement consultée. L'info-bulle affiche « Aide pour [Nom de la page] » pour indiquer quelle documentation sera ouverte.                                                                           |
+| <IconButton icon="lucide:rotate-ccw" /> &nbsp; Actualiser l'écran                                                                                    | Exécute une actualisation manuelle immédiate de toutes les données                                                                                                                       |
+| <IconButton label="Actualisation automatique" />                                                                                                              | Active ou désactive la fonction d'actualisation automatique. Configurez-la dans [Paramètres d'affichage](settings/display-settings.md) <br/> _Clic droit_ pour ouvrir la page Paramètres d'affichage           |
+| <SvgButton svgFilename="ntfy.svg" /> &nbsp; Ouvrir NTFY                                                                                            | Accède au site web ntfy.sh pour le sujet de notification configuré. <br/> _Clic droit_ pour afficher un code QR permettant de configurer votre appareil afin de recevoir des notifications depuis duplistatus. |
+| <SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Configuration Duplicati](duplicati-configuration.md)       | Ouvre l'interface web du serveur Duplicati sélectionné <br/> _Clic droit_ pour ouvrir l'interface héritée Duplicati (`/ngax`) dans un nouvel onglet                                                                                                                           |
+| <IconButton icon="lucide:download" href="collect-backup-logs" /> &nbsp; [Collecter les journaux](collect-backup-logs.md)                                   | Se connecte aux serveurs Duplicati et récupère les journaux des sauvegardes <br/> _Clic droit_ pour collecter les journaux de tous les serveurs configurés                                                         |
+| <IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [Paramètres](settings/backup-notifications-settings.md) | Configure les notifications, la surveillance, le serveur SMTP et les modèles de notification                                                                                                 |
+| <IconButton icon="lucide:user" label="nom d'utilisateur" />                                                                                               | Afficher l'utilisateur connecté, le type d'utilisateur (`Admin`, `User`), cliquer pour ouvrir le menu utilisateur (inclut la sélection de la langue). En savoir plus dans [Gestion des utilisateurs](settings/user-management-settings.md)                               |
+| <IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; Guide de l'utilisateur                                                                    | Ouvrir le [Guide de l'utilisateur](overview.md) à la section correspondant à la page que vous consultez actuellement. L'info-bulle affiche « Aide pour [Page Name] » pour indiquer quelle documentation sera ouverte.                                                                           |
 
 ### Menu Utilisateur {#user-menu}
 
@@ -98,12 +99,12 @@ Cliquer sur le bouton utilisateur ouvre un menu déroulant avec des options spé
 
 ## Configuration Essentielle {#essential-configuration}
 
-1. Configurez vos [serveurs Duplicati](../installation/duplicati-server-configuration.md) pour envoyer les messages de journaux de sauvegarde à duplistatus (requis).
-2. Collectez les journaux de sauvegarde initiaux – utilisez la fonctionnalité [Collecter les journaux de sauvegarde](collect-backup-logs.md) pour remplir la base de données avec les données de sauvegarde historiques de tous vos serveurs Duplicati. Cela met également à jour automatiquement les intervalles de surveillance de sauvegarde en fonction de la configuration de chaque serveur.
-3. Configurez les paramètres du serveur – configurez les alias de serveur et les notes dans [Paramètres → Serveur](settings/server-settings.md) pour rendre votre tableau de bord plus informatif.
+1. Configurez vos [serveurs Duplicati](../installation/duplicati-server-configuration.md) pour envoyer les messages de journal de sauvegarde à duplistatus (requis).
+2. Collectez les journaux de sauvegarde initiaux – utilisez la fonctionnalité [Collecter les journaux de sauvegarde](collect-backup-logs.md) pour remplir la base de données avec les données historiques de sauvegarde provenant de tous vos serveurs Duplicati. Cela met également à jour automatiquement les intervalles de surveillance des sauvegardes en fonction de la configuration de chaque serveur.
+3. Configurez les paramètres du serveur – définissez des alias et des notes pour les serveurs dans [Paramètres → Serveur](settings/server-settings.md) afin de rendre votre tableau de bord plus informatif.
 4. Configurez les paramètres NTFY – configurez les notifications via NTFY dans [Paramètres → NTFY](settings/ntfy-settings.md).
-5. Configurez les paramètres e-mail – configurez les notifications par e-mail dans [Paramètres → E-mail](settings/email-settings.md).
-6. Configurez les notifications de sauvegarde – configurez les notifications par sauvegarde ou par serveur dans [Paramètres → Notifications de sauvegarde](settings/backup-notifications-settings.md).
+5. Configurez les paramètres de messagerie – configurez les notifications par courriel dans [Paramètres → E-mail](settings/email-settings.md).
+6. Configurez les notifications de sauvegarde – configurez des notifications par sauvegarde ou par serveur dans [Paramètres → Notifications de sauvegarde](settings/backup-notifications-settings.md).
 
 <br/>
 

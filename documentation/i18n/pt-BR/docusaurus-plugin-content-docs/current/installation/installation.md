@@ -1,12 +1,13 @@
 ---
-translation_last_updated: '2026-04-18T00:02:03.696Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:20:13.548Z'
+source_file_mtime: '2026-05-06T23:18:51.418Z'
 source_file_hash: ff45fe5f2dea04589c6b35a872a2fbb19c0c49b4c33a0951774e8556326297c0
 translation_language: pt-BR
 source_file_path: documentation/docs/installation/installation.md
 translation_models:
   - anthropic/claude-3.5-haiku
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Guia de Instalação {#installation-guide}
 
@@ -92,13 +93,13 @@ volumes:
 
 ### Opção 3: Usando Portainer Stacks (Repositório GitHub) {#option-3-using-portainer-stacks-github-repository}
 
-1. No [Portainer](https://docs.portainer.io/user/docker/stacks), vá para "Pilhas" e clique em "Adicionar pilha".
-2. Nomeie sua pilha (por exemplo, "duplistatus").
-3. Escolha "Método de construção" como "Repositório".
-4. Digite a URL do repositório: `https://github.com/wsj-br/duplistatus.git`
-5. No campo "Caminho do Compose", digite: `production.yml`
-6. (opcional) Defina as variáveis de ambiente `TZ`, `LANG`, `PWD_ENFORCE` e `PWD_MIN_LEN` na seção "Variáveis de ambiente". Verifique a seção [Fuso Horário](./configure-tz.md) para mais detalhes sobre como ajustar o fuso horário e o formato de número/data/hora.
-6. Clique em "Implantar a pilha".
+1. No [Portainer](https://docs.portainer.io/user/docker/stacks), vá até "Stacks" e clique em "Add stack".
+2. Dê um nome à sua stack (por exemplo, "duplistatus").
+3. Escolha "Build method" como "Repository".
+4. Insira a URL do repositório: `https://github.com/wsj-br/duplistatus.git`
+5. No campo "Compose path", insira: `production.yml`
+6. (opcional) Defina as variáveis de ambiente `TZ`, `LANG`, `PWD_ENFORCE` e `PWD_MIN_LEN` na seção "Environment variables". Consulte a seção [Timezone](./configure-tz.md) para obter mais detalhes sobre como ajustar o fuso horário e o formato de número/data/hora. 
+6. Clique em "Deploy the stack".
 
 ### Opção 4: Usando Docker CLI {#option-4-using-docker-cli}
 
@@ -261,12 +262,12 @@ podman pod rm -f duplistatus-pod
 
 ## Configuração Essencial {#essential-configuration}
 
-1. Configure seus [servidores Duplicati](duplicati-server-configuration.md) para enviar mensagens de log de backup para duplistatus (obrigatório).
-2. Entrar no duplistatus – veja as instruções no [Guia do Usuário](../user-guide/overview.md#accessing-the-dashboard).
-3. Coletar logs de backup iniciais – use o recurso [Coletar logs de backup](../user-guide/collect-backup-logs.md) para preencher o banco de dados com dados históricos de backup de todos os seus servidores Duplicati. Isso também atualiza automaticamente os intervalos de monitoramento de backup com base na configuração de cada servidor.
-4. Configurar configurações do servidor – configure aliases de servidor e notas em [Configurações → Servidor](../user-guide/settings/server-settings.md) para tornar seu painel mais informativo.
-5. Configurar configurações de NTFY – configure notificações via NTFY em [Configurações → NTFY](../user-guide/settings/ntfy-settings.md).
-6. Configurar configurações de e-mail – configure notificações por e-mail em [Configurações → E-mail](../user-guide/settings/email-settings.md).
-7. Configurar notificações de backup – configure notificações por backup ou por servidor em [Configurações → Notificações de backup](../user-guide/settings/backup-notifications-settings.md).
+1. Configure seus [servidores Duplicati](duplicati-server-configuration.md) para enviar mensagens de log de backup para o duplistatus (obrigatório).
+2. Faça login no duplistatus – consulte as instruções no [Guia do Usuário](../user-guide/overview.md#accessing-the-dashboard).
+3. Colete os logs iniciais de backup – use o recurso [Coletar Logs de Backup](../user-guide/collect-backup-logs.md) para preencher o banco de dados com dados históricos de backup de todos os seus servidores Duplicati. Isso também atualiza automaticamente os intervalos de monitoramento de backup com base na configuração de cada servidor.
+4. Configure as configurações do servidor – defina apelidos e anotações dos servidores em [Configurações → Servidor](../user-guide/settings/server-settings.md) para tornar seu painel mais informativo.
+5. Configure as configurações do NTFY – configure notificações via NTFY em [Configurações → NTFY](../user-guide/settings/ntfy-settings.md).
+6. Configure as configurações de e-mail – configure notificações por e-mail em [Configurações → E-mail](../user-guide/settings/email-settings.md).
+7. Configure as notificações de backup – configure notificações por backup ou por servidor em [Configurações → Notificações de Backup](../user-guide/settings/backup-notifications-settings.md).
 
 Consulte as seções a seguir para configurar as configurações opcionais, como fuso horário, formato de números e HTTPS.

@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:02:07.045Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
-source_file_hash: a9c3dbba0383c39fc8db237418ff7690073036337de033ffbb314ff7f3dc230e
+translation_last_updated: '2026-05-06T23:20:14.453Z'
+source_file_mtime: '2026-05-06T23:18:51.410Z'
+source_file_hash: 8b9a230f64fd786725b53f2231596f7426ccf84e8ad7352af80d2f9b7a86410c
 translation_language: pt-BR
 source_file_path: documentation/docs/migration/api-changes.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Mudanças de API incompatíveis com versões anteriores {#api-breaking-changes}
 
@@ -43,12 +44,12 @@ Os endpoints da API externa são mantidos para compatibilidade com versões ante
 
 A Versão 0.9.x introduz autenticação e requer que todos os usuários entrem. Quando atualizar da versão 0.8.x:
 
-1. **Autenticação Obrigatória**: Todas as páginas e endpoints de API interna agora requerem autenticação
-2. **Conta Admin Padrão**: Uma conta admin padrão é criada automaticamente:
+1. **Autenticação Obrigatória**: Todas as páginas e endpoints da API interna agora exigem autenticação
+2. **Conta de Administrador Padrão**: Uma conta de administrador padrão é criada automaticamente:
    - Nome de usuário: `admin`
    - Senha: `Duplistatus09` (deve ser alterada no primeiro login)
-3. **Invalidação de Sessão**: Todas as sessões existentes são invalidadas
-4. **Acesso à API Externa**: Os endpoints de API externa (`/api/summary`, `/api/lastbackup`, `/api/lastbackups`, `/api/upload`) permanecem sem autenticação para compatibilidade com integrações e Duplicati
+3. **Invalidação de Sessões**: Todas as sessões existentes são invalidadas
+4. **Acesso à API Externa**: Endpoints da API externa (`/api/summary`, `/api/lastbackup`, `/api/lastbackups`, `/api/upload`) permanecem sem autenticação para compatibilidade com integrações e Duplicati
 
 ### Versão 0.8.x {#version-08x}
 
@@ -80,9 +81,9 @@ A Versão 0.7.x introduz várias mudanças significativas nos endpoints da API e
 
 ##### Renomeação de Campo {#field-renaming}
 
-- **`totalMachines`** → **`totalServers`** no endpoint `/api/summary`
-- **`machine`** → **`server`** nos objetos de resposta da API
-- **`backup_types_count`** → **`backup_jobs_count`** no endpoint `/api/lastbackups/{serverId}`
+- `totalMachines` → `totalServers` no endpoint `/api/summary`
+- `machine` → `server` em objetos de resposta da API
+- `backup_types_count` → `backup_jobs_count` no endpoint `/api/lastbackups/{serverId}`
 
 ##### Mudanças no Caminho do Endpoint {#endpoint-path-changes}
 
@@ -230,14 +231,14 @@ Se você está atualizando de uma versão anterior à 0.7.x, siga estas etapas:
 
 ### Compatibilidade com Versões Anteriores {#backward-compatibility}
 
-- **Versão 1.2.1**: Totalmente compatível com versões anteriores da estrutura da API 1.1.x
-- **Versão 1.1.x**: Totalmente compatível com versões anteriores da estrutura da API 1.0.x
-- **Versão 1.0.x**: Totalmente compatível com versões anteriores da estrutura da API 0.9.x
-- **Versão 0.9.x**: Totalmente compatível com versões anteriores da estrutura da API 0.8.x
-- **Versão 0.8.x**: Totalmente compatível com versões anteriores da estrutura da API 0.7.x
+- **Versão 1.2.1**: Totalmente compatível com a estrutura da API 1.1.x
+- **Versão 1.1.x**: Totalmente compatível com a estrutura da API 1.0.x
+- **Versão 1.0.x**: Totalmente compatível com a estrutura da API 0.9.x
+- **Versão 0.9.x**: Totalmente compatível com a estrutura da API 0.8.x
+- **Versão 0.8.x**: Totalmente compatível com a estrutura da API 0.7.x
 - **Versão 0.7.x**: Não é compatível com versões anteriores à 0.7.x
-  - Nomes de campos antigos não funcionarão
-  - Caminhos de endpoints antigos não funcionarão
+  - Nomes antigos de campos não funcionarão
+  - Caminhos antigos de endpoints não funcionarão
 
 ### Suporte Futuro {#future-support}
 
@@ -249,19 +250,19 @@ Se você está atualizando de uma versão anterior à 0.7.x, siga estas etapas:
 
 Os seguintes endpoints de API externa são mantidos para compatibilidade com versões anteriores e permanecem não autenticados:
 
-| Endpoint | Method | Descrição | Breaking Changes |
-|----------|--------|-----------|------------------|
-| `/api/summary` | GET | Resumo geral de operações de backup | 0.7.x: `totalMachines` → `totalServers` |
+| Endpoint | Método | Descrição | Alterações Significativas |
+|----------|--------|-------------|------------------|
+| `/api/summary` | GET | Resumo geral das operações de backup | 0.7.x: `totalMachines` → `totalServers` |
 | `/api/lastbackup/{serverId}` | GET | Último backup para um servidor | 0.7.x: `machine` → `server` |
-| `/api/lastbackups/{serverId}` | GET | Últimos backups para todos os trabalhos de backup | 0.7.x: `machine` → `server`, `backup_types_count` → `backup_jobs_count` |
-| `/api/upload` | POST | Subir dados de backup do Duplicati | Não há breaking changes |
+| `/api/lastbackups/{serverId}` | GET | Últimos backups para todas as tarefas de backup | 0.7.x: `machine` → `server`, `backup_types_count` → `backup_jobs_count` |
+| `/api/upload` | POST | Enviar dados de backup do Duplicati | Sem alterações significativas |
 
 ## Precisa de Ajuda? {#need-help}
 
 Se você precisa de assistência para atualizar sua integração:
 
-- **Referência da API**: Verificar a [Referência da API](../api-reference/overview.md) para documentação atual dos endpoints
+- **Referência da API**: Verifique a [Referência da API](../api-reference/overview.md) para documentação atual dos endpoints
 - **APIs Externas**: Consulte [APIs Externas](../api-reference/external-apis.md) para documentação detalhada dos endpoints
-- **Guia de Migração**: Revise o [Guia de Migração](version_upgrade.md) para informações gerais de migração
+- **Guia de Migração**: Revise o [Guia de Migração](version_upgrade.md) para informações gerais sobre migração
 - **Notas de Lançamento**: Revise as [Notas de Lançamento](../release-notes/0.8.x.md) específicas da versão para contexto adicional
-- **Suporte**: Abra uma issue no [GitHub](https://github.com/wsj-br/duplistatus/issues) para suporte
+- **Suporte**: Abra uma issue no [GitHub](https://github.com/wsj-br/duplistatus/issues) para obter suporte

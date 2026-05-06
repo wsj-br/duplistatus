@@ -1,12 +1,13 @@
 ---
-translation_last_updated: '2026-04-18T00:03:48.474Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:21:53.642Z'
+source_file_mtime: '2026-05-06T23:18:51.446Z'
 source_file_hash: 80141305b3c0238b589afcd457332db981c79b94ea2f13640c56b2203599bbd7
 translation_language: fr
 source_file_path: documentation/docs/user-guide/settings/notification-templates.md
 translation_models:
   - anthropic/claude-3.5-haiku
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Modèles {#templates}
 
@@ -16,11 +17,11 @@ La page inclut un sélecteur **Langue des modèles** qui définit la locale pour
 
 ![notification templates](../../assets/screen-settings-templates.png)
 
-| Modèle             | Description                                                    |
-| :----------------- | :------------------------------------------------------------- |
-| **Succès**         | Utilisé quand les sauvegardes se terminent avec succès.        |
-| **Avertissement/Erreur** | Utilisé quand les sauvegardes se terminent avec des avertissements ou des erreurs. |
-| **Sauvegarde en retard** | Utilisé quand les sauvegardes sont en retard.                  |
+| Modèle           | Description                                         |
+| :----------------- | :-------------------------------------------------- |
+| **Succès**        | Utilisé lorsque les sauvegardes se terminent avec succès.            |
+| **Avertissement/Erreur**  | Utilisé lorsque les sauvegardes se terminent avec des avertissements ou des erreurs. |
+| **Sauvegarde en retard** | Utilisé lorsque les sauvegardes sont en retard.                      |
 
 <br/>
 
@@ -32,12 +33,12 @@ Un sélecteur de **Langue des modèles** en haut de la page vous permet de chois
 
 ## Actions disponibles {#available-actions}
 
-| Bouton | Description |
+| Bouton                                                              | Description                                                                                         |
 |:--------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------|
-| <IconButton label="Enregistrer les paramètres du modèle" /> | Enregistre les paramètres lors de la modification du modèle. Le bouton enregistre le modèle affiché (Succès, Avertissement/Erreur ou Sauvegarde en retard). |
-| <IconButton icon="lucide:send" label="Envoyer une notification de test"/> | Vérifie le modèle après sa mise à jour. Les variables seront remplacées par leurs noms pour le test. Pour les notifications par e-mail, le titre du modèle devient la ligne d'objet de l'e-mail. |
-| <IconButton icon="lucide:rotate-ccw" label="Réinitialiser ce modèle par défaut"/> | Restaure le modèle par défaut pour le **modèle sélectionné** (l'onglet actuel). N'oubliez pas d'enregistrer après la réinitialisation. |
-| <IconButton icon="lucide:rotate-ccw" label="Réinitialiser tous les modèles par défaut"/> | Restaure les trois modèles (Succès, Avertissement/Erreur, Sauvegarde en retard) aux valeurs par défaut pour la Langue du modèle sélectionnée. N'oubliez pas d'enregistrer après la réinitialisation. |
+| <IconButton label="Enregistrer les paramètres du modèle" />                      | Enregistre les paramètres lors de la modification du modèle. Le bouton enregistre le modèle affiché (Succès, Avertissement/Erreur ou Sauvegarde en retard). |
+| <IconButton icon="lucide:send" label="Envoyer la notification de test"/>     | Vérifie le modèle après sa mise à jour. Les variables seront remplacées par leurs noms pour le test. Pour les notifications par courriel, le titre du modèle devient l'objet du courriel. |
+| <IconButton icon="lucide:rotate-ccw" label="Réinitialiser ce modèle à la valeur par défaut"/> | Restaure le modèle par défaut pour le **modèle sélectionné** (l'onglet actuel). N'oubliez pas d'enregistrer après la réinitialisation. |
+| <IconButton icon="lucide:rotate-ccw" label="Réinitialiser tout à la valeur par défaut"/> | Restaure les trois modèles (Succès, Avertissement/Erreur, Sauvegarde en retard) aux valeurs par défaut pour la Langue du modèle sélectionnée. N'oubliez pas d'enregistrer après la réinitialisation. |
 
 <br/>
 
@@ -45,7 +46,7 @@ Un sélecteur de **Langue des modèles** en haut de la page vous permet de chois
 
 Tous les modèles supportent les variables qui seront remplacées par des valeurs réelles. Le tableau suivant montre les variables disponibles :
 
-| Variable               | Description                                     | Available In     |
+| Variable               | Description                                     | Disponible dans     |
 |:-----------------------|:------------------------------------------------|:-----------------|
 | `{server_name}`        | Nom du serveur.                             | Tous les modèles    |
 | `{server_alias}`       | Alias du serveur.                            | Tous les modèles    |
@@ -55,8 +56,8 @@ Tous les modèles supportent les variables qui seront remplacées par des valeur
 | `{status}`             | Statut de la sauvegarde (Succès, Avertissement, Erreur, Fatal). | Succès, Avertissement |
 | `{backup_date}`        | Date et heure de la sauvegarde.                    | Succès, Avertissement |
 | `{duration}`           | Durée de la sauvegarde.                         | Succès, Avertissement |
-| `{uploaded_size}`      | Quantité de données téléversées.                        | Succès, Avertissement |
-| `{storage_size}`       | Informations d'utilisation du stockage.                      | Succès, Avertissement |
+| `{uploaded_size}`      | Quantité de données téléchargées.                        | Succès, Avertissement |
+| `{storage_size}`       | Informations sur l'utilisation du stockage.                      | Succès, Avertissement |
 | `{available_versions}` | Nombre de versions de sauvegarde disponibles.            | Succès, Avertissement |
 | `{file_count}`         | Nombre de fichiers traités.                      | Succès, Avertissement |
 | `{file_size}`          | Taille totale des fichiers sauvegardés.                  | Succès, Avertissement |
@@ -66,7 +67,7 @@ Tous les modèles supportent les variables qui seront remplacées par des valeur
 | `{log_text}`           | Messages du journal (avertissements et erreurs)              | Succès, Avertissement |
 | `{last_backup_date}`   | Date de la dernière sauvegarde.                        | En retard          |
 | `{last_elapsed}`       | Temps écoulé depuis la dernière sauvegarde.             | En retard          |
-| `{expected_date}`      | Date de sauvegarde attendue.                           | En retard          |
-| `{expected_elapsed}`   | Temps écoulé depuis la date attendue.           | En retard          |
-| `{backup_interval}`    | Chaîne d'intervalle (par exemple, « 1D », « 2W », « 1M »).       | En retard          |
+| `{expected_date}`      | Date prévue de la sauvegarde.                           | En retard          |
+| `{expected_elapsed}`   | Temps écoulé depuis la date prévue.           | En retard          |
+| `{backup_interval}`    | Chaîne d'intervalle (par exemple, "1D", "2W", "1M").       | En retard          |
 | `{overdue_tolerance}`  | Paramètre de tolérance de retard.                      | En retard          |

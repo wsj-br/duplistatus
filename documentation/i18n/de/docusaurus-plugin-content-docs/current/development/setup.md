@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-04-18T14:28:11.434Z'
-source_file_mtime: '2026-04-18T14:26:06.971Z'
-source_file_hash: 5f21215bb0815be3623139b3b25d7c342d796fc468d95ff0bf0bc3ff6d32890b
+translation_last_updated: '2026-05-06T23:20:23.328Z'
+source_file_mtime: '2026-05-06T23:18:51.410Z'
+source_file_hash: afa62bd5079025673839bdb73483cc80a950dce1e23ab6fbc63dccb4333ad41f
 translation_language: de
 source_file_path: documentation/docs/development/setup.md
 translation_models:
@@ -17,9 +17,9 @@ translation_models:
 - Node.js >=24.12.0
 - pnpm >=10.24.0 (packageManager: pnpm@10.30.3)
 - SQLite3
-- Inkscape (für die Übersetzung von Dokumentations-SVG und PNG-Exportieren; erforderlich nur, wenn Sie `translate` oder `translate:svg` ausführen)
-- bat/batcat (um eine schöne Version der `translate:help` einzublenden)
-- direnv (um die `.env*`-Dateien automatisch zu laden)
+- Inkscape (für die Übersetzung von Dokumentations-SVGs und PNG-Export; nur erforderlich, wenn Sie `translate` oder `translate:svg` ausführen)
+- bat/batcat (um eine ansprechende Version von `translate:help` anzuzeigen)
+- direnv (zum automatischen Laden der `.env*`-Dateien)
 
 ## Schritte {#steps}
 
@@ -128,12 +128,12 @@ mit diesem Befehl:
 Das Projekt enthält mehrere npm-Skripte für verschiedene Entwicklungsaufgaben:
 
 ### Entwicklungsskripte {#development-scripts}
-- `pnpm dev` - Starten Sie den Entwicklungsserver auf Port 8666 (einschließlich Vorprüfungen)
-- `pnpm build` - Erstellen Sie die Anwendung für die Produktion (einschließlich Vorprüfungen)
-- `pnpm lint` - Führen Sie ESLint aus, um die Codequalität zu prüfen
-- `pnpm typecheck` - Führen Sie die TypeScript-Typprüfung aus
-- `scripts/upgrade-dependencies.sh` - Aktualisieren Sie alle Pakete auf die neueste Version, prüfen Sie auf Sicherheitslücken und beheben Sie diese automatisch
-- `scripts/clean-workspace.sh` - Bereinigen Sie den Arbeitsbereich
+- `pnpm dev` - Entwicklungs-Server auf Port 8666 starten (beinhaltet Vorabprüfungen)
+- `pnpm build` - Anwendung für die Produktion bauen (beinhaltet Vorabprüfungen)
+- `pnpm lint` - ESLint ausführen, um die Code-Qualität zu überprüfen
+- `pnpm typecheck` - TypeScript-Typüberprüfung ausführen
+- `scripts/upgrade-dependencies.sh` — Root- und `documentation/`-Pakete aktualisieren (`npm-check-updates`), die Workspace-Lockdatei aktualisieren, browserslist aktualisieren und `pnpm audit` / fix ausführen. Bevorzugen Sie `source ./scripts/upgrade-dependencies.sh`, damit **nvm** in Ihrer Shell greift; in CI oder Automatisierung verwenden Sie `CI=1` oder `DUPLISTATUS_UPGRADE_ALLOW_EXEC=1`, wenn die Datei direkt ausgeführt wird. Siehe auch `scripts/upgrade-tools.sh` für Node/pnpm-Tooling allein.
+- `scripts/clean-workspace.sh` - Arbeitsbereich bereinigen
 
 **Hinweis:** Das `preinstall`-Skript erzwingt automatisch pnpm als Paketmanager.
 
@@ -141,16 +141,16 @@ Das Projekt enthält mehrere npm-Skripte für verschiedene Entwicklungsaufgaben:
 
 Diese Skripte müssen aus dem `documentation/`-Verzeichnis ausgeführt werden:
 
-- `pnpm start` - Dokumentationsseite im Produktionsmodus erstellen und bereitstellen (Port 3000 standardmäßig)
-- `pnpm start:en` - Dokumentations-Entwicklungsserver in Englisch starten (Hot-Reloading aktiviert)
-- `pnpm start:fr` - Dokumentations-Entwicklungsserver in Französisch starten (Hot-Reloading aktiviert)
-- `pnpm start:de` - Dokumentations-Entwicklungsserver in Deutsch starten (Hot-Reloading aktiviert)
-- `pnpm start:es` - Dokumentations-Entwicklungsserver in Spanisch starten (Hot-Reloading aktiviert)
-- `pnpm start:pt-br` - Dokumentations-Entwicklungsserver in Portugiesisch (Brasilien) starten (Hot-Reloading aktiviert)
-- `pnpm build` - Dokumentationsseite für Produktion erstellen
-- `pnpm write-translations` - Übersetzbare Zeichenfolgen aus der Dokumentation extrahieren
-- `pnpm translate` - Dokumentationsdateien mit KI übersetzen (siehe [Übersetzungs-Workflow](translation-workflow))
-- `pnpm lint` - ESLint auf Dokumentationsquelldateien ausführen
+- `pnpm start` - Dokumentationswebsite im Produktionsmodus bauen und bereitstellen (Standardport 3000)
+- `pnpm start:en` - Entwicklungs-Server für Dokumentation auf Englisch starten (Hot Reloading aktiviert)
+- `pnpm start:fr` - Entwicklungs-Server für Dokumentation im Französisch-Format starten (Hot Reloading aktiviert)
+- `pnpm start:de` - Entwicklungs-Server für Dokumentation im Deutsch-Format starten (Hot Reloading aktiviert)
+- `pnpm start:es` - Entwicklungs-Server für Dokumentation im Spanisch-Format starten (Hot Reloading aktiviert)
+- `pnpm start:pt-br` - Entwicklungs-Server für Dokumentation im Portugiesisch (Brasilien)-Format starten (Hot Reloading aktiviert)
+- `pnpm build` - Dokumentationswebsite für die Produktion bauen
+- `pnpm write-translations` - Übersetzbare Zeichenketten aus der Dokumentation extrahieren
+- `pnpm translate` - Dokumentationsdateien mithilfe von KI übersetzen (siehe [Übersetzungsworkflow](translation-workflow))
+- `pnpm lint` - ESLint auf Dokumentations-Quelldateien ausführen
 
 Die Entwicklungsserver (`start:*`) bieten Hot-Module-Replacement für schnelle Entwicklung. Der Standardport ist 3000.
 
@@ -160,20 +160,20 @@ Die Entwicklungsserver (`start:*`) bieten Hot-Module-Replacement für schnelle E
 - `pnpm start` - Produktions-Server starten (Port 9666)
 
 ### Docker-Skripte {#docker-scripts}
-- `pnpm docker:up` - Docker-Compose-Stack starten
-- `pnpm docker:down` - Docker-Compose-Stack stoppen
+- `pnpm docker:up` - Docker Compose-Stack starten
+- `pnpm docker:down` - Docker Compose-Stack stoppen
 - `pnpm docker:clean` - Docker-Umgebung und Cache bereinigen
-- `pnpm docker:devel` - Ein Entwicklungs-Docker-Image mit dem Tag `wsj-br/duplistatus:devel` erstellen
+- `pnpm docker:devel` - Erstellt ein Entwicklung-Docker-Image mit dem Tag `wsj-br/duplistatus:devel`
 
 ### Cron-Service-Skripte {#cron-service-scripts}
 - `pnpm cron:start` - Starten des Cron-Service im Produktionsmodus
 - `pnpm cron:dev` - Starten des Cron-Service im Entwicklungsmodus mit Dateiüberwachung (Port 8667)
 - `pnpm cron:start-local` - Starten des Cron-Service lokal zum Testen (Port 8667)
 
-### Test-Skripte {#test-scripts}
-- `pnpm generate-test-data` - Test-Sicherungsdaten generieren (erfordert --servers=N-Parameter)
-- `pnpm validate-csv-export` - CSV-Exportfunktionalität validieren
-- `pnpm test-entrypoint` - Docker-Entrypoint-Skript in der lokalen Entwicklung testen (siehe [Test-Skripte](test-scripts))
-- `pnpm take-screenshots` - Screenshots für die Dokumentation aufnehmen (siehe [Dokumentationswerkzeuge](documentation-tools))
+### Testskripte {#test-scripts}
+- `pnpm generate-test-data` - Test-Sicherungsdaten generieren (erfordert Parameter --servers=N)
+- `pnpm validate-csv-export` - CSV-Exportfunktionalität überprüfen
+- `pnpm test-entrypoint` - Docker-Entrypoint-Skript im lokalen Entwicklungsmodus testen (siehe [Testskripte](test-scripts))
+- `pnpm take-screenshots` - Erstellt Screenshots für die Dokumentation (siehe [Dokumentationswerkzeuge](documentation-tools))
 
 Überfällige Prüfungen, Cron-Systemprüfungen und SMTP-Tests erfolgen über die laufende Anwendung und `curl` (siehe [Test-Skripte](test-scripts)); die alten eigenständigen `pnpm`-Hilfsskripte dafür wurden entfernt.

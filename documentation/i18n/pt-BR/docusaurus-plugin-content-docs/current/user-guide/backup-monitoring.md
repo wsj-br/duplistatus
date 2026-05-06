@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:02:12.705Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:22:19.612Z'
+source_file_mtime: '2026-05-06T23:18:51.430Z'
 source_file_hash: 74e68a394e4fc2ec0fae355e9467377c4f1bde23f973fd6555e67a0ca86af518
 translation_language: pt-BR
 source_file_path: documentation/docs/user-guide/backup-monitoring.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 import { ZoomMermaid } from '@site/src/components/ZoomMermaid';
 
@@ -21,11 +22,11 @@ Na interface do usuário, os backups atrasados são exibidos com um ícone de av
 
 | **Etapa** | **Valor**                  | **Descrição**                                   | **Exemplo**        |
 |:--------:|:---------------------------|:--------------------------------------------------|:-------------------|
-|    1     | **Última Backup**            | A data e hora do último backup bem-sucedido.      | `2024-01-01 08:00` |
-|    2     | **Intervalo esperado**      | A frequência de backup configurada.                  | `1 day`            |
-|    3     | **Próximo Backup Calculado** | `Última Backup` + `Intervalo esperado`               | `2024-01-02 08:00` |
-|    4     | **Tolerância**              | O período de tolerância configurado (tempo extra permitido). | `1 hour`           |
-|    5     | **Próximo Backup Esperado**   | `Próximo Backup Calculado` + `Tolerância`            | `2024-01-02 09:00` |
+|    1     | **Último Backup**            | A data e hora do último backup bem-sucedido.      | `2024-01-01 08:00` |
+|    2     | **Intervalo Esperado**      | A frequência configurada de backup.                  | `1 day`            |
+|    3     | **Próximo Backup Calculado** | `Last Backup` + `Expected Interval`               | `2024-01-02 08:00` |
+|    4     | **Tolerância**              | O período de carência configurado (tempo extra permitido). | `1 hour`           |
+|    5     | **Próximo Backup Esperado**   | `Calculated Next Backup` + `Tolerance`            | `2024-01-02 09:00` |
 
 Um backup é considerado **atrasado** se a hora atual é posterior à hora do `Próximo Backup Esperado`.
 

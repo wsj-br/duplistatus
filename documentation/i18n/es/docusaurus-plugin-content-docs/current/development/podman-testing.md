@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:01:26.397Z'
-source_file_mtime: '2026-04-10T18:19:13.212Z'
+translation_last_updated: '2026-05-06T23:19:56.356Z'
+source_file_mtime: '2026-05-06T23:18:51.394Z'
 source_file_hash: f647338c95a160f5fa9c03468bfb314c8f97e5e5ab00f1264f67ab14f18b1589
 translation_language: es
 source_file_path: documentation/docs/development/podman-testing.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Pruebas de Podman {#podman-testing}
 
@@ -13,26 +14,26 @@ Copiar y ejecutar los scripts ubicados en `scripts/podman_testing` en el Servido
 
 ## Configuración Inicial y Gestión {#initial-setup-and-management}
 
-1. `copy.docker.duplistatus.local`: Copia la imagen de Docker del daemon de Docker local a Podman (para pruebas locales).
-2. `copy.docker.duplistatus.remote`: Copia la imagen de Docker de un servidor de desarrollo remoto a Podman (requiere acceso SSH).
-   - Cree la imagen en el servidor de desarrollo utilizando: `docker build . -t wsj-br/duplistatus:devel`
-3. `start.duplistatus`: Inicia el contenedor en modo sin privilegios de root.
+1. `copy.docker.duplistatus.local`: Copia la imagen de Docker desde el daemon local de Docker a Podman (para pruebas locales).
+2. `copy.docker.duplistatus.remote`: Copia la imagen de Docker desde un servidor de desarrollo remoto a Podman (requiere acceso SSH).
+   - Cree la imagen en el servidor de desarrollo usando: `docker build . -t wsj-br/duplistatus:devel`
+3. `start.duplistatus`: Inicia el contenedor en modo sin privilegios (rootless).
 4. `pod.testing`: Prueba el contenedor dentro de un pod de Podman (con privilegios de root).
 5. `stop.duplistatus`: Detiene el pod y elimina el contenedor.
-6. `clean.duplistatus`: Detiene los contenedores, elimina los pods y limpia las imágenes antiguas.
+6. `clean.duplistatus`: Detiene los contenedores, elimina los pods y limpia imágenes antiguas.
 
 ## Configuración de DNS {#dns-configuration}
 
 Los scripts detectan y configuran automáticamente la configuración de DNS desde el sistema host:
 
-- **Detección Automática**: Utiliza `resolvectl status` (systemd-resolved) para extraer servidores DNS y dominios de búsqueda
-- **Soporte de Respaldo**: Recurre al análisis de `/etc/resolv.conf` en sistemas sin systemd
-- **Filtrado Inteligente**: Filtra automáticamente direcciones localhost y servidores de nombres IPv6
-- **Compatible con**:
+- **Detección automática**: Usa `resolvectl status` (systemd-resolved) para extraer servidores DNS y dominios de búsqueda
+- **Soporte de respaldo**: Recurre al análisis de `/etc/resolv.conf` en sistemas sin systemd
+- **Filtrado inteligente**: Filtra automáticamente direcciones de localhost y servidores de nombres IPv6
+- **Funciona con**:
   - Tailscale MagicDNS (100.100.100.100)
   - Servidores DNS corporativos
   - Configuraciones de red estándar
-  - Configuraciones DNS Personalizadas
+  - Configuraciones DNS personalizadas
 
 No es necesaria ninguna configuración manual de DNS: ¡los scripts la manejan automáticamente!
 
@@ -58,15 +59,15 @@ docker build . -t wsj-br/duplistatus:devel
 
 ### Servidor Podman {#podman-server}
 
-1. Transferir la imagen de Docker:
+1. Transfiera la imagen de Docker:
    - Use `./copy.docker.duplistatus.local` si Docker y Podman están en la misma máquina
-   - Use `./copy.docker.duplistatus.remote` si copia desde un servidor de desarrollo remoto (requiere archivo `.env` con `REMOTE_USER` y `REMOTE_HOST`)
-2. Inicie el contenedor con `./start.duplistatus` (independiente, sin privilegios)
-   - O use `./pod.testing` para probar en modo pod (con root)
+   - Use `./copy.docker.duplistatus.remote` si copia desde un servidor de desarrollo remoto (requiere el archivo `.env` con `REMOTE_USER` y `REMOTE_HOST`)
+2. Inicie el contenedor con `./start.duplistatus` (autónomo, sin privilegios)
+   - O use `./pod.testing` para probar en modo pod (con privilegios de root)
 3. Monitoree con `./check.duplistatus` y `./logs.duplistatus`
-4. Detenga con `./stop.duplistatus` cuando haya terminado
+4. Detenga con `./stop.duplistatus` cuando termine
 5. Use `./restart.duplistatus` para un ciclo de reinicio completo (detener, copiar imagen, iniciar)
-   - **Nota**: Este script actualmente hace referencia a `copy.docker.duplistatus` que debe reemplazarse con la variante `.local` o `.remote`
+   - **Nota**: Este script actualmente hace referencia a `copy.docker.duplistatus`, lo cual debe reemplazarse por la variante `.local` o `.remote`
 6. Use `./clean.duplistatus` para eliminar contenedores, pods e imágenes antiguas
 
 # Prueba de la Aplicación {#testing-the-application}

@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-04-18T14:28:16.078Z'
-source_file_mtime: '2026-04-18T14:26:03.387Z'
+translation_last_updated: '2026-05-06T23:20:25.014Z'
+source_file_mtime: '2026-05-06T23:18:51.394Z'
 source_file_hash: 1d2e30215eab8e6548c552a40d5a81eb9837ec96e1f22b22b2e39a0a757fe50a
 translation_language: de
 source_file_path: documentation/docs/development/test-scripts.md
@@ -86,12 +86,12 @@ Nützlich, um sicherzustellen, dass CSV-Exporte vor Releases ordnungsgemäß fun
 sudo ./scripts/temporary_ntfy.sh_block.sh
 ```
 
-Dieses Skript blockiert vorübergehend den ausgehenden Netzwerkzugriff auf den NTFY-Server (`ntfy.sh`), um den Wiederholungsmechanismus für Benachrichtigungen zu testen. Es:
-- Löst die IP-Adresse des NTFY-Servers auf
+Dieses Skript blockiert vorübergehend den ausgehenden Netzwerkzugriff auf den NTFY-Server (`ntfy.sh`), um den Benachrichtigungs-Wiederholungsmechanismus zu testen. Es führt Folgendes durch:
+- Ermittelt die IP-Adresse des NTFY-Servers
 - Fügt eine iptables-Regel hinzu, um ausgehenden Datenverkehr zu blockieren
 - Blockiert für 10 Sekunden (konfigurierbar)
-- Entfernt die Blockierungsregel beim Beenden automatisch
-- Erfordert Root-Berechtigungen (sudo)
+- Entfernt die Blockierungsregel automatisch beim Beenden
+- Erfordert Root-Rechte (sudo)
 
 >[!CAUTION]
 > Dieses Skript ändert iptables-Regeln und erfordert Root-Privilegien. Verwenden Sie es nur zum Testen von Benachrichtigungs-Wiederholungsmechanismen.
@@ -108,23 +108,23 @@ Das Projekt enthält Skripte zum Testen von Datenbankmigrationen von älteren Ve
 
 Dieses Skript generiert Testdatenbanken für mehrere historische Versionen der Anwendung. Es:
 
-1. **Stoppt und entfernt** jeden vorhandenen Docker-Container
+1. **Stoppt und entfernt** alle vorhandenen Docker-Container
 2. **Für jede Version** (v0.4.0, v0.5.0, v0.6.1, 0.7.27, 0.8.21):
    - Entfernt vorhandene Datenbankdateien
-   - Erstellt eine Versions-Tag-Datei
-   - Startet einen Docker-Container mit der spezifischen Version
+   - Erstellt eine Versions-Taggdatei
+   - Startet einen Docker-Container mit der jeweiligen Version
    - Wartet, bis der Container bereit ist
-   - Generiert Testdaten mit `pnpm generate-test-data`
-   - Erstellt einen Screenshot der Benutzeroberfläche mit Testdaten
+   - Generiert Testdaten mithilfe von `pnpm generate-test-data`
+   - Erstellt einen Screenshot der Benutzeroberfläche mit den Testdaten
    - Stoppt und entfernt den Container
-   - Leert WAL-Dateien und speichert das Datenbankschema
+   - Leert die WAL-Dateien und speichert das Datenbankschema
    - Kopiert die Datenbankdatei nach `scripts/migration_test_data/`
 
 **Anforderungen:**
 - Docker muss installiert und konfiguriert sein
 - Google Chrome (über Puppeteer) muss installiert sein
-- Root-/sudo-Zugriff für Docker-Operationen
-- Das Docker-Volume `duplistatus_data` muss vorhanden sein
+- Root-/Sudo-Zugriff für Docker-Operationen
+- Das Docker-Volume `duplistatus_data` muss existieren
 
 **Ausgabe:**
 - Datenbankdateien: `scripts/migration_test_data/backups_<VERSION>.db`
@@ -153,26 +153,26 @@ Dieses Skript testet Datenbankmigrationen von alten Versionen zur aktuellen Vers
 1. **Für jede Version** (v0.4.0, v0.5.0, v0.6.1, 0.7.27, 0.8.21):
    - Erstellt eine temporäre Kopie der Testdatenbank
    - Führt den Migrationsprozess mit `test-migration.ts` aus
-   - Validiert die Struktur der migrierten Datenbank
-   - Prüft auf erforderliche Tabellen und Spalten
-   - Überprüft, dass die Datenbankversion 4.0 ist
-   - Bereinigt temporäre Dateien
+   - Überprüft die Struktur der migrierten Datenbank
+   - Überprüft das Vorhandensein erforderlicher Tabellen und Spalten
+   - Stellt sicher, dass die Datenbankversion 4.0 ist
+   - Entfernt temporäre Dateien
 
 **Anforderungen:**
 - Testdatenbanken müssen in `scripts/migration_test_data/` vorhanden sein
 - Generiert durch vorheriges Ausführen von `generate-migration-test-data.sh`
 
 **Ausgabe:**
-- Farbcodierte Testergebnisse (grün für bestanden, rot für fehlgeschlagen)
-- Zusammenfassung bestandener und fehlgeschlagener Versionen
+- Farbkodierte Testergebnisse (grün für bestanden, rot für fehlgeschlagen)
+- Zusammenfassung der bestandenen und fehlgeschlagenen Versionen
 - Detaillierte Fehlermeldungen für fehlgeschlagene Migrationen
-- Exit-Code 0, wenn alle Tests bestanden sind, 1 wenn einer fehlschlägt
+- Exit-Code 0, wenn alle Tests bestanden werden, 1, wenn mindestens ein Test fehlschlägt
 
-**Was wird validiert:**
-- Datenbankversion ist nach der Migration 4.0
+**Was validiert wird:**
+- Die Datenbankversion ist nach der Migration 4.0
 - Alle erforderlichen Tabellen existieren: `servers`, `backups`, `configurations`, `users`, `sessions`, `audit_log`, `db_version`
 - Erforderliche Spalten existieren in jeder Tabelle
-- Datenbankstruktur ist korrekt
+- Die Datenbankstruktur ist korrekt
 
 **Beispielausgabe:**
 
@@ -233,11 +233,11 @@ Dieses Skript bietet einen Test-Wrapper für `docker-entrypoint.sh` in der lokal
 
 **Was es tut:**
 
-1. **Erstellt immer eine neue Version**: Führt automatisch `pnpm build-local` aus, um vor dem Testen einen neuen Build zu erstellen (kein manuelles Bauen erforderlich)
-2. **Erstellt den Cron-Service**: Stellt sicher, dass der Cron-Service erstellt wird (`dist/cron-service.cjs`)
-3. **Richtet eine Docker-ähnliche Struktur ein**: Erstellt notwendige Symlinks und Verzeichnisstrukturen, um die Docker-Umgebung nachzuahmen
+1. **Erstellt immer eine frische Version**: Führt automatisch `pnpm build-local` aus, um vor dem Testen einen frischen Build zu erstellen (kein manueller Build erforderlich)
+2. **Baut den Cron-Service**: Stellt sicher, dass der Cron-Service gebaut wird (`dist/cron-service.cjs`)
+3. **Richtet eine Docker-ähnliche Struktur ein**: Erstellt notwendige symbolische Verknüpfungen und Verzeichnisstrukturen, um die Docker-Umgebung nachzuahmen
 4. **Führt das Entrypoint-Skript aus**: Führt `docker-entrypoint.sh` mit den richtigen Umgebungsvariablen aus
-5. **Räumt auf**: Entfernt automatisch temporäre Dateien beim Beenden
+5. **Aufräumen**: Entfernt automatisch temporäre Dateien beim Beenden
 
 **Verwendung:**
 
@@ -260,8 +260,8 @@ pnpm test-entrypoint
 - Das Skript muss aus dem Repository-Stammverzeichnis ausgeführt werden (pnpm handhabt dies automatisch)
 - Das Skript handhabt automatisch alle Voraussetzungen (Build, Cron-Service usw.)
 
-**Use Cases:**
+**Anwendungsfälle:**
 - Lokales Testen von Änderungen am Entrypoint-Skript vor der Docker-Bereitstellung
-- Überprüfung der Protokollrotation und Protokollierungsfunktionalität
-- Testen von ordnungsgemäßem Herunterfahren und Signalbehandlung
-- Debugging des Verhaltens von Entrypoint-Skripten in einer lokalen Umgebung
+- Überprüfung der Protokollrotation und Protokollierungsfunktionen
+- Testen des geordneten Herunterfahrens und der Signalverarbeitung
+- Debuggen des Verhaltens des Entrypoint-Skripts in einer lokalen Umgebung

@@ -1,41 +1,42 @@
 ---
-translation_last_updated: '2026-04-18T00:03:00.037Z'
-source_file_mtime: '2026-04-10T18:19:13.216Z'
-source_file_hash: 8db5711d4031f54e856800f57a26c3a4d6f0b4d1d15c4c7a9225fbeae0f272bb
+translation_last_updated: '2026-05-06T23:20:44.573Z'
+source_file_mtime: '2026-05-06T23:18:51.410Z'
+source_file_hash: 5e64fe25444d347417eef7f5a5c28139a4130cae452f2e3ac9ea593ea31bb608
 translation_language: de
 source_file_path: documentation/docs/migration/version_upgrade.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Migrationsleitfaden {#migration-guide}
 
-Dieses Handbuch erklärt, wie Sie zwischen Versionen von duplistatus aktualisieren. Migrationen erfolgen automatisch – das Datenbankschema aktualisiert sich selbst, wenn Sie eine neue Version starten.
+Diese Anleitung erklärt, wie Sie zwischen Versionen von duplistatus aktualisieren. Migrationen erfolgen automatisch – das Datenbankschema aktualisiert sich beim Start einer neuen Version selbst.
 
-Manuelle Schritte sind nur erforderlich, wenn Sie benutzerdefinierte Benachrichtigungsvorlagen angepasst haben (Version 0.8.x hat Vorlagenvariablen geändert) oder externe API-Integrationen aktualisiert werden müssen (Version 0.7.x hat API-Feldnamen geändert, Version 0.9.x erfordert Authentifizierung).
+Manuelle Schritte sind nur erforderlich, wenn Sie Benachrichtigungsvorlagen angepasst haben (in Version 0.8.x wurden Vorlagenvariablen geändert) oder externe API-Integrationen aktualisiert werden müssen (in Version 0.7.x wurden API-Feldnamen geändert, in Version 0.9.x ist eine Authentifizierung erforderlich).
 
 ## Übersicht {#overview}
 
-duplistatus migriert Ihr Datenbankschema bei einem Upgrade automatisch. Das System:
+duplistatus migriert Ihr Datenbankschema beim Upgrade automatisch. Das System:
 
-1. Erstellt eine Sicherung Ihrer Datenbank vor Änderungen
+1. Erstellt vor Änderungen ein Backup der Datenbank
 2. Aktualisiert das Datenbankschema auf die neueste Version
-3. Bewahrt alle vorhandenen Daten (Server, Sicherungen, Konfiguration)
+3. Behält alle bestehenden Daten bei (Server, Backups, Konfiguration)
 4. Überprüft, ob die Migration erfolgreich abgeschlossen wurde
 
 ## Sicherung Ihrer Datenbank vor der Migration {#backing-up-your-database-before-migration}
 
-Vor dem Upgrade auf eine neue Version wird empfohlen, eine Sicherung von Ihrer Datenbank zu erstellen. Dies stellt sicher, dass Sie Ihre Daten wiederherstellen können, falls während des Migrationsprozesses etwas schiefgeht.
+Bevor Sie auf eine neue Version aktualisieren, sollten Sie ein Backup Ihrer Datenbank erstellen. So können Sie Ihre Daten wiederherstellen, falls während des Migrationsprozesses etwas schiefgeht.
 
 ### Wenn Sie Version 1.2.1 oder später ausführen {#if-youre-running-version-121-or-later}
 
-Verwenden Sie die integrierte Datenbanksicherungsfunktion:
+Verwenden Sie die integrierte Datenbank-Backup-Funktion:
 
-1. Navigieren Sie zu [Einstellungen → Datenbankwartung](../user-guide/settings/database-maintenance.md) in der Weboberfläche
-2. Wählen Sie im Abschnitt **Datenbanksicherung** ein Sicherungsformat aus:
-   - **Datenbankdatei (.db)**: Binärformat – schnellste Sicherung, behält alle Datenbankstrukturen exakt bei
-   - **SQL-Dump (.sql)**: Textformat – lesbare SQL-Anweisungen
-3. Klicken Sie auf **Sicherung herunterladen**
-4. Die Sicherungsdatei wird auf Ihren Computer mit einem Zeitstempel-Dateinamen heruntergeladen
+1. Navigieren Sie in der Weboberfläche zu [Einstellungen → Datenbankwartung](../user-guide/settings/database-maintenance.md)
+2. Wählen Sie im Abschnitt **Datenbank-Backup** ein Backup-Format aus:
+   - **Datenbankdatei (.db)**: Binäres Format – schnellstes Backup, behält exakt die gesamte Datenbankstruktur bei
+   - **SQL-Dump (.sql)**: Textformat – menschenlesbare SQL-Anweisungen
+3. Klicken Sie auf **Backup herunterladen**
+4. Die Backup-Datei wird mit einem zeitgestempelten Dateinamen auf Ihren Computer heruntergeladen
 
 Weitere Details finden Sie in der Dokumentation zur [Datenbankwartung](../user-guide/settings/database-maintenance.md#database-backup).
 
@@ -60,12 +61,12 @@ docker cp duplistatus:/app/data/backups.db ./duplistatus-backup-$(date +%Y%m%d).
 ##### Für Windows-Benutzer {#for-windows-users}
 Wenn Sie Docker Desktop unter Windows ausführen, haben Sie zwei einfache Möglichkeiten, dies ohne Verwendung der Befehlszeile zu bewältigen:
 
-###### Option A: Docker Desktop verwenden (Am einfachsten) {#option-a-use-docker-desktop-easiest}
-1. Öffnen Sie das Docker Desktop Dashboard.
-2. Gehen Sie zur Registerkarte Containers und klicken Sie auf Ihren duplistatus Container.
-3. Klicken Sie auf die Registerkarte Dateien.
+###### Option A: Docker Desktop verwenden (am einfachsten) {#option-a-use-docker-desktop-easiest}
+1. Öffnen Sie das Docker Desktop-Dashboard.
+2. Wechseln Sie zum Reiter Container und klicken Sie auf Ihren duplistatus-Container.
+3. Klicken Sie auf den Reiter Dateien.
 4. Navigieren Sie zu `/app/data/`.
-5. Klicken Sie mit der rechten Maustaste auf `backups.db` und wählen Sie **Speichern unter...**, um die Datei in Ihre Windows-Ordner herunterzuladen.
+5. Klicken Sie mit der rechten Maustaste auf `backups.db` und wählen Sie **Speichern unter...**, um die Datei in Ihren Windows-Ordnern zu speichern.
 
 ###### Option B: PowerShell verwenden {#option-b-use-powershell}
 Wenn Sie das Terminal bevorzugen, können Sie PowerShell verwenden, um die Datei auf Ihren Desktop zu kopieren:
@@ -82,14 +83,14 @@ Wenn Sie Ihren Container ursprünglich mit einem Bind Mount eingerichtet haben (
 #### Wiederherstellen Ihrer Daten {#restoring-your-data}
 Wenn Sie Ihre Datenbank aus einer vorherigen Sicherung wiederherstellen müssen, führen Sie die folgenden Schritte basierend auf Ihrem Betriebssystem aus.
 
-:::info[WICHTIG] 
-Stoppen Sie den Container vor der Wiederherstellung der Datenbank, um Dateikorruption zu verhindern.
+:::info[IMPORTANT]
+Stoppen Sie den Container, bevor Sie die Datenbank wiederherstellen, um Dateibeschädigungen zu vermeiden.
 :::
 
-##### Für Linux-Benutzer {#for-linux-users}
-Die einfachste Möglichkeit zur Wiederherstellung besteht darin, die Sicherungsdatei in den internen Speicherplatz des Containers "zurückzuspielen".
+##### Für Linux-Benutzer {#for-linux-users-1}
+Die einfachste Methode zur Wiederherstellung besteht darin, die Sicherungsdatei in den internen Speicherpfad des Containers zu „übertragen“.
 
-###### Docker oder Podman verwenden: {#using-docker-or-podman}
+###### Mit Docker oder Podman: {#using-docker-or-podman-1}
 
 ```bash
 # stop the container
@@ -102,21 +103,21 @@ docker cp ./duplistatus-backup.db duplistatus:/app/data/backups.db
 docker start duplistatus
 ```
 
-##### Für Windows-Benutzer {#for-windows-users}
-Wenn Sie Docker Desktop verwenden, können Sie die Wiederherstellung über die GUI oder PowerShell durchführen.
+##### Für Windows-Benutzer {#for-windows-users-1}
+Wenn Sie Docker Desktop verwenden, können Sie die Wiederherstellung über die grafische Oberfläche (GUI) oder PowerShell durchführen.
 
 ###### Option A: Docker Desktop (GUI) verwenden {#option-a-use-docker-desktop-gui}
-1. Stellen Sie sicher, dass der duplistatus-Container aktiv ist (Docker Desktop erfordert, dass der Container aktiv ist, um Dateien über die GUI hochzuladen).
-2. Gehen Sie zur Registerkarte „Dateien" in Ihren Container-Einstellungen.
+1. Stellen Sie sicher, dass der duplistatus-Container ausgeführt wird (Docker Desktop erfordert, dass der Container aktiv ist, um Dateien über die GUI hochzuladen).
+2. Wechseln Sie zum Reiter Dateien in den Einstellungen Ihres Containers.
 3. Navigieren Sie zu `/app/data/`.
-4. Klicken Sie mit der rechten Maustaste auf die vorhandene backups.db und wählen Sie „Löschen".
-5. Klicken Sie auf die Schaltfläche „Importieren" (oder klicken Sie mit der rechten Maustaste in den Ordnerbereich) und wählen Sie Ihre Sicherungsdatei von Ihrem Computer aus.
+4. Klicken Sie mit der rechten Maustaste auf die vorhandene Datei backups.db und wählen Sie Löschen.
+5. Klicken Sie auf die Schaltfläche Importieren (oder klicken Sie mit der rechten Maustaste im Ordnerbereich) und wählen Sie Ihre Sicherungsdatei von Ihrem Computer aus.
 
-Benennen Sie die importierte Datei in genau backups.db um, wenn sie einen Zeitstempel im Namen hat.
+Benennen Sie die importierte Datei in genau backups.db um, falls sie einen Zeitstempel im Namen enthält.
 
 Starten Sie den Container neu.
 
-###### Option B: PowerShell verwenden {#option-b-use-powershell}
+###### Option B: PowerShell verwenden {#option-b-use-powershell-1}
 
 ```powershell
 # Copy the file from your Desktop back into the container
@@ -126,12 +127,12 @@ docker cp $HOME\Desktop\duplistatus-backup.db duplistatus:/app/data/backups.db
 docker start duplistatus
 ```
 
-##### Wenn Sie Bind Mounts verwenden {#if-you-use-bind-mounts}
-Wenn Sie einen lokalen Ordner dem Container zuordnen, benötigen Sie keine speziellen Befehle.
+##### Wenn Sie Bind-Mounts verwenden {#if-you-use-bind-mounts-1}
+Wenn Sie einen lokalen Ordner verwenden, der an den Container angebunden ist, benötigen Sie keine speziellen Befehle.
 
 1. Stoppen Sie den Container.
-2. Kopieren Sie Ihre Sicherungsdatei manuell in Ihren zugeordneten Ordner (z. B. `/opt/duplistatus` oder `C:\duplistatus_data`).
-3. Stellen Sie sicher, dass die Datei genau `backups.db` benannt ist.
+2. Kopieren Sie Ihre Sicherungsdatei manuell in Ihren verknüpften Ordner (z. B. `/opt/duplistatus` oder `C:\duplistatus_data`).
+3. Stellen Sie sicher, dass die Datei exakt den Namen `backups.db` trägt.
 4. Starten Sie den Container.
 
 ```bash
@@ -175,83 +176,83 @@ Suchen Sie nach Nachrichten wie:
 
 #### Was ändert sich automatisch {#what-changes-automatically}
 
-- Datenbankschema wird von v3.1 zu v4.0 migriert
-- Neue Tabellen erstellt: `users`, `sessions`, `audit_log`
-- Standard-Admin-Konto wird automatisch erstellt
-- Alle vorhandenen Sitzungen ungültig gemacht
+- Datenbankschema wird von v3.1 auf v4.0 migriert
+- Neue Tabellen werden erstellt: `users`, `sessions`, `audit_log`
+- Standard-Administratorkonto wird automatisch erstellt
+- Alle vorhandenen Sitzungen werden ungültig
 
 #### Was Sie tun müssen {#what-you-must-do}
 
-1. **Anmelden** mit Standard-Admin-Anmeldedaten:
+1. **Anmelden** mit Standard-Administrator-Anmeldeinformationen:
    - Benutzername: `admin`
    - Passwort: `Duplistatus09`
-2. **Passwort ändern** wenn aufgefordert (erforderlich bei der ersten Anmeldung)
+2. **Passwort ändern**, wenn dazu aufgefordert (erforderlich beim ersten Anmelden)
 3. **Benutzerkonten erstellen** für andere Benutzer (Einstellungen → Benutzer)
-4. **Externe API-Integrationen aktualisieren**, um Authentifizierung einzubeziehen (siehe [Rückwärts inkompatible API-Änderungen](api-changes.md))
-5. **Audit-Log-Aufbewahrung konfigurieren**, falls erforderlich (Einstellungen → Audit-Log)
+4. **Externe API-Integrationen aktualisieren**, um Authentifizierung einzubeziehen (siehe [Nicht abwärtskompatible API-Änderungen](api-changes.md))
+5. **Audit-Protokoll-Beibehaltung konfigurieren**, falls erforderlich (Einstellungen → Audit-Log)
 
 #### Wenn Sie gesperrt sind {#if-youre-locked-out}
 
-Verwenden Sie das Admin-Wiederherstellungstool:
+Verwenden Sie das Administrator-Wiederherstellungstool:
 
 ```bash
 docker exec -it duplistatus /app/admin-recovery admin NewPassword123
 ```
 
-Weitere Informationen finden Sie im [Admin Recovery Guide](../user-guide/admin-recovery.md).
+Weitere Details finden Sie im [Administrator-Wiederherstellungsleitfaden](../user-guide/admin-recovery.md).
 
 ### Upgrade auf Version 0.8.x {#upgrading-to-version-08x}
 
-#### Was ändert sich automatisch {#what-changes-automatically}
+#### Was sich automatisch ändert {#what-changes-automatically-1}
 
 - Datenbankschema auf v3.1 aktualisiert
 - Hauptschlüssel für Verschlüsselung generiert (gespeichert in `.duplistatus.key`)
 - Sitzungen ungültig gemacht (neue CSRF-geschützte Sitzungen erstellt)
 - Passwörter mit neuem System verschlüsselt
 
-#### Was Sie tun müssen {#what-you-must-do}
+#### Was Sie selbst vornehmen müssen {#what-you-must-do-1}
 
 1. **Benachrichtigungsvorlagen aktualisieren**, falls Sie diese angepasst haben:
    - Ersetzen Sie `{backup_interval_value}` und `{backup_interval_type}` durch `{backup_interval}`
-   - Standard-Vorlagen werden automatisch aktualisiert
+   - Standardvorlagen werden automatisch aktualisiert
 
 #### Sicherheitshinweise {#security-notes}
 
-- Stellen Sie sicher, dass die Datei `.duplistatus.key` gesichert ist (hat 0400-Berechtigungen)
-- Sitzungen verfallen nach 24 Stunden
+- Stellen Sie sicher, dass die Datei `.duplistatus.key` gesichert ist (hat Berechtigungen 0400)
+- Sitzungen laufen nach 24 Stunden ab
 
 ### Upgrade auf Version 0.7.x {#upgrading-to-version-07x}
 
-#### Was ändert sich automatisch {#what-changes-automatically}
+#### Was sich automatisch ändert {#what-changes-automatically-2}
 
-- `machines` Tabelle in `servers` umbenannt
-- `machine_id` Felder in `server_id` umbenannt
+- Tabelle `machines` wurde umbenannt in `servers`
+- Felder `machine_id` wurden umbenannt in `server_id`
 - Neue Felder hinzugefügt: `alias`, `notes`, `created_at`, `updated_at`
 
-#### Was Sie tun müssen {#what-you-must-do}
+#### Was Sie selbst vornehmen müssen {#what-you-must-do-2}
 
 1. **Externe API-Integrationen aktualisieren**:
-   - `totalMachines` → `totalServers` in `/api/summary` ändern
-   - `machine` → `server` in API-Antwortobjekten ändern
-   - `backup_types_count` → `backup_jobs_count` in `/api/lastbackups/{serverId}` ändern
-   - Endpunkt-Pfade von `/api/machines/...` zu `/api/servers/...` aktualisieren
+   - Ändern Sie `totalMachines` → `totalServers` in `/api/summary`
+   - Ändern Sie `machine` → `server` in API-Antwortobjekten
+   - Ändern Sie `backup_types_count` → `backup_jobs_count` in `/api/lastbackups/{serverId}`
+   - Aktualisieren Sie die Endpunktpfade von `/api/machines/...` zu `/api/servers/...`
 2. **Benachrichtigungsvorlagen aktualisieren**:
-   - `{machine_name}` durch `{server_name}` ersetzen
+   - Ersetzen Sie `{machine_name}` durch `{server_name}`
 
-Siehe [Rückwärts inkompatible API-Änderungen](api-changes.md) für detaillierte API-Migrationschritte.
+Detaillierte Anweisungen zur API-Migration finden Sie unter [Nicht abwärtskompatible API-Änderungen](api-changes.md).
 
 ## Checkliste nach der Migration {#post-migration-checklist}
 
-Nach dem Upgrade bestätigen:
+Nach dem Upgrade überprüfen:
 
 - [ ] Alle Server werden korrekt im Dashboard angezeigt
-- [ ] Sicherungsverlauf ist vollständig und zugänglich
+- [ ] Der Sicherungsverlauf ist vollständig und zugänglich
 - [ ] Benachrichtigungen funktionieren (NTFY/E-Mail testen)
 - [ ] Externe API-Integrationen funktionieren (falls zutreffend)
 - [ ] Einstellungen sind zugänglich und korrekt
-- [ ] Sicherungsüberwachung funktioniert korrekt
+- [ ] Die Backup-Überwachung funktioniert ordnungsgemäß
 - [ ] Erfolgreich angemeldet (0.9.x+)
-- [ ] Standard-Admin-Passwort geändert (0.9.x+)
+- [ ] Standard-Administratorpasswort geändert (0.9.x+)
 - [ ] Benutzerkonten für andere Benutzer erstellt (0.9.x+)
 - [ ] Externe API-Integrationen mit Authentifizierung aktualisiert (0.9.x+)
 
@@ -259,36 +260,36 @@ Nach dem Upgrade bestätigen:
 
 ### Migration schlägt fehl {#migration-fails}
 
-1. Prüfen Sie den Speicherplatz (Sicherung erfordert Speicherplatz)
-2. Bestätigen Sie Schreibberechtigungen im Datenverzeichnis
-3. Überprüfen Sie Container-Protokolle auf spezifische Fehler
-4. Stellen Sie bei Bedarf aus einer Sicherung wieder her (siehe Rollback unten)
+1. Prüfen Sie den verfügbaren Speicherplatz (für die Sicherung wird Platz benötigt)
+2. Schreibrechte im Datenverzeichnis überprüfen
+3. Container-Logs auf spezifische Fehler prüfen
+4. Bei Bedarf aus der Sicherung wiederherstellen (siehe Rollback unten)
 
 ### Daten fehlen nach der Migration {#data-missing-after-migration}
 
-1. Bestätigen Sie, dass die Sicherung erstellt wurde (Datenverzeichnis prüfen)
-2. Überprüfen Sie die Container-Protokolle auf Nachrichten zur Sicherungserstellung
-3. Prüfen Sie die Integrität der Datenbankdatei
+1. Überprüfen Sie, ob eine Sicherung erstellt wurde (Datenverzeichnis prüfen)
+2. Container-Logs auf Meldungen zur Sicherungserstellung prüfen
+3. Integrität der Datenbankdatei prüfen
 
 ### Authentifizierungsprobleme (0.9.x+) {#authentication-issues-09x}
 
-1. Bestätigen Sie, dass das Standard-Admin-Konto vorhanden ist (Protokolle prüfen)
-2. Versuchen Sie Standard-Anmeldedaten: `admin` / `Duplistatus09`
-3. Verwenden Sie das Admin-Wiederherstellungstool, wenn gesperrt
-4. Bestätigen Sie, dass die Tabelle `users` in der Datenbank vorhanden ist
+1. Überprüfen Sie, ob der Standard-Administratoraccount existiert (Logs prüfen)
+2. Standardanmeldedaten versuchen: `admin` / `Duplistatus09`
+3. Administratoren-Wiederherstellungstool verwenden, falls Zugang gesperrt ist
+4. Überprüfen Sie, ob die Tabelle `users` in der Datenbank existiert
 
 ### API-Fehler {#api-errors}
 
-1. Überprüfen Sie [Rückwärts inkompatible API-Änderungen](api-changes.md) auf Endpunkt-Updates
-2. Aktualisieren Sie externe Integrationen mit neuen Feldnamen
-3. Fügen Sie Authentifizierung zu API-Anfragen hinzu (0.9.x+)
-4. Testen Sie API-Endpunkte nach der Migration
+1. [Nicht abwärtskompatible API-Änderungen](api-changes.md) auf Aktualisierungen der Endpunkte prüfen
+2. Externe Integrationen mit neuen Feldnamen aktualisieren
+3. Authentifizierung zu API-Anfragen hinzufügen (0.9.x+)
+4. API-Endpunkte nach der Migration testen
 
 ### Probleme mit Master Key (0.8.x+) {#master-key-issues-08x}
 
 1. Stellen Sie sicher, dass die Datei `.duplistatus.key` zugänglich ist
-2. Bestätigen Sie, dass die Dateiberechtigungen 0400 sind
-3. Prüfen Sie die Container-Protokolle auf Fehler bei der Schlüsselerzeugung
+2. Überprüfen Sie, ob die Dateiberechtigungen auf 0400 gesetzt sind
+3. Container-Logs auf Fehler bei der Schlüsselerzeugung prüfen
 
 ### Podman-DNS-Konfiguration {#podman-dns-configuration}
 
@@ -296,33 +297,33 @@ Wenn Sie Podman verwenden und nach einem Upgrade Probleme mit der Netzwerkkonnek
 
 ## Rollback-Verfahren {#rollback-procedure}
 
-Wenn Sie zu einer vorherigen Version zurückwechseln müssen:
+Wenn Sie zu einer früheren Version zurückkehren müssen:
 
 1. **Container stoppen**: `docker stop <container-name>` (oder `podman stop <container-name>`)
-2. **Ihre Sicherung suchen**: 
-   - Wenn Sie eine Sicherung über die Weboberfläche erstellt haben (Version 1.2.1+), verwenden Sie diese heruntergeladene Sicherungsdatei
-   - Wenn Sie eine manuelle Volume-Sicherung erstellt haben, extrahieren Sie diese zunächst
-   - Automatische Migrationssicherungen befinden sich im Datenverzeichnis (mit Zeitstempel versehene `.db`-Dateien)
-3. **Datenbank wiederherstellen**: 
-   - **Für Sicherungen der Weboberfläche (Version 1.2.1+)**: Verwenden Sie die Wiederherstellungsfunktion in `Einstellungen → Datenbankwartung` (siehe [Datenbankwartung](../user-guide/settings/database-maintenance.md#database-restore))
-   - **Für manuelle Sicherungen**: Ersetzen Sie `backups.db` in Ihrem Datenverzeichnis/Volume mit der Sicherungsdatei
-4. **Vorherige Image-Version verwenden**: Rufen Sie das vorherige Container-Image ab und führen Sie es aus
-5. **Container starten**: Starten Sie mit der vorherigen Version
+2. **Sicherung suchen**:
+   - Wenn Sie eine Sicherung über die Weboberfläche erstellt haben (ab Version 1.2.1+), verwenden Sie diese heruntergeladene Sicherungsdatei
+   - Wenn Sie eine manuelle Volume-Sicherung erstellt haben, extrahieren Sie diese zuerst
+   - Automatische Migrations-Backups befinden sich im Datenverzeichnis (zeitgestempelte `.db`-Dateien)
+3. **Stellen Sie die Datenbank wieder her**: 
+   - **Für Backups über die Weboberfläche (Version 1.2.1+)**: Verwenden Sie die Wiederherstellungsfunktion in `Settings → Database Maintenance` (siehe [Datenbankwartung](../user-guide/settings/database-maintenance.md#database-restore))
+   - **Für manuelle Backups**: Ersetzen Sie `backups.db` in Ihrem Datenverzeichnis/Volume durch die Backup-Datei
+4. **Verwenden Sie die vorherige Image-Version**: Ziehen und führen Sie das vorherige Container-Image aus
+5. **Starten Sie den Container**: Starten Sie mit der vorherigen Version
 
 :::warning
-Das Zurückrollen kann zu Datenverlust führen, wenn das neuere Schema mit der älteren Version nicht kompatibel ist. Stellen Sie immer sicher, dass Sie eine aktuelle Sicherung haben, bevor Sie versuchen, ein Zurückrollen durchzuführen.
+Ein Zurücksetzen kann zu Datenverlust führen, wenn das neuere Schema mit der älteren Version nicht kompatibel ist. Stellen Sie immer sicher, dass Sie ein aktuelles Backup haben, bevor Sie ein Zurücksetzen versuchen.
 :::
 
 ### Fehlerbehebung bei Ihrer Wiederherstellung / Rollback {#troubleshooting-your-restore--rollback}
 
-Wenn die Anwendung nicht startet oder Ihre Daten nach einer Wiederherstellung oder einem Rollback nicht angezeigt werden, prüfen Sie die folgenden häufigen Probleme:
+Wenn die Anwendung nach einer Wiederherstellung oder einem Zurücksetzen nicht startet oder Ihre Daten nicht angezeigt werden, überprüfen Sie die folgenden häufigen Probleme:
 
 #### 1. Dateiberechtigungen (Linux/Podman) {#1-database-file-permissions-linuxpodman}
 
-Wenn Sie die Datei als `root`-Benutzer wiederhergestellt haben, hat die Anwendung im Container möglicherweise keine Berechtigung, sie zu lesen oder zu schreiben.
+Wenn Sie die Datei als `root`-Benutzer wiederhergestellt haben, könnte die Anwendung im Container keine Berechtigung zum Lesen oder Schreiben haben.
 
-* **Das Symptom:** Protokolle zeigen "Permission Denied" oder "Read-only database" ein.
-* **Die Lösung:** Setzen Sie die Berechtigungen von der Datei im Container zurück, um sicherzustellen, dass sie zugänglich ist.
+* **Das Symptom:** Die Logs zeigen „Zugriff verweigert“ oder „Datenbank schreibgeschützt.“
+* **Die Lösung:** Setzen Sie die Berechtigungen der Datei im Container zurück, um sicherzustellen, dass darauf zugegriffen werden kann.
 
 ```bash
 # Set ownership (usually UID 1000 or the app user)
@@ -333,14 +334,14 @@ docker exec -u 0 duplistatus chmod 664 /app/data/backups.db
 
 #### 2. Falscher Dateiname {#2-incorrect-filename}
 
-Die Anwendung sucht speziell nach einer Datei mit dem Namen `backups.db`.
+Die Anwendung sucht gezielt nach einer Datei mit dem Namen `backups.db`.
 
-* **Das Symptom:** Die Anwendung startet, sieht aber „leer" aus (wie eine Neuinstallation).
-* **Die Lösung:** Prüfen Sie das Verzeichnis `/app/data/`. Wenn Ihre Datei `duplistatus-backup-2024.db` heißt oder die Erweiterung `.sqlite` hat, wird die App sie ignorieren. Verwenden Sie den Befehl `mv` oder die Docker Desktop GUI, um sie exakt in `backups.db` umzubenennen.
+* **Das Symptom:** Die Anwendung startet, scheint aber „leer“ (wie eine Neuinstallation).
+* **Die Lösung:** Überprüfen Sie das `/app/data/`-Verzeichnis. Wenn Ihre Datei `duplistatus-backup-2024.db` heißt oder die Erweiterung `.sqlite` hat, ignoriert die App sie. Verwenden Sie den Befehl `mv` oder die Docker Desktop-GUI, um sie exakt in `backups.db` umzubenennen.
 
 #### 3. Container nicht neu gestartet {#3-container-not-restarted}
 
-Auf einigen Systemen kann die Verwendung von `docker cp` während der Ausführung des Containers die Verbindung der Anwendung zur Datenbank möglicherweise nicht sofort "aktualisieren".
+Auf einigen Systemen führt die Verwendung von `docker cp`, während der Container läuft, möglicherweise nicht zu einer sofortigen „Aktualisierung“ der Verbindung der Anwendung zur Datenbank.
 
 * **Die Lösung:** Führen Sie nach einer Wiederherstellung immer einen vollständigen Neustart durch:
 
@@ -350,9 +351,9 @@ docker restart duplistatus
 
 #### 4. Datenbankversion-Nichtübereinstimmung {#4-database-version-mismatch}
 
-Wenn Sie eine Sicherung aus einer viel neueren Version von duplistatus in einer älteren Version der App wiederherstellen, könnte das Datenbankschema inkompatibel sein.
+Wenn Sie ein Backup einer viel neueren Version von duplistatus in eine ältere Version der Anwendung einspielen, könnte das Datenbankschema inkompatibel sein.
 
-* **Die Lösung:** Stellen Sie immer sicher, dass Sie die gleiche (oder eine neuere) Version des duplistatus-Images ausführen wie diejenige, die die Sicherung erstellt hat. Prüfen Sie Ihre Version mit:
+* **Die Lösung:** Stellen Sie sicher, dass Sie die gleiche (oder eine neuere) Version des duplistatus-Images verwenden wie diejenige, die das Backup erstellt hat. Prüfen Sie Ihre Version mit:
 
 ```bash
 docker inspect duplistatus --format '{{.Config.Image}}'
@@ -360,18 +361,18 @@ docker inspect duplistatus --format '{{.Config.Image}}'
 
 ## Datenbankschema-Versionen {#database-schema-versions}
 
-| Anwendungsversion         | Schema-Version | Wichtigste Änderungen                                        |
+| Anwendungsversion        | Schema-Version | Wichtige Änderungen                                        |
 |----------------------------|----------------|----------------------------------------------------|
-| 0.6.x und früher          | v1.0           | Initiales Schema                                     |
-| 0.7.x                      | v2.0, v3.0     | Konfigurationen hinzugefügt, machines → Server umbenannt   |
-| 0.8.x                      | v3.1           | Erweiterte Sicherungsfelder, Verschlüsselungsunterstützung         |
-| 0.9.x, 1.0.x, 1.1.x, 1.2.x, 1.3.x | v4.0           | Benutzerzugriffskontrolle, Authentifizierung, Audit-Protokollierung |
+| 0.6.x und früher          | v1.0           | Erstes Schema                                     |
+| 0.7.x                      | v2.0, v3.0     | Hinzugefügte Konfigurationen, umbenannte Maschinen → Server   |
+| 0.8.x                      | v3.1           | Erweiterte Sicherungsfelder, Unterstützung für Verschlüsselung         |
+| 0.9.x, 1.0.x, 1.1.x, 1.2.x, 1.3.x | v4.0           | Benutzer-Zugriffskontrolle, Authentifizierung, Audit-Protokollierung |
 
 ## Hilfe {#getting-help}
 
 - **Dokumentation**: [Benutzerhandbuch](../user-guide/overview.md)
 - **API-Referenz**: [API-Dokumentation](../api-reference/overview.md)
-- **API-Änderungen**: [Rückwärts inkompatible API-Änderungen](api-changes.md)
-- **Versionshinweise**: Prüfen Sie versionsspezifische Versionshinweise auf detaillierte Änderungen
-- **Community**: [GitHub Discussions](https://github.com/wsj-br/duplistatus/discussions)
-- **Probleme**: [GitHub Issues](https://github.com/wsj-br/duplistatus/issues)
+- **API-Änderungen**: [Nicht abwärtskompatible API-Änderungen](api-changes.md)
+- **Versionshinweise**: Überprüfen Sie die versionsbezogenen Release Notes für detaillierte Änderungen
+- **Community**: [GitHub-Diskussionen](https://github.com/wsj-br/duplistatus/discussions)
+- **Probleme melden**: [GitHub Issues](https://github.com/wsj-br/duplistatus/issues)

@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-04-18T00:02:56.062Z'
-source_file_mtime: '2026-04-10T18:19:13.216Z'
+translation_last_updated: '2026-05-06T23:20:34.166Z'
+source_file_mtime: '2026-05-06T23:18:51.394Z'
 source_file_hash: 18c3808b355ca85cf99e63f258dc6c18f79f738a87a5623a96e332a06ea24ee7
 translation_language: de
 source_file_path: documentation/docs/intro.md
@@ -8,6 +8,7 @@ translation_models:
   - anthropic/claude-3.5-haiku
   - anthropic/claude-haiku-4.5
   - 'nvidia/nemotron-nano-12b-v2-vl:free'
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Willkommen bei duplistatus {#welcome-to-duplistatus}
 
@@ -15,15 +16,15 @@ translation_models:
 
 ## Funktionen {#features}
 
-- **Schnelle Einrichtung**: Einfache containerisierte Bereitstellung mit Images auf Docker Hub und GitHub.
-- **Einheitliches Dashboard**: Sicherungsstatus, Verlauf und Details für alle Server an einem Ort anzeigen.
-- **Sicherungsüberwachung**: Automatische Überprüfung und Benachrichtigungen für überfällige geplante Sicherungen.
-- **Datenvisualisierung und Protokolle**: Interaktive Diagramme und automatische Protokollerfassung von Duplicati-Servern.
-- **Benachrichtigungen und Warnungen**: Integrierte NTFY- und SMTP-E-Mail-Unterstützung für Sicherungswarnungen, einschließlich Benachrichtigungen für überfällige Sicherungen.
-- **Benutzerzugriffskontrolle und Sicherheit**: Sicheres Authentifizierungssystem mit rollenbasierter Zugriffskontrolle (Admin-/Benutzerrollen), konfigurierbare Passwortrichtlinien, Kontosperrschutz und umfassende Benutzerverwaltung.
-- **Audit-Protokollierung**: Vollständige Audit-Spur aller Systemänderungen und Benutzeraktionen mit erweiterten Filterungs-, Export- und konfigurierbaren Aufbewahrungszeiträumen.
-- **Anwendungsprotokoll-Viewer**: Nur für Administratoren verfügbare Schnittstelle zum Anzeigen, Suchen und Exportieren von Anwendungsprotokollen direkt über die Weboberfläche mit Echtzeitüberwachungsfunktionen.
-- **Mehrsprachige Unterstützung**: Benutzeroberfläche und Dokumentation in Englisch, Französisch, Deutsch, Spanisch und Brasilianisches Portugiesisch verfügbar.
+- **Schnelleinrichtung**: Einfache containerbasierte Bereitstellung mit verfügbaren Images auf Docker Hub und GitHub.
+- **Einheitliches Dashboard**: Anzeige des Sicherungsstatus, Verlaufs und Details für alle Server an einem Ort.
+- **Backup-Überwachung**: Automatische Überprüfung und Warnungen bei überfälligen geplanten Sicherungen.
+- **Datenvisualisierung & Protokolle**: Interaktive Diagramme und automatische Protokollsammlung von Duplicati-Servern.
+- **Benachrichtigungen & Warnungen**: Integrierte NTFY- und SMTP-E-Mail-Unterstützung für Sicherungswarnungen, einschließlich Hinweisen zu überfälligen Sicherungen.
+- **Benutzerzugriffskontrolle & Sicherheit**: Sicheres Authentifizierungssystem mit rollenbasierter Zugriffskontrolle (Administrator/Benutzer-Rollen), konfigurierbaren Passwortrichtlinien, Schutz vor Kontosperrung und umfassender Benutzerverwaltung.
+- **Audit-Protokollierung**: Vollständige Nachverfolgung aller Systemänderungen und Benutzeraktionen mit erweiterter Filterung, Exportfunktionen und konfigurierbaren Aufbewahrungszeiträumen.
+- **Anwendung-Protokollbetrachter**: Nur für Administratoren zugängliche Schnittstelle zum Anzeigen, Suchen und Exportieren von Anwendungsprotokollen direkt über die Weboberfläche mit Echtzeitüberwachung.
+- **Mehrsprachige Unterstützung**: Oberfläche und Dokumentation verfügbar in Englisch, Französisch, Deutsch, Spanisch und Brasilianisch-Portugiesisch.
 
 ## Installation {#installation}
 

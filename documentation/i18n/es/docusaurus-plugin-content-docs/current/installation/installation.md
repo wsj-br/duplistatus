@@ -1,12 +1,13 @@
 ---
-translation_last_updated: '2026-04-18T00:01:46.595Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:20:09.308Z'
+source_file_mtime: '2026-05-06T23:18:51.418Z'
 source_file_hash: ff45fe5f2dea04589c6b35a872a2fbb19c0c49b4c33a0951774e8556326297c0
 translation_language: es
 source_file_path: documentation/docs/installation/installation.md
 translation_models:
   - anthropic/claude-3.5-haiku
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Guía de Instalación {#installation-guide}
 
@@ -92,13 +93,13 @@ volumes:
 
 ### Opción 3: Uso de Portainer Stacks (Repositorio de GitHub) {#option-3-using-portainer-stacks-github-repository}
 
-1. En [Portainer](https://docs.portainer.io/user/docker/stacks), vaya a "Stacks" y haga clic en "Añadir stack".
-2. Asigne un nombre a su stack (por ejemplo, "duplistatus").
-3. Elija "Método de compilación" como "Repositorio".
-4. Introduzca la URL del repositorio: `https://github.com/wsj-br/duplistatus.git`
-5. En el campo "Ruta de composición", introduzca: `production.yml`
-6. (opcional) Establezca las variables de entorno `TZ`, `LANG`, `PWD_ENFORCE` y `PWD_MIN_LEN` en la sección "Variables de entorno". Consulte la sección [Zona horaria](./configure-tz.md) para obtener más detalles sobre cómo ajustar la zona horaria y el formato de número/fecha/hora.
-6. Haga clic en "Implementar el stack".
+1. En [Portainer](https://docs.portainer.io/user/docker/stacks), vaya a "Pilas" y haga clic en "Agregar pila".
+2. Asigne un nombre a su pila (por ejemplo, "duplistatus").
+3. Elija "Método de creación" como "Repositorio".
+4. Ingrese la URL del repositorio: `https://github.com/wsj-br/duplistatus.git`
+5. En el campo "Ruta de Compose", ingrese: `production.yml`
+6. (opcional) Establezca las variables de entorno `TZ`, `LANG`, `PWD_ENFORCE` y `PWD_MIN_LEN` en la sección "Variables de entorno". Consulte la sección [Zona horaria](./configure-tz.md) para obtener más detalles sobre cómo ajustar la zona horaria y el formato de número/fecha/hora. 
+6. Haga clic en "Desplegar la pila".
 
 ### Opción 4: Usar Docker CLI {#option-4-using-docker-cli}
 
@@ -261,12 +262,12 @@ podman pod rm -f duplistatus-pod
 
 ## Configuración Esencial {#essential-configuration}
 
-1. Configure sus [servidores Duplicati](duplicati-server-configuration.md) para enviar mensajes de logs de backup a duplistatus (requerido).
-2. Inicie sesión en duplistatus – consulte las instrucciones en la [Guía del usuario](../user-guide/overview.md#accessing-the-dashboard).
-3. Recopile logs de backup iniciales – utilice la función [Recopilar logs de backup](../user-guide/collect-backup-logs.md) para completar la base de datos con datos históricos de backup de todos sus servidores Duplicati. Esto también actualiza automáticamente los intervalos de monitoreo de backup según la configuración de cada servidor.
-4. Configure los ajustes del servidor – establezca alias de servidor y notas en [Configuración → Servidor](../user-guide/settings/server-settings.md) para que su panel de control sea más informativo.
-5. Configure los ajustes de NTFY – configure notificaciones a través de NTFY en [Configuración → NTFY](../user-guide/settings/ntfy-settings.md).
-6. Configure los ajustes de correo electrónico – configure notificaciones por correo electrónico en [Configuración → Correo electrónico](../user-guide/settings/email-settings.md).
-7. Configure las notificaciones de backup – configure notificaciones por backup o por servidor en [Configuración → Notificaciones de backup](../user-guide/settings/backup-notifications-settings.md).
+1. Configure sus [servidores Duplicati](duplicati-server-configuration.md) para enviar mensajes de registro de copia de seguridad a duplistatus (requerido).
+2. Inicie sesión en duplistatus – consulte las instrucciones en la [Guía del Usuario](../user-guide/overview.md#accessing-the-dashboard).
+3. Recopile registros iniciales de copia de seguridad – use la función [Recopilar Registros de Copia de Seguridad](../user-guide/collect-backup-logs.md) para llenar la base de datos con datos históricos de copias de seguridad de todos sus servidores Duplicati. Esto también actualiza automáticamente los intervalos de monitoreo de copias de seguridad según la configuración de cada servidor.
+4. Configure los ajustes del servidor – configure alias y notas de servidores en [Configuración → Servidor](../user-guide/settings/server-settings.md) para hacer su panel más informativo.
+5. Configure los ajustes de NTFY – configure notificaciones mediante NTFY en [Configuración → NTFY](../user-guide/settings/ntfy-settings.md).
+6. Configure los ajustes de correo electrónico – configure notificaciones por correo en [Configuración → Correo electrónico](../user-guide/settings/email-settings.md).
+7. Configure las notificaciones de copia de seguridad – configure notificaciones por copia de seguridad o por servidor en [Configuración → Notificaciones de copia de seguridad](../user-guide/settings/backup-notifications-settings.md).
 
 Consulte las siguientes secciones para configurar la configuración opcional como zona horaria, formato de números e HTTPS.

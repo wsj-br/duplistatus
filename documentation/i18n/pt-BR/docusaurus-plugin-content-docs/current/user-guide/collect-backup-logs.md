@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:02:12.899Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
-source_file_hash: 2db4ee85ae548cd4dcb93017bf40bcb7ae364551fa85c0d545995b8020fc0989
+translation_last_updated: '2026-05-06T23:22:19.830Z'
+source_file_mtime: '2026-05-06T23:18:51.430Z'
+source_file_hash: 82c01b068ec14a08bbafa65059c1ef8cd15f0aa41b743bd14c4313857a0dbc97
 translation_language: pt-BR
 source_file_path: documentation/docs/user-guide/collect-backup-logs.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Coletar logs de backup {#collect-backup-logs}
 
@@ -15,7 +16,7 @@ translation_models:
 
 ### Coleta Manual {#manual-collection}
 
-1.  Clique no ícone <IconButton icon="lucide:download" /> **Coletar logs de backup** na [Barra de ferramentas da aplicação](overview#application-toolbar).
+1.  Clique no ícone <IconButton icon="lucide:download" /> **Coletar Logs de Backup** na [Barra de Ferramentas do Aplicativo](overview.md#application-toolbar).
 
 ![Collect Backup Logs Popup](../assets/screen-collect-button-popup.png)
 
@@ -54,10 +55,10 @@ Você também pode usar o botão <IconButton icon="lucide:import" label="Coletar
 
 - O **duplistatus** detecta automaticamente o melhor protocolo de conexão e se conecta ao servidor Duplicati especificado.
 - Ele recupera o histórico de backup, informações de log e configurações de backup (para monitoramento de backup).
-- Todos os logs já presentes no banco de dados do **duplistatus** são ignorados.
+- Quaisquer logs já presentes no banco de dados do **duplistatus** são ignorados.
 - Os novos dados são processados e armazenados no banco de dados local.
-- A URL usada (com o protocolo detectado) será armazenada ou atualizada no banco de dados local.
-- Se a opção de download for selecionada, ela baixará os dados JSON coletados. O nome do arquivo estará neste formato: `[serverName]_collected_[Timestamp].json`. O timestamp usa o formato de data ISO 8601 (YYYY-MM-DDTHH:MM:SS).
+- A URL utilizada (com o protocolo detectado) será armazenada ou atualizada no banco de dados local.
+- Se a opção de download for selecionada, os dados JSON coletados serão baixados. O nome do arquivo seguirá este formato: `[serverName]_collected_[Timestamp].json`. A data e hora utilizam o formato ISO 8601 (AAAA-MM-DDTHH:MM:SS).
 - O painel é atualizado para refletir as novas informações.
 
 ## Solução de Problemas de Coleta {#troubleshooting-collection-issues}

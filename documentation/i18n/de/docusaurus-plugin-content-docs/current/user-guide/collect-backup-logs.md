@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:03:28.860Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
-source_file_hash: 2db4ee85ae548cd4dcb93017bf40bcb7ae364551fa85c0d545995b8020fc0989
+translation_last_updated: '2026-05-06T23:22:01.997Z'
+source_file_mtime: '2026-05-06T23:18:51.430Z'
+source_file_hash: 82c01b068ec14a08bbafa65059c1ef8cd15f0aa41b743bd14c4313857a0dbc97
 translation_language: de
 source_file_path: documentation/docs/user-guide/collect-backup-logs.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Backup-Protokolle sammeln {#collect-backup-logs}
 
@@ -15,7 +16,7 @@ translation_models:
 
 ### Manuelle Erfassung {#manual-collection}
 
-1.  Klicken Sie auf das Symbol <IconButton icon="lucide:download" /> **Backup-Protokolle sammeln** in der [Anwendungssymbolleiste](overview#application-toolbar).
+1.  Klicken Sie auf das <IconButton icon="lucide:download" /> **Backup-Logs sammeln**-Symbol in der [Anwendungsleiste](overview.md#application-toolbar).
 
 ![Collect Backup Logs Popup](../assets/screen-collect-button-popup.png)
 
@@ -52,13 +53,13 @@ Sie können auch die Schaltfläche <IconButton icon="lucide:import" label="Alle 
 
 ## Wie der Erfassungsprozess funktioniert {#how-the-collection-process-works}
 
-- **duplistatus** erkennt automatisch das beste Verbindungsprotokoll und verbindet sich mit dem angegebenen Duplicati-Server.
-- Es ruft Sicherungsverlauf, Protokollinformationen und Sicherungseinstellungen (für die Sicherungsüberwachung) ab.
-- Alle bereits in der **duplistatus**-Datenbank vorhandenen Protokolle werden übersprungen.
+- **duplistatus** erkennt automatisch das beste Verbindungsprotokoll und stellt eine Verbindung zum angegebenen Duplicati-Server her.
+- Es ruft den Sicherungsverlauf, Protokollinformationen und Sicherungseinstellungen (für die Backup-Überwachung) ab.
+- Protokolle, die bereits in der **duplistatus**-Datenbank vorhanden sind, werden übersprungen.
 - Neue Daten werden verarbeitet und in der lokalen Datenbank gespeichert.
 - Die verwendete URL (mit dem erkannten Protokoll) wird in der lokalen Datenbank gespeichert oder aktualisiert.
-- Wenn die Download-Option ausgewählt ist, werden die gesammelten JSON-Daten heruntergeladen. Der Dateiname hat folgendes Format: `[serverName]_collected_[Zeitstempel].json`. Der Zeitstempel verwendet das ISO-8601-Datumsformat (YYYY-MM-DDTHH:MM:SS).
-- Das Dashboard wird aktualisiert, um die neuen Informationen widerzuspiegeln.
+- Falls die Download-Option ausgewählt ist, werden die gesammelten JSON-Daten heruntergeladen. Der Dateiname hat folgendes Format: `[serverName]_collected_[Timestamp].json`. Der Zeitstempel verwendet das ISO 8601-Datumsformat (JJJJ-MM-TTTT:MM:SS).
+- Das Dashboard wird aktualisiert, um die neuen Informationen anzuzeigen.
 
 ## Fehlerbehebung bei Sammlungsproblemen {#troubleshooting-collection-issues}
 

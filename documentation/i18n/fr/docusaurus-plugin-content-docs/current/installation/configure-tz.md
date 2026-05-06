@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-04-18T00:02:33.149Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:20:02.165Z'
+source_file_mtime: '2026-05-06T23:18:51.418Z'
 source_file_hash: fae3a81d94023aecc08c2c0b247e071f9990285fb3aa9384cc93cba826f99fe6
 translation_language: fr
 source_file_path: documentation/docs/installation/configure-tz.md

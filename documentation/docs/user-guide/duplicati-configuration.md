@@ -1,7 +1,7 @@
 
 # Duplicati Configuration {#duplicati-configuration}
 
-The <SvgButton svgFilename="duplicati_logo.svg" /> button on the [Application Toolbar](overview#application-toolbar) opens the Duplicati server's web interface in a new tab.
+The <SvgButton svgFilename="duplicati_logo.svg" /> button on the [Application Toolbar](overview.md#application-toolbar) opens the Duplicati server's web interface in a new tab.
 
 You can select a server from the dropdown list. If you have already selected a server (by clicking its card) or are viewing its details, the button will open that specific server's Duplicati configuration directly.
 

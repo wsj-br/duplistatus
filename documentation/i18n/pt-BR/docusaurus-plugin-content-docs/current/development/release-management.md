@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:01:42.655Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:19:59.890Z'
+source_file_mtime: '2026-05-06T23:18:51.394Z'
 source_file_hash: 1b0cbbe3a12f7a343230d78134d9363a4281a2f7fe7a9366fa6509e427ba450b
 translation_language: pt-BR
 source_file_path: documentation/docs/development/release-management.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Gerenciamento de Lançamentos {#release-management}
 
@@ -21,11 +22,11 @@ O projeto segue Versionamento Semântico (SemVer) com o formato `MAJOR.MINOR.PAT
 
 Antes de lançar uma nova versão, certifique-se de que você concluiu o seguinte:
 
-- [ ] Todas as alterações foram confirmadas e enviadas para a branch `vMAJOR.MINOR.x`.
-- [ ] O número da versão foi atualizado em `package.json` (use `scripts/update-version.sh` para sincronizá-lo entre arquivos).
-- [ ] Todos os testes passam (em modo devel, local, docker e podman). 
-- [ ] Inicie um container Docker com `pnpm docker:up` e execute `scripts/compare-versions.sh` para verificar a consistência de versão entre o ambiente de desenvolvimento e o container Docker (requer que o container Docker esteja em execução). Este script compara versões SQLite apenas pela versão principal (por exemplo, 3.45.1 vs 3.51.1 são consideradas compatíveis) e compara versões de Node, npm e duplistatus exatamente.
-- [ ] A documentação está atualizada, atualize as capturas de tela (use `pnpm take-screenshots`)
+- [ ] Todas as alterações foram confirmadas e enviadas para o branch `vMAJOR.MINOR.x`.
+- [ ] O número da versão foi atualizado em `package.json` (use `scripts/update-version.sh` para sincronizá-lo entre os arquivos).
+- [ ] Todos os testes foram aprovados (no modo de desenvolvimento, local, docker e podman). 
+- [ ] Inicie um contêiner Docker com `pnpm docker:up` e execute `scripts/compare-versions.sh` para verificar a consistência da versão entre o ambiente de desenvolvimento e o contêiner Docker (requer que o contêiner Docker esteja em execução). Este script compara as versões do SQLite apenas pela versão principal (por exemplo, 3.45.1 e 3.51.1 são consideradas compatíveis) e compara exatamente as versões do Node, npm e Duplistatus.
+- [ ] A documentação está atualizada; atualize as capturas de tela (use `pnpm take-screenshots`)
 - [ ] As notas de lançamento foram preparadas em `documentation/docs/release-notes/VERSION.md`.
 - [ ] Execute `scripts/generate-readme-from-intro.sh` para atualizar `README.md` com a nova versão e quaisquer alterações de `documentation/docs/intro.md`. Este script também gera automaticamente `README_dockerhub.md` e `RELEASE_NOTES_github_VERSION.md`.
 
@@ -39,14 +40,14 @@ Este é o método preferido, pois fornece melhor rastreabilidade e dispara autom
 
 ### Etapa 1: Criar Pull Request {#step-1-create-pull-request}
 
-1. Navegue até o [repositório duplistatus](https://github.com/wsj-br/duplistatus) no GitHub.
+1. Acesse o [repositório duplistatus](https://github.com/wsj-br/duplistatus) no GitHub.
 2. Clique na aba **"Pull requests"**.
 3. Clique em **"New pull request"**.
-4. Defina a **base branch** como `master` e a **compare branch** como `vMAJOR.MINOR.x`.
-5. Revise a visualização das alterações para garantir que tudo está correto.
+4. Defina o branch **base** como `master` e o branch **compare** como `vMAJOR.MINOR.x`.
+5. Revise a prévia das alterações para garantir que tudo esteja correto.
 6. Clique em **"Create pull request"**.
 7. Adicione um título descritivo (por exemplo, "Release v1.2.0") e uma descrição resumindo as alterações.
-8. Clique em **"Create pull request"** novamente.
+8. Clique novamente em **"Create pull request"**.
 
 ### Etapa 2: Mesclar a Solicitação de Pull {#step-2-merge-the-pull-request}
 
@@ -60,24 +61,24 @@ Após revisar o pull request:
 
 Após a conclusão da mesclagem, crie uma versão no GitHub:
 
-1. Navegue até o [repositório duplistatus](https://github.com/wsj-br/duplistatus) no GitHub.
-2. Acesse a seção **"Releases"** (ou clique em "Releases" na barra lateral direita).
-3. Clique em **"Draft a new release."**
-4. No campo **"Choose a tag"**, digite seu novo número de versão no formato `vMAJOR.MINOR.PATCH` (por exemplo, `v1.2.0`). Isso criará uma nova tag.
-5. Selecione `master` como a branch de destino.
-6. Adicione um **título de release** (por exemplo, "Release v1.2.0").
+1. Acesse o [repositório duplistatus](https://github.com/wsj-br/duplistatus) no GitHub.
+2. Vá até a seção **"Releases"** (ou clique em "Releases" na barra lateral direita).
+3. Clique em **"Draft a new release"**.
+4. No campo **"Choose a tag"**, digite o novo número da versão no formato `vMAJOR.MINOR.PATCH` (por exemplo, `v1.2.0`). Isso criará uma nova tag.
+5. Selecione `master` como branch de destino.
+6. Adicione um **título do lançamento** (por exemplo, "Release v1.2.0").
 7. Adicione uma **descrição** documentando as alterações nesta versão. Você pode:
    - Copiar o conteúdo de `RELEASE_NOTES_github_VERSION.md` (gerado por `scripts/generate-readme-from-intro.sh`)
-   - Ou referenciar as notas de release de `documentation/docs/release-notes/` (mas observe que links relativos não funcionarão em releases do GitHub)
-8. Clique em **"Publish release."**
+   - Ou referenciar as notas de lançamento de `documentation/docs/release-notes/` (mas observe que links relativos não funcionarão nos lançamentos do GitHub)
+8. Clique em **"Publish release"**.
 
 **O que acontece automaticamente:**
 - Uma nova tag Git é criada
-- O workflow "Build and Publish Docker Image" é acionado
-- Imagens Docker são construídas para arquiteturas AMD64 e ARM64
+- O fluxo de trabalho "Build and Publish Docker Image" é acionado
+- Imagens Docker são construídas para as arquiteturas AMD64 e ARM64
 - As imagens são enviadas para:
-  - Docker Hub: `wsjbr/duplistatus:VERSION` e `wsjbr/duplistatus:latest` (se esta for a versão mais recente)
-  - GitHub Container Registry: `ghcr.io/wsj-br/duplistatus:VERSION` e `ghcr.io/wsj-br/duplistatus:latest` (se esta for a versão mais recente)
+  - Docker Hub: `wsjbr/duplistatus:VERSION` e `wsjbr/duplistatus:latest` (se for o lançamento mais recente)
+  - GitHub Container Registry: `ghcr.io/wsj-br/duplistatus:VERSION` e `ghcr.io/wsj-br/duplistatus:latest` (se for o lançamento mais recente)
 
 ## Método 2: Linha de Comando (Alternativa) {#method-2-command-line-alternative}
 
@@ -142,12 +143,12 @@ Após fazer push da tag, crie uma versão no GitHub (consulte o Método 1, Etapa
 
 Para disparar manualmente o fluxo de trabalho de compilação da imagem Docker sem criar uma versão:
 
-1. Navegue até o [repositório duplistatus](https://github.com/wsj-br/duplistatus) no GitHub.
+1. Acesse o [repositório duplistatus](https://github.com/wsj-br/duplistatus) no GitHub.
 2. Clique na aba **"Ações"**.
 3. Selecione o fluxo de trabalho **"Build and Publish Docker Image"**.
 4. Clique em **"Run workflow"**.
-5. Selecione a branch para compilar (normalmente `master`).
-6. Clique em **"Run workflow"** novamente.
+5. Selecione a branch a partir da qual será feita a compilação (normalmente `master`).
+6. Clique novamente em **"Run workflow"**.
 
 **Nota:** Compilações manuais não marcarão automaticamente imagens como `latest` a menos que o fluxo de trabalho determine que seja a versão mais recente.
 
@@ -222,9 +223,9 @@ Se você fez alterações em `documentation/docs/intro.md`, regenere o `README.m
 
 Este script:
 - Extrai a versão de `package.json`
-- Gera `README.md` a partir de `documentation/docs/intro.md` (converte admonições do Docusaurus para alertas no estilo GitHub, converte links e imagens)
-- Cria `README_dockerhub.md` para Docker Hub (com formatação compatível com Docker Hub)
-- Gera `RELEASE_NOTES_github_VERSION.md` a partir de `documentation/docs/release-notes/VERSION.md` (converte links e imagens para URLs absolutas)
-- Atualiza a tabela de conteúdos usando `doctoc`
+- Gera `README.md` a partir de `documentation/docs/intro.md` (converte destaques do Docusaurus em alertas no estilo GitHub, converte links e imagens)
+- Cria `README_dockerhub.md` para o Docker Hub (com formatação compatível com o Docker Hub)
+- Gera `RELEASE_NOTES_github_VERSION.md` a partir de `documentation/docs/release-notes/VERSION.md` (converte links e imagens em URLs absolutas)
+- Atualiza o sumário usando `doctoc`
 
 Faça commit e push do `README.md` atualizado junto com seu release.

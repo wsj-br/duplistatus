@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:03:50.183Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:21:56.160Z'
+source_file_mtime: '2026-05-06T23:18:51.446Z'
 source_file_hash: b1f073fc756bf469acd698513daa0acf449968820b163817769bb58e9e84a91a
 translation_language: fr
 source_file_path: documentation/docs/user-guide/settings/user-management-settings.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Utilisateurs {#users}
 
@@ -29,24 +30,24 @@ Vous pouvez accéder à la section Gestion des utilisateurs de deux façons :
 
 ## Création d'un nouvel utilisateur {#creating-a-new-user}
 
-1. Cliquez sur le bouton <IconButton icon="lucide:plus" label="Ajouter un utilisateur"/>
-2. Entrez les détails de l'utilisateur :
-   - **Nom d'utilisateur** : Doit contenir 3 à 50 caractères, être unique et insensible à la casse
-   - **Admin** : Vérifier pour accorder les privilèges d'administrateur
-   - **Exiger le changement de mot de passe** : Vérifier pour forcer le changement de mot de passe à la première connexion
+1. Cliquez sur le bouton <IconButton icon="lucide:plus" label="Add User"/>
+2. Saisissez les détails de l'utilisateur :
+   - **Nom d'utilisateur** : doit contenir entre 3 et 50 caractères, être unique et insensible à la casse
+   - **Administrateur** : cochez pour accorder les privilèges d'administrateur
+   - **Exiger un changement de mot de passe** : cochez pour forcer le changement de mot de passe lors de la première connexion
    - **Mot de passe** :
-     - Option 1 : Vérifier « Générer automatiquement le mot de passe » pour créer un mot de passe temporaire sécurisé
-     - Option 2 : Décocher et entrer un mot de passe personnalisé
-3. Cliquez sur <IconButton icon="lucide:user-plus" label="Créer l'utilisateur" />.
+     - Option 1 : cochez "Générer automatiquement un mot de passe" pour créer un mot de passe temporaire sécurisé
+     - Option 2 : décochez et saisissez un mot de passe personnalisé
+3. Cliquez sur <IconButton icon="lucide:user-plus" label="Create User" />.
 
 ## Modification d'un utilisateur {#editing-a-user}
 
-1. Cliquez sur l'icône <IconButton icon="lucide:edit" /> Modifier à côté de l'utilisateur
+1. Cliquez sur l'icône d'édition <IconButton icon="lucide:edit" /> située à côté de l'utilisateur
 2. Modifiez l'un des éléments suivants :
-   - **Nom d'utilisateur** : Modifiez le nom d'utilisateur (doit être unique)
-   - **Admin** : Activez/désactivez les privilèges administrateur
-   - **Exiger un changement de mot de passe** : Activez/désactivez l'exigence de changement de mot de passe
-3. Cliquez sur <IconButton icon="lucide:check" label="Enregistrer les modifications" />.
+   - **Nom d'utilisateur** : modifiez le nom d'utilisateur (doit être unique)
+   - **Administrateur** : activez ou désactivez les privilèges d'administrateur
+   - **Exiger un changement de mot de passe** : activez ou désactivez l'exigence de changement de mot de passe
+3. Cliquez sur <IconButton icon="lucide:check" label="Save Changes" />.
 
 ## Réinitialisation du mot de passe d'un utilisateur {#resetting-a-user-password}
 

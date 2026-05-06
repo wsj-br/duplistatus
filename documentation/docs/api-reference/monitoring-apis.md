@@ -2,7 +2,7 @@
 
 # Monitoring & Health {#monitoring-health}
 
-## Health Check - `/api/health` {#health-check-apihealth}
+## Health Check - `/api/health` {#health-check---apihealth}
 - **Endpoint**: `/api/health`
 - **Method**: GET
 - **Description**: Checks the health status of the application and database.

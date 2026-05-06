@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-04-18T00:01:20.497Z'
-source_file_mtime: '2026-03-05T22:33:28.419Z'
-source_file_hash: ccd50e5fe2f6be70227afc5ce46c99b7ce52a87df5184098f4d303683bd9e6c6
+translation_last_updated: '2026-05-06T23:19:50.423Z'
+source_file_mtime: '2026-05-06T23:18:51.410Z'
+source_file_hash: eb18cd75959282575195e73b0368d4eecd23bf9684c9c5915cea3d8f6c360fce
 translation_language: de
 source_file_path: documentation/docs/api-reference/monitoring-apis.md
 translation_models:
@@ -9,10 +9,10 @@ translation_models:
 ---
 # Überwachung und Zustand {#monitoring-health}
 
-## Zustandsüberprüfung - `/api/health` {#health-check-apihealth}
-- **Endpunkt**: `/api/health`
+## Health Check - `/api/health` {#health-check---apihealth}
+- **Endpoint**: `/api/health`
 - **Methode**: GET
-- **Beschreibung**: Überprüft den Zustand der Anwendung und der Datenbank.
+- **Beschreibung**: Überprüft den Status der Anwendung und der Datenbank.
 - **Antwort** (gesund):
 
   ```json
@@ -72,10 +72,10 @@ translation_models:
 
 - **Hinweise**: 
   - Gibt Status 200 für funktionierende Systeme zurück
-  - Gibt Status 503 für fehlerhafte Systeme oder Fehler bei vorbereiteten Anweisungen zurück
+  - Gibt Status 503 für gestörte Systeme oder Fehler bei vorbereiteten Anweisungen zurück
   - Enthält das Feld `preparedStatementsError`, wenn vorbereitete Anweisungen fehlschlagen
   - Enthält das Feld `initializationError`, wenn die Datenbankinitialisierung fehlschlägt
   - Enthält `connectionHealthError` und `connectionDetails`, wenn Verbindungs-Statusprüfungen fehlschlagen
   - Stack-Trace wird nur im Entwicklungsmodus eingefügt
-  - Überprüft grundlegende Datenbankverbindung, vorbereitete Anweisungen, Initialisierungsstatus und Verbindungszustand
+  - Prüft grundlegende Datenbankverbindung, vorbereitete Anweisungen, Initialisierungsstatus und Verbindungsintegrität
   - Bietet umfassende Zustandsdiagnosen zur Fehlerbehebung

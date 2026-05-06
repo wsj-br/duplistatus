@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:01:54.810Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:21:14.115Z'
+source_file_mtime: '2026-05-06T23:18:51.430Z'
 source_file_hash: 715719058387c53e24d6ec27814f20fb52349ff40f5e59310d6965344bb8f16a
 translation_language: es
 source_file_path: documentation/docs/user-guide/admin-recovery.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Recuperación de Cuenta Admin {#admin-account-recovery}
 
@@ -30,10 +31,10 @@ docker exec -it duplistatus /app/admin-recovery admin NewPassword123
 
 Si encuentra problemas con el script de recuperación:
 
-1. **Verificar que el contenedor está en ejecución**: Verifique que el contenedor está en ejecución con `docker ps`
-2. **Verificar disponibilidad del script**: Verifique que el script existe en el contenedor con `docker exec -it duplistatus ls -la /app/admin-recovery`
-3. **Revisar los logs del contenedor**: Verifique si hay errores con `docker logs duplistatus`
-4. **Verificar Nombre de usuario**: Asegúrese de que el Nombre de usuario existe en la base de datos
-5. **Verificar formato de Contraseña**: Asegúrese de que la Nueva contraseña cumple con todos los requisitos
+1. **Verificar que el contenedor esté en ejecución**: Verifique que el contenedor esté en ejecución con `docker ps`
+2. **Verificar disponibilidad del script**: Verifique que el script exista en el contenedor con `docker exec -it duplistatus ls -la /app/admin-recovery`
+3. **Revisar registros del contenedor**: Busque errores con `docker logs duplistatus`
+4. **Verificar nombre de usuario**: Asegúrese de que el nombre de usuario exista en la base de datos
+5. **Verificar formato de la contraseña**: Asegúrese de que la nueva contraseña cumpla con todos los requisitos
 
 Si los problemas persisten, consulte la guía de [Solución de problemas](troubleshooting.md) para obtener más ayuda.

@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-04-18T00:01:58.013Z'
-source_file_mtime: '2026-03-05T22:33:28.419Z'
-source_file_hash: fe4cf26fcdad9ea7ff5f3f4cb9f9533b46f148bea17589644eeef65398578b86
+translation_last_updated: '2026-05-06T23:19:54.536Z'
+source_file_mtime: '2026-05-06T23:18:51.418Z'
+source_file_hash: 55f7e22ce3b1fa4868b6c112f9ed098fc3c8bf99e832fc930106cbc887815c77
 translation_language: de
 source_file_path: documentation/docs/api-reference/overview.md
 translation_models:
@@ -24,16 +24,16 @@ Dieses Dokument beschreibt alle verfügbaren API-Endpunkte für die duplistatus-
 Für eine schnelle Übersicht über alle Endpunkte siehe die [API-Endpunktliste](api-endpoint-list).
 
 Die API ist in logische Gruppen unterteilt:
-- **[Externe APIs](external-apis)**: Zusammenfassungsdaten, aktueller Backup-Status und Backup-Daten-Uploads von Duplicati
-- **[Kernoperationen](core-operations)**: Dashboard-Daten, Serververwaltung und detaillierte Backup-Informationen
-- **[Diagrammdaten](chart-data-apis)**: Aggregierte und server-spezifische Zeitreihendaten zur Visualisierung und Analyse
-- **[Konfigurationsverwaltung](configuration-apis)**: E-Mail-, Benachrichtigungs-, Backup-Einstellungen und Systemkonfiguration
-- **[Benachrichtigungssystem](notification-apis)**: Test von Benachrichtigungen, Überprüfung verspäteter Backups und Verwaltung von Benachrichtigungen
-- **[Cron-Dienste](cron-service-apis)**: Verwaltung von Cron-Diensten
-- **[Überwachung & Zustand](monitoring-apis)**: Zustandsprüfungen und Statusüberwachung
-- **[Administration](administration-apis)**: Datenbankwartung, Bereinigungsoperationen und Systemverwaltung
-- **[Sitzungsverwaltung](session-management-apis)**: Sitzungsverwaltung und Erstellung von Sitzungen
-- **[Authentifizierung & Sicherheit](authentication-security)**: Authentifizierung und Sicherheit
+- [**Externe APIs**](external-apis): Zusammenfassungsdaten, aktueller Sicherungsstatus und Uploads von Sicherungsdaten von Duplicati
+- [**Kernoperationen**](core-operations): Dashboard-Daten, Serververwaltung und detaillierte Sicherungsinformationen
+- [**Diagrammdaten**](chart-data-apis): Aggregierte und server-spezifische Zeitreihendaten zur Visualisierung und Analyse
+- [**Konfigurationsverwaltung**](configuration-apis): E-Mail-, Benachrichtigungs-, Sicherungseinstellungen und Systemkonfiguration
+- [**Benachrichtigungssystem**](notification-apis): Test von Benachrichtigungen, Überprüfung verspäteter Sicherungen und Verwaltung von Benachrichtigungen
+- [**Cron-Dienste**](cron-service-apis): Verwaltung von Cron-Diensten
+- [**Überwachung & Zustand**](monitoring-apis): Zustandsprüfungen und Statusüberwachung
+- [**Administration**](administration-apis): Datenbankwartung, Bereinigungsvorgänge und Systemverwaltung
+- [**Sitzungsverwaltung**](session-management-apis): Sitzungsverwaltung und Erstellung von Sitzungen
+- [**Authentifizierung & Sicherheit**](authentication-security): Authentifizierung und Sicherheit
 
 Für eine schnelle Übersicht über alle Endpunkte siehe die [API-Endpunktliste](api-endpoint-list).
 
@@ -47,18 +47,18 @@ Alle API-Antworten werden im JSON-Format mit konsistenten Fehlernbehandlungsmust
 
 Alle Endpunkte folgen einem konsistenten Muster zur Fehlerbehandlung:
 
-- **400 Ungültige Anfrage**: Ungültige Anfragedaten oder fehlende erforderliche Felder
-- **401 Nicht autorisiert**: Ungültige oder fehlende Sitzung, abgelaufene Sitzung oder fehlgeschlagene CSRF-Token-Validierung
-- **403 Verboten**: Vorgang nicht erlaubt (z. B. Löschung von Backups in der Produktion) oder fehlgeschlagene CSRF-Token-Validierung
-- **404 Nicht gefunden**: Ressource nicht gefunden
-- **409 Konflikt**: Doppeldaten (bei Upload-Endpunkten)
-- **500 Interner Serverfehler**: Serverseitige Fehler mit detaillierten Fehlermeldungen
-- **503 Dienst nicht verfügbar**: Fehler bei Zustandsprüfungen, Datenbankverbindungsprobleme oder Cron-Dienst nicht verfügbar
+- **400 Bad Request**: Ungültige Anfragedaten oder fehlende erforderliche Felder
+- **401 Unauthorized**: Ungültige oder fehlende Sitzung, abgelaufene Sitzung oder fehlgeschlagene CSRF-Token-Validierung
+- **403 Forbidden**: Vorgang nicht erlaubt (z. B. Löschung einer Sicherung in der Produktionsumgebung) oder fehlgeschlagene CSRF-Token-Validierung
+- **404 Not Found**: Ressource nicht gefunden
+- **409 Conflict**: Doppeldaten (bei Upload-Endpunkten)
+- **500 Internal Server Error**: Serverseitige Fehler mit detaillierten Fehlermeldungen
+- **503 Service Unavailable**: Fehler bei Zustandsprüfungen, Probleme mit der Datenbankverbindung oder nicht verfügbarer Cron-Dienst
 
 Fehlerantworten enthalten:
-- `error`: Für Menschen lesbare Fehlermeldung
+- `error`: Menschlich lesbare Fehlermeldung
 - `message`: Technische Fehlerdetails (im Entwicklungsmodus)
-- `stack`: Fehlerstack-Trace (im Entwicklungsmodus)
+- `stack`: Fehler-Stack-Trace (im Entwicklungsmodus)
 - `timestamp`: Wann der Fehler aufgetreten ist
 
 ## Hinweise zu Datentypen {#data-type-notes}

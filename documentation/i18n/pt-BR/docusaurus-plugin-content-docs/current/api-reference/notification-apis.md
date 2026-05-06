@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-04-18T00:01:00.788Z'
-source_file_mtime: '2026-03-05T22:33:28.419Z'
-source_file_hash: c9fa1157e8f98ef3d8071252f75634990ea86aa2c6de3db3a16b0f911b7a2789
+translation_last_updated: '2026-05-06T23:19:44.353Z'
+source_file_mtime: '2026-05-06T23:18:51.418Z'
+source_file_hash: e4cf34f832ca3ceb70addd63ee65ede46d3ff7cfd213775d5722e5c02b50f44d
 translation_language: pt-BR
 source_file_path: documentation/docs/api-reference/notification-apis.md
 translation_models:
@@ -9,10 +9,10 @@ translation_models:
 ---
 # Sistema de Notificação {#notification-system}
 
-## Notificação de Teste - `/api/notifications/test` {#test-notification-apinotificationstest}
+## Testar Notificação - `/api/notifications/test` {#test-notification---apinotificationstest}
 - **Endpoint**: `/api/notifications/test`
 - **Método**: POST
-- **Descrição**: Envia notificações de teste (simples, baseadas em modelo ou por e-mail) para verificar a configuração de notificação.
+- **Descrição**: Envia notificações de teste (simples, baseadas em modelo ou por e-mail) para verificar a configuração de notificações.
 - **Autenticação**: Requer sessão válida e token CSRF
 - **Corpo da Requisição**:
   Para teste simples:
@@ -91,20 +91,20 @@ O conteúdo do e-mail de teste exibe:
   - Endereço de origem e nome do remetente usados no e-mail
   - Data e hora do teste
 - **Respostas de Erro**:
-  - `401`: Não autorizado - Sessão ou token CSRF inválido
-  - `400`: Configuração do NTFY é necessária, configuração inválida ou e-mail não configurado
+  - `401`: Não autorizado - Sessão inválida ou token CSRF inválido
+  - `400`: Configuração do NTFY é obrigatória, configuração inválida ou e-mail não configurado
   - `500`: Falha ao enviar notificação de teste com detalhes do erro
 - **Notas**:
-  - Suporta mensagens de teste simples, notificações baseadas em modelo e testes por e-mail
+  - Suporta mensagens de teste simples, notificações baseadas em modelo e testes de e-mail
   - O teste de modelo usa dados de exemplo para substituir as variáveis do modelo
   - Inclui data e hora na mensagem de teste
   - Valida URL e tópico do NTFY antes do envio
   - Usa o campo `accessToken` para autenticação
   - Para testes de modelo, envia notificações para NTFY e e-mail (se configurado)
-  - Testes por e-mail exigem que a configuração SMTP esteja configurada
-  - O endpoint de e-mail de teste limpa o cache da requisição antes de ler a configuração SMTP, garantindo que scripts externos possam atualizar a configuração e ela seja imediatamente refletida nos e-mails de teste
+  - Testes de e-mail exigem que a configuração SMTP esteja configurada
+  - O endpoint de e-mail de teste limpa o cache de requisição antes de ler a configuração SMTP, garantindo que scripts externos possam atualizar a configuração e que ela seja imediatamente refletida nos e-mails de teste
 
-## Verificar Backups Atrasados - `/api/notifications/check-overdue` {#check-overdue-backups-apinotificationscheck-overdue}
+## Verificar Backups Atrasados - `/api/notifications/check-overdue` {#check-overdue-backups---apinotificationscheck-overdue}
 - **Endpoint**: `/api/notifications/check-overdue`
 - **Método**: POST
 - **Descrição**: Aciona manualmente a verificação de backups atrasados e envia notificações.
@@ -128,12 +128,12 @@ O conteúdo do e-mail de teste exibe:
 - **Notas**:
   - Aciona manualmente a verificação de backups atrasados
   - Retorna estatísticas sobre o processo de verificação
-  - Envia notificações para backups atrasados encontrados
+  - Envia notificações para os backups atrasados encontrados
 
-## Limpar Data e Hora de Backups Atrasados - `/api/notifications/clear-overdue-timestamps` {#clear-overdue-timestamps-apinotificationsclear-overdue-timestamps}
+## Limpar Carimbos de Tempo Atrasados - `/api/notifications/clear-overdue-timestamps` {#clear-overdue-timestamps---apinotificationsclear-overdue-timestamps}
 - **Endpoint**: `/api/notifications/clear-overdue-timestamps`
 - **Método**: POST
-- **Descrição**: Limpa todos os registros de data e hora de notificações de backups atrasados, permitindo que as notificações sejam enviadas novamente.
+- **Descrição**: Limpa todos os carimbos de tempo de notificação de backup atrasado, permitindo que as notificações sejam enviadas novamente.
 - **Autenticação**: Requer sessão válida e token CSRF
 - **Resposta**:
 
@@ -144,8 +144,8 @@ O conteúdo do e-mail de teste exibe:
   ```
 
 - **Respostas de Erro**:
-  - `500`: Falha ao limpar os registros de data e hora de backups atrasados
+  - `500`: Falha ao limpar os carimbos de tempo de backup atrasado
 - **Notas**:
-  - Limpa todos os registros de data e hora de notificações de backups atrasados
+  - Limpa todos os carimbos de tempo de notificação de backup atrasado
   - Permite que as notificações sejam enviadas novamente
-  - Útil para testar o sistema de notificação
+  - Útil para testar o sistema de notificações

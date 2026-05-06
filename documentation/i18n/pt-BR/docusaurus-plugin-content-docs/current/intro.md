@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-04-18T00:02:06.527Z'
-source_file_mtime: '2026-04-10T18:19:13.216Z'
+translation_last_updated: '2026-05-06T23:20:13.920Z'
+source_file_mtime: '2026-05-06T23:18:51.394Z'
 source_file_hash: 18c3808b355ca85cf99e63f258dc6c18f79f738a87a5623a96e332a06ea24ee7
 translation_language: pt-BR
 source_file_path: documentation/docs/intro.md
@@ -15,15 +15,15 @@ translation_models:
 
 ## Recursos {#features}
 
-- **Configuração rápida**: Implantação simples em contêiner, com imagens disponíveis no Docker Hub e GitHub.
-- **Painel unificado**: Visualize o status do backup, histórico e detalhes de todos os servidores em um único lugar.
-- **Monitoramento de backup**: Verificação automatizada e alertas para backups agendados atrasados.
-- **Visualização de dados e logs**: Gráficos interativos e coleta automática de logs de servidores Duplicati.
-- **Notificações e alertas**: Suporte integrado a NTFY e e-mail SMTP para alertas de backup, incluindo notificações de backups atrasados.
-- **Controle de acesso do usuário e segurança**: Sistema de autenticação seguro com controle de acesso baseado em função (funções Admin/Usuário), políticas de senha configuráveis, proteção contra bloqueio de conta e gerenciamento abrangente de usuários.
-- **Auditoria de logs**: Trilha de auditoria completa de todas as alterações do sistema e ações do usuário com filtragem avançada, recursos de exportação e períodos de retenção configuráveis.
-- **Visualizador de logs do aplicativo**: Interface exclusiva para administradores para visualizar, pesquisar e exportar logs da aplicação diretamente da interface web com recursos de monitoramento em tempo real.
-- **Suporte multilíngue**: Interface e documentação disponíveis em inglês, francês, alemão, espanhol e português brasileiro.
+- **Configuração Rápida**: Implantação simples em contêiner, com imagens disponíveis no Docker Hub e no GitHub.
+- **Painel Unificado**: Visualize status, histórico e detalhes de backups de todos os servidores em um único local.
+- **Monitoramento de Backup**: Verificação automatizada e alertas para backups agendados atrasados.
+- **Visualização de Dados e Logs**: Gráficos interativos e coleta automática de logs dos servidores Duplicati.
+- **Notificações e Alertas**: Suporte integrado ao NTFY e e-mail SMTP para alertas de backup, incluindo notificações de backups atrasados.
+- **Controle de Acesso e Segurança do Usuário**: Sistema de autenticação seguro com controle de acesso baseado em função (funções Administrador/Usuário), políticas de senha configuráveis, proteção contra bloqueio de conta e gerenciamento completo de usuários.
+- **Registro de Auditoria**: Trilha completa de auditoria de todas as alterações no sistema e ações dos usuários, com filtros avançados, capacidade de exportação e períodos de retenção configuráveis.
+- **Visualizador de Logs da Aplicação**: Interface exclusiva para administradores visualizar, pesquisar e exportar logs da aplicação diretamente pela interface web, com capacidades de monitoramento em tempo real.
+- **Suporte Multilíngue**: Interface e documentação disponíveis em Português, Francês, Alemão, Espanhol e Inglês.
 
 ## Instalação {#installation}
 

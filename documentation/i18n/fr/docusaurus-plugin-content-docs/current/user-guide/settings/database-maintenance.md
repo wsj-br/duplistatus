@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:03:35.471Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:21:50.995Z'
+source_file_mtime: '2026-05-06T23:18:51.446Z'
 source_file_hash: 6fadb27aa2b2898a91a2c277aa6ef2a380feb63069ba823e7cdf1943df204b51
 translation_language: fr
 source_file_path: documentation/docs/user-guide/settings/database-maintenance.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Maintenance de la base de données {#database-maintenance}
 
@@ -54,9 +55,9 @@ Restaurez votre base de données à partir d'un fichier de sauvegarde créé pr�
 
 - Une sauvegarde de sécurité de la base de données actuelle est automatiquement créée avant la restauration
 - La base de données actuelle est remplacée par le fichier de sauvegarde
-- Toutes les sessions sont effacées pour des raisons de sécurité (les utilisateurs doivent se connecter à nouveau)
+- Toutes les sessions sont effacées pour des raisons de sécurité (les utilisateurs doivent se reconnecter)
 - L'intégrité de la base de données est vérifiée après la restauration
-- Tous les caches sont effacés pour garantir des données actualisées
+- Tous les caches sont effacés pour garantir des données à jour
 
 **Formats de restauration :**
 
@@ -162,9 +163,9 @@ Cela peut se produire quand l'`machine-id` de Duplicati change après une mise �
 1.  Accédez à [Paramètres → Maintenance de la base de données](database-maintenance.md).
 2.  Si des serveurs en double sont détectés, une section **Fusionner les serveurs en double** apparaîtra.
 3.  Examinez la liste des groupes de serveurs en double :
-    - Chaque groupe affiche les serveurs portant le même nom mais avec des identifiants différents
-    - Le **Serveur cible** (le plus récent par date de création) est mis en évidence
-    - Les **anciens identifiants de serveur** qui seront fusionnés sont listés séparément
+    - Chaque groupe affiche des serveurs ayant le même nom mais des ID différents
+    - Le **Serveur cible** (le plus récent selon la date de création) est mis en surbrillance
+    - Les **Anciens ID de serveur** qui seront fusionnés sont listés séparément
 4.  Sélectionnez les groupes de serveurs que vous souhaitez fusionner en cochant la case à côté de chaque groupe.
 5.  Cliquez sur <IconButton icon="lucide:git-merge" label="Fusionner les serveurs sélectionnés" />.
 6.  Confirmez l'action dans la boîte de dialogue.

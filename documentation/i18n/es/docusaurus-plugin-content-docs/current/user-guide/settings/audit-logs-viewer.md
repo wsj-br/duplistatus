@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:01:56.576Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:21:20.511Z'
+source_file_mtime: '2026-05-06T23:18:51.442Z'
 source_file_hash: 80be5481828e5ef8fd45f7d5798ad511ae84f6dde487dd8920d6b2f458c1e1b8
 translation_language: es
 source_file_path: documentation/docs/user-guide/settings/audit-logs-viewer.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Logs de Auditoría {#audit-logs}
 
@@ -20,14 +21,14 @@ El visor de log de auditoría muestra una lista cronológica de todos los evento
 - **Marca de tiempo**: Cuándo ocurrió el evento
 - **Usuario**: El nombre de usuario que realizó la acción (o "Sistema" para acciones automatizadas)
 - **Acción**: La acción específica que se realizó
-- **Categoría**: La categoría de la acción (Autenticación, Gestión de usuarios, Configuración, Operaciones de backup, Gestión de servidores, Operaciones del sistema)
-- **Estado**: Si la acción se realizó correctamente o falló
-- **Objetivo**: El objeto que fue afectado (si aplica)
+- **Categoría**: La categoría de la acción (Autenticación, Gestión de usuarios, Configuración, Operaciones de copia de seguridad, Gestión del servidor, Operaciones del sistema)
+- **Estado**: Si la acción tuvo éxito o falló
+- **Destino**: El objeto que se vio afectado (si corresponde)
 - **Detalles**: Información adicional sobre la acción
 
 ### Ver Detalles del Registro {#viewing-log-details}
 
-Haga clic en el icono <IconButton icon="lucide:eye" /> de ojo junto a cualquier entrada de registro para ver información detallada, incluyendo:
+Haga clic en el icono de <IconButton icon="lucide:eye" /> ojo junto a cualquier entrada del registro para ver información detallada, incluyendo:
 - Marca de tiempo completa
 - Información del usuario
 - Detalles completos de la acción (por ejemplo: campos modificados, estadísticas, etc.)
@@ -40,8 +41,8 @@ Puede exportar logs de auditoría filtrados en dos formatos:
 
 | Botón | Descripción |
 |:------|:-----------|
-| <IconButton icon="lucide:download" label="CSV"/> | Exportar logs como archivo CSV para análisis en hojas de cálculo |
-| <IconButton icon="lucide:download" label="JSON"/> | Exportar logs como archivo JSON para análisis programático |
+| <IconButton icon="lucide:download" label="CSV"/> | Exportar registros como un archivo CSV para análisis en hojas de cálculo |
+| <IconButton icon="lucide:download" label="JSON"/> | Exportar registros como un archivo JSON para análisis mediante programación |
 
 :::note
 Las exportaciones incluyen solo los logs actualmente visibles según sus filtros activos. Para exportar todos los logs, primero limpie todos los filtros.

@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:01:47.461Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
-source_file_hash: a9c3dbba0383c39fc8db237418ff7690073036337de033ffbb314ff7f3dc230e
+translation_last_updated: '2026-05-06T23:20:10.207Z'
+source_file_mtime: '2026-05-06T23:18:51.410Z'
+source_file_hash: 8b9a230f64fd786725b53f2231596f7426ccf84e8ad7352af80d2f9b7a86410c
 translation_language: es
 source_file_path: documentation/docs/migration/api-changes.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Cambios de API incompatibles con versiones anteriores {#api-breaking-changes}
 
@@ -43,12 +44,12 @@ Los puntos finales de API externos se mantienen para compatibilidad hacia atrás
 
 La versión 0.9.x introduce autenticación y requiere que todos los usuarios inicien sesión. Al actualizar desde la versión 0.8.x:
 
-1. **Autenticación requerida**: Todas las páginas y puntos finales de API internos ahora requieren autenticación
-2. **Cuenta Admin por defecto**: Una cuenta admin por defecto se crea automáticamente:
+1. **Autenticación requerida**: Todas las páginas y puntos finales de la API interna ahora requieren autenticación
+2. **Cuenta de administrador por defecto**: Se crea automáticamente una cuenta de administrador por defecto:
    - Nombre de usuario: `admin`
-   - Contraseña: `Duplistatus09` (debe cambiarse al iniciar sesión por primera vez)
+   - Contraseña: `Duplistatus09` (debe cambiarse en el primer inicio de sesión)
 3. **Invalidación de sesiones**: Todas las sesiones existentes se invalidan
-4. **Acceso a API externa**: Los puntos finales de API externa (`/api/summary`, `/api/lastbackup`, `/api/lastbackups`, `/api/upload`) permanecen sin autenticación para compatibilidad con integraciones y Duplicati
+4. **Acceso a la API externa**: Los puntos finales de la API externa (`/api/summary`, `/api/lastbackup`, `/api/lastbackups`, `/api/upload`) permanecen sin autenticar para mantener compatibilidad con integraciones y Duplicati
 
 ### Versión 0.8.x {#version-08x}
 
@@ -80,9 +81,9 @@ La versión 0.7.x introduce varios cambios disruptivos en los puntos finales de 
 
 ##### Cambio de Nombre de Campo {#field-renaming}
 
-- **`totalMachines`** → **`totalServers`** en el endpoint `/api/summary`
-- **`machine`** → **`server`** en objetos de respuesta de API
-- **`backup_types_count`** → **`backup_jobs_count`** en el endpoint `/api/lastbackups/{serverId}`
+- `totalMachines` → `totalServers` en el punto final `/api/summary`
+- `machine` → `server` en los objetos de respuesta de la API
+- `backup_types_count` → `backup_jobs_count` en el punto final `/api/lastbackups/{serverId}`
 
 ##### Cambios en la Ruta del Endpoint {#endpoint-path-changes}
 
@@ -230,14 +231,14 @@ Si está actualizando desde una versión anterior a 0.7.x, siga estos pasos:
 
 ### Compatibilidad hacia atrás {#backward-compatibility}
 
-- **Versión 1.2.1**: Totalmente compatible hacia atrás con la estructura de API 1.1.x
-- **Versión 1.1.x**: Totalmente compatible hacia atrás con la estructura de API 1.0.x
-- **Versión 1.0.x**: Totalmente compatible hacia atrás con la estructura de API 0.9.x
-- **Versión 0.9.x**: Totalmente compatible hacia atrás con la estructura de API 0.8.x
-- **Versión 0.8.x**: Totalmente compatible hacia atrás con la estructura de API 0.7.x
-- **Versión 0.7.x**: No es compatible hacia atrás con versiones anteriores a 0.7.x
-  - Los nombres de campo antiguos no funcionarán
-  - Las rutas de extremo antiguas no funcionarán
+- **Versión 1.2.1**: Totalmente compatible con la estructura de API 1.1.x
+- **Versión 1.1.x**: Totalmente compatible con la estructura de API 1.0.x
+- **Versión 1.0.x**: Totalmente compatible con la estructura de API 0.9.x
+- **Versión 0.9.x**: Totalmente compatible con la estructura de API 0.8.x
+- **Versión 0.8.x**: Totalmente compatible con la estructura de API 0.7.x
+- **Versión 0.7.x**: No es compatible con versiones anteriores a 0.7.x
+  - Los nombres antiguos de campos no funcionarán
+  - Las rutas antiguas de puntos finales no funcionarán
 
 ### Soporte Futuro {#future-support}
 
@@ -249,19 +250,19 @@ Si está actualizando desde una versión anterior a 0.7.x, siga estos pasos:
 
 Los siguientes puntos finales de API externos se mantienen por compatibilidad con versiones anteriores y permanecen sin autenticación:
 
-| Endpoint | Método | Descripción | Cambios Incompatibles |
-|----------|--------|-------------|----------------------|
-| `/api/summary` | GET | Resumen general de operaciones de backup | 0.7.x: `totalMachines` → `totalServers` |
-| `/api/lastbackup/{serverId}` | GET | Último backup para un servidor | 0.7.x: `machine` → `server` |
-| `/api/lastbackups/{serverId}` | GET | Últimos backups para todos los trabajos de backup | 0.7.x: `machine` → `server`, `backup_types_count` → `backup_jobs_count` |
-| `/api/upload` | POST | Subir datos de backup desde Duplicati | No hay cambios incompatibles |
+| Punto final | Método | Descripción | Cambios importantes |
+|----------|--------|-------------|------------------|
+| `/api/summary` | GET | Resumen general de las operaciones de copia de seguridad | 0.7.x: `totalMachines` → `totalServers` |
+| `/api/lastbackup/{serverId}` | GET | Última copia de seguridad para un servidor | 0.7.x: `machine` → `server` |
+| `/api/lastbackups/{serverId}` | GET | Últimas copias de seguridad para todos los trabajos de copia de seguridad | 0.7.x: `machine` → `server`, `backup_types_count` → `backup_jobs_count` |
+| `/api/upload` | POST | Cargar datos de copia de seguridad desde Duplicati | Sin cambios importantes |
 
 ## ¿Necesita ayuda? {#need-help}
 
 Si necesita asistencia para actualizar su integración:
 
-- **Referencia de API**: Verifique la [Referencia de API](../api-reference/overview.md) para la documentación actual de puntos finales
-- **APIs Externas**: Consulte [APIs Externas](../api-reference/external-apis.md) para documentación detallada de puntos finales
-- **Guía de Migración**: Revise la [Guía de Migración](version_upgrade.md) para información general de migración
-- **Notas de la Versión**: Revise las [Notas de la Versión](../release-notes/0.8.x.md) específicas de la versión para contexto adicional
-- **Soporte**: Abra un problema en [GitHub](https://github.com/wsj-br/duplistatus/issues) para obtener soporte
+- **Referencia de API**: Verifique la [Referencia de API](../api-reference/overview.md) para documentación actualizada de puntos finales
+- **APIs externas**: Consulte [APIs externas](../api-reference/external-apis.md) para documentación detallada de puntos finales
+- **Guía de migración**: Revise la [Guía de migración](version_upgrade.md) para información general sobre migración
+- **Notas de versión**: Revise las [Notas de versión](../release-notes/0.8.x.md) específicas de cada versión para obtener contexto adicional
+- **Soporte**: Abra un problema en [GitHub](https://github.com/wsj-br/duplistatus/issues) para obtener ayuda

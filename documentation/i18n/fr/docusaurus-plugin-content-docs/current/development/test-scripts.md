@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-04-18T14:28:17.345Z'
-source_file_mtime: '2026-04-18T14:26:03.387Z'
+translation_last_updated: '2026-05-06T23:19:57.908Z'
+source_file_mtime: '2026-05-06T23:18:51.394Z'
 source_file_hash: 1d2e30215eab8e6548c552a40d5a81eb9837ec96e1f22b22b2e39a0a757fe50a
 translation_language: fr
 source_file_path: documentation/docs/development/test-scripts.md
@@ -86,12 +86,12 @@ Utile pour s'assurer que les exports CSV fonctionnent correctement avant les ver
 sudo ./scripts/temporary_ntfy.sh_block.sh
 ```
 
-Ce script bloque temporairement l'accès réseau sortant vers le serveur NTFY (`ntfy.sh`) pour tester le mécanisme de réessayer de notification. Il :
+Ce script bloque temporairement l'accès réseau sortant vers le serveur NTFY (`ntfy.sh`) afin de tester le mécanisme de nouvelle tentative des notifications. Il :
 - Résout l'adresse IP du serveur NTFY
 - Ajoute une règle iptables pour bloquer le trafic sortant
 - Bloque pendant 10 secondes (configurable)
 - Supprime automatiquement la règle de blocage à la sortie
-- Nécessite les privilèges root (sudo)
+- Nécessite des privilèges administrateur (sudo)
 
 >[!CAUTION]
 > Ce script modifie les règles iptables et nécessite les privilèges root. À utiliser uniquement pour tester les mécanismes de réessai de notification.
@@ -111,16 +111,16 @@ Ce script génère des bases de données de test pour plusieurs versions histori
 1. **Arrête et supprime** tout conteneur Docker existant
 2. **Pour chaque version** (v0.4.0, v0.5.0, v0.6.1, 0.7.27, 0.8.21) :
    - Supprime les fichiers de base de données existants
-   - Crée un fichier d'étiquette de version
+   - Crée un fichier de version
    - Démarre un conteneur Docker avec la version spécifique
    - Attend que le conteneur soit prêt
    - Génère des données de test à l'aide de `pnpm generate-test-data`
-   - Prend une capture d'écran de l'interface utilisateur avec les données de test
+   - Prend une capture d'écran de l'interface avec les données de test
    - Arrête et supprime le conteneur
-   - Vide les fichiers WAL et enregistre le schéma de la base de données
+   - Vide les fichiers WAL et sauvegarde le schéma de la base de données
    - Copie le fichier de base de données vers `scripts/migration_test_data/`
 
-**Exigences :**
+**Conditions requises :**
 - Docker doit être installé et configuré
 - Google Chrome (via Puppeteer) doit être installé
 - Accès root/sudo pour les opérations Docker
@@ -150,12 +150,12 @@ Ce script génère des bases de données de test pour plusieurs versions histori
 
 Ce script teste les migrations de base de données à partir des anciennes versions vers la version actuelle (4.0). Il :
 
-1. **Pour chaque version** (v0.4.0, v0.5.0, v0.6.1, 0.7.27, 0.8.21):
+1. **Pour chaque version** (v0.4.0, v0.5.0, v0.6.1, 0.7.27, 0.8.21) :
    - Crée une copie temporaire de la base de données de test
-   - Exécute le processus de migration en utilisant `test-migration.ts`
+   - Exécute le processus de migration à l'aide de `test-migration.ts`
    - Valide la structure de la base de données migrée
    - Vérifie la présence des tables et colonnes requises
-   - Confirme que la version de la base de données est 4.0
+   - Vérifie que la version de la base de données est 4.0
    - Nettoie les fichiers temporaires
 
 **Exigences :**
@@ -163,15 +163,15 @@ Ce script teste les migrations de base de données à partir des anciennes versi
 - Générées en exécutant d'abord `generate-migration-test-data.sh`
 
 **Résultat :**
-- Résultats de test codés par couleur (vert pour réussite, rouge pour échec)
-- Résumé des versions réussies et échouées
-- Messages d'erreur détaillés pour les migrations échouées
-- Code de sortie 0 si tous les tests réussissent, 1 si l'un d'eux échoue
+- Résultats des tests en couleur (vert pour succès, rouge pour échec)
+- Résumé des versions réussies et ayant échoué
+- Messages d'erreur détaillés pour les migrations ayant échoué
+- Code de sortie 0 si tous les tests réussissent, 1 si un test échoue
 
 **Ce qu'il valide :**
 - La version de la base de données est 4.0 après la migration
-- Tous les tableaux requis existent : `servers`, `backups`, `configurations`, `users`, `sessions`, `audit_log`, `db_version`
-- Les colonnes requises existent dans chaque tableau
+- Toutes les tables requises existent : `servers`, `backups`, `configurations`, `users`, `sessions`, `audit_log`, `db_version`
+- Les colonnes requises existent dans chaque table
 - La structure de la base de données est correcte
 
 **Exemple de sortie :**
@@ -233,11 +233,11 @@ Ce script fournit un wrapper de test pour `docker-entrypoint.sh` en développeme
 
 **Ce qu'il fait :**
 
-1. **Crée toujours une version récente** : Exécute automatiquement `pnpm build-local` pour créer une version récente avant les tests (pas besoin de compiler manuellement en premier)
-2. **Compile le service cron** : Assure que le service cron est compilé (`dist/cron-service.cjs`)
-3. **Configure une structure de type Docker** : Crée les liens symboliques et la structure de répertoires nécessaires pour imiter l'environnement Docker
-4. **Exécute le script de point d'entrée** : Lance `docker-entrypoint.sh` avec les variables d'environnement appropriées
-5. **Nettoie** : Supprime automatiquement les fichiers temporaires à la fermeture
+1. **Construit toujours une version fraîche** : Exécute automatiquement `pnpm build-local` pour créer une nouvelle version avant les tests (pas besoin de construire manuellement au préalable)
+2. **Construit le service cron** : S'assure que le service cron est construit (`dist/cron-service.cjs`)
+3. **Configure une structure similaire à Docker** : Crée les liens symboliques et la structure de répertoires nécessaires pour imiter l'environnement Docker
+4. **Exécute le script d'entrée** : Lance `docker-entrypoint.sh` avec les variables d'environnement appropriées
+5. **Nettoyage** : Supprime automatiquement les fichiers temporaires à la sortie
 
 **Utilisation :**
 
@@ -261,7 +261,7 @@ pnpm test-entrypoint
 - Le script gère automatiquement tous les prérequis (build, service cron, etc.)
 
 **Cas d'utilisation :**
-- Tester les modifications du script de point d'entrée localement avant le déploiement Docker
-- Vérifier la rotation des journaux et la fonctionnalité de journalisation
+- Tester les modifications du script d'entrée localement avant le déploiement Docker
+- Vérifier la rotation des journaux et les fonctionnalités de journalisation
 - Tester l'arrêt gracieux et la gestion des signaux
-- Déboguer le comportement du script de point d'entrée dans un environnement local
+- Déboguer le comportement du script d'entrée dans un environnement local

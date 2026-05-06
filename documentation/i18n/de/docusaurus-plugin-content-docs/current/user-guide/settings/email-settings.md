@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:03:42.699Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:22:11.812Z'
+source_file_mtime: '2026-05-06T23:18:51.442Z'
 source_file_hash: b978c78a610418d49df860a0680c231bce4f9a5f2690a3736ca40ae39b5ace0d
 translation_language: de
 source_file_path: documentation/docs/user-guide/settings/email-settings.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # E-Mail {#email}
 
@@ -16,14 +17,14 @@ translation_models:
 | Einstellung                 | Beschreibung                                                      |
 |:------------------------|:-----------------------------------------------------------------|
 | **SMTP-Server-Host**    | Der SMTP-Server Ihres E-Mail-Anbieters (z. B. `smtp.gmail.com`).      |
-| **SMTP-Server-Port**    | Portnummer (normalerweise `25` für Einfaches SMTP, `587` für STARTTLS oder `465` für Direktes SSL/TLS). |
-| **Verbindungstyp**     | Auswählen zwischen Einfaches SMTP, STARTTLS oder Direktes SSL/TLS. Standardmäßig auf Direktes SSL/TLS für neue Konfigurationen eingestellt. |
-| **SMTP-Authentifizierung** | Umschalten zum Aktivieren oder Deaktivieren der SMTP-Authentifizierung. Wenn deaktiviert, sind Benutzername und Passwort nicht erforderlich. |
+| **SMTP-Server-Port**    | Portnummer (typischerweise `25` für einfaches SMTP, `587` für STARTTLS oder `465` für direkte SSL/TLS). |
+| **Verbindungstyp**     | Wählen Sie zwischen einfachem SMTP, STARTTLS oder direkter SSL/TLS. Standardmäßig ist direkte SSL/TLS für neue Konfigurationen eingestellt. |
+| **SMTP-Authentifizierung** | Schalten Sie die SMTP-Authentifizierung ein oder aus. Wenn deaktiviert, sind Benutzername und Passwort nicht erforderlich. |
 | **SMTP-Benutzername**       | Ihre E-Mail-Adresse oder Ihr Benutzername (erforderlich, wenn die Authentifizierung aktiviert ist). |
-| **SMTP-Passwort**       | Ihr E-Mail-Passwort oder App-spezifisches Passwort (erforderlich, wenn die Authentifizierung aktiviert ist). |
-| **Absendername**         | Anzeigename, der als Absender in E-Mail-Benachrichtigungen angezeigt wird (optional, standardmäßig „duplistatus"). |
-| **Absenderadresse**        | E-Mail-Adresse, die als Absender angezeigt wird. Erforderlich für Einfaches SMTP oder wenn die Authentifizierung deaktiviert ist. Standardmäßig auf SMTP-Benutzername eingestellt, wenn die Authentifizierung aktiviert ist. Hinweis: Einige E-Mail-Anbieter überschreiben die `Absenderadresse` mit dem `SMTP-Server-Benutzername`. |
-| **Empfänger-E-Mail**     | Die E-Mail-Adresse zum Empfangen von Benachrichtigungen. Muss ein gültiges E-Mail-Adressformat sein. |
+| **SMTP-Passwort**       | Ihr E-Mail-Passwort oder ein app-spezifisches Passwort (erforderlich, wenn die Authentifizierung aktiviert ist). |
+| **Absendername**         | Anzeigename, der als Absender in E-Mail-Benachrichtigungen angezeigt wird (optional, Standard ist "duplistatus"). |
+| **Absenderadresse**        | E-Mail-Adresse, die als Absender angezeigt wird. Erforderlich bei einfachen SMTP-Verbindungen oder wenn die Authentifizierung deaktiviert ist. Standardmäßig wird der SMTP-Benutzername verwendet, wenn die Authentifizierung aktiviert ist. Beachten Sie, dass einige E-Mail-Anbieter die `From Address` mit der `SMTP Server Username` überschreiben. |
+| **Empfänger-E-Mail**     | Die E-Mail-Adresse, die Benachrichtigungen empfängt. Muss im gültigen E-Mail-Adressformat vorliegen. |
 
 Ein <IIcon2 icon="lucide:mail" color="green"/> grünes Symbol neben **E-Mail** in der Seitenleiste bedeutet, dass Ihre Einstellungen gültig sind. Wenn das Symbol <IIcon2 icon="lucide:mail" color="yellow"/> gelb ist, sind Ihre Einstellungen nicht gültig oder nicht konfiguriert.
 
@@ -35,11 +36,11 @@ Wenn die Konfiguration nicht vollständig konfiguriert ist, wird ein gelbes Warn
 
 ## Verfügbare Aktionen {#available-actions}
 
-| Schaltfläche                                                   | Beschreibung                                              |
+| Button                                                           | Beschreibung                                              |
 |:-----------------------------------------------------------------|:---------------------------------------------------------|
-| <IconButton label="Einstellungen speichern" />                             | Speichert die Änderungen an den NTFY-Einstellungen.              |
-| <IconButton icon="lucide:mail" label="Test-E-Mail senden"/>         | Sendet eine Test-E-Mail mit der SMTP-Konfiguration. Die Test-E-Mail zeigt den SMTP-Server-Hostname, Port, Verbindungstyp, Authentifizierungsstatus, Benutzername (falls zutreffend), Empfänger-E-Mail, Absenderadresse, Absendername und Testzeitstempel. |
-| <IconButton icon="lucide:trash-2" label="SMTP-Einstellungen löschen"/> | Löscht / Entfernt die SMTP-Konfiguration.                   |
+| <IconButton label="Einstellungen speichern" />                             | Speichern Sie die Änderungen an den NTFY-Einstellungen.              |
+| <IconButton icon="lucide:mail" label="Test-E-Mail senden"/>         | Sendet eine Test-E-Mail mithilfe der SMTP-Konfiguration. Die Test-E-Mail zeigt SMTP-Server-Hostname, Port, Verbindungstyp, Authentifizierungsstatus, Benutzernamen (falls zutreffend), Empfänger-E-Mail, Absenderadresse, Absendername und Test-Zeitstempel an. |
+| <IconButton icon="lucide:trash-2" label="SMTP-Einstellungen löschen"/> | Löschen / Leeren der SMTP-Konfiguration.                   |
 
 <br/>
 
@@ -58,10 +59,10 @@ Wenn die Konfiguration nicht vollständig konfiguriert ist, wird ein gelbes Warn
 **Gmail:**
 
 - Host: `smtp.gmail.com`
-- Port: `587` (STARTTLS) oder `465` (Direktes SSL/TLS)
-- Verbindungstyp: STARTTLS für Port 587, Direktes SSL/TLS für Port 465
+- Port: `587` (STARTTLS) oder `465` (Direkte SSL/TLS)
+- Verbindungstyp: STARTTLS für Port 587, Direkte SSL/TLS für Port 465
 - Benutzername: Ihre Gmail-Adresse
-- Passwort: Verwenden Sie ein App-Passwort (nicht Ihr reguläres Passwort). Generieren Sie eines unter https://myaccount.google.com/apppasswords
+- Passwort: Verwenden Sie ein App-Passwort (nicht Ihr reguläres Passwort). Erstellen Sie eines unter https://myaccount.google.com/apppasswords
 - Authentifizierung: Erforderlich
 
 **Outlook/Hotmail:**
@@ -70,7 +71,7 @@ Wenn die Konfiguration nicht vollständig konfiguriert ist, wird ein gelbes Warn
 - Port: `587`
 - Verbindungstyp: STARTTLS
 - Benutzername: Ihre Outlook-E-Mail-Adresse
-- Passwort: Ihr Kontokennwort
+- Passwort: Ihr Kontopasswort
 - Authentifizierung: Erforderlich
 
 **Yahoo Mail:**
@@ -80,12 +81,12 @@ Wenn die Konfiguration nicht vollständig konfiguriert ist, wird ein gelbes Warn
 - Verbindungstyp: STARTTLS
 - Benutzername: Ihre Yahoo-E-Mail-Adresse
 - Passwort: Verwenden Sie ein App-Passwort
-- Authentifizierung: erforderlich
+- Authentifizierung: Erforderlich
 
 ### Sicherheit – Best Practices {#security-best-practices}
 
-- Erwägen Sie die Verwendung eines dedizierten E-Mail-Kontos für Benachrichtigungen
- - Testen Sie Ihre Konfiguration mit der Schaltfläche „Test-E-Mail senden"
- - Einstellungen sind verschlüsselt und sicher in der Datenbank gespeichert
- - **Verwenden Sie verschlüsselte Verbindungen** - STARTTLS und Direktes SSL/TLS werden für die Produktionsnutzung empfohlen
- - Einfache SMTP-Verbindungen (Port 25) sind für vertrauenswürdige lokale Netzwerke verfügbar, werden aber nicht für die Produktionsnutzung über nicht vertrauenswürdige Netzwerke empfohlen
+- Verwenden Sie ein dediziertes E-Mail-Konto für Benachrichtigungen
+ - Testen Sie Ihre Konfiguration mithilfe der Schaltfläche "Test-E-Mail senden"
+ - Einstellungen werden verschlüsselt und sicher in der Datenbank gespeichert
+ - **Verschlüsselte Verbindungen verwenden** - STARTTLS und Direkte SSL/TLS werden für den Produktiveinsatz empfohlen
+ - Einfache SMTP-Verbindungen (Port 25) sind für vertrauenswürdige lokale Netzwerke verfügbar, aber nicht für den Einsatz über nicht vertrauenswürdige Netzwerke im Produktivbetrieb empfohlen

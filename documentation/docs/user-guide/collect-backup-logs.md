@@ -10,7 +10,7 @@
 
 ### Manual Collection {#manual-collection}
 
-1.  Click the <IconButton icon="lucide:download" /> **Collect Backup Logs** icon on the [Application Toolbar](overview#application-toolbar).
+1.  Click the <IconButton icon="lucide:download" /> **Collect Backup Logs** icon on the [Application Toolbar](overview.md#application-toolbar).
 
 ![Collect Backup Logs Popup](../assets/screen-collect-button-popup.png)
 

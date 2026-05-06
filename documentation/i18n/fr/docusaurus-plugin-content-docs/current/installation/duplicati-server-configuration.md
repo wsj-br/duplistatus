@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:02:33.283Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:20:02.319Z'
+source_file_mtime: '2026-05-06T23:18:51.418Z'
 source_file_hash: f8c4464625015170ba865f56f24e9f8d1dcde28efa05628f7e79b30cc230240c
 translation_language: fr
 source_file_path: documentation/docs/installation/duplicati-server-configuration.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Configuration du Serveur Duplicati (Requis) {#duplicati-server-configuration-required}
 
@@ -25,7 +26,7 @@ Appliquez cette configuration à chacun de vos serveurs Duplicati :
 
 2. **Configurer la création de rapports de résultats de sauvegarde :** Sur la page Configuration Duplicati, sélectionnez `Settings` et, dans la section `Default Options`, incluez les options suivantes. Remplacez « my.local.server » par le nom de votre serveur ou l'adresse IP où **duplistatus** est en cours d'exécution.
 
-| Option avancée                   | Valeur                                   |
+| Option avancée                   | Valeur                                     |
     | -------------------------------- | ---------------------------------------- |
     | `send-http-url`                  | `http://my.local.server:9666/api/upload` |
     | `send-http-result-output-format` | `Json`                                   |

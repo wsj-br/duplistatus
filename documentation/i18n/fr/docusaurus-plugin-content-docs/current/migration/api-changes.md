@@ -1,11 +1,13 @@
 ---
-translation_last_updated: '2026-04-18T00:02:34.849Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
-source_file_hash: a9c3dbba0383c39fc8db237418ff7690073036337de033ffbb314ff7f3dc230e
+translation_last_updated: '2026-05-06T23:20:04.021Z'
+source_file_mtime: '2026-05-06T23:18:51.410Z'
+source_file_hash: 8b9a230f64fd786725b53f2231596f7426ccf84e8ad7352af80d2f9b7a86410c
 translation_language: fr
 source_file_path: documentation/docs/migration/api-changes.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - openai/gpt-4o-mini
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Modifications incompatibles avec les versions antérieures de l'API {#api-breaking-changes}
 
@@ -43,12 +45,12 @@ Les points de terminaison des API externes sont maintenus pour la compatibilité
 
 La version 0.9.x introduit l'authentification et nécessite que tous les utilisateurs se connectent. Lors de la mise à niveau à partir de la version 0.8.x :
 
-1. **Authentification requise** : Toutes les pages et les points de terminaison API internes nécessitent maintenant une authentification
-2. **Compte Admin par défaut** : Un compte admin par défaut est créé automatiquement :
+1. **Authentification requise** : Toutes les pages et points de terminaison d'API internes nécessitent désormais une authentification
+2. **Compte administrateur par défaut** : Un compte administrateur par défaut est créé automatiquement :
    - Nom d'utilisateur : `admin`
-   - Mot de passe : `Duplistatus09` (doit être modifié à la première connexion)
-3. **Invalidation de session** : Tous les sessions existantes sont invalidées
-4. **Accès API externe** : Les points de terminaison API externes (`/api/summary`, `/api/lastbackup`, `/api/lastbackups`, `/api/upload`) restent non authentifiés pour la compatibilité avec les intégrations et Duplicati
+   - Mot de passe : `Duplistatus09` (doit être modifié lors de la première connexion)
+3. **Invalidation des sessions** : Toutes les sessions existantes sont invalidées
+4. **Accès à l'API externe** : Les points de terminaison d'API externes (`/api/summary`, `/api/lastbackup`, `/api/lastbackups`, `/api/upload`) restent non authentifiés pour assurer la compatibilité avec les intégrations et Duplicati
 
 ### Version 0.8.x {#version-08x}
 
@@ -80,9 +82,9 @@ La version 0.7.x introduit plusieurs modifications incompatibles avec les versio
 
 ##### Renommage de champs {#field-renaming}
 
-- **`totalMachines`** → **`totalServers`** dans le point de terminaison `/api/summary`
-- **`machine`** → **`server`** dans les objets de réponse API
-- **`backup_types_count`** → **`backup_jobs_count`** dans le point de terminaison `/api/lastbackups/{serverId}`
+- `totalMachines` → `totalServers` dans le point de terminaison `/api/summary`
+- `machine` → `server` dans les objets de réponse de l'API
+- `backup_types_count` → `backup_jobs_count` dans le point de terminaison `/api/lastbackups/{serverId}`
 
 ##### Modifications des chemins d'accès aux points de terminaison {#endpoint-path-changes}
 
@@ -230,14 +232,14 @@ Si vous effectuez une mise à niveau à partir d'une version antérieure à 0.7.
 
 ### Compatibilité rétroactive {#backward-compatibility}
 
-- **Version 1.2.1** : Entièrement rétrocompatible avec la structure API 1.1.x
-- **Version 1.1.x** : Entièrement rétrocompatible avec la structure API 1.0.x
-- **Version 1.0.x** : Entièrement rétrocompatible avec la structure API 0.9.x
-- **Version 0.9.x** : Entièrement rétrocompatible avec la structure API 0.8.x
-- **Version 0.8.x** : Entièrement rétrocompatible avec la structure API 0.7.x
-- **Version 0.7.x** : Non rétrocompatible avec les versions antérieures à 0.7.x
+- **Version 1.2.1** : Entièrement compatible avec la structure API 1.1.x
+- **Version 1.1.x** : Entièrement compatible avec la structure API 1.0.x
+- **Version 1.0.x** : Entièrement compatible avec la structure API 0.9.x
+- **Version 0.9.x** : Entièrement compatible avec la structure API 0.8.x
+- **Version 0.8.x** : Entièrement compatible avec la structure API 0.7.x
+- **Version 0.7.x** : Non compatible avec les versions antérieures à 0.7.x
   - Les anciens noms de champs ne fonctionneront pas
-  - Les anciens chemins de points de terminaison ne fonctionneront pas
+  - Les anciens chemins d'endpoint ne fonctionneront pas
 
 ### Support Futur {#future-support}
 
@@ -249,19 +251,19 @@ Si vous effectuez une mise à niveau à partir d'une version antérieure à 0.7.
 
 Les points de terminaison API externes suivants sont maintenus pour la compatibilité descendante et restent non authentifiés :
 
-| Point de terminaison | Méthode | Description | Modifications incompatibles |
-|----------|--------|-------------|------------------|
+| Point de terminaison | Méthode | Description | Changements majeurs |
+|---------------------|---------|-------------|--------------------|
 | `/api/summary` | GET | Résumé global des opérations de sauvegarde | 0.7.x : `totalMachines` → `totalServers` |
 | `/api/lastbackup/{serverId}` | GET | Dernière sauvegarde pour un serveur | 0.7.x : `machine` → `server` |
 | `/api/lastbackups/{serverId}` | GET | Dernières sauvegardes pour tous les travaux de sauvegarde | 0.7.x : `machine` → `server`, `backup_types_count` → `backup_jobs_count` |
-| `/api/upload` | POST | Téléverser les données de sauvegarde depuis Duplicati | Non |
+| `/api/upload` | POST | Télécharger les données de sauvegarde depuis Duplicati | Aucun changement majeur |
 
 ## Besoin d'aide ? {#need-help}
 
 Si vous avez besoin d'aide pour mettre à jour votre intégration :
 
 - **Référence API** : Vérifiez la [Référence API](../api-reference/overview.md) pour la documentation actuelle des points de terminaison
-- **API externes** : Consultez [API externes](../api-reference/external-apis.md) pour la documentation détaillée des points de terminaison
-- **Guide de migration** : Consultez le [Guide de migration](version_upgrade.md) pour les informations générales de migration
+- **APIs externes** : Consultez les [APIs externes](../api-reference/external-apis.md) pour la documentation détaillée des points de terminaison
+- **Guide de migration** : Consultez le [Guide de migration](version_upgrade.md) pour des informations générales sur la migration
 - **Notes de version** : Consultez les [Notes de version](../release-notes/0.8.x.md) spécifiques à la version pour un contexte supplémentaire
 - **Support** : Ouvrez un problème sur [GitHub](https://github.com/wsj-br/duplistatus/issues) pour obtenir de l'aide

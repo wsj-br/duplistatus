@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-04-18T00:00:16.007Z'
-source_file_mtime: '2026-03-05T22:33:28.419Z'
+translation_last_updated: '2026-05-06T23:19:37.770Z'
+source_file_mtime: '2026-05-06T23:18:51.410Z'
 source_file_hash: ccf0b5d9282c57ab9d01796a3974e790ac31e069ecc8a6880cf29c92b410210a
 translation_language: es
 source_file_path: documentation/docs/api-reference/database-values.md

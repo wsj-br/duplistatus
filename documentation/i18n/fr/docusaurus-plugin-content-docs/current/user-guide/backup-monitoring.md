@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:03:12.035Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:21:42.241Z'
+source_file_mtime: '2026-05-06T23:18:51.430Z'
 source_file_hash: 74e68a394e4fc2ec0fae355e9467377c4f1bde23f973fd6555e67a0ca86af518
 translation_language: fr
 source_file_path: documentation/docs/user-guide/backup-monitoring.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 import { ZoomMermaid } from '@site/src/components/ZoomMermaid';
 
@@ -23,9 +24,9 @@ Dans l'interface utilisateur, les sauvegardes en retard sont affichées avec une
 |:--------:|:---------------------------|:--------------------------------------------------|:-------------------|
 |    1     | **Dernière sauvegarde**            | L'horodatage de la dernière sauvegarde réussie.      | `2024-01-01 08:00` |
 |    2     | **Intervalle attendu**      | La fréquence de sauvegarde configurée.                  | `1 day`            |
-|    3     | **Prochaine sauvegarde calculée** | `Dernière sauvegarde` + `Intervalle attendu`               | `2024-01-02 08:00` |
+|    3     | **Prochaine sauvegarde calculée** | `Last Backup` + `Expected Interval`               | `2024-01-02 08:00` |
 |    4     | **Tolérance**              | La période de grâce configurée (temps supplémentaire autorisé). | `1 hour`           |
-|    5     | **Prochaine sauvegarde attendue**   | `Prochaine sauvegarde calculée` + `Tolérance`            | `2024-01-02 09:00` |
+|    5     | **Prochaine sauvegarde attendue**   | `Calculated Next Backup` + `Tolerance`            | `2024-01-02 09:00` |
 
 Une sauvegarde est considérée comme **en retard** si l'heure actuelle est ultérieure à l'heure de la `Sauvegarde Suivante Attendue`.
 

@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:01:55.208Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
-source_file_hash: 2db4ee85ae548cd4dcb93017bf40bcb7ae364551fa85c0d545995b8020fc0989
+translation_last_updated: '2026-05-06T23:21:15.584Z'
+source_file_mtime: '2026-05-06T23:18:51.430Z'
+source_file_hash: 82c01b068ec14a08bbafa65059c1ef8cd15f0aa41b743bd14c4313857a0dbc97
 translation_language: es
 source_file_path: documentation/docs/user-guide/collect-backup-logs.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Recopilar logs de backup {#collect-backup-logs}
 
@@ -15,7 +16,7 @@ translation_models:
 
 ### Recopilación Manual {#manual-collection}
 
-1.  Haga clic en el icono <IconButton icon="lucide:download" /> **Recopilar logs de backup** en la [Barra de herramientas de la aplicación](overview#application-toolbar).
+1.  Haga clic en el icono <IconButton icon="lucide:download" /> **Recopilar Registros de Copia de Seguridad** en la [Barra de Herramientas de la Aplicación](overview.md#application-toolbar).
 
 ![Collect Backup Logs Popup](../assets/screen-collect-button-popup.png)
 
@@ -53,12 +54,12 @@ También puede utilizar el botón <IconButton icon="lucide:import" label="Recopi
 ## Cómo funciona el proceso de recopilación {#how-the-collection-process-works}
 
 - **duplistatus** detecta automáticamente el mejor protocolo de conexión y se conecta al servidor Duplicati especificado.
-- Recupera el historial de backups, información de logs y configuración de backups (para monitoreo de backups).
-- Los logs ya presentes en la base de datos de **duplistatus** se omiten.
-- Los datos nuevos se procesan y almacenan en la base de datos local.
+- Recupera el historial de copias de seguridad, la información de registros y la configuración de copias de seguridad (para monitoreo de copias de seguridad).
+- Se omiten cualquier registro ya presente en la base de datos de **duplistatus**.
+- Los nuevos datos se procesan y almacenan en la base de datos local.
 - La URL utilizada (con el protocolo detectado) se almacenará o actualizará en la base de datos local.
-- Si se selecciona la opción de descarga, descargará los datos JSON recopilados. El nombre del archivo tendrá este formato: `[nombreDelServidor]_collected_[MarcaDeTiempo].json`. La marca de tiempo utiliza el formato de fecha ISO 8601 (YYYY-MM-DDTHH:MM:SS).
-- El panel de control se actualiza para reflejar la nueva información.
+- Si se selecciona la opción de descarga, se descargarán los datos JSON recopilados. El nombre del archivo tendrá el siguiente formato: `[serverName]_collected_[Timestamp].json`. La marca de tiempo utiliza el formato de fecha ISO 8601 (AAAA-MM-DDTHH:MM:SS).
+- El panel se actualiza para reflejar la nueva información.
 
 ## Solución de problemas de recopilación {#troubleshooting-collection-issues}
 

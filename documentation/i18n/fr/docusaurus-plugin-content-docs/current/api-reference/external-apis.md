@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-04-18T00:01:00.655Z'
-source_file_mtime: '2026-03-05T22:33:28.419Z'
-source_file_hash: 70fe731fa22f714de94b93df446dee4ca4dc1f5683c22bc93eb52b2e03dd77d4
+translation_last_updated: '2026-05-06T23:19:34.833Z'
+source_file_mtime: '2026-05-06T23:18:51.410Z'
+source_file_hash: 59b045e2f0ca88a7be16ce8ed6d2ae4476eed38416d4d0284b2f590183c45b81
 translation_language: fr
 source_file_path: documentation/docs/api-reference/external-apis.md
 translation_models:
@@ -11,10 +11,10 @@ translation_models:
 
 Ces points de terminaison sont conçus pour être utilisés par d'autres applications et intégrations, par exemple [Homepage](../user-guide/homepage-integration.md).
 
-## Obtenir le résumé général - `/api/summary` {#get-overall-summary-apisummary}
-- **Endpoint** : `/api/summary`
+## Obtenir un résumé général - `/api/summary` {#get-overall-summary---apisummary}
+- **Point de terminaison** : `/api/summary`
 - **Méthode** : GET
-- **Description** : Récupère un résumé de toutes les opérations de sauvegarde sur tous les serveurs.
+- **Description** : Récupère un résumé de toutes les opérations de sauvegarde sur l'ensemble des serveurs.
 - **Réponse** :
 
   ```json
@@ -31,19 +31,19 @@ Ces points de terminaison sont conçus pour être utilisés par d'autres applica
   ```
 
 - **Réponses d'erreur** :
-  - `500` : Erreur du serveur lors de la récupération des données de synthèse
+  - `500` : Erreur du serveur lors de la récupération des données de résumé
 - **Notes** :
   - Dans la version 0.5.x, le champ `totalBackupedSize` a été remplacé par `totalBackupSize`
   - Dans la version 0.7.x, le champ `totalMachines` a été remplacé par `totalServers`
   - Le champ `overdueBackupsCount` indique le nombre de sauvegardes actuellement en retard
   - Le champ `secondsSinceLastBackup` indique le temps en secondes depuis la dernière sauvegarde sur tous les serveurs
-  - Retourne une réponse de secours avec des valeurs nulles si la récupération des données échoue
+  - Renvoie une réponse de secours avec des valeurs nulles si la récupération des données échoue
   - **Note** : Pour une utilisation interne du tableau de bord, envisagez d'utiliser `/api/dashboard`, qui inclut ces données ainsi que des informations supplémentaires
 
-## Obtenir la dernière sauvegarde - `/api/lastbackup/:serverId` {#get-latest-backup-apilastbackupserverid}
-- **Endpoint** : `/api/lastbackup/:serverId`
+## Obtenir la dernière sauvegarde - `/api/lastbackup/:serverId` {#get-latest-backup---apilastbackupserverid}
+- **Point de terminaison** : `/api/lastbackup/:serverId`
 - **Méthode** : GET
-- **Description** : Récupère les informations de la dernière sauvegarde pour un serveur spécifique.
+- **Description** : Récupère les informations sur la dernière sauvegarde pour un serveur spécifique.
 - **Paramètres** :
   - `serverId` : l'identifiant du serveur (ID ou nom)
 
@@ -94,13 +94,13 @@ L'identifiant du serveur doit être encodé en URL.
 - **Notes** :
   - Dans la version 0.7.x, la clé de l'objet de réponse est passée de `machine` à `server`
   - L'identifiant du serveur peut être soit l'ID, soit le nom
-  - Retourne null pour latest_backup s'il n'existe aucune sauvegarde
+  - Renvoie null pour latest_backup s'il n'existe aucune sauvegarde
   - Inclut des en-têtes de contrôle de cache pour empêcher la mise en cache
 
-## Obtenir les dernières sauvegardes - `/api/lastbackups/:serverId` {#get-latest-backups-apilastbackupsserverid}
-- **Endpoint** : `/api/lastbackups/:serverId`
+## Obtenir les dernières sauvegardes - `/api/lastbackups/:serverId` {#get-latest-backups---apilastbackupsserverid}
+- **Point de terminaison** : `/api/lastbackups/:serverId`
 - **Méthode** : GET
-- **Description** : Récupère les informations de la dernière sauvegarde pour toutes les sauvegardes configurées (par exemple 'Fichiers', 'Bases de données') sur un serveur spécifique.
+- **Description** : Récupère les informations sur la dernière sauvegarde pour toutes les sauvegardes configurées (par exemple 'Fichiers', 'Bases de données') sur un serveur spécifique.
 - **Paramètres** :
   - `serverId` : l'identifiant du serveur (ID ou nom)
 
@@ -177,14 +177,14 @@ L'identifiant du serveur doit être encodé en URL.
 - **Notes** :
   - Dans la version 0.7.x, la clé de l'objet de réponse est passée de `machine` à `server`, et le champ `backup_types_count` a été renommé en `backup_jobs_count`
   - L'identifiant du serveur peut être soit l'ID, soit le nom
-  - Retourne la dernière sauvegarde pour chaque tâche de sauvegarde (backup_name) que possède le serveur
-  - Contrairement à `/api/lastbackup/:serverId` qui retourne uniquement la sauvegarde la plus récente du serveur (indépendamment de la tâche de sauvegarde)
+  - Renvoie la dernière sauvegarde pour chaque tâche de sauvegarde (backup_name) que possède le serveur
+  - Contrairement à `/api/lastbackup/:serverId`, qui renvoie uniquement la sauvegarde la plus récente du serveur (indépendamment de la tâche de sauvegarde)
   - Inclut des en-têtes de contrôle de cache pour empêcher la mise en cache
 
-## Téléverser les données de sauvegarde - `/api/upload` {#upload-backup-data-apiupload}
-- **Endpoint** : `/api/upload`
+## Téléverser les données de sauvegarde - `/api/upload` {#upload-backup-data---apiupload}
+- **Point de terminaison** : `/api/upload`
 - **Méthode** : POST
-- **Description** : Téléverse les données d'opération de sauvegarde pour un serveur. Prend en charge la détection des doublons de sauvegarde et envoie des notifications.
+- **Description** : Téléverse les données d'opération de sauvegarde pour un serveur. Prend en charge la détection des exécutions de sauvegarde en double et envoie des notifications.
 - **Corps de la requête** : JSON envoyé par Duplicati avec les options suivantes :
 
   ```bash
@@ -209,7 +209,7 @@ L'identifiant du serveur doit être encodé en URL.
   - Ne traite que les opérations de sauvegarde (MainOperation doit être "Backup")
   - Valide les champs requis dans la section Extra : machine-id, machine-name, backup-name, backup-id
   - Valide les champs requis dans la section Data : ParsedResult, BeginTime, Duration
-  - Détecte automatiquement les exécutions de sauvegarde en double et retourne un statut 409
+  - Détecte automatiquement les exécutions de sauvegarde en double et renvoie un statut 409
   - Envoie des notifications après une insertion réussie de la sauvegarde (si configuré)
-  - Enregistre les données de la requête dans un fichier du répertoire `data` à la racine du projet en mode développement, à des fins de débogage
+  - Journalise les données de la requête dans un fichier du répertoire `data` à la racine du projet en mode développement, à des fins de débogage
   - Utilise une transaction pour assurer la cohérence des données

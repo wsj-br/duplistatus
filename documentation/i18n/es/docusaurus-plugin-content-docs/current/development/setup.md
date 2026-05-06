@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-04-18T14:28:11.830Z'
-source_file_mtime: '2026-04-18T14:26:06.971Z'
-source_file_hash: 5f21215bb0815be3623139b3b25d7c342d796fc468d95ff0bf0bc3ff6d32890b
+translation_last_updated: '2026-05-06T23:20:04.884Z'
+source_file_mtime: '2026-05-06T23:18:51.410Z'
+source_file_hash: afa62bd5079025673839bdb73483cc80a950dce1e23ab6fbc63dccb4333ad41f
 translation_language: es
 source_file_path: documentation/docs/development/setup.md
 translation_models:
@@ -17,7 +17,7 @@ translation_models:
 - Node.js >=24.12.0
 - pnpm >=10.24.0 (packageManager: pnpm@10.30.3)
 - SQLite3
-- Inkscape (para traducción de SVG de documentación y exportación PNG; requerido solo si ejecuta `translate` o `translate:svg`)
+- Inkscape (para la traducción de SVGs de documentación y exportación a PNG; requerido solo si ejecutas `translate` o `translate:svg`)
 - bat/batcat (para mostrar una versión bonita de `translate:help`)
 - direnv (para cargar automáticamente los archivos `.env*`)
 
@@ -127,12 +127,12 @@ con este comando:
 
 El proyecto incluye varios scripts npm para diferentes tareas de desarrollo:
 
-### Scripts de Desarrollo {#development-scripts}
-- `pnpm dev` - Iniciar servidor de desarrollo en el puerto 8666 (incluye verificaciones previas)
+### Scripts de desarrollo {#development-scripts}
+- `pnpm dev` - Iniciar el servidor de desarrollo en el puerto 8666 (incluye verificaciones previas)
 - `pnpm build` - Compilar la aplicación para producción (incluye verificaciones previas)
 - `pnpm lint` - Ejecutar ESLint para verificar la calidad del código
 - `pnpm typecheck` - Ejecutar verificación de tipos de TypeScript
-- `scripts/upgrade-dependencies.sh` - Actualizar todos los paquetes a la versión más reciente, verificar vulnerabilidades y repararlas automáticamente
+- `scripts/upgrade-dependencies.sh` — Actualizar paquetes raíz y `documentation/` (`npm-check-updates`), actualizar el archivo de bloqueo del espacio de trabajo, actualizar browserslist y ejecutar `pnpm audit` / fix. Prefiere `source ./scripts/upgrade-dependencies.sh` para que **nvm** se aplique a tu shell; en CI o automatización, usa `CI=1` o `DUPLISTATUS_UPGRADE_ALLOW_EXEC=1` al ejecutar el archivo directamente. Consulta también `scripts/upgrade-tools.sh` para herramientas de Node/pnpm únicamente.
 - `scripts/clean-workspace.sh` - Limpiar el espacio de trabajo
 
 **Nota:** El script `preinstall` aplica automáticamente pnpm como gestor de paquetes.
@@ -141,16 +141,16 @@ El proyecto incluye varios scripts npm para diferentes tareas de desarrollo:
 
 Estos scripts deben ejecutarse desde el directorio `documentation/`:
 
-- `pnpm start` - Compilar y servir el sitio de documentación en modo de producción (puerto 3000 por defecto)
-- `pnpm start:en` - Iniciar servidor de desarrollo de documentación en inglés (recarga en caliente habilitada)
-- `pnpm start:fr` - Iniciar servidor de desarrollo de documentación en francés (recarga en caliente habilitada)
-- `pnpm start:de` - Iniciar servidor de desarrollo de documentación en alemán (recarga en caliente habilitada)
-- `pnpm start:es` - Iniciar servidor de desarrollo de documentación en español (recarga en caliente habilitada)
-- `pnpm start:pt-br` - Iniciar servidor de desarrollo de documentación en portugués (Brasil) (recarga en caliente habilitada)
-- `pnpm build` - Compilar el sitio de documentación para producción
+- `pnpm start` - Construir y servir el sitio de documentación en modo producción (puerto 3000 por defecto)
+- `pnpm start:en` - Iniciar el servidor de desarrollo de documentación en inglés (recarga automática habilitada)
+- `pnpm start:fr` - Iniciar el servidor de desarrollo de documentación en configuración regional francesa (recarga automática habilitada)
+- `pnpm start:de` - Iniciar el servidor de desarrollo de documentación en configuración regional alemana (recarga automática habilitada)
+- `pnpm start:es` - Iniciar el servidor de desarrollo de documentación en configuración regional española (recarga automática habilitada)
+- `pnpm start:pt-br` - Iniciar el servidor de desarrollo de documentación en configuración regional portuguesa (Brasil) (recarga automática habilitada)
+- `pnpm build` - Construir el sitio de documentación para producción
 - `pnpm write-translations` - Extraer cadenas traducibles de la documentación
-- `pnpm translate` - Traducir archivos de documentación usando IA (ver [Flujo de Trabajo de Traducción](translation-workflow))
-- `pnpm lint` - Ejecutar ESLint en archivos de origen de documentación
+- `pnpm translate` - Traducir archivos de documentación usando IA (ver [Flujo de traducción](translation-workflow))
+- `pnpm lint` - Ejecutar ESLint en los archivos fuente de la documentación
 
 Los servidores de desarrollo (`start:*`) proporcionan reemplazo de módulos en caliente para un desarrollo rápido. El puerto por defecto es 3000.
 
@@ -160,20 +160,20 @@ Los servidores de desarrollo (`start:*`) proporcionan reemplazo de módulos en c
 - `pnpm start` - Iniciar servidor de producción (puerto 9666)
 
 ### Scripts de Docker {#docker-scripts}
-- `pnpm docker:up` - Iniciar pila de Docker Compose
-- `pnpm docker:down` - Detener pila de Docker Compose
-- `pnpm docker:clean` - Limpiar entorno de Docker y caché
-- `pnpm docker:devel` - Construir una imagen de Docker de desarrollo etiquetada como `wsj-br/duplistatus:devel`
+- `pnpm docker:up` - Iniciar la pila de Docker Compose
+- `pnpm docker:down` - Detener la pila de Docker Compose
+- `pnpm docker:clean` - Limpiar el entorno y caché de Docker
+- `pnpm docker:devel` - Crear una imagen de desarrollo de Docker etiquetada como `wsj-br/duplistatus:devel`
 
 ### Scripts del Servicio Cron {#cron-service-scripts}
 - `pnpm cron:start` - Iniciar servicio cron en modo producción
 - `pnpm cron:dev` - Iniciar servicio cron en modo desarrollo con observación de archivos (puerto 8667)
 - `pnpm cron:start-local` - Iniciar servicio cron localmente para pruebas (puerto 8667)
 
-### Probar Scripts {#test-scripts}
-- `pnpm generate-test-data` - Generar datos de respaldo de prueba (requiere el parámetro --servers=N)
+### Scripts de prueba {#test-scripts}
+- `pnpm generate-test-data` - Generar datos de respaldo para pruebas (requiere el parámetro --servers=N)
 - `pnpm validate-csv-export` - Validar la funcionalidad de exportación CSV
-- `pnpm test-entrypoint` - Probar el script de entrada de Docker en el desarrollo local (ver [Test Scripts](test-scripts))
-- `pnpm take-screenshots` - Tomar capturas de pantalla para la documentación (ver [Documentation Tools](documentation-tools))
+- `pnpm test-entrypoint` - Probar el script de entrada de Docker en desarrollo local (ver [Scripts de prueba](test-scripts))
+- `pnpm take-screenshots` - Tomar capturas de pantalla para la documentación (ver [Herramientas de documentación](documentation-tools))
 
 Las comprobaciones retrasadas, las comprobaciones de salud de cron y las pruebas de SMTP se realizan a través de la aplicación en ejecución y `curl` (ver [Test Scripts](test-scripts)); se eliminaron los antiguos ayudantes independientes `pnpm` para esos.

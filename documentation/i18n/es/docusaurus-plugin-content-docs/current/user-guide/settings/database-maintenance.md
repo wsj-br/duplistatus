@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:02:00.195Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:21:23.537Z'
+source_file_mtime: '2026-05-06T23:18:51.446Z'
 source_file_hash: 6fadb27aa2b2898a91a2c277aa6ef2a380feb63069ba823e7cdf1943df204b51
 translation_language: es
 source_file_path: documentation/docs/user-guide/settings/database-maintenance.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Mantenimiento de base de datos {#database-maintenance}
 
@@ -52,11 +53,11 @@ Restaure su base de datos desde un archivo de backup creado anteriormente.
 
 **Proceso de Restauración:**
 
-- Se crea automáticamente un backup de seguridad de la base de datos actual antes de la restauración
-- La base de datos actual se reemplaza con el archivo de backup
-- Todas las sesiones se cierran por seguridad (los usuarios deben iniciar sesión nuevamente)
+- Se crea automáticamente una copia de seguridad de seguridad de la base de datos actual antes de la restauración
+- La base de datos actual se reemplaza con el archivo de copia de seguridad
+- Todas las sesiones se eliminan por motivos de seguridad (los usuarios deben iniciar sesión nuevamente)
 - Se verifica la integridad de la base de datos después de la restauración
-- Todos los cachés se borran para garantizar datos frescos
+- Se eliminan todas las cachés para garantizar datos actualizados
 
 **Formatos de Restauración:**
 
@@ -159,13 +160,13 @@ Detectar y fusionar servidores duplicados que tienen el mismo nombre pero difere
 
 Esto puede ocurrir cuando el `machine-id` de Duplicati cambia después de una actualización o reinstalación. Los servidores duplicados solo se muestran cuando existen. Si no se detectan duplicados, la sección mostrará un mensaje indicando que todos los servidores tienen nombres únicos.
 
-1.  Navegue a [Configuración → Mantenimiento de base de datos](database-maintenance.md).
+1.  Navegue a [Configuración → Mantenimiento de la base de datos](database-maintenance.md).
 2.  Si se detectan servidores duplicados, aparecerá una sección **Fusionar servidores duplicados**.
 3.  Revise la lista de grupos de servidores duplicados:
     - Cada grupo muestra servidores con el mismo nombre pero diferentes IDs
-    - El **Servidor objetivo** (más reciente por fecha de creación) está resaltado
+    - El **Servidor de destino** (el más reciente por fecha de creación) está resaltado
     - Los **IDs de servidores antiguos** que se fusionarán se enumeran por separado
-4.  Seleccione los grupos de servidores que desea fusionar marcando la casilla de verificación junto a cada grupo.
+4.  Seleccione los grupos de servidores que desea fusionar marcando la casilla junto a cada grupo.
 5.  Haga clic en <IconButton icon="lucide:git-merge" label="Fusionar servidores seleccionados" />.
 6.  Confirme la acción en el cuadro de diálogo.
 

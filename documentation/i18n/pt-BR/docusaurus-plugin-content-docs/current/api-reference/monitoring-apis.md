@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-04-18T00:00:48.935Z'
-source_file_mtime: '2026-03-05T22:33:28.419Z'
-source_file_hash: ccd50e5fe2f6be70227afc5ce46c99b7ce52a87df5184098f4d303683bd9e6c6
+translation_last_updated: '2026-05-06T23:19:42.291Z'
+source_file_mtime: '2026-05-06T23:18:51.410Z'
+source_file_hash: eb18cd75959282575195e73b0368d4eecd23bf9684c9c5915cea3d8f6c360fce
 translation_language: pt-BR
 source_file_path: documentation/docs/api-reference/monitoring-apis.md
 translation_models:
@@ -9,10 +9,10 @@ translation_models:
 ---
 # Monitoramento e Saúde {#monitoring-health}
 
-## Verificar Saúde - `/api/health` {#health-check-apihealth}
+## Verificação de Integridade - `/api/health` {#health-check---apihealth}
 - **Endpoint**: `/api/health`
 - **Método**: GET
-- **Descrição**: Verifica o status de saúde da aplicação e do banco de dados.
+- **Descrição**: Verifica o status de integridade da aplicação e do banco de dados.
 - **Resposta** (saudável):
 
   ```json
@@ -72,10 +72,10 @@ translation_models:
 
 - **Notas**: 
   - Retorna status 200 para sistemas saudáveis
-  - Retorna status 503 para sistemas não saudáveis ou falhas em declarações preparadas
-  - Inclui o campo `preparedStatementsError` quando ocorrem falhas em declarações preparadas
+  - Retorna status 503 para sistemas não saudáveis ou falhas em prepared statements
+  - Inclui o campo `preparedStatementsError` quando ocorrem falhas em prepared statements
   - Inclui o campo `initializationError` quando a inicialização do banco de dados falha
   - Inclui `connectionHealthError` e `connectionDetails` quando as verificações de saúde da conexão falham
-  - Rastreamento de pilha incluído apenas no modo de desenvolvimento
-  - Testa conexão básica com o banco de dados, declarações preparadas, status de inicialização e saúde da conexão
+  - O rastreamento de pilha é incluído apenas no modo de desenvolvimento
+  - Testa a conexão básica com o banco de dados, prepared statements, status de inicialização e saúde da conexão
   - Fornece diagnósticos abrangentes de saúde para solução de problemas

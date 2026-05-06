@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:02:14.228Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:22:21.420Z'
+source_file_mtime: '2026-05-06T23:18:51.442Z'
 source_file_hash: 80be5481828e5ef8fd45f7d5798ad511ae84f6dde487dd8920d6b2f458c1e1b8
 translation_language: pt-BR
 source_file_path: documentation/docs/user-guide/settings/audit-logs-viewer.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Logs de Auditoria {#audit-logs}
 
@@ -20,14 +21,14 @@ O visualizador de log de auditoria exibe uma lista cronológica de todos os even
 - **Data e hora**: Quando o evento ocorreu
 - **Usuário**: O nome de usuário que realizou a ação (ou "Sistema" para ações automatizadas)
 - **Ação**: A ação específica que foi realizada
-- **Categoria**: A categoria da ação (Autenticação, Gerenciamento de usuários, Configuração, Operações de backup, Gerenciamento de servidores, Operações do sistema)
+- **Categoria**: A categoria da ação (Autenticação, Gerenciamento de Usuários, Configuração, Operações de Backup, Gerenciamento de Servidor, Operações do Sistema)
 - **Status**: Se a ação foi bem-sucedida ou falhou
 - **Destino**: O objeto que foi afetado (se aplicável)
 - **Detalhes**: Informações adicionais sobre a ação
 
 ### Visualizando Detalhes do Log {#viewing-log-details}
 
-Clique no ícone <IconButton icon="lucide:eye" /> de olho ao lado de qualquer entrada de log para visualizar informações detalhadas, incluindo:
+Clique no ícone do <IconButton icon="lucide:eye" /> olho ao lado de qualquer entrada de log para visualizar informações detalhadas, incluindo:
 - Data e hora completa
 - Informações do usuário
 - Detalhes completos da ação (por exemplo: campos alterados, estatísticas, etc.)
@@ -40,8 +41,8 @@ Você pode exportar logs de auditoria filtrados em dois formatos:
 
 | Botão | Descrição |
 |:------|:-----------|
-| <IconButton icon="lucide:download" label="CSV"/> | Exportar logs como arquivo CSV para análise em planilha |
-| <IconButton icon="lucide:download" label="JSON"/> | Exportar logs como arquivo JSON para análise programática |
+| <IconButton icon="lucide:download" label="CSV"/> | Exportar logs como um arquivo CSV para análise em planilhas |
+| <IconButton icon="lucide:download" label="JSON"/> | Exportar logs como um arquivo JSON para análise programática |
 
 :::note
 As exportações incluem apenas os logs visíveis no momento com base nos seus filtros ativos. Para exportar todos os logs, limpe todos os filtros primeiro.

@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:03:41.459Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:22:10.086Z'
+source_file_mtime: '2026-05-06T23:18:51.446Z'
 source_file_hash: 6fadb27aa2b2898a91a2c277aa6ef2a380feb63069ba823e7cdf1943df204b51
 translation_language: de
 source_file_path: documentation/docs/user-guide/settings/database-maintenance.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # Datenbankwartung {#database-maintenance}
 
@@ -52,11 +53,11 @@ Stellen Sie Ihre Datenbank aus einer zuvor erstellten Sicherungsdatei wieder her
 
 **Wiederherstellungsprozess:**
 
-- Eine Sicherungskopie der aktuellen Datenbank wird automatisch vor der Wiederherstellung erstellt
+- Vor der Wiederherstellung wird automatisch ein Sicherungs-Backup der aktuellen Datenbank erstellt
 - Die aktuelle Datenbank wird durch die Sicherungsdatei ersetzt
 - Alle Sitzungen werden aus Sicherheitsgründen gelöscht (Benutzer müssen sich erneut anmelden)
 - Die Datenbankintegrität wird nach der Wiederherstellung überprüft
-- Alle Caches werden geleert, um sicherzustellen, dass frische Daten vorhanden sind
+- Alle Caches werden gelöscht, um aktuelle Daten sicherzustellen
 
 **Wiederherstellungsformate:**
 
@@ -160,10 +161,10 @@ Erkennen und führen Sie doppelte Server zusammen, die denselben Namen, aber unt
 Dies kann auftreten, wenn sich die `machine-id` von Duplicati nach einem Upgrade oder einer Neuinstallation ändert. Doppelte Server werden nur angezeigt, wenn sie vorhanden sind. Wenn keine Duplikate erkannt werden, zeigt der Bereich eine Meldung an, die angibt, dass alle Server eindeutige Namen haben.
 
 1.  Navigieren Sie zu [Einstellungen → Datenbankwartung](database-maintenance.md).
-2.  Wenn doppelte Server erkannt werden, wird ein Abschnitt **Doppelte Server zusammenführen** angezeigt.
-3.  Überprüfen Sie die Liste der doppelten Servergruppen:
-    - Jede Gruppe zeigt Server mit demselben Namen, aber unterschiedlichen IDs
-    - Der **Ziel-Server** (neuester nach Erstellungsdatum) ist hervorgehoben
+2.  Falls doppelte Server erkannt werden, wird ein Abschnitt **Doppelte Server zusammenführen** angezeigt.
+3.  Überprüfen Sie die Liste der Gruppen mit doppelten Servern:
+    - Jede Gruppe zeigt Server mit gleichem Namen, aber unterschiedlichen IDs
+    - Der **Zielserver** (neuester nach Erstellungsdatum) ist hervorgehoben
     - **Alte Server-IDs**, die zusammengeführt werden, sind separat aufgelistet
 4.  Wählen Sie die Servergruppen aus, die Sie zusammenführen möchten, indem Sie das Kontrollkästchen neben jeder Gruppe aktivieren.
 5.  Klicken Sie auf <IconButton icon="lucide:git-merge" label="Ausgewählte Server zusammenführen" />.

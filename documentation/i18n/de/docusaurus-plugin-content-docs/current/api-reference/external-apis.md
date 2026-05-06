@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-04-18T00:01:15.250Z'
-source_file_mtime: '2026-03-05T22:33:28.419Z'
-source_file_hash: 70fe731fa22f714de94b93df446dee4ca4dc1f5683c22bc93eb52b2e03dd77d4
+translation_last_updated: '2026-05-06T23:19:47.578Z'
+source_file_mtime: '2026-05-06T23:18:51.410Z'
+source_file_hash: 59b045e2f0ca88a7be16ce8ed6d2ae4476eed38416d4d0284b2f590183c45b81
 translation_language: de
 source_file_path: documentation/docs/api-reference/external-apis.md
 translation_models:
@@ -11,10 +11,10 @@ translation_models:
 
 Diese Endpunkte sind für die Verwendung durch andere Anwendungen und Integrationen konzipiert, zum Beispiel [Homepage](../user-guide/homepage-integration.md).
 
-## Gesamtübersicht abrufen - `/api/summary` {#get-overall-summary-apisummary}
+## Gesamtübersicht abrufen - `/api/summary` {#get-overall-summary---apisummary}
 - **Endpunkt**: `/api/summary`
 - **Methode**: GET
-- **Beschreibung**: Ruft eine Zusammenfassung aller Sicherungsvorgänge auf allen Servern ab.
+- **Beschreibung**: Ruft eine Zusammenfassung aller Backup-Operationen auf allen Servern ab.
 - **Antwort**:
 
   ```json
@@ -36,14 +36,14 @@ Diese Endpunkte sind für die Verwendung durch andere Anwendungen und Integratio
   - In Version 0.5.x wurde das Feld `totalBackupedSize` durch `totalBackupSize` ersetzt
   - In Version 0.7.x wurde das Feld `totalMachines` durch `totalServers` ersetzt
   - Das Feld `overdueBackupsCount` zeigt die Anzahl der aktuell überfälligen Sicherungen an
-  - Das Feld `secondsSinceLastBackup` zeigt die Zeit in Sekunden seit der letzten Sicherung auf allen Servern an
-  - Gibt eine Fallback-Antwort mit Nullwerten zurück, wenn das Abrufen der Daten fehlschlägt
+  - Das Feld `secondsSinceLastBackup` zeigt die Zeit in Sekunden seit der letzten Sicherung über alle Server hinweg an
+  - Gibt bei Fehlern eine Ersatzantwort mit Nullwerten zurück
   - **Hinweis**: Für die Verwendung im internen Dashboard ziehen Sie `/api/dashboard` in Betracht, das diese Daten sowie zusätzliche Informationen enthält
 
-## Letzte Sicherung abrufen - `/api/lastbackup/:serverId` {#get-latest-backup-apilastbackupserverid}
+## Letztes Backup abrufen - `/api/lastbackup/:serverId` {#get-latest-backup---apilastbackupserverid}
 - **Endpunkt**: `/api/lastbackup/:serverId`
 - **Methode**: GET
-- **Beschreibung**: Ruft die Informationen zur letzten Sicherung für einen bestimmten Server ab.
+- **Beschreibung**: Ruft die neuesten Backup-Informationen für einen bestimmten Server ab.
 - **Parameter**:
   - `serverId`: die Serverkennung (ID oder Name)
 
@@ -93,14 +93,14 @@ Die Serverkennung muss URL-kodiert sein.
   - `500`: Interner Serverfehler
 - **Hinweise**:
   - In Version 0.7.x hat sich der Schlüssel des Antwortobjekts von `machine` zu `server` geändert
-  - Die Serverkennung kann entweder ID oder Name sein
-  - Gibt null für latest_backup zurück, wenn keine Sicherungen existieren
-  - Beinhaltet Cache-Control-Header, um Caching zu verhindern
+  - Die Serverkennung kann entweder die ID oder der Name sein
+  - Gibt null für latest_backup zurück, wenn keine Sicherungen vorhanden sind
+  - Beinhaltet Cache-Control-Header, um das Zwischenspeichern zu verhindern
 
-## Letzte Sicherungen abrufen - `/api/lastbackups/:serverId` {#get-latest-backups-apilastbackupsserverid}
+## Letzte Backups abrufen - `/api/lastbackups/:serverId` {#get-latest-backups---apilastbackupsserverid}
 - **Endpunkt**: `/api/lastbackups/:serverId`
 - **Methode**: GET
-- **Beschreibung**: Ruft die Informationen zur letzten Sicherung für alle konfigurierten Sicherungen (z. B. 'Dateien', 'Datenbanken') auf einem bestimmten Server ab.
+- **Beschreibung**: Ruft die neuesten Backup-Informationen für alle konfigurierten Backups (z. B. 'Dateien', 'Datenbanken') auf einem bestimmten Server ab.
 - **Parameter**:
   - `serverId`: die Serverkennung (ID oder Name)
 
@@ -176,16 +176,16 @@ Die Serverkennung muss URL-kodiert sein.
   - `500`: Interner Serverfehler
 - **Hinweise**:
   - In Version 0.7.x hat sich der Schlüssel des Antwortobjekts von `machine` zu `server` geändert und das Feld `backup_types_count` wurde in `backup_jobs_count` umbenannt
-  - Die Serverkennung kann entweder ID oder Name sein
-  - Gibt die letzte Sicherung für jeden Sicherungsauftrag (backup_name) zurück, den der Server hat
+  - Die Serverkennung kann entweder die ID oder der Name sein
+  - Gibt die letzte Sicherung für jeden Sicherungsauftrag (backup_name) zurück, den der Server besitzt
   - Im Gegensatz zu `/api/lastbackup/:serverId`, das nur die jeweils aktuellste Sicherung des Servers zurückgibt (unabhängig vom Sicherungsauftrag)
-  - Beinhaltet Cache-Control-Header, um Caching zu verhindern
+  - Beinhaltet Cache-Control-Header, um das Zwischenspeichern zu verhindern
 
-## Sicherungsdaten hochladen - `/api/upload` {#upload-backup-data-apiupload}
+## Backup-Daten hochladen - `/api/upload` {#upload-backup-data---apiupload}
 - **Endpunkt**: `/api/upload`
 - **Methode**: POST
-- **Beschreibung**: Lädt Sicherungsdaten für einen Server hoch. Unterstützt die Erkennung doppelter Sicherungsläufe und sendet Benachrichtigungen.
-- **Anfrage-Body**: JSON, gesendet von Duplicati, mit folgenden Optionen:
+- **Beschreibung**: Lädt Backup-Operationsdaten für einen Server hoch. Unterstützt die Erkennung doppelter Backup-Läufe und sendet Benachrichtigungen.
+- **Anforderungstext**: JSON, gesendet von Duplicati, mit folgenden Optionen:
 
   ```bash
   --send-http-url=http://my.local.server:9666/api/upload
@@ -202,14 +202,14 @@ Die Serverkennung muss URL-kodiert sein.
   ```
 
 - **Fehlerantworten**:
-  - `400`: Erforderliche Felder in den Abschnitten Extra oder Data fehlen oder ungültige MainOperation
+  - `400`: Erforderliche Felder in den Abschnitten Extra oder Data fehlen oder MainOperation ist ungültig
   - `409`: Doppelte Sicherungsdaten (wird ignoriert)
   - `500`: Serverfehler bei der Verarbeitung der Sicherungsdaten
 - **Hinweise**:
   - Verarbeitet nur Sicherungsvorgänge (MainOperation muss „Backup“ sein)
-  - Überprüft erforderliche Felder im Extra-Bereich: machine-id, machine-name, backup-name, backup-id
-  - Überprüft erforderliche Felder im Data-Bereich: ParsedResult, BeginTime, Duration
+  - Überprüft erforderliche Felder im Extra-Abschnitt: machine-id, machine-name, backup-name, backup-id
+  - Überprüft erforderliche Felder im Data-Abschnitt: ParsedResult, BeginTime, Duration
   - Erkennt automatisch doppelte Sicherungsläufe und gibt den Status 409 zurück
   - Sendet Benachrichtigungen nach erfolgreichem Einfügen der Sicherung (falls konfiguriert)
-  - Protokolliert Anfragedaten in einer Datei im `data`-Verzeichnis im Stammverzeichnis des Projekts im Entwicklungsmodus zu Debugging-Zwecken
-  - Verwendet Transaktionen für Datenkonsistenz
+  - Protokolliert Anforderungsdaten in einer Datei im `data`-Verzeichnis im Projektstamm im Entwicklungsmodus zur Fehlerbehebung
+  - Verwendet eine Transaktion für Datenkonsistenz

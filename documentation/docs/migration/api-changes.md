@@ -75,9 +75,9 @@ Version 0.7.x introduces several breaking changes to external API endpoints that
 
 ##### Field Renaming {#field-renaming}
 
-- **`totalMachines`** → **`totalServers`** in `/api/summary` endpoint
-- **`machine`** → **`server`** in API response objects
-- **`backup_types_count`** → **`backup_jobs_count`** in `/api/lastbackups/{serverId}` endpoint
+- `totalMachines` → `totalServers` in `/api/summary` endpoint
+- `machine` → `server` in API response objects
+- `backup_types_count` → `backup_jobs_count` in `/api/lastbackups/{serverId}` endpoint
 
 ##### Endpoint Path Changes {#endpoint-path-changes}
 

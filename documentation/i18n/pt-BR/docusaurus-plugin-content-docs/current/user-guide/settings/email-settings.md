@@ -1,11 +1,12 @@
 ---
-translation_last_updated: '2026-04-18T00:02:18.097Z'
-source_file_mtime: '2026-03-05T22:33:28.423Z'
+translation_last_updated: '2026-05-06T23:22:22.926Z'
+source_file_mtime: '2026-05-06T23:18:51.442Z'
 source_file_hash: b978c78a610418d49df860a0680c231bce4f9a5f2690a3736ca40ae39b5ace0d
 translation_language: pt-BR
 source_file_path: documentation/docs/user-guide/settings/email-settings.md
 translation_models:
   - anthropic/claude-haiku-4.5
+  - qwen/qwen3-235b-a22b-2507
 ---
 # E-mail {#email}
 
@@ -13,17 +14,17 @@ translation_models:
 
 ![Email Configuration](../../assets/screen-settings-email.png)
 
-| Configuração                | Descrição                                                      |
+| Configuração                 | Descrição                                                      |
 |:------------------------|:-----------------------------------------------------------------|
-| **Host do servidor SMTP**    | O servidor SMTP do seu provedor de e-mail (por exemplo, `smtp.gmail.com`).      |
-| **Porta do servidor SMTP**    | Número da porta (normalmente `25` para SMTP simples, `587` para STARTTLS ou `465` para SSL/TLS direto). |
-| **Tipo de conexão**     | Selecionar entre SMTP simples, STARTTLS ou SSL/TLS direto. O padrão é SSL/TLS direto para novas configurações. |
-| **Autenticação SMTP** | Ativar ou desativar a autenticação SMTP. Quando desabilitado, os campos de nome de usuário e senha não são obrigatórios. |
+| **Nome do host do servidor SMTP**    | Servidor SMTP do seu provedor de e-mail (por exemplo, `smtp.gmail.com`).      |
+| **Porta do servidor SMTP**    | Número da porta (normalmente `25` para SMTP Puro, `587` para STARTTLS ou `465` para SSL/TLS Direto). |
+| **Tipo de Conexão**     | Selecione entre SMTP Puro, STARTTLS ou SSL/TLS Direto. O padrão é SSL/TLS Direto para novas configurações. |
+| **Autenticação SMTP** | Alternar para habilitar ou desativar a autenticação SMTP. Quando desativada, os campos de nome de usuário e senha não são obrigatórios. |
 | **Nome de usuário SMTP**       | Seu endereço de e-mail ou nome de usuário (obrigatório quando a autenticação está habilitada). |
-| **Senha SMTP**       | Sua senha de e-mail ou senha específica do aplicativo (obrigatório quando a autenticação está habilitada). |
-| **Nome do remetente**         | Nome de exibição mostrado como remetente nas notificações por e-mail (opcional, padrão é "duplistatus"). |
-| **Endereço do remetente**        | Endereço de e-mail mostrado como remetente. Obrigatório para conexões SMTP simples ou quando a autenticação está desabilitada. O padrão é o nome de usuário SMTP quando a autenticação está habilitada. Observe que alguns provedores de e-mail substituirão o `Endereço do remetente` pelo `Nome de usuário do servidor SMTP`. |
-| **E-mail do destinatário**     | O endereço de e-mail para receber notificações. Deve estar em um formato de endereço de e-mail válido. |
+| **Senha SMTP**       | Sua senha de e-mail ou senha específica para aplicativos (obrigatória quando a autenticação está habilitada). |
+| **Nome do remetente**         | Nome exibido como remetente nas notificações por e-mail (opcional, padrão é "duplistatus"). |
+| **Endereço de origem**        | Endereço de e-mail exibido como remetente. Obrigatório para conexões SMTP Puro ou quando a autenticação está desativada. O padrão é o nome de usuário SMTP quando a autenticação está habilitada. Observe que alguns provedores de e-mail substituirão o `From Address` pelo `SMTP Server Username`. |
+| **E-mail do destinatário**     | O endereço de e-mail que receberá as notificações. Deve estar em formato válido de endereço de e-mail. |
 
 Um ícone <IIcon2 icon="lucide:mail" color="green"/> verde ao lado de **E-mail** na barra lateral significa que suas configurações são válidas. Se o ícone for <IIcon2 icon="lucide:mail" color="yellow"/> amarelo, suas configurações não são válidas ou não estão configuradas.
 
@@ -35,11 +36,11 @@ Quando a configuração não está totalmente configurada, uma caixa de alerta a
 
 ## Ações Disponíveis {#available-actions}
 
-| Botão                                                            | Descrição                                                |
+| Botão                                                           | Descrição                                              |
 |:-----------------------------------------------------------------|:---------------------------------------------------------|
-| <IconButton label="Salvar configurações" />                      | Salvar as alterações feitas nas configurações NTFY.      |
-| <IconButton icon="lucide:mail" label="Enviar e-mail de teste"/>  | Envia uma mensagem de e-mail de teste usando a configuração SMTP. O e-mail de teste exibe nome do host do servidor SMTP, porta, tipo de conexão, status de autenticação, nome de usuário (se aplicável), e-mail do destinatário, endereço do remetente, nome do remetente e data e hora do teste. |
-| <IconButton icon="lucide:trash-2" label="Excluir configurações SMTP"/> | Excluir / Limpar a configuração SMTP.                   |
+| <IconButton label="Salvar Configurações" />                             | Salva as alterações feitas nas configurações do NTFY.              |
+| <IconButton icon="lucide:mail" label="Enviar E-mail de Teste"/>         | Envia uma mensagem de e-mail de teste usando a configuração SMTP. O e-mail de teste exibe o nome do host do servidor SMTP, porta, tipo de conexão, status de autenticação, nome de usuário (se aplicável), e-mail do destinatário, endereço de origem, nome do remetente e carimbo de data/hora do teste. |
+| <IconButton icon="lucide:trash-2" label="Excluir Configurações SMTP"/> | Excluir / Limpar a configuração SMTP.                   |
 
 <br/>
 
@@ -58,34 +59,34 @@ Quando a configuração não está totalmente configurada, uma caixa de alerta a
 **Gmail:**
 
 - Host: `smtp.gmail.com`
-- Porta: `587` (STARTTLS) ou `465` (SSL/TLS direto)
-- Tipo de conexão: STARTTLS para porta 587, SSL/TLS direto para porta 465
+- Porta: `587` (STARTTLS) ou `465` (SSL/TLS Direto)
+- Tipo de Conexão: STARTTLS para a porta 587, SSL/TLS Direto para a porta 465
 - Nome de usuário: Seu endereço Gmail
 - Senha: Use uma Senha de Aplicativo (não sua senha regular). Gere uma em https://myaccount.google.com/apppasswords
-- Autenticação: Obrigatório
+- Autenticação: Obrigatória
 
 **Outlook/Hotmail:**
 
 - Host: `smtp-mail.outlook.com`
 - Porta: `587`
-- Tipo de conexão: STARTTLS
+- Tipo de Conexão: STARTTLS
 - Nome de usuário: Seu endereço de e-mail do Outlook
 - Senha: Sua senha da conta
-- Autenticação: Obrigatório
+- Autenticação: Obrigatória
 
 **Yahoo Mail:**
 
 - Host: `smtp.mail.yahoo.com`
 - Porta: `587`
-- Tipo de conexão: STARTTLS
-- Nome de usuário: Seu endereço de e-mail Yahoo
+- Tipo de Conexão: STARTTLS
+- Nome de usuário: Seu endereço de e-mail do Yahoo
 - Senha: Use uma Senha de Aplicativo
-- Autenticação: Obrigatório
+- Autenticação: Obrigatória
 
 ### Práticas Recomendadas de Segurança {#security-best-practices}
 
 - Considere usar uma conta de e-mail dedicada para notificações
- - Teste sua configuração usando o botão "Enviar e-mail de teste"
+ - Teste sua configuração usando o botão "Enviar E-mail de Teste"
  - As configurações são criptografadas e armazenadas com segurança no banco de dados
- - **Use conexões criptografadas** - STARTTLS e SSL/TLS direto são recomendados para uso em produção
- - Conexões SMTP simples (porta 25) estão disponíveis para redes locais confiáveis, mas não são recomendadas para uso em produção em redes não confiáveis
+ - **Use conexões criptografadas** - STARTTLS e SSL/TLS Direto são recomendados para uso em produção
+ - Conexões SMTP Puro (porta 25) estão disponíveis para redes locais confiáveis, mas não são recomendadas para uso em produção em redes não confiáveis

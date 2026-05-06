@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-04-18T14:28:16.801Z'
-source_file_mtime: '2026-04-18T14:26:03.387Z'
+translation_last_updated: '2026-05-06T23:20:05.398Z'
+source_file_mtime: '2026-05-06T23:18:51.394Z'
 source_file_hash: 1d2e30215eab8e6548c552a40d5a81eb9837ec96e1f22b22b2e39a0a757fe50a
 translation_language: es
 source_file_path: documentation/docs/development/test-scripts.md
@@ -86,7 +86,7 @@ Este script valida la funcionalidad de exportación CSV. Realiza lo siguiente:
 sudo ./scripts/temporary_ntfy.sh_block.sh
 ```
 
-Este script bloquea temporalmente el acceso de red saliente al servidor NTFY (`ntfy.sh`) para probar el mecanismo de reintentos de notificaciones. Realiza lo siguiente:
+Este script bloquea temporalmente el acceso de red saliente al servidor NTFY (`ntfy.sh`) para probar el mecanismo de reintento de notificaciones. Realiza lo siguiente:
 - Resuelve la dirección IP del servidor NTFY
 - Añade una regla de iptables para bloquear el tráfico saliente
 - Bloquea durante 10 segundos (configurable)
@@ -110,14 +110,14 @@ Este script genera bases de datos de prueba para múltiples versiones histórica
 
 1. **Detiene y elimina** cualquier contenedor Docker existente
 2. **Para cada versión** (v0.4.0, v0.5.0, v0.6.1, 0.7.27, 0.8.21):
-   - Elimina archivos de base de datos existentes
+   - Elimina los archivos de base de datos existentes
    - Crea un archivo de etiqueta de versión
    - Inicia un contenedor Docker con la versión específica
    - Espera a que el contenedor esté listo
    - Genera datos de prueba usando `pnpm generate-test-data`
-   - Toma una captura de pantalla de la interfaz de usuario con datos de prueba
+   - Toma una captura de pantalla de la interfaz con los datos de prueba
    - Detiene y elimina el contenedor
-   - Vacía archivos WAL y guarda el esquema de la base de datos
+   - Descarga los archivos WAL y guarda el esquema de la base de datos
    - Copia el archivo de base de datos a `scripts/migration_test_data/`
 
 **Requisitos:**
@@ -152,10 +152,10 @@ Este script prueba migraciones de base de datos desde versiones antiguas a la ve
 
 1. **Para cada versión** (v0.4.0, v0.5.0, v0.6.1, 0.7.27, 0.8.21):
    - Crea una copia temporal de la base de datos de prueba
-   - Ejecuta el proceso de migración utilizando `test-migration.ts`
+   - Ejecuta el proceso de migración usando `test-migration.ts`
    - Valida la estructura de la base de datos migrada
-   - Verifica las tablas y columnas requeridas
-   - Comprueba que la versión de la base de datos sea 4.0
+   - Verifica la existencia de tablas y columnas requeridas
+   - Confirma que la versión de la base de datos sea 4.0
    - Limpia los archivos temporales
 
 **Requisitos:**
@@ -163,10 +163,10 @@ Este script prueba migraciones de base de datos desde versiones antiguas a la ve
 - Generadas ejecutando primero `generate-migration-test-data.sh`
 
 **Salida:**
-- Resultados de pruebas codificados por color (verde para aprobado, rojo para fallido)
+- Resultados de pruebas con codificación por colores (verde para aprobado, rojo para fallido)
 - Resumen de versiones aprobadas y fallidas
-- Mensajes de error detallados para migraciones fallidas
-- Código de salida 0 si todas las pruebas se aprueban, 1 si alguna falla
+- Mensajes detallados de error para migraciones fallidas
+- Código de salida 0 si todas las pruebas pasan, 1 si alguna falla
 
 **Lo que valida:**
 - La versión de la base de datos es 4.0 después de la migración
@@ -233,11 +233,11 @@ Este script proporciona un contenedor de prueba para `docker-entrypoint.sh` en d
 
 **Qué hace:**
 
-1. **Siempre construye una versión nueva**: Ejecuta automáticamente `pnpm build-local` para crear una compilación nueva antes de realizar pruebas (no es necesario compilar manualmente primero)
-2. **Construye el servicio cron**: Asegura que el servicio cron esté compilado (`dist/cron-service.cjs`)
-3. **Configura la estructura similar a Docker**: Crea los enlaces simbólicos y la estructura de directorios necesarios para imitar el entorno de Docker
-4. **Ejecuta el script de punto de entrada**: Ejecuta `docker-entrypoint.sh` con las variables de entorno apropiadas
-5. **Limpia**: Elimina automáticamente los archivos temporales al salir
+1. **Construye siempre una versión nueva**: Ejecuta automáticamente `pnpm build-local` para crear una compilación nueva antes de probar (no es necesario compilar manualmente primero)
+2. **Construye el servicio cron**: Asegura que el servicio cron se compile (`dist/cron-service.cjs`)
+3. **Configura una estructura tipo Docker**: Crea los enlaces simbólicos y la estructura de directorios necesarios para imitar el entorno de Docker
+4. **Ejecuta el script de entrada**: Ejecuta `docker-entrypoint.sh` con las variables de entorno adecuadas
+5. **Limpieza**: Elimina automáticamente los archivos temporales al salir
 
 **Uso:**
 
@@ -261,7 +261,7 @@ pnpm test-entrypoint
 - El script maneja automáticamente todos los requisitos previos (compilación, servicio cron, etc.)
 
 **Casos de uso:**
-- Probar cambios en el script de punto de entrada localmente antes del despliegue en Docker
+- Probar cambios en el script de entrada localmente antes del despliegue en Docker
 - Verificar la rotación de registros y la funcionalidad de registro
-- Probar el apagado elegante y el manejo de señales
-- Depurar el comportamiento del script de punto de entrada en un entorno local
+- Probar el apagado ordenado y el manejo de señales
+- Depuración del comportamiento del script de entrada en un entorno local
