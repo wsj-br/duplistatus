@@ -41,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Build warning vscode-languageserver-types (documentation)**: Suppressed Webpack "Critical dependency: require function is used in a way in which dependencies cannot be statically extracted" for transitive dependency `vscode-languageserver-types` (from intlayer-editor) in the **documentation** (Docusaurus) build via an inline plugin in `documentation/docusaurus.config.ts` that adds `ignoreWarnings`. The warning occurs during the docs build only, not the main app.
 
 ### Security
+- **pnpm overrides (uuid, postcss)**: Added root **`pnpm.overrides`** so transitive **`uuid`** is **≥14.0.0** (GHSA-w5hq-g745-h8pq: sockjs/mermaid under Docusaurus) and **`postcss`** is **≥8.5.10** (GHSA-qx2v-qp2m-jg93: Next.js dependency chain).
 - **Dependabot dependency updates (documentation)**: Merged two Dependabot PRs to address vulnerabilities in the documentation workspace: (1) bump `ajv` in `/documentation` (8.17.1→8.18.0 and 6.12.6→6.14.0); (2) bump `fast-xml-parser` in `/documentation` (5.3.5→5.3.6). Both were merged via the dependabot multi-update for /documentation.
 - **Dependency vulnerabilities**: Fixed 4 high-severity vulnerabilities by adding pnpm overrides:
   - `minimatch >=3.1.4`: Fixes GHSA-3ppc-4f35-3m26 (ReDoS via repeated wildcards), GHSA-7r86-cg39-jmmj (combinatorial backtracking), and GHSA-23c5-xmqv-rm74 (nested extglobs backtracking) in documentation>@docusaurus/core>serve-handler>minimatch.
