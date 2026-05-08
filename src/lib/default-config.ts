@@ -98,7 +98,7 @@ export const defaultNtfyConfig = {
 };
 
 // Global overdue tolerance configuration
-export const defaultOverdueTolerance = '1h' as const;
+export const defaultOverdueTolerance = '2h' as const;
 
 // Global cron interval configuration
 export const defaultCronInterval = '5min' as CronInterval;

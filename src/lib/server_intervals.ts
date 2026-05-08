@@ -3,12 +3,16 @@
 // Based on Duplicati's Scheduler.GetNextValidTime: https://github.com/duplicati/duplicati/blob/master/Duplicati.Server/Web/Models/Scheduler.cs
 // generated in TypeScript by Copilot AI from the C# code and modified to fit the needs of the project and simplify the logic.
 //
+// Calendar steps (D, W, M, Y) and weekday checks use UTC getters/setters (getUTCDate, setUTCDate, getUTCDay, …).
+// Using local setDate/getDay would shift UTC instants by one hour when the process TZ crosses DST (e.g. GMT→BST),
+// causing false "next run" drift versus Duplicati reports stored as ISO UTC.
+//
 // - repeat is parsed as concatenated tokens: <int><unit> where unit in s,m,h,D,W,M,Y (case-sensitive)
 // - plain integer is treated as seconds
 // - if the total repetition interval is >= 1 day (time difference >= 24h),
 //   the scheduler advances day-by-day from the candidate date until an allowed weekday is found (up to 8 days)
 // - otherwise it repeatedly adds the repetition interval until an allowed weekday is found (with a safety cap)
-// 
+//
 
 import { parseIntervalString, ParsedInterval } from './interval-utils';
 
@@ -33,17 +37,17 @@ function addInterval(date: Date, tokens: ParsedInterval[]): Date {
                 res = new Date(res.getTime() + v * 60 * 60 * 1000);
                 break;
             case 'D': case 'd':
-                res.setDate(res.getDate() + v);
+                res.setUTCDate(res.getUTCDate() + v);
                 break;
             case 'W': case 'w':
-                res.setDate(res.getDate() + v * 7);
+                res.setUTCDate(res.getUTCDate() + v * 7);
                 break;
             case 'M':
-                // add months preserving day-of-month where possible
-                res.setMonth(res.getMonth() + v);
+                // add months preserving day-of-month where possible (UTC calendar)
+                res.setUTCMonth(res.getUTCMonth() + v);
                 break;
             case 'Y': case 'y':
-                res.setFullYear(res.getFullYear() + v);
+                res.setUTCFullYear(res.getUTCFullYear() + v);
                 break;
             default:
                 throw new Error(`Unsupported unit: ${unit}`);
@@ -119,7 +123,7 @@ export function GetNextBackupRunDate(lastBackupStr: string, baseTimeStr: string,
 
     function isAllowed(dt: Date): boolean {
         if (allDaysAllowed) return true;
-        const dayOfWeek = dt.getDay();
+        const dayOfWeek = dt.getUTCDay();
         const isAllowedDay = allowed.indexOf(dayOfWeek) >= 0;
         return isAllowedDay;
     }
@@ -150,7 +154,7 @@ export function GetNextBackupRunDate(lastBackupStr: string, baseTimeStr: string,
     if (intervalIsAtLeastDay) {
         // Advance day-by-day until allowed (up to 8 days)
         for (let i = 0; i < 8; i++) {
-            candidate.setDate(candidate.getDate() + 1);
+            candidate.setUTCDate(candidate.getUTCDate() + 1);
             if (isAllowed(candidate)) {
                 return candidate.toISOString();
             }

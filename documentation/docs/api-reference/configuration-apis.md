@@ -194,7 +194,7 @@
       "requireAuth": true,
       "hasPassword": true
     },
-    "overdue_tolerance": "1h",
+    "overdue_tolerance": "2h",
     "backup_settings": {
       "server1:backup1": {
         "notificationEvent": "all",
@@ -413,7 +413,7 @@
 - **Response**:
   ```json
   {
-    "overdue_tolerance": "1h"
+    "overdue_tolerance": "2h"
   }
   ```
 - **Error Responses**:
@@ -430,7 +430,7 @@
 - **Request Body**:
   ```json
   {
-    "overdue_tolerance": "1h"
+    "overdue_tolerance": "2h"
   }
   ```
 - **Response**:
@@ -444,6 +444,6 @@
   - `400`: overdue_tolerance is required
   - `500`: Server error updating overdue tolerance
 - **Notes**:
-  - Updates the overdue tolerance setting (accepts string format like "1h", "2h", etc.)
+  - Updates the overdue tolerance setting (accepts string format like `"1h"`, `"2h"`, etc.; default for new installs is **`2h`**)
   - Affects when backups are considered overdue
   - Used by the overdue backup checker

@@ -21,6 +21,10 @@ interface BackupNotificationConfig {
 
 ## Core Algorithm
 
+### UTC calendar arithmetic
+
+`GetNextBackupRunDate` advances day/week/month/year intervals using **UTC** calendar fields (`setUTCDate`, `getUTCDay`, etc.). Backups and `lastBackupDate` are stored as ISO UTC; using the Node process **local** `setDate`/`getDay` made “next run” drift by one hour when the server timezone crossed DST (e.g. GMT→BST), because local calendar days are not always 24 hours long.
+
 ### Time Field Calculation
 
 The `time` field represents the **next expected backup date** and is calculated using this algorithm:
