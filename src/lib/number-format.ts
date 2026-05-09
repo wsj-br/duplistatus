@@ -1,66 +1,37 @@
 /**
- * Locale-aware number formatting utilities
- * Integrates with Intlayer's locale system to provide consistent number formatting
- * across the application.
+ * Locale-aware number formatting utilities.
+ * Uses the same locale strings as date/time formatting (`Intl` resolves tags such as `de` without a region).
  */
 
-/**
- * Normalize locale string. For known UI locales, maps to Intl-compatible codes.
- * For arbitrary locales, passes through as-is.
- */
-function normalizeLocale(locale: string): string {
-  const normalized = locale === 'pt-br' ? 'pt-BR' : locale;
-  return normalized;
-}
-
-const KNOWN_LOCALE_MAP: Record<string, string> = {
-  'en-GB': 'en-GB',
-  'de': 'de-DE',
-  'fr': 'fr-FR',
-  'es': 'es-ES',
-  'pt-BR': 'pt-BR',
-};
-
-/**
- * Get the Intl locale string for a given locale.
- * Uses known mappings for our 5 UI locales; passes through for all others.
- */
-function getIntlLocale(locale: string): string {
-  const normalized = normalizeLocale(locale);
-  if (normalized in KNOWN_LOCALE_MAP) {
-    return KNOWN_LOCALE_MAP[normalized];
-  }
-  return locale;
-}
+import { SOURCE_LOCALE } from '@/lib/locales';
 
 /**
  * Format a number using locale-specific formatting
  * 
  * Number formats:
- * - English (en-GB): 1,234.56 (comma thousand separator, period decimal)
+ * - English (source locale): 1,234.56 (comma thousand separator, period decimal)
  * - German (de): 1.234,56 (period thousand separator, comma decimal)
  * - French (fr): 1 234,56 (space thousand separator, comma decimal)
  * - Spanish (es): 1.234,56 (period thousand separator, comma decimal)
  * - Portuguese (pt-BR): 1.234,56 (period thousand separator, comma decimal)
  * 
  * @param value - Number to format
- * @param locale - Locale string (e.g., "en-GB", "de", "fr", "es", "pt-BR")
+ * @param locale - Locale string (default: {@link SOURCE_LOCALE})
  * @param options - Optional Intl.NumberFormatOptions for custom formatting
  * @returns Formatted number string
  */
-export function formatNumber(value: number, locale: string = 'en-GB', options?: Intl.NumberFormatOptions): string {
+export function formatNumber(value: number, locale: string = SOURCE_LOCALE, options?: Intl.NumberFormatOptions): string {
   if (value === null || value === undefined || isNaN(value) || !isFinite(value)) {
     return '0';
   }
   
   try {
-    const intlLocale = getIntlLocale(locale);
-    const formatter = new Intl.NumberFormat(intlLocale, options);
+    const formatter = new Intl.NumberFormat(locale, options);
     return formatter.format(value);
   } catch (error) {
     console.error('Error formatting number:', error);
     // Fallback to default formatting
-    return new Intl.NumberFormat('en-GB', options).format(value);
+    return new Intl.NumberFormat(SOURCE_LOCALE, options).format(value);
   }
 }
 
@@ -68,10 +39,10 @@ export function formatNumber(value: number, locale: string = 'en-GB', options?: 
  * Format a number as an integer (no decimal places)
  * 
  * @param value - Number to format
- * @param locale - Locale string (e.g., "en-GB", "de", "fr", "es", "pt-BR")
+ * @param locale - Locale string (default: {@link SOURCE_LOCALE})
  * @returns Formatted integer string
  */
-export function formatInteger(value: number, locale: string = 'en-GB'): string {
+export function formatInteger(value: number, locale: string = SOURCE_LOCALE): string {
   return formatNumber(value, locale, {
     maximumFractionDigits: 0,
     minimumFractionDigits: 0,
@@ -82,11 +53,11 @@ export function formatInteger(value: number, locale: string = 'en-GB'): string {
  * Format a number with a specific number of decimal places
  * 
  * @param value - Number to format
- * @param locale - Locale string (e.g., "en-GB", "de", "fr", "es", "pt-BR")
+ * @param locale - Locale string (default: {@link SOURCE_LOCALE})
  * @param decimals - Number of decimal places (default: 2)
  * @returns Formatted number string with specified decimal places
  */
-export function formatDecimal(value: number, locale: string = 'en-GB', decimals: number = 2): string {
+export function formatDecimal(value: number, locale: string = SOURCE_LOCALE, decimals: number = 2): string {
   return formatNumber(value, locale, {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
@@ -97,11 +68,11 @@ export function formatDecimal(value: number, locale: string = 'en-GB', decimals:
  * Format bytes with locale-aware number formatting
  * 
  * @param bytes - Number of bytes
- * @param locale - Locale string (e.g., "en-GB", "de", "fr", "es", "pt-BR")
+ * @param locale - Locale string (default: {@link SOURCE_LOCALE})
  * @param decimals - Number of decimal places (default: 2)
  * @returns Formatted bytes string (e.g., "1.234,56 MB" for German)
  */
-export function formatBytes(bytes: unknown, locale: string = 'en-GB', decimals: number = 2): string {
+export function formatBytes(bytes: unknown, locale: string = SOURCE_LOCALE, decimals: number = 2): string {
   // Handle all possible invalid inputs
   if (bytes === null || bytes === undefined) return '0 Bytes';
   
@@ -129,8 +100,7 @@ export function formatBytes(bytes: unknown, locale: string = 'en-GB', decimals: 
   const value = numBytes / Math.pow(k, i);
 
   // Use locale-aware number formatting
-  const intlLocale = getIntlLocale(locale);
-  const formatter = new Intl.NumberFormat(intlLocale, {
+  const formatter = new Intl.NumberFormat(locale, {
     minimumFractionDigits: dm,
     maximumFractionDigits: dm,
   });
@@ -142,14 +112,14 @@ export function formatBytes(bytes: unknown, locale: string = 'en-GB', decimals: 
  * Format currency with locale-specific formatting
  * 
  * @param value - Amount to format
- * @param locale - Locale string (e.g., "en-GB", "de", "fr", "es", "pt-BR")
+ * @param locale - Locale string (default: {@link SOURCE_LOCALE})
  * @param currency - Currency code (default: 'USD')
  * @param options - Optional Intl.NumberFormatOptions for custom formatting
  * @returns Formatted currency string
  */
 export function formatCurrency(
   value: number,
-  locale: string = 'en-GB',
+  locale: string = SOURCE_LOCALE,
   currency: string = 'USD',
   options?: Intl.NumberFormatOptions
 ): string {
@@ -158,8 +128,7 @@ export function formatCurrency(
   }
   
   try {
-    const intlLocale = getIntlLocale(locale);
-    const formatter = new Intl.NumberFormat(intlLocale, {
+    const formatter = new Intl.NumberFormat(locale, {
       style: 'currency',
       currency,
       ...options,
@@ -168,7 +137,7 @@ export function formatCurrency(
   } catch (error) {
     console.error('Error formatting currency:', error);
     // Fallback to default formatting
-    return new Intl.NumberFormat('en-GB', {
+    return new Intl.NumberFormat(SOURCE_LOCALE, {
       style: 'currency',
       currency,
       ...options,
@@ -180,18 +149,17 @@ export function formatCurrency(
  * Format a percentage with locale-specific formatting
  * 
  * @param value - Percentage value (0-100)
- * @param locale - Locale string (e.g., "en-GB", "de", "fr", "es", "pt-BR")
+ * @param locale - Locale string (default: {@link SOURCE_LOCALE})
  * @param decimals - Number of decimal places (default: 1)
  * @returns Formatted percentage string
  */
-export function formatPercentage(value: number, locale: string = 'en-GB', decimals: number = 1): string {
+export function formatPercentage(value: number, locale: string = SOURCE_LOCALE, decimals: number = 1): string {
   if (value === null || value === undefined || isNaN(value) || !isFinite(value)) {
     return '0%';
   }
   
   try {
-    const intlLocale = getIntlLocale(locale);
-    const formatter = new Intl.NumberFormat(intlLocale, {
+    const formatter = new Intl.NumberFormat(locale, {
       style: 'percent',
       minimumFractionDigits: decimals,
       maximumFractionDigits: decimals,
@@ -200,7 +168,7 @@ export function formatPercentage(value: number, locale: string = 'en-GB', decima
   } catch (error) {
     console.error('Error formatting percentage:', error);
     // Fallback to default formatting
-    return new Intl.NumberFormat('en-GB', {
+    return new Intl.NumberFormat(SOURCE_LOCALE, {
       style: 'percent',
       minimumFractionDigits: decimals,
       maximumFractionDigits: decimals,

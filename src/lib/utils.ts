@@ -2,21 +2,21 @@ import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { parseISO, isValid } from 'date-fns';
 import type { BackupStatus, NotificationEvent, OverdueTolerance, StartOfWeek } from './types';
+import { SOURCE_LOCALE } from './locales';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
 /**
- * Get the browser's locale for number formatting
- * Falls back to 'en-GB' if not available (e.g., in SSR)
+ * Get the browser's locale for number formatting.
+ * Falls back to {@link SOURCE_LOCALE} if not available (e.g., in SSR).
  */
 function getBrowserLocale(): string {
   if (typeof window === 'undefined') {
-    return 'en-GB'; // Default for SSR
+    return SOURCE_LOCALE;
   }
-  // Use navigator.language or navigator.languages[0] if available
-  return navigator.language || navigator.languages?.[0] || 'en-GB';
+  return navigator.language || navigator.languages?.[0] || SOURCE_LOCALE;
 }
 
 export function formatDurationFromMinutes(totalMinutes: unknown): string {
@@ -370,7 +370,7 @@ export function formatTimeElapsed(dateString: string, currentTime?: Date, locale
         try {
           const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
           // For future dates, we'll just return a generic message
-          return locale === 'fr' ? 'dans le futur' : locale === 'es' ? 'en-GB el futuro' : locale === 'de' ? 'in der Zukunft' : locale === 'pt-BR' ? 'no futuro' : 'in the future';
+          return locale === 'fr' ? 'dans le futur' : locale === 'es' ? 'en el futuro' : locale === 'de' ? 'in der Zukunft' : locale === 'pt-BR' ? 'no futuro' : 'in the future';
         } catch {
           return "in the future";
         }
@@ -767,7 +767,7 @@ export function getLocaleWeekDays(locale?: string, startOfWeekOverride?: StartOf
     try {
       const localeLower = browserLocale.toLowerCase();
       const mondayFirstLocales = [
-        'en-GB-gb', 'en-GB-au', 'en-GB-nz', 'fr', 'de', 'es', 'it', 'pt-pt',
+        'en-gb', 'en-au', 'en-nz', 'fr', 'de', 'es', 'it', 'pt-pt',
         'nl', 'pl', 'ru', 'sv', 'no', 'da', 'fi', 'cs', 'sk', 'hu',
         'ro', 'bg', 'hr', 'sl', 'et', 'lv', 'lt', 'el', 'is', 'mt'
       ];

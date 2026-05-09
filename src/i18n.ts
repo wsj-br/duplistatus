@@ -1,14 +1,14 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import aiI18n from 'ai-i18n-tools/runtime';
+import { SOURCE_LOCALE } from '@/lib/locales';
 
 // Project locale files — paths must match `ui` in ai-i18n-tools.config.json (paths there are relative to the project root).
 import uiLanguages from './locales/ui-languages.json'; // `ui.uiLanguagesPath` (defaults to `{ui.flatOutputDir}/ui-languages.json`)
 import stringsJson from './locales/strings.json'; // `ui.stringsJson`
 //import sourcePluralFlat from './public/locales/en-GB.json'; // `{ui.flatOutputDir}/{SOURCE_LOCALE}.json` from translate-ui
 
-// Must match `sourceLocale` in ai-i18n-tools.config.json (same string as in the import path above)
-export const SOURCE_LOCALE = 'en-GB';
+export { SOURCE_LOCALE, LOCALE_COOKIE_NAME } from '@/lib/locales';
 
 // initialise i18n with the default options
 void i18n.use(initReactI18next).init(aiI18n.defaultI18nInitOptions(SOURCE_LOCALE));

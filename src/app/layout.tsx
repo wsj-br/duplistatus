@@ -16,98 +16,51 @@ import { GlobalSessionErrorHandler } from "@/components/global-session-error-han
 import { ConditionalLayout } from "@/components/conditional-layout";
 import { ClientLocaleProvider } from "@/contexts/locale-context";
 import { I18nProvider } from "@/components/i18n-provider";
-import { getTextDirection } from "@/lib/rtl-utils";
-
-const SUPPORTED_LOCALES = ["en-GB", "de", "fr", "es", "pt-BR"] as const;
-const DEFAULT_LOCALE = "en-GB";
-const LOCALE_COOKIE_NAME = "NEXT_LOCALE";
-
-type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
-
-/**
- * Normalizes a locale string to the canonical format.
- * Accepts both "pt-br" and "pt-BR" and normalizes to "pt-BR".
- */
-function normalizeLocale(locale: string): SupportedLocale | null {
-  const legacy =
-    locale === "en-GB-GB" || locale.toLowerCase() === "en-gb-gb" ? "en-GB" : locale;
-  const normalized = legacy.toLowerCase() === "pt-br" ? "pt-BR" : legacy;
-  if (SUPPORTED_LOCALES.includes(normalized as SupportedLocale)) {
-    return normalized as SupportedLocale;
-  }
-  return null;
-}
+import { getTextDirection } from "ai-i18n-tools/runtime";
+import {
+  SOURCE_LOCALE,
+  LOCALE_COOKIE_NAME,
+  parseLocaleTag,
+  resolveLocaleFromAcceptLanguage,
+  type LocaleCode,
+} from "@/lib/locales";
 
 /**
  * Gets the locale from server-side sources (cookies, headers, or default).
  * Used for setting HTML lang attribute in root layout.
  * Silently falls back to default locale during static generation.
  */
-async function getServerLocale(): Promise<SupportedLocale> {
+async function getServerLocale(): Promise<LocaleCode> {
   try {
     // 1. Check cookie for persisted locale preference
     const cookieStore = await cookies();
     const cookieLocale = cookieStore.get(LOCALE_COOKIE_NAME)?.value;
     if (cookieLocale) {
-      const normalized = normalizeLocale(cookieLocale);
-      if (normalized) {
-        return normalized;
-      }
+      const parsed = parseLocaleTag(cookieLocale);
+      if (parsed) return parsed;
     }
 
-    // 2. Check pathname header (set by proxy/middleware) to extract locale
+    // 2. Check Accept-Language header (canonical routes have no locale segment; cookie covers persisted choice)
     const headersList = await headers();
-    const pathname = headersList.get("x-pathname") || "";
-    const pathLocaleMatch = pathname.match(/^\/([^/]+)/);
-    if (pathLocaleMatch) {
-      const pathLocale = pathLocaleMatch[1];
-      const normalized = normalizeLocale(pathLocale);
-      if (normalized) {
-        return normalized;
-      }
-    }
-
-    // 3. Check Accept-Language header
-    const acceptLanguage = headersList.get("accept-language");
-    if (acceptLanguage) {
-      const languages = acceptLanguage
-        .split(",")
-        .map((lang) => {
-          const [code, q = "q=1"] = lang.trim().split(";");
-          const quality = parseFloat(q.replace("q=", "")) || 1;
-          return { code: code.toLowerCase().split("-")[0], quality };
-        })
-        .sort((a, b) => b.quality - a.quality);
-
-      for (const { code } of languages) {
-        let mappedLocale: SupportedLocale | null = null;
-        if (code === "en") mappedLocale = "en-GB";
-        else if (code === "de") mappedLocale = "de";
-        else if (code === "fr") mappedLocale = "fr";
-        else if (code === "es") mappedLocale = "es";
-        else if (code === "pt") mappedLocale = "pt-BR";
-
-        if (mappedLocale && SUPPORTED_LOCALES.includes(mappedLocale)) {
-          return mappedLocale;
-        }
-      }
-    }
+    const fromAccept = resolveLocaleFromAcceptLanguage(
+      headersList.get("accept-language"),
+    );
+    if (fromAccept) return fromAccept;
   } catch (error) {
     // If cookies/headers are not available (e.g., during static generation),
     // silently fall back to default locale. This is expected behavior.
     // The error is typically "Dynamic server usage" during static generation.
   }
 
-  // 4. Fallback to default locale
-  return DEFAULT_LOCALE;
+  // 3. Fallback to source locale
+  return SOURCE_LOCALE;
 }
 
 /**
  * Maps locale code to HTML lang attribute value.
- * pt-BR -> pt-BR, others use the same code.
  */
-function getHtmlLang(locale: SupportedLocale): string {
-  return locale; // pt-BR is already correct, others are fine as-is
+function getHtmlLang(locale: LocaleCode): string {
+  return locale;
 }
 
 const geistSans = localFont({

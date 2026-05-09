@@ -19,20 +19,21 @@ import { KeyChangedModal } from "@/components/key-changed-modal";
 import { useLocale } from "@/contexts/locale-context";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Languages } from "lucide-react";
+import {
+  getLocaleLabel,
+  isSupportedLocale,
+  LOCALE_CODE_LIST,
+  LOCALE_COOKIE_NAME,
+  type LocaleCode,
+} from "@/lib/locales";
 
 const REMEMBERED_USERNAME_KEY = "duplistatus_remembered_username";
 const REMEMBER_ME_ENABLED_KEY = "duplistatus_remember_me_enabled";
-const LOCALE_COOKIE_NAME = "NEXT_LOCALE";
-const SUPPORTED_LOCALES = ["en-GB", "de", "fr", "es", "pt-BR"] as const;
-type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
+const LOCALES = LOCALE_CODE_LIST;
 
-const LOCALE_NAMES: Record<SupportedLocale, string> = {
-  "en-GB": "English",
-  de: "Deutsch",
-  fr: "Français",
-  es: "Español",
-  "pt-BR": "Português (BR)",
-};
+const LOCALE_NAMES: Record<LocaleCode, string> = Object.fromEntries(
+  LOCALES.map((code) => [code, getLocaleLabel(code)])
+) as Record<LocaleCode, string>;
 
 function LoginForm({ t }: { t: TFunction }) {
   const searchParams = useSearchParams();
@@ -211,12 +212,10 @@ function LoginForm({ t }: { t: TFunction }) {
 
   const handleLocaleChange = async (newLocale: string) => {
     if (newLocale === locale) return;
-
-    const normalized = newLocale.toLowerCase() === "pt-br" ? "pt-BR" : newLocale;
-    document.cookie = `${LOCALE_COOKIE_NAME}=${encodeURIComponent(normalized)}; path=/; max-age=${365 * 24 * 60 * 60}; SameSite=Lax`;
-
-    await loadLocale(normalized);
-    await i18n.changeLanguage(normalized);
+    if (!isSupportedLocale(newLocale)) return;
+    document.cookie = `${LOCALE_COOKIE_NAME}=${encodeURIComponent(newLocale)}; path=/; max-age=${365 * 24 * 60 * 60}; SameSite=Lax`;
+    await loadLocale(newLocale);
+    await i18n.changeLanguage(newLocale);
     router.refresh();
   };
 
@@ -230,9 +229,9 @@ function LoginForm({ t }: { t: TFunction }) {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {SUPPORTED_LOCALES.map((loc) => (
+            {LOCALES.map((loc) => (
               <SelectItem key={loc} value={loc}>
-                {LOCALE_NAMES[loc]}
+                {LOCALE_NAMES[loc as LocaleCode]}
               </SelectItem>
             ))}
           </SelectContent>

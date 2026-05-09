@@ -4,12 +4,13 @@ import {
   isValidTemplateLanguage,
 } from '@/lib/default-config';
 import type { SupportedTemplateLanguage } from '@/lib/types';
+import { SOURCE_LOCALE } from '@/lib/locales';
 
-// GET /api/configuration/templates/defaults?language=en-GB
+// GET /api/configuration/templates/defaults?language=<locale>
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const language = searchParams.get('language') || 'en-GB';
+    const language = searchParams.get('language') || SOURCE_LOCALE;
 
     if (!isValidTemplateLanguage(language)) {
       return NextResponse.json(

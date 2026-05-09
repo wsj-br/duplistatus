@@ -135,7 +135,7 @@ ai-i18n-tools.config.json   # i18n tooling (UI + docs + SVG)
 - **Default**: **`const { t } = useTranslation()`** and inline **`t('…')`** next to labels, toasts, and `aria-*` text.
 - **Optional**: **`useXxxContent()`** from `src/i18n/generated-hooks/` for a large feature module (many strings in one place) — still built from `t('English')` per key, not a separate “common” indirection.
 - **Interpolation**: i18next format `{{name}}` with `t('…', { name: value })`.
-- **Server / notifications**: use `getServerI18n()` / shared bundles (`src/lib/i18n-server.ts`, `src/lib/status-translations.ts`) so labels align with UI JSON.
+- **Server / notifications**: use `getServerI18n()` or `getServerI18nForLanguage()` from `src/lib/i18n-server.ts`, then `i18n.t('…')` with the same English keys as the UI (`setupKeyAsDefaultT` + locale bundles).
 
 ### Database Access
 - **Always use** functions from `src/lib/db.ts`

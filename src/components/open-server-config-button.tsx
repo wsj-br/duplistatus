@@ -13,7 +13,6 @@ import { useToast } from '@/components/ui/use-toast';
 import { ServerIcon } from '@/components/ui/server-icon';
 import { Settings, Server, Loader2 } from 'lucide-react';
 import { useServerSelection } from "@/contexts/server-selection-context";
-import { useLocale } from "@/contexts/locale-context";
 import { ServerAddress } from "@/lib/types";
 import { GradientCardHeader } from '@/components/ui/card';
 import { ColoredIcon } from '@/components/ui/colored-icon';
@@ -26,7 +25,6 @@ export function OpenServerConfigButton() {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  const locale = useLocale();
   const { toast } = useToast();
   const { state: serverSelectionState, getSelectedServer } = useServerSelection();
 
@@ -34,7 +32,7 @@ export function OpenServerConfigButton() {
     try {
       setIsLoading(true);
       
-      // Check if we're on a server detail page (with or without locale prefix)
+      // On server detail page /detail/:id there is no multi-server popover list
       if (pathname?.includes("/detail/")) {
         // On detail page, don't fetch server connections for popup
         // The popup should not be shown for single servers
@@ -154,9 +152,9 @@ export function OpenServerConfigButton() {
   };
 
   const handleButtonClick = async () => {
-    // Check if we're on a server detail page (including backup detail pages, with or without locale prefix)
+    // Server detail or backup detail route — resolve server id from /detail/:id(/backup/:bid)?
     if (pathname?.includes("/detail/")) {
-      // Extract serverId from the pathname (e.g. /en-GB/detail/abc or /detail/abc)
+      // Extract serverId from /detail/:serverId
       const pathMatch = pathname.match(/\/detail\/([^\/\?]+)/);
       const currentServerId = pathMatch ? pathMatch[1] : undefined;
       

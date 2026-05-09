@@ -1,6 +1,7 @@
 /**
  * Maps application routes to documentation URLs
  */
+import { SOURCE_LOCALE } from './locales';
 
 // the URL has to end in a trailing slash (/)
 const DOCS_BASE_URL =
@@ -86,10 +87,12 @@ const HELP_MAP: Record<string, HelpMapping> = {
 };
 
 /**
- * Gets the help URL and page name for a given route
- * @param pathname - The current pathname (e.g., '/', '/settings', '/detail/123')
- * @param searchParams - Optional search params string (e.g., 'tab=notifications')
- * @param locale - Optional locale code (e.g., 'en-GB', 'pt-BR') to include in the documentation URL
+ * Gets the help URL and page name for a given route.
+ * App routes have no locale segment (language is cookie / i18n); pathname is used as-is.
+ *
+ * @param pathname - The current pathname (e.g. `'/'`, `'/settings'`, `'/detail/123'`)
+ * @param searchParams - Optional search params string (e.g. `'tab=notifications'`)
+ * @param locale - Optional UI locale for the **documentation** site path (`de/…`, `pt-BR/…` when not {@link SOURCE_LOCALE})
  * @returns Object with full documentation URL and page name for tooltip
  */
 export function getHelpUrl(
@@ -97,17 +100,14 @@ export function getHelpUrl(
   searchParams?: string,
   locale?: string
 ): { url: string; pageName: string } {
-  // Normalize: strip optional locale prefix (e.g. /en-GB, /de) for routing logic
-  const pathWithoutLocale = pathname.replace(/^\/[a-z]{2}(-[A-Za-z0-9]+)?/, "") || "/";
+  const pathForMatch = pathname || '/';
 
-  // Helper function to build documentation URL with locale
   const buildDocUrl = (docPath: string): string => {
-    const localePrefix = locale && locale !== 'en-GB' ? `${locale}/` : '';
+    const localePrefix = locale && locale !== SOURCE_LOCALE ? `${locale}/` : '';
     return `${DOCS_BASE_URL}${localePrefix}${docPath}`;
   };
 
-  // Handle settings routes with query parameters (/settings or /en-GB/settings etc.)
-  if (pathWithoutLocale === "/settings" || pathWithoutLocale.startsWith("/settings?")) {
+  if (pathForMatch === '/settings' || pathForMatch.startsWith('/settings?')) {
     if (searchParams) {
       const params = new URLSearchParams(searchParams);
       const tab = params.get('tab');
@@ -130,15 +130,14 @@ export function getHelpUrl(
     };
   }
 
-  // Handle dynamic routes - server details (pathWithoutLocale: /detail/xxx or /detail/xxx/backup/yyy)
-  if (pathWithoutLocale.startsWith("/detail/")) {
-    if (/^\/detail\/[^/]+\/backup\/[^/]+$/.test(pathWithoutLocale)) {
+  if (pathForMatch.startsWith('/detail/')) {
+    if (/^\/detail\/[^/]+\/backup\/[^/]+$/.test(pathForMatch)) {
       return {
         url: buildDocUrl('user-guide/server-details#backup-details'),
         pageName: "Backup Details",
       };
     }
-    if (/^\/detail\/[^/]+$/.test(pathWithoutLocale)) {
+    if (/^\/detail\/[^/]+$/.test(pathForMatch)) {
       return {
         url: buildDocUrl('user-guide/server-details'),
         pageName: "Server Details",
@@ -146,8 +145,7 @@ export function getHelpUrl(
     }
   }
 
-  // Exact path matches (dashboard / or /en-GB -> /, etc.)
-  const exactMatch = HELP_MAP[pathWithoutLocale];
+  const exactMatch = HELP_MAP[pathForMatch];
   if (exactMatch) {
     return {
       url: buildDocUrl(exactMatch.url),

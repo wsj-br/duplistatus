@@ -2,16 +2,14 @@
 
 import {
   createContext,
-  useCallback,
   useContext,
   useEffect,
 } from "react";
 import { useTranslation } from "react-i18next";
 import { applyDirection } from "ai-i18n-tools/runtime";
+import { SOURCE_LOCALE } from "@/lib/locales";
 
-const DEFAULT_LOCALE = "en-GB";
-
-const LocaleContext = createContext<string>(DEFAULT_LOCALE);
+const LocaleContext = createContext<string>(SOURCE_LOCALE);
 
 /**
  * Provides the active i18n locale (from react-i18next). Must render under I18nextProvider.
@@ -31,18 +29,8 @@ export function ClientLocaleProvider({ children }: { children: React.ReactNode }
 }
 
 /**
- * Returns the current locale (e.g. "en-GB", "de") for number/date formatting and labels.
+ * Returns the current locale (e.g. {@link SOURCE_LOCALE}, "de") for number/date formatting and labels.
  */
 export function useLocale(): string {
   return useContext(LocaleContext);
-}
-
-/**
- * Returns paths without a locale prefix (language is driven by i18n, not the URL).
- */
-export function usePrefixWithLocale() {
-  return useCallback((path: string) => {
-    if (path.startsWith("/")) return path;
-    return `/${path}`;
-  }, []);
 }

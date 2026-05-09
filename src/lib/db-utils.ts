@@ -12,6 +12,7 @@ import { getDefaultAllowedWeekDays } from './interval-utils';
 import { GetNextBackupRunDate } from './server_intervals';
 import { defaultBackupNotificationConfig } from './default-config';
 import { encryptData, decryptData } from './secrets';
+import { SOURCE_LOCALE } from './locales';
 
 // Request-level cache to avoid redundant function calls within a single request
 // In production mode, this is a module-level variable that persists across requests,
@@ -477,7 +478,7 @@ export function getAllServers() {
       const chartData = formattedBackups.map(backup => {
         const backupDate = new Date(backup.date);
         return {
-          date: backupDate.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+          date: backupDate.toLocaleDateString(SOURCE_LOCALE, { day: '2-digit', month: '2-digit', year: 'numeric' }),
           isoDate: backup.date,
           uploadedSize: backup.uploadedSize,
           duration: backup.durationInMinutes,
@@ -758,7 +759,7 @@ export function getServerById(serverId: string) {
       const chartData = formattedBackups.map(backup => {
         const backupDate = new Date(backup.date);
         return {
-          date: backupDate.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+          date: backupDate.toLocaleDateString(SOURCE_LOCALE, { day: '2-digit', month: '2-digit', year: 'numeric' }),
           isoDate: backup.date,
           uploadedSize: backup.uploadedSize,
           duration: backup.durationInMinutes,
@@ -1658,7 +1659,7 @@ export function getNotificationTemplates(): {
       const templatesJson = getConfiguration('notification_templates');
       if (!templatesJson || templatesJson.trim() === '') {
         const defaultTemplates = {
-          language: 'en-GB' as SupportedTemplateLanguage,
+          language: SOURCE_LOCALE as SupportedTemplateLanguage,
           success: defaultNotificationTemplates.success,
           warning: defaultNotificationTemplates.warning,
           overdueBackup: defaultNotificationTemplates.overdueBackup,
@@ -1696,7 +1697,7 @@ export function getNotificationTemplates(): {
       // Ensure language field exists (backward compatibility)
       const language = parsed.language && isValidTemplateLanguage(parsed.language)
         ? (parsed.language as SupportedTemplateLanguage)
-        : 'en-GB';
+        : SOURCE_LOCALE;
       updatedTemplates.language = language;
 
       // Save updated templates if any were upgraded or language was added
@@ -1707,7 +1708,7 @@ export function getNotificationTemplates(): {
           warning: NotificationTemplate;
           overdueBackup: NotificationTemplate;
         } = {
-          language: updatedTemplates.language || 'en-GB',
+          language: updatedTemplates.language || SOURCE_LOCALE,
           success: updatedTemplates.success || defaultNotificationTemplates.success,
           warning: updatedTemplates.warning || defaultNotificationTemplates.warning,
           overdueBackup: updatedTemplates.overdueBackup || defaultNotificationTemplates.overdueBackup,
@@ -1725,7 +1726,7 @@ export function getNotificationTemplates(): {
     } catch (error) {
       console.error('Failed to get notification templates:', error instanceof Error ? error.message : String(error));
       const defaultTemplates = {
-        language: 'en-GB' as SupportedTemplateLanguage,
+        language: SOURCE_LOCALE as SupportedTemplateLanguage,
         success: defaultNotificationTemplates.success,
         warning: defaultNotificationTemplates.warning,
         overdueBackup: defaultNotificationTemplates.overdueBackup,

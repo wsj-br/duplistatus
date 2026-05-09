@@ -28,6 +28,13 @@ import { getHelpUrl } from '@/lib/helpMapper';
 import { useLocale } from '@/contexts/locale-context';
 import { useDashboardServerFilter } from '@/contexts/dashboard-server-filter-context';
 import i18n, { loadLocale } from '@/i18n';
+import {
+  getLocaleLabel,
+  isSupportedLocale,
+  LOCALE_CODE_LIST,
+  LOCALE_COOKIE_NAME,
+  type LocaleCode,
+} from '@/lib/locales';
 //import the logo image
 import DupliLogo from '../../public/images/duplistatus_logo.png';
 
@@ -38,17 +45,11 @@ interface User {
   mustChangePassword?: boolean;
 }
 
-const LOCALE_COOKIE_NAME = "NEXT_LOCALE";
-const SUPPORTED_LOCALES = ["en-GB", "de", "fr", "es", "pt-BR"] as const;
-type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
+const LOCALES = LOCALE_CODE_LIST;
 
-const LOCALE_NAMES: Record<SupportedLocale, string> = {
-  "en-GB": "English (GB)",
-  de: "Deutsch",
-  fr: "Français",
-  es: "Español",
-  "pt-BR": "Português (BR)",
-};
+const LOCALE_NAMES: Record<LocaleCode, string> = Object.fromEntries(
+  LOCALES.map((code) => [code, getLocaleLabel(code)])
+) as Record<LocaleCode, string>;
 
 export function AppHeader() {
   const pathname = usePathname();
@@ -57,7 +58,8 @@ export function AppHeader() {
   const locale = useLocale();
   const { t } = useTranslation();
   const { serverFilter, setServerFilter } = useDashboardServerFilter();
-  const isDashboardPage = pathname === '/' || /^\/[^/]+\/?$/.test(pathname ?? '');
+  /** Home dashboard only — app routes are not locale-prefixed (language via cookie / i18n). */
+  const isDashboardPage = pathname === '/';
   const isHomeDashboard = pathname === '/';
   const isSettingsPage = /\/settings/.test(pathname ?? '');
   const [user, setUser] = useState<User | null>(null);
@@ -97,12 +99,10 @@ export function AppHeader() {
 
   const handleLocaleChange = async (newLocale: string) => {
     if (newLocale === locale) return;
-
-    const normalized = newLocale.toLowerCase() === 'pt-br' ? 'pt-BR' : newLocale;
-    document.cookie = `${LOCALE_COOKIE_NAME}=${encodeURIComponent(normalized)}; path=/; max-age=${365 * 24 * 60 * 60}; SameSite=Lax`;
-
-    await loadLocale(normalized);
-    await i18n.changeLanguage(normalized);
+    if (!isSupportedLocale(newLocale)) return;
+    document.cookie = `${LOCALE_COOKIE_NAME}=${encodeURIComponent(newLocale)}; path=/; max-age=${365 * 24 * 60 * 60}; SameSite=Lax`;
+    await loadLocale(newLocale);
+    await i18n.changeLanguage(newLocale);
     router.refresh();
   };
 
@@ -248,9 +248,9 @@ export function AppHeader() {
                   </DropdownMenuSubTrigger>
                   <DropdownMenuSubContent>
                     <DropdownMenuRadioGroup value={locale} onValueChange={handleLocaleChange}>
-                      {SUPPORTED_LOCALES.map((loc) => (
+                      {LOCALES.map((loc) => (
                         <DropdownMenuRadioItem key={loc} value={loc}>
-                          {LOCALE_NAMES[loc]}
+                          {LOCALE_NAMES[loc as LocaleCode]}
                         </DropdownMenuRadioItem>
                       ))}
                     </DropdownMenuRadioGroup>

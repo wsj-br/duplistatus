@@ -23,6 +23,7 @@ import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { useGlobalRefresh } from "@/contexts/global-refresh-context";
 import { formatDateTime, formatDate } from "@/lib/date-format";
 import { formatInteger, formatBytes as formatBytesLocale } from "@/lib/number-format";
+import { SOURCE_LOCALE } from "@/lib/locales";
 
 // Interface for interpolated chart data points
 interface InterpolatedChartPoint {
@@ -48,7 +49,7 @@ const formatDuration = (minutes: number): string => {
 };
 
 // Use existing library function for bytes formatting with Y-axis specific precision
-const formatBytesForYAxis = (bytes: number, locale: string = 'en-GB'): string => {
+const formatBytesForYAxis = (bytes: number, locale: string = SOURCE_LOCALE): string => {
   if (bytes === 0) return '0 B';
   
   // Determine the appropriate precision based on the size for Y-axis labels

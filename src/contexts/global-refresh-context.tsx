@@ -9,12 +9,8 @@ import type { ServerSummary, OverallSummary, ChartDataPoint } from '@/lib/types'
 
 type PageType = 'dashboard' | 'detail' | 'none';
 
-// Helper function to remove locale prefix from pathname (e.g., /en-GB/detail/123 -> /detail/123)
-function removeLocalePrefix(pathname: string | null): string {
-  if (!pathname) return '/';
-  // Match locale prefix pattern: /en-GB, /de, /fr, /es, /pt-BR
-  const localePattern = /^\/(en-GB|de|fr|es|pt-BR)(\/|$)/;
-  return pathname.replace(localePattern, '/') || '/';
+function normalizePath(pathname: string | null): string {
+  return pathname ?? '/';
 }
 
 interface GlobalRefreshState {
@@ -85,10 +81,9 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
 
   // Determine current page type
   const getCurrentPageType = useCallback((): PageType => {
-    const pathWithoutLocale = removeLocalePrefix(pathname);
-    if (pathWithoutLocale === '/') return 'dashboard';
-    // Only show on main detail pages, not on backup detail pages
-    if (pathWithoutLocale.startsWith('/detail/') && !pathWithoutLocale.includes('/backup/')) return 'detail';
+    const path = normalizePath(pathname);
+    if (path === '/') return 'dashboard';
+    if (path.startsWith('/detail/') && !path.includes('/backup/')) return 'detail';
     return 'none';
   }, [pathname]);
 
@@ -204,14 +199,12 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
   useEffect(() => {
     const pageType = getCurrentPageType();
     const isDashboardPage = pageType === 'dashboard';
-    
-    // Check if user is returning to dashboard from another page
-    const previousPathWithoutLocale = removeLocalePrefix(previousPathname);
-    const currentPathWithoutLocale = removeLocalePrefix(pathname);
-    const isReturningToDashboard = isDashboardPage && 
-      previousPathname && 
-      previousPathWithoutLocale !== '/' && 
-      previousPathWithoutLocale !== currentPathWithoutLocale;
+
+    const isReturningToDashboard =
+      isDashboardPage &&
+      Boolean(previousPathname) &&
+      normalizePath(previousPathname) !== '/' &&
+      previousPathname !== pathname;
     
     setState(prev => ({
       ...prev,
@@ -236,10 +229,7 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
       if (state.currentPage === 'dashboard') {
         refreshDashboard();
       } else if (state.currentPage === 'detail') {
-        // For detail pages, we need the serverId from the URL
-        // Only match main detail pages, not backup detail pages
-        const pathWithoutLocale = removeLocalePrefix(pathname);
-        const match = pathWithoutLocale.match(/^\/detail\/([^\/]+)$/);
+        const match = normalizePath(pathname).match(/^\/detail\/([^/]+)$/);
         if (match) {
           refreshDetail(match[1]);
         }

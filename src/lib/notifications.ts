@@ -6,7 +6,8 @@ import { defaultNotificationTemplates } from './default-config';
 import { isDevelopmentMode } from './utils';
 import { formatDateTime } from './date-format';
 import { formatInteger, formatBytes as formatBytesLocale } from './number-format';
-import { translateStatus } from './status-translations';
+import { SOURCE_LOCALE } from './locales';
+import { getServerI18nForLanguage } from './i18n-server';
 
 // Ensure this runs in Node.js runtime, not Edge Runtime
 export const runtime = 'nodejs';
@@ -587,17 +588,19 @@ export function convertTextToHtml(text: string): string {
 // Helper function to format date strings using locale-aware formatting
 // Removed - now using formatDateTime from date-format.ts
 
-function processTemplate(
+async function processTemplate(
   template: NotificationTemplate,
   context: NotificationContext | OverdueBackupContext,
-  locale: string = 'en-GB'
-): {
+  locale: string = SOURCE_LOCALE
+): Promise<{
   title: string;
   message: string;
   priority: string;
   tags: string;
-} {
-   // Create a copy of the context with formatted dates and numbers
+}> {
+  const i18n = await getServerI18nForLanguage(locale);
+
+  // Create a copy of the context with formatted dates and numbers
   const formattedContext = { ...context } as Record<string, unknown>;
 
   // Add additional server variables to context 
@@ -647,9 +650,8 @@ function processTemplate(
     }
   }
 
-  // Translate status if present
   if ('status' in formattedContext && formattedContext.status !== null) {
-    formattedContext.status = translateStatus(formattedContext.status as BackupStatus | string, locale);
+    formattedContext.status = i18n.t(String(formattedContext.status));
   }
 
   return {
@@ -740,8 +742,8 @@ export async function sendBackupNotification(
 
   let processedTemplate;
   try {
-    const locale = config.templates?.language || 'en-GB';
-    processedTemplate = processTemplate(template, context, locale);
+    const locale = config.templates?.language || SOURCE_LOCALE;
+    processedTemplate = await processTemplate(template, context, locale);
   } catch (error) {
     console.error(`Failed to process notification template for backup ${backup.name} on server ${serverName}:`, error instanceof Error ? error.message : String(error));
     throw error;
@@ -1119,8 +1121,8 @@ export async function sendOverdueBackupNotification(
   }
 
   try {
-    const locale = notificationConfig.templates?.language || 'en-GB';
-    const processedTemplate = processTemplate(notificationConfig.templates?.overdueBackup || defaultNotificationTemplates.overdueBackup, context, locale);
+    const locale = notificationConfig.templates?.language || SOURCE_LOCALE;
+    const processedTemplate = await processTemplate(notificationConfig.templates?.overdueBackup || defaultNotificationTemplates.overdueBackup, context, locale);
     
     // Send notifications based on backup configuration
     const notifications: Promise<void>[] = [];

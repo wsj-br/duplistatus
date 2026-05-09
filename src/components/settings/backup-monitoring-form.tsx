@@ -1,6 +1,6 @@
 "use client";
 import { useTranslation } from "react-i18next";
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -275,6 +275,33 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
     return settings[backupKey] || { ...defaultBackupNotificationConfig };
   };
 
+  const getServersWithBackupAndSettings = useCallback((): ServerWithBackupAndSettings[] => {
+    if (!config?.serversWithBackups) return [];
+
+    return config.serversWithBackups.map((server: ServerWithBackup) => {
+      const backupKey = `${server.id}:${server.backupName}`;
+      const backupSetting = settings[backupKey] || { ...defaultBackupNotificationConfig };
+      const display = getIntervalDisplay(backupSetting.expectedInterval);
+      const inputKey = `${server.id}:${server.backupName}`;
+
+      const displayUnit = selectedUnits[inputKey] || display.unit;
+      const isCustomInterval = displayUnit === 'custom' || display.isCustom;
+
+      const nextRunDate = server.expectedBackupDate || 'N/A';
+
+      return {
+        ...server,
+        overdueBackupCheckEnabled: backupSetting.overdueBackupCheckEnabled,
+        expectedInterval: backupSetting.expectedInterval,
+        displayInterval: display.isCustom ? 0 : display.value,
+        displayUnit: displayUnit,
+        isCustomInterval: isCustomInterval,
+        allowedWeekDays: backupSetting.allowedWeekDays || getDefaultAllowedWeekDays(),
+        nextRunDate: nextRunDate,
+      };
+    });
+  }, [config?.serversWithBackups, settings, selectedUnits]);
+
   const handleIntervalInputChangeById = (serverId: string, backupName: string, value: string) => {
     const inputKey = `${serverId}:${backupName}`;
     
@@ -433,49 +460,19 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
     }));
   };
 
-  // Create servers with settings for sorting
-  const getServersWithBackupAndSettings = (): ServerWithBackupAndSettings[] => {
-    if (!config?.serversWithBackups) return [];
-    
-    return config.serversWithBackups.map((server: ServerWithBackup) => {
-      const backupSetting = getBackupSettingById(server.id, server.backupName);
-      const display = getIntervalDisplay(backupSetting.expectedInterval);
-      const inputKey = `${server.id}:${server.backupName}`;
-      
-      // Use selected unit if available, otherwise use calculated unit
-      const displayUnit = selectedUnits[inputKey] || display.unit;
-      const isCustomInterval = displayUnit === 'custom' || display.isCustom;
-      
-      // Use the calculated expectedBackupDate from server data (calculated on server-side)
-      // This is the correct next expected backup date based on lastBackupDate + interval
-      const nextRunDate = server.expectedBackupDate || 'N/A';
-      
-      return {
-        ...server,
-        overdueBackupCheckEnabled: backupSetting.overdueBackupCheckEnabled,
-        expectedInterval: backupSetting.expectedInterval,
-        displayInterval: display.isCustom ? 0 : display.value,
-        displayUnit: displayUnit,
-        isCustomInterval: isCustomInterval,
-        allowedWeekDays: backupSetting.allowedWeekDays || getDefaultAllowedWeekDays(),
-        nextRunDate: nextRunDate,
-      };
-    });
-  };
-
   // Filter servers by name, alias, and backup name
   const filteredServers = useMemo(() => {
     const servers = getServersWithBackupAndSettings();
     if (!serverFilter.trim()) return servers;
-    
+
     const filterLower = serverFilter.toLowerCase();
-    return servers.filter(server => 
+    return servers.filter(server =>
       server.name.toLowerCase().includes(filterLower) ||
       (server.alias && server.alias.toLowerCase().includes(filterLower)) ||
       (server.note && server.note.toLowerCase().includes(filterLower)) ||
       server.backupName.toLowerCase().includes(filterLower)
     );
-  }, [config?.serversWithBackups, settings, selectedUnits, serverFilter]);
+  }, [getServersWithBackupAndSettings, serverFilter]);
 
   // Get sorted servers
   const sortedServers = createSortedArray(filteredServers, sortConfig, columnConfig);

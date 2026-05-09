@@ -4,6 +4,7 @@ import { defaultNotificationTemplatesDe } from './default-notifications-de';
 import { defaultNotificationTemplatesFr } from './default-notifications-fr';
 import { defaultNotificationTemplatesEs } from './default-notifications-es';
 import { defaultNotificationTemplatesPtBR } from './default-notifications-pt-BR';
+import { SOURCE_LOCALE, isSupportedLocale } from './locales';
 
 // Type for notification templates (without language field)
 type NotificationTemplatesData = {
@@ -19,7 +20,7 @@ export const defaultNotificationTemplatesByLanguage: Record<
   SupportedTemplateLanguage,
   NotificationTemplatesData
 > = {
-  "en-GB": defaultNotificationTemplatesEn,
+  [SOURCE_LOCALE]: defaultNotificationTemplatesEn,
   de: defaultNotificationTemplatesDe,
   fr: defaultNotificationTemplatesFr,
   es: defaultNotificationTemplatesEs,
@@ -27,19 +28,19 @@ export const defaultNotificationTemplatesByLanguage: Record<
 };
 
 /**
- * Default notification templates (English) - for backward compatibility
+ * Default notification templates (source locale) - for backward compatibility
  * @deprecated Use getDefaultNotificationTemplates(language) instead
  */
 export const defaultNotificationTemplates = defaultNotificationTemplatesEn;
 
 /**
- * Get default notification templates for a specific language
- * Falls back to English if the language is not supported
+ * Get default notification templates for a specific language.
+ * Falls back to the source locale templates if the language is not supported.
  */
 export function getDefaultNotificationTemplates(
-  language: SupportedTemplateLanguage = 'en-GB'
+  language: SupportedTemplateLanguage = SOURCE_LOCALE
 ): NotificationTemplatesData {
-  return defaultNotificationTemplatesByLanguage[language] || defaultNotificationTemplatesByLanguage['en-GB'];
+  return defaultNotificationTemplatesByLanguage[language] || defaultNotificationTemplatesByLanguage[SOURCE_LOCALE];
 }
 
 /**
@@ -57,7 +58,7 @@ export function getDefaultNotificationTemplate(
  * Check if a language is supported for templates
  */
 export function isValidTemplateLanguage(language: string): language is SupportedTemplateLanguage {
-  return ['en-GB', 'de', 'fr', 'es', 'pt-BR'].includes(language);
+  return isSupportedLocale(language);
 }
 
 // Default cron service configuration

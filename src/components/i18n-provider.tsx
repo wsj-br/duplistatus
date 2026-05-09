@@ -3,28 +3,30 @@
 import { type ReactNode, useEffect } from "react";
 import { I18nextProvider } from "react-i18next";
 import i18n, { loadLocale } from "@/i18n";
-import { LOCALE_COOKIE_NAME } from "@/i18n-config";
+import {
+  LOCALE_COOKIE_NAME,
+  resolveLocalePreference,
+} from "@/lib/locales";
 
-function readLocaleCookie(): string {
-  if (typeof document === "undefined") return "en-GB";
+function readLocaleCookie(): string | undefined {
+  if (typeof document === "undefined") return undefined;
   const m = document.cookie.match(
     new RegExp(`(?:^|; )${LOCALE_COOKIE_NAME}=([^;]*)`)
   );
-  if (!m) return "en-GB";
+  if (!m) return undefined;
   try {
     return decodeURIComponent(m[1]);
   } catch {
-    return "en-GB";
+    return undefined;
   }
 }
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
-    const loc = readLocaleCookie();
-    const normalized = loc.toLowerCase() === "pt-br" ? "pt-BR" : loc;
+    const canonical = resolveLocalePreference(readLocaleCookie());
     void (async () => {
-      await loadLocale(normalized);
-      await i18n.changeLanguage(normalized);
+      await loadLocale(canonical);
+      await i18n.changeLanguage(canonical);
     })();
   }, []);
 

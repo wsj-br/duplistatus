@@ -1,71 +1,41 @@
 import { NextRequest, NextResponse } from "next/server";
+import {
+  SOURCE_LOCALE,
+  LOCALE_COOKIE_NAME,
+  parseLocaleTag,
+  resolveLocaleFromAcceptLanguage,
+  type LocaleCode,
+} from "@/lib/locales";
 
-const SUPPORTED_LOCALES = ["en-GB", "de", "fr", "es", "pt-BR"] as const;
-const DEFAULT_LOCALE = "en-GB";
-const LOCALE_COOKIE_NAME = "NEXT_LOCALE";
 const LOCALE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
-
-type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
-
-function normalizeLocale(locale: string): SupportedLocale | null {
-  const legacy =
-    locale === "en-GB-GB" || locale.toLowerCase() === "en-gb-gb" ? "en-GB" : locale;
-  const normalized = legacy.toLowerCase() === "pt-br" ? "pt-BR" : legacy;
-  if (SUPPORTED_LOCALES.includes(normalized as SupportedLocale)) {
-    return normalized as SupportedLocale;
-  }
-  return null;
-}
 
 /**
  * Preferred locale without using URL segments (cookie → Accept-Language → default).
  */
-function detectLocale(request: NextRequest): SupportedLocale {
+function detectLocale(request: NextRequest): LocaleCode {
   const cookieLocale = request.cookies.get(LOCALE_COOKIE_NAME)?.value;
   if (cookieLocale) {
-    const normalized = normalizeLocale(cookieLocale);
-    if (normalized) return normalized;
+    const parsed = parseLocaleTag(cookieLocale);
+    if (parsed) return parsed;
   }
 
-  const acceptLanguage = request.headers.get("accept-language");
-  if (acceptLanguage) {
-    const languages = acceptLanguage
-      .split(",")
-      .map((lang) => {
-        const [code, q = "q=1"] = lang.trim().split(";");
-        const quality = parseFloat(q.replace("q=", "")) || 1;
-        return { code: code.toLowerCase().split("-")[0], quality };
-      })
-      .sort((a, b) => b.quality - a.quality);
-
-    for (const { code } of languages) {
-      let mappedLocale: SupportedLocale | null = null;
-      if (code === "en") mappedLocale = "en-GB";
-      else if (code === "de") mappedLocale = "de";
-      else if (code === "fr") mappedLocale = "fr";
-      else if (code === "es") mappedLocale = "es";
-      else if (code === "pt") mappedLocale = "pt-BR";
-
-      if (mappedLocale && SUPPORTED_LOCALES.includes(mappedLocale)) {
-        return mappedLocale;
-      }
-    }
-  }
-
-  return DEFAULT_LOCALE;
+  const fromAccept = resolveLocaleFromAcceptLanguage(
+    request.headers.get("accept-language"),
+  );
+  return fromAccept ?? SOURCE_LOCALE;
 }
 
-/** Legacy URLs: /en-GB/..., /de/..., etc. → same path without the first segment. */
-function stripLegacyLocalePrefix(pathname: string): string | null {
+/**
+ * Legacy bookmark support only: locale-first paths redirect to canonical routes and set NEXT_LOCALE.
+ * Normal navigation uses cookie-driven language without URL segments (see ai-i18n-tools pattern).
+ */
+function stripLocalePathPrefix(pathname: string): string | null {
   const match = pathname.match(/^\/([^/]+)(\/.*)?$/);
   if (!match) return null;
   const raw = match[1];
   const rest = match[2] ?? "";
-  const loc = normalizeLocale(raw);
+  const loc = parseLocaleTag(raw);
   if (!loc) return null;
-  if (raw.toLowerCase() === "pt-br" && raw !== "pt-BR") {
-    return (rest || "/") as string;
-  }
   return rest || "/";
 }
 
@@ -85,13 +55,13 @@ export function proxy(request: NextRequest) {
     return response;
   }
 
-  const stripped = stripLegacyLocalePrefix(pathname);
+  const stripped = stripLocalePathPrefix(pathname);
   if (stripped !== null) {
     url.pathname = stripped;
     url.search = search;
     const response = NextResponse.redirect(url, 308);
     const localeFromPath = pathname.match(/^\/([^/]+)/)?.[1];
-    const pathLocale = localeFromPath ? normalizeLocale(localeFromPath) : null;
+    const pathLocale = localeFromPath ? parseLocaleTag(localeFromPath) : null;
     if (pathLocale) {
       response.cookies.set(LOCALE_COOKIE_NAME, pathLocale, {
         maxAge: LOCALE_COOKIE_MAX_AGE,

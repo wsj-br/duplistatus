@@ -24,6 +24,7 @@ import { ClipboardPaste, Send, RotateCcw, CheckCircle, AlertTriangle, Clock, Typ
 import { ColoredIcon } from '@/components/ui/colored-icon';
 import { useToast } from '@/components/ui/use-toast';
 import { NotificationTemplate, SUPPORTED_TEMPLATE_LANGUAGES, type SupportedTemplateLanguage } from '@/lib/types';
+import { getLocaleEnglishName, SOURCE_LOCALE } from '@/lib/locales';
 import { defaultNotificationTemplates, getDefaultNotificationTemplate } from '@/lib/default-config';
 import { getUserLocalStorageItem, setUserLocalStorageItem } from '@/lib/user-local-storage';
 import { useCurrentUser } from '@/hooks/use-current-user';
@@ -237,20 +238,7 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
   const { t } = useTranslation();
 
   const templateLanguageName = (lang: SupportedTemplateLanguage) => {
-    switch (lang) {
-      case "en-GB":
-        return t("English");
-      case "de":
-        return t("German");
-      case "fr":
-        return t("French");
-      case "es":
-        return t("Spanish");
-      case "pt-BR":
-        return t("Portuguese (Brazil)");
-      default:
-        return lang;
-    }
+    return t(getLocaleEnglishName(lang));
   };
 
   const notificationTemplateTitleForTab = (tab: "success" | "warning" | "overdue") =>
@@ -272,7 +260,7 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
   const [isSaving, setIsSaving] = useState(false);
   const [isSendingTest, setIsSendingTest] = useState(false);
   const [selectedVariable, setSelectedVariable] = useState<string>('');
-  const [templateLanguage, setTemplateLanguage] = useState<SupportedTemplateLanguage>('en-GB');
+  const [templateLanguage, setTemplateLanguage] = useState<SupportedTemplateLanguage>(SOURCE_LOCALE);
   const [isLoadingLanguage, setIsLoadingLanguage] = useState(true);
   const [isResetSingleDialogOpen, setIsResetSingleDialogOpen] = useState(false);
   const [isResetAllDialogOpen, setIsResetAllDialogOpen] = useState(false);

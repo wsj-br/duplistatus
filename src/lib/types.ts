@@ -146,21 +146,17 @@ export interface NotificationTemplate {
   message: string;
 }
 
+import { LOCALE_CODE_LIST, type LocaleCode } from '@/lib/locales';
+
 /**
  * Supported languages for notification templates.
  */
-export type SupportedTemplateLanguage = 'en-GB' | 'de' | 'fr' | 'es' | 'pt-BR';
+export type SupportedTemplateLanguage = LocaleCode;
 
 /**
- * List of all supported template languages
+ * List of all supported template languages - derived from ui-languages.json
  */
-export const SUPPORTED_TEMPLATE_LANGUAGES: SupportedTemplateLanguage[] = [
-  'en-GB',
-  'de',
-  'fr',
-  'es',
-  'pt-BR',
-];
+export const SUPPORTED_TEMPLATE_LANGUAGES: SupportedTemplateLanguage[] = [...LOCALE_CODE_LIST];
 
 // Deprecated: NotificationConfig has been replaced by separate keys and unified response shape
 

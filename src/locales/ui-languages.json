@@ -3,7 +3,8 @@
     "code": "en-GB",
     "label": "English (GB)",
     "englishName": "English (GB)",
-    "direction": "ltr"
+    "direction": "ltr",
+    "isSourceLocale": true
   },
   {
     "code": "de",
