@@ -3,10 +3,11 @@
 import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { defaultUIConfig, defaultOverdueTolerance } from '@/lib/default-config';
-import type { OverdueTolerance, StartOfWeek } from '@/lib/types';
+import type { OverdueTolerance, StartOfWeek, FormatLocaleOverride } from '@/lib/types';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { getUserLocalStorageItem, setUserLocalStorageItem, removeUserLocalStorageItem } from '@/lib/user-local-storage';
 import { useCurrentUser } from '@/hooks/use-current-user';
+import { useLocale } from '@/contexts/locale-context';
 
 type DatabaseCleanupPeriod = 'Delete all data' | '6 months' | '1 year' | '2 years';
 export type TablePageSize = 5 | 10 | 15 | 20 | 25 | 30 | 40 | 50;
@@ -29,6 +30,8 @@ interface ConfigContextProps {
   setDashboardCardsSortOrder: (order: DashboardCardsSortOrder) => void;
   startOfWeek: StartOfWeek;
   setStartOfWeek: (start: StartOfWeek) => void;
+  formatLocale: FormatLocaleOverride;
+  setFormatLocale: (locale: FormatLocaleOverride) => void;
   overdueTolerance: OverdueTolerance;
   refreshOverdueTolerance: () => Promise<void>;
   cleanupDatabase: () => Promise<void>;
@@ -45,6 +48,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
   const [autoRefreshEnabled, setAutoRefreshEnabled] = useState<boolean>(true);
   const [dashboardCardsSortOrder, setDashboardCardsSortOrder] = useState<DashboardCardsSortOrder>(defaultUIConfig.dashboardCardsSortOrder);
   const [startOfWeek, setStartOfWeek] = useState<StartOfWeek>(defaultUIConfig.startOfWeek);
+  const [formatLocale, setFormatLocale] = useState<FormatLocaleOverride>(defaultUIConfig.formatLocale);
   const [overdueTolerance, setOverdueTolerance] = useState<OverdueTolerance>(defaultOverdueTolerance);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const pathname = usePathname();
@@ -77,6 +81,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
         if (config.autoRefreshEnabled !== undefined) setAutoRefreshEnabled(config.autoRefreshEnabled);
         if (config.dashboardCardsSortOrder) setDashboardCardsSortOrder(config.dashboardCardsSortOrder);
         if (config.startOfWeek) setStartOfWeek(config.startOfWeek);
+        if (config.formatLocale) setFormatLocale(config.formatLocale);
       } catch (error) {
         console.error('Failed to parse saved config from localStorage:', error);
         // Clear the invalid config from localStorage
@@ -118,9 +123,10 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
         autoRefreshEnabled,
         dashboardCardsSortOrder,
         startOfWeek,
+        formatLocale,
       }));
     }
-  }, [databaseCleanupPeriod, tablePageSize, chartTimeRange, autoRefreshInterval, autoRefreshEnabled, dashboardCardsSortOrder, startOfWeek, currentUser]);
+  }, [databaseCleanupPeriod, tablePageSize, chartTimeRange, autoRefreshInterval, autoRefreshEnabled, dashboardCardsSortOrder, startOfWeek, formatLocale, currentUser]);
 
   const cleanupDatabase = async () => {
     try {
@@ -191,6 +197,8 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
         setDashboardCardsSortOrder,
         startOfWeek,
         setStartOfWeek,
+        formatLocale,
+        setFormatLocale,
         overdueTolerance,
         refreshOverdueTolerance,
         cleanupDatabase,
@@ -208,4 +216,15 @@ export const useConfig = () => {
     throw new Error('useConfig must be used within a ConfigProvider');
   }
   return context;
-}; 
+};
+
+/**
+ * Returns the effective locale to use for date/time/number formatting.
+ * If the user has set a format locale override, that locale is returned.
+ * Otherwise, the UI language locale is used.
+ */
+export function useEffectiveFormatLocale(): string {
+  const { formatLocale } = useConfig();
+  const uiLocale = useLocale();
+  return formatLocale === 'locale-default' ? uiLocale : formatLocale;
+} 

@@ -5,38 +5,32 @@
  */
 
 /**
- * Supported locales in the application
+ * Normalize locale string. For known UI locales, maps to Intl-compatible codes.
+ * For arbitrary locales, passes through as-is.
  */
-export type SupportedLocale = 'en-GB' | 'de' | 'fr' | 'es' | 'pt-BR';
-
-/**
- * Normalize locale string to supported format
- */
-function normalizeLocale(locale: string): SupportedLocale {
+function normalizeLocale(locale: string): string {
   const normalized = locale === 'pt-br' ? 'pt-BR' : locale;
-  if (['en-GB', 'de', 'fr', 'es', 'pt-BR'].includes(normalized)) {
-    return normalized as SupportedLocale;
-  }
-  return 'en-GB';
+  return normalized;
 }
 
+const KNOWN_LOCALE_MAP: Record<string, string> = {
+  'en-GB': 'en-GB',
+  'de': 'de-DE',
+  'fr': 'fr-FR',
+  'es': 'es-ES',
+  'pt-BR': 'pt-BR',
+};
+
 /**
- * Get the Intl locale string for a given locale
- * Maps our locale codes to Intl-compatible locale strings
+ * Get the Intl locale string for a given locale.
+ * Uses known mappings for our 5 UI locales; passes through for all others.
  */
 function getIntlLocale(locale: string): string {
   const normalized = normalizeLocale(locale);
-  
-  // Map to Intl-compatible locale strings
-  const localeMap: Record<SupportedLocale, string> = {
-    'en-GB': 'en-GB',
-    'de': 'de-DE',
-    'fr': 'fr-FR',
-    'es': 'es-ES',
-    'pt-BR': 'pt-BR',
-  };
-  
-  return localeMap[normalized];
+  if (normalized in KNOWN_LOCALE_MAP) {
+    return KNOWN_LOCALE_MAP[normalized];
+  }
+  return locale;
 }
 
 /**

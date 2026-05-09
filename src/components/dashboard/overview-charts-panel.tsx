@@ -15,13 +15,12 @@ import { formatDurationFromMinutes } from "@/lib/utils";
 import type { ChartConfig } from "@/components/ui/chart";
 import { ChartContainer } from "@/components/ui/chart"; 
 import { FileBarChart2 } from "lucide-react";
-import { useConfig } from "@/contexts/config-context";
+import { useConfig, useEffectiveFormatLocale } from "@/contexts/config-context";
 import { subWeeks, subMonths, subQuarters, subYears } from "date-fns";
 import type { ChartDataPoint } from "@/lib/types";
 import { useToast } from "@/components/ui/use-toast";
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { useGlobalRefresh } from "@/contexts/global-refresh-context";
-import { useLocale } from "@/contexts/locale-context";
 import { formatDateTime, formatDate } from "@/lib/date-format";
 import { formatInteger, formatBytes as formatBytesLocale } from "@/lib/number-format";
 
@@ -315,7 +314,7 @@ function OverviewChartsPanelCore({
   
   const { chartTimeRange } = useConfig();
   const { state: globalRefreshState } = useGlobalRefresh();
-  const locale = useLocale();
+  const effectiveLocale = useEffectiveFormatLocale();
   
   // Configuration for overview charts - only 3 metrics
   const overviewChartMetrics = [
@@ -607,7 +606,7 @@ function OverviewChartsPanelCore({
                 metricKey={metric.key as keyof ChartDataPoint}
                 label={metric.label}
                 color={metric.color}
-                locale={locale}
+                locale={effectiveLocale}
               />
             </div>
           ))}

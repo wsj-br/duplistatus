@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { HardDrive, Archive, UploadCloud, Database, FileSearch, AlertTriangle, ChartLine, LayoutDashboard, Sheet, ThumbsUp } from "lucide-react";
 import { ColoredIcon } from "@/components/ui/colored-icon";
 import { formatInteger, formatBytes } from "@/lib/number-format";
-import { useLocale } from "@/contexts/locale-context";
+import { useEffectiveFormatLocale } from "@/contexts/config-context";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -33,7 +33,7 @@ export function DashboardSummaryCards({
   const { viewMode } = serverSelectionState;
   const currentUser = useCurrentUser();
   const { t } = useTranslation();
-  const locale = useLocale();
+  const effectiveLocale = useEffectiveFormatLocale();
   
   const viewModeTooltipsTexts = {
     overview: t("overview"),
@@ -58,42 +58,42 @@ export function DashboardSummaryCards({
     {
       id: 'totalServers',
       title: t("Total Servers"),
-      value: formatInteger(summary.totalServers, locale),
+      value: formatInteger(summary.totalServers, effectiveLocale),
       icon: <ColoredIcon icon={HardDrive} color="blue" size="lg" />,
       "data-ai-hint": "server computer",
     },
     {
       id: 'totalBackupJobs',
       title: t("Total Backup Jobs"),
-      value: formatInteger(summary.totalBackups, locale),
+      value: formatInteger(summary.totalBackups, effectiveLocale),
       icon: <ColoredIcon icon={Archive} color="green" size="lg" />,
       "data-ai-hint": "archive box",
     },
     {
       id: 'totalBackupRuns',
       title: t("Total Backup Runs"),
-      value: formatInteger(summary.totalBackupsRuns, locale),
+      value: formatInteger(summary.totalBackupsRuns, effectiveLocale),
       icon: <ColoredIcon icon={Archive} color="purple" size="lg" />,
       "data-ai-hint": "archive box",
     },
     {
       id: 'totalBackupSize',
       title: t("Total Backup Size"),
-      value: formatBytes(summary.totalBackupSize, locale),
+      value: formatBytes(summary.totalBackupSize, effectiveLocale),
       icon: <ColoredIcon icon={FileSearch} color="yellow" size="lg" />,
       "data-ai-hint": "file search",
     },
     {
       id: 'totalStorageUsed',
       title: t("Total Storage Used"),
-      value: formatBytes(summary.totalStorageUsed, locale),
+      value: formatBytes(summary.totalStorageUsed, effectiveLocale),
       icon: <ColoredIcon icon={Database} color="blue" size="lg" />,
       "data-ai-hint": "database storage",
     },
     {
       id: 'totalUploadedSize',
       title: t("Total Uploaded Size"),
-      value: formatBytes(summary.totalUploadedSize, locale),
+      value: formatBytes(summary.totalUploadedSize, effectiveLocale),
       icon: <ColoredIcon icon={UploadCloud} color="blue" size="lg" />,
       "data-ai-hint": "cloud upload",
     },
@@ -101,7 +101,7 @@ export function DashboardSummaryCards({
     ...(viewMode !== 'overview' ? [{
       id: 'overdueBackups',
       title: t("Overdue Backups"),
-      value: formatInteger(summary.overdueBackupsCount, locale),
+      value: formatInteger(summary.overdueBackupsCount, effectiveLocale),
       icon: summary.overdueBackupsCount > 0 ? (
         <ColoredIcon icon={AlertTriangle} color="red" size="lg" />
       ) : (

@@ -29,9 +29,7 @@
 - adjust the documentation to make clear that the duplicate connectivity is optional and the allow remove access also is optional
   (documentation/docs/installation/duplicati-server-configuration.md item 1, line 7 ) (see https://github.com/wsj-br/duplistatus/issues/40)
 
-- add a date/time format override in the settings (Settings > Display Settings > Date/Time Format) (see https://github.com/wsj-br/duplistatus/issues/59)
-
-
+- add a option in the "theme selection" to "System (follow OS)" 
 
 <br/>
 

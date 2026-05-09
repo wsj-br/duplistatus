@@ -4,7 +4,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
-import { useLocale } from "@/contexts/locale-context";
+import { useEffectiveFormatLocale } from "@/contexts/config-context";
 import type { BackupStatus } from "@/lib/types";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -52,7 +52,7 @@ export function ServerDetailSummaryItems({
 }: ServerDetailSummaryItemsProps) {
   const { t } = useTranslation();
   const router = useRouter();
-  const locale = useLocale();
+  const effectiveLocale = useEffectiveFormatLocale();
   // Use a try/catch for each item to ensure nothing breaks
   const getFormattedValue = (value: number, formatter: (val: number) => string, defaultValue: string = '0') => {
     try {
@@ -65,7 +65,7 @@ export function ServerDetailSummaryItems({
   const getFormattedNumber = (value: number, defaultValue: string = '0') => {
     try {
       const num = Number(value);
-      return isNaN(num) ? defaultValue : formatInteger(num, locale);
+      return isNaN(num) ? defaultValue : formatInteger(num, effectiveLocale);
     } catch {
       return defaultValue;
     }
@@ -83,12 +83,12 @@ export function ServerDetailSummaryItems({
   
   // Format the expected backup date with locale-aware formatting
   const formattedExpectedBackupDate = SelectedExpectedBackupDate && SelectedExpectedBackupDate !== 'N/A' 
-    ? formatDateTime(SelectedExpectedBackupDate, locale)
+    ? formatDateTime(SelectedExpectedBackupDate, effectiveLocale)
     : SelectedExpectedBackupDate;
   
   // Format the expected backup elapsed time client-side with locale-aware formatting
   const formattedExpectedBackupElapsed = SelectedExpectedBackupDate && SelectedExpectedBackupDate !== 'N/A'
-    ? formatTimeElapsed(SelectedExpectedBackupDate, undefined, locale)
+    ? formatTimeElapsed(SelectedExpectedBackupDate, undefined, effectiveLocale)
     : 'N/A';
 
 
@@ -132,21 +132,21 @@ export function ServerDetailSummaryItems({
       { 
         id: 'lastBackupSize',
         title: t("Last Backup Size"), 
-        value: getFormattedValue(lastBackupFileSize, (val) => formatBytes(val, locale), "0 Bytes"),
+        value: getFormattedValue(lastBackupFileSize, (val) => formatBytes(val, effectiveLocale), "0 Bytes"),
         icon: <HardDrive className="h-4 w-4 text-blue-600" />, 
         "data-ai-hint": "hard drive" 
       },
       { 
         id: 'totalStorageUsed',
         title: t("Total Storage Used"), 
-        value: getFormattedValue(lastBackupStorageSize, (val) => formatBytes(val, locale), "0 Bytes"),
+        value: getFormattedValue(lastBackupStorageSize, (val) => formatBytes(val, effectiveLocale), "0 Bytes"),
         icon: <Database className="h-4 w-4 text-blue-600" />, 
         "data-ai-hint": "database symbol" 
       },
       { 
         id: 'totalUploaded',
         title: t("Total Uploaded"), 
-        value: getFormattedValue(totalUploadedSize, (val) => formatBytes(val, locale), "0 Bytes"),
+        value: getFormattedValue(totalUploadedSize, (val) => formatBytes(val, effectiveLocale), "0 Bytes"),
         icon: <UploadCloud className="h-4 w-4 text-blue-600" />, 
         "data-ai-hint": "cloud data" 
       }
@@ -195,12 +195,12 @@ export function ServerDetailSummaryItems({
                   <span className="text-sm">
                     <span className="text-muted-foreground">{t("Overdue scheduled backups:")}</span> {overdueBackups.map(ob => {
                       const elapsed = ob.expectedBackupDate !== 'N/A' 
-                        ? formatTimeElapsed(ob.expectedBackupDate, undefined, locale)
+                        ? formatTimeElapsed(ob.expectedBackupDate, undefined, effectiveLocale)
                         : ob.expectedBackupElapsed;
                       return `'${ob.backupName} (${elapsed} ${t("overdue")})'`;
                     }).join(', ')}.
                     {lastOverdueCheck && lastOverdueCheck !== 'N/A' && (
-                      <span className="px-3 text-muted-foreground">{t("Last checked:")} {formatRelativeTime(lastOverdueCheck, undefined, locale)}</span>
+                      <span className="px-3 text-muted-foreground">{t("Last checked:")} {formatRelativeTime(lastOverdueCheck, undefined, effectiveLocale)}</span>
                     )}
                   </span>
                 </div>
@@ -229,7 +229,7 @@ export function ServerDetailSummaryItems({
                        elapsed: formattedExpectedBackupElapsed || 'N/A',
                      })}
                      {lastOverdueCheck && lastOverdueCheck !== 'N/A' && (
-                       <span className="px-3 text-muted-foreground">{t("Last checked:")} {formatRelativeTime(lastOverdueCheck, undefined, locale)}</span>
+                       <span className="px-3 text-muted-foreground">{t("Last checked:")} {formatRelativeTime(lastOverdueCheck, undefined, effectiveLocale)}</span>
                      )}
                   </span>
                 </div>

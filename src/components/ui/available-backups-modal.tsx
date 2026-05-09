@@ -2,7 +2,7 @@
 import type { TFunction } from "i18next";
 import React, { useState, useMemo, createContext, useContext, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocale } from '@/contexts/locale-context';
+import { useEffectiveFormatLocale } from '@/contexts/config-context';
 import { History } from "lucide-react";
 import { formatRelativeTime } from "@/lib/utils";
 import { formatDateTime } from "@/lib/date-format";
@@ -60,7 +60,7 @@ function useAvailableBackupsT(): TFunction {
 // Global modal component that will be rendered in the layout
 const GlobalAvailableBackupsModal = React.memo(() => {
   const t = useAvailableBackupsT();
-  const locale = useLocale();
+  const effectiveLocale = useEffectiveFormatLocale();
   const { modalState, closeModal } = useModalContext();
 
   const formatAvailableBackupDate = (isoTimestamp: string): string => {
@@ -133,7 +133,7 @@ const GlobalAvailableBackupsModal = React.memo(() => {
               <span className="font-normal text-muted-foreground"> : </span>
               <span className="font-medium text-muted-foreground">{modalState.backupName}</span>
               <span className="font-normal text-muted-foreground"> @ </span>
-              <span className="text-blue-400 font-normal">{formatDateTime(modalState.backupDate, locale)}</span>
+              <span className="text-blue-400 font-normal">{formatDateTime(modalState.backupDate, effectiveLocale)}</span>
               {modalState.serverNote && (
                 <>
                   <br/>
@@ -163,7 +163,7 @@ const GlobalAvailableBackupsModal = React.memo(() => {
                   <TableRow key={index} className="border-b">
                     <TableCell className="w-16 py-1.5 px-3">{index + 1}</TableCell>
                     <TableCell className="py-1.5 px-3">{formatAvailableBackupDate(timestamp)}</TableCell>
-                    <TableCell className="py-1.5 px-3">{formatRelativeTime(timestamp, undefined, locale)}</TableCell>
+                    <TableCell className="py-1.5 px-3">{formatRelativeTime(timestamp, undefined, effectiveLocale)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -259,14 +259,14 @@ interface AvailableBackupsIconProps {
 
 export function AvailableBackupsIcon({ availableBackups, currentBackupDate, serverName, serverAlias, serverNote, backupName, onIconClick, count }: AvailableBackupsIconProps) {
   const t = useAvailableBackupsT();
-  const locale = useLocale();
+  const effectiveLocale = useEffectiveFormatLocale();
   const hasAvailableBackups = availableBackups && availableBackups.length > 0;
   
   return (
     <TooltipProvider>
       <div className="flex items-center justify-center gap-2">
         <span>
-          {count !== null ? formatInteger(count, locale) : 'N/A'}
+          {count !== null ? formatInteger(count, effectiveLocale) : 'N/A'}
         </span>
         {hasAvailableBackups ? (
           <Tooltip>

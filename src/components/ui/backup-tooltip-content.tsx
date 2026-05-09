@@ -2,7 +2,7 @@
 import { useTranslation } from "react-i18next";
 
 import { useRouter } from "next/navigation";
-import { useLocale } from "@/contexts/locale-context";
+import { useEffectiveFormatLocale } from "@/contexts/config-context";
 import type { BackupStatus, NotificationEvent } from "@/lib/types";
 import { formatRelativeTime, getStatusColor } from "@/lib/utils";
 import { formatDateTime } from "@/lib/date-format";
@@ -67,7 +67,7 @@ export function BackupTooltipContent({
 }: BackupTooltipContentProps) {
   const { t } = useTranslation();
   const router = useRouter();
-  const locale = useLocale();
+  const effectiveLocale = useEffectiveFormatLocale();
 
   // Helper function to get translated status label
   const getStatusLabel = (status: BackupStatus | 'N/A'): string => {
@@ -111,7 +111,7 @@ export function BackupTooltipContent({
             <div className="text-muted-foreground text-left mb-1">{t("Date:")}</div>
             <div className="font-semibold text-left">
               {lastBackupDate !== "N/A" 
-                ? formatDateTime(lastBackupDate, locale) + " (" + formatRelativeTime(lastBackupDate, undefined, locale) + ")"
+                ? formatDateTime(lastBackupDate, effectiveLocale) + " (" + formatRelativeTime(lastBackupDate, undefined, effectiveLocale) + ")"
                 : t("N/A")}
             </div>
           </div>
@@ -136,7 +136,7 @@ export function BackupTooltipContent({
             <div className="text-muted-foreground text-left mb-1">{t("Files:")}</div>
             <div className="font-semibold text-left">
               {fileCount !== null && fileCount !== undefined
-                ? formatInteger(fileCount, locale)
+                ? formatInteger(fileCount, effectiveLocale)
                 : t("N/A")}
             </div>
           </div>
@@ -145,7 +145,7 @@ export function BackupTooltipContent({
             <div className="text-muted-foreground text-left mb-1">{t("Size:")}</div>
             <div className="font-semibold text-left">
               {fileSize !== null && fileSize !== undefined
-                ? formatBytes(fileSize, locale)
+                ? formatBytes(fileSize, effectiveLocale)
                 : t("N/A")}
             </div>
           </div>
@@ -154,7 +154,7 @@ export function BackupTooltipContent({
             <div className="text-muted-foreground text-left mb-1">{t("Storage:")}</div>
             <div className="font-semibold text-left">
               {storageSize !== null && storageSize !== undefined
-                ? formatBytes(storageSize, locale)
+                ? formatBytes(storageSize, effectiveLocale)
                 : t("N/A")}
             </div>
           </div>
@@ -163,7 +163,7 @@ export function BackupTooltipContent({
             <div className="text-muted-foreground text-left mb-1">{t("Uploaded:")}</div>
             <div className="font-semibold text-left">
               {uploadedSize !== null && uploadedSize !== undefined
-                ? formatBytes(uploadedSize, locale)
+                ? formatBytes(uploadedSize, effectiveLocale)
                 : t("N/A")}
             </div>
           </div>
@@ -172,7 +172,7 @@ export function BackupTooltipContent({
             <div className="text-muted-foreground text-left mb-1">{t("Versions:")}</div>
             <div className="font-semibold text-left">
               {lastBackupListCount !== null && lastBackupListCount !== undefined
-                ? formatInteger(lastBackupListCount, locale)
+                ? formatInteger(lastBackupListCount, effectiveLocale)
                 : t("N/A")}
             </div>
           </div>
@@ -182,7 +182,7 @@ export function BackupTooltipContent({
             <div className="col-span-2">
               <div className="text-muted-foreground text-left mb-1">{t("Expected:")}</div>
               <div className="font-semibold text-left">
-                {formatDateTime(expectedBackupDate, locale) + " (" + formatRelativeTime(expectedBackupDate, undefined, locale) + ")"}
+                {formatDateTime(expectedBackupDate, effectiveLocale) + " (" + formatRelativeTime(expectedBackupDate, undefined, effectiveLocale) + ")"}
               </div>
             </div>
           )}
@@ -201,7 +201,7 @@ export function BackupTooltipContent({
             <div className="text-muted-foreground text-right">{t("Expected:")}</div>
             <div className="font-semibold text-left">
               {expectedBackupDate !== "N/A" 
-                ? formatDateTime(expectedBackupDate, locale) + " (" + formatRelativeTime(expectedBackupDate, undefined, locale) + ")"
+                ? formatDateTime(expectedBackupDate, effectiveLocale) + " (" + formatRelativeTime(expectedBackupDate, undefined, effectiveLocale) + ")"
                 : t("N/A")}
             </div>
           </div>

@@ -7,12 +7,9 @@
 import { parseISO, isValid } from 'date-fns';
 
 /**
- * Supported locales in the application
- */
-export type SupportedLocale = 'en-GB' | 'de' | 'fr' | 'es' | 'pt-BR';
-
-/**
- * Date format configuration for each locale
+ * Known locale-specific format configurations
+ * Used for backward-compatible formatting of our 5 supported UI locales.
+ * For arbitrary locales, we use Intl.DateTimeFormat with sensible defaults.
  */
 interface LocaleDateFormatConfig {
   dateFormat: Intl.DateTimeFormatOptions;
@@ -20,10 +17,7 @@ interface LocaleDateFormatConfig {
   uses24Hour: boolean;
 }
 
-/**
- * Locale-specific date and time format configurations
- */
-const LOCALE_FORMATS: Record<SupportedLocale, LocaleDateFormatConfig> = {
+const KNOWN_LOCALE_FORMATS: Record<string, LocaleDateFormatConfig> = {
   'en-GB': {
     dateFormat: {
       year: 'numeric',
@@ -33,7 +27,7 @@ const LOCALE_FORMATS: Record<SupportedLocale, LocaleDateFormatConfig> = {
     timeFormat: {
       hour: 'numeric',
       minute: '2-digit',
-      hour12: true, // 12-hour format
+      hour12: true,
     },
     uses24Hour: false,
   },
@@ -46,7 +40,7 @@ const LOCALE_FORMATS: Record<SupportedLocale, LocaleDateFormatConfig> = {
     timeFormat: {
       hour: '2-digit',
       minute: '2-digit',
-      hour12: false, // 24-hour format
+      hour12: false,
     },
     uses24Hour: true,
   },
@@ -59,7 +53,7 @@ const LOCALE_FORMATS: Record<SupportedLocale, LocaleDateFormatConfig> = {
     timeFormat: {
       hour: '2-digit',
       minute: '2-digit',
-      hour12: false, // 24-hour format
+      hour12: false,
     },
     uses24Hour: true,
   },
@@ -72,7 +66,7 @@ const LOCALE_FORMATS: Record<SupportedLocale, LocaleDateFormatConfig> = {
     timeFormat: {
       hour: '2-digit',
       minute: '2-digit',
-      hour12: false, // 24-hour format
+      hour12: false,
     },
     uses24Hour: true,
   },
@@ -85,37 +79,50 @@ const LOCALE_FORMATS: Record<SupportedLocale, LocaleDateFormatConfig> = {
     timeFormat: {
       hour: '2-digit',
       minute: '2-digit',
-      hour12: false, // 24-hour format
+      hour12: false,
     },
     uses24Hour: true,
   },
 };
 
+const DEFAULT_DATE_FORMAT: Intl.DateTimeFormatOptions = {
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+};
+
+const DEFAULT_TIME_FORMAT: Intl.DateTimeFormatOptions = {
+  hour: '2-digit',
+  minute: '2-digit',
+  hour12: false,
+};
+
 /**
- * Get the locale format configuration for a given locale
- * Falls back to 'en-GB' if locale is not supported
+ * Get the locale format configuration for a given locale.
+ * Uses known configs for our 5 UI locales; sensible defaults for all others.
  */
 function getLocaleConfig(locale: string): LocaleDateFormatConfig {
-  const normalizedLocale = locale === 'pt-br' ? 'pt-BR' : locale;
-  const supportedLocale = normalizedLocale as SupportedLocale;
-  
-  if (supportedLocale in LOCALE_FORMATS) {
-    return LOCALE_FORMATS[supportedLocale];
+  const normalized = locale === 'pt-br' ? 'pt-BR' : locale;
+  if (normalized in KNOWN_LOCALE_FORMATS) {
+    return KNOWN_LOCALE_FORMATS[normalized];
   }
-  
-  // Fallback to English
-  return LOCALE_FORMATS['en-GB'];
+  return {
+    dateFormat: DEFAULT_DATE_FORMAT,
+    timeFormat: DEFAULT_TIME_FORMAT,
+    uses24Hour: true,
+  };
 }
 
 /**
- * Normalize locale string to supported format
+ * Normalize locale string. For known UI locales, preserves exact casing.
+ * For arbitrary locales, passes through as-is.
  */
-function normalizeLocale(locale: string): SupportedLocale {
+function normalizeLocale(locale: string): string {
   const normalized = locale === 'pt-br' ? 'pt-BR' : locale;
-  if (normalized in LOCALE_FORMATS) {
-    return normalized as SupportedLocale;
+  if (normalized in KNOWN_LOCALE_FORMATS) {
+    return normalized;
   }
-  return 'en-GB';
+  return locale;
 }
 
 /**

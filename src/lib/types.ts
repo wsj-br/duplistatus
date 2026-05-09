@@ -208,6 +208,9 @@ export type OverdueTolerance = 'no_tolerance' | '5min' | '15min' | '30min' | '1h
 // Start of week options
 export type StartOfWeek = 'locale' | 'sunday' | 'monday';
 
+// Format locale override: 'locale-default' or any locale code from supported-locales.json
+export type FormatLocaleOverride = 'locale-default' | string;
+
 // Interface for overdue backup notification timestamps
 export interface OverdueNotificationTimestamp {
   lastNotificationSent: string; // ISO timestamp

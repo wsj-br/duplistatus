@@ -11,6 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 
+
+### Fixed
+- **build-local script**: Fixed the build-local script to copy the static files to the standalone directory. Simplify the script to use the pos-build.sh script.
+
+### Added
+- **Format locale override**: Users can now select a formatting locale independently of their UI language in Settings > Display Settings using a searchable combobox (416 locales supported). Date, time, and number formatting across the dashboard, server details, and settings panels respects the selected format locale. A live preview shows formatted samples on selection.
+
 ### Changed
 - **Locale code**: English UI / cookie / i18n source locale is consistently **`en-GB`** (replaced the mistaken `en-GB-GB` string). `src/proxy.ts`, `src/app/layout.tsx`, `src/i18n.ts`, `src/i18n-config.ts`, `src/locales/ui-languages.json`, header/refresh/detail helpers, and related defaults were updated. Legacy `NEXT_LOCALE` / path values `en-GB-GB` are still accepted and mapped to `en-GB`. `Accept-Language` handling in the root layout now maps the primary tag `en` to `en-GB` (it compared to `en-GB` before, which never matched).
 

@@ -15,13 +15,12 @@ import { formatDurationFromMinutes } from "@/lib/utils";
 import type { ChartConfig } from "@/components/ui/chart";
 import { ChartContainer } from "@/components/ui/chart"; 
 import { FileBarChart2 } from "lucide-react";
-import { useConfig } from "@/contexts/config-context";
+import { useConfig, useEffectiveFormatLocale } from "@/contexts/config-context";
 import { subWeeks, subMonths, subQuarters, subYears } from "date-fns";
 import type { ChartDataPoint } from "@/lib/types";
 import { useToast } from "@/components/ui/use-toast";
 import { useGlobalRefresh } from "@/contexts/global-refresh-context";
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
-import { useLocale } from "@/contexts/locale-context";
 import { formatDateTime, formatDate } from "@/lib/date-format";
 import { formatInteger, formatBytes } from "@/lib/number-format";
 
@@ -354,7 +353,7 @@ function MetricsChartsPanelCore({
 }: MetricsChartsPanelCoreProps) {
   const { chartTimeRange } = useConfig();
   const { state: globalRefreshState } = useGlobalRefresh();
-  const locale = useLocale();
+  const effectiveLocale = useEffectiveFormatLocale();
   // If externalChartData is provided, use it instead of fetching
   const [chartData, setChartData] = useState<ChartDataPoint[]>(externalChartData || []);
   const [isLoading, setIsLoading] = useState(true);
@@ -640,14 +639,14 @@ function MetricsChartsPanelCore({
       {/* Charts - Responsive grid layout: 1 column mobile/small, 3 columns medium/large */}
       {!isLoading && !error && chartData.length > 0 && (
         <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 ${useContentBasedHeight ? 'auto-rows-auto' : 'auto-rows-fr'} items-stretch gap-2 sm:gap-3 pb-2 flex-1 min-h-0 overflow-hidden`}>
-          {getChartMetrics(t, locale).map((metric) => (
+          {getChartMetrics(t, effectiveLocale).map((metric) => (
             <SmallMetricChart
               key={metric.key}
               data={chartData}
               metricKey={metric.key as keyof ChartDataPoint}
               label={metric.label}
               color={metric.color}
-              locale={locale}
+              locale={effectiveLocale}
             />
           ))}
         </div>

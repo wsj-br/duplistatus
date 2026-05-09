@@ -4,7 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { StatusBadge } from '@/components/status-badge';
 import { MessageSquare, AlertTriangle, XCircle, Info } from 'lucide-react';
 import { formatRelativeTime } from '@/lib/utils';
-import { formatBytes } from '@/lib/number-format';
+import { formatDateTime } from '@/lib/date-format';
+import { formatBytes, formatInteger } from '@/lib/number-format';
 import { BackButton } from '@/components/ui/back-button';
 import {
   Table,
@@ -177,10 +178,11 @@ const parseJsonArray = (jsonString: string | null): string[] => {
   }
 };
 
-const AvailableBackupsTable = ({ availableBackups, currentBackupDate, t }: { 
+const AvailableBackupsTable = ({ availableBackups, currentBackupDate, t, locale }: { 
   availableBackups: string[] | null; 
   currentBackupDate: string;
   t: TFunction;
+  locale: string;
 }) => {
   if (!availableBackups || availableBackups.length === 0) {
     return <span className="text-sm text-muted-foreground"> </span>;
@@ -200,14 +202,14 @@ const AvailableBackupsTable = ({ availableBackups, currentBackupDate, t }: {
           {/* First row: Current backup date */}
           <TableRow className="border-b">
             <TableCell className="w-8 py-1 px-2 text-xs">1</TableCell>
-            <TableCell className="py-1 px-2 text-xs">{new Date(currentBackupDate).toLocaleString()}</TableCell>
+            <TableCell className="py-1 px-2 text-xs">{formatDateTime(currentBackupDate, locale)}</TableCell>
             <TableCell className="py-1 px-2 text-xs">{formatRelativeTime(currentBackupDate)}</TableCell>
           </TableRow>
           {/* Additional available versions starting from #2 */}
           {availableBackups.map((timestamp, index) => (
             <TableRow key={index} className="border-b">
               <TableCell className="w-8 py-1 px-2 text-xs">{index + 2}</TableCell>
-              <TableCell className="py-1 px-2 text-xs">{new Date(timestamp).toLocaleString()}</TableCell>
+              <TableCell className="py-1 px-2 text-xs">{formatDateTime(timestamp, locale)}</TableCell>
               <TableCell className="py-1 px-2 text-xs">{formatRelativeTime(timestamp)}</TableCell>
             </TableRow>
           ))}
@@ -322,7 +324,7 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
                   <dd className="mx-4 flex items-center gap-6">
                     <div className="flex items-center gap-2">
                       <span className="font-medium text-muted-foreground">{t("Date:")}</span>
-                      <span>{new Date(safeBackup.date).toLocaleString()}</span>
+                      <span>{formatDateTime(safeBackup.date, locale)}</span>
                       <span className="text-sm text-muted-foreground">
                         ({formatRelativeTime(safeBackup.date)})
                       </span>
@@ -338,7 +340,7 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
                   <dd className="mx-4 grid grid-cols-2 gap-x-4 gap-y-1">
                     <div className="flex items-center gap-2">
                       <span className="font-medium text-muted-foreground">{t("File Count:")}</span>
-                      <span>{backup.fileCount?.toLocaleString() || '0'}</span>
+                      <span>{formatInteger(backup.fileCount ?? 0, locale)}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="font-medium text-muted-foreground">{t("File Size:")}</span>
@@ -363,15 +365,15 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
                   <dd className="mx-4 flex items-center gap-6">
                     <div className="flex items-center gap-1">
                       <MessageSquare className="h-4 w-4 text-blue-500" />
-                      <span className="text-sm">{t("Messages:")} {safeBackup.messages.toLocaleString()}</span>
+                      <span className="text-sm">{t("Messages:")} {formatInteger(safeBackup.messages, locale)}</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <AlertTriangle className="h-4 w-4 text-yellow-500" />
-                      <span className="text-sm">{t("Warnings:")} {safeBackup.warnings.toLocaleString()}</span>
+                      <span className="text-sm">{t("Warnings:")} {formatInteger(safeBackup.warnings, locale)}</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <XCircle className="h-4 w-4 text-red-500" />
-                      <span className="text-sm">{t("Errors:")} {safeBackup.errors.toLocaleString()}</span>
+                      <span className="text-sm">{t("Errors:")} {formatInteger(safeBackup.errors, locale)}</span>
                     </div>
                   </dd>
                 </div>
@@ -385,7 +387,7 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
                      )}
                 </dt>
                 <dd className="text-sm">
-                  <AvailableBackupsTable availableBackups={availableBackups} currentBackupDate={safeBackup.date} t={t} />
+                  <AvailableBackupsTable availableBackups={availableBackups} currentBackupDate={safeBackup.date} t={t} locale={locale} />
                 </dd>
               </div>
             </div>

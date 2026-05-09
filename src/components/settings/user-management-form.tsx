@@ -1,7 +1,7 @@
 'use client';
 import { useTranslation } from "react-i18next";
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useLocale } from '@/contexts/locale-context';
+import { useEffectiveFormatLocale } from '@/contexts/config-context';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -65,7 +65,7 @@ interface UserManagementFormProps {
 export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
   const { t } = useTranslation();
   const { toast } = useToast();
-  const locale = useLocale();
+  const effectiveLocale = useEffectiveFormatLocale();
   const passwordPolicy = usePasswordPolicy();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
@@ -543,9 +543,9 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                   <TableCell>
                     {user.lastLoginAt ? (
                       <>
-                        <div>{formatDateTime(user.lastLoginAt, locale)}</div>
+                        <div>{formatDateTime(user.lastLoginAt, effectiveLocale)}</div>
                         <div className="text-xs text-muted-foreground">
-                          {formatRelativeTime(user.lastLoginAt, undefined, locale)}
+                          {formatRelativeTime(user.lastLoginAt, undefined, effectiveLocale)}
                         </div>
                       </>
                     ) : (
@@ -553,13 +553,13 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                     )}
                   </TableCell>
                   <TableCell>
-                    <div>{formatDateTime(user.updatedAt, locale)}</div>
+                    <div>{formatDateTime(user.updatedAt, effectiveLocale)}</div>
                     <div className="text-xs text-muted-foreground">
                       {formatRelativeTime(user.updatedAt)}
                     </div>
                   </TableCell>
                   <TableCell>
-                    <div>{formatDateTime(user.createdAt, locale)}</div>
+                    <div>{formatDateTime(user.createdAt, effectiveLocale)}</div>
                     <div className="text-xs text-muted-foreground">
                       {formatRelativeTime(user.createdAt)}
                     </div>
@@ -702,9 +702,9 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                       <div className="text-sm">
                         {user.lastLoginAt ? (
                           <>
-                            <div>{formatDateTime(user.lastLoginAt, locale)}</div>
+                            <div>{formatDateTime(user.lastLoginAt, effectiveLocale)}</div>
                             <div className="text-xs text-muted-foreground">
-                              {formatRelativeTime(user.lastLoginAt, undefined, locale)}
+                              {formatRelativeTime(user.lastLoginAt, undefined, effectiveLocale)}
                             </div>
                           </>
                         ) : (
@@ -717,7 +717,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Last Update</Label>
                       <div className="text-sm">
-                        <div>{formatDateTime(user.updatedAt, locale)}</div>
+                        <div>{formatDateTime(user.updatedAt, effectiveLocale)}</div>
                         <div className="text-xs text-muted-foreground">
                           {formatRelativeTime(user.updatedAt)}
                         </div>
@@ -728,9 +728,9 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Created</Label>
                       <div className="text-sm">
-                        <div>{formatDateTime(user.createdAt, locale)}</div>
+                        <div>{formatDateTime(user.createdAt, effectiveLocale)}</div>
                         <div className="text-xs text-muted-foreground">
-                          {formatRelativeTime(user.createdAt, undefined, locale)}
+                          {formatRelativeTime(user.createdAt, undefined, effectiveLocale)}
                         </div>
                       </div>
                     </div>

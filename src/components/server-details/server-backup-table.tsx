@@ -18,10 +18,9 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { formatRelativeTime } from "@/lib/utils";
 import { formatDateTime } from "@/lib/date-format";
 import { formatInteger, formatBytes } from "@/lib/number-format";
-import { useConfig } from "@/contexts/config-context";
+import { useConfig, useEffectiveFormatLocale } from "@/contexts/config-context";
 import { useBackupSelection } from "@/contexts/backup-selection-context";
 import { useRouter } from "next/navigation";
-import { useLocale } from "@/contexts/locale-context";
 import {
   Tooltip,
   TooltipContent,
@@ -99,7 +98,7 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
 
   const { totalPages, paginated: paginatedBackups } = sortedFilteredPaginatedBackups;
   const router = useRouter();
-  const locale = useLocale();
+  const effectiveLocale = useEffectiveFormatLocale();
 
   const handleSort = (column: string) => {
     setSortConfig(prevConfig => {
@@ -266,9 +265,9 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
                   >
                     <TableCell className="font-medium">{backup.name}</TableCell>
                     <TableCell>
-                      <div>{formatDateTime(backup.date, locale)}</div>
+                      <div>{formatDateTime(backup.date, effectiveLocale)}</div>
                       <div className="text-xs text-muted-foreground">
-                        {formatRelativeTime(backup.date, undefined, locale)}
+                        {formatRelativeTime(backup.date, undefined, effectiveLocale)}
                       </div>
                     </TableCell>
                     <TableCell>
@@ -303,11 +302,11 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
                         count={backup.backup_list_count}
                       />
                     </TableCell>
-                    <TableCell className="text-right">{formatInteger(backup.fileCount, locale)}</TableCell>
-                    <TableCell className="text-right">{formatBytes(backup.fileSize, locale)}</TableCell>
-                    <TableCell className="text-right">{formatBytes(backup.uploadedSize, locale)}</TableCell>
+                    <TableCell className="text-right">{formatInteger(backup.fileCount, effectiveLocale)}</TableCell>
+                    <TableCell className="text-right">{formatBytes(backup.fileSize, effectiveLocale)}</TableCell>
+                    <TableCell className="text-right">{formatBytes(backup.uploadedSize, effectiveLocale)}</TableCell>
                     <TableCell className="text-right">{backup.duration}</TableCell>
-                    <TableCell className="text-right">{formatBytes(backup.knownFileSize, locale)}</TableCell>
+                    <TableCell className="text-right">{formatBytes(backup.knownFileSize, effectiveLocale)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -329,7 +328,7 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
                     <div className="flex-1">
                       <div className="font-medium text-sm">{backup.name}</div>
                       <div className="text-xs text-muted-foreground">
-                        {formatDateTime(backup.date, locale)}
+                        {formatDateTime(backup.date, effectiveLocale)}
                       </div>
                     </div>
                     
@@ -377,18 +376,18 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
                     
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">{t("File Count")}</Label>
-                      <div className="text-sm">{formatInteger(backup.fileCount, locale)}</div>
+                      <div className="text-sm">{formatInteger(backup.fileCount, effectiveLocale)}</div>
                     </div>
 
                     {/* Row 2 */}
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">{t("File Size")}</Label>
-                      <div className="text-sm">{formatBytes(backup.fileSize, locale)}</div>
+                      <div className="text-sm">{formatBytes(backup.fileSize, effectiveLocale)}</div>
                     </div>
                     
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">{t("Uploaded Size")}</Label>
-                      <div className="text-sm">{formatBytes(backup.uploadedSize, locale)}</div>
+                      <div className="text-sm">{formatBytes(backup.uploadedSize, effectiveLocale)}</div>
                     </div>
 
                     {/* Row 3 */}
@@ -399,7 +398,7 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
                     
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">{t("Storage Size")}</Label>
-                      <div className="text-sm">{formatBytes(backup.knownFileSize, locale)}</div>
+                      <div className="text-sm">{formatBytes(backup.knownFileSize, effectiveLocale)}</div>
                     </div>
                   </div>
 

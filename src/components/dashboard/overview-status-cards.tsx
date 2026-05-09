@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { useMemo } from 'react';
 import { useRouter } from "next/navigation";
-import { useLocale } from "@/contexts/locale-context";
+import { useEffectiveFormatLocale } from "@/contexts/config-context";
 import type { ServerSummary, BackupStatus, NotificationEvent } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -39,7 +39,7 @@ interface BackupWithServer {
 
 export function OverviewStatusPanel({ servers, totalBackups }: OverviewStatusPanelProps) {
   const router = useRouter();
-  const locale = useLocale();
+  const effectiveLocale = useEffectiveFormatLocale();
   const { t } = useTranslation();
 
   // Helper function to calculate percentage
@@ -212,7 +212,7 @@ export function OverviewStatusPanel({ servers, totalBackups }: OverviewStatusPan
                             <div className="flex items-center gap-2 justify-end">
                               {getStatusIcon(backup.lastBackupStatus)}
                               <span className="text-xs text-red-500 truncate">
-                                {formatShortTimeAgo(backup.lastBackupDate, undefined, undefined, locale)}
+                                {formatShortTimeAgo(backup.lastBackupDate, undefined, undefined, effectiveLocale)}
                               </span>
                               <ServerConfigurationButton
                                 serverUrl={backup.serverUrl}

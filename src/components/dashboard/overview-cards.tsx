@@ -11,8 +11,7 @@ import { formatInteger, formatBytes } from "@/lib/number-format";
 import { HardDrive, AlertTriangle, Download, Server, Database, Calendar } from "lucide-react";
 import { ColoredIcon } from "@/components/ui/colored-icon";
 import { useRouter } from "next/navigation";
-import { useLocale } from "@/contexts/locale-context";
-import { useConfig } from "@/contexts/config-context";
+import { useConfig, useEffectiveFormatLocale } from "@/contexts/config-context";
 import { getStatusSortValue } from "@/lib/sort-utils";
 import { ServerConfigurationButton } from "@/components/ui/server-configuration-button";
 import { BackupTooltipContent } from "@/components/ui/backup-tooltip-content";
@@ -137,7 +136,7 @@ interface OverviewCardProps {
 const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
   const serverStatus = getServerStatus(server);
   const router = useRouter();
-  const locale = useLocale();
+  const effectiveLocale = useEffectiveFormatLocale();
   const { t } = useTranslation();
 
   const handleCardClick = () => {
@@ -188,7 +187,7 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
               <span>{t("Files")}</span>
             </div>
             <p className="font-semibold text-sm">
-              {server.totalFileCount > 0 ? formatInteger(server.totalFileCount, locale) : 'N/A'}
+              {server.totalFileCount > 0 ? formatInteger(server.totalFileCount, effectiveLocale) : 'N/A'}
             </p>
           </section>
           <section className="flex flex-col items-center">
@@ -197,7 +196,7 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
               <span>{t("Size")}</span>
             </div>
             <p className="font-semibold text-sm">
-              {server.totalFileSize > 0 ? formatBytes(server.totalFileSize, locale) : 'N/A'}
+              {server.totalFileSize > 0 ? formatBytes(server.totalFileSize, effectiveLocale) : 'N/A'}
             </p>
           </section>
           <section className="flex flex-col items-center">
@@ -206,7 +205,7 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
               <span>{t("Storage")}</span>
             </div>
             <p className="font-semibold text-sm">
-              {server.totalStorageSize > 0 ? formatBytes(server.totalStorageSize, locale) : 'N/A'}
+              {server.totalStorageSize > 0 ? formatBytes(server.totalStorageSize, effectiveLocale) : 'N/A'}
             </p>
           </section>
           <section className="flex flex-col items-center">
@@ -219,10 +218,10 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <span className="cursor-help">{formatRelativeTime(server.lastBackupDate, undefined, locale)}</span>
+                      <span className="cursor-help">{formatRelativeTime(server.lastBackupDate, undefined, effectiveLocale)}</span>
                     </TooltipTrigger>
                     <TooltipContent>
-                      {formatDateTime(server.lastBackupDate, locale)}
+                      {formatDateTime(server.lastBackupDate, effectiveLocale)}
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>

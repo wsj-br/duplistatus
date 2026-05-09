@@ -11,7 +11,7 @@ import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components
 import { SortableTableHead } from '@/components/ui/sortable-table-head';
 import { useToast } from '@/components/ui/use-toast';
 import { useConfiguration, type ServerWithBackup } from '@/contexts/configuration-context';
-import { useConfig } from '@/contexts/config-context';
+import { useConfig, useEffectiveFormatLocale } from '@/contexts/config-context';
 import { BackupNotificationConfig, BackupKey, CronInterval, NotificationFrequencyConfig, OverdueTolerance } from '@/lib/types';
 import { SortConfig, createSortedArray, sortFunctions } from '@/lib/sort-utils';
 import { cronClient } from '@/lib/cron-client';
@@ -61,6 +61,7 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
   const { t } = useTranslation();
   const { toast } = useToast();
   const locale = useLocale();
+  const effectiveLocale = useEffectiveFormatLocale();
   const { config, refreshConfigSilently, updateConfig } = useConfiguration();
   const { startOfWeek } = useConfig();
   const [settings, setSettings] = useState<Record<BackupKey, BackupNotificationConfig>>(backupSettings);
@@ -952,7 +953,8 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
             <ServerFilterInput
               value={serverFilter}
               onChange={setServerFilter}
-              placeholder={t("Filter by server name, alias, or backup name...")}
+              placeholder={t("Filter by name, alias, or backup name...")}
+              className="min-w-[500px]"
             />
           </div>
             
@@ -1095,9 +1097,9 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                             >
                               {server.nextRunDate !== 'N/A' ? 
                                 <>
-                                  {formatDateTime(server.nextRunDate, locale)}
+                                  {formatDateTime(server.nextRunDate, effectiveLocale)}
                                   <br />
-                                  {formatRelativeTime(server.nextRunDate, undefined, locale)}
+                                  {formatRelativeTime(server.nextRunDate, undefined, effectiveLocale)}
                                 </>
                                : 
                                 t("Not set")
@@ -1113,9 +1115,9 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                                 if (lastBackupTimestamp) {
                                   return (
                                     <>
-                                      {formatDateTime(lastBackupTimestamp, locale)}
+                                      {formatDateTime(lastBackupTimestamp, effectiveLocale)}
                                       <br />
-                                      {formatRelativeTime(lastBackupTimestamp, undefined, locale)}
+                                      {formatRelativeTime(lastBackupTimestamp, undefined, effectiveLocale)}
                                     </>
                                   );
                                 }
@@ -1275,7 +1277,7 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                               className={`text-xs p-1 rounded ${getNextRunDateStyle(server.nextRunDate, backupSetting.overdueBackupCheckEnabled)}`}
                             >
                               {server.nextRunDate !== 'N/A' ?
-                                 formatDateTime(server.nextRunDate, locale)+` (${formatRelativeTime(server.nextRunDate, undefined, locale)})` :
+                                 formatDateTime(server.nextRunDate, effectiveLocale)+` (${formatRelativeTime(server.nextRunDate, undefined, effectiveLocale)})` :
                                 'Not set'
                               }
                             </div>
@@ -1289,9 +1291,9 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                                 if (lastBackupTimestamp) {
                                   return (
                                     <>
-                                      {formatDateTime(lastBackupTimestamp, locale)}
+                                      {formatDateTime(lastBackupTimestamp, effectiveLocale)}
                                       <br />
-                                      {formatRelativeTime(lastBackupTimestamp, undefined, locale)}
+                                      {formatRelativeTime(lastBackupTimestamp, undefined, effectiveLocale)}
                                     </>
                                   );
                                 }

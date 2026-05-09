@@ -4,6 +4,7 @@
   "openrouter": {
     "baseUrl": "https://openrouter.ai/api/v1",
     "translationModels": [
+      "anthropic/claude-3.5-haiku",
       "qwen/qwen3-235b-a22b-2507",
       "openai/gpt-4o-mini",
       "deepseek/deepseek-v4-flash",

@@ -1,7 +1,7 @@
 'use client';
 import { useTranslation } from "react-i18next";
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
-import { useLocale } from '@/contexts/locale-context';
+import { useEffectiveFormatLocale } from '@/contexts/config-context';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -63,7 +63,7 @@ interface AuditLogViewerProps {
 export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewerProps) {
   const { t } = useTranslation();
   const { toast } = useToast();
-  const locale = useLocale();
+  const effectiveLocale = useEffectiveFormatLocale();
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -530,9 +530,9 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
                           {index + 1}
                         </TableCell>
                         <TableCell>
-                          <div>{formatSQLiteTimestamp(log.timestamp, locale)}</div>
+                          <div>{formatSQLiteTimestamp(log.timestamp, effectiveLocale)}</div>
                           <div className="text-xs text-muted-foreground">
-                            {formatRelativeTime(log.timestamp, undefined, locale)}
+                            {formatRelativeTime(log.timestamp, undefined, effectiveLocale)}
                           </div>
                         </TableCell>
                         <TableCell>{log.username || t("System")}</TableCell>
@@ -643,7 +643,7 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label className="text-xs text-muted-foreground">{t("Timestamp")}</Label>
-                  <div className="text-sm">{formatSQLiteTimestamp(selectedLog.timestamp, locale)}</div>
+                  <div className="text-sm">{formatSQLiteTimestamp(selectedLog.timestamp, effectiveLocale)}</div>
                 </div>
                 <div>
                   <Label className="text-xs text-muted-foreground">{t("Status")}</Label>
