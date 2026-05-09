@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-05-06T23:19:36.781Z'
-source_file_mtime: '2026-05-06T23:18:51.418Z'
-source_file_hash: 92de20237e937c17944b837bfeae8ee1ff73d8f798d555278795e7a4b1be3864
+translation_last_updated: '2026-05-09T16:23:54.028Z'
+source_file_mtime: '2026-05-09T16:18:03.467Z'
+source_file_hash: bad433c4dc8fe5b6a3c7ffa2d838452a15dc67a13477b122b24827ebcb976f1e
 translation_language: de
 source_file_path: documentation/docs/api-reference/configuration-apis.md
 translation_models:
@@ -187,7 +187,7 @@ translation_models:
       "accessToken": ""
     },
     "templates": {
-      "language": "en",
+      "language": "en-GB",
       "success": {
         "title": "✅ {status} - {backup_name} @ {server_name}",
         "message": "Backup {backup_name} on {server_name} completed with status '{status}' at {backup_date} in {duration}.",
@@ -218,7 +218,7 @@ translation_models:
       "requireAuth": true,
       "hasPassword": true
     },
-    "overdue_tolerance": "1h",
+    "overdue_tolerance": "2h",
     "backup_settings": {
       "server1:backup1": {
         "notificationEvent": "all",
@@ -458,7 +458,7 @@ Für die Benachrichtigungshäufigkeit:
 
   ```json
   {
-    "overdue_tolerance": "1h"
+    "overdue_tolerance": "2h"
   }
   ```
 
@@ -477,7 +477,7 @@ Für die Benachrichtigungshäufigkeit:
 
   ```json
   {
-    "overdue_tolerance": "1h"
+    "overdue_tolerance": "2h"
   }
   ```
 
@@ -493,7 +493,7 @@ Für die Benachrichtigungshäufigkeit:
   - `401`: Nicht autorisiert – Ungültige Sitzung oder CSRF-Token
   - `400`: overdue_tolerance ist erforderlich
   - `500`: Serverfehler bei der Aktualisierung der Überfälligkeits-Toleranz
-- **Hinweise**:
-  - Aktualisiert die Überfälligkeits-Toleranz-Einstellung (akzeptiert Zeichenketten im Format wie "1h", "2h", usw.)
+- **Notizen**:
+  - Aktualisiert die Toleranz-Einstellung für verspätete Sicherungen (akzeptiert Zeichenfolgenformat wie `"1h"`, `"2h"`, usw.; Standard bei neuen Installationen ist **`2h`**)
   - Beeinflusst, wann Sicherungen als überfällig gelten
-  - Wird vom Prüfer für überfällige Sicherungen verwendet
+  - Wird vom Prüfer für verspätete Sicherungen verwendet

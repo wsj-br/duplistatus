@@ -1,8 +1,8 @@
 [
   {
-    "code": "en",
-    "label": "English",
-    "englishName": "English",
+    "code": "en-GB",
+    "label": "English (GB)",
+    "englishName": "English (GB)",
     "direction": "ltr"
   },
   {

@@ -590,7 +590,7 @@ export function convertTextToHtml(text: string): string {
 function processTemplate(
   template: NotificationTemplate,
   context: NotificationContext | OverdueBackupContext,
-  locale: string = 'en'
+  locale: string = 'en-GB'
 ): {
   title: string;
   message: string;
@@ -740,7 +740,7 @@ export async function sendBackupNotification(
 
   let processedTemplate;
   try {
-    const locale = config.templates?.language || 'en';
+    const locale = config.templates?.language || 'en-GB';
     processedTemplate = processTemplate(template, context, locale);
   } catch (error) {
     console.error(`Failed to process notification template for backup ${backup.name} on server ${serverName}:`, error instanceof Error ? error.message : String(error));
@@ -1119,7 +1119,7 @@ export async function sendOverdueBackupNotification(
   }
 
   try {
-    const locale = notificationConfig.templates?.language || 'en';
+    const locale = notificationConfig.templates?.language || 'en-GB';
     const processedTemplate = processTemplate(notificationConfig.templates?.overdueBackup || defaultNotificationTemplates.overdueBackup, context, locale);
     
     // Send notifications based on backup configuration

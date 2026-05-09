@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const SUPPORTED_LOCALES = ["en", "de", "fr", "es", "pt-BR"] as const;
-const DEFAULT_LOCALE = "en";
+const SUPPORTED_LOCALES = ["en-GB", "de", "fr", "es", "pt-BR"] as const;
+const DEFAULT_LOCALE = "en-GB";
 const LOCALE_COOKIE_NAME = "NEXT_LOCALE";
 const LOCALE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
 type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 
 function normalizeLocale(locale: string): SupportedLocale | null {
-  const normalized = locale.toLowerCase() === "pt-br" ? "pt-BR" : locale;
+  const legacy =
+    locale === "en-GB-GB" || locale.toLowerCase() === "en-gb-gb" ? "en-GB" : locale;
+  const normalized = legacy.toLowerCase() === "pt-br" ? "pt-BR" : legacy;
   if (SUPPORTED_LOCALES.includes(normalized as SupportedLocale)) {
     return normalized as SupportedLocale;
   }
@@ -38,7 +40,7 @@ function detectLocale(request: NextRequest): SupportedLocale {
 
     for (const { code } of languages) {
       let mappedLocale: SupportedLocale | null = null;
-      if (code === "en") mappedLocale = "en";
+      if (code === "en") mappedLocale = "en-GB";
       else if (code === "de") mappedLocale = "de";
       else if (code === "fr") mappedLocale = "fr";
       else if (code === "es") mappedLocale = "es";
@@ -53,7 +55,7 @@ function detectLocale(request: NextRequest): SupportedLocale {
   return DEFAULT_LOCALE;
 }
 
-/** Legacy URLs: /en/..., /de/..., etc. → same path without the first segment. */
+/** Legacy URLs: /en-GB/..., /de/..., etc. → same path without the first segment. */
 function stripLegacyLocalePrefix(pathname: string): string | null {
   const match = pathname.match(/^\/([^/]+)(\/.*)?$/);
   if (!match) return null;

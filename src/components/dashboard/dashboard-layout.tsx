@@ -2,6 +2,7 @@
 import { useTranslation } from "react-i18next";
 
 import { useMemo, useEffect, useRef, useState } from "react";
+import { useDashboardServerFilter } from "@/contexts/dashboard-server-filter-context";
 import type { ServerSummary, Backup, DashboardData } from "@/lib/types";
 import { DashboardSummaryCards } from "@/components/dashboard/dashboard-summary-cards";
 import { DashboardTable } from "@/components/dashboard/dashboard-table";
@@ -13,7 +14,6 @@ import { OverviewChartsPanel } from "./overview-charts-panel";
 import { OverviewSidePanelToggle } from "@/components/ui/overview-side-panel-toggle";
 import { useServerSelection } from "@/contexts/server-selection-context";
 import { useGlobalRefresh } from "@/contexts/global-refresh-context";
-
 interface DashboardLayoutProps {
   data: DashboardData;
   selectedServerId?: string | null;
@@ -69,6 +69,7 @@ export function DashboardLayout({
   
   // Get visible card index from global context instead of local state
   const visibleCardIndex = globalRefreshState.visibleCardIndex;
+  const { serverFilter } = useDashboardServerFilter();
 
   // Handle view mode changes
   const handleViewModeChange = (newViewMode: 'table' | 'overview') => {
@@ -178,6 +179,7 @@ export function DashboardLayout({
               <CardContent className="p-2 h-full">
                 <OverviewCards 
                   servers={data.serversSummary}
+                  serverFilter={serverFilter}
                   selectedServerId={selectedServerId}
                   onSelect={onServerSelect}
                 />
@@ -210,7 +212,10 @@ export function DashboardLayout({
           <div className="mt-2 mb-2">
             <Card className="shadow-lg border-2 border-border">
               <CardContent className="p-4">
-                <DashboardTable servers={data.serversSummary} />
+                <DashboardTable 
+                  servers={data.serversSummary}
+                  serverFilter={serverFilter}
+                />
               </CardContent>
             </Card>
           </div>

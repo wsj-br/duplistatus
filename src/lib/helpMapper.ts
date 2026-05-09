@@ -89,7 +89,7 @@ const HELP_MAP: Record<string, HelpMapping> = {
  * Gets the help URL and page name for a given route
  * @param pathname - The current pathname (e.g., '/', '/settings', '/detail/123')
  * @param searchParams - Optional search params string (e.g., 'tab=notifications')
- * @param locale - Optional locale code (e.g., 'en', 'pt-BR') to include in the documentation URL
+ * @param locale - Optional locale code (e.g., 'en-GB', 'pt-BR') to include in the documentation URL
  * @returns Object with full documentation URL and page name for tooltip
  */
 export function getHelpUrl(
@@ -97,16 +97,16 @@ export function getHelpUrl(
   searchParams?: string,
   locale?: string
 ): { url: string; pageName: string } {
-  // Normalize: strip optional locale prefix (e.g. /en, /de) for routing logic
+  // Normalize: strip optional locale prefix (e.g. /en-GB, /de) for routing logic
   const pathWithoutLocale = pathname.replace(/^\/[a-z]{2}(-[A-Za-z0-9]+)?/, "") || "/";
 
   // Helper function to build documentation URL with locale
   const buildDocUrl = (docPath: string): string => {
-    const localePrefix = locale && locale !== 'en' ? `${locale}/` : '';
+    const localePrefix = locale && locale !== 'en-GB' ? `${locale}/` : '';
     return `${DOCS_BASE_URL}${localePrefix}${docPath}`;
   };
 
-  // Handle settings routes with query parameters (/settings or /en/settings etc.)
+  // Handle settings routes with query parameters (/settings or /en-GB/settings etc.)
   if (pathWithoutLocale === "/settings" || pathWithoutLocale.startsWith("/settings?")) {
     if (searchParams) {
       const params = new URLSearchParams(searchParams);
@@ -146,7 +146,7 @@ export function getHelpUrl(
     }
   }
 
-  // Exact path matches (dashboard / or /en -> /, etc.)
+  // Exact path matches (dashboard / or /en-GB -> /, etc.)
   const exactMatch = HELP_MAP[pathWithoutLocale];
   if (exactMatch) {
     return {

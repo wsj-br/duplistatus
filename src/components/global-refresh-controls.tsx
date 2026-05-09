@@ -7,11 +7,11 @@ import { useGlobalRefresh } from "@/contexts/global-refresh-context";
 import { useConfig } from "@/contexts/config-context";
 import { useToast } from "@/components/ui/use-toast";
 import { usePathname } from "next/navigation";
-// Helper function to remove locale prefix from pathname (e.g., /en/detail/123 -> /detail/123)
+// Helper function to remove locale prefix from pathname (e.g., /en-GB/detail/123 -> /detail/123)
 function removeLocalePrefix(pathname: string | null): string {
   if (!pathname) return '/';
-  // Match locale prefix pattern: /en, /de, /fr, /es, /pt-BR
-  const localePattern = /^\/(en|de|fr|es|pt-BR)(\/|$)/;
+  // Match locale prefix pattern: /en-GB, /de, /fr, /es, /pt-BR
+  const localePattern = /^\/(en-GB|de|fr|es|pt-BR)(\/|$)/;
   return pathname.replace(localePattern, '/') || '/';
 }
 

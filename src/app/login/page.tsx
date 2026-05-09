@@ -23,11 +23,11 @@ import { Languages } from "lucide-react";
 const REMEMBERED_USERNAME_KEY = "duplistatus_remembered_username";
 const REMEMBER_ME_ENABLED_KEY = "duplistatus_remember_me_enabled";
 const LOCALE_COOKIE_NAME = "NEXT_LOCALE";
-const SUPPORTED_LOCALES = ["en", "de", "fr", "es", "pt-BR"] as const;
+const SUPPORTED_LOCALES = ["en-GB", "de", "fr", "es", "pt-BR"] as const;
 type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 
 const LOCALE_NAMES: Record<SupportedLocale, string> = {
-  en: "English",
+  "en-GB": "English",
   de: "Deutsch",
   fr: "Français",
   es: "Español",

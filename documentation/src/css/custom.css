@@ -1150,10 +1150,10 @@ mark {
   }
 
   /* Flag emojis for locale dropdown */
-  /* English: default locale has no /en/ in URL; use lang attribute (e.g. en-US) */
-  .dropdown__menu .dropdown__link[lang^="en"]::before,
-  .dropdown__menu .dropdown__link[href*="/en/"]::before,
-  .dropdown__menu .dropdown__link[href*="/en"]::before {
+  /* English: default locale has no /en-GB/ in URL; use lang attribute (e.g. en-GB) */
+  .dropdown__menu .dropdown__link[lang^="en-GB"]::before,
+  .dropdown__menu .dropdown__link[href*="/en-GB/"]::before,
+  .dropdown__menu .dropdown__link[href*="/en-GB"]::before {
     content: "🇬🇧";
     font-size: 1.2em;
   }

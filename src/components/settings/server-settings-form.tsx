@@ -1,6 +1,6 @@
 "use client";
 import { useTranslation } from "react-i18next";
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -13,6 +13,7 @@ import { SortConfig, createSortedArray, sortFunctions } from '@/lib/sort-utils';
 import { Server, XCircle, Ellipsis, Loader2, Play, Globe, CheckCircle, User, FileText, RectangleEllipsis, KeyRound, FastForward, SquareX } from 'lucide-react';
 import { ColoredIcon } from '@/components/ui/colored-icon';
 import { ServerConfigurationButton } from '@/components/ui/server-configuration-button';
+import { ServerFilterInput } from '@/components/ui/server-filter-input';
 import { BackupCollectMenu } from '@/components/backup-collect-menu';
 import { CollectAllButton } from '@/components/ui/collect-all-button';
 import { useConfiguration } from '@/contexts/configuration-context';
@@ -57,6 +58,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
   const [csrfToken, setCsrfToken] = useState<string>('');
   const [showPassword, setShowPassword] = useState(false);
   const passwordInputRef = useRef<HTMLInputElement>(null);
+  const [serverFilter, setServerFilter] = useState<string>('');
 
   // Column configuration for sorting
   const columnConfig = {
@@ -718,7 +720,19 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
 
 
   // Get sorted connections
-  const sortedConnections = createSortedArray(connections, sortConfig, columnConfig);
+  const filteredConnections = useMemo(() => {
+    if (!serverFilter.trim()) return connections;
+    
+    const filterLower = serverFilter.toLowerCase();
+    return connections.filter(conn => 
+      conn.name.toLowerCase().includes(filterLower) ||
+      conn.alias?.toLowerCase().includes(filterLower) ||
+      conn.note?.toLowerCase().includes(filterLower) ||
+      conn.server_url?.toLowerCase().includes(filterLower)
+    );
+  }, [connections, serverFilter]);
+
+  const sortedConnections = createSortedArray(filteredConnections, sortConfig, columnConfig);
 
   if (connections.length === 0) {
     return (
@@ -754,6 +768,15 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
           </div>
         </CardHeader>
         <CardContent>
+          {/* Filter Input */}
+          <div className="mb-4">
+            <ServerFilterInput
+              value={serverFilter}
+              onChange={setServerFilter}
+              placeholder={t("Filter by server name, alias, or note...")}
+            />
+          </div>
+          
           {/* Desktop Table View */}
           <div className="hidden sm:block overflow-x-auto">
             <Table>

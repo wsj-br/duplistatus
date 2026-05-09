@@ -19,6 +19,7 @@ import { cronIntervalMap } from '@/lib/cron-interval-map';
 import { defaultBackupNotificationConfig, defaultNotificationFrequencyConfig, defaultOverdueTolerance, defaultCronInterval } from '@/lib/default-config';
 import { RefreshCw, TimerReset, Download } from "lucide-react";
 import { ServerConfigurationButton } from '../ui/server-configuration-button';
+import { ServerFilterInput } from '@/components/ui/server-filter-input';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { BackupCollectMenu } from '../backup-collect-menu';
 import { CollectAllButton } from '../ui/collect-all-button';
@@ -78,6 +79,7 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
   const [autoCollectingServers, setAutoCollectingServers] = useState<Set<string>>(new Set());
   const [isSavingInProgress, setIsSavingInProgress] = useState(false);
   const [lastBackupTimestamps, setLastBackupTimestamps] = useState<Record<string, string>>({});
+  const [serverFilter, setServerFilter] = useState<string>("");
   const tableScrollContainerRef = useRef<HTMLDivElement>(null);
 
   // Get locale-aware weekdays ordered by locale's first day of week (with user's preference)
@@ -460,8 +462,22 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
     });
   };
 
+  // Filter servers by name, alias, and backup name
+  const filteredServers = useMemo(() => {
+    const servers = getServersWithBackupAndSettings();
+    if (!serverFilter.trim()) return servers;
+    
+    const filterLower = serverFilter.toLowerCase();
+    return servers.filter(server => 
+      server.name.toLowerCase().includes(filterLower) ||
+      (server.alias && server.alias.toLowerCase().includes(filterLower)) ||
+      (server.note && server.note.toLowerCase().includes(filterLower)) ||
+      server.backupName.toLowerCase().includes(filterLower)
+    );
+  }, [config?.serversWithBackups, settings, selectedUnits, serverFilter]);
+
   // Get sorted servers
-  const sortedServers = createSortedArray(getServersWithBackupAndSettings(), sortConfig, columnConfig);
+  const sortedServers = createSortedArray(filteredServers, sortConfig, columnConfig);
 
   // Helper function to run overdue backup check
   const runOverdueBackupCheck = async () => {
@@ -931,7 +947,15 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
           </CardDescription>
         </CardHeader>
         <CardContent>
-          
+          {/* Filter Input */}
+          <div className="mb-4">
+            <ServerFilterInput
+              value={serverFilter}
+              onChange={setServerFilter}
+              placeholder={t("Filter by server name, alias, or backup name...")}
+            />
+          </div>
+            
           {/* Desktop Table View */}
           <div className="hidden md:block border rounded-md">
             <div 

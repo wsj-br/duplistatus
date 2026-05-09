@@ -6,6 +6,7 @@ import { AppHeader } from '@/components/app-header';
 import AppVersion from '@/components/app-version';
 import { GithubLink } from '@/components/github-link';
 import { PasswordChangeGuard } from '@/components/password-change-guard';
+import { DashboardServerFilterProvider } from '@/contexts/dashboard-server-filter-context';
 
 export function ConditionalLayout({ children }: { children: React.ReactNode }) {
   const { t } = useTranslation();
@@ -17,13 +18,14 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="relative flex min-h-screen flex-col">
-      <Suspense fallback={<div className="sticky top-0 z-50 w-full border-b border-x-[20px] border-solid border-b-border border-x-transparent bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 h-16" />}>
-        <AppHeader />
-      </Suspense>
-      <PasswordChangeGuard>
-        <main className="flex-1 w-[95%] mx-auto pt-1 pb-8">{children}</main>
-      </PasswordChangeGuard>
+    <DashboardServerFilterProvider>
+      <div className="relative flex min-h-screen flex-col">
+        <Suspense fallback={<div className="sticky top-0 z-50 w-full border-b border-x-[20px] border-solid border-b-border border-x-transparent bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 h-16" />}>
+          <AppHeader />
+        </Suspense>
+        <PasswordChangeGuard>
+          <main className="flex-1 w-[95%] mx-auto pt-1 pb-8">{children}</main>
+        </PasswordChangeGuard>
       <div className="flex flex-col items-center gap-0.5">
         <div className="flex items-center gap-6">
           <AppVersion />
@@ -33,7 +35,8 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
           {t("Product names and icons belong to their respective owners and are used for identification purposes only.")}
         </span>
       </div>
-    </div>
+      </div>
+    </DashboardServerFilterProvider>
   );
 }
 

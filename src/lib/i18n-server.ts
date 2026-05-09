@@ -1,8 +1,9 @@
 import { cookies } from "next/headers";
 import { createInstance, type i18n as I18nType } from "i18next";
+import stringsJson from "@/locales/strings.json";
 import {
   defaultI18nInitOptions,
-  wrapI18nWithKeyTrim,
+  setupKeyAsDefaultT,
 } from "ai-i18n-tools/runtime";
 import { SOURCE_LOCALE, LOCALE_COOKIE_NAME } from "@/i18n-config";
 import de from "@/locales/de.json";
@@ -10,7 +11,7 @@ import fr from "@/locales/fr.json";
 import es from "@/locales/es.json";
 import ptBR from "@/locales/pt-BR.json";
 
-const SUPPORTED = ["en", "de", "fr", "es", "pt-BR"] as const;
+const SUPPORTED = ["en-GB", "de", "fr", "es", "pt-BR"] as const;
 
 const bundles: Record<string, Record<string, string>> = {
   de: de as Record<string, string>,
@@ -43,7 +44,9 @@ export async function getServerI18n(): Promise<I18nType> {
     ...defaultI18nInitOptions(SOURCE_LOCALE),
     lng: locale,
   });
-  wrapI18nWithKeyTrim(instance as unknown as Parameters<typeof wrapI18nWithKeyTrim>[0]);
+  setupKeyAsDefaultT(instance, {
+    stringsJson,
+  });
 
   if (locale !== SOURCE_LOCALE && bundles[locale]) {
     instance.addResourceBundle(locale, "translation", bundles[locale], true, true);

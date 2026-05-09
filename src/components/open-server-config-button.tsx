@@ -156,7 +156,7 @@ export function OpenServerConfigButton() {
   const handleButtonClick = async () => {
     // Check if we're on a server detail page (including backup detail pages, with or without locale prefix)
     if (pathname?.includes("/detail/")) {
-      // Extract serverId from the pathname (e.g. /en/detail/abc or /detail/abc)
+      // Extract serverId from the pathname (e.g. /en-GB/detail/abc or /detail/abc)
       const pathMatch = pathname.match(/\/detail\/([^\/\?]+)/);
       const currentServerId = pathMatch ? pathMatch[1] : undefined;
       

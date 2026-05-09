@@ -82,7 +82,7 @@ function removeLocaleArticles(text: string, locale?: string): string {
  * Uses Intl.RelativeTimeFormat for locale-aware formatting when locale is provided
  * @param dateString - ISO date string or SQLite timestamp
  * @param currentTime - Optional reference time (defaults to now)
- * @param locale - Optional locale string (e.g., "en", "de", "fr"). If not provided, uses English
+ * @param locale - Optional locale string (e.g., "en-GB", "de", "fr"). If not provided, uses English
  */
 export function formatRelativeTime(dateString: string, currentTime?: Date, locale?: string): string {
   if (!dateString || dateString === "N/A") return "";
@@ -227,7 +227,7 @@ export function formatRelativeTime(dateString: string, currentTime?: Date, local
  * @param dateString - ISO date string
  * @param currentTime - Optional reference time (defaults to now)
  * @param addPlural - Optional flag for plural suffix (legacy parameter, not used with locale)
- * @param locale - Optional locale string (e.g., "en", "de", "fr"). If not provided, uses English abbreviations
+ * @param locale - Optional locale string (e.g., "en-GB", "de", "fr"). If not provided, uses English abbreviations
  */
 export function formatShortTimeAgo(dateString: string, currentTime?: Date, addPlural?: boolean, locale?: string): string {
   if (!dateString || dateString === "N/A") return "";
@@ -370,7 +370,7 @@ export function formatTimeElapsed(dateString: string, currentTime?: Date, locale
         try {
           const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
           // For future dates, we'll just return a generic message
-          return locale === 'fr' ? 'dans le futur' : locale === 'es' ? 'en el futuro' : locale === 'de' ? 'in der Zukunft' : locale === 'pt-BR' ? 'no futuro' : 'in the future';
+          return locale === 'fr' ? 'dans le futur' : locale === 'es' ? 'en-GB el futuro' : locale === 'de' ? 'in der Zukunft' : locale === 'pt-BR' ? 'no futuro' : 'in the future';
         } catch {
           return "in the future";
         }
@@ -767,7 +767,7 @@ export function getLocaleWeekDays(locale?: string, startOfWeekOverride?: StartOf
     try {
       const localeLower = browserLocale.toLowerCase();
       const mondayFirstLocales = [
-        'en-gb', 'en-au', 'en-nz', 'fr', 'de', 'es', 'it', 'pt-pt',
+        'en-GB-gb', 'en-GB-au', 'en-GB-nz', 'fr', 'de', 'es', 'it', 'pt-pt',
         'nl', 'pl', 'ru', 'sv', 'no', 'da', 'fi', 'cs', 'sk', 'hu',
         'ro', 'bg', 'hr', 'sl', 'et', 'lv', 'lt', 'el', 'is', 'mt'
       ];

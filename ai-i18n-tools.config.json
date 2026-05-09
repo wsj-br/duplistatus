@@ -1,18 +1,20 @@
 {
-  "sourceLocale": "en",
+  "sourceLocale": "en-GB",
   "targetLocales": ["de", "fr", "es", "pt-BR"],
   "openrouter": {
     "baseUrl": "https://openrouter.ai/api/v1",
     "translationModels": [
       "qwen/qwen3-235b-a22b-2507",
       "openai/gpt-4o-mini",
-      "deepseek/deepseek-v3.2",
+      "deepseek/deepseek-v4-flash",
       "anthropic/claude-3-haiku",
       "qwen/qwen3.6-plus",
       "anthropic/claude-3.5-haiku",
-      "openai/gpt-5.3-codex",
-      "anthropic/claude-sonnet-4.6",
-      "google/gemini-3-flash-preview"
+      "google/gemini-3-flash-preview",
+      "~anthropic/claude-haiku-latest",
+      "google/gemma-4-31b-it",
+      "~anthropic/claude-sonnet-latest",
+      "openai/gpt-5.3-codex"
     ],
     "maxTokens": 8192,
     "temperature": 0.2

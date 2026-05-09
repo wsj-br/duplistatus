@@ -29,7 +29,7 @@ const RTL_LANGUAGES = [
 /**
  * Check if a locale is RTL (Right-to-Left)
  * 
- * @param locale - Locale string (e.g., "en", "ar", "he")
+ * @param locale - Locale string (e.g., "en-GB", "ar", "he")
  * @returns true if the locale is RTL, false otherwise
  */
 export function isRTL(locale: string): boolean {
@@ -44,7 +44,7 @@ export function isRTL(locale: string): boolean {
 /**
  * Get the text direction for a locale
  * 
- * @param locale - Locale string (e.g., "en", "ar", "he")
+ * @param locale - Locale string (e.g., "en-GB", "ar", "he")
  * @returns "rtl" for RTL languages, "ltr" otherwise
  */
 export function getTextDirection(locale: string): 'ltr' | 'rtl' {

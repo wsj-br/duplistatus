@@ -149,13 +149,13 @@ export interface NotificationTemplate {
 /**
  * Supported languages for notification templates.
  */
-export type SupportedTemplateLanguage = 'en' | 'de' | 'fr' | 'es' | 'pt-BR';
+export type SupportedTemplateLanguage = 'en-GB' | 'de' | 'fr' | 'es' | 'pt-BR';
 
 /**
  * List of all supported template languages
  */
 export const SUPPORTED_TEMPLATE_LANGUAGES: SupportedTemplateLanguage[] = [
-  'en',
+  'en-GB',
   'de',
   'fr',
   'es',

@@ -163,7 +163,7 @@
       "accessToken": ""
     },
     "templates": {
-      "language": "en",
+      "language": "en-GB",
       "success": {
         "title": "✅ {status} - {backup_name} @ {server_name}",
         "message": "Backup {backup_name} on {server_name} completed with status '{status}' at {backup_date} in {duration}.",

@@ -19,11 +19,11 @@ export const defaultNotificationTemplatesByLanguage: Record<
   SupportedTemplateLanguage,
   NotificationTemplatesData
 > = {
-  en: defaultNotificationTemplatesEn,
+  "en-GB": defaultNotificationTemplatesEn,
   de: defaultNotificationTemplatesDe,
   fr: defaultNotificationTemplatesFr,
   es: defaultNotificationTemplatesEs,
-  'pt-BR': defaultNotificationTemplatesPtBR,
+  "pt-BR": defaultNotificationTemplatesPtBR,
 };
 
 /**
@@ -37,9 +37,9 @@ export const defaultNotificationTemplates = defaultNotificationTemplatesEn;
  * Falls back to English if the language is not supported
  */
 export function getDefaultNotificationTemplates(
-  language: SupportedTemplateLanguage = 'en'
+  language: SupportedTemplateLanguage = 'en-GB'
 ): NotificationTemplatesData {
-  return defaultNotificationTemplatesByLanguage[language] || defaultNotificationTemplatesByLanguage.en;
+  return defaultNotificationTemplatesByLanguage[language] || defaultNotificationTemplatesByLanguage['en-GB'];
 }
 
 /**
@@ -57,7 +57,7 @@ export function getDefaultNotificationTemplate(
  * Check if a language is supported for templates
  */
 export function isValidTemplateLanguage(language: string): language is SupportedTemplateLanguage {
-  return ['en', 'de', 'fr', 'es', 'pt-BR'].includes(language);
+  return ['en-GB', 'de', 'fr', 'es', 'pt-BR'].includes(language);
 }
 
 // Default cron service configuration
@@ -129,7 +129,7 @@ export const defaultUIConfig = {
   chartTimeRange: 'All data' as const,
   autoRefreshInterval: 1 as const,
   dashboardCardsSortOrder: 'Server name (a-z)' as const,
-  startOfWeek: 'locale' as const // Default to locale-based (en-US = Sunday, en-GB = Monday)
+  startOfWeek: 'locale' as const // Default to locale-based (en-US Sunday, en-GB Monday)
 };
 
 // Default API configuration

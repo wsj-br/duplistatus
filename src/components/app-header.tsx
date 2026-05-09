@@ -23,8 +23,10 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useState, useEffect } from 'react';
 import { ChangePasswordModal } from '@/components/change-password-modal';
+import { ServerFilterInput } from '@/components/ui/server-filter-input';
 import { getHelpUrl } from '@/lib/helpMapper';
 import { useLocale } from '@/contexts/locale-context';
+import { useDashboardServerFilter } from '@/contexts/dashboard-server-filter-context';
 import i18n, { loadLocale } from '@/i18n';
 //import the logo image
 import DupliLogo from '../../public/images/duplistatus_logo.png';
@@ -37,11 +39,11 @@ interface User {
 }
 
 const LOCALE_COOKIE_NAME = "NEXT_LOCALE";
-const SUPPORTED_LOCALES = ["en", "de", "fr", "es", "pt-BR"] as const;
+const SUPPORTED_LOCALES = ["en-GB", "de", "fr", "es", "pt-BR"] as const;
 type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 
 const LOCALE_NAMES: Record<SupportedLocale, string> = {
-  en: "English",
+  "en-GB": "English (GB)",
   de: "Deutsch",
   fr: "Français",
   es: "Español",
@@ -54,7 +56,9 @@ export function AppHeader() {
   const searchParams = useSearchParams();
   const locale = useLocale();
   const { t } = useTranslation();
+  const { serverFilter, setServerFilter } = useDashboardServerFilter();
   const isDashboardPage = pathname === '/' || /^\/[^/]+\/?$/.test(pathname ?? '');
+  const isHomeDashboard = pathname === '/';
   const isSettingsPage = /\/settings/.test(pathname ?? '');
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -167,6 +171,15 @@ export function AppHeader() {
         )}
         
         <div className="flex flex-1 items-center justify-end flex-wrap gap-2 self-start">
+          {isHomeDashboard && (
+            <ServerFilterInput
+              variant="collapsible"
+              value={serverFilter}
+              onChange={setServerFilter}
+              placeholder={t("Filter by name, alias, or backup...")}
+              className="shrink-0"
+            />
+          )}
           <GlobalRefreshControls />
           <NtfyMessagesButton />
           <OpenServerConfigButton />

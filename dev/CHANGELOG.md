@@ -11,10 +11,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 
+### Changed
+- **Locale code**: English UI / cookie / i18n source locale is consistently **`en-GB`** (replaced the mistaken `en-GB-GB` string). `src/proxy.ts`, `src/app/layout.tsx`, `src/i18n.ts`, `src/i18n-config.ts`, `src/locales/ui-languages.json`, header/refresh/detail helpers, and related defaults were updated. Legacy `NEXT_LOCALE` / path values `en-GB-GB` are still accepted and mapped to `en-GB`. `Accept-Language` handling in the root layout now maps the primary tag `en` to `en-GB` (it compared to `en-GB` before, which never matched).
+
+### Fixed
+- **i18n tooltip issue**: In Settings > Servers, the password change tooltip was showing "[object Object]" instead of the correct text. Changed from `wrapI18nWithKeyTrim` to `setupKeyAsDefaultT` in `src/i18n.ts` and `src/lib/i18n-server.ts` to properly handle translation key resolution. Updated `dev/TODO.md`.
+- **Dashboard server filter**: The home dashboard filter now matches server id, URL, and any backup job name (cards and table use `src/lib/dashboard-server-filter-match.ts`), so queries like a backup name no longer hide all rows when the server label did not match. Fixed overview card grid not updating when only the filter changed (`OverviewCards` memo comparator omitted `serverFilter`).
+
+
 ### Added
+- **Server filtering**: Added filter input to server lists in Settings > Backup Monitoring, Settings > Servers, and the main Dashboard (both card and table views). Users can filter servers by name, alias, and backup name (where applicable) to quickly find specific servers.
 
 
 ### Changed
+- **Dashboard server filter**: The search field for filtering servers on the home dashboard is shown in the **app header** (with auto-refresh and toolbar actions) instead of above the overview/table content; state is shared via `DashboardServerFilterProvider` in `conditional-layout.tsx` (`src/contexts/dashboard-server-filter-context.tsx`). When the query is empty, the control shows **only the search icon**; hover or click expands the text field (`ServerFilterInput` with `variant="collapsible"`).
 - **Next expected backup / overdue**: `GetNextBackupRunDate` (`src/lib/server_intervals.ts`) now advances **day/week/month/year** intervals and weekday checks in **UTC** (`setUTCDate`, `getUTCDay`, …) instead of local `setDate`/`getDay`, avoiding a **one-hour UTC drift** when the host timezone crosses DST (e.g. Europe/London GMT→BST). Documented in `dev/OVERDUE_DETECTION_ALGORITHM.md`.
 - **Default overdue tolerance**: New installs and defaults now use **`2h`** instead of **`1h`** (`src/lib/default-config.ts`, `src/lib/db.ts` / `src/lib/db-migrations.ts` initial config paths).
 - **ESLint**: Ignore **`.intlayer/**`** (generated). Turn off React Compiler–specific **`react-hooks/*`** rules that flag common mount/sync/fetch patterns; remove obsolete **`eslint-disable-next-line react-hooks/set-state-in-effect`** comments (auto-fixed).

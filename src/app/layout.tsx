@@ -18,8 +18,8 @@ import { ClientLocaleProvider } from "@/contexts/locale-context";
 import { I18nProvider } from "@/components/i18n-provider";
 import { getTextDirection } from "@/lib/rtl-utils";
 
-const SUPPORTED_LOCALES = ["en", "de", "fr", "es", "pt-BR"] as const;
-const DEFAULT_LOCALE = "en";
+const SUPPORTED_LOCALES = ["en-GB", "de", "fr", "es", "pt-BR"] as const;
+const DEFAULT_LOCALE = "en-GB";
 const LOCALE_COOKIE_NAME = "NEXT_LOCALE";
 
 type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
@@ -29,7 +29,9 @@ type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
  * Accepts both "pt-br" and "pt-BR" and normalizes to "pt-BR".
  */
 function normalizeLocale(locale: string): SupportedLocale | null {
-  const normalized = locale.toLowerCase() === "pt-br" ? "pt-BR" : locale;
+  const legacy =
+    locale === "en-GB-GB" || locale.toLowerCase() === "en-gb-gb" ? "en-GB" : locale;
+  const normalized = legacy.toLowerCase() === "pt-br" ? "pt-BR" : legacy;
   if (SUPPORTED_LOCALES.includes(normalized as SupportedLocale)) {
     return normalized as SupportedLocale;
   }
@@ -79,7 +81,7 @@ async function getServerLocale(): Promise<SupportedLocale> {
 
       for (const { code } of languages) {
         let mappedLocale: SupportedLocale | null = null;
-        if (code === "en") mappedLocale = "en";
+        if (code === "en") mappedLocale = "en-GB";
         else if (code === "de") mappedLocale = "de";
         else if (code === "fr") mappedLocale = "fr";
         else if (code === "es") mappedLocale = "es";

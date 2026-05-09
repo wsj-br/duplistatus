@@ -1658,7 +1658,7 @@ export function getNotificationTemplates(): {
       const templatesJson = getConfiguration('notification_templates');
       if (!templatesJson || templatesJson.trim() === '') {
         const defaultTemplates = {
-          language: 'en' as SupportedTemplateLanguage,
+          language: 'en-GB' as SupportedTemplateLanguage,
           success: defaultNotificationTemplates.success,
           warning: defaultNotificationTemplates.warning,
           overdueBackup: defaultNotificationTemplates.overdueBackup,
@@ -1696,7 +1696,7 @@ export function getNotificationTemplates(): {
       // Ensure language field exists (backward compatibility)
       const language = parsed.language && isValidTemplateLanguage(parsed.language)
         ? (parsed.language as SupportedTemplateLanguage)
-        : 'en';
+        : 'en-GB';
       updatedTemplates.language = language;
 
       // Save updated templates if any were upgraded or language was added
@@ -1707,7 +1707,7 @@ export function getNotificationTemplates(): {
           warning: NotificationTemplate;
           overdueBackup: NotificationTemplate;
         } = {
-          language: updatedTemplates.language || 'en',
+          language: updatedTemplates.language || 'en-GB',
           success: updatedTemplates.success || defaultNotificationTemplates.success,
           warning: updatedTemplates.warning || defaultNotificationTemplates.warning,
           overdueBackup: updatedTemplates.overdueBackup || defaultNotificationTemplates.overdueBackup,
@@ -1725,7 +1725,7 @@ export function getNotificationTemplates(): {
     } catch (error) {
       console.error('Failed to get notification templates:', error instanceof Error ? error.message : String(error));
       const defaultTemplates = {
-        language: 'en' as SupportedTemplateLanguage,
+        language: 'en-GB' as SupportedTemplateLanguage,
         success: defaultNotificationTemplates.success,
         warning: defaultNotificationTemplates.warning,
         overdueBackup: defaultNotificationTemplates.overdueBackup,

@@ -11,7 +11,7 @@ export const defaultNotificationTemplatesEs: {
   success: {
     title: '✅ {status} - {backup_name} @ {server_alias}',
     message:
-      "La copia de seguridad {backup_name} en {server_alias} se completó con estado '{status}' el {backup_date} en {duration}.\n\n" +
+      "La copia de seguridad {backup_name} en-GB {server_alias} se completó con estado '{status}' el {backup_date} en-GB {duration}.\n\n" +
       '🔍 Nota: {server_note}\n' +
       '☁️ Subido: {uploaded_size}\n' +
       '💾 Uso de almacenamiento: {storage_size}\n' +
@@ -22,7 +22,7 @@ export const defaultNotificationTemplatesEs: {
   warning: {
     title: '⚠️ {status} - {backup_name} @ {server_alias}',
     message:
-      "La copia de seguridad {backup_name} en {server_alias} se completó con estado '{status}' el {backup_date}.\n\n" +
+      "La copia de seguridad {backup_name} en-GB {server_alias} se completó con estado '{status}' el {backup_date}.\n\n" +
       '🔍 Nota: {server_note}\n' +
       '⏰ Duración: {duration}\n' +
       '☁️ Subido: {uploaded_size}\n\n' +
@@ -36,7 +36,7 @@ export const defaultNotificationTemplatesEs: {
   overdueBackup: {
     title: '🕑 Atrasado - {backup_name} @ {server_alias}',
     message:
-      'La copia de seguridad {backup_name} está atrasada en {server_alias}.\n\n' +
+      'La copia de seguridad {backup_name} está atrasada en-GB {server_alias}.\n\n' +
       '🔍 Nota: {server_note}\n' +
       '🚨 Última copia recibida: {last_backup_date} ({last_elapsed})\n' +
       '⏰ Hora de copia esperada: {expected_date} ({expected_elapsed})\n\n' +

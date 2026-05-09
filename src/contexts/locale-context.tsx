@@ -9,7 +9,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { applyDirection } from "ai-i18n-tools/runtime";
 
-const DEFAULT_LOCALE = "en";
+const DEFAULT_LOCALE = "en-GB";
 
 const LocaleContext = createContext<string>(DEFAULT_LOCALE);
 
@@ -31,7 +31,7 @@ export function ClientLocaleProvider({ children }: { children: React.ReactNode }
 }
 
 /**
- * Returns the current locale (e.g. "en", "de") for number/date formatting and labels.
+ * Returns the current locale (e.g. "en-GB", "de") for number/date formatting and labels.
  */
 export function useLocale(): string {
   return useContext(LocaleContext);

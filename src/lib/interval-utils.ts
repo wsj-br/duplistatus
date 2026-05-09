@@ -251,7 +251,7 @@ export function getDefaultAllowedWeekDays(): number[] {
 /**
  * Convert weekday numbers to display names
  * @param weekDays - array of weekday numbers
- * @param locale - Optional locale string. If not provided, uses browser locale (client-side) or 'en-US' (server-side)
+ * @param locale - Optional locale string. If not provided, uses browser locale (client-side) or 'en-GB' (server-side)
  * @returns array of weekday names
  */
 export function getWeekDayNames(weekDays: number[], locale?: string): string[] {

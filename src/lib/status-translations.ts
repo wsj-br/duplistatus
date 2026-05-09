@@ -19,9 +19,9 @@ const bundles: Record<string, Record<string, string>> = {
 /**
  * Translate a backup status value for the given locale.
  */
-export function translateStatus(status: BackupStatus | string, locale: string = 'en'): string {
+export function translateStatus(status: BackupStatus | string, locale: string = 'en-GB'): string {
   const normalizedLocale = locale.toLowerCase() === 'pt-br' ? 'pt-BR' : locale;
-  if (normalizedLocale === 'en') {
+  if (normalizedLocale === 'en-GB') {
     return String(status);
   }
   const bundle = bundles[normalizedLocale];

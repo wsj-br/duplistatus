@@ -30,13 +30,16 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ServerConfigurationButton } from "@/components/ui/server-configuration-button";
+import { ServerFilterInput } from "@/components/ui/server-filter-input";
 import { BackupCollectMenu } from "@/components/backup-collect-menu";
 import { getUserLocalStorageItem, setUserLocalStorageItem } from "@/lib/user-local-storage";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { useRef } from "react";
 import { useLocale } from "@/contexts/locale-context";
+import { backupRowMatchesDashboardFilter } from "@/lib/dashboard-server-filter-match";
 interface DashboardTableProps {
   servers: ServerSummary[];
+  serverFilter?: string;
 }
 
 const DASHBOARD_SORT_KEY = 'dashboard-table-sort';
@@ -77,7 +80,7 @@ function getNotificationTooltip(notificationEvent: NotificationEvent | undefined
   }
 }
 
-export function DashboardTable({ servers }: DashboardTableProps) {
+export function DashboardTable({ servers, serverFilter = '' }: DashboardTableProps) {
   const router = useRouter();
   const locale = useLocale();
   const { handleAvailableBackupsClick } = useAvailableBackupsModal();
@@ -134,6 +137,9 @@ export function DashboardTable({ servers }: DashboardTableProps) {
     
     for (const server of servers) {
       for (const backup of server.backupInfo) {
+        if (!backupRowMatchesDashboardFilter(server, backup.name, serverFilter)) {
+          continue;
+        }
         flattenedData.push({
           id: `${server.id}-${backup.name}`,
           serverId: server.id,
@@ -163,7 +169,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
     }
     
     return flattenedData;
-  }, [servers]);
+  }, [servers, serverFilter]);
 
   // Column configuration for sorting
   const columnConfig = useMemo(() => ({

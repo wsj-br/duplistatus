@@ -1,7 +1,7 @@
 import type { NotificationTemplate } from '@/lib/types';
 
 /**
- * English (en) default notification templates
+ * English (en-GB) default notification templates
  */
 export const defaultNotificationTemplatesEn: {
   overdueBackup: NotificationTemplate;

@@ -7,17 +7,17 @@
 /**
  * Supported locales in the application
  */
-export type SupportedLocale = 'en' | 'de' | 'fr' | 'es' | 'pt-BR';
+export type SupportedLocale = 'en-GB' | 'de' | 'fr' | 'es' | 'pt-BR';
 
 /**
  * Normalize locale string to supported format
  */
 function normalizeLocale(locale: string): SupportedLocale {
   const normalized = locale === 'pt-br' ? 'pt-BR' : locale;
-  if (['en', 'de', 'fr', 'es', 'pt-BR'].includes(normalized)) {
+  if (['en-GB', 'de', 'fr', 'es', 'pt-BR'].includes(normalized)) {
     return normalized as SupportedLocale;
   }
-  return 'en';
+  return 'en-GB';
 }
 
 /**
@@ -29,7 +29,7 @@ function getIntlLocale(locale: string): string {
   
   // Map to Intl-compatible locale strings
   const localeMap: Record<SupportedLocale, string> = {
-    'en': 'en-US',
+    'en-GB': 'en-GB',
     'de': 'de-DE',
     'fr': 'fr-FR',
     'es': 'es-ES',
@@ -43,18 +43,18 @@ function getIntlLocale(locale: string): string {
  * Format a number using locale-specific formatting
  * 
  * Number formats:
- * - English (en): 1,234.56 (comma thousand separator, period decimal)
+ * - English (en-GB): 1,234.56 (comma thousand separator, period decimal)
  * - German (de): 1.234,56 (period thousand separator, comma decimal)
  * - French (fr): 1 234,56 (space thousand separator, comma decimal)
  * - Spanish (es): 1.234,56 (period thousand separator, comma decimal)
  * - Portuguese (pt-BR): 1.234,56 (period thousand separator, comma decimal)
  * 
  * @param value - Number to format
- * @param locale - Locale string (e.g., "en", "de", "fr", "es", "pt-BR")
+ * @param locale - Locale string (e.g., "en-GB", "de", "fr", "es", "pt-BR")
  * @param options - Optional Intl.NumberFormatOptions for custom formatting
  * @returns Formatted number string
  */
-export function formatNumber(value: number, locale: string = 'en', options?: Intl.NumberFormatOptions): string {
+export function formatNumber(value: number, locale: string = 'en-GB', options?: Intl.NumberFormatOptions): string {
   if (value === null || value === undefined || isNaN(value) || !isFinite(value)) {
     return '0';
   }
@@ -66,7 +66,7 @@ export function formatNumber(value: number, locale: string = 'en', options?: Int
   } catch (error) {
     console.error('Error formatting number:', error);
     // Fallback to default formatting
-    return new Intl.NumberFormat('en-US', options).format(value);
+    return new Intl.NumberFormat('en-GB', options).format(value);
   }
 }
 
@@ -74,10 +74,10 @@ export function formatNumber(value: number, locale: string = 'en', options?: Int
  * Format a number as an integer (no decimal places)
  * 
  * @param value - Number to format
- * @param locale - Locale string (e.g., "en", "de", "fr", "es", "pt-BR")
+ * @param locale - Locale string (e.g., "en-GB", "de", "fr", "es", "pt-BR")
  * @returns Formatted integer string
  */
-export function formatInteger(value: number, locale: string = 'en'): string {
+export function formatInteger(value: number, locale: string = 'en-GB'): string {
   return formatNumber(value, locale, {
     maximumFractionDigits: 0,
     minimumFractionDigits: 0,
@@ -88,11 +88,11 @@ export function formatInteger(value: number, locale: string = 'en'): string {
  * Format a number with a specific number of decimal places
  * 
  * @param value - Number to format
- * @param locale - Locale string (e.g., "en", "de", "fr", "es", "pt-BR")
+ * @param locale - Locale string (e.g., "en-GB", "de", "fr", "es", "pt-BR")
  * @param decimals - Number of decimal places (default: 2)
  * @returns Formatted number string with specified decimal places
  */
-export function formatDecimal(value: number, locale: string = 'en', decimals: number = 2): string {
+export function formatDecimal(value: number, locale: string = 'en-GB', decimals: number = 2): string {
   return formatNumber(value, locale, {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
@@ -103,11 +103,11 @@ export function formatDecimal(value: number, locale: string = 'en', decimals: nu
  * Format bytes with locale-aware number formatting
  * 
  * @param bytes - Number of bytes
- * @param locale - Locale string (e.g., "en", "de", "fr", "es", "pt-BR")
+ * @param locale - Locale string (e.g., "en-GB", "de", "fr", "es", "pt-BR")
  * @param decimals - Number of decimal places (default: 2)
  * @returns Formatted bytes string (e.g., "1.234,56 MB" for German)
  */
-export function formatBytes(bytes: unknown, locale: string = 'en', decimals: number = 2): string {
+export function formatBytes(bytes: unknown, locale: string = 'en-GB', decimals: number = 2): string {
   // Handle all possible invalid inputs
   if (bytes === null || bytes === undefined) return '0 Bytes';
   
@@ -148,14 +148,14 @@ export function formatBytes(bytes: unknown, locale: string = 'en', decimals: num
  * Format currency with locale-specific formatting
  * 
  * @param value - Amount to format
- * @param locale - Locale string (e.g., "en", "de", "fr", "es", "pt-BR")
+ * @param locale - Locale string (e.g., "en-GB", "de", "fr", "es", "pt-BR")
  * @param currency - Currency code (default: 'USD')
  * @param options - Optional Intl.NumberFormatOptions for custom formatting
  * @returns Formatted currency string
  */
 export function formatCurrency(
   value: number,
-  locale: string = 'en',
+  locale: string = 'en-GB',
   currency: string = 'USD',
   options?: Intl.NumberFormatOptions
 ): string {
@@ -174,7 +174,7 @@ export function formatCurrency(
   } catch (error) {
     console.error('Error formatting currency:', error);
     // Fallback to default formatting
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-GB', {
       style: 'currency',
       currency,
       ...options,
@@ -186,11 +186,11 @@ export function formatCurrency(
  * Format a percentage with locale-specific formatting
  * 
  * @param value - Percentage value (0-100)
- * @param locale - Locale string (e.g., "en", "de", "fr", "es", "pt-BR")
+ * @param locale - Locale string (e.g., "en-GB", "de", "fr", "es", "pt-BR")
  * @param decimals - Number of decimal places (default: 1)
  * @returns Formatted percentage string
  */
-export function formatPercentage(value: number, locale: string = 'en', decimals: number = 1): string {
+export function formatPercentage(value: number, locale: string = 'en-GB', decimals: number = 1): string {
   if (value === null || value === undefined || isNaN(value) || !isFinite(value)) {
     return '0%';
   }
@@ -206,7 +206,7 @@ export function formatPercentage(value: number, locale: string = 'en', decimals:
   } catch (error) {
     console.error('Error formatting percentage:', error);
     // Fallback to default formatting
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-GB', {
       style: 'percent',
       minimumFractionDigits: decimals,
       maximumFractionDigits: decimals,

@@ -9,7 +9,7 @@ import { parseISO, isValid } from 'date-fns';
 /**
  * Supported locales in the application
  */
-export type SupportedLocale = 'en' | 'de' | 'fr' | 'es' | 'pt-BR';
+export type SupportedLocale = 'en-GB' | 'de' | 'fr' | 'es' | 'pt-BR';
 
 /**
  * Date format configuration for each locale
@@ -24,7 +24,7 @@ interface LocaleDateFormatConfig {
  * Locale-specific date and time format configurations
  */
 const LOCALE_FORMATS: Record<SupportedLocale, LocaleDateFormatConfig> = {
-  'en': {
+  'en-GB': {
     dateFormat: {
       year: 'numeric',
       month: '2-digit',
@@ -93,7 +93,7 @@ const LOCALE_FORMATS: Record<SupportedLocale, LocaleDateFormatConfig> = {
 
 /**
  * Get the locale format configuration for a given locale
- * Falls back to 'en' if locale is not supported
+ * Falls back to 'en-GB' if locale is not supported
  */
 function getLocaleConfig(locale: string): LocaleDateFormatConfig {
   const normalizedLocale = locale === 'pt-br' ? 'pt-BR' : locale;
@@ -104,7 +104,7 @@ function getLocaleConfig(locale: string): LocaleDateFormatConfig {
   }
   
   // Fallback to English
-  return LOCALE_FORMATS['en'];
+  return LOCALE_FORMATS['en-GB'];
 }
 
 /**
@@ -115,24 +115,24 @@ function normalizeLocale(locale: string): SupportedLocale {
   if (normalized in LOCALE_FORMATS) {
     return normalized as SupportedLocale;
   }
-  return 'en';
+  return 'en-GB';
 }
 
 /**
  * Format a date string using locale-specific date format
  * 
  * Formats:
- * - English (en): MM/DD/YYYY
+ * - English (en-GB): MM/DD/YYYY
  * - German (de): DD.MM.YYYY
  * - French (fr): DD/MM/YYYY
  * - Spanish (es): DD/MM/YYYY
  * - Portuguese (pt-BR): DD/MM/YYYY
  * 
  * @param dateString - ISO date string or SQLite timestamp (YYYY-MM-DD HH:MM:SS)
- * @param locale - Locale string (e.g., "en", "de", "fr", "es", "pt-BR")
+ * @param locale - Locale string (e.g., "en-GB", "de", "fr", "es", "pt-BR")
  * @returns Formatted date string
  */
-export function formatDate(dateString: string, locale: string = 'en'): string {
+export function formatDate(dateString: string, locale: string = 'en-GB'): string {
   if (!dateString || dateString === 'N/A') return '';
   
   try {
@@ -166,17 +166,17 @@ export function formatDate(dateString: string, locale: string = 'en'): string {
  * Format a time string using locale-specific time format
  * 
  * Time formats:
- * - English (en): 12-hour format (AM/PM)
+ * - English (en-GB): 12-hour format (AM/PM)
  * - German (de): 24-hour format
  * - French (fr): 24-hour format
  * - Spanish (es): 24-hour format
  * - Portuguese (pt-BR): 24-hour format
  * 
  * @param dateString - ISO date string or SQLite timestamp
- * @param locale - Locale string (e.g., "en", "de", "fr", "es", "pt-BR")
+ * @param locale - Locale string (e.g., "en-GB", "de", "fr", "es", "pt-BR")
  * @returns Formatted time string
  */
-export function formatTime(dateString: string, locale: string = 'en'): string {
+export function formatTime(dateString: string, locale: string = 'en-GB'): string {
   if (!dateString || dateString === 'N/A') return '';
   
   try {
@@ -211,10 +211,10 @@ export function formatTime(dateString: string, locale: string = 'en'): string {
  * Combines date and time formatting with locale-appropriate separators
  * 
  * @param dateString - ISO date string or SQLite timestamp
- * @param locale - Locale string (e.g., "en", "de", "fr", "es", "pt-BR")
+ * @param locale - Locale string (e.g., "en-GB", "de", "fr", "es", "pt-BR")
  * @returns Formatted date and time string
  */
-export function formatDateTime(dateString: string, locale: string = 'en'): string {
+export function formatDateTime(dateString: string, locale: string = 'en-GB'): string {
   if (!dateString || dateString === 'N/A') return '';
   
   try {
@@ -250,10 +250,10 @@ export function formatDateTime(dateString: string, locale: string = 'en'): strin
  * Used in charts and graphs where space is limited
  * 
  * @param dateString - ISO date string or SQLite timestamp
- * @param locale - Locale string (e.g., "en", "de", "fr", "es", "pt-BR")
+ * @param locale - Locale string (e.g., "en-GB", "de", "fr", "es", "pt-BR")
  * @returns Formatted date string for charts
  */
-export function formatDateForChart(dateString: string, locale: string = 'en'): string {
+export function formatDateForChart(dateString: string, locale: string = 'en-GB'): string {
   return formatDate(dateString, locale);
 }
 
@@ -262,10 +262,10 @@ export function formatDateForChart(dateString: string, locale: string = 'en'): s
  * Parse a SQLite DATETIME timestamp string (UTC) and format it for display in browser timezone
  * 
  * @param timestamp - SQLite timestamp string in "YYYY-MM-DD HH:MM:SS" format
- * @param locale - Locale string (e.g., "en", "de", "fr", "es", "pt-BR")
+ * @param locale - Locale string (e.g., "en-GB", "de", "fr", "es", "pt-BR")
  * @returns Formatted date string in browser's local timezone with locale formatting
  */
-export function formatSQLiteTimestamp(timestamp: string, locale: string = 'en'): string {
+export function formatSQLiteTimestamp(timestamp: string, locale: string = 'en-GB'): string {
   if (!timestamp) return '';
   
   try {

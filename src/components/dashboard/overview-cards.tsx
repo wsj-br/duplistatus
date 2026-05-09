@@ -16,6 +16,7 @@ import { useConfig } from "@/contexts/config-context";
 import { getStatusSortValue } from "@/lib/sort-utils";
 import { ServerConfigurationButton } from "@/components/ui/server-configuration-button";
 import { BackupTooltipContent } from "@/components/ui/backup-tooltip-content";
+import { serverMatchesDashboardFilter } from "@/lib/dashboard-server-filter-match";
 // Default card size constants
 const DEFAULT_MIN_CARD_WIDTH = 270;  // Minimum width of a card in pixels
 const DEFAULT_MAX_CARD_WIDTH = 330;  // Maximum width of a card in pixels
@@ -330,6 +331,7 @@ interface OverviewCardsProps {
   servers: ServerSummary[];
   selectedServerId?: string | null;
   onSelect: (serverId: string | null) => void;
+  serverFilter?: string;
   minCardWidth?: number;  // Minimum width of each card in pixels
   maxCardWidth?: number;  // Maximum width of each card in pixels
   minCardHeight?: number; // Minimum height of each card in pixels
@@ -341,6 +343,7 @@ export const OverviewCards = memo(function OverviewCards({
   servers, 
   selectedServerId, 
   onSelect,
+  serverFilter = '',
   minCardWidth = DEFAULT_MIN_CARD_WIDTH,
   maxCardWidth = DEFAULT_MAX_CARD_WIDTH,
   minCardHeight = DEFAULT_MIN_CARD_HEIGHT,
@@ -350,15 +353,23 @@ export const OverviewCards = memo(function OverviewCards({
   const { dashboardCardsSortOrder } = useConfig();
   const { t } = useTranslation();
 
+  // Filter servers (name, alias, note, id, URL, or any backup job name)
+  const filteredServers = useMemo(() => {
+    if (!serverFilter.trim()) return servers;
+    return servers.filter((server) =>
+      serverMatchesDashboardFilter(server, serverFilter)
+    );
+  }, [servers, serverFilter]);
+
   // Remove duplicates by server ID, sort based on configuration, and memoize to prevent unnecessary re-renders
   const uniqueServers = useMemo(() => {
-    const filtered = servers.filter((server, index, self) => 
+    const withoutDuplicates = filteredServers.filter((server, index, self) => 
       index === self.findIndex(s => s.id === server.id)
     );
     
     // Sort based on dashboardCardsSortOrder configuration
     // Note: dashboardCardsSortOrder stores English strings, so we compare against English values
-    return [...filtered].sort((a, b) => {
+    return [...withoutDuplicates].sort((a, b) => {
       switch (dashboardCardsSortOrder) {
         case 'Server name (a-z)':
           // Use alias with fallback to name for sorting
@@ -391,7 +402,7 @@ export const OverviewCards = memo(function OverviewCards({
           return 0;
       }
     });
-  }, [servers, dashboardCardsSortOrder]);
+  }, [filteredServers, dashboardCardsSortOrder]);
 
   // Show message if no servers
   if (uniqueServers.length === 0) {
@@ -474,14 +485,15 @@ export const OverviewCards = memo(function OverviewCards({
            JSON.stringify(server.backupInfo) === JSON.stringify(nextServer.backupInfo);
   });
   
-  // Check other props
-  const otherPropsEqual = 
+  // Check other props (include serverFilter — omitted props caused memo to skip re-renders when only the filter changed)
+  const otherPropsEqual =
+    prevProps.serverFilter === nextProps.serverFilter &&
     prevProps.selectedServerId === nextProps.selectedServerId &&
     prevProps.minCardWidth === nextProps.minCardWidth &&
     prevProps.maxCardWidth === nextProps.maxCardWidth &&
     prevProps.minCardHeight === nextProps.minCardHeight &&
     prevProps.minGapHorizontal === nextProps.minGapHorizontal &&
     prevProps.minGapVertical === nextProps.minGapVertical;
-  
+
   return serversEqual && otherPropsEqual;
 });

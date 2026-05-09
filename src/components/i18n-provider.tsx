@@ -6,15 +6,15 @@ import i18n, { loadLocale } from "@/i18n";
 import { LOCALE_COOKIE_NAME } from "@/i18n-config";
 
 function readLocaleCookie(): string {
-  if (typeof document === "undefined") return "en";
+  if (typeof document === "undefined") return "en-GB";
   const m = document.cookie.match(
     new RegExp(`(?:^|; )${LOCALE_COOKIE_NAME}=([^;]*)`)
   );
-  if (!m) return "en";
+  if (!m) return "en-GB";
   try {
     return decodeURIComponent(m[1]);
   } catch {
-    return "en";
+    return "en-GB";
   }
 }
 

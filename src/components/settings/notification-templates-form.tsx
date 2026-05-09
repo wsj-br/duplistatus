@@ -238,7 +238,7 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
 
   const templateLanguageName = (lang: SupportedTemplateLanguage) => {
     switch (lang) {
-      case "en":
+      case "en-GB":
         return t("English");
       case "de":
         return t("German");
@@ -272,7 +272,7 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
   const [isSaving, setIsSaving] = useState(false);
   const [isSendingTest, setIsSendingTest] = useState(false);
   const [selectedVariable, setSelectedVariable] = useState<string>('');
-  const [templateLanguage, setTemplateLanguage] = useState<SupportedTemplateLanguage>('en');
+  const [templateLanguage, setTemplateLanguage] = useState<SupportedTemplateLanguage>('en-GB');
   const [isLoadingLanguage, setIsLoadingLanguage] = useState(true);
   const [isResetSingleDialogOpen, setIsResetSingleDialogOpen] = useState(false);
   const [isResetAllDialogOpen, setIsResetAllDialogOpen] = useState(false);

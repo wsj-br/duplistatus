@@ -5,11 +5,11 @@ import {
 } from '@/lib/default-config';
 import type { SupportedTemplateLanguage } from '@/lib/types';
 
-// GET /api/configuration/templates/defaults?language=en
+// GET /api/configuration/templates/defaults?language=en-GB
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const language = searchParams.get('language') || 'en';
+    const language = searchParams.get('language') || 'en-GB';
 
     if (!isValidTemplateLanguage(language)) {
       return NextResponse.json(

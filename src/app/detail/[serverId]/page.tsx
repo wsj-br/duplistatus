@@ -5,7 +5,7 @@ import type { Server } from "@/lib/types";
 import { BackupSelectionProvider } from "@/contexts/backup-selection-context";
 import { requireServerAuth } from "@/lib/auth-server";
 
-const LOCALES = ["en", "de", "fr", "es", "pt-BR"] as const;
+const LOCALES = ["en-GB", "de", "fr", "es", "pt-BR"] as const;
 
 // Add cache control headers to the response
 export async function generateMetadata() {
