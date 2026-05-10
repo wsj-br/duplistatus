@@ -157,19 +157,30 @@ export default async function RootLayout({
             __html: `
               (function() {
                 try {
-                  // Initial theme load before React hydration
-                  // Note: User-specific themes are handled by React after mount
-                  // This script provides a fallback for initial page load
-                  // Default to dark theme for headless browsers and SSR
-                  var theme = localStorage.getItem('theme');
-                  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                  if (theme === 'light') {
-                    document.documentElement.classList.remove('dark');
-                  } else {
-                    // Default to dark: if theme is 'dark', or no theme preference exists
-                    // (including headless browsers where system preference may not be available)
-                    document.documentElement.classList.add('dark');
+                  // Initial theme before React hydration — mirrors theme-context + user keys (theme:user-*)
+                  function readThemePreference() {
+                    var legacy = localStorage.getItem('theme');
+                    if (legacy === 'light' || legacy === 'dark' || legacy === 'system') {
+                      return legacy;
+                    }
+                    for (var i = 0; i < localStorage.length; i++) {
+                      var key = localStorage.key(i);
+                      if (key && key.indexOf('theme:') === 0) {
+                        var v = localStorage.getItem(key);
+                        if (v === 'light' || v === 'dark' || v === 'system') return v;
+                      }
+                    }
+                    return null;
                   }
+                  var pref = readThemePreference();
+                  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  var useDark = false;
+                  if (pref === 'light') useDark = false;
+                  else if (pref === 'dark') useDark = true;
+                  else if (pref === 'system' || pref === null) useDark = prefersDark;
+                  else useDark = true;
+                  if (useDark) document.documentElement.classList.add('dark');
+                  else document.documentElement.classList.remove('dark');
                 } catch (e) {
                   console.error('Error applying initial theme:', e);
                 }

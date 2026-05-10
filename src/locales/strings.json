@@ -309,7 +309,7 @@
       },
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 361
+        "line": 371
       }
     ]
   },
@@ -16300,7 +16300,7 @@
       },
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 321
+        "line": 331
       }
     ]
   },
@@ -16756,95 +16756,17 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 227
+        "line": 237
       }
     ]
   },
-  "eb21044d": {
-    "source": "Toggle Theme",
-    "translated": {
-      "de": "Design wechseln",
-      "pt-BR": "Alternar Tema",
-      "fr": "Basculer le thème",
-      "es": "Cambiar tema"
-    },
-    "models": {
-      "de": "anthropic/claude-3.5-haiku",
-      "pt-BR": "anthropic/claude-3.5-haiku",
-      "fr": "anthropic/claude-3.5-haiku",
-      "es": "anthropic/claude-3.5-haiku"
-    },
-    "locations": [
-      {
-        "file": "src/components/settings/display-settings-form.tsx",
-        "line": 234
-      },
-      {
-        "file": "src/components/settings/display-settings-form.tsx",
-        "line": 239
-      }
-    ]
-  },
-  "48aa1718": {
-    "source": "Switch to Dark Mode",
-    "translated": {
-      "de": "In den Dunkelmodus wechseln",
-      "pt-BR": "Mudar para Modo Escuro",
-      "fr": "Passer en mode Sombre",
-      "es": "Cambiar a modo oscuro"
-    },
-    "models": {
-      "de": "anthropic/claude-3.5-haiku",
-      "pt-BR": "anthropic/claude-3.5-haiku",
-      "fr": "anthropic/claude-3.5-haiku",
-      "es": "anthropic/claude-3.5-haiku"
-    },
+  "d19d5632": {
+    "source": "Select theme",
+    "translated": {},
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
         "line": 244
-      }
-    ]
-  },
-  "dd993040": {
-    "source": "Switch to Light Mode",
-    "translated": {
-      "de": "In den Hellmodus wechseln",
-      "pt-BR": "Mudar para Modo Claro",
-      "fr": "Passer en mode Clair",
-      "es": "Cambiar a modo claro"
-    },
-    "models": {
-      "de": "anthropic/claude-3.5-haiku",
-      "pt-BR": "anthropic/claude-3.5-haiku",
-      "fr": "anthropic/claude-3.5-haiku",
-      "es": "anthropic/claude-3.5-haiku"
-    },
-    "locations": [
-      {
-        "file": "src/components/settings/display-settings-form.tsx",
-        "line": 249
-      }
-    ]
-  },
-  "cc003491": {
-    "source": "Current theme:",
-    "translated": {
-      "de": "Aktuelles Design:",
-      "pt-BR": "Tema atual:",
-      "fr": "Thème actuel :",
-      "es": "Tema actual:"
-    },
-    "models": {
-      "de": "anthropic/claude-3.5-haiku",
-      "pt-BR": "anthropic/claude-3.5-haiku",
-      "fr": "anthropic/claude-3.5-haiku",
-      "es": "anthropic/claude-3.5-haiku"
-    },
-    "locations": [
-      {
-        "file": "src/components/settings/display-settings-form.tsx",
-        "line": 254
       }
     ]
   },
@@ -16865,7 +16787,15 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 254
+        "line": 247
+      },
+      {
+        "file": "src/components/settings/display-settings-form.tsx",
+        "line": 256
+      },
+      {
+        "file": "src/components/settings/display-settings-form.tsx",
+        "line": 262
       }
     ]
   },
@@ -16886,7 +16816,45 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
+        "line": 248
+      },
+      {
+        "file": "src/components/settings/display-settings-form.tsx",
+        "line": 256
+      },
+      {
+        "file": "src/components/settings/display-settings-form.tsx",
+        "line": 262
+      }
+    ]
+  },
+  "b8126f93": {
+    "source": "System (follow OS)",
+    "translated": {},
+    "locations": [
+      {
+        "file": "src/components/settings/display-settings-form.tsx",
+        "line": 249
+      }
+    ]
+  },
+  "862a4b65": {
+    "source": "Matches your OS appearance (currently {{appearance}}).",
+    "translated": {},
+    "locations": [
+      {
+        "file": "src/components/settings/display-settings-form.tsx",
         "line": 254
+      }
+    ]
+  },
+  "114717ff": {
+    "source": "Current appearance:",
+    "translated": {},
+    "locations": [
+      {
+        "file": "src/components/settings/display-settings-form.tsx",
+        "line": 260
       }
     ]
   },
@@ -16907,7 +16875,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 264
+        "line": 274
       }
     ]
   },
@@ -16928,7 +16896,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 271
+        "line": 281
       }
     ]
   },
@@ -16949,7 +16917,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 274
+        "line": 284
       }
     ]
   },
@@ -16970,7 +16938,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 275
+        "line": 285
       }
     ]
   },
@@ -16991,7 +16959,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 276
+        "line": 286
       }
     ]
   },
@@ -17012,7 +16980,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 286
+        "line": 296
       }
     ]
   },
@@ -17033,7 +17001,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 303
+        "line": 313
       }
     ]
   },
@@ -17054,7 +17022,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 308
+        "line": 318
       }
     ]
   },
@@ -17075,7 +17043,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 365
+        "line": 375
       }
     ]
   },
@@ -17096,7 +17064,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 369
+        "line": 379
       }
     ]
   },

@@ -10,7 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+- **Theme**: Display Settings includes **System (follow OS)** alongside light and dark. The app stores a **theme preference** and applies the effective light/dark class from `prefers-color-scheme` when set to system; the root layout inline script reads the same `theme:user-*` / `theme:anonymous` keys. Export **`getResolvedSystemTheme()`** from **`src/contexts/theme-context.tsx`** for OS detection.
+
 ### Changed
+- **Theme (Display Settings)**: Theme choice is a **button group** with Light / Dark / System; the status line sits on the **same row** as the group (wraps on narrow viewports).
 - **`usePrefixWithLocale`**: Removed unused hook from `src/contexts/locale-context.tsx` (no call sites).
 - **Notifications i18n**: Removed **`src/lib/status-translations.ts`** (static imports of **`de.json`** / **`fr.json`** / **`es.json`** / **`pt-BR.json`**). **`src/lib/notifications.ts`** uses **`getServerI18nForLanguage()`** from **`src/lib/i18n-server.ts`** and **`i18n.t()`** for backup status labels so server code matches the **`ai-i18n-tools`** stack (`setupKeyAsDefaultT`, manifest loaders).
 - **Legacy URL locale removal**: Dropped `LOCALE_REGEX` and client-side “strip locale prefix” logic (`global-refresh-context.tsx`, `global-refresh-controls.tsx`); pathnames are canonical. Root layout SSR locale no longer infers locale from the first path segment (cookie + `Accept-Language` only). `AppHeader` treats only `/` as the dashboard for “return” chrome. `src/proxy.ts` still 308-redirects old `/{locale}/...` bookmarks and sets `NEXT_LOCALE` (documented as legacy-only). `open-server-config-button.tsx` no longer references locale-prefixed paths.

@@ -11,11 +11,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { useConfig } from '@/contexts/config-context';
 import { useTheme } from '@/contexts/theme-context';
 import type { TablePageSize } from '@/contexts/config-context';
 import type { FormatLocaleOverride, StartOfWeek } from '@/lib/types';
-import { MonitorCog, Table, BarChart3, RefreshCw, SortDesc, Moon, Sun, Calendar1, Languages, Check, ChevronsUpDown } from 'lucide-react';
+import { MonitorCog, Table, BarChart3, RefreshCw, SortDesc, Moon, Sun, Calendar1, Languages, Check, ChevronsUpDown, SunMoon } from 'lucide-react';
 import { ColoredIcon } from '@/components/ui/colored-icon';
 import {
   Command,
@@ -57,7 +58,7 @@ export function DisplaySettingsForm() {
     setFormatLocale,
   } = useConfig();
   
-  const { theme, toggleTheme } = useTheme();
+  const { themePreference, resolvedTheme, setThemePreference } = useTheme();
   const uiLocale = useLocale();
   // Track if component has mounted on client (prevents hydration mismatch)
   // Use useState initializer to avoid set-state-in-effect warning
@@ -220,39 +221,72 @@ export function DisplaySettingsForm() {
           {/* Right Column ----------------------------------------------------------------------------------------------------- */}
           <div className="flex flex-col gap-y-8 mt-8 md:mt-0">
 
-            {/* Theme Toggle */}
+            {/* Theme */}
             <div className="grid gap-2">
-              <Label className="flex items-center gap-2">
-                <ColoredIcon icon={theme === "light" ? Sun : Moon} color="orange" size="sm" />
+              <Label id="display-theme-label" className="flex items-center gap-2">
+                <ColoredIcon
+                  icon={
+                    themePreference === 'system'
+                      ? SunMoon
+                      : resolvedTheme === 'light'
+                        ? Sun
+                        : Moon
+                  }
+                  color="orange"
+                  size="sm"
+                />
                 {t("Theme")}
               </Label>
-              <div className="flex items-center gap-3">
-                <Button
-                  variant="outline"
-                  onClick={toggleTheme}
-                  className="w-full sm:w-auto"
-                  aria-label={t("Toggle Theme")}
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                <div
+                  id="theme-preference"
+                  className="inline-flex rounded-md border border-input bg-muted/40 p-1 shadow-sm"
+                  role="group"
+                  aria-labelledby="display-theme-label"
                 >
-                  {!mounted ? (
-                    <>
-                      <Sun className="h-4 w-4 mr-2" />
-                      {t("Toggle Theme")}
-                    </>
-                  ) : theme === "light" ? (
-                    <>
-                      <Moon className="h-4 w-4 mr-2" />
-                      {t("Switch to Dark Mode")}
-                    </>
-                  ) : (
-                    <>
-                      <Sun className="h-4 w-4 mr-2" />
-                      {t("Switch to Light Mode")}
-                    </>
-                  )}
-                </Button>
-                <span className="text-sm text-muted-foreground">
-                  {t("Current theme:")} <span className="font-medium">{theme === "light" ? t("Light") : t("Dark")}</span>
-                </span>
+                  <Button
+                    type="button"
+                    variant={themePreference === 'light' ? 'secondary' : 'ghost'}
+                    size="sm"
+                    className={cn(
+                      'rounded-sm px-3 shadow-none',
+                      themePreference === 'light' && 'bg-background shadow-sm',
+                    )}
+                    onClick={() => setThemePreference('light')}
+                    aria-pressed={themePreference === 'light'}
+                  >
+                    <Sun className="mr-1.5 h-4 w-4 shrink-0" aria-hidden />
+                    {t('Light')}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={themePreference === 'dark' ? 'secondary' : 'ghost'}
+                    size="sm"
+                    className={cn(
+                      'rounded-sm px-3 shadow-none',
+                      themePreference === 'dark' && 'bg-background shadow-sm',
+                    )}
+                    onClick={() => setThemePreference('dark')}
+                    aria-pressed={themePreference === 'dark'}
+                  >
+                    <Moon className="mr-1.5 h-4 w-4 shrink-0" aria-hidden />
+                    {t('Dark')}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={themePreference === 'system' ? 'secondary' : 'ghost'}
+                    size="sm"
+                    className={cn(
+                      'rounded-sm px-3 shadow-none',
+                      themePreference === 'system' && 'bg-background shadow-sm',
+                    )}
+                    onClick={() => setThemePreference('system')}
+                    aria-pressed={themePreference === 'system'}
+                  >
+                    <SunMoon className="mr-1.5 h-4 w-4 shrink-0" aria-hidden />
+                    {t('System (follow OS)')}
+                  </Button>
+                </div>
               </div>
             </div>
 
