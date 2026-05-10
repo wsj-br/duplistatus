@@ -309,7 +309,7 @@
       },
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 371
+        "line": 395
       }
     ]
   },
@@ -5904,7 +5904,7 @@
       },
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 160
+        "line": 161
       }
     ]
   },
@@ -5933,7 +5933,7 @@
       },
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 161
+        "line": 162
       }
     ]
   },
@@ -5962,7 +5962,7 @@
       },
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 162
+        "line": 163
       }
     ]
   },
@@ -5991,7 +5991,7 @@
       },
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 163
+        "line": 164
       }
     ]
   },
@@ -6020,7 +6020,7 @@
       },
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 164
+        "line": 165
       }
     ]
   },
@@ -6049,7 +6049,7 @@
       },
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 165
+        "line": 166
       }
     ]
   },
@@ -6078,7 +6078,7 @@
       },
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 166
+        "line": 167
       }
     ]
   },
@@ -9355,7 +9355,7 @@
       },
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 187
+        "line": 188
       }
     ]
   },
@@ -9380,7 +9380,7 @@
       },
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 191
+        "line": 192
       }
     ]
   },
@@ -9405,7 +9405,7 @@
       },
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 192
+        "line": 193
       }
     ]
   },
@@ -16296,11 +16296,11 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 89
+        "line": 90
       },
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 331
+        "line": 355
       }
     ]
   },
@@ -16321,7 +16321,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 110
+        "line": 111
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
@@ -16350,7 +16350,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 113
+        "line": 114
       }
     ]
   },
@@ -16371,7 +16371,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 124
+        "line": 125
       }
     ]
   },
@@ -16392,7 +16392,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 131
+        "line": 132
       }
     ]
   },
@@ -16411,10 +16411,6 @@
       "es": "anthropic/claude-3.5-haiku"
     },
     "locations": [
-      {
-        "file": "src/components/settings/display-settings-form.tsx",
-        "line": 134
-      },
       {
         "file": "src/components/settings/display-settings-form.tsx",
         "line": 135
@@ -16442,6 +16438,10 @@
       {
         "file": "src/components/settings/display-settings-form.tsx",
         "line": 141
+      },
+      {
+        "file": "src/components/settings/display-settings-form.tsx",
+        "line": 142
       }
     ]
   },
@@ -16462,7 +16462,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 150
+        "line": 151
       }
     ]
   },
@@ -16483,7 +16483,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 157
+        "line": 158
       }
     ]
   },
@@ -16504,7 +16504,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 175
+        "line": 176
       }
     ]
   },
@@ -16525,7 +16525,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 182
+        "line": 183
       }
     ]
   },
@@ -16546,7 +16546,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 185
+        "line": 186
       }
     ]
   },
@@ -16567,7 +16567,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 186
+        "line": 187
       }
     ]
   },
@@ -16588,7 +16588,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 188
+        "line": 189
       }
     ]
   },
@@ -16609,7 +16609,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 189
+        "line": 190
       }
     ]
   },
@@ -16630,7 +16630,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 190
+        "line": 191
       }
     ]
   },
@@ -16651,7 +16651,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 201
+        "line": 202
       }
     ]
   },
@@ -16672,7 +16672,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 208
+        "line": 209
       }
     ]
   },
@@ -16693,7 +16693,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 211
+        "line": 212
       }
     ]
   },
@@ -16714,7 +16714,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 212
+        "line": 213
       }
     ]
   },
@@ -16735,7 +16735,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 213
+        "line": 214
       }
     ]
   },
@@ -16756,17 +16756,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 237
-      }
-    ]
-  },
-  "d19d5632": {
-    "source": "Select theme",
-    "translated": {},
-    "locations": [
-      {
-        "file": "src/components/settings/display-settings-form.tsx",
-        "line": 244
+        "line": 238
       }
     ]
   },
@@ -16787,15 +16777,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 247
-      },
-      {
-        "file": "src/components/settings/display-settings-form.tsx",
-        "line": 256
-      },
-      {
-        "file": "src/components/settings/display-settings-form.tsx",
-        "line": 262
+        "line": 259
       }
     ]
   },
@@ -16816,47 +16798,30 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 248
-      },
-      {
-        "file": "src/components/settings/display-settings-form.tsx",
-        "line": 256
-      },
-      {
-        "file": "src/components/settings/display-settings-form.tsx",
-        "line": 262
+        "line": 273
       }
     ]
   },
   "b8126f93": {
     "source": "System (follow OS)",
-    "translated": {},
+    "translated": {
+      "pt-BR": "Sistema (seguir SO)",
+      "fr": "Système (suivre le système d'exploitation)",
+      "es": "Sistema (seguir SO)",
+      "de": "System (Betriebssystem)"
+    },
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 249
+        "line": 287
       }
-    ]
-  },
-  "862a4b65": {
-    "source": "Matches your OS appearance (currently {{appearance}}).",
-    "translated": {},
-    "locations": [
-      {
-        "file": "src/components/settings/display-settings-form.tsx",
-        "line": 254
-      }
-    ]
-  },
-  "114717ff": {
-    "source": "Current appearance:",
-    "translated": {},
-    "locations": [
-      {
-        "file": "src/components/settings/display-settings-form.tsx",
-        "line": 260
-      }
-    ]
+    ],
+    "models": {
+      "pt-BR": "anthropic/claude-3.5-haiku",
+      "fr": "anthropic/claude-3.5-haiku",
+      "es": "anthropic/claude-3.5-haiku",
+      "de": "anthropic/claude-3.5-haiku"
+    }
   },
   "a94082c0": {
     "source": "Start of Week",
@@ -16875,7 +16840,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 274
+        "line": 298
       }
     ]
   },
@@ -16896,7 +16861,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 281
+        "line": 305
       }
     ]
   },
@@ -16917,7 +16882,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 284
+        "line": 308
       }
     ]
   },
@@ -16938,7 +16903,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 285
+        "line": 309
       }
     ]
   },
@@ -16959,7 +16924,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 286
+        "line": 310
       }
     ]
   },
@@ -16980,7 +16945,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 296
+        "line": 320
       }
     ]
   },
@@ -17001,7 +16966,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 313
+        "line": 337
       }
     ]
   },
@@ -17022,7 +16987,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 318
+        "line": 342
       }
     ]
   },
@@ -17043,7 +17008,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 375
+        "line": 399
       }
     ]
   },
@@ -17064,7 +17029,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 379
+        "line": 403
       }
     ]
   },
