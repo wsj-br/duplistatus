@@ -17,19 +17,32 @@
 
 ## Fix
 
-- fix the bug: "duplistatus does not show available backup versions for some Duplicati backup jobs." (see https://github.com/wsj-br/duplistatus/issues/65)
+- take-screenshots.ts: some issues:
 
-- fix the bug: Duplistatus crash: JavaScript heap out of memory (see https://github.com/wsj-br/duplistatus/issues/62)
+    ```log
+    [00:04:47] 🌐 [Phase B] Capturing locale: en-GB
+    [00:04:51] -------------------------------------------------------
+    [00:04:51] Switching to table view...
+    [00:04:53] Current view mode: null (will switch to table)
+    [00:04:58] -------------------------------------------------------
+    [00:04:58] Taking screenshot of dashboard in table mode...
+    [00:04:58]   📸 Taking screenshot: screen-main-dashboard-table-mode.png... 
+    [00:05:13]    ⚠ data-screenshot-target="dashboard-table-view" not found within 15000ms 
+    [00:05:15]   💾 Screenshot saved: /home/wsj/src/duplistatus/documentation/static/assets/screen-main-dashboard-table-mode.png
+    [00:05:15] -------------------------------------------------------
+    [00:05:15] Capturing metrics chart...
+    [00:05:30]    ⚠ data-screenshot-target="metrics-chart" not found within 15000ms 
+    [00:05:30] Could not find metrics chart bounds
+    [00:05:30] -------------------------------------------------------
+    [00:05:30] Capturing dashboard summary card (screen-dashboard-summary-table.png)...
+    ```
 
 <br/>
 
 
 ## Changes needed
 
-- adjust the documentation to make clear that the duplicate connectivity is optional and the allow remove access also is optional
-  (documentation/docs/installation/duplicati-server-configuration.md item 1, line 7 ) (see https://github.com/wsj-br/duplistatus/issues/40)
-
-- add a option in the "theme selection" to "System (follow OS)" 
+- take-screenshots.ts: add to save a copy of the log into the dev folder with .log extension (as we do in the transrewrt project)
 
 <br/>
 

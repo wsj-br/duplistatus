@@ -54,10 +54,10 @@ const config: Config = {
 
   // Internationalization configuration for multi-language support
   i18n: {
-    defaultLocale: 'en',
-    locales: ['en', 'fr', 'de', 'es', 'pt-BR'],
+    defaultLocale: 'en-GB',
+    locales: ['en-GB', 'fr', 'de', 'es', 'pt-BR'],
     localeConfigs: {
-      en: {
+      'en-GB': {
         label: 'English',
         direction: 'ltr',
         htmlLang: 'en-GB',

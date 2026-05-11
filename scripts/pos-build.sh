@@ -11,7 +11,7 @@ ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 # -----  start of pos-build -----
 
 # go to the root directory
-cd $(ROOT_DIR)
+cd "$ROOT_DIR"
 
 # create the standalone directory
 mkdir -p .next/standalone/.next 

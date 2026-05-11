@@ -1,4 +1,4 @@
-import { getServerById } from '@/lib/db-utils';
+import { getServerById, getBackupLogs } from '@/lib/db-utils';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { StatusBadge } from '@/components/status-badge';
@@ -264,9 +264,12 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
     notFound();
   }
 
-  const messages = parseJsonArray(backup.messages_array || null);
-  const warnings = parseJsonArray(backup.warnings_array || null);
-  const errors = parseJsonArray(backup.errors_array || null);
+  const backupLogs = await getBackupLogs(backupId);
+  const MAX_LOG_LINES = 1000;
+  
+  const messages = parseJsonArray(backupLogs?.messages_array || null).slice(0, MAX_LOG_LINES);
+  const warnings = parseJsonArray(backupLogs?.warnings_array || null).slice(0, MAX_LOG_LINES);
+  const errors = parseJsonArray(backupLogs?.errors_array || null).slice(0, MAX_LOG_LINES);
   
   // Handle available_backups field - it should already be parsed as an array from db-utils
   const availableBackups = (backup as { available_backups?: string[] }).available_backups || [];

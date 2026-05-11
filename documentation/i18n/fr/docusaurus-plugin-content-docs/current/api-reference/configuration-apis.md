@@ -1,10 +1,11 @@
 ---
-translation_last_updated: '2026-05-09T16:23:54.305Z'
-source_file_mtime: '2026-05-09T16:18:03.467Z'
-source_file_hash: bad433c4dc8fe5b6a3c7ffa2d838452a15dc67a13477b122b24827ebcb976f1e
+translation_last_updated: '2026-05-11T14:27:38.577Z'
+source_file_mtime: '2026-05-10T21:42:22.919Z'
+source_file_hash: 7c4af7564bebe2a0dac1c8dc3c5face4a1ed43b3e9c8faa8357ce5864a58171f
 translation_language: fr
 source_file_path: documentation/docs/api-reference/configuration-apis.md
 translation_models:
+  - anthropic/claude-3.5-haiku
   - qwen/qwen3-235b-a22b-2507
 ---
 # Gestion de la configuration {#configuration-management}
@@ -493,7 +494,7 @@ Pour la fréquence des notifications :
   - `401` : Non autorisé - Session ou jeton CSRF invalide
   - `400` : overdue_tolerance est requis
   - `500` : Erreur serveur lors de la mise à jour de la tolérance en retard
-- **Notes** :
-  - Met à jour le paramètre de tolérance aux retards (accepte un format chaîne comme `"1h"`, `"2h"`, etc. ; la valeur par défaut pour les nouvelles installations est **`2h`**)
-  - Détermine quand les sauvegardes sont considérées comme en retard
+- **Notes**:
+  - Met à jour le paramètre de tolérance de retard (accepte le format de chaîne comme `"1h"`, `"2h"`, etc. ; par défaut pour les nouvelles installations : `2h`)
+  - Affecte quand les sauvegardes sont considérées comme étant en retard
   - Utilisé par le vérificateur de sauvegarde en retard

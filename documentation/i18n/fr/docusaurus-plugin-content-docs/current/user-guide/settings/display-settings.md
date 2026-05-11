@@ -1,10 +1,11 @@
 ---
-translation_last_updated: '2026-05-06T23:21:51.863Z'
-source_file_mtime: '2026-05-06T23:18:51.442Z'
-source_file_hash: cea05020c7711dac6d718d53ed458c8e5ea4efa2100371ed25ba113cfaa69d29
+translation_last_updated: '2026-05-11T14:27:47.809Z'
+source_file_mtime: '2026-05-09T23:54:51.779Z'
+source_file_hash: 535a6655527691ed8a2170729359dcc23c21fb97fa3e28a3e9c8b0e413e6b6d9
 translation_language: fr
 source_file_path: documentation/docs/user-guide/settings/display-settings.md
 translation_models:
+  - anthropic/claude-3.5-haiku
   - anthropic/claude-haiku-4.5
   - qwen/qwen3-235b-a22b-2507
 ---
@@ -23,7 +24,7 @@ Configurer les préférences d'interface utilisateur et d'affichage.
 | **Intervalle de rafraîchissement automatique** | Fréquence de rafraîchissement automatique des pages.              | 1 minute           |
 | **Ordre de tri des cartes**      | Ordre de tri des cartes sur le tableau de bord.              | Nom du serveur (a-z)  |
 | **Début de la semaine**         | Configurez à quel moment la semaine commence.                     | Basé sur les paramètres régionaux    |
-| **Thème**                 | Sélectionnez le thème clair ou sombre.                     | Sombre               |
+| **Thème**                 | Choisissez clair, sombre ou adaptez-vous à l'apparence de votre système d'exploitation (mode clair/sombre préféré). | Suivre le système d'exploitation par défaut |
 
 <br/>
 

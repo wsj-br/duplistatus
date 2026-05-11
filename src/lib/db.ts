@@ -1113,9 +1113,9 @@ function createDbOps() {
       COALESCE(b.uploaded_size, 0) as uploaded_size,
       COALESCE(b.known_file_size, 0) as known_file_size,
       b.backup_list_count,
-      b.messages_array,
-      b.warnings_array,
-      b.errors_array,
+      NULL as messages_array,
+      NULL as warnings_array,
+      NULL as errors_array,
       b.available_backups,
       b.warnings_actual_length,
       b.errors_actual_length,
@@ -1126,6 +1126,15 @@ function createDbOps() {
     WHERE b.server_id = ?
     ORDER BY b.date DESC
   `, 'getServerBackups'),
+
+  getBackupLogsById: safePrepare(`
+    SELECT 
+      messages_array,
+      warnings_array,
+      errors_array
+    FROM backups
+    WHERE id = ?
+  `, 'getBackupLogsById'),
 
    getOverallSummary: safePrepare(`
     SELECT 

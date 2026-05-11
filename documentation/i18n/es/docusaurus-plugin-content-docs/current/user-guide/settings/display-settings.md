@@ -1,10 +1,11 @@
 ---
-translation_last_updated: '2026-05-06T23:21:24.349Z'
-source_file_mtime: '2026-05-06T23:18:51.442Z'
-source_file_hash: cea05020c7711dac6d718d53ed458c8e5ea4efa2100371ed25ba113cfaa69d29
+translation_last_updated: '2026-05-11T14:27:47.811Z'
+source_file_mtime: '2026-05-09T23:54:51.779Z'
+source_file_hash: 535a6655527691ed8a2170729359dcc23c21fb97fa3e28a3e9c8b0e413e6b6d9
 translation_language: es
 source_file_path: documentation/docs/user-guide/settings/display-settings.md
 translation_models:
+  - anthropic/claude-3.5-haiku
   - anthropic/claude-haiku-4.5
   - qwen/qwen3-235b-a22b-2507
 ---
@@ -23,7 +24,7 @@ Configurar preferencias de interfaz de usuario y pantalla.
 | **Intervalo de actualización automática** | Frecuencia con la que las páginas se actualizan automáticamente.              | 1 minuto           |
 | **Orden de clasificación de tarjetas**      | Forma en que se ordenan las tarjetas en el panel.              | Nombre del servidor (a-z)  |
 | **Inicio de la semana**         | Configurar cuándo comienza la semana.                     | Basado en la configuración regional    |
-| **Tema**                 | Seleccione el tema claro u oscuro.                     | Oscuro               |
+| **Tema**                 | Elija claro, oscuro o coincidir con la apariencia de su sistema operativo (prefiere modo claro/oscuro). | Seguir SO cuando no esté establecido |
 
 <br/>
 

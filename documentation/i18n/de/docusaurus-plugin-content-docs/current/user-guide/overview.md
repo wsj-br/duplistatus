@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-05-06T23:22:04.859Z'
-source_file_mtime: '2026-05-06T23:18:51.430Z'
-source_file_hash: 7771f9d86a84f69538824b04174596c096a83c31c5860e9ced75eb272db5cfd5
+translation_last_updated: '2026-05-11T14:27:46.888Z'
+source_file_mtime: '2026-05-10T23:06:13.815Z'
+source_file_hash: 3d1ba5a81b316e3831c0ae88b5c9c7ca0139d405589c848f27360fee93a83b0e
 translation_language: de
 source_file_path: documentation/docs/user-guide/overview.md
 translation_models:
@@ -69,11 +69,12 @@ Die Benutzeroberfläche ist in mehrere Schlüsselbereiche unterteilt, um ein kla
 
 Die Anwendungssymbolleiste bietet bequemen Zugriff auf wichtige Funktionen und Einstellungen, organisiert für einen effizienten Arbeitsablauf.
 
-![Application toolbar](../assets/duplistatus_toolbar.png)
+![Application toolbar](../assets/duplistatus_toolbar.svg)
 
-| Button                                                                                                                                           | Beschreibung                                                                                                                                                                  |
-|--------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| <IconButton icon="lucide:rotate-ccw" /> &nbsp; Aktualisieren                                                                                    | Sofortige manuelle Aktualisierung aller Daten auf dem Bildschirm                                                                                                                       |
+| Button                                                                                                                                           | Beschreibung                                                                                                                                                                                |
+|--------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| <IconButton icon="lucide:search" /> &nbsp; Filter                                                                                            | Filter nach Servername, Alias oder Backup-Name                                                                                                                                              |
+| <IconButton icon="lucide:rotate-ccw" /> &nbsp; Bildschirm aktualisieren                                                                                    | Führt eine sofortige manuelle Aktualisierung aller Daten auf dem Bildschirm aus                                                                                                                                     |
 | <IconButton label="Automatisch aktualisieren" />                                                                                                              | Automatische Aktualisierung ein- oder ausschalten. Konfiguration unter [Anzeigeeinstellungen](settings/display-settings.md) <br/> _Rechtsklick_, um die Seite „Anzeigeeinstellungen“ zu öffnen           |
 | <SvgButton svgFilename="ntfy.svg" /> &nbsp; NTFY öffnen                                                                                            | Zugriff auf die ntfy.sh-Website für Ihr konfiguriertes Benachrichtigungsthema. <br/> _Rechtsklick_, um einen QR-Code anzuzeigen, um Ihr Gerät für Benachrichtigungen von duplistatus einzurichten |
 | <SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Duplicati-Konfiguration](duplicati-configuration.md)       | Öffnet die Web-Oberfläche des ausgewählten Duplicati-Servers <br/> _Rechtsklick_, um die Duplicati-Legacy-Oberfläche (`/ngax`) in einem neuen Tab zu öffnen                                                                                                                           |

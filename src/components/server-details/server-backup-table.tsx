@@ -171,11 +171,7 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
   };
 
   const hasNoMessages = (backup: Backup): boolean => {
-    const messages = parseJsonArray(backup.messages_array);
-    const warnings = parseJsonArray(backup.warnings_array);
-    const errors = parseJsonArray(backup.errors_array);
-    
-    return messages.length === 0 && warnings.length === 0 && errors.length === 0;
+    return (backup.messages || 0) === 0 && (backup.warnings || 0) === 0 && (backup.errors || 0) === 0;
   };
 
   const handleBackupClick = (backup: Backup) => {

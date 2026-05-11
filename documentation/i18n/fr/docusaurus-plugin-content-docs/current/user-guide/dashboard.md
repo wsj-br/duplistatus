@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-05-06T23:21:43.876Z'
-source_file_mtime: '2026-05-06T23:18:51.430Z'
-source_file_hash: c5a21306a791b07d790b4dac459f51300cd7ee6d900b4fc4e92f7af705a8194a
+translation_last_updated: '2026-05-11T14:27:46.558Z'
+source_file_mtime: '2026-05-10T23:08:38.195Z'
+source_file_hash: afafb5babfbcde75a3fc8bdefb13967a3477a08a68d802733ec33aff54a7e00f
 translation_language: fr
 source_file_path: documentation/docs/user-guide/dashboard.md
 translation_models:
@@ -31,7 +31,7 @@ Cette section affiche les statistiques agrégées pour toutes les sauvegardes.
 
 La disposition des cartes affiche le statut du journal de sauvegarde le plus récent reçu pour chaque sauvegarde.
 
-![Dashboard Overview](../assets/duplistatus_dash-cards.png)
+![Card layout](../assets/duplistatus_dash-cards.svg)
 
 - **Server Name** : Nom du serveur Duplicati (ou alias)
   - Passer la souris sur le **Server Name** affiche le nom du serveur et la note

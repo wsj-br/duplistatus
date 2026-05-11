@@ -305,7 +305,7 @@
     "locations": [
       {
         "file": "src/components/server-details/server-backup-table.tsx",
-        "line": 221
+        "line": 217
       },
       {
         "file": "src/components/settings/display-settings-form.tsx",
@@ -439,7 +439,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 354
+        "line": 357
       },
       {
         "file": "src/components/ui/backup-tooltip-content.tsx",
@@ -762,7 +762,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 289
+        "line": 292
       }
     ]
   },
@@ -783,7 +783,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 322
+        "line": 325
       }
     ]
   },
@@ -804,7 +804,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 326
+        "line": 329
       },
       {
         "file": "src/components/ui/backup-tooltip-content.tsx",
@@ -829,7 +829,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 333
+        "line": 336
       }
     ]
   },
@@ -850,7 +850,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 339
+        "line": 342
       }
     ]
   },
@@ -871,7 +871,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 342
+        "line": 345
       }
     ]
   },
@@ -892,7 +892,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 346
+        "line": 349
       }
     ]
   },
@@ -913,7 +913,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 350
+        "line": 353
       }
     ]
   },
@@ -934,7 +934,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 358
+        "line": 361
       }
     ]
   },
@@ -955,7 +955,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 364
+        "line": 367
       }
     ]
   },
@@ -976,7 +976,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 368
+        "line": 371
       }
     ]
   },
@@ -997,7 +997,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 372
+        "line": 375
       }
     ]
   },
@@ -1018,7 +1018,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 376
+        "line": 379
       }
     ]
   },
@@ -1039,7 +1039,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 385
+        "line": 388
       }
     ]
   },
@@ -1060,7 +1060,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 399
+        "line": 402
       },
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
@@ -1072,11 +1072,11 @@
       },
       {
         "file": "src/components/server-details/server-backup-table.tsx",
-        "line": 230
+        "line": 226
       },
       {
         "file": "src/components/server-details/server-backup-table.tsx",
-        "line": 413
+        "line": 409
       },
       {
         "file": "src/components/settings/backup-notifications-form.tsx",
@@ -1145,7 +1145,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 400
+        "line": 403
       },
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
@@ -1157,11 +1157,11 @@
       },
       {
         "file": "src/components/server-details/server-backup-table.tsx",
-        "line": 227
+        "line": 223
       },
       {
         "file": "src/components/server-details/server-backup-table.tsx",
-        "line": 408
+        "line": 404
       },
       {
         "file": "src/components/settings/backup-notifications-form.tsx",
@@ -1230,7 +1230,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 401
+        "line": 404
       }
     ]
   },
@@ -4064,7 +4064,7 @@
       },
       {
         "file": "src/components/server-details/server-backup-table.tsx",
-        "line": 224
+        "line": 220
       },
       {
         "file": "src/components/settings/audit-log-viewer.tsx",
@@ -4903,7 +4903,7 @@
       },
       {
         "file": "src/components/server-details/server-backup-table.tsx",
-        "line": 218
+        "line": 214
       },
       {
         "file": "src/components/settings/backup-monitoring-form.tsx",
@@ -4986,11 +4986,11 @@
       },
       {
         "file": "src/components/server-details/server-backup-table.tsx",
-        "line": 233
+        "line": 229
       },
       {
         "file": "src/components/server-details/server-backup-table.tsx",
-        "line": 362
+        "line": 358
       },
       {
         "file": "src/components/server-details/server-detail-summary-items.tsx",
@@ -5094,11 +5094,11 @@
       },
       {
         "file": "src/components/server-details/server-backup-table.tsx",
-        "line": 245
+        "line": 241
       },
       {
         "file": "src/components/server-details/server-backup-table.tsx",
-        "line": 395
+        "line": 391
       }
     ]
   },
@@ -5529,7 +5529,7 @@
       },
       {
         "file": "src/components/server-details/server-backup-table.tsx",
-        "line": 427
+        "line": 423
       }
     ]
   },
@@ -5557,15 +5557,15 @@
   "6f6cb72d": {
     "source": "Size",
     "translated": {
-      "pt-BR": "Tamanho",
       "fr": "Taille",
       "de": "Größe",
-      "es": "Tamaño"
+      "pt-BR": "Tam.",
+      "es": "Tam"
     },
     "models": {
-      "pt-BR": "anthropic/claude-3.5-haiku",
       "fr": "anthropic/claude-3.5-haiku",
       "de": "anthropic/claude-3.5-haiku",
+      "pt-BR": "anthropic/claude-3.5-haiku",
       "es": "anthropic/claude-3.5-haiku"
     },
     "locations": [
@@ -5578,15 +5578,15 @@
   "8c4aa541": {
     "source": "Storage",
     "translated": {
-      "pt-BR": "Armazenamento",
       "fr": "Stockage",
       "de": "Speicher",
-      "es": "Almacenamiento"
+      "pt-BR": "Arm.",
+      "es": "Alm."
     },
     "models": {
-      "pt-BR": "anthropic/claude-3.5-haiku",
       "fr": "anthropic/claude-3.5-haiku",
       "de": "anthropic/claude-3.5-haiku",
+      "pt-BR": "anthropic/claude-3.5-haiku",
       "es": "anthropic/claude-3.5-haiku"
     },
     "locations": [
@@ -5599,15 +5599,15 @@
   "d55b3060": {
     "source": "Last",
     "translated": {
-      "pt-BR": "Último",
       "fr": "Dernier",
       "de": "Letzte",
-      "es": "Último"
+      "pt-BR": "Últ.",
+      "es": "Últ."
     },
     "models": {
-      "pt-BR": "anthropic/claude-3.5-haiku",
       "fr": "anthropic/claude-3.5-haiku",
       "de": "anthropic/claude-3.5-haiku",
+      "pt-BR": "anthropic/claude-3.5-haiku",
       "es": "anthropic/claude-3.5-haiku"
     },
     "locations": [
@@ -5705,11 +5705,11 @@
       },
       {
         "file": "src/components/server-details/server-backup-table.tsx",
-        "line": 239
+        "line": 235
       },
       {
         "file": "src/components/server-details/server-backup-table.tsx",
-        "line": 384
+        "line": 380
       }
     ]
   },
@@ -5738,11 +5738,11 @@
       },
       {
         "file": "src/components/server-details/server-backup-table.tsx",
-        "line": 248
+        "line": 244
       },
       {
         "file": "src/components/server-details/server-backup-table.tsx",
-        "line": 400
+        "line": 396
       }
     ]
   },
@@ -6598,11 +6598,11 @@
       },
       {
         "file": "src/components/server-details/server-backup-table.tsx",
-        "line": 242
+        "line": 238
       },
       {
         "file": "src/components/server-details/server-backup-table.tsx",
-        "line": 389
+        "line": 385
       }
     ]
   },
@@ -6627,11 +6627,11 @@
       },
       {
         "file": "src/components/server-details/server-backup-table.tsx",
-        "line": 236
+        "line": 232
       },
       {
         "file": "src/components/server-details/server-backup-table.tsx",
-        "line": 378
+        "line": 374
       }
     ]
   },
@@ -6999,7 +6999,7 @@
     "locations": [
       {
         "file": "src/components/server-details/server-backup-table.tsx",
-        "line": 200
+        "line": 196
       }
     ]
   },
@@ -7020,7 +7020,7 @@
     "locations": [
       {
         "file": "src/components/server-details/server-backup-table.tsx",
-        "line": 203
+        "line": 199
       }
     ]
   },
@@ -7041,7 +7041,7 @@
     "locations": [
       {
         "file": "src/components/server-details/server-backup-table.tsx",
-        "line": 256
+        "line": 252
       }
     ]
   },
@@ -7062,11 +7062,11 @@
     "locations": [
       {
         "file": "src/components/server-details/server-backup-table.tsx",
-        "line": 282
+        "line": 278
       },
       {
         "file": "src/components/server-details/server-backup-table.tsx",
-        "line": 344
+        "line": 340
       }
     ]
   },
@@ -7087,7 +7087,7 @@
     "locations": [
       {
         "file": "src/components/server-details/server-backup-table.tsx",
-        "line": 320
+        "line": 316
       }
     ]
   },
@@ -7108,7 +7108,7 @@
     "locations": [
       {
         "file": "src/components/server-details/server-backup-table.tsx",
-        "line": 445
+        "line": 441
       }
     ]
   },
@@ -7129,7 +7129,7 @@
     "locations": [
       {
         "file": "src/components/server-details/server-backup-table.tsx",
-        "line": 448
+        "line": 444
       }
     ]
   },
@@ -7150,7 +7150,7 @@
     "locations": [
       {
         "file": "src/components/server-details/server-backup-table.tsx",
-        "line": 448
+        "line": 444
       }
     ]
   },
@@ -7171,7 +7171,7 @@
     "locations": [
       {
         "file": "src/components/server-details/server-backup-table.tsx",
-        "line": 456
+        "line": 452
       }
     ]
   },
@@ -9494,6 +9494,10 @@
       {
         "file": "src/components/settings/backup-monitoring-form.tsx",
         "line": 118
+      },
+      {
+        "file": "src/lib/utils.ts",
+        "line": 794
       }
     ]
   },
@@ -9519,6 +9523,10 @@
       {
         "file": "src/components/settings/backup-monitoring-form.tsx",
         "line": 119
+      },
+      {
+        "file": "src/lib/utils.ts",
+        "line": 795
       }
     ]
   },
@@ -9540,6 +9548,10 @@
       {
         "file": "src/components/settings/backup-monitoring-form.tsx",
         "line": 114
+      },
+      {
+        "file": "src/lib/utils.ts",
+        "line": 790
       }
     ]
   },
@@ -9561,6 +9573,10 @@
       {
         "file": "src/components/settings/backup-monitoring-form.tsx",
         "line": 115
+      },
+      {
+        "file": "src/lib/utils.ts",
+        "line": 791
       }
     ]
   },
@@ -9582,6 +9598,10 @@
       {
         "file": "src/components/settings/backup-monitoring-form.tsx",
         "line": 116
+      },
+      {
+        "file": "src/lib/utils.ts",
+        "line": 792
       }
     ]
   },
@@ -9603,6 +9623,10 @@
       {
         "file": "src/components/settings/backup-monitoring-form.tsx",
         "line": 117
+      },
+      {
+        "file": "src/lib/utils.ts",
+        "line": 793
       }
     ]
   },
@@ -9624,6 +9648,10 @@
       {
         "file": "src/components/settings/backup-monitoring-form.tsx",
         "line": 120
+      },
+      {
+        "file": "src/lib/utils.ts",
+        "line": 796
       }
     ]
   },
@@ -9645,6 +9673,10 @@
       {
         "file": "src/components/settings/backup-monitoring-form.tsx",
         "line": 121
+      },
+      {
+        "file": "src/lib/utils.ts",
+        "line": 797
       }
     ]
   },
@@ -9666,6 +9698,10 @@
       {
         "file": "src/components/settings/backup-monitoring-form.tsx",
         "line": 122
+      },
+      {
+        "file": "src/lib/utils.ts",
+        "line": 798
       }
     ]
   },
@@ -9687,6 +9723,10 @@
       {
         "file": "src/components/settings/backup-monitoring-form.tsx",
         "line": 123
+      },
+      {
+        "file": "src/lib/utils.ts",
+        "line": 799
       }
     ]
   },
@@ -16810,18 +16850,18 @@
       "es": "Sistema (seguir SO)",
       "de": "System (Betriebssystem)"
     },
-    "locations": [
-      {
-        "file": "src/components/settings/display-settings-form.tsx",
-        "line": 287
-      }
-    ],
     "models": {
       "pt-BR": "anthropic/claude-3.5-haiku",
       "fr": "anthropic/claude-3.5-haiku",
       "es": "anthropic/claude-3.5-haiku",
       "de": "anthropic/claude-3.5-haiku"
-    }
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/display-settings-form.tsx",
+        "line": 287
+      }
+    ]
   },
   "a94082c0": {
     "source": "Start of Week",

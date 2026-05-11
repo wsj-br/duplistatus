@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-05-06T23:20:32.929Z'
-source_file_mtime: '2026-05-06T23:18:51.418Z'
+translation_last_updated: '2026-05-11T14:27:42.713Z'
+source_file_mtime: '2026-05-10T19:03:27.501Z'
 source_file_hash: ff45fe5f2dea04589c6b35a872a2fbb19c0c49b4c33a0951774e8556326297c0
 translation_language: de
 source_file_path: documentation/docs/installation/installation.md

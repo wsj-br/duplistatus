@@ -1,10 +1,11 @@
 ---
-translation_last_updated: '2026-05-06T23:20:08.556Z'
-source_file_mtime: '2026-05-06T23:18:51.418Z'
-source_file_hash: f8c4464625015170ba865f56f24e9f8d1dcde28efa05628f7e79b30cc230240c
+translation_last_updated: '2026-05-11T14:27:42.336Z'
+source_file_mtime: '2026-05-10T19:00:19.989Z'
+source_file_hash: c3785bbdf46a519aee1f05ff2845a158534f37927bd8ac3eade9f28f6acdb51b
 translation_language: es
 source_file_path: documentation/docs/installation/duplicati-server-configuration.md
 translation_models:
+  - anthropic/claude-3.5-haiku
   - anthropic/claude-haiku-4.5
   - qwen/qwen3-235b-a22b-2507
 ---
@@ -14,17 +15,11 @@ Para que esta aplicación funcione correctamente, cada uno de sus servidores Dup
 
 Aplique esta configuración a cada uno de sus servidores Duplicati:
 
-1. **Permitir acceso remoto:** Inicie sesión en [la interfaz de usuario de Duplicati](https://docs.duplicati.com/getting-started/set-up-a-backup-in-the-ui), seleccione `Settings`, y permita acceso remoto, incluyendo una lista de nombres de host (o utilice `*`).
+1. **Configurar la notificación de resultados de copia de seguridad:** En la página de configuración de Duplicati, seleccione `Settings` y, en la sección `Default Options`, incluya las siguientes opciones.
 
-![Duplicati settings](/img/duplicati-settings.png)
+![Duplicati configuration](/img/duplicati-options.png)
 
-:::caution
-    Solo activa el acceso remoto si tu servidor Duplicati está protegido por una red segura
-    (por ejemplo, VPN, LAN privada o reglas de firewall). Exponer la interfaz de Duplicati a Internet público
-    sin medidas de seguridad adecuadas podría provocar acceso no autorizado.
-    :::
-
-2. **Configurar la notificación de resultados de backup:** En la página Configuración de Duplicati, seleccione `Settings` y, en la sección `Default Options`, incluya las siguientes opciones. Reemplace 'my.local.server' con el nombre del servidor o dirección IP donde **duplistatus** se está ejecutando.
+Reemplace 'my.local.server' con el nombre de su servidor o dirección IP donde se está ejecutando **duplistatus**.
 
 | Opción avanzada                  | Valor                                    |
     | -------------------------------- | ---------------------------------------- |
@@ -42,8 +37,6 @@ Alternativamente, puedes hacer clic en `Edit as text` y copiar las líneas a con
 --send-http-max-log-lines=0
 ```
 
-![Duplicati configuration](/img/duplicati-options.png)
-
 **Notas importantes sobre los mensajes enviados por Duplicati:**
 
 - Si omite `--send-http-log-level=Information`, no se enviarán mensajes de registro a **duplistatus**, solo Estadísticas. Esto evitará que la función de Versiones disponibles funcione.
@@ -52,4 +45,20 @@ Alternativamente, puedes hacer clic en `Edit as text` y copiar las líneas a con
 
 :::tip
 Después de configurar el servidor **duplistatus**, recopile los logs de backup de todos sus servidores Duplicati usando [Recopilar logs de backup](../user-guide/collect-backup-logs.md).
+:::
+
+2. **Opcional - Permitir acceso a la interfaz remota:** Si desea acceder a la interfaz web de Duplicati directamente desde los enlaces del panel de **duplistatus**, inicie sesión en [Interfaz de Duplicati](https://docs.duplicati.com/getting-started/set-up-a-backup-in-the-ui), seleccione `Settings` y permita el acceso remoto, incluyendo una lista de nombres de host (o use `*`). Si omite esto, **duplistatus** seguirá recibiendo informes de copia de seguridad, pero los enlaces directos a la interfaz de Duplicati no funcionarán.
+
+:::info
+Si no habilita el acceso remoto en Duplicati, los enlaces en **Duplistatus** para acceder a la __Interfaz de Duplicati__ no funcionarán.
+:::
+
+![Duplicati settings](/img/duplicati-settings.png)
+
+:::caution
+Solo habilite el acceso remoto si su servidor Duplicati está protegido por una red segura
+(por ejemplo, VPN, LAN privada o reglas de firewall). Exponer la interfaz de Duplicati a Internet
+público sin las medidas de seguridad adecuadas podría llevar a un acceso no autorizado.
+
+Se recomienda usar Tailscale, Headscale, NetBird, ZeroTier, Nebula, Twingate, Pritunl, Cloudflare Access, Wireguard o soluciones similares para acceder de forma segura a sus servidores desde fuera de su red local.
 :::

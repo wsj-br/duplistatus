@@ -17,7 +17,7 @@ import { AuditLogger } from '@/lib/audit-logger';
 import { clearAllLegacySessions } from '@/lib/session-csrf';
 import path from 'path';
 import fs from 'fs';
-import { getDataDir } from '@/lib/paths';
+import { getDataTempDir } from '@/lib/paths';
 
 const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
 
@@ -100,11 +100,11 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
     }
     
     // Create temp directory for uploaded file
-    const tempDir = path.join(getDataDir(), 'temp');
+    const tempDir = getDataTempDir();
     if (!fs.existsSync(tempDir)) {
       fs.mkdirSync(tempDir, { recursive: true });
     }
-    
+
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
     const tempFilePath = path.join(tempDir, `restore-${timestamp}-${file.name}`);
     const dbPath = getDatabasePath();

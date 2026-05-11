@@ -1,10 +1,11 @@
 ---
-translation_last_updated: '2026-05-06T23:20:02.319Z'
-source_file_mtime: '2026-05-06T23:18:51.418Z'
-source_file_hash: f8c4464625015170ba865f56f24e9f8d1dcde28efa05628f7e79b30cc230240c
+translation_last_updated: '2026-05-11T14:27:42.333Z'
+source_file_mtime: '2026-05-10T19:00:19.989Z'
+source_file_hash: c3785bbdf46a519aee1f05ff2845a158534f37927bd8ac3eade9f28f6acdb51b
 translation_language: fr
 source_file_path: documentation/docs/installation/duplicati-server-configuration.md
 translation_models:
+  - anthropic/claude-3.5-haiku
   - anthropic/claude-haiku-4.5
   - qwen/qwen3-235b-a22b-2507
 ---
@@ -14,17 +15,11 @@ Pour que cette application fonctionne correctement, chacun de vos serveurs Dupli
 
 Appliquez cette configuration à chacun de vos serveurs Duplicati :
 
-1. **Autoriser l'accès à distance :** Se connecter à [l'interface utilisateur de Duplicati](https://docs.duplicati.com/getting-started/set-up-a-backup-in-the-ui), sélectionner `Settings`, et autoriser l'accès à distance, y compris une liste de noms d'hôtes (ou utiliser `*`).
+1. **Configurer la création de rapports de sauvegarde :** Sur la page de configuration de Duplicati, sélectionnez `Settings` et, dans la section `Default Options`, incluez les options suivantes.
 
-![Duplicati settings](/img/duplicati-settings.png)
+![Duplicati configuration](/img/duplicati-options.png)
 
-:::caution
-    N'activez l'accès à distance que si votre serveur Duplicati est protégé par un réseau sécurisé
-    (par exemple, VPN, LAN privé ou règles de pare-feu). Exposer l'interface Duplicati à l'Internet public
-    sans mesures de sécurité appropriées pourrait entraîner un accès non autorisé.
-    :::
-
-2. **Configurer la création de rapports de résultats de sauvegarde :** Sur la page Configuration Duplicati, sélectionnez `Settings` et, dans la section `Default Options`, incluez les options suivantes. Remplacez « my.local.server » par le nom de votre serveur ou l'adresse IP où **duplistatus** est en cours d'exécution.
+Remplacez 'my.local.server' par le nom de votre serveur ou l'adresse IP où **duplistatus** est en cours d'exécution.
 
 | Option avancée                   | Valeur                                     |
     | -------------------------------- | ---------------------------------------- |
@@ -42,8 +37,6 @@ Vous pouvez également cliquer sur `Edit as text` et copier les lignes ci-dessou
 --send-http-max-log-lines=0
 ```
 
-![Duplicati configuration](/img/duplicati-options.png)
-
 **Notes importantes sur les messages envoyés par Duplicati :**
 
 - Si vous omettez `--send-http-log-level=Information`, aucun message de journal ne sera envoyé à **duplistatus**, uniquement les statistiques. Cela empêchera la fonctionnalité Versions disponibles de fonctionner.
@@ -52,4 +45,20 @@ Vous pouvez également cliquer sur `Edit as text` et copier les lignes ci-dessou
 
 :::tip
 Après avoir configuré le serveur **duplistatus**, collectez les journaux de sauvegarde pour tous vos serveurs Duplicati en utilisant [Collecter les journaux de sauvegarde](../user-guide/collect-backup-logs.md).
+:::
+
+2. **Optionnel - Autoriser l'accès à l'interface distante :** Si vous voulez accéder à l'interface web de Duplicati directement depuis les liens du tableau de bord **duplistatus**, connectez-vous à [l'interface utilisateur de Duplicati](https://docs.duplicati.com/getting-started/set-up-a-backup-in-the-ui), sélectionnez `Settings`, et autorisez l'accès distant, en incluant une liste de noms d'hôtes (ou utilisez `*`). Si vous ignorez cette étape, **duplistatus** recevra toujours les rapports de sauvegarde, mais les liens directs vers l'interface utilisateur de Duplicati ne fonctionneront pas.
+
+:::info
+Si vous n'activez pas l'accès distant dans Duplicati, les liens dans **Duplistatus** pour accéder à l'__interface utilisateur de Duplicati__ ne fonctionneront pas.
+:::
+
+![Duplicati settings](/img/duplicati-settings.png)
+
+:::caution
+N'activez l'accès distant que si votre serveur Duplicati est protégé par un réseau sécurisé
+(par exemple, VPN, réseau local privé ou règles de pare-feu). Exposer l'interface de Duplicati à l'Internet public
+sans mesures de sécurité appropriées pourrait conduire à un accès non autorisé.
+
+Il est recommandé d'utiliser Tailscale, Headscale, NetBird, ZeroTier, Nebula, Twingate, Pritunl, Cloudflare Access, Wireguard ou des solutions similaires pour accéder en toute sécurité à vos serveurs depuis l'extérieur de votre réseau local.
 :::

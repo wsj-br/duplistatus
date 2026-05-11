@@ -1,10 +1,11 @@
 ---
-translation_last_updated: '2026-05-06T23:20:12.728Z'
-source_file_mtime: '2026-05-06T23:18:51.418Z'
-source_file_hash: f8c4464625015170ba865f56f24e9f8d1dcde28efa05628f7e79b30cc230240c
+translation_last_updated: '2026-05-11T14:27:42.338Z'
+source_file_mtime: '2026-05-10T19:00:19.989Z'
+source_file_hash: c3785bbdf46a519aee1f05ff2845a158534f37927bd8ac3eade9f28f6acdb51b
 translation_language: pt-BR
 source_file_path: documentation/docs/installation/duplicati-server-configuration.md
 translation_models:
+  - anthropic/claude-3.5-haiku
   - anthropic/claude-haiku-4.5
   - qwen/qwen3-235b-a22b-2507
 ---
@@ -14,17 +15,11 @@ Para que este aplicativo funcione corretamente, cada um de seus servidores Dupli
 
 Aplique esta configuração a cada um de seus servidores Duplicati:
 
-1. **Permitir acesso remoto:** Entrar na [interface do Duplicati](https://docs.duplicati.com/getting-started/set-up-a-backup-in-the-ui), selecionar `Settings` e permitir acesso remoto, incluindo uma lista de nomes de host (ou usar `*`).
+1. **Configurar relatórios de resultado de backup:** Na página de configuração do Duplicati, selecione `Settings` e, na seção `Default Options`, inclua as seguintes opções.
 
-![Duplicati settings](/img/duplicati-settings.png)
+![Duplicati configuration](/img/duplicati-options.png)
 
-:::caution
-    Ative o acesso remoto apenas se seu servidor Duplicati estiver protegido por uma rede segura
-    (por exemplo, VPN, LAN privada ou regras de firewall). Expor a interface do Duplicati à Internet pública
-    sem medidas de segurança adequadas pode levar a acesso não autorizado.
-    :::
-
-2. **Configurar relatório de resultado de backup:** Na página Configuração do Duplicati, selecione `Settings` e, na seção `Default Options`, inclua as seguintes opções. Substitua 'my.local.server' pelo nome do seu servidor ou endereço IP onde **duplistatus** está em execução.
+Substitua 'my.local.server' pelo nome do seu servidor ou endereço IP onde o **duplistatus** está em execução.
 
 | Opção avançada                  | Valor                                    |
     | -------------------------------- | ---------------------------------------- |
@@ -42,8 +37,6 @@ Alternativamente, você pode clicar em `Edit as text` e copiar as linhas abaixo,
 --send-http-max-log-lines=0
 ```
 
-![Duplicati configuration](/img/duplicati-options.png)
-
 **Notas importantes sobre mensagens enviadas pelo Duplicati:**
 
 - Se você omitir `--send-http-log-level=Information`, nenhuma mensagem de log será enviada para **duplistatus**, apenas estatísticas. Isso impedirá que o recurso de versões disponíveis funcione.
@@ -52,4 +45,20 @@ Alternativamente, você pode clicar em `Edit as text` e copiar as linhas abaixo,
 
 :::tip
 Após configurar o servidor **duplistatus**, colete os logs de backup para todos os seus servidores Duplicati usando [Coletar logs de backup](../user-guide/collect-backup-logs.md).
+:::
+
+2. **Opcional - Permitir acesso à interface remota:** Se você deseja acessar a interface web do Duplicati diretamente pelos links do painel **duplistatus**, faça login na [Interface do Duplicati](https://docs.duplicati.com/getting-started/set-up-a-backup-in-the-ui), selecione `Settings` e permita o acesso remoto, incluindo uma lista de nomes de host (ou use `*`). Se você pular esta etapa, o **duplistatus** ainda receberá relatórios de backup, mas os links diretos para a interface do Duplicati não funcionarão.
+
+:::info
+Se você não habilitar o acesso remoto no Duplicati, os links no **Duplistatus** para acessar a __Interface do Duplicati__ não funcionarão.
+:::
+
+![Duplicati settings](/img/duplicati-settings.png)
+
+:::caution
+Habilite o acesso remoto apenas se o seu servidor Duplicati estiver protegido por uma rede segura
+(por exemplo, VPN, LAN privada ou regras de firewall). Expor a interface do Duplicati à Internet pública
+sem medidas de segurança adequadas pode levar a acesso não autorizado.
+
+Recomenda-se usar Tailscale, Headscale, NetBird, ZeroTier, Nebula, Twingate, Pritunl, Cloudflare Access, Wireguard ou soluções similares para acessar seus servidores com segurança de fora da rede local.
 :::

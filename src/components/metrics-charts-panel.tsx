@@ -42,10 +42,10 @@ interface MetricsChartsPanelProps {
 type MetricsChartsPanelCoreProps = MetricsChartsPanelProps & { t: TFunction };
 
 // Use existing library function for duration formatting
-const formatDuration = (minutes: number): string => {
-  // Extract just HH:MM from the HH:MM:SS format for chart display
-  const formatted = formatDurationFromMinutes(minutes);
-  return formatted.split(':').slice(0, 2).join(':');
+const formatDuration = (minutes: number, locale?: string): string => {
+  // Extract just HH:MM from the formatted duration (which may use localized separators like '.' or ':')
+  const formatted = formatDurationFromMinutes(minutes, locale);
+  return formatted.replace(/[^\d]\d{2}$/, '');
 };
 
 // Use existing library function for bytes formatting with Y-axis specific precision
@@ -84,7 +84,7 @@ const getChartMetrics = (t: TFunction, locale: string) => [
   { 
     key: 'duration', 
     label: t("Duration"), 
-    formatter: formatDuration,
+    formatter: (v: number) => formatDuration(v, locale),
     color: "#10b981" // Green
   },
   { 
@@ -143,7 +143,7 @@ const CustomTooltip = ({ active, payload, label, metricKey, locale }: {
   if (metricKey === 'uploadedSize' || metricKey === 'fileSize' || metricKey === 'storageSize') {
     formattedValue = formatBytesForYAxis(value, locale);
   } else if (metricKey === 'duration') {
-    formattedValue = formatDuration(value);
+    formattedValue = formatDuration(value, locale);
   } else {
     formattedValue = formatInteger(value, locale);
   }
@@ -319,7 +319,7 @@ function SmallMetricChart({
                     if (metricKey === 'uploadedSize' || metricKey === 'fileSize' || metricKey === 'storageSize') {
                       return formatBytesForYAxis(value, locale);
                     } else if (metricKey === 'duration') {
-                      return formatDuration(value);
+                      return formatDuration(value, locale);
                     } else {
                       // For counts (fileCount, backupVersions) - no decimal positions
                       return formatInteger(Math.round(value), locale);

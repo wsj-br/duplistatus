@@ -19,37 +19,48 @@ function getBrowserLocale(): string {
   return navigator.language || navigator.languages?.[0] || SOURCE_LOCALE;
 }
 
-export function formatDurationFromMinutes(totalMinutes: unknown): string {
+export function formatDurationFromMinutes(totalMinutes: unknown, locale?: string): string {
   // Handle all possible invalid inputs
   if (totalMinutes === null || totalMinutes === undefined) return "00:00:00";
-  
+
   let numMinutes: number;
-  
+
   if (typeof totalMinutes === 'number') {
     numMinutes = totalMinutes;
   } else if (typeof totalMinutes === 'string') {
     try {
       numMinutes = Number(totalMinutes);
     } catch {
-      return "00:00:00";
+      numMinutes = 0;
     }
   } else {
-    return "00:00:00";
+    numMinutes = 0;
   }
-  
-  if (isNaN(numMinutes) || numMinutes < 0 || !isFinite(numMinutes)) return "00:00:00";
-  if (numMinutes === 0) return "00:00:00";
+
+  if (isNaN(numMinutes) || numMinutes < 0 || !isFinite(numMinutes)) numMinutes = 0;
 
   const hours = Math.floor(numMinutes / 60);
   const minutes = Math.floor(numMinutes % 60);
   // Calculate seconds from the fractional part of totalMinutes
   const seconds = Math.round((numMinutes * 60) % 60);
 
-  const paddedHours = String(hours).padStart(2, '0');
-  const paddedMinutes = String(minutes).padStart(2, '0');
-  const paddedSeconds = String(seconds).padStart(2, '0');
+  const resolvedLocale = locale || getBrowserLocale();
 
-  return `${paddedHours}:${paddedMinutes}:${paddedSeconds}`;
+  try {
+    return new (Intl as any).DurationFormat(resolvedLocale, {
+      style: 'digital',
+      hours: '2-digit',
+      minutes: '2-digit',
+      seconds: '2-digit'
+    }).format({ hours, minutes, seconds });
+  } catch {
+    // Fallback if Intl.DurationFormat is not supported or fails
+    const paddedHours = String(hours).padStart(2, '0');
+    const paddedMinutes = String(minutes).padStart(2, '0');
+    const paddedSeconds = String(seconds).padStart(2, '0');
+
+    return `${paddedHours}:${paddedMinutes}:${paddedSeconds}`;
+  }
 }
 
 /**
@@ -63,17 +74,17 @@ function removeLocaleArticles(text: string, locale?: string): string {
     return text;
   }
   const localeLower = locale.toLowerCase();
-  
+
   // Spanish articles: el, la, los, las
   if (localeLower.startsWith('es')) {
     return text.replace(/^(el|la|los|las)\s+/i, '');
   }
-  
+
   // French articles: le, la, les, l'
   if (localeLower.startsWith('fr')) {
     return text.replace(/^(le|la|les|l')\s+/i, '');
   }
-  
+
   return text;
 }
 
@@ -93,10 +104,10 @@ export function formatRelativeTime(dateString: string, currentTime?: Date, local
     if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(dateString.trim())) {
       isoString = dateString.replace(' ', 'T') + 'Z';
     }
-    
+
     const date = parseISO(isoString);
     if (!isValid(date)) {
-      return ""; 
+      return "";
     }
 
     // Use a fixed reference time (server-side) to avoid hydration mismatches
@@ -123,42 +134,42 @@ export function formatRelativeTime(dateString: string, currentTime?: Date, local
     if (locale) {
       try {
         const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
-        
+
         if (absDiffInSeconds < 60) {
           const seconds = Math.floor(absDiffInSeconds);
           return removeLocaleArticles(rtf.format(isFuture ? seconds : -seconds, 'second'), locale);
         }
-        
+
         if (absDiffInSeconds < 3600) {
           const minutes = Math.floor(absDiffInSeconds / 60);
           return removeLocaleArticles(rtf.format(isFuture ? minutes : -minutes, 'minute'), locale);
         }
-        
+
         if (absDiffInSeconds < 86400) {
           const hours = Math.floor(absDiffInSeconds / 3600);
           return removeLocaleArticles(rtf.format(isFuture ? hours : -hours, 'hour'), locale);
         }
-        
+
         if (absDiffInSeconds < 604800) {
           const days = Math.floor(absDiffInSeconds / 86400);
           return removeLocaleArticles(rtf.format(isFuture ? days : -days, 'day'), locale);
         }
-        
+
         if (absDiffInSeconds < 2592000) {
           const weeks = Math.floor(absDiffInSeconds / 604800);
           return removeLocaleArticles(rtf.format(isFuture ? weeks : -weeks, 'week'), locale);
         }
-        
+
         if (absDiffInSeconds < 31536000) {
           const months = Math.floor(absDiffInSeconds / 2592000);
           return removeLocaleArticles(rtf.format(isFuture ? months : -months, 'month'), locale);
         }
-        
+
         // For periods longer than 1 year, show years and months
         const years = Math.floor(absDiffInSeconds / 31536000);
         const remainingSeconds = absDiffInSeconds % 31536000;
         const months = Math.floor(remainingSeconds / 2592000);
-        
+
         if (months === 0) {
           return removeLocaleArticles(rtf.format(isFuture ? years : -years, 'year'), locale);
         } else {
@@ -175,7 +186,7 @@ export function formatRelativeTime(dateString: string, currentTime?: Date, local
     }
 
     // Fallback to English formatting if locale not provided or Intl.RelativeTimeFormat fails
-    if (absDiffInSeconds < 60) {  
+    if (absDiffInSeconds < 60) {
       const seconds = Math.floor(absDiffInSeconds);
       return isFuture ? `in ${seconds} second${seconds === 1 ? '' : 's'}` : `${seconds} second${seconds === 1 ? '' : 's'} ago`;
     }
@@ -209,7 +220,7 @@ export function formatRelativeTime(dateString: string, currentTime?: Date, local
     const years = Math.floor(absDiffInSeconds / 31536000);
     const remainingSeconds = absDiffInSeconds % 31536000;
     const months = Math.floor(remainingSeconds / 2592000);
-    
+
     if (months === 0) {
       return isFuture ? `in ${years} year${years === 1 ? '' : 's'}` : `${years} year${years === 1 ? '' : 's'} ago`;
     } else {
@@ -234,7 +245,7 @@ export function formatShortTimeAgo(dateString: string, currentTime?: Date, addPl
   try {
     const date = parseISO(dateString);
     if (!isValid(date)) {
-      return ""; 
+      return "";
     }
 
     // Use a fixed reference time (server-side) to avoid hydration mismatches
@@ -319,7 +330,7 @@ export function formatShortTimeAgo(dateString: string, currentTime?: Date, addPl
     const years = Math.floor(diffInSeconds / 31536000);
     const remainingSeconds = diffInSeconds % 31536000;
     const months = Math.floor(remainingSeconds / 2592000);
-    
+
     if (locale) {
       try {
         const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'always', style: 'narrow' });
@@ -340,7 +351,7 @@ export function formatShortTimeAgo(dateString: string, currentTime?: Date, addPl
         }
       }
     }
-    
+
     if (months === 0) {
       return `${years} y`;
     } else {
@@ -357,7 +368,7 @@ export function formatTimeElapsed(dateString: string, currentTime?: Date, locale
   try {
     const date = parseISO(dateString);
     if (!isValid(date)) {
-      return ""; 
+      return "";
     }
 
     // Use a fixed reference time (server-side) to avoid hydration mismatches
@@ -382,41 +393,41 @@ export function formatTimeElapsed(dateString: string, currentTime?: Date, locale
     if (locale) {
       try {
         const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto', style: 'long' });
-        
+
         if (Math.abs(diffInSeconds) < 15) {
           return removeLocaleArticles(rtf.format(0, 'second'), locale);
         }
-        
+
         if (diffInSeconds < 3600) {
           const minutes = Math.floor(diffInSeconds / 60);
           return removeLocaleArticles(rtf.format(-minutes, 'minute'), locale);
         }
-        
+
         if (diffInSeconds < 86400) {
           const hours = Math.floor(diffInSeconds / 3600);
           return removeLocaleArticles(rtf.format(-hours, 'hour'), locale);
         }
-        
+
         if (diffInSeconds < 604800) {
           const days = Math.floor(diffInSeconds / 86400);
           return removeLocaleArticles(rtf.format(-days, 'day'), locale);
         }
-        
+
         if (diffInSeconds < 2592000) {
           const weeks = Math.floor(diffInSeconds / 604800);
           return removeLocaleArticles(rtf.format(-weeks, 'week'), locale);
         }
-        
+
         if (diffInSeconds < 31536000) {
           const months = Math.floor(diffInSeconds / 2592000);
           return removeLocaleArticles(rtf.format(-months, 'month'), locale);
         }
-        
+
         // Calculate years and remaining months for periods longer than 1 year
         const years = Math.floor(diffInSeconds / 31536000);
         const remainingSeconds = diffInSeconds % 31536000;
         const months = Math.floor(remainingSeconds / 2592000);
-        
+
         if (months === 0) {
           return removeLocaleArticles(rtf.format(-years, 'year'), locale);
         } else {
@@ -464,7 +475,7 @@ export function formatTimeElapsed(dateString: string, currentTime?: Date, locale
     const years = Math.floor(diffInSeconds / 31536000);
     const remainingSeconds = diffInSeconds % 31536000;
     const months = Math.floor(remainingSeconds / 2592000);
-    
+
     if (months === 0) {
       return `${years} year${years === 1 ? '' : 's'}`;
     } else {
@@ -475,48 +486,75 @@ export function formatTimeElapsed(dateString: string, currentTime?: Date, locale
   }
 }
 
-// Function to convert timestamp from Duplicati format to ISO format
+// Function to convert timestamp from Duplicati format to ISO format.
+// Supports locale-specific formats emitted by Duplicati, covering the most
+// common locales worldwide. Formats supported (single-digit d/M/h tolerated):
+//
+//   yyyy-MM-dd HH:mm:ss         ISO 8601 / en-CA / sv-SE / lt-LT
+//   yyyy.MM.dd HH:mm:ss         zh-CN / ja-JP / hu-HU / zh-TW
+//   yyyy.MM.dd tt hh:mm:ss      ko-KR  (AM/PM marker precedes the time)
+//   yyyy/MM/dd hh:mm:ss tt      es-MX / es-CO
+//   dd/MM/yyyy HH:mm:ss         en-GB / fr-FR / it-IT / es-ES / pt-BR
+//   dd/MM/yyyy HH.mm.ss         nn-NO / da-DK  (dots as time separator)
+//   dd.MM.yyyy HH:mm:ss         de-DE / de-AT / ru-RU / tr-TR / fi-FI
+//   MM/dd/yyyy hh:mm:ss tt  \
+//   dd/MM/yyyy hh:mm:ss tt  /   en-US / en-PH / en-AU / en-IN / en-NZ / ms-MY
+//                               (disambiguated by value range; defaults to MM/dd)
 export function convertTimestampToISO(timestamp: string): string {
   try {
-    // Handle various timestamp formats that might come from Duplicati
-    // Expected format: "14/07/2025 00:05:06" or similar
-    const cleanTimestamp = timestamp.trim();
-    
-    // Try to parse DD/MM/YYYY HH:mm:ss format - be strict about this format
-    const match = cleanTimestamp.match(/^(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2}):(\d{2})$/);
-    if (match) {
-      const [, day, month, year, hour, minute, second] = match;
-      const dayNum = parseInt(day);
-      const monthNum = parseInt(month);
-      const yearNum = parseInt(year);
-      const hourNum = parseInt(hour);
-      const minuteNum = parseInt(minute);
-      const secondNum = parseInt(second);
-      
-      // Validate ranges
-      if (dayNum < 1 || dayNum > 31 || 
-          monthNum < 1 || monthNum > 12 || 
-          yearNum < 1900 || yearNum > 2100 ||
-          hourNum < 0 || hourNum > 23 ||
-          minuteNum < 0 || minuteNum > 59 ||
-          secondNum < 0 || secondNum > 59) {
-        console.warn(`Invalid timestamp values: ${timestamp}`);
-        return '';
-      }
-      
-      const date = new Date(yearNum, monthNum - 1, dayNum, hourNum, minuteNum, secondNum);
-      
-      // Additional validation - check if the date is valid
-      if (date.getFullYear() !== yearNum || 
-          date.getMonth() !== monthNum - 1 || 
-          date.getDate() !== dayNum) {
-        console.warn(`Invalid date constructed from timestamp: ${timestamp}`);
-        return '';
-      }
-      
-      return date.toISOString();
+    // Normalise non-breaking spaces (U+00A0, U+202F narrow NBSP) → regular space.
+    // Duplicati on some platforms emits a narrow NBSP before AM/PM.
+    const s = timestamp.trim().replace(/[\u00A0\u202F]/g, ' ');
+
+    let m: RegExpMatchArray | null;
+
+    // ── Year-first (unambiguous) ──────────────────────────────────────────────
+
+    // yyyy-MM-dd HH:mm:ss  (ISO 8601, en-CA, sv-SE, lt-LT)
+    m = s.match(/^(\d{4})-(\d{2})-(\d{2})\s+(\d{1,2}):(\d{2}):(\d{2})$/);
+    if (m) return buildISO(+m[3], +m[2], +m[1], +m[4], +m[5], +m[6], timestamp);
+
+    // yyyy.MM.dd HH:mm:ss  (zh-CN, ja-JP, hu-HU, zh-TW)
+    m = s.match(/^(\d{4})\.(\d{2})\.(\d{2})\s+(\d{1,2}):(\d{2}):(\d{2})$/);
+    if (m) return buildISO(+m[3], +m[2], +m[1], +m[4], +m[5], +m[6], timestamp);
+
+    // yyyy.MM.dd tt hh:mm:ss  (ko-KR — AM/PM marker precedes the time)
+    m = s.match(/^(\d{4})\.(\d{2})\.(\d{2})\s+(AM|PM)\s+(\d{1,2}):(\d{2}):(\d{2})$/i);
+    if (m) return buildISO(+m[3], +m[2], +m[1], to24h(+m[5], m[4]), +m[6], +m[7], timestamp);
+
+    // yyyy/MM/dd hh:mm:ss tt  (es-MX, es-CO)
+    m = s.match(/^(\d{4})\/(\d{2})\/(\d{2})\s+(\d{1,2}):(\d{2}):(\d{2})\s+(AM|PM)$/i);
+    if (m) return buildISO(+m[3], +m[2], +m[1], to24h(+m[4], m[7]), +m[5], +m[6], timestamp);
+
+    // ── Day-first, 24-hour (unambiguous) ─────────────────────────────────────
+
+    // dd/MM/yyyy HH:mm:ss  (en-GB, fr-FR, it-IT, es-ES, pt-BR) — single-digit ok
+    m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2}):(\d{2})$/);
+    if (m) return buildISO(+m[1], +m[2], +m[3], +m[4], +m[5], +m[6], timestamp);
+
+    // dd/MM/yyyy HH.mm.ss  (nn-NO, da-DK — dots as time separator)
+    m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2})\.(\d{2})\.(\d{2})$/);
+    if (m) return buildISO(+m[1], +m[2], +m[3], +m[4], +m[5], +m[6], timestamp);
+
+    // dd.MM.yyyy HH:mm:ss  (de-DE, de-AT, ru-RU, tr-TR, fi-FI) — single-digit ok
+    m = s.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})\s+(\d{1,2}):(\d{2}):(\d{2})$/);
+    if (m) return buildISO(+m[1], +m[2], +m[3], +m[4], +m[5], +m[6], timestamp);
+
+    // ── Slash + AM/PM: MM/dd (en-US, en-PH) vs dd/MM (en-AU, en-IN, en-NZ, ms-MY) ──
+    // Cannot be determined from the timestamp alone; disambiguate by value range:
+    //   • first part > 12  → it must be a day  → dd/MM interpretation
+    //   • second part > 12 → it must be a day  → MM/dd interpretation
+    //   • both ≤ 12        → default to MM/dd  (AM/PM is strongly US-associated)
+    m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2}):(\d{2})\s+(AM|PM)$/i);
+    if (m) {
+      const a = +m[1], b = +m[2];
+      let day: number, month: number;
+      if (a > 12) { day = a; month = b; }  // a must be day → dd/MM
+      else if (b > 12) { day = b; month = a; }  // b must be day → MM/dd
+      else { month = a; day = b; }  // ambiguous     → default MM/dd (US)
+      return buildISO(day, month, +m[3], to24h(+m[4], m[7]), +m[5], +m[6], timestamp);
     }
-    
+
     console.warn(`Timestamp format not recognized: ${timestamp}`);
     return '';
   } catch (error) {
@@ -525,17 +563,57 @@ export function convertTimestampToISO(timestamp: string): string {
   }
 }
 
+/** Convert a 12-hour clock value + meridiem string ("AM"/"PM") to 24-hour. */
+function to24h(hour: number, meridiem: string): number {
+  const ap = meridiem.toUpperCase();
+  if (ap === 'AM' && hour === 12) return 0;
+  if (ap === 'PM' && hour !== 12) return hour + 12;
+  return hour;
+}
+
+/** Validate date/time components and return an ISO string, or '' on failure. */
+function buildISO(
+  day: number, month: number, year: number,
+  hour: number, minute: number, second: number,
+  originalTimestamp: string
+): string {
+  if (
+    day < 1 || day > 31 ||
+    month < 1 || month > 12 ||
+    year < 1900 || year > 2100 ||
+    hour < 0 || hour > 23 ||
+    minute < 0 || minute > 59 ||
+    second < 0 || second > 59
+  ) {
+    console.warn(`Invalid timestamp values: ${originalTimestamp}`);
+    return '';
+  }
+
+  const date = new Date(year, month - 1, day, hour, minute, second);
+
+  if (
+    date.getFullYear() !== year ||
+    date.getMonth() !== month - 1 ||
+    date.getDate() !== day
+  ) {
+    console.warn(`Invalid date constructed from timestamp: ${originalTimestamp}`);
+    return '';
+  }
+
+  return date.toISOString();
+}
+
 // Helper function to extract from plain text (non-JSON strings)
 function extractFromPlainText(text: string): string[] {
   let backupsToConsider: string[] = [];
   let backupsToDelete: string[] = [];
-  
+
   // Split by lines and process each line
   const lines = text.split('\n');
-  
+
   for (const line of lines) {
     if (typeof line !== 'string') continue;
-    
+
     if (line.includes("Backups to consider:")) {
       const timestampsStr = line.split("Backups to consider:")[1]?.trim();
       if (timestampsStr) {
@@ -546,7 +624,7 @@ function extractFromPlainText(text: string): string[] {
           .filter(ts => ts.length > 0);
       }
     }
-    
+
     if (line.includes("All backups to delete:")) {
       const timestampsStr = line.split("All backups to delete:")[1]?.trim();
       if (timestampsStr) {
@@ -558,9 +636,9 @@ function extractFromPlainText(text: string): string[] {
       }
     }
   }
-  
+
   if (backupsToConsider.length === 0) return [];
-  
+
   // Filter out backups to delete
   return backupsToConsider.filter(backup => !backupsToDelete.includes(backup));
 }
@@ -568,49 +646,49 @@ function extractFromPlainText(text: string): string[] {
 // Function to extract available versions from message array
 export function extractAvailableBackups(messagesArray: string | null): string[] {
   if (!messagesArray) return [];
-  
+
   // Trim whitespace and check for empty strings
   const cleanedMessages = messagesArray.trim();
   if (cleanedMessages.length === 0) return [];
-  
+
   let messages: unknown;
-  
+
   try {
     messages = JSON.parse(cleanedMessages);
   } catch (jsonError) {
     // If JSON parsing fails, try to handle as plain text
     console.warn('Messages array is not valid JSON, attempting to parse as plain text:', jsonError instanceof Error ? jsonError.message : 'Unknown error');
-    
+
     // Try to extract directly from the string if it contains the target lines
     if (typeof cleanedMessages === 'string') {
       return extractFromPlainText(cleanedMessages);
     }
-    
+
     return [];
   }
-  
+
   // Handle case where JSON was parsed but result is not an array
   if (!Array.isArray(messages)) {
     console.warn('Parsed messages is not an array, got:', typeof messages);
-    
+
     // If it's a string, try to extract from it
     if (typeof messages === 'string') {
       return extractFromPlainText(messages);
     }
-    
+
     return [];
   }
-  
+
   let backupsToConsider: string[] = [];
   let backupsToDelete: string[] = [];
-  
+
   for (const message of messages) {
     // Skip non-string elements
     if (typeof message !== 'string') {
       console.warn('Skipping non-string message element:', typeof message);
       continue;
     }
-    
+
     if (message.includes("Backups to consider:")) {
       const timestampsStr = message.split("Backups to consider:")[1]?.trim();
       if (timestampsStr) {
@@ -621,7 +699,7 @@ export function extractAvailableBackups(messagesArray: string | null): string[] 
           .filter(ts => ts.length > 0);
       }
     }
-    
+
     if (message.includes("All backups to delete:")) {
       const timestampsStr = message.split("All backups to delete:")[1]?.trim();
       if (timestampsStr) {
@@ -633,12 +711,12 @@ export function extractAvailableBackups(messagesArray: string | null): string[] 
       }
     }
   }
-  
+
   if (backupsToConsider.length === 0) return [];
-  
+
   // Filter out backups to delete
   const availableBackups = backupsToConsider.filter(backup => !backupsToDelete.includes(backup));
-  
+
   // Sort timestamps from most recent to oldest (ISO format can be sorted as strings)
   return availableBackups.sort((a, b) => b.localeCompare(a));
 }
@@ -682,7 +760,7 @@ export function getStatusColor(status: BackupStatus | 'N/A'): string {
  */
 export function getNotificationIconType(notificationEvent: NotificationEvent | undefined): 'errors' | 'warnings' | 'all' | 'off' | null {
   if (!notificationEvent) return null;
-  
+
   switch (notificationEvent) {
     case 'errors':
       return 'errors';
@@ -705,19 +783,22 @@ export function isDevelopmentMode(): boolean {
  * Convert overdue tolerance value to human-readable label
  */
 export function getOverdueToleranceLabel(tolerance: OverdueTolerance): string {
+  // Dummy t function for i18n string extraction
+  const t = (s: string) => s;
+
   const toleranceLabels: Record<OverdueTolerance, string> = {
-    'no_tolerance': 'No tolerance',
-    '5min': '5 min',
-    '15min': '15 min',
-    '30min': '30 min',
-    '1h': '1 hour',
-    '2h': '2 hours',
-    '4h': '4 hours',
-    '6h': '6 hours',
-    '12h': '12 hours',
-    '1d': '1 day'
+    'no_tolerance': t('No tolerance'),
+    '5min': t('5 min'),
+    '15min': t('15 min'),
+    '30min': t('30 min'),
+    '1h': t('1 hour'),
+    '2h': t('2 hours'),
+    '4h': t('4 hours'),
+    '6h': t('6 hours'),
+    '12h': t('12 hours'),
+    '1d': t('1 day')
   };
-  
+
   return toleranceLabels[tolerance] || tolerance;
 }
 

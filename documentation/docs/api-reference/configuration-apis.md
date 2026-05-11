@@ -444,6 +444,6 @@
   - `400`: overdue_tolerance is required
   - `500`: Server error updating overdue tolerance
 - **Notes**:
-  - Updates the overdue tolerance setting (accepts string format like `"1h"`, `"2h"`, etc.; default for new installs is **`2h`**)
+  - Updates the overdue tolerance setting (accepts string format like `"1h"`, `"2h"`, etc.; default for new installs is `2h`)
   - Affects when backups are considered overdue
   - Used by the overdue backup checker

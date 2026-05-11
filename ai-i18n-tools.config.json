@@ -29,7 +29,7 @@
   },
   "glossary": {
     "uiGlossary": "src/locales/strings.json",
-    "userGlossary": "documentation/glossary-user.csv"
+    "userGlossary": "glossary-user.csv"
   },
   "ui": {
     "sourceRoots": ["src/"],
@@ -42,18 +42,33 @@
       "description": "Docusaurus docs site",
       "contentPaths": ["documentation/docs"],
       "outputDir": "documentation/i18n",
-      "jsonSource": "documentation/i18n/en",
+      "jsonSource": "documentation/i18n/en-GB",
       "markdownOutput": {
         "style": "docusaurus",
-        "docsRoot": "documentation/docs"
+        "docsRoot": "documentation/docs",
+        "postProcessing": {
+          "regexAdjustments": [
+            {
+              "description": "translate SVG images paths from /img to ../assets for duplistatus_ files",
+              "search": "\\(/img/duplistatus_",
+              "replace": "(../assets/duplistatus_"
+            }
+          ]
+        }
       },
       "addFrontmatter": true
     }
   ],
   "svg": {
-    "sourcePath": "documentation/static/img",
+    "sourcePath": [
+      "documentation/static/img/duplistatus_dash-cards.svg",
+      "documentation/static/img/duplistatus_dash-table.svg",
+      "documentation/static/img/duplistatus_toolbar.svg"
+    ],
     "outputDir": "documentation/i18n",
-    "style": "nested"
+    "style": "nested",
+    "pathTemplate": "{outputDir}/{locale}/docusaurus-plugin-content-docs/current/assets/{basename}",
+    "forceLowercase": true
   },
   "concurrency": 4,
   "batchConcurrency": 4,

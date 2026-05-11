@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { readFile, stat } from 'fs/promises';
-import { join } from 'path';
 import { requireAdmin } from '@/lib/auth-middleware';
 import { withCSRF } from '@/lib/csrf-middleware';
 import { getApplicationLogPath, getApplicationLogFilename } from '@/lib/paths';

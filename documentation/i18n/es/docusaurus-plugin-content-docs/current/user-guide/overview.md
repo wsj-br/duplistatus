@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-05-06T23:21:18.442Z'
-source_file_mtime: '2026-05-06T23:18:51.430Z'
-source_file_hash: 7771f9d86a84f69538824b04174596c096a83c31c5860e9ced75eb272db5cfd5
+translation_last_updated: '2026-05-11T14:27:46.897Z'
+source_file_mtime: '2026-05-10T23:06:13.815Z'
+source_file_hash: 3d1ba5a81b316e3831c0ae88b5c9c7ca0139d405589c848f27360fee93a83b0e
 translation_language: es
 source_file_path: documentation/docs/user-guide/overview.md
 translation_models:
@@ -69,11 +69,12 @@ La interfaz de usuario está organizada en varias secciones clave para proporcio
 
 La barra de herramientas de la aplicación proporciona acceso conveniente a funciones y configuración clave, organizada para un flujo de trabajo eficiente.
 
-![Application toolbar](../assets/duplistatus_toolbar.png)
+![Application toolbar](../assets/duplistatus_toolbar.svg)
 
-| Botón                                                                                                                                           | Descripción                                                                                                                                                                  |
-|--------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| <IconButton icon="lucide:rotate-ccw" /> &nbsp; Actualizar pantalla                                                                                    | Ejecutar una actualización manual inmediata de todos los datos                                                                                                                       |
+| Botón                                                                                                                                           | Descripción                                                                                                                                                                                |
+|--------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| <IconButton icon="lucide:search" /> &nbsp; Filtrar                                                                                            | Filtrar por nombre del servidor, alias o nombre de copia de seguridad                                                                                                                      |
+| <IconButton icon="lucide:rotate-ccw" /> &nbsp; Actualizar pantalla                                                                                    | Ejecutar una actualización manual inmediata de todos los datos                                                                                                                             |
 | <IconButton label="Actualización automática" />                                                                                                              | Activar o desactivar la función de actualización automática. Configurar en [Configuración de visualización](settings/display-settings.md) <br/> _Clic derecho_ para abrir la página de Configuración de visualización           |
 | <SvgButton svgFilename="ntfy.svg" /> &nbsp; Abrir NTFY                                                                                            | Acceder al sitio web ntfy.sh para el tema de notificación configurado. <br/> _Clic derecho_ para mostrar un código QR y configurar su dispositivo para recibir notificaciones de duplistatus. |
 | <SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Configuración de Duplicati](duplicati-configuration.md)       | Abrir la interfaz web del servidor Duplicati seleccionado <br/> _Clic derecho_ para abrir la interfaz heredada de Duplicati (`/ngax`) en una nueva pestaña                                                                                                                           |

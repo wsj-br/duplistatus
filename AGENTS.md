@@ -43,7 +43,7 @@ This file documents essential information for AI agents working in the duplistat
 ### Internationalization (i18n)
 - **Runtime**: i18next (`src/i18n.ts`, `I18nProvider` in root layout). Client components use **`useTranslation()` + `t('Exact English phrase')`** at the point of use (English source string = key). Server Components and other non-React code use **`getServerI18n()`** from `src/lib/i18n-server.ts` and **`i18n.t('…')`** with the same literal keys. **Do not** add feature-level wrapper hooks or shared “content” objects for UI strings — **`ai-i18n-tools extract`** scans literal `t('…')` in `src/`.
 - **Catalog / flat bundles**: `src/locales/strings.json`, `de.json`, `fr.json`, `es.json`, `pt-BR.json` (updated via `pnpm i18n:extract` and translate commands).
-- **Config**: `ai-i18n-tools.config.json` at repo root (`sourceLocale`: `en`, `targetLocales`, UI roots, Docusaurus paths, glossary, `cacheDir`).
+- **Config**: `ai-i18n-tools.config.json` at repo root (`sourceLocale`: `en-GB`, `targetLocales`, UI roots, Docusaurus paths, glossary, `cacheDir`).
 - **URLs**: No locale prefix in app routes; language is stored (e.g. `NEXT_LOCALE` cookie) and applied with `loadLocale` + `i18n.changeLanguage`. Legacy `/{locale}/…` URLs are redirected at the edge (see `src/proxy.ts`).
 
 ## Essential Commands
@@ -237,7 +237,7 @@ export async function POST(request: NextRequest) {
 ## Documentation
 
 - **Location**: `documentation/` (Docusaurus site)
-- **Languages**: Full docs in en, de, fr, es, pt-BR
+- **Languages**: Full docs in en-GB, de, fr, es, pt-BR
 - **Translation**: `ai-i18n-tools` from repo root; from `documentation/`, `pnpm translate` calls the root scripts
 - **Update only English**: When modifying docs, only update `./documentation/docs/` (English); translated files under `documentation/i18n/` are produced by the tooling
 

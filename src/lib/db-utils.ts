@@ -725,6 +725,21 @@ export function getServerInfoById(serverId: string) {
 }
 
 
+export function getBackupLogs(backupId: string) {
+  return withDb(() => {
+    try {
+      return safeDbOperation(() => dbOps.getBackupLogsById.get(backupId), 'getBackupLogsById') as {
+        messages_array: string | null;
+        warnings_array: string | null;
+        errors_array: string | null;
+      } | undefined;
+    } catch (error) {
+      console.error(`Failed to get logs for backup ${backupId}:`, error instanceof Error ? error.message : String(error));
+      return null;
+    }
+  });
+}
+
 export function getServerById(serverId: string) {
   return withDb(() => {
     try {

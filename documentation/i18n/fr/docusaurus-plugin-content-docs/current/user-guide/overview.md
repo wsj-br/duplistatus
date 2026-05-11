@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-05-06T23:21:45.805Z'
-source_file_mtime: '2026-05-06T23:18:51.430Z'
-source_file_hash: 7771f9d86a84f69538824b04174596c096a83c31c5860e9ced75eb272db5cfd5
+translation_last_updated: '2026-05-11T14:27:46.893Z'
+source_file_mtime: '2026-05-10T23:06:13.815Z'
+source_file_hash: 3d1ba5a81b316e3831c0ae88b5c9c7ca0139d405589c848f27360fee93a83b0e
 translation_language: fr
 source_file_path: documentation/docs/user-guide/overview.md
 translation_models:
@@ -69,11 +69,12 @@ L'interface utilisateur est organisée en plusieurs sections clés pour offrir u
 
 La barre d'outils de l'application fournit un accès pratique aux fonctions et paramètres clés, organisés pour un flux de travail efficace.
 
-![Application toolbar](../assets/duplistatus_toolbar.png)
+![Application toolbar](../assets/duplistatus_toolbar.svg)
 
-| Bouton                                                                                                                                           | Description                                                                                                                                                                  |
-|--------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| <IconButton icon="lucide:rotate-ccw" /> &nbsp; Actualiser l'écran                                                                                    | Exécute une actualisation manuelle immédiate de toutes les données                                                                                                                       |
+| Bouton                                                                                                                                           | Description                                                                                                                                                                                |
+|--------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| <IconButton icon="lucide:search" /> &nbsp; Filtrer                                                            | Filtrer sur le nom du serveur, l'alias ou le nom de la sauvegarde                                                                                                                          |
+| <IconButton icon="lucide:rotate-ccw" /> &nbsp; Actualiser l'écran                                                                                    | Exécuter une actualisation manuelle immédiate de toutes les données                                                                                                                        |
 | <IconButton label="Actualisation automatique" />                                                                                                              | Active ou désactive la fonction d'actualisation automatique. Configurez-la dans [Paramètres d'affichage](settings/display-settings.md) <br/> _Clic droit_ pour ouvrir la page Paramètres d'affichage           |
 | <SvgButton svgFilename="ntfy.svg" /> &nbsp; Ouvrir NTFY                                                                                            | Accède au site web ntfy.sh pour le sujet de notification configuré. <br/> _Clic droit_ pour afficher un code QR permettant de configurer votre appareil afin de recevoir des notifications depuis duplistatus. |
 | <SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Configuration Duplicati](duplicati-configuration.md)       | Ouvre l'interface web du serveur Duplicati sélectionné <br/> _Clic droit_ pour ouvrir l'interface héritée Duplicati (`/ngax`) dans un nouvel onglet                                                                                                                           |

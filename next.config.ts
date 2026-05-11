@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
-import { version } from "./package.json";
+
+// Set by npm/pnpm when running package scripts (e.g. `pnpm build`). Avoid importing package.json here — that retriggers Turbopack NFT “whole project traced” warnings tied to next.config.
+const version = process.env.npm_package_version ?? "dev";
 
 const ourWebpack: NextConfig["webpack"] = (config, { isServer, webpack }) => {
   if (isServer) {

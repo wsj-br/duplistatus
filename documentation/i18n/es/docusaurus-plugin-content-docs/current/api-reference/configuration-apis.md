@@ -1,10 +1,11 @@
 ---
-translation_last_updated: '2026-05-09T16:23:54.582Z'
-source_file_mtime: '2026-05-09T16:18:03.467Z'
-source_file_hash: bad433c4dc8fe5b6a3c7ffa2d838452a15dc67a13477b122b24827ebcb976f1e
+translation_last_updated: '2026-05-11T14:27:38.583Z'
+source_file_mtime: '2026-05-10T21:42:22.919Z'
+source_file_hash: 7c4af7564bebe2a0dac1c8dc3c5face4a1ed43b3e9c8faa8357ce5864a58171f
 translation_language: es
 source_file_path: documentation/docs/api-reference/configuration-apis.md
 translation_models:
+  - anthropic/claude-3.5-haiku
   - qwen/qwen3-235b-a22b-2507
 ---
 # Gestión de configuración {#configuration-management}
@@ -494,6 +495,6 @@ Para la frecuencia de notificación:
   - `400`: Se requiere overdue_tolerance
   - `500`: Error del servidor al actualizar la tolerancia de retraso
 - **Notas**:
-  - Actualiza la configuración de tolerancia de retraso (acepta formato de cadena como `"1h"`, `"2h"`, etc.; el valor predeterminado para nuevas instalaciones es **`2h`**)
-  - Afecta cuándo se consideran retrasadas las copias de seguridad
-  - Utilizado por el comprobador de copia de seguridad retrasada
+  - Actualiza la configuración de tolerancia de copias de seguridad vencidas (acepta formato de cadena como `"1h"`, `"2h"`, etc.; predeterminada para nuevas instalaciones es `2h`)
+  - Afecta cuándo se consideran vencidas las copias de seguridad
+  - Utilizada por el verificador de copias de seguridad vencidas

@@ -654,6 +654,10 @@ async function processTemplate(
     formattedContext.status = i18n.t(String(formattedContext.status));
   }
 
+  if ('overdue_tolerance' in formattedContext && formattedContext.overdue_tolerance !== null) {
+    formattedContext.overdue_tolerance = i18n.t(String(formattedContext.overdue_tolerance));
+  }
+
   return {
     title: format(template.title, formattedContext),
     message: format(template.message, formattedContext),

@@ -1,10 +1,11 @@
 ---
-translation_last_updated: '2026-05-09T16:23:54.028Z'
-source_file_mtime: '2026-05-09T16:18:03.467Z'
-source_file_hash: bad433c4dc8fe5b6a3c7ffa2d838452a15dc67a13477b122b24827ebcb976f1e
+translation_last_updated: '2026-05-11T14:27:38.556Z'
+source_file_mtime: '2026-05-10T21:42:22.919Z'
+source_file_hash: 7c4af7564bebe2a0dac1c8dc3c5face4a1ed43b3e9c8faa8357ce5864a58171f
 translation_language: de
 source_file_path: documentation/docs/api-reference/configuration-apis.md
 translation_models:
+  - anthropic/claude-3.5-haiku
   - qwen/qwen3-235b-a22b-2507
 ---
 # Konfigurationsverwaltung {#configuration-management}
@@ -493,7 +494,7 @@ Für die Benachrichtigungshäufigkeit:
   - `401`: Nicht autorisiert – Ungültige Sitzung oder CSRF-Token
   - `400`: overdue_tolerance ist erforderlich
   - `500`: Serverfehler bei der Aktualisierung der Überfälligkeits-Toleranz
-- **Notizen**:
-  - Aktualisiert die Toleranz-Einstellung für verspätete Sicherungen (akzeptiert Zeichenfolgenformat wie `"1h"`, `"2h"`, usw.; Standard bei neuen Installationen ist **`2h`**)
+- **Hinweise**:
+  - Aktualisiert die Einstellung für die Toleranz überfälliger Sicherungen (akzeptiert Stringformate wie `"1h"`, `"2h"` usw.; Standard für neue Installationen ist `2h`)
   - Beeinflusst, wann Sicherungen als überfällig gelten
-  - Wird vom Prüfer für verspätete Sicherungen verwendet
+  - Wird vom Prüfer für überfällige Sicherungen verwendet

@@ -17,7 +17,7 @@ const VIEWPORT_HEIGHT = 1080;
 /** Timeout (ms) for waiting for data-screenshot-target elements to appear. */
 const SCREENSHOT_TARGET_TIMEOUT = 15000;
 
-const LOCALES = ['en', 'de', 'fr', 'es', 'pt-BR'] as const;
+const LOCALES = ['en-GB', 'de', 'fr', 'es', 'pt-BR'] as const;
 
 type Locale = (typeof LOCALES)[number];
 
@@ -141,15 +141,25 @@ function parseLocaleArg(): Locale[] {
 }
 
 function getScreenshotDir(locale: Locale): string {
-  if (locale === 'en') {
+  if (locale === 'en-GB') {
     return 'documentation/static/assets';
   }
   return `documentation/i18n/${locale}/docusaurus-plugin-content-docs/current/assets`;
 }
 
-function makeUrl(locale: Locale, pathWithLeadingSlash: string): string {
+function makeUrl(pathWithLeadingSlash: string): string {
   const path = pathWithLeadingSlash.startsWith('/') ? pathWithLeadingSlash : `/${pathWithLeadingSlash}`;
-  return `${BASE_URL}/${locale}${path}`;
+  return `${BASE_URL}${path}`;
+}
+
+/** Set locale via NEXT_LOCALE cookie. */
+async function setLocale(page: Page, locale: Locale): Promise<void> {
+  await page.setCookie({
+    name: 'NEXT_LOCALE',
+    value: locale,
+    domain: 'localhost',
+    path: '/',
+  });
 }
 
 // ANSI color codes for console output
@@ -200,8 +210,8 @@ Requirements:
 
 Examples:
   pnpm ${script}                          # All locales
-  pnpm ${script} --locale pt-BR           # English only
-  pnpm ${script} --locale en,de,pt-BR
+  pnpm ${script} --locale en-GB           # English only
+  pnpm ${script} --locale en-GB,de,pt-BR
 `);
 }
 
@@ -403,25 +413,18 @@ async function generateTestData() {
 async function setDarkTheme(page: Page, userId: string) {
   console.log(`Setting dark theme for user ${userId}...`);
   await page.evaluate((uid) => {
-    // Set theme in localStorage
-    const keys = Object.keys(localStorage);
-    for (const key of keys) {
-      if (key.includes('theme') && key.includes(uid)) {
-        localStorage.setItem(key, 'dark');
-      }
-    }
-    // Also set global theme preference
+    // Matches getUserLocalStorageKey('theme', userId) in src/lib/user-local-storage.ts
+    localStorage.setItem(`theme:user-${uid}`, 'dark');
+    // Legacy key still read by root layout inline script
     localStorage.setItem('theme', 'dark');
-    // Apply dark class to document
     document.documentElement.classList.add('dark');
   }, userId);
   await delay(500);
 }
 
-async function login(page: Page, locale: Locale, username: string, password: string) {
+async function login(page: Page, username: string, password: string) {
   console.log(`Logging in as ${username}...`);
-  // Keep login + post-login redirect inside the requested locale.
-  await page.goto(makeUrl(locale, '/login?redirect=%2F'), { waitUntil: 'networkidle0' });
+  await page.goto(makeUrl('/login?redirect=%2F'), { waitUntil: 'networkidle0' });
   
   // Wait for the form to be ready
   await page.waitForSelector('#username', { visible: true });
@@ -445,22 +448,35 @@ async function login(page: Page, locale: Locale, username: string, password: str
   
   console.log(`Successfully logged in as ${username}`);
   
-  // Get user ID and set dark theme
-  const userId = await page.evaluate(() => {
-    // Try to get user ID from localStorage or API
+  // Resolve user id (same pattern as switchToTableView) and persist explicit dark preference
+  const userId = await page.evaluate(async () => {
+    try {
+      const response = await fetch('/api/auth/me');
+      const data = (await response.json()) as {
+        authenticated?: boolean;
+        user?: { id?: string };
+      };
+      if (data.authenticated && data.user?.id) {
+        return data.user.id;
+      }
+    } catch {
+      // fall through to localStorage scan
+    }
     const keys = Object.keys(localStorage);
     for (const key of keys) {
       if (key.includes('user') && key.includes('id')) {
-        return localStorage.getItem(key);
+        const value = localStorage.getItem(key);
+        if (value && value.length > 10) {
+          return value;
+        }
       }
     }
     return null;
   });
-  
+
   if (userId) {
     await setDarkTheme(page, userId);
   } else {
-    // Fallback: set dark theme globally
     await page.evaluate(() => {
       document.documentElement.classList.add('dark');
       localStorage.setItem('theme', 'dark');
@@ -476,7 +492,7 @@ async function getCSRFToken(page: Page): Promise<string> {
   return response.token || response.csrfToken || '';
 }
 
-async function logout(page: Page, locale: Locale) {
+async function logout(page: Page) {
   console.log('Logging out...');
   try {
     // Get CSRF token
@@ -495,12 +511,12 @@ async function logout(page: Page, locale: Locale) {
     }, csrfToken);
     
     // Navigate to login page to ensure we're logged out
-    await page.goto(makeUrl(locale, '/login'), { waitUntil: 'domcontentloaded' });
+    await page.goto(makeUrl('/login'), { waitUntil: 'domcontentloaded' });
     console.log('Logged out');
   } catch (error) {
     logError('Error during logout: ' + (error instanceof Error ? error.message : String(error)));
     // Try navigating to login page anyway
-    await page.goto(makeUrl(locale, '/login'), { waitUntil: 'domcontentloaded' });
+    await page.goto(makeUrl('/login'), { waitUntil: 'domcontentloaded' });
   }
 }
 
@@ -1266,7 +1282,7 @@ async function captureCollectButtonPopup(
     if (!skipNavigation) {
       // Navigate to blank page; use networkidle0 so header (client-rendered) is ready
       console.log('🌐 Navigating to blank page (/blank)...');
-      await page.goto(makeUrl(locale, '/blank'), { waitUntil: 'networkidle0' });
+      await page.goto(makeUrl('/blank'), { waitUntil: 'networkidle0' });
       await page.waitForSelector('[data-screenshot-target="collect-button"]', { timeout: 15000, visible: true });
     }
     
@@ -1505,7 +1521,7 @@ async function captureOverdueBackupHoverCard(page: Page, screenshotDir: string):
 async function captureBackupTooltip(page: Page, locale: Locale, screenshotDir: string): Promise<boolean> {
   try {
     // Navigate to dashboard in card mode
-    await page.goto(makeUrl(locale, '/'), { waitUntil: 'networkidle0' });
+    await page.goto(makeUrl('/'), { waitUntil: 'networkidle0' });
     await waitForDashboardLoad(page);
     await delay(500);
     
@@ -1656,7 +1672,7 @@ async function captureDuplicatiConfiguration(page: Page, locale: Locale, screens
     if (!skipNavigation) {
       // Navigate to blank page; use networkidle0 so header is ready, then wait for trigger
       console.log('🌐 Navigating to blank page (/blank)...');
-      await page.goto(makeUrl(locale, '/blank'), { waitUntil: 'networkidle0' });
+      await page.goto(makeUrl('/blank'), { waitUntil: 'networkidle0' });
       await page.waitForSelector('[data-screenshot-target="duplicati-configuration-trigger"]', { timeout: 15000, visible: true });
       await delay(500);
     }
@@ -1729,7 +1745,7 @@ async function captureUserMenu(page: Page, locale: Locale, screenshotDir: string
         (res) => res.url().includes('/api/auth/me'),
         { timeout: 18000 }
       ).catch(() => null);
-      await page.goto(makeUrl(locale, '/blank'), { waitUntil: 'networkidle0' });
+      await page.goto(makeUrl('/blank'), { waitUntil: 'networkidle0' });
       await authMePromise;
       // Allow React to setState and re-render the header with the user trigger
       await delay(1200);
@@ -1825,7 +1841,7 @@ async function captureUserMenu(page: Page, locale: Locale, screenshotDir: string
 async function captureDashboardSummary(page: Page, locale: Locale, screenshotDir: string, filename: string): Promise<boolean> {
   try {
     // Navigate to dashboard
-    await page.goto(makeUrl(locale, '/'), { waitUntil: 'networkidle0' });
+    await page.goto(makeUrl('/'), { waitUntil: 'networkidle0' });
     await waitForDashboardLoad(page);
     await delay(500);
     
@@ -1872,7 +1888,7 @@ async function captureDashboardSummary(page: Page, locale: Locale, screenshotDir
 async function captureOverviewSidePanel(page: Page, locale: Locale, screenshotDir: string): Promise<{ status: boolean; charts: boolean }> {
   try {
     // Navigate to dashboard
-    await page.goto(makeUrl(locale, '/'), { waitUntil: 'networkidle0' });
+    await page.goto(makeUrl('/'), { waitUntil: 'networkidle0' });
     await waitForDashboardLoad(page);
     await delay(500);
     
@@ -2099,7 +2115,7 @@ async function captureBackupHistoryTable(page: Page, locale: Locale, screenshotD
   try {
     if (!skipNavigation) {
       // Navigate to server details page
-      await page.goto(makeUrl(locale, `/detail/${serverId}`), { waitUntil: 'networkidle0' });
+      await page.goto(makeUrl(`/detail/${serverId}`), { waitUntil: 'networkidle0' });
     }
     
     // Wait for content to load (client component fetches data after page load)
@@ -2295,7 +2311,7 @@ async function captureMetricsChartOnCurrentPage(page: Page, screenshotDir: strin
 async function captureMetricsChart(page: Page, locale: Locale, screenshotDir: string, serverId: string, skipNavigation?: boolean): Promise<boolean> {
   try {
     if (!skipNavigation) {
-      await page.goto(makeUrl(locale, `/detail/${serverId}`), { waitUntil: 'networkidle0' });
+      await page.goto(makeUrl(`/detail/${serverId}`), { waitUntil: 'networkidle0' });
       const contentLoaded = await waitForServerDetailContent(page, 15000);
       if (!contentLoaded) {
         logError('Server detail content did not load in time');
@@ -2322,7 +2338,7 @@ async function captureAvailableBackupsModal(page: Page, locale: Locale, screensh
   try {
     if (!skipNavigation) {
       // Navigate to server details page (should already be there, but ensure we're on the right page)
-      await page.goto(makeUrl(locale, `/detail/${serverId}`), { waitUntil: 'networkidle0' });
+      await page.goto(makeUrl(`/detail/${serverId}`), { waitUntil: 'networkidle0' });
     }
     
     // Wait for content to load (client component fetches data after page load)
@@ -2428,7 +2444,7 @@ async function captureServerOverdueMessage(page: Page, locale: Locale, screensho
     console.log(`Found server with overdue backups: ${serverWithOverdue.name} (${serverWithOverdue.id})`);
     
     // Navigate to the server detail page of the server that has overdue backups (so the overdue message is shown)
-    const overdueDetailUrl = makeUrl(locale, `/detail/${serverWithOverdue.id}`);
+    const overdueDetailUrl = makeUrl(`/detail/${serverWithOverdue.id}`);
     console.log(`🌐 Navigating to server-with-overdue detail page: ${overdueDetailUrl}`);
     await page.goto(overdueDetailUrl, { waitUntil: 'networkidle0' });
     
@@ -2564,11 +2580,18 @@ async function main() {
   });
   
   const page = await browser.newPage();
+  // Headless Chrome defaults to light prefers-color-scheme; force dark so "system" theme matches docs screenshots
+  await page.emulateMediaFeatures([{ name: 'prefers-color-scheme', value: 'dark' }]);
   await page.setViewport({ width: VIEWPORT_WIDTH, height: VIEWPORT_HEIGHT });
   
   try {
-    // Login once (admin) to establish auth cookies; we will switch locales via URL prefix.
-    await login(page, 'en', ADMIN_USERNAME, ADMIN_PASSWORD!);
+    // Login once (admin) to establish auth cookies; we will switch locales via cookie.
+    await login(page, ADMIN_USERNAME, ADMIN_PASSWORD!);
+    
+    // Set initial locale to first locale in the list
+    if (localesToRun.length > 0) {
+      await setLocale(page, localesToRun[0]);
+    }
 
     // Get a server with backups for Phase A metrics screenshot (more data before cleanup)
     const dbModuleForMetrics = await import('../src/lib/db');
@@ -2601,10 +2624,13 @@ async function main() {
 
       console.log('-------------------------------------------------------');
       console.log(`🌐 [Phase A] Capturing locale: ${locale}`);
+      
+      // Set locale via cookie (no URL prefix anymore)
+      await setLocale(page, locale);
 
       // Navigate to dashboard
       console.log('🌐 Navigating to dashboard page (/)...');
-      await page.goto(makeUrl(locale, '/'), { waitUntil: 'networkidle0' });
+      await page.goto(makeUrl('/'), { waitUntil: 'networkidle0' });
       await waitForDashboardLoad(page);
 
       // Dashboard (card/overview) screenshot
@@ -2791,7 +2817,7 @@ async function main() {
       console.log(`  Deletion complete. ${remainingServerCount.count} server(s) remaining in database.`);
       
       // Refresh the page to see updated server list
-      await page.goto(makeUrl('en', '/'), { waitUntil: 'networkidle0' });
+      await page.goto(makeUrl('/'), { waitUntil: 'networkidle0' });
       await waitForDashboardLoad(page);
     }
     
@@ -2873,7 +2899,7 @@ async function main() {
       }
       
       // Refresh the page to see updated server configurations
-      await page.goto(makeUrl('en', '/'), { waitUntil: 'networkidle0' });
+      await page.goto(makeUrl('/'), { waitUntil: 'networkidle0' });
       await waitForDashboardLoad(page);
     }
     
@@ -2959,9 +2985,12 @@ async function main() {
 
       console.log('-------------------------------------------------------');
       console.log(`🌐 [Phase B] Capturing locale: ${locale}`);
+      
+      // Set locale via cookie (no URL prefix anymore)
+      await setLocale(page, locale);
 
       // Navigate to dashboard and switch to table view
-      await page.goto(makeUrl(locale, '/'), { waitUntil: 'networkidle0' });
+      await page.goto(makeUrl('/'), { waitUntil: 'networkidle0' });
       await waitForDashboardLoad(page);
       await switchToTableView(page);
       await delay(500);
@@ -3028,7 +3057,7 @@ async function main() {
 
       console.log('Navigating to first server\'s backup list page...');
       console.log(`🌐 Navigating to server detail page (/detail/${firstServer.id})...`);
-      await page.goto(makeUrl(locale, `/detail/${firstServer.id}`), { waitUntil: 'networkidle0' });
+      await page.goto(makeUrl(`/detail/${firstServer.id}`), { waitUntil: 'networkidle0' });
 
       const contentLoaded = await waitForServerDetailContent(page, 15000);
       if (!contentLoaded) {
@@ -3066,7 +3095,7 @@ async function main() {
         if (backupDetails.server && backupDetails.server.backups && backupDetails.server.backups.length > 0) {
           const firstBackup = backupDetails.server.backups[0];
           console.log(`🌐 Navigating to backup detail page (/detail/${firstServer.id}/backup/${firstBackup.id})...`);
-          await page.goto(makeUrl(locale, `/detail/${firstServer.id}/backup/${firstBackup.id}`), { waitUntil: 'networkidle0' });
+          await page.goto(makeUrl(`/detail/${firstServer.id}/backup/${firstBackup.id}`), { waitUntil: 'networkidle0' });
           return takeScreenshot(page, 'screen-backup-detail.png', screenshotDir, { cropBottom: 80, screenshotTarget: 'backup-detail' });
         }
         return takeScreenshot(page, 'screen-backup-detail.png', screenshotDir, { cropBottom: 80, screenshotTarget: 'backup-detail' });
@@ -3082,7 +3111,7 @@ async function main() {
 
       // Settings (admin)
       console.log('🌐 Navigating to settings page (/settings)...');
-      await page.goto(makeUrl(locale, '/settings'), { waitUntil: 'domcontentloaded' });
+      await page.goto(makeUrl('/settings'), { waitUntil: 'domcontentloaded' });
       await delay(500);
 
       console.log('-------------------------------------------------------');
@@ -3112,7 +3141,7 @@ async function main() {
           await delay(1000);
         }
 
-        await page.goto(makeUrl(locale, `/settings?tab=${tab}`), { waitUntil: 'networkidle0' });
+        await page.goto(makeUrl(`/settings?tab=${tab}`), { waitUntil: 'networkidle0' });
         await delay(500);
 
         if (tab === 'notifications') {
@@ -3299,8 +3328,8 @@ async function main() {
 
       // Non-admin captures (per locale)
       console.log('Logging out and logging in as non-admin user...');
-      await logout(page, locale);
-      await login(page, locale, USER_USERNAME, USER_PASSWORD!);
+      await logout(page);
+      await login(page, USER_USERNAME, USER_PASSWORD!);
 
       console.log('-------------------------------------------------------');
       console.log('Capturing user menu dropdown (user)...');
@@ -3309,7 +3338,7 @@ async function main() {
       else failed.push('screen-user-menu-user.png');
 
       console.log('🌐 Navigating to settings page as non-admin (/settings)...');
-      await page.goto(makeUrl(locale, '/settings'), { waitUntil: 'domcontentloaded' });
+      await page.goto(makeUrl('/settings'), { waitUntil: 'domcontentloaded' });
       await delay(500);
 
       console.log('-------------------------------------------------------');
@@ -3319,8 +3348,8 @@ async function main() {
       else failed.push('screen-settings-left-panel-non-admin.png');
 
       // Restore admin session for next locale in Phase B (except after last)
-      await logout(page, locale);
-      await login(page, locale, ADMIN_USERNAME, ADMIN_PASSWORD!);
+      await logout(page);
+      await login(page, ADMIN_USERNAME, ADMIN_PASSWORD!);
     }
 
     // Restore console so summary is not prefixed with elapsed

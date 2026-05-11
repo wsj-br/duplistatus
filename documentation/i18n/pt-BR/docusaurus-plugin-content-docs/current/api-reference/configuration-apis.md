@@ -1,10 +1,11 @@
 ---
-translation_last_updated: '2026-05-09T16:23:54.846Z'
-source_file_mtime: '2026-05-09T16:18:03.467Z'
-source_file_hash: bad433c4dc8fe5b6a3c7ffa2d838452a15dc67a13477b122b24827ebcb976f1e
+translation_last_updated: '2026-05-11T14:27:38.587Z'
+source_file_mtime: '2026-05-10T21:42:22.919Z'
+source_file_hash: 7c4af7564bebe2a0dac1c8dc3c5face4a1ed43b3e9c8faa8357ce5864a58171f
 translation_language: pt-BR
 source_file_path: documentation/docs/api-reference/configuration-apis.md
 translation_models:
+  - anthropic/claude-3.5-haiku
   - qwen/qwen3-235b-a22b-2507
 ---
 # Gerenciamento de Configuração {#configuration-management}
@@ -494,6 +495,6 @@ Para frequência de notificação:
   - `400`: overdue_tolerance é obrigatório
   - `500`: Erro do servidor ao atualizar a tolerância de atraso
 - **Notas**:
-  - Atualiza a configuração de tolerância de atraso (aceita formato de string como `"1h"`, `"2h"`, etc.; o padrão para novas instalações é **`2h`**)
+  - Atualiza a configuração de tolerância de atraso (aceita formato de string como `"1h"`, `"2h"`, etc.; padrão para novas instalações é `2h`)
   - Afeta quando os backups são considerados atrasados
-  - Utilizado pelo verificador de backup atrasado
+  - Usado pelo verificador de backup atrasado

@@ -1,10 +1,11 @@
 ---
-translation_last_updated: '2026-05-06T23:22:22.694Z'
-source_file_mtime: '2026-05-06T23:18:51.442Z'
-source_file_hash: cea05020c7711dac6d718d53ed458c8e5ea4efa2100371ed25ba113cfaa69d29
+translation_last_updated: '2026-05-11T14:27:47.812Z'
+source_file_mtime: '2026-05-09T23:54:51.779Z'
+source_file_hash: 535a6655527691ed8a2170729359dcc23c21fb97fa3e28a3e9c8b0e413e6b6d9
 translation_language: pt-BR
 source_file_path: documentation/docs/user-guide/settings/display-settings.md
 translation_models:
+  - anthropic/claude-3.5-haiku
   - anthropic/claude-haiku-4.5
   - qwen/qwen3-235b-a22b-2507
 ---
@@ -23,7 +24,7 @@ Configurar preferências de interface do usuário e exibição.
 | **Intervalo de atualização automática** | Com que frequência as páginas são atualizadas automaticamente.              | 1 minuto           |
 | **Ordem de classificação dos cartões**      | A forma como os cartões são classificados no painel.              | Nome do servidor (a-z)  |
 | **Início da semana**         | Configurar quando a semana começa.                     | Baseado na localidade    |
-| **Tema**                 | Selecionar o tema claro ou escuro.                     | Escuro               |
+| **Tema**                 | Escolha claro, escuro ou corresponda à aparência do seu sistema operacional (preferência de modo claro/escuro). | Seguir SO quando não definido |
 
 <br/>
 

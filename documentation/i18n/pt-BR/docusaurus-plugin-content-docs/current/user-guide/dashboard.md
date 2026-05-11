@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-05-06T23:22:20.166Z'
-source_file_mtime: '2026-05-06T23:18:51.430Z'
-source_file_hash: c5a21306a791b07d790b4dac459f51300cd7ee6d900b4fc4e92f7af705a8194a
+translation_last_updated: '2026-05-11T14:27:46.583Z'
+source_file_mtime: '2026-05-10T23:08:38.195Z'
+source_file_hash: afafb5babfbcde75a3fc8bdefb13967a3477a08a68d802733ec33aff54a7e00f
 translation_language: pt-BR
 source_file_path: documentation/docs/user-guide/dashboard.md
 translation_models:
@@ -31,7 +31,7 @@ Esta seção exibe estatísticas agregadas para todos os backups.
 
 O layout de cards mostra o status do log de backup mais recente recebido para cada backup.
 
-![Dashboard Overview](../assets/duplistatus_dash-cards.png)
+![Card layout](../assets/duplistatus_dash-cards.svg)
 
 - **Nome do Servidor**: Nome do servidor Duplicati (ou o apelido)
   - Passar o mouse sobre o **Nome do Servidor** mostrará o nome do servidor e a observação

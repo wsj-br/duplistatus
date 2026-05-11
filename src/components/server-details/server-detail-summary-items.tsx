@@ -125,7 +125,7 @@ export function ServerDetailSummaryItems({
       { 
         id: 'avgDuration',
         title: t("Avg. Duration"), 
-        value: getFormattedValue(averageDuration, formatDurationFromMinutes, "00:00:00"),
+        value: getFormattedValue(averageDuration, (val) => formatDurationFromMinutes(val, effectiveLocale), "00:00:00"),
         icon: <Clock className="h-4 w-4 text-blue-600" />, 
         "data-ai-hint": "timer clock" 
       },
