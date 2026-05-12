@@ -16,7 +16,7 @@ RUN npm install -g pnpm@latest-10
 WORKDIR /app
 
 # Copy workspace configuration files
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .pnpmfile.cjs ./
 
 # Install all workspace dependencies
 RUN pnpm install --frozen-lockfile
