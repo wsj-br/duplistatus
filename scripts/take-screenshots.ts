@@ -865,9 +865,6 @@ async function switchToTableView(page: Page) {
   console.log('-------------------------------------------------------');
   console.log('Switching to table view...');
   try {
-    // Wait for the dashboard to load
-    await delay(2000);
-    
     // Get user ID first to construct the proper localStorage key
     const userId = await page.evaluate(async () => {
       // Try to get user ID from API
@@ -911,49 +908,51 @@ async function switchToTableView(page: Page) {
         }
       }
       
-      // If not found, return null (will default to clicking to switch)
+      // If not found, return null
       return null;
     }, userId);
     
-    console.log(`Current view mode: ${currentViewMode || 'null (will switch to table)'}`);
+    console.log(`Current view mode: ${currentViewMode || 'null (default: overview)'}`);
     
-    // If we're in overview mode, click once to get to table mode
-    // If we're already in table mode, we don't need to click
+    // If not already in table view, set it directly and reload
     if (currentViewMode !== 'table') {
-      // Use data-screenshot-target for reliable element selection
-      try {
-        const found = await waitForScreenshotTarget(page, 'dashboard-view-mode-toggle', 5000);
-        if (found) {
-          await page.click('[data-screenshot-target="dashboard-view-mode-toggle"]');
-          await delay(2000);
-          
-          // Verify we're in table view now
-          const newViewMode = await page.evaluate((uid) => {
-            if (uid) {
-              const userKey = `dashboard-view-mode:user-${uid}`;
-              const value = localStorage.getItem(userKey);
-              if (value) return value;
-            }
-            const keys = Object.keys(localStorage);
-            for (const key of keys) {
-              if (key.includes('dashboard-view-mode')) {
-                return localStorage.getItem(key);
-              }
-            }
-            return null;
-          }, userId);
-          
-          if (newViewMode !== 'table') {
-            // Click again if we're still not in table view
-            await page.click('[data-screenshot-target="dashboard-view-mode-toggle"]');
-            await delay(2000);
-          }
+      console.log('Setting view mode to table via localStorage...');
+      
+      // Set localStorage directly using the correct key format
+      await page.evaluate((uid) => {
+        if (uid) {
+          const userKey = `dashboard-view-mode:user-${uid}`;
+          localStorage.setItem(userKey, 'table');
+          console.log(`Set ${userKey} = 'table'`);
         } else {
-          throw new Error('dashboard-view-mode-toggle not found');
+          // Fallback: set a generic key
+          localStorage.setItem('dashboard-view-mode', 'table');
         }
-      } catch (error) {
-        console.log(colors.yellow, 'Could not click view mode button: ' + (error instanceof Error ? error.message : String(error)), colors.reset);
+      }, userId);
+      
+      // Reload the page to apply the new view mode
+      console.log('Reloading page to apply table view...');
+      await page.reload({ waitUntil: 'networkidle0' });
+      await waitForDashboardLoad(page);
+      
+      // Verify we're now in table view
+      const newViewMode = await page.evaluate((uid) => {
+        if (uid) {
+          const userKey = `dashboard-view-mode:user-${uid}`;
+          return localStorage.getItem(userKey);
+        }
+        return localStorage.getItem('dashboard-view-mode');
+      }, userId);
+      
+      console.log(`View mode after reload: ${newViewMode}`);
+      
+      if (newViewMode !== 'table') {
+        logError(`Failed to switch to table view. Current mode: ${newViewMode}`);
+      } else {
+        console.log('Successfully switched to table view');
       }
+    } else {
+      console.log('Already in table view, no action needed');
     }
   } catch (error) {
     logError('Error switching to table view: ' + (error instanceof Error ? error.message : String(error)));
@@ -2989,11 +2988,58 @@ async function main() {
       // Set locale via cookie (no URL prefix anymore)
       await setLocale(page, locale);
 
-      // Navigate to dashboard and switch to table view
+      // Set table view in localStorage BEFORE navigating to dashboard
+      // This ensures the dashboard loads directly in table view mode
+      console.log('Setting table view mode in localStorage before navigation...');
+      await page.evaluateOnNewDocument(() => {
+        // This runs before any scripts on the new page
+        localStorage.setItem('dashboard-view-mode', 'table');
+      });
+      
+      // Also set it for the specific user we know will be logged in
+      const adminUserId = await page.evaluate(async () => {
+        try {
+          const response = await fetch('/api/auth/me');
+          const data = await response.json();
+          if (data.authenticated && data.user && data.user.id) {
+            return data.user.id;
+          }
+        } catch (e) {
+          // Ignore error
+        }
+        return null;
+      });
+      
+      if (adminUserId) {
+        await page.evaluate((uid) => {
+          localStorage.setItem(`dashboard-view-mode:user-${uid}`, 'table');
+        }, adminUserId);
+        console.log(`Set dashboard-view-mode:user-${adminUserId} = 'table'`);
+      }
+      
+      // Navigate to dashboard - it should now load in table view directly
       await page.goto(makeUrl('/'), { waitUntil: 'networkidle0' });
       await waitForDashboardLoad(page);
-      await switchToTableView(page);
-      await delay(500);
+      
+      // Wait for table view to render
+      console.log('Waiting for table view to fully render...');
+      await delay(3000);
+      
+      // Wait for the table view element to be present
+      const tableViewFound = await waitForScreenshotTarget(page, 'dashboard-table-view', 15000);
+      if (!tableViewFound) {
+        logError('Table view element not found. Trying to click toggle button...');
+        // Fallback: try to click the toggle button to switch to table view
+        try {
+          const found = await waitForScreenshotTarget(page, 'dashboard-view-mode-toggle', 5000);
+          if (found) {
+            await page.click('[data-screenshot-target="dashboard-view-mode-toggle"]');
+            await delay(3000);
+          }
+        } catch (e) {
+          // Ignore error
+        }
+      }
 
       console.log('-------------------------------------------------------');
       console.log('Taking screenshot of dashboard in table mode...');
@@ -3004,6 +3050,8 @@ async function main() {
       // Metrics chart on dashboard table view (same page, no navigation)
       console.log('-------------------------------------------------------');
       console.log('Capturing metrics chart...');
+      // Wait longer for metrics chart to mount and render
+      await delay(2000);
       const metricsChart = await captureMetricsChartOnCurrentPage(page, screenshotDir);
       if (metricsChart) successful.push('screen-metrics.png');
       else failed.push('screen-metrics.png');
