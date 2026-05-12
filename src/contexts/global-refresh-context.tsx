@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { usePathname } from 'next/navigation';
 import { useConfig } from './config-context';
 import { useConfiguration } from './configuration-context';
+import { useConnectivityError, isNetworkError } from '@/components/ui/connectivity-error-modal';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import type { ServerSummary, OverallSummary, ChartDataPoint } from '@/lib/types';
 
@@ -87,6 +88,8 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
     return 'none';
   }, [pathname]);
 
+  const { showConnectivityError } = useConnectivityError();
+
   const refreshDashboard = useCallback(async () => {
     try {
       const refreshStartTime = Date.now();
@@ -140,6 +143,12 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
       }));
     } catch (error) {
       console.error('Error refreshing dashboard:', error instanceof Error ? error.message : String(error));
+      
+      // Check if this is a network/connectivity error
+      if (isNetworkError(error)) {
+        showConnectivityError(error instanceof Error ? error.message : 'Network connection failed');
+      }
+      
       setState(prev => ({
         ...prev,
         isRefreshing: false,
@@ -147,7 +156,7 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
         refreshInProgress: false,
       }));
     }
-  }, [refreshConfigSilently]);
+  }, [refreshConfigSilently, showConnectivityError]);
 
   const refreshDetail = useCallback(async (serverId: string) => {
     try {
@@ -186,6 +195,12 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
       }));
     } catch (error) {
       console.error('Error refreshing detail page:', error instanceof Error ? error.message : String(error));
+      
+      // Check if this is a network/connectivity error
+      if (isNetworkError(error)) {
+        showConnectivityError(error instanceof Error ? error.message : 'Network connection failed');
+      }
+      
       setState(prev => ({
         ...prev,
         isRefreshing: false,
@@ -193,7 +208,7 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
         refreshInProgress: false,
       }));
     }
-  }, [refreshConfigSilently]);
+  }, [refreshConfigSilently, showConnectivityError]);
 
   // Update current page when pathname changes and detect dashboard returns
   useEffect(() => {

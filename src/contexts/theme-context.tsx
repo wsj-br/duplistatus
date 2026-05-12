@@ -51,6 +51,10 @@ export const CustomThemeProvider = ({ children }: { children: ReactNode }) => {
     if (typeof window === 'undefined') {
       return;
     }
+    // undefined = still loading; null = loaded but unauthenticated.
+    if (currentUser === undefined) {
+      return;
+    }
     if (currentUser === null) {
       lastAppliedUserIdRef.current = null;
       return;

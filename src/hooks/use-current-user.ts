@@ -11,27 +11,13 @@ interface CurrentUser {
 }
 
 /**
- * Check if session cookie exists (client-side)
- * This helps detect if user will be redirected to login
+ * Hook to get the current authenticated user.
+ * Returns `undefined` while the auth check is in-flight (loading).
+ * Returns `null` when loading is complete and the user is not authenticated.
+ * Returns a `CurrentUser` object when authenticated.
+ * Skips fetching on the login page.
  */
-function hasSessionCookie(): boolean {
-  if (typeof document === 'undefined') {
-    return false;
-  }
-  const cookies = document.cookie.split(';').reduce((acc, cookie) => {
-    const [key] = cookie.trim().split('=');
-    acc[key] = true;
-    return acc;
-  }, {} as Record<string, boolean>);
-  return !!(cookies['sessionId'] || cookies['session']);
-}
-
-/**
- * Hook to get the current authenticated user
- * Returns null if not authenticated or while loading.
- * Skips fetching on login page or when no session cookie exists to avoid unnecessary API calls.
- */
-export function useCurrentUser(): CurrentUser | null {
+export function useCurrentUser(): CurrentUser | null | undefined {
   const pathname = usePathname();
   const isLoginPage = pathname === '/login' || pathname?.startsWith('/login');
   const [user, setUser] = useState<CurrentUser | null>(null);
@@ -49,12 +35,9 @@ export function useCurrentUser(): CurrentUser | null {
       return;
     }
 
-    // If we're on root path and no session cookie, we'll be redirected to login
-    // Skip API call to avoid unnecessary requests
-    if (pathname === '/' && !hasSessionCookie()) {
-      setIsLoading(false);
-      return;
-    }
+    // NOTE: We cannot check for session cookie here because it's httpOnly
+    // The API call to /api/auth/me will determine if user is authenticated
+    // Server will return { authenticated: false } if no valid session
 
     async function fetchUser() {
       try {
@@ -76,11 +59,11 @@ export function useCurrentUser(): CurrentUser | null {
     fetchUser();
   }, [isLoginPage, pathname]);
 
-  // Return null while loading to avoid using stale data
+  // Return undefined while loading so callers can distinguish "still loading"
+  // from "loaded but unauthenticated" (null).
   if (isLoading) {
-    return null;
+    return undefined;
   }
 
   return user;
 }
-

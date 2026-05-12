@@ -6,6 +6,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { useGlobalRefresh } from "@/contexts/global-refresh-context";
 import { useToast } from "@/components/ui/use-toast";
+import { useConnectivityError, isNetworkError } from "@/components/ui/connectivity-error-modal";
 import { authenticatedRequestWithRecovery } from "@/lib/client-session-csrf";
 import { useParams } from 'next/navigation';
 import type { Server } from "@/lib/types";
@@ -39,6 +40,7 @@ export function DetailAutoRefresh({ initialData }: DetailAutoRefreshProps) {
   
   const { state } = useGlobalRefresh();
   const { toast } = useToast();
+  const { showConnectivityError } = useConnectivityError();
   const params = useParams();
   const serverId = params.serverId as string;
 
@@ -78,6 +80,12 @@ export function DetailAutoRefresh({ initialData }: DetailAutoRefreshProps) {
         console.error('Error refreshing detail data:', error);
         setLastError(errorMessage);
         
+        // Check if this is a network/connectivity error
+        if (isNetworkError(error)) {
+          showConnectivityError(errorMessage);
+          return;
+        }
+        
         toast({
           title: t("Error"),
           description: `Failed to refresh detail data: ${errorMessage}`,
@@ -92,7 +100,7 @@ export function DetailAutoRefresh({ initialData }: DetailAutoRefreshProps) {
     if (!state.isRefreshing && !state.pageSpecificLoading.detail && !state.refreshInProgress && state.lastRefresh) {
       fetchData();
     }
-  }, [state.isRefreshing, state.pageSpecificLoading.detail, state.refreshInProgress, state.lastRefresh, serverId, toast, t]);
+  }, [state.isRefreshing, state.pageSpecificLoading.detail, state.refreshInProgress, state.lastRefresh, serverId, toast, t, showConnectivityError]);
 
   return (
     <div className="flex flex-col gap-8">

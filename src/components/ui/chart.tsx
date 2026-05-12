@@ -47,13 +47,45 @@ const ChartContainer = React.forwardRef<
   const chartId = `chart-${id || uniqueId.replace(/:/g, "")}`
   const isAspectAuto = className?.includes('!aspect-auto')
 
+  // For aspect-auto mode: measure the outer wrapper and feed explicit pixel
+  // dimensions to ResponsiveContainer so Recharts never sees width/height = -1.
+  const outerRef = React.useRef<HTMLDivElement>(null)
+  const [measuredSize, setMeasuredSize] = React.useState<{ width: number; height: number } | null>(null)
+
+  React.useEffect(() => {
+    if (!isAspectAuto) return
+    const el = outerRef.current
+    if (!el) return
+
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect
+        if (width > 0 && height > 0) {
+          setMeasuredSize({ width, height })
+        }
+      }
+    })
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [isAspectAuto])
+
+  // Merge forwarded ref with our local outerRef
+  const setRef = React.useCallback(
+    (node: HTMLDivElement | null) => {
+      (outerRef as React.MutableRefObject<HTMLDivElement | null>).current = node
+      if (typeof ref === 'function') ref(node)
+      else if (ref) (ref as React.MutableRefObject<HTMLDivElement | null>).current = node
+    },
+    [ref]
+  )
+
   return (
     <ChartContext.Provider value={{ config }}>
       <div
         data-chart={chartId}
-        ref={ref}
+        ref={setRef}
         className={cn(
-          "flex aspect-video justify-center text-xs min-w-0 [&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-border/50 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-dot[stroke='#fff']]:stroke-transparent [&_.recharts-layer]:outline-none [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-muted [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_[stroke='#ccc']]:stroke-border [&_.recharts-sector[stroke='#fff']]:stroke-transparent [&_.recharts-sector]:outline-none [&_.recharts-surface]:outline-none",
+          "flex aspect-video justify-center text-xs min-w-0 min-h-0 [&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-border/50 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-dot[stroke='#fff']]:stroke-transparent [&_.recharts-layer]:outline-none [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-muted [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_[stroke='#ccc']]:stroke-border [&_.recharts-sector[stroke='#fff']]:stroke-transparent [&_.recharts-sector]:outline-none [&_.recharts-surface]:outline-none",
           className
         )}
         style={{ 
@@ -65,9 +97,22 @@ const ChartContainer = React.forwardRef<
         {...props}
       >
         <ChartStyle id={chartId} config={config} />
-        <RechartsPrimitive.ResponsiveContainer minWidth={0} minHeight={0}>
-          {children}
-        </RechartsPrimitive.ResponsiveContainer>
+        {isAspectAuto ? (
+          // Only render when we have real pixel dimensions — avoids the
+          // "width(-1) and height(-1)" Recharts warning entirely.
+          measuredSize && (
+            <RechartsPrimitive.ResponsiveContainer
+              width={measuredSize.width}
+              height={measuredSize.height}
+            >
+              {children}
+            </RechartsPrimitive.ResponsiveContainer>
+          )
+        ) : (
+          <RechartsPrimitive.ResponsiveContainer>
+            {children}
+          </RechartsPrimitive.ResponsiveContainer>
+        )}
       </div>
     </ChartContext.Provider>
   )

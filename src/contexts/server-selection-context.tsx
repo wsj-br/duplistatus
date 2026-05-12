@@ -30,6 +30,12 @@ interface ServerSelectionProviderProps {
 
 export function ServerSelectionProvider({ children }: ServerSelectionProviderProps) {
   const currentUser = useCurrentUser();
+  // Use a ref to always access the latest currentUser value in callbacks
+  // This avoids closure staleness issues when callbacks are called after render
+  const currentUserRef = useRef(currentUser);
+  useEffect(() => {
+    currentUserRef.current = currentUser;
+  }, [currentUser]);
   
   // Initialize view mode and overview side panel from localStorage (lazy initialization)
   const [state, setState] = useState<ServerSelectionState>(() => {
@@ -44,25 +50,42 @@ export function ServerSelectionProvider({ children }: ServerSelectionProviderPro
       };
     }
 
-    // Default values - will be updated when user loads
+    // Default values - isInitialized=false until user-specific settings are loaded
+    // from localStorage (requires currentUser to be resolved first)
     return {
       selectedServerId: null,
       viewMode: 'overview',
       servers: [],
-      isInitialized: true,
+      isInitialized: false,
       overviewSidePanel: 'status',
     };
   });
 
   const hasLoadedUserConfigRef = useRef(false);
 
-  // Load user-specific settings when user is available
+  // Load user-specific settings when user is available.
+  // Also marks isInitialized=true once loading is done (whether user is
+  // authenticated or not), so the dashboard doesn't stay stuck on the
+  // loading screen when there is no session.
   useEffect(() => {
-    if (typeof window === 'undefined' || currentUser === null || hasLoadedUserConfigRef.current) {
+    if (typeof window === 'undefined' || hasLoadedUserConfigRef.current) {
       return;
     }
 
-    hasLoadedUserConfigRef.current = true;
+    // currentUser is undefined while the /api/auth/me fetch is in-flight; wait for it.
+    // null means loading is done but no authenticated user (will be redirected to login).
+    if (currentUser === undefined) {
+      return;
+    }
+
+    // If not authenticated, there are no user-specific settings to load.
+    // Mark as initialized so the UI is not stuck on the loading screen.
+    if (currentUser === null) {
+      hasLoadedUserConfigRef.current = true;
+      setState(prev => ({ ...prev, isInitialized: true }));
+      return;
+    }
+
     try {
       const savedViewMode = getUserLocalStorageItem('dashboard-view-mode', currentUser.id);
       const savedOverviewSidePanel = getUserLocalStorageItem('overview-side-panel', currentUser.id);
@@ -75,14 +98,18 @@ export function ServerSelectionProvider({ children }: ServerSelectionProviderPro
         ? savedOverviewSidePanel
         : 'status';
       
-       
       setState(prev => ({
         ...prev,
         viewMode: viewMode as 'table' | 'overview',
         overviewSidePanel: overviewSidePanel as 'status' | 'chart',
+        isInitialized: true,
       }));
     } catch (error) {
       console.error('Error loading settings from localStorage:', error);
+      // Mark as initialized even on error so the UI is not stuck
+      setState(prev => ({ ...prev, isInitialized: true }));
+    } finally {
+      hasLoadedUserConfigRef.current = true;
     }
   }, [currentUser]);
 
@@ -91,32 +118,44 @@ export function ServerSelectionProvider({ children }: ServerSelectionProviderPro
   }, []);
 
   const setViewMode = useCallback((viewMode: 'table' | 'overview') => {
-    setState(prev => ({ ...prev, viewMode }));
-    // Save to localStorage (only in browser environment and if user is loaded)
-    if (typeof window !== 'undefined' && currentUser) {
-      try {
-        setUserLocalStorageItem('dashboard-view-mode', currentUser.id, viewMode);
-      } catch (error) {
-        console.error('Error saving view mode to localStorage:', error);
+    // Use ref to get latest currentUser value, avoiding closure staleness
+    const latestUser = currentUserRef.current;
+    setState(prev => {
+      if (typeof window !== 'undefined') {
+        const userId = latestUser?.id;
+        if (userId) {
+          try {
+            setUserLocalStorageItem('dashboard-view-mode', userId, viewMode);
+          } catch (error) {
+            console.error('Error saving view mode to localStorage:', error);
+          }
+        }
       }
-    }
-  }, [currentUser]);
+      return { ...prev, viewMode };
+    });
+  }, []); // No dependencies - uses ref for latest value
 
   const setServers = useCallback((servers: ServerSummary[]) => {
     setState(prev => ({ ...prev, servers }));
   }, []);
 
   const setOverviewSidePanel = useCallback((panel: 'status' | 'chart') => {
-    setState(prev => ({ ...prev, overviewSidePanel: panel }));
-    // Save to localStorage (only in browser environment and if user is loaded)
-    if (typeof window !== 'undefined' && currentUser) {
-      try {
-        setUserLocalStorageItem('overview-side-panel', currentUser.id, panel);
-      } catch (error) {
-        console.error('Error saving overview side panel to localStorage:', error);
+    // Use ref to get latest currentUser value, avoiding closure staleness
+    const latestUser = currentUserRef.current;
+    setState(prev => {
+      if (typeof window !== 'undefined') {
+        const userId = latestUser?.id;
+        if (userId) {
+          try {
+            setUserLocalStorageItem('overview-side-panel', userId, panel);
+          } catch (error) {
+            console.error('Error saving overview side panel to localStorage:', error);
+          }
+        }
       }
-    }
-  }, [currentUser]);
+      return { ...prev, overviewSidePanel: panel };
+    });
+  }, []); // No dependencies - uses ref for latest value
 
   const getSelectedServer = useCallback(() => {
     if (!state.selectedServerId) return null;

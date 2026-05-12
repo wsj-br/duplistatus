@@ -8,6 +8,7 @@ import { GlobalRefreshProvider } from "@/contexts/global-refresh-context";
 import { ServerSelectionProvider } from "@/contexts/server-selection-context";
 import { ConfigurationProvider } from "@/contexts/configuration-context";
 import { AvailableBackupsModalProvider } from "@/components/ui/available-backups-modal";
+import { ConnectivityErrorProvider } from "@/components/ui/connectivity-error-modal";
 import { Toaster } from "@/components/ui/toaster";
 import { ToastProvider } from "@/components/ui/use-toast";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -195,9 +196,10 @@ export default async function RootLayout({
             <ClientLocaleProvider>
             <ConfigProvider>
               <ConfigurationProvider>
-                <GlobalRefreshProvider>
-                  <ServerSelectionProvider>
-                    <AvailableBackupsModalProvider>
+                <ConnectivityErrorProvider>
+                  <GlobalRefreshProvider>
+                    <ServerSelectionProvider>
+                      <AvailableBackupsModalProvider>
                       <TooltipProvider delayDuration={300}>
                         <ToastProvider>
                         <SessionInitializer />
@@ -206,9 +208,10 @@ export default async function RootLayout({
                         <Toaster />
                       </ToastProvider>
                       </TooltipProvider>
-                    </AvailableBackupsModalProvider>
-                  </ServerSelectionProvider>
-                </GlobalRefreshProvider>
+                      </AvailableBackupsModalProvider>
+                    </ServerSelectionProvider>
+                  </GlobalRefreshProvider>
+                </ConnectivityErrorProvider>
               </ConfigurationProvider>
             </ConfigProvider>
             </ClientLocaleProvider>

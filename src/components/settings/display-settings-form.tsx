@@ -12,12 +12,13 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { useConfig } from '@/contexts/config-context';
+import { useConfig, type ChartTimeRange } from '@/contexts/config-context';
+import { CHART_TIME_RANGES } from '@/lib/chart-utils';
 import { useTheme } from '@/contexts/theme-context';
-import type { TablePageSize } from '@/contexts/config-context';
 import type { FormatLocaleOverride, StartOfWeek } from '@/lib/types';
-import { MonitorCog, Table, BarChart3, RefreshCw, SortDesc, Moon, Sun, Calendar1, Languages, Check, ChevronsUpDown, SunMoon } from 'lucide-react';
+import { MonitorCog, Table, BarChart3, RefreshCw, SortDesc, Moon, Sun, Calendar1, Languages, Check, ChevronsUpDown, SunMoon, LineChart } from 'lucide-react';
 import { ColoredIcon } from '@/components/ui/colored-icon';
+import type { ChartStyle, TablePageSize } from '@/contexts/config-context';
 import {
   Command,
   CommandInput,
@@ -48,6 +49,8 @@ export function DisplaySettingsForm() {
     setTablePageSize,
     chartTimeRange,
     setChartTimeRange,
+    chartStyle,
+    setChartStyle,
     autoRefreshInterval,
     setAutoRefreshInterval,
     dashboardCardsSortOrder,
@@ -152,21 +155,65 @@ export function DisplaySettingsForm() {
               </Label>
               <Select
                 value={chartTimeRange}
-                onValueChange={(value) => setChartTimeRange(value as '2 weeks' | '1 month' | '3 months' | '6 months' | '1 year' | '2 years' | 'All data')}
+                onValueChange={(value) => setChartTimeRange(value as ChartTimeRange)}
               >
                 <SelectTrigger id="chart-time-range">
                   <SelectValue placeholder={t("Select time range")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="2 weeks">{t("Last 2 weeks")}</SelectItem>
-                  <SelectItem value="1 month">{t("Last month")}</SelectItem>
-                  <SelectItem value="3 months">{t("Last quarter")}</SelectItem>
-                  <SelectItem value="6 months">{t("Last semester")}</SelectItem>
-                  <SelectItem value="1 year">{t("Last Year")}</SelectItem>
-                  <SelectItem value="2 years">{t("Last 2 years")}</SelectItem>
-                  <SelectItem value="All data">{t("All available data")}</SelectItem>
+                  {CHART_TIME_RANGES.map((range) => (
+                    <SelectItem key={range} value={range}>
+                      {t(range === '1 week' ? 'Last week' : 
+                         range === '2 weeks' ? 'Last 2 weeks' : 
+                         range === '1 month' ? 'Last month' : 
+                         'Last quarter')}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
+            </div>
+
+            {/* Chart Style */}
+            <div className="grid gap-2">
+              <Label id="chart-style-label" className="flex items-center gap-2">
+                <ColoredIcon icon={BarChart3} color="green" size="sm" />
+                {t("Chart Style")}
+              </Label>
+              <div
+                id="chart-style"
+                className="inline-flex rounded-md border border-input bg-muted/40 p-1 shadow-sm"
+                role="group"
+                aria-labelledby="chart-style-label"
+              >
+                <Button
+                  type="button"
+                  variant={chartStyle === 'smooth-line' ? 'secondary' : 'ghost'}
+                  size="sm"
+                  className={cn(
+                    'rounded-sm px-3 shadow-none',
+                    chartStyle === 'smooth-line' && 'bg-background shadow-sm',
+                  )}
+                  onClick={() => setChartStyle('smooth-line' as ChartStyle)}
+                  aria-pressed={chartStyle === 'smooth-line'}
+                >
+                  <LineChart className="mr-1.5 h-4 w-4 shrink-0" aria-hidden />
+                  {t('Smooth Lines')}
+                </Button>
+                <Button
+                  type="button"
+                  variant={chartStyle === 'bar' ? 'secondary' : 'ghost'}
+                  size="sm"
+                  className={cn(
+                    'rounded-sm px-3 shadow-none',
+                    chartStyle === 'bar' && 'bg-background shadow-sm',
+                  )}
+                  onClick={() => setChartStyle('bar' as ChartStyle)}
+                  aria-pressed={chartStyle === 'bar'}
+                >
+                  <BarChart3 className="mr-1.5 h-4 w-4 shrink-0" aria-hidden />
+                  {t('Bar Chart')}
+                </Button>
+              </div>
             </div>
 
             {/* Auto-refresh Interval */}

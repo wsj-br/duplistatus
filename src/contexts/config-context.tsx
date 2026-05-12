@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
+import React, { createContext, useContext, useEffect, useState, useRef, useCallback } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { defaultUIConfig, defaultOverdueTolerance } from '@/lib/default-config';
 import type { OverdueTolerance, StartOfWeek, FormatLocaleOverride } from '@/lib/types';
@@ -11,7 +11,8 @@ import { useLocale } from '@/contexts/locale-context';
 
 type DatabaseCleanupPeriod = 'Delete all data' | '6 months' | '1 year' | '2 years';
 export type TablePageSize = 5 | 10 | 15 | 20 | 25 | 30 | 40 | 50;
-type ChartTimeRange = '2 weeks' | '1 month' | '3 months' | '6 months' | '1 year' | '2 years' | 'All data';
+export type ChartTimeRange = '1 week' | '2 weeks' | '1 month' | '3 months';
+export type ChartStyle = 'smooth-line' | 'bar';
 type AutoRefreshInterval = 0.25 | 0.5 | 1 | 2 | 3 | 4 | 5 | 10;
 type DashboardCardsSortOrder = 'Server name (a-z)' | 'Status (error>warnings>success)' | 'Last backup received (new>old)';
 
@@ -22,6 +23,8 @@ interface ConfigContextProps {
   setTablePageSize: (size: TablePageSize) => void;
   chartTimeRange: ChartTimeRange;
   setChartTimeRange: (range: ChartTimeRange) => void;
+  chartStyle: ChartStyle;
+  setChartStyle: (style: ChartStyle) => void;
   autoRefreshInterval: AutoRefreshInterval;
   setAutoRefreshInterval: (interval: AutoRefreshInterval) => void;
   autoRefreshEnabled: boolean;
@@ -44,6 +47,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
   const [databaseCleanupPeriod, setDatabaseCleanupPeriod] = useState<DatabaseCleanupPeriod>(defaultUIConfig.databaseCleanupPeriod);
   const [tablePageSize, setTablePageSize] = useState<TablePageSize>(defaultUIConfig.tablePageSize);
   const [chartTimeRange, setChartTimeRange] = useState<ChartTimeRange>(defaultUIConfig.chartTimeRange);
+  const [chartStyle, setChartStyle] = useState<ChartStyle>(defaultUIConfig.chartStyle);
   const [autoRefreshInterval, setAutoRefreshInterval] = useState<AutoRefreshInterval>(defaultUIConfig.autoRefreshInterval);
   const [autoRefreshEnabled, setAutoRefreshEnabled] = useState<boolean>(true);
   const [dashboardCardsSortOrder, setDashboardCardsSortOrder] = useState<DashboardCardsSortOrder>(defaultUIConfig.dashboardCardsSortOrder);
@@ -54,6 +58,11 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const router = useRouter();
   const currentUser = useCurrentUser();
+  // Use a ref to always access the latest currentUser value in callbacks
+  const currentUserRef = useRef(currentUser);
+  useEffect(() => {
+    currentUserRef.current = currentUser;
+  }, [currentUser]);
 
   const hasLoadedUserConfigRef = useRef(false);
 
@@ -64,8 +73,16 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
       return;
     }
 
-    // Wait for user to be loaded before loading settings
-    if (currentUser === null || hasLoadedUserConfigRef.current) {
+    // Wait for user to be loaded before loading settings.
+    // undefined = still loading; null = loaded but unauthenticated.
+    if (currentUser === undefined || hasLoadedUserConfigRef.current) {
+      return;
+    }
+
+    // If not authenticated, just mark loading as done with defaults.
+    if (currentUser === null) {
+      hasLoadedUserConfigRef.current = true;
+      setIsLoading(false);
       return;
     }
 
@@ -77,6 +94,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
         if (config.databaseCleanupPeriod) setDatabaseCleanupPeriod(config.databaseCleanupPeriod);
         if (config.tablePageSize) setTablePageSize(config.tablePageSize);
         if (config.chartTimeRange) setChartTimeRange(config.chartTimeRange);
+        if (config.chartStyle) setChartStyle(config.chartStyle);
         if (config.autoRefreshInterval) setAutoRefreshInterval(config.autoRefreshInterval);
         if (config.autoRefreshEnabled !== undefined) setAutoRefreshEnabled(config.autoRefreshEnabled);
         if (config.dashboardCardsSortOrder) setDashboardCardsSortOrder(config.dashboardCardsSortOrder);
@@ -113,12 +131,13 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     // Save settings to localStorage whenever they change (only in browser environment)
-    // Only save if user is loaded (not null)
-    if (typeof window !== 'undefined' && currentUser !== null) {
+    // Only save when user is authenticated (not null/undefined)
+    if (typeof window !== 'undefined' && currentUser) {
       setUserLocalStorageItem('duplistatus-config', currentUser.id, JSON.stringify({
         databaseCleanupPeriod,
         tablePageSize,
         chartTimeRange,
+        chartStyle,
         autoRefreshInterval,
         autoRefreshEnabled,
         dashboardCardsSortOrder,
@@ -126,7 +145,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
         formatLocale,
       }));
     }
-  }, [databaseCleanupPeriod, tablePageSize, chartTimeRange, autoRefreshInterval, autoRefreshEnabled, dashboardCardsSortOrder, startOfWeek, formatLocale, currentUser]);
+  }, [databaseCleanupPeriod, tablePageSize, chartTimeRange, chartStyle, autoRefreshInterval, autoRefreshEnabled, dashboardCardsSortOrder, startOfWeek, formatLocale, currentUser]);
 
   const cleanupDatabase = async () => {
     try {
@@ -180,6 +199,47 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  // Wrapped setters that immediately persist to localStorage.
+  // This avoids race conditions where the user changes a setting before
+  // currentUser has resolved, causing the change to not be persisted.
+  const persistChartTimeRange = useCallback((range: ChartTimeRange) => {
+    // Use ref to get latest currentUser value, avoiding closure staleness
+    const latestUser = currentUserRef.current;
+    setChartTimeRange(range);
+    if (typeof window !== 'undefined') {
+      const userId = latestUser?.id;
+      if (userId) {
+        try {
+          const existing = getUserLocalStorageItem('duplistatus-config', userId);
+          const config = existing ? JSON.parse(existing) : {};
+          config.chartTimeRange = range;
+          setUserLocalStorageItem('duplistatus-config', userId, JSON.stringify(config));
+        } catch (error) {
+          console.error('Failed to persist chartTimeRange:', error);
+        }
+      }
+    }
+  }, []); // No dependencies - uses ref for latest value
+
+  const persistChartStyle = useCallback((style: ChartStyle) => {
+    // Use ref to get latest currentUser value, avoiding closure staleness
+    const latestUser = currentUserRef.current;
+    setChartStyle(style);
+    if (typeof window !== 'undefined') {
+      const userId = latestUser?.id;
+      if (userId) {
+        try {
+          const existing = getUserLocalStorageItem('duplistatus-config', userId);
+          const config = existing ? JSON.parse(existing) : {};
+          config.chartStyle = style;
+          setUserLocalStorageItem('duplistatus-config', userId, JSON.stringify(config));
+        } catch (error) {
+          console.error('Failed to persist chartStyle:', error);
+        }
+      }
+    }
+  }, []); // No dependencies - uses ref for latest value
+
   return (
     <ConfigContext.Provider
       value={{
@@ -188,7 +248,9 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
         tablePageSize,
         setTablePageSize,
         chartTimeRange,
-        setChartTimeRange,
+        setChartTimeRange: persistChartTimeRange,
+        chartStyle,
+        setChartStyle: persistChartStyle,
         autoRefreshInterval,
         setAutoRefreshInterval,
         autoRefreshEnabled,
@@ -227,4 +289,4 @@ export function useEffectiveFormatLocale(): string {
   const { formatLocale } = useConfig();
   const uiLocale = useLocale();
   return formatLocale === 'locale-default' ? uiLocale : formatLocale;
-} 
+}

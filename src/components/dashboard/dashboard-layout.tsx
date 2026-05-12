@@ -174,9 +174,9 @@ export function DashboardLayout({
           {/* Left Panel: Overview Cards - 80% width */}
           <div className={`${useContentBasedHeight ? 'w-full md:w-[80%]' : 'w-[80%]'} ${
             useContentBasedHeight ? 'min-h-[400px]' : 'h-full'
-          }`}>
+          } min-w-0 min-h-0`}>
             <Card className="shadow-lg border-2 border-border h-full">
-              <CardContent className="p-2 h-full">
+              <CardContent className="p-2 h-full overflow-hidden">
                 <OverviewCards 
                   servers={data.serversSummary}
                   serverFilter={serverFilter}
@@ -190,16 +190,15 @@ export function DashboardLayout({
           {/* Right Panel: Overview Charts - 20% width */}
           <div className={`${useContentBasedHeight ? 'w-full md:w-[20%]' : 'w-[20%]'} ${
             useContentBasedHeight ? 'min-h-[400px]' : 'h-full'
-          }`} data-screenshot-target="overview-side-panel">
+          } min-w-0 min-h-0`} data-screenshot-target="overview-side-panel">
             <Card className="shadow-lg border-2 border-border h-full relative">
               <OverviewSidePanelToggle />
-              <CardContent className="p-0 h-full">
+              <CardContent className="p-0 h-full overflow-hidden">
                 {overviewSidePanel === 'status' ? (
                   <OverviewStatusPanel servers={data.serversSummary} totalBackups={summary.totalBackups} />
                 ) : (
-                  <OverviewChartsPanel 
+                  <OverviewChartsPanel
                     serverId={selectedServerId || undefined}
-                    chartData={selectedServerId ? undefined : data.allServersChartData}
                   />
                 )}
               </CardContent>

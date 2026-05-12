@@ -127,7 +127,8 @@ export const defaultBackupNotificationConfig: BackupNotificationConfig = {
 export const defaultUIConfig = {
   databaseCleanupPeriod: '2 years' as const,
   tablePageSize: 5 as const,
-  chartTimeRange: 'All data' as const,
+  chartTimeRange: '1 month' as const,
+  chartStyle: 'smooth-line' as const,
   autoRefreshInterval: 1 as const,
   dashboardCardsSortOrder: 'Server name (a-z)' as const,
   startOfWeek: 'locale' as const, // Default to locale-based (en-US Sunday, en-GB Monday)

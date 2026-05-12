@@ -63,6 +63,7 @@ run.log*
 .cursor/*
 !.cursor/rules/
 !.cursor/rules/**
+.codebuddy/
 
 
 # typescript

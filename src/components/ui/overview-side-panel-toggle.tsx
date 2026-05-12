@@ -1,7 +1,8 @@
 "use client";
 import { useTranslation } from "react-i18next";
-import { SquareMenu, ChartLine } from "lucide-react";
+import { SquareMenu, ChartSpline, ChartColumn } from "lucide-react";
 import { useServerSelection } from "@/contexts/server-selection-context";
+import { useConfig } from "@/contexts/config-context";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -13,6 +14,7 @@ export function OverviewSidePanelToggle({ className }: OverviewSidePanelTogglePr
   const { t } = useTranslation();
   const { state, setOverviewSidePanel } = useServerSelection();
   const { overviewSidePanel } = state;
+  const { chartStyle } = useConfig();
 
   const handleToggle = () => {
     const newPanel = overviewSidePanel === 'status' ? 'chart' : 'status';
@@ -20,6 +22,8 @@ export function OverviewSidePanelToggle({ className }: OverviewSidePanelTogglePr
   };
 
   const titleText = overviewSidePanel === 'status' ? t("Switch to chart view") : t("Switch to status view");
+
+  const ChartIcon = chartStyle === 'bar' ? ChartColumn : ChartSpline;
 
   return (
     <Button
@@ -39,7 +43,7 @@ export function OverviewSidePanelToggle({ className }: OverviewSidePanelTogglePr
 
         <SquareMenu className="h-3 w-3 hover:text-foreground" />
       ) : (
-        <ChartLine className="h-3 w-3 hover:text-foreground" />
+        <ChartIcon className="h-3 w-3 hover:text-foreground" />
       )}
     </Button>
   );

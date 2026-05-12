@@ -6,6 +6,7 @@ import { RotateCcw } from "lucide-react";
 import { useGlobalRefresh } from "@/contexts/global-refresh-context";
 import { useConfig } from "@/contexts/config-context";
 import { useToast } from "@/components/ui/use-toast";
+import { useConnectivityError, isNetworkError } from "@/components/ui/connectivity-error-modal";
 import { usePathname } from "next/navigation";
 
 interface AutoRefreshButtonProps {
@@ -77,6 +78,7 @@ export function GlobalRefreshControls() {
   const { state, refreshDashboard, refreshDetail, toggleAutoRefresh, getCurrentPageType } = useGlobalRefresh();
   const { autoRefreshInterval } = useConfig();
   const { toast } = useToast();
+  const { showConnectivityError } = useConnectivityError();
   const pathname = usePathname();
   
   const [progress, setProgress] = useState(0);
@@ -145,6 +147,13 @@ export function GlobalRefreshControls() {
       }
     } catch (error) {
       console.error('Refresh failed:', error);
+      
+      // Check if this is a network/connectivity error
+      if (isNetworkError(error)) {
+        showConnectivityError(error instanceof Error ? error.message : 'Network connection failed');
+        return;
+      }
+      
       toast({
         title: t("Refresh Failed"),
         description: t("Failed to refresh data. Please try again."),

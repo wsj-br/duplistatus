@@ -100,15 +100,22 @@ export function DashboardTable({ servers, serverFilter = '' }: DashboardTablePro
       return;
     }
 
-    if (currentUser === null || hasLoadedUserConfigRef.current) {
-      // User not loaded yet, or already loaded config
-      if (currentUser === null) {
+    if (currentUser === undefined || hasLoadedUserConfigRef.current) {
+      // undefined = still loading; wait for user to resolve.
+      if (currentUser === undefined) {
         return;
       }
       // Already loaded, mark as loaded
       if (!isLoaded) {
         setIsLoaded(true);
       }
+      return;
+    }
+
+    // null = unauthenticated (will redirect to login); nothing to load.
+    if (currentUser === null) {
+      hasLoadedUserConfigRef.current = true;
+      setIsLoaded(true);
       return;
     }
 

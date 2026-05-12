@@ -1,9 +1,10 @@
 "use client";
 import type { TFunction } from "i18next";
 import { useTranslation } from "react-i18next";
-import { useState, useEffect, useRef, memo, useCallback } from 'react';
+import { useState, useEffect, useRef, memo, useCallback, useMemo } from 'react';
 import { 
-  Line, 
+  Line,
+  Bar,
   ComposedChart,
   XAxis,
   YAxis,
@@ -16,22 +17,17 @@ import type { ChartConfig } from "@/components/ui/chart";
 import { ChartContainer } from "@/components/ui/chart"; 
 import { FileBarChart2 } from "lucide-react";
 import { useConfig, useEffectiveFormatLocale } from "@/contexts/config-context";
-import { subWeeks, subMonths, subQuarters, subYears } from "date-fns";
+import { subDays } from "date-fns";
 import type { ChartDataPoint } from "@/lib/types";
 import { useToast } from "@/components/ui/use-toast";
 import { useGlobalRefresh } from "@/contexts/global-refresh-context";
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
-import { formatDateTime, formatDate } from "@/lib/date-format";
+import { formatDate } from "@/lib/date-format";
 import { formatInteger, formatBytes } from "@/lib/number-format";
 import { SOURCE_LOCALE } from "@/lib/locales";
-
-// Interface for interpolated chart data points
-interface InterpolatedChartPoint {
-  date: string;
-  isoDate: string;
-  [key: string]: string | number;
-}
-
+import { bucketChartData, getBucketSizeDays, type BucketedChartPoint, getTimeRangeLabel } from "@/lib/chart-utils";
+import type { ChartStyle, ChartTimeRange } from "@/contexts/config-context";
+import { ChartTimeRangeSelector } from "@/components/chart-time-range-selector";
 interface MetricsChartsPanelProps {
   serverId?: string;
   backupName?: string;
@@ -128,11 +124,11 @@ const CustomTooltip = ({ active, payload, label, metricKey, locale }: {
   const data = payload[0];
   const value = data.value;
   
-  // Format the date for display using locale-aware formatting
+  // Format the date for display using locale-aware formatting (date only, no time)
   let formattedDate = label;
   try {
     if (data.payload?.isoDate) {
-      formattedDate = formatDateTime(data.payload.isoDate, locale);
+      formattedDate = formatDate(data.payload.isoDate, locale);
     }
   } catch {
     // Fallback to original label if date parsing fails
@@ -160,18 +156,22 @@ const CustomTooltip = ({ active, payload, label, metricKey, locale }: {
   );
 };
 
-function SmallMetricChart({ 
-  data, 
-  metricKey, 
-  label, 
+function SmallMetricChart({
+  data,
+  metricKey,
+  label,
   color,
   locale,
-}: { 
-  data: ChartDataPoint[]; 
-  metricKey: keyof ChartDataPoint; 
-  label: string; 
+  chartStyle,
+  chartTimeRange,
+}: {
+  data: ChartDataPoint[];
+  metricKey: keyof ChartDataPoint;
+  label: string;
   color: string;
   locale: string;
+  chartStyle: ChartStyle;
+  chartTimeRange: string;
 }) {
 
   // Create chart config
@@ -181,77 +181,25 @@ function SmallMetricChart({
       color,
     },
   } as ChartConfig;
-  
-  // Prepare data for chart
-  const chartReady = data.map(item => ({
+
+  // Aggregate data into time buckets (replaces linear interpolation)
+  const bucketDays = getBucketSizeDays(chartTimeRange);
+  const bucketedData: BucketedChartPoint[] = bucketChartData(data, bucketDays);
+
+
+
+  // Map bucketed data to chart-ready shape with the specific metricKey
+  const resampledData = bucketedData.map(item => ({
     date: item.date,
     isoDate: item.isoDate,
-    [metricKey]: item[metricKey]
+    [metricKey]: item[metricKey as keyof BucketedChartPoint],
   }));
-
-  // Resample data for small charts using linear interpolation
-  const maxPoints = 50;
-  const resampledData = (() => {
-    // Only resample if there are more than maxPoints in the data
-    if (chartReady.length <= maxPoints) return chartReady;
-    
-    const resampledPoints: InterpolatedChartPoint[] = [];
-    const sourceLength = chartReady.length;
-    
-    // Calculate the step size for interpolation
-    const step = (sourceLength - 1) / (maxPoints - 1);
-    
-    for (let i = 0; i < maxPoints; i++) {
-      const exactIndex = i * step;
-      const lowerIndex = Math.floor(exactIndex);
-      const upperIndex = Math.min(Math.ceil(exactIndex), sourceLength - 1);
-      
-      if (lowerIndex === upperIndex || exactIndex === lowerIndex) {
-        // Exact match or at the end, use the data point directly
-        const point = chartReady[lowerIndex];
-        resampledPoints.push({
-          date: point.date,
-          isoDate: point.isoDate,
-          [metricKey]: (point[metricKey] as number) || 0
-        } as InterpolatedChartPoint);
-      } else {
-        // Interpolate between two points
-        const lowerPoint = chartReady[lowerIndex];
-        const upperPoint = chartReady[upperIndex];
-        const fraction = exactIndex - lowerIndex;
-        
-        // Create interpolated point
-        const interpolatedPoint: InterpolatedChartPoint = {
-          date: lowerPoint.date, // Use the lower point's date for display
-          isoDate: lowerPoint.isoDate
-        };
-        
-        // Interpolate the metric value
-        const lowerValue = lowerPoint[metricKey];
-        const upperValue = upperPoint[metricKey];
-        
-        // Check if this is a count metric that should be rounded to integer
-        const isCountMetric = metricKey === 'fileCount' || metricKey === 'backupVersions';
-        
-        if (typeof lowerValue === 'number' && typeof upperValue === 'number') {
-          const interpolatedValue = lowerValue + (upperValue - lowerValue) * fraction;
-          (interpolatedPoint as Record<string, string | number>)[metricKey] = isCountMetric ? Math.round(interpolatedValue) : interpolatedValue;
-        } else if (typeof lowerValue === 'number') {
-          (interpolatedPoint as Record<string, string | number>)[metricKey] = lowerValue; // Fallback to lower value
-        } else {
-          (interpolatedPoint as Record<string, string | number>)[metricKey] = 0; // Default fallback
-        }
-        
-        resampledPoints.push(interpolatedPoint);
-      }
-    }
-    
-    return resampledPoints;
-  })();
 
   // Calculate Y-axis domain and ticks
   const yAxisConfig = (() => {
-    const values = resampledData.map(item => item[metricKey]).filter((v): v is number => typeof v === 'number');
+    const values = resampledData
+      .map(item => item[metricKey])
+      .filter((v): v is number => typeof v === 'number' && v !== null);
     if (values.length === 0) return { domain: [0, 1], ticks: [] };
     
     const min = Math.min(...values);
@@ -279,8 +227,8 @@ function SmallMetricChart({
       <CardHeader className="pb-0 pt-1 px-2 flex-shrink-0">
         <CardTitle className="text-xs font-medium">{label}</CardTitle>
       </CardHeader>
-      <CardContent className="flex-1 p-1 min-h-[100px] flex flex-col">
-        <div className="flex-1 min-h-[100px] w-full">
+      <CardContent className="flex-1 p-1 min-h-[100px] flex flex-col overflow-hidden">
+        <div className="flex-1 min-h-0 w-full relative">
           <ChartContainer config={chartConfig} className="!aspect-auto w-full h-full">
           <ComposedChart data={resampledData} margin={{ top: 2, right: 5, bottom: 2, left: 5 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#666" />
@@ -328,15 +276,24 @@ function SmallMetricChart({
                   return '';
                 }}
               />
-              <Line
-                type="monotone"
-                dataKey={metricKey}
-                stroke={color}
-                strokeWidth={2}
-                dot={false}
-                connectNulls
-                isAnimationActive={false}
-              />
+              {chartStyle === 'bar' ? (
+                <Bar
+                  dataKey={metricKey}
+                  fill={color}
+                  radius={[2, 2, 0, 0]}
+                  isAnimationActive={false}
+                />
+              ) : (
+                <Line
+                  type="monotone"
+                  dataKey={metricKey}
+                  stroke={color}
+                  strokeWidth={2}
+                  dot={false}
+                  connectNulls
+                  isAnimationActive={false}
+                />
+              )}
               <Tooltip content={<CustomTooltip metricKey={metricKey} locale={locale} />} />
           </ComposedChart>
         </ChartContainer>
@@ -352,7 +309,7 @@ function MetricsChartsPanelCore({
   backupName,
   chartData: externalChartData, // Use external chart data if provided
 }: MetricsChartsPanelCoreProps) {
-  const { chartTimeRange } = useConfig();
+  const { chartTimeRange, chartStyle, setChartTimeRange } = useConfig();
   const { state: globalRefreshState } = useGlobalRefresh();
   const effectiveLocale = useEffectiveFormatLocale();
   // If externalChartData is provided, use it instead of fetching
@@ -364,7 +321,7 @@ function MetricsChartsPanelCore({
   const lastGlobalRefreshTime = useRef<Date | null>(null);
   const lastChartDataRef = useRef<string | null>(null);
   const isLoadingRef = useRef<boolean>(false);
-  
+
   // Track screen height for responsive height behavior
   const [screenHeight, setScreenHeight] = useState<number>(0);
   
@@ -386,40 +343,30 @@ function MetricsChartsPanelCore({
   // Determine if we should use content-based height (when screen height < 865px)
   const useContentBasedHeight = screenHeight < 865;
   
-  // Calculate time range dates
-  const { startDate, endDate } = (() => {
-    if (chartTimeRange === 'All data') {
-      return { startDate: null, endDate: null };
-    }
-    
+  // Calculate time range dates - useMemo to prevent re-calculation on every render
+  const { startDate, endDate } = useMemo(() => {
     const now = new Date();
     let startDate: Date;
     
     switch (chartTimeRange) {
+      case '1 week':
+        startDate = subDays(now, 7);   // Last 7 days (rolling)
+        break;
       case '2 weeks':
-        startDate = subWeeks(now, 2);
+        startDate = subDays(now, 14);  // Last 14 days (rolling)
         break;
       case '1 month':
-        startDate = subMonths(now, 1);
+        startDate = subDays(now, 30);  // Last 30 days (rolling)
         break;
       case '3 months':
-        startDate = subQuarters(now, 1);
-        break;
-      case '6 months':
-        startDate = subMonths(now, 6);
-        break;
-      case '1 year':
-        startDate = subYears(now, 1);
-        break;
-      case '2 years':
-        startDate = subYears(now, 2);
+        startDate = subDays(now, 90);  // Last 90 days (rolling)
         break;
       default:
-        startDate = subMonths(now, 1);
+        startDate = subDays(now, 30);
     }
     
     return { startDate, endDate: now };
-  })();
+  }, [chartTimeRange]); // Only recalculate when chartTimeRange changes
 
   // Fetch chart data based on parameters
   const fetchChartData = useCallback(async (skipLoadingState = false) => {
@@ -563,7 +510,6 @@ function MetricsChartsPanelCore({
   
   // Get selection info for display
   const selectionInfo = (() => {
-
     if(isLoading) return '';
 
     let baseText = '';
@@ -578,34 +524,8 @@ function MetricsChartsPanelCore({
       baseText = t("All Servers & Backups");
     }
     
-    // Convert chartTimeRange to display label
-    const getTimeRangeLabel = (timeRange: string) => {
-      switch (timeRange) {
-        case '24 hours':
-          return t("Last 24 Hours");
-        case '7 days':
-          return t("Last week");
-        case '2 weeks':
-          return t("Last 2 weeks");
-        case '1 month':
-          return t("Last month");
-        case '3 months':
-          return t("Last quarter");
-        case '6 months':
-          return t("Last semester");
-        case '1 year':
-          return t("Last Year");
-        case '2 years':
-          return t("Last 2 years");
-        case 'All data':
-          return t("All available data");
-        default:
-          return timeRange;
-      }
-    };
-    
-    // Append chartTimeRange in brackets with proper label
-    return `${baseText} (${getTimeRangeLabel(chartTimeRange)})`;
+    // Use centralized getTimeRangeLabel from chart-utils
+    return `${baseText} (${t(getTimeRangeLabel(chartTimeRange))})`;
   })();
 
   return (
@@ -648,6 +568,8 @@ function MetricsChartsPanelCore({
               label={metric.label}
               color={metric.color}
               locale={effectiveLocale}
+              chartStyle={chartStyle}
+              chartTimeRange={chartTimeRange}
             />
           ))}
         </div>
@@ -695,22 +617,30 @@ const MemoizedChartsCore = memo(MetricsChartsPanelCore, (prevProps, nextProps) =
 });
 
 // Main wrapper component that combines charts with refresh time display
-export const MetricsChartsPanel = ({ 
+export const MetricsChartsPanel = ({
   serverId,
   backupName,
   chartData
 }: MetricsChartsPanelProps) => {
   const { t } = useTranslation();
-  
+  const { chartTimeRange, setChartTimeRange, chartStyle, setChartStyle } = useConfig();
+
   return (
     <div className="flex flex-col p-3 h-full min-h-0 min-w-0 overflow-hidden" data-screenshot-target="metrics-chart">
-      {/* Header with independent refresh time display */}
+      {/* Header with time range selector inline */}
       <div className="flex items-center justify-between mb-1 flex-shrink-0">
         <div className="flex items-center gap-2">
           <FileBarChart2 className="h-4 w-4 text-blue-600" />
           <h2 className="text-sm font-semibold">{t("Metrics")}</h2>
         </div>
-        {/* <RefreshTimeDisplay /> */}
+        {/* Inline time range selector - stock chart style */}
+        <ChartTimeRangeSelector
+          value={chartTimeRange}
+          onChange={setChartTimeRange}
+          chartStyle={chartStyle}
+          onChartStyleChange={setChartStyle}
+          size="default"
+        />
       </div>
 
       {/* Memoized charts component */}

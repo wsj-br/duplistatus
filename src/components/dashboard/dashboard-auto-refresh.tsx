@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { DashboardLayout } from './dashboard-layout';
 import { useGlobalRefresh } from '@/contexts/global-refresh-context';
+import { useConnectivityError, isNetworkError } from '@/components/ui/connectivity-error-modal';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import type { ServerSummary, OverallSummary, ChartDataPoint } from '@/lib/types';
 
@@ -32,6 +33,8 @@ export function DashboardAutoRefresh({ initialData }: DashboardAutoRefreshProps)
     // We'll set the actual time after the component mounts
     return new Date(0);
   });
+
+  const { showConnectivityError } = useConnectivityError();
 
   // Set the actual refresh time after component mounts
   useEffect(() => {
@@ -66,10 +69,15 @@ export function DashboardAutoRefresh({ initialData }: DashboardAutoRefreshProps)
       setLastRefreshTime(new Date());
     } catch (error) {
       console.error('Error refreshing dashboard data:', error);
+      
+      // Check if this is a network/connectivity error
+      if (isNetworkError(error)) {
+        showConnectivityError(error instanceof Error ? error.message : 'Network connection failed');
+      }
     } finally {
       setIsLoading(false);
     }
-  }, [isLoading]);
+  }, [isLoading, showConnectivityError]);
 
   // Listen for global refresh events
   useEffect(() => {

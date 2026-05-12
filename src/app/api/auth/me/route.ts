@@ -36,4 +36,3 @@ export const GET = withCSRF(async (request: NextRequest) => {
     );
   }
 });
-
