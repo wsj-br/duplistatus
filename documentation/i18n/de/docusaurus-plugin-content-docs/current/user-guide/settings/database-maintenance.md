@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:47.745Z'
-source_file_mtime: '2026-05-06T23:18:51.446Z'
-source_file_hash: 6fadb27aa2b2898a91a2c277aa6ef2a380feb63069ba823e7cdf1943df204b51
-translation_language: de
-source_file_path: documentation/docs/user-guide/settings/database-maintenance.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Datenbankwartung {#database-maintenance}
 
 Verwalten Sie Ihre Sicherungsdaten und optimieren Sie die Leistung durch Datenbankwartungsvorgänge.

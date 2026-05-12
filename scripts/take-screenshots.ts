@@ -361,18 +361,13 @@ async function waitForServerDetailContent(page: Page, maxWaitMs: number = 15000)
       
       // Check if there's actual content (not just empty cards)
       const hasTable = document.querySelector('table') !== null;
-      const hasBackupHistoryTitle = Array.from(cards).some(card => {
-        const title = card.querySelector('h3, [class*="CardTitle"]');
-        return title && title.textContent?.includes('Backup History');
-      });
       
       return {
         cardCount,
         hasTargets: targets.length > 0,
         hasSummary: !!summary,
         hasBackupHistory: !!backupHistory,
-        hasTable,
-        hasBackupHistoryTitle
+        hasTable
       };
     });
     
@@ -384,7 +379,7 @@ async function waitForServerDetailContent(page: Page, maxWaitMs: number = 15000)
     }
     
     // If we have the backup history table or summary, content is loaded
-    if (contentInfo.hasBackupHistory || contentInfo.hasSummary || (contentInfo.hasTable && contentInfo.hasBackupHistoryTitle)) {
+    if (contentInfo.hasBackupHistory || contentInfo.hasSummary || contentInfo.hasTable) {
       await delay(1000);
       return true;
     }
@@ -2072,12 +2067,9 @@ async function captureOverviewSidePanel(page: Page, locale: Locale, screenshotDi
       
       // Click the toggle button to switch to chart mode
       await page.evaluate(() => {
-        const panel = document.querySelector('[data-screenshot-target="overview-side-panel"]');
-        if (panel) {
-          const toggleButton = panel.querySelector('button[title*="Switch"], button[aria-label*="Switch"]');
-          if (toggleButton) {
-            (toggleButton as HTMLButtonElement).click();
-          }
+        const toggleButton = document.querySelector('[data-screenshot-target="overview-side-panel-toggle"]');
+        if (toggleButton) {
+          (toggleButton as HTMLButtonElement).click();
         }
       });
       await delay(1500); // Wait for the state to change
@@ -2191,13 +2183,9 @@ async function captureBackupHistoryTable(page: Page, locale: Locale, screenshotD
       // Try waiting for any Card element as fallback
       try {
         await page.waitForSelector('[class*="Card"]', { timeout: 3000 });
-        // Check if backup history card exists using evaluate
+        // Check if backup history card exists using data-screenshot-target
         const cardExists = await page.evaluate(() => {
-          const cards = Array.from(document.querySelectorAll('[class*="Card"]'));
-          return cards.some(card => {
-            const title = card.querySelector('h3, [class*="CardTitle"]');
-            return title && title.textContent?.includes('Backup History');
-          });
+          return !!document.querySelector('[data-screenshot-target="backup-history-table"]');
         });
         if (!cardExists) {
           throw new Error('Backup History card not found');
@@ -2207,16 +2195,11 @@ async function captureBackupHistoryTable(page: Page, locale: Locale, screenshotD
         // Debug: check what's on the page
         const debugInfo = await page.evaluate(() => {
           const cards = document.querySelectorAll('[class*="Card"]');
-          const titles = Array.from(cards).map(card => {
-            const title = card.querySelector('h3, [class*="CardTitle"]');
-            return title?.textContent || '';
-          });
           const allTargets = Array.from(document.querySelectorAll('[data-screenshot-target]')).map(el => el.getAttribute('data-screenshot-target'));
           const hasTable = document.querySelector('table') !== null;
           const url = window.location.href;
           return {
             totalCards: cards.length,
-            cardTitles: titles,
             hasBackupHistoryTarget: !!document.querySelector('[data-screenshot-target="backup-history-table"]'),
             allScreenshotTargets: allTargets,
             hasTable,
@@ -2249,20 +2232,8 @@ async function captureBackupHistoryTable(page: Page, locale: Locale, screenshotD
     
     // Find the backup history table section using data-screenshot-target
     const tableBounds = await page.evaluate(() => {
-      // First try the data attribute
+      // Use the data attribute for reliable selection
       let card = document.querySelector('[data-screenshot-target="backup-history-table"]');
-      
-      // Fallback: find Card with "Backup History" title
-      if (!card) {
-        const cards = Array.from(document.querySelectorAll('[class*="Card"]'));
-        for (const c of cards) {
-          const title = c.querySelector('h3, [class*="CardTitle"]');
-          if (title && title.textContent?.includes('Backup History')) {
-            card = c as HTMLElement;
-            break;
-          }
-        }
-      }
       
       // Fallback: find any Card containing a table
       if (!card) {
@@ -2322,9 +2293,8 @@ async function findMetricsChartBounds(page: Page): Promise<{ x: number; y: numbe
     const chartSelectors = '[class*="chart"], [class*="recharts"], canvas, svg[class*="chart"], svg[class*="recharts"]';
     const cards = Array.from(document.querySelectorAll('[class*="Card"], [class*="card"]'));
     for (const card of cards) {
-      const header = card.querySelector('h2, h3, [class*="CardTitle"]');
       const hasChart = card.querySelector(chartSelectors);
-      if (hasChart || (header && (header.textContent || '').includes('Metrics'))) {
+      if (hasChart) {
         const rect = card.getBoundingClientRect();
         return {
           x: Math.max(0, rect.x - 10),

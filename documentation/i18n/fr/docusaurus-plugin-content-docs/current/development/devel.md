@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:40.221Z'
-source_file_mtime: '2026-05-06T23:18:51.406Z'
-source_file_hash: 9d4cf0118b57183b62975b8e1557d2da7033073c6a7bd0b3131a0a0efa508862
-translation_language: fr
-source_file_path: documentation/docs/development/devel.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Commandes les plus utilisées {#most-used-commands}
 
 ## Exécuter en mode développement {#run-in-dev-mode}

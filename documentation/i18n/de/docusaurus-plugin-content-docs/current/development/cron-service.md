@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:39.558Z'
-source_file_mtime: '2026-05-06T23:18:51.394Z'
-source_file_hash: d96b8a208e1a506c80e1a45e3190044bd8a8d6b789fda92a5bc3d91cec00ef2f
-translation_language: de
-source_file_path: documentation/docs/development/cron-service.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Cron-Dienst {#cron-service}
 
 Die Anwendung enthält einen separaten Cron-Service zur Verarbeitung geplanter Aufgaben:

@@ -1,12 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:38.966Z'
-source_file_mtime: '2026-05-06T23:18:51.410Z'
-source_file_hash: ccf0b5d9282c57ab9d01796a3974e790ac31e069ecc8a6880cf29c92b410210a
-translation_language: es
-source_file_path: documentation/docs/api-reference/database-values.md
-translation_models:
-  - qwen/qwen3-235b-a22b-2507
----
 # Muestra de informe de copia de seguridad (valores de base de datos) {#database-values}
 
 Este documento contiene un ejemplo de la carga útil JSON enviada por Duplicati al usar la opción `--send-http-url`. Ilustra la estructura y los campos que duplistatus recibe y persiste. Algunos campos pueden estar vacíos o redactados en este ejemplo.

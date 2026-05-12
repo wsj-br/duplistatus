@@ -1,14 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:41.549Z'
-source_file_mtime: '2026-05-06T23:18:51.410Z'
-source_file_hash: afa62bd5079025673839bdb73483cc80a950dce1e23ab6fbc63dccb4333ad41f
-translation_language: es
-source_file_path: documentation/docs/development/setup.md
-translation_models:
-  - anthropic/claude-3.5-haiku
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Configuración de Desarrollo {#development-setup}
 
 ## Requisitos previos {#prerequisites}

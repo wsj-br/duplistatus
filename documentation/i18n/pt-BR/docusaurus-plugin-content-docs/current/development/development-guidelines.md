@@ -1,14 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:40.349Z'
-source_file_mtime: '2026-05-06T23:18:51.406Z'
-source_file_hash: c7ae1bc72c936d2aee0a62300df6c52bf8f2bbcc98ea4f2271e966cc459510be
-translation_language: pt-BR
-source_file_path: documentation/docs/development/development-guidelines.md
-translation_models:
-  - anthropic/claude-3.5-haiku
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Referência de Desenvolvimento {#development-reference}
 
 ## Organização do Código {#code-organisation}

@@ -1,12 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:38.842Z'
-source_file_mtime: '2026-05-06T23:18:51.418Z'
-source_file_hash: 71a70ebe58920eba7ffc9c0087432da38e19bacac8c69249ecddce48e51cdce2
-translation_language: fr
-source_file_path: documentation/docs/api-reference/core-operations.md
-translation_models:
-  - qwen/qwen3-235b-a22b-2507
----
 # Opérations principales {#core-operations}
 
 ## Obtenir les données du tableau de bord (consolidées) - `/api/dashboard` {#get-dashboard-data-consolidated---apidashboard}

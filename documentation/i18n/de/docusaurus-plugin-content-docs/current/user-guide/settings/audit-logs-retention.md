@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:47.104Z'
-source_file_mtime: '2026-05-06T23:18:51.442Z'
-source_file_hash: e3e4bfa89172763e996fda191dad072d6156ecad610292ea1c564e416018e41e
-translation_language: de
-source_file_path: documentation/docs/user-guide/settings/audit-logs-retention.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Audit-Log-Aufbewahrung {#audit-log-retention}
 
 Konfigurieren Sie, wie lange Audit-Protokolle vor der automatischen Bereinigung beibehalten werden.

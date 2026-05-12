@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:48.431Z'
-source_file_mtime: '2026-05-10T19:03:27.501Z'
-source_file_hash: b1f073fc756bf469acd698513daa0acf449968820b163817769bb58e9e84a91a
-translation_language: es
-source_file_path: documentation/docs/user-guide/settings/user-management-settings.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Usuarios {#users}
 
 Administre cuentas de usuario, permisos y control de acceso para **duplistatus**. Esta sección permite a los administradores crear, modificar y eliminar cuentas de usuario.

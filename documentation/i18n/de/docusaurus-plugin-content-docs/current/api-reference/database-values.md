@@ -1,12 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:38.963Z'
-source_file_mtime: '2026-05-06T23:18:51.410Z'
-source_file_hash: ccf0b5d9282c57ab9d01796a3974e790ac31e069ecc8a6880cf29c92b410210a
-translation_language: de
-source_file_path: documentation/docs/api-reference/database-values.md
-translation_models:
-  - qwen/qwen3-235b-a22b-2507
----
 # Beispiel-Backup-Bericht (Datenbankwerte) {#database-values}
 
 Dieses Dokument enthält ein Beispiel für die JSON-Nutzlast, die von Duplicati gesendet wird, wenn die `--send-http-url`-Option verwendet wird. Es veranschaulicht die Struktur und die Felder, die von duplistatus empfangen und gespeichert werden. Einige Felder können in diesem Beispiel gelöscht oder geschwärzt sein.

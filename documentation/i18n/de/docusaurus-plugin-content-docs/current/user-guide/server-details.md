@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:47.006Z'
-source_file_mtime: '2026-05-10T19:03:27.501Z'
-source_file_hash: 6e8a3cb53bff96ec8defba9ae5c4fd654bfcf4c5249b42c64faab1e60cc2bc68
-translation_language: de
-source_file_path: documentation/docs/user-guide/server-details.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Server Details {#server-details}
 
 Wenn Sie auf einen Server im Dashboard klicken, wird eine Seite mit einer Liste von Sicherungen für diesen Server geöffnet. Sie können alle Sicherungen anzeigen oder eine bestimmte auswählen, wenn der Server mehrere Sicherungen konfiguriert hat.

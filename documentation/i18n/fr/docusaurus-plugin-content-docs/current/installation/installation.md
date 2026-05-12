@@ -1,14 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:42.718Z'
-source_file_mtime: '2026-05-10T19:03:27.501Z'
-source_file_hash: ff45fe5f2dea04589c6b35a872a2fbb19c0c49b4c33a0951774e8556326297c0
-translation_language: fr
-source_file_path: documentation/docs/installation/installation.md
-translation_models:
-  - anthropic/claude-3.5-haiku
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Guide d'Installation {#installation-guide}
 
 L'application peut être déployée à l'aide de Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks), ou Podman. Après l'installation, vous souhaiterez peut-être configurer le fuseau horaire, comme décrit dans la section [Configurer le fuseau horaire](./configure-tz.md) et vous devez configurer les serveurs Duplicati pour envoyer les journaux de sauvegarde à **duplistatus**, comme indiqué dans la section [Configuration Duplicati](./duplicati-server-configuration.md).

@@ -1,14 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:42.506Z'
-source_file_mtime: '2026-05-06T23:18:51.418Z'
-source_file_hash: 837ff8a2eae0a48ed5b1298115447eb5f025e020cf32dee7ae20d8849e656bc0
-translation_language: fr
-source_file_path: documentation/docs/installation/https-setup.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - google/gemma-3-27b-it
-  - qwen/qwen3-235b-a22b-2507
----
 # Configuration HTTPS (Optionnel) {#https-setup-optional}
 
 Pour les déploiements en production, il est recommandé de servir **duplistatus** via HTTPS en utilisant un proxy inverse. Cette section fournit des exemples de configuration pour les solutions de proxy inverse populaires.

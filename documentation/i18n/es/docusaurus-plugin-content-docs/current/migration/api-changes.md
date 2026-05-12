@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:43.124Z'
-source_file_mtime: '2026-05-06T23:18:51.410Z'
-source_file_hash: 8b9a230f64fd786725b53f2231596f7426ccf84e8ad7352af80d2f9b7a86410c
-translation_language: es
-source_file_path: documentation/docs/migration/api-changes.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Cambios de API incompatibles con versiones anteriores {#api-breaking-changes}
 
 Este documento describe los cambios disruptivos en los puntos finales de la API externa en diferentes versiones de duplistatus. Los puntos finales de la API externa son aquellos diseñados para ser utilizados por otras aplicaciones e integraciones (por ejemplo, integración de Homepage).

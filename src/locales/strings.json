@@ -309,7 +309,7 @@
       },
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 395
+        "line": 442
       }
     ]
   },
@@ -1064,11 +1064,11 @@
       },
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 298
+        "line": 305
       },
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 586
+        "line": 593
       },
       {
         "file": "src/components/server-details/server-backup-table.tsx",
@@ -1149,11 +1149,11 @@
       },
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 295
+        "line": 302
       },
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 581
+        "line": 588
       },
       {
         "file": "src/components/server-details/server-backup-table.tsx",
@@ -1811,7 +1811,7 @@
       },
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 593
+        "line": 600
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
@@ -2046,7 +2046,7 @@
       },
       {
         "file": "src/components/server-details/detail-auto-refresh.tsx",
-        "line": 82
+        "line": 90
       },
       {
         "file": "src/components/settings/application-logs-viewer.tsx",
@@ -4623,6 +4623,111 @@
       }
     ]
   },
+  "a824a0a8": {
+    "source": "Chart time range",
+    "translated": {
+      "es": "Intervalo de tiempo del gráfico",
+      "fr": "Plage horaire du graphique",
+      "de": "Diagrammzeitbereich",
+      "pt-BR": "Intervalo de tempo do gráfico"
+    },
+    "models": {
+      "es": "anthropic/claude-3.5-haiku",
+      "fr": "anthropic/claude-3.5-haiku",
+      "de": "anthropic/claude-3.5-haiku",
+      "pt-BR": "anthropic/claude-3.5-haiku"
+    },
+    "locations": [
+      {
+        "file": "src/components/chart-time-range-selector.tsx",
+        "line": 65
+      }
+    ]
+  },
+  "f22d5e63": {
+    "source": "Switch to line chart",
+    "translated": {
+      "es": "Cambiar a gráfico de líneas",
+      "fr": "Passer au graphique linéaire",
+      "de": "Zu Liniendiagramm wechseln",
+      "pt-BR": "Alternar para gráfico de linhas"
+    },
+    "models": {
+      "es": "anthropic/claude-3.5-haiku",
+      "fr": "anthropic/claude-3.5-haiku",
+      "de": "anthropic/claude-3.5-haiku",
+      "pt-BR": "anthropic/claude-3.5-haiku"
+    },
+    "locations": [
+      {
+        "file": "src/components/chart-time-range-selector.tsx",
+        "line": 78
+      }
+    ]
+  },
+  "dd6269d3": {
+    "source": "Switch to bar chart",
+    "translated": {
+      "es": "Cambiar a gráfico de barras",
+      "fr": "Passer au graphique à barres",
+      "de": "Zu Balkendiagramm wechseln",
+      "pt-BR": "Alternar para gráfico de barras"
+    },
+    "models": {
+      "es": "anthropic/claude-3.5-haiku",
+      "fr": "anthropic/claude-3.5-haiku",
+      "de": "anthropic/claude-3.5-haiku",
+      "pt-BR": "anthropic/claude-3.5-haiku"
+    },
+    "locations": [
+      {
+        "file": "src/components/chart-time-range-selector.tsx",
+        "line": 78
+      }
+    ]
+  },
+  "719986a0": {
+    "source": "Line chart",
+    "translated": {
+      "es": "Gráfico de líneas",
+      "fr": "Graphique linéaire",
+      "de": "Liniendiagramm",
+      "pt-BR": "Gráfico de linhas"
+    },
+    "models": {
+      "es": "anthropic/claude-3.5-haiku",
+      "fr": "anthropic/claude-3.5-haiku",
+      "de": "anthropic/claude-3.5-haiku",
+      "pt-BR": "anthropic/claude-3.5-haiku"
+    },
+    "locations": [
+      {
+        "file": "src/components/chart-time-range-selector.tsx",
+        "line": 79
+      }
+    ]
+  },
+  "098f75a7": {
+    "source": "Bar chart",
+    "translated": {
+      "es": "Gráfico de barras",
+      "fr": "Graphique à barres",
+      "de": "Balkendiagramm",
+      "pt-BR": "Gráfico de barras"
+    },
+    "models": {
+      "es": "anthropic/claude-3.5-haiku",
+      "fr": "anthropic/claude-3.5-haiku",
+      "de": "anthropic/claude-3.5-haiku",
+      "pt-BR": "anthropic/claude-3.5-haiku"
+    },
+    "locations": [
+      {
+        "file": "src/components/chart-time-range-selector.tsx",
+        "line": 79
+      }
+    ]
+  },
   "bce05974": {
     "source": "overview",
     "translated": {
@@ -4866,7 +4971,7 @@
     "locations": [
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 260
+        "line": 267
       },
       {
         "file": "src/components/settings/backup-monitoring-form.tsx",
@@ -4899,7 +5004,7 @@
     "locations": [
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 263
+        "line": 270
       },
       {
         "file": "src/components/server-details/server-backup-table.tsx",
@@ -4932,7 +5037,7 @@
     "locations": [
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 267
+        "line": 274
       }
     ]
   },
@@ -4953,7 +5058,7 @@
     "locations": [
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 273
+        "line": 280
       }
     ]
   },
@@ -4974,15 +5079,15 @@
     "locations": [
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 280
+        "line": 287
       },
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 541
+        "line": 548
       },
       {
         "file": "src/components/metrics-charts-panel.tsx",
-        "line": 110
+        "line": 106
       },
       {
         "file": "src/components/server-details/server-backup-table.tsx",
@@ -5015,11 +5120,11 @@
     "locations": [
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 283
+        "line": 290
       },
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 555
+        "line": 562
       }
     ]
   },
@@ -5040,7 +5145,7 @@
     "locations": [
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 286
+        "line": 293
       }
     ]
   },
@@ -5061,7 +5166,7 @@
     "locations": [
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 289
+        "line": 296
       }
     ]
   },
@@ -5082,15 +5187,15 @@
     "locations": [
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 292
+        "line": 299
       },
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 575
+        "line": 582
       },
       {
         "file": "src/components/metrics-charts-panel.tsx",
-        "line": 86
+        "line": 82
       },
       {
         "file": "src/components/server-details/server-backup-table.tsx",
@@ -5119,7 +5224,7 @@
     "locations": [
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 301
+        "line": 308
       }
     ]
   },
@@ -5140,11 +5245,11 @@
     "locations": [
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 313
+        "line": 320
       },
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 487
+        "line": 494
       },
       {
         "file": "src/components/dashboard/overview-cards.tsx",
@@ -5173,11 +5278,11 @@
     "locations": [
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 315
+        "line": 322
       },
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 489
+        "line": 496
       },
       {
         "file": "src/components/dashboard/overview-cards.tsx",
@@ -5202,11 +5307,11 @@
     "locations": [
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 317
+        "line": 324
       },
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 491
+        "line": 498
       },
       {
         "file": "src/components/settings/application-logs-viewer.tsx",
@@ -5231,11 +5336,11 @@
     "locations": [
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 319
+        "line": 326
       },
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 493
+        "line": 500
       },
       {
         "file": "src/components/dashboard/overview-cards.tsx",
@@ -5260,11 +5365,11 @@
     "locations": [
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 354
+        "line": 361
       },
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 525
+        "line": 532
       },
       {
         "file": "src/components/server-details/server-detail-summary-items.tsx",
@@ -5289,11 +5394,11 @@
     "locations": [
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 358
+        "line": 365
       },
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 632
+        "line": 639
       }
     ]
   },
@@ -5314,11 +5419,11 @@
     "locations": [
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 359
+        "line": 366
       },
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 633
+        "line": 640
       }
     ]
   },
@@ -5339,11 +5444,11 @@
     "locations": [
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 360
+        "line": 367
       },
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 634
+        "line": 641
       }
     ]
   },
@@ -5364,11 +5469,11 @@
     "locations": [
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 361
+        "line": 368
       },
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 635
+        "line": 642
       }
     ]
   },
@@ -5389,11 +5494,11 @@
     "locations": [
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 372
+        "line": 379
       },
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 648
+        "line": 655
       }
     ]
   },
@@ -5414,7 +5519,7 @@
     "locations": [
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 561
+        "line": 568
       }
     ]
   },
@@ -5435,7 +5540,7 @@
     "locations": [
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 604
+        "line": 611
       },
       {
         "file": "src/components/settings/backup-notifications-form.tsx",
@@ -5504,7 +5609,7 @@
     "locations": [
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 630
+        "line": 637
       }
     ]
   },
@@ -5525,7 +5630,7 @@
     "locations": [
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
-        "line": 662
+        "line": 669
       },
       {
         "file": "src/components/server-details/server-backup-table.tsx",
@@ -5676,7 +5781,7 @@
     "locations": [
       {
         "file": "src/components/dashboard/overview-charts-panel.tsx",
-        "line": 324
+        "line": 278
       }
     ]
   },
@@ -5697,11 +5802,11 @@
     "locations": [
       {
         "file": "src/components/dashboard/overview-charts-panel.tsx",
-        "line": 330
+        "line": 284
       },
       {
         "file": "src/components/metrics-charts-panel.tsx",
-        "line": 98
+        "line": 94
       },
       {
         "file": "src/components/server-details/server-backup-table.tsx",
@@ -5730,11 +5835,11 @@
     "locations": [
       {
         "file": "src/components/dashboard/overview-charts-panel.tsx",
-        "line": 335
+        "line": 289
       },
       {
         "file": "src/components/metrics-charts-panel.tsx",
-        "line": 104
+        "line": 100
       },
       {
         "file": "src/components/server-details/server-backup-table.tsx",
@@ -5763,19 +5868,19 @@
     "locations": [
       {
         "file": "src/components/dashboard/overview-charts-panel.tsx",
-        "line": 459
+        "line": 402
       },
       {
         "file": "src/components/dashboard/overview-charts-panel.tsx",
-        "line": 595
+        "line": 489
       },
       {
         "file": "src/components/metrics-charts-panel.tsx",
-        "line": 499
+        "line": 446
       },
       {
         "file": "src/components/metrics-charts-panel.tsx",
-        "line": 635
+        "line": 555
       }
     ]
   },
@@ -5796,11 +5901,11 @@
     "locations": [
       {
         "file": "src/components/dashboard/overview-charts-panel.tsx",
-        "line": 535
+        "line": 455
       },
       {
         "file": "src/components/metrics-charts-panel.tsx",
-        "line": 575
+        "line": 521
       }
     ]
   },
@@ -5821,264 +5926,11 @@
     "locations": [
       {
         "file": "src/components/dashboard/overview-charts-panel.tsx",
-        "line": 538
+        "line": 458
       },
       {
         "file": "src/components/metrics-charts-panel.tsx",
-        "line": 578
-      }
-    ]
-  },
-  "91cffeca": {
-    "source": "Last 24 Hours",
-    "translated": {
-      "pt-BR": "Últimas 24 Horas",
-      "fr": "Dernières 24 heures",
-      "de": "Letzte 24 Stunden",
-      "es": "Últimas 24 Horas"
-    },
-    "models": {
-      "pt-BR": "anthropic/claude-3.5-haiku",
-      "fr": "anthropic/claude-3.5-haiku",
-      "de": "anthropic/claude-3.5-haiku",
-      "es": "anthropic/claude-3.5-haiku"
-    },
-    "locations": [
-      {
-        "file": "src/components/dashboard/overview-charts-panel.tsx",
-        "line": 545
-      },
-      {
-        "file": "src/components/metrics-charts-panel.tsx",
-        "line": 585
-      }
-    ]
-  },
-  "438c1d26": {
-    "source": "Last week",
-    "translated": {
-      "pt-BR": "Última semana",
-      "fr": "Dernière semaine",
-      "de": "Letzte Woche",
-      "es": "Última semana"
-    },
-    "models": {
-      "pt-BR": "anthropic/claude-3.5-haiku",
-      "fr": "anthropic/claude-3.5-haiku",
-      "de": "anthropic/claude-3.5-haiku",
-      "es": "anthropic/claude-3.5-haiku"
-    },
-    "locations": [
-      {
-        "file": "src/components/dashboard/overview-charts-panel.tsx",
-        "line": 547
-      },
-      {
-        "file": "src/components/metrics-charts-panel.tsx",
-        "line": 587
-      }
-    ]
-  },
-  "1e937283": {
-    "source": "Last 2 weeks",
-    "translated": {
-      "pt-BR": "Últimas 2 semanas",
-      "fr": "Dernières 2 semaines",
-      "de": "Letzte 2 Wochen",
-      "es": "Últimas 2 semanas"
-    },
-    "models": {
-      "pt-BR": "anthropic/claude-3.5-haiku",
-      "fr": "anthropic/claude-3.5-haiku",
-      "de": "anthropic/claude-3.5-haiku",
-      "es": "anthropic/claude-3.5-haiku"
-    },
-    "locations": [
-      {
-        "file": "src/components/dashboard/overview-charts-panel.tsx",
-        "line": 549
-      },
-      {
-        "file": "src/components/metrics-charts-panel.tsx",
-        "line": 589
-      },
-      {
-        "file": "src/components/settings/display-settings-form.tsx",
-        "line": 161
-      }
-    ]
-  },
-  "80cbddde": {
-    "source": "Last month",
-    "translated": {
-      "pt-BR": "Último mês",
-      "fr": "Dernier mois",
-      "de": "Letzter Monat",
-      "es": "Último mes"
-    },
-    "models": {
-      "pt-BR": "anthropic/claude-3.5-haiku",
-      "fr": "anthropic/claude-3.5-haiku",
-      "de": "anthropic/claude-3.5-haiku",
-      "es": "anthropic/claude-3.5-haiku"
-    },
-    "locations": [
-      {
-        "file": "src/components/dashboard/overview-charts-panel.tsx",
-        "line": 551
-      },
-      {
-        "file": "src/components/metrics-charts-panel.tsx",
-        "line": 591
-      },
-      {
-        "file": "src/components/settings/display-settings-form.tsx",
-        "line": 162
-      }
-    ]
-  },
-  "2f33528a": {
-    "source": "Last quarter",
-    "translated": {
-      "pt-BR": "Último trimestre",
-      "fr": "Dernier trimestre",
-      "de": "Letztes Quartal",
-      "es": "Último trimestre"
-    },
-    "models": {
-      "pt-BR": "anthropic/claude-3.5-haiku",
-      "fr": "anthropic/claude-3.5-haiku",
-      "de": "anthropic/claude-3.5-haiku",
-      "es": "anthropic/claude-3.5-haiku"
-    },
-    "locations": [
-      {
-        "file": "src/components/dashboard/overview-charts-panel.tsx",
-        "line": 553
-      },
-      {
-        "file": "src/components/metrics-charts-panel.tsx",
-        "line": 593
-      },
-      {
-        "file": "src/components/settings/display-settings-form.tsx",
-        "line": 163
-      }
-    ]
-  },
-  "6a056774": {
-    "source": "Last semester",
-    "translated": {
-      "pt-BR": "Último semestre",
-      "fr": "Dernier semestre",
-      "de": "Letztes Halbjahr",
-      "es": "Último semestre"
-    },
-    "models": {
-      "pt-BR": "anthropic/claude-3.5-haiku",
-      "fr": "anthropic/claude-3.5-haiku",
-      "de": "anthropic/claude-3.5-haiku",
-      "es": "anthropic/claude-3.5-haiku"
-    },
-    "locations": [
-      {
-        "file": "src/components/dashboard/overview-charts-panel.tsx",
-        "line": 555
-      },
-      {
-        "file": "src/components/metrics-charts-panel.tsx",
-        "line": 595
-      },
-      {
-        "file": "src/components/settings/display-settings-form.tsx",
-        "line": 164
-      }
-    ]
-  },
-  "f39badf6": {
-    "source": "Last Year",
-    "translated": {
-      "pt-BR": "Último Ano",
-      "fr": "Dernière année",
-      "de": "Letztes Jahr",
-      "es": "Último Año"
-    },
-    "models": {
-      "pt-BR": "anthropic/claude-3.5-haiku",
-      "fr": "anthropic/claude-3.5-haiku",
-      "de": "anthropic/claude-3.5-haiku",
-      "es": "anthropic/claude-3.5-haiku"
-    },
-    "locations": [
-      {
-        "file": "src/components/dashboard/overview-charts-panel.tsx",
-        "line": 557
-      },
-      {
-        "file": "src/components/metrics-charts-panel.tsx",
-        "line": 597
-      },
-      {
-        "file": "src/components/settings/display-settings-form.tsx",
-        "line": 165
-      }
-    ]
-  },
-  "9153d505": {
-    "source": "Last 2 years",
-    "translated": {
-      "pt-BR": "Últimos 2 anos",
-      "fr": "Dernières 2 années",
-      "de": "Letzte 2 Jahre",
-      "es": "Últimos 2 años"
-    },
-    "models": {
-      "pt-BR": "anthropic/claude-3.5-haiku",
-      "fr": "anthropic/claude-3.5-haiku",
-      "de": "anthropic/claude-3.5-haiku",
-      "es": "anthropic/claude-3.5-haiku"
-    },
-    "locations": [
-      {
-        "file": "src/components/dashboard/overview-charts-panel.tsx",
-        "line": 559
-      },
-      {
-        "file": "src/components/metrics-charts-panel.tsx",
-        "line": 599
-      },
-      {
-        "file": "src/components/settings/display-settings-form.tsx",
-        "line": 166
-      }
-    ]
-  },
-  "2943f496": {
-    "source": "All available data",
-    "translated": {
-      "pt-BR": "Todos os dados disponíveis",
-      "fr": "Toutes les données disponibles",
-      "de": "Alle verfügbaren Daten",
-      "es": "Todos los datos disponibles"
-    },
-    "models": {
-      "pt-BR": "anthropic/claude-3.5-haiku",
-      "fr": "anthropic/claude-3.5-haiku",
-      "de": "anthropic/claude-3.5-haiku",
-      "es": "anthropic/claude-3.5-haiku"
-    },
-    "locations": [
-      {
-        "file": "src/components/dashboard/overview-charts-panel.tsx",
-        "line": 561
-      },
-      {
-        "file": "src/components/metrics-charts-panel.tsx",
-        "line": 601
-      },
-      {
-        "file": "src/components/settings/display-settings-form.tsx",
-        "line": 167
+        "line": 524
       }
     ]
   },
@@ -6099,11 +5951,11 @@
     "locations": [
       {
         "file": "src/components/dashboard/overview-charts-panel.tsx",
-        "line": 585
+        "line": 479
       },
       {
         "file": "src/components/metrics-charts-panel.tsx",
-        "line": 625
+        "line": 545
       }
     ]
   },
@@ -6124,11 +5976,11 @@
     "locations": [
       {
         "file": "src/components/dashboard/overview-charts-panel.tsx",
-        "line": 622
+        "line": 518
       },
       {
         "file": "src/components/metrics-charts-panel.tsx",
-        "line": 661
+        "line": 583
       }
     ]
   },
@@ -6149,11 +6001,11 @@
     "locations": [
       {
         "file": "src/components/dashboard/overview-charts-panel.tsx",
-        "line": 672
+        "line": 558
       },
       {
         "file": "src/components/metrics-charts-panel.tsx",
-        "line": 711
+        "line": 634
       }
     ]
   },
@@ -6216,7 +6068,7 @@
     "locations": [
       {
         "file": "src/components/global-refresh-controls.tsx",
-        "line": 35
+        "line": 36
       }
     ]
   },
@@ -6237,7 +6089,7 @@
     "locations": [
       {
         "file": "src/components/global-refresh-controls.tsx",
-        "line": 37
+        "line": 38
       }
     ]
   },
@@ -6258,7 +6110,7 @@
     "locations": [
       {
         "file": "src/components/global-refresh-controls.tsx",
-        "line": 61
+        "line": 62
       }
     ]
   },
@@ -6279,7 +6131,7 @@
     "locations": [
       {
         "file": "src/components/global-refresh-controls.tsx",
-        "line": 61
+        "line": 62
       }
     ]
   },
@@ -6300,7 +6152,7 @@
     "locations": [
       {
         "file": "src/components/global-refresh-controls.tsx",
-        "line": 64
+        "line": 65
       }
     ]
   },
@@ -6321,7 +6173,7 @@
     "locations": [
       {
         "file": "src/components/global-refresh-controls.tsx",
-        "line": 66
+        "line": 67
       }
     ]
   },
@@ -6342,7 +6194,7 @@
     "locations": [
       {
         "file": "src/components/global-refresh-controls.tsx",
-        "line": 68
+        "line": 69
       }
     ]
   },
@@ -6363,7 +6215,7 @@
     "locations": [
       {
         "file": "src/components/global-refresh-controls.tsx",
-        "line": 149
+        "line": 158
       }
     ]
   },
@@ -6384,7 +6236,7 @@
     "locations": [
       {
         "file": "src/components/global-refresh-controls.tsx",
-        "line": 150
+        "line": 159
       }
     ]
   },
@@ -6405,7 +6257,7 @@
     "locations": [
       {
         "file": "src/components/global-refresh-controls.tsx",
-        "line": 180
+        "line": 189
       }
     ]
   },
@@ -6594,7 +6446,7 @@
     "locations": [
       {
         "file": "src/components/metrics-charts-panel.tsx",
-        "line": 80
+        "line": 76
       },
       {
         "file": "src/components/server-details/server-backup-table.tsx",
@@ -6623,7 +6475,7 @@
     "locations": [
       {
         "file": "src/components/metrics-charts-panel.tsx",
-        "line": 92
+        "line": 88
       },
       {
         "file": "src/components/server-details/server-backup-table.tsx",
@@ -6978,7 +6830,7 @@
     "locations": [
       {
         "file": "src/components/server-details/detail-auto-refresh.tsx",
-        "line": 104
+        "line": 112
       }
     ]
   },
@@ -9355,7 +9207,7 @@
       },
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 188
+        "line": 235
       }
     ]
   },
@@ -9380,7 +9232,7 @@
       },
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 192
+        "line": 239
       }
     ]
   },
@@ -9405,7 +9257,7 @@
       },
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 193
+        "line": 240
       }
     ]
   },
@@ -12219,7 +12071,7 @@
       },
       {
         "file": "src/components/ui/server-filter-input.tsx",
-        "line": 144
+        "line": 136
       }
     ]
   },
@@ -16336,11 +16188,11 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 90
+        "line": 93
       },
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 355
+        "line": 402
       }
     ]
   },
@@ -16361,7 +16213,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 111
+        "line": 114
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
@@ -16390,7 +16242,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 114
+        "line": 117
       }
     ]
   },
@@ -16411,7 +16263,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 125
+        "line": 128
       }
     ]
   },
@@ -16432,7 +16284,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 132
+        "line": 135
       }
     ]
   },
@@ -16453,18 +16305,6 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 135
-      },
-      {
-        "file": "src/components/settings/display-settings-form.tsx",
-        "line": 136
-      },
-      {
-        "file": "src/components/settings/display-settings-form.tsx",
-        "line": 137
-      },
-      {
-        "file": "src/components/settings/display-settings-form.tsx",
         "line": 138
       },
       {
@@ -16482,6 +16322,18 @@
       {
         "file": "src/components/settings/display-settings-form.tsx",
         "line": 142
+      },
+      {
+        "file": "src/components/settings/display-settings-form.tsx",
+        "line": 143
+      },
+      {
+        "file": "src/components/settings/display-settings-form.tsx",
+        "line": 144
+      },
+      {
+        "file": "src/components/settings/display-settings-form.tsx",
+        "line": 145
       }
     ]
   },
@@ -16502,7 +16354,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 151
+        "line": 154
       }
     ]
   },
@@ -16523,7 +16375,70 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 158
+        "line": 161
+      }
+    ]
+  },
+  "c2718d92": {
+    "source": "Chart Style",
+    "translated": {
+      "es": "Estilo de gráfico",
+      "fr": "Style de graphique",
+      "de": "Diagrammstil",
+      "pt-BR": "Estilo do Gráfico"
+    },
+    "models": {
+      "es": "anthropic/claude-3.5-haiku",
+      "fr": "anthropic/claude-3.5-haiku",
+      "de": "anthropic/claude-3.5-haiku",
+      "pt-BR": "anthropic/claude-3.5-haiku"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/display-settings-form.tsx",
+        "line": 180
+      }
+    ]
+  },
+  "5602c6f3": {
+    "source": "Smooth Lines",
+    "translated": {
+      "es": "Líneas suaves",
+      "fr": "Lignes lissées",
+      "de": "Weiche Linien",
+      "pt-BR": "Linhas suaves"
+    },
+    "models": {
+      "es": "anthropic/claude-3.5-haiku",
+      "fr": "anthropic/claude-3.5-haiku",
+      "de": "anthropic/claude-3.5-haiku",
+      "pt-BR": "anthropic/claude-3.5-haiku"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/display-settings-form.tsx",
+        "line": 200
+      }
+    ]
+  },
+  "d00d3123": {
+    "source": "Bar Chart",
+    "translated": {
+      "es": "Gráfico de barras",
+      "fr": "Graphique à barres",
+      "de": "Balkendiagramm",
+      "pt-BR": "Gráfico de Barras"
+    },
+    "models": {
+      "es": "anthropic/claude-3.5-haiku",
+      "fr": "anthropic/claude-3.5-haiku",
+      "de": "anthropic/claude-3.5-haiku",
+      "pt-BR": "anthropic/claude-3.5-haiku"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/display-settings-form.tsx",
+        "line": 214
       }
     ]
   },
@@ -16544,7 +16459,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 176
+        "line": 223
       }
     ]
   },
@@ -16565,7 +16480,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 183
+        "line": 230
       }
     ]
   },
@@ -16586,7 +16501,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 186
+        "line": 233
       }
     ]
   },
@@ -16607,7 +16522,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 187
+        "line": 234
       }
     ]
   },
@@ -16628,7 +16543,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 189
+        "line": 236
       }
     ]
   },
@@ -16649,7 +16564,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 190
+        "line": 237
       }
     ]
   },
@@ -16670,7 +16585,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 191
+        "line": 238
       }
     ]
   },
@@ -16691,7 +16606,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 202
+        "line": 249
       }
     ]
   },
@@ -16712,7 +16627,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 209
+        "line": 256
       }
     ]
   },
@@ -16733,7 +16648,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 212
+        "line": 259
       }
     ]
   },
@@ -16754,7 +16669,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 213
+        "line": 260
       }
     ]
   },
@@ -16775,7 +16690,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 214
+        "line": 261
       }
     ]
   },
@@ -16796,7 +16711,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 238
+        "line": 285
       }
     ]
   },
@@ -16817,7 +16732,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 259
+        "line": 306
       }
     ]
   },
@@ -16838,7 +16753,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 273
+        "line": 320
       }
     ]
   },
@@ -16859,7 +16774,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 287
+        "line": 334
       }
     ]
   },
@@ -16880,7 +16795,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 298
+        "line": 345
       }
     ]
   },
@@ -16901,7 +16816,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 305
+        "line": 352
       }
     ]
   },
@@ -16922,7 +16837,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 308
+        "line": 355
       }
     ]
   },
@@ -16943,7 +16858,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 309
+        "line": 356
       }
     ]
   },
@@ -16964,7 +16879,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 310
+        "line": 357
       }
     ]
   },
@@ -16985,7 +16900,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 320
+        "line": 367
       }
     ]
   },
@@ -17006,7 +16921,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 337
+        "line": 384
       }
     ]
   },
@@ -17027,7 +16942,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 342
+        "line": 389
       }
     ]
   },
@@ -17048,7 +16963,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 399
+        "line": 446
       }
     ]
   },
@@ -17069,7 +16984,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 403
+        "line": 450
       }
     ]
   },
@@ -23222,6 +23137,132 @@
       }
     ]
   },
+  "1e815ebb": {
+    "source": "Please close this tab manually using your browser's close button.",
+    "translated": {
+      "es": "Cierre esta pestaña manualmente usando el botón de cerrar de su navegador.",
+      "fr": "Veuillez fermer cet onglet manuellement en utilisant le bouton de fermeture de votre navigateur.",
+      "de": "Bitte schließen Sie diesen Tab manuell über die Schaltfläche Ihres Browsers.",
+      "pt-BR": "Feche esta aba manualmente usando o botão de fechar do seu navegador."
+    },
+    "models": {
+      "es": "anthropic/claude-3.5-haiku",
+      "fr": "anthropic/claude-3.5-haiku",
+      "de": "anthropic/claude-3.5-haiku",
+      "pt-BR": "anthropic/claude-3.5-haiku"
+    },
+    "locations": [
+      {
+        "file": "src/components/ui/connectivity-error-modal.tsx",
+        "line": 56
+      }
+    ]
+  },
+  "89b5fd44": {
+    "source": "Connection Lost",
+    "translated": {
+      "es": "Conexión perdida",
+      "fr": "Connexion perdue",
+      "de": "Verbindung unterbrochen",
+      "pt-BR": "Conexão Perdida"
+    },
+    "models": {
+      "es": "anthropic/claude-3.5-haiku",
+      "fr": "anthropic/claude-3.5-haiku",
+      "de": "anthropic/claude-3.5-haiku",
+      "pt-BR": "anthropic/claude-3.5-haiku"
+    },
+    "locations": [
+      {
+        "file": "src/components/ui/connectivity-error-modal.tsx",
+        "line": 130
+      }
+    ]
+  },
+  "43b755d3": {
+    "source": "Unable to connect to the server. The application cannot function without a connection.",
+    "translated": {
+      "es": "No se puede conectar al servidor. La aplicación no puede funcionar sin conexión.",
+      "fr": "Impossible de se connecter au serveur. L'application ne peut pas fonctionner sans connexion.",
+      "de": "Keine Verbindung zum Server möglich. Die Anwendung kann ohne Verbindung nicht funktionieren.",
+      "pt-BR": "Não foi possível conectar ao servidor. O aplicativo não pode funcionar sem conexão."
+    },
+    "models": {
+      "es": "anthropic/claude-3.5-haiku",
+      "fr": "anthropic/claude-3.5-haiku",
+      "de": "anthropic/claude-3.5-haiku",
+      "pt-BR": "anthropic/claude-3.5-haiku"
+    },
+    "locations": [
+      {
+        "file": "src/components/ui/connectivity-error-modal.tsx",
+        "line": 134
+      }
+    ]
+  },
+  "ad513e4f": {
+    "source": "Close Window",
+    "translated": {
+      "es": "Cerrar ventana",
+      "fr": "Fermer la fenêtre",
+      "de": "Fenster schließen",
+      "pt-BR": "Fechar Janela"
+    },
+    "models": {
+      "es": "anthropic/claude-3.5-haiku",
+      "fr": "anthropic/claude-3.5-haiku",
+      "de": "anthropic/claude-3.5-haiku",
+      "pt-BR": "anthropic/claude-3.5-haiku"
+    },
+    "locations": [
+      {
+        "file": "src/components/ui/connectivity-error-modal.tsx",
+        "line": 151
+      }
+    ]
+  },
+  "e23fbe3a": {
+    "source": "Retrying...",
+    "translated": {
+      "es": "Reintentando...",
+      "fr": "Nouvelle tentative...",
+      "de": "Verbindung wird wiederhergestellt...",
+      "pt-BR": "Tentando novamente..."
+    },
+    "models": {
+      "es": "anthropic/claude-3.5-haiku",
+      "fr": "anthropic/claude-3.5-haiku",
+      "de": "anthropic/claude-3.5-haiku",
+      "pt-BR": "anthropic/claude-3.5-haiku"
+    },
+    "locations": [
+      {
+        "file": "src/components/ui/connectivity-error-modal.tsx",
+        "line": 163
+      }
+    ]
+  },
+  "0823c836": {
+    "source": "Retry Connection",
+    "translated": {
+      "es": "Reintentar conexión",
+      "fr": "Réessayer la connexion",
+      "de": "Verbindung erneut versuchen",
+      "pt-BR": "Tentar Reconectar"
+    },
+    "models": {
+      "es": "anthropic/claude-3.5-haiku",
+      "fr": "anthropic/claude-3.5-haiku",
+      "de": "anthropic/claude-3.5-haiku",
+      "pt-BR": "anthropic/claude-3.5-haiku"
+    },
+    "locations": [
+      {
+        "file": "src/components/ui/connectivity-error-modal.tsx",
+        "line": 163
+      }
+    ]
+  },
   "9b613da7": {
     "source": "Configure your device",
     "translated": {
@@ -23344,7 +23385,7 @@
     "locations": [
       {
         "file": "src/components/ui/overview-side-panel-toggle.tsx",
-        "line": 22
+        "line": 24
       }
     ]
   },
@@ -23365,7 +23406,7 @@
     "locations": [
       {
         "file": "src/components/ui/overview-side-panel-toggle.tsx",
-        "line": 22
+        "line": 24
       }
     ]
   },
@@ -23432,6 +23473,31 @@
       }
     ]
   },
+  "c48d15c9": {
+    "source": "Click to filter",
+    "translated": {
+      "de": "Zum Filtern klicken",
+      "fr": "Filtrer",
+      "pt-BR": "Clique para filtrar",
+      "es": "Clic para filtrar"
+    },
+    "models": {
+      "de": "anthropic/claude-3.5-haiku",
+      "fr": "anthropic/claude-3.5-haiku",
+      "pt-BR": "anthropic/claude-3.5-haiku",
+      "es": "anthropic/claude-3.5-haiku"
+    },
+    "locations": [
+      {
+        "file": "src/components/ui/server-filter-input.tsx",
+        "line": 95
+      },
+      {
+        "file": "src/components/ui/server-filter-input.tsx",
+        "line": 96
+      }
+    ]
+  },
   "70d112bf": {
     "source": "Filter servers by name, alias, or backup name...",
     "translated": {
@@ -23449,11 +23515,7 @@
     "locations": [
       {
         "file": "src/components/ui/server-filter-input.tsx",
-        "line": 102
-      },
-      {
-        "file": "src/components/ui/server-filter-input.tsx",
-        "line": 132
+        "line": 124
       }
     ]
   },

@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:47.950Z'
-source_file_mtime: '2026-05-06T23:18:51.442Z'
-source_file_hash: b978c78a610418d49df860a0680c231bce4f9a5f2690a3736ca40ae39b5ace0d
-translation_language: pt-BR
-source_file_path: documentation/docs/user-guide/settings/email-settings.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # E-mail {#email}
 
 **duplistatus** oferece suporte ao envio de notificações por e-mail via SMTP como alternativa ou complemento às notificações NTFY. A configuração de e-mail agora é gerenciada através da interface web com armazenamento criptografado no banco de dados para maior segurança.

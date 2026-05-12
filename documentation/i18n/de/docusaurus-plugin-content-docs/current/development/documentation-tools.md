@@ -1,14 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:40.650Z'
-source_file_mtime: '2026-05-06T23:18:51.406Z'
-source_file_hash: 32f396a9dd0e693dbecae2445210921ff4a39963d24b6dd0d17ad22b61045d6b
-translation_language: de
-source_file_path: documentation/docs/development/documentation-tools.md
-translation_models:
-  - anthropic/claude-3.5-haiku
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Dokumentationswerkzeuge {#documentation-tools}
 
 Die Dokumentation wird mit [Docusaurus](https://docusaurus.io/) erstellt und befindet sich im Ordner `documentation`. Die Dokumentation wird auf [GitHub Pages](https://wsj-br.github.io/duplistatus/) gehostet und ist nicht mehr im Docker-Container-Image enthalten.

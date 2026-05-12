@@ -12,7 +12,7 @@ interface ServerFilterInputProps {
   placeholder?: string;
   className?: string;
   autoFocus?: boolean;
-  /** When empty: show only the search icon until hover, focus, or click expands the field. */
+  /** When empty: show only the search icon until click expands the field. */
   variant?: "default" | "collapsible";
 }
 
@@ -26,20 +26,14 @@ export function ServerFilterInput({
 }: ServerFilterInputProps) {
   const { t } = useTranslation();
   const [isFocused, setIsFocused] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-  /** Tap icon (no hover on touch) to keep field open until blur when empty. */
-  const [openedByClick, setOpenedByClick] = useState(false);
+  /** Track if the input was opened by clicking the icon button. */
+  const [isOpened, setIsOpened] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const collapsible = variant === "collapsible";
   const hasQuery = value.trim().length > 0;
-  const isExpanded =
-    !collapsible ||
-    hasQuery ||
-    isFocused ||
-    isHovered ||
-    openedByClick;
+  const isExpanded = !collapsible || hasQuery || isOpened;
 
   useEffect(() => {
     if (autoFocus && inputRef.current) {
@@ -48,9 +42,9 @@ export function ServerFilterInput({
   }, [autoFocus]);
 
   useEffect(() => {
-    if (!openedByClick || !inputRef.current) return;
+    if (!isOpened || !inputRef.current) return;
     inputRef.current.focus();
-  }, [openedByClick]);
+  }, [isOpened]);
 
   const handleClear = () => {
     onChange("");
@@ -63,7 +57,7 @@ export function ServerFilterInput({
         handleClear();
       } else if (collapsible) {
         inputRef.current?.blur();
-        setOpenedByClick(false);
+        setIsOpened(false);
       }
     }
   };
@@ -73,14 +67,15 @@ export function ServerFilterInput({
     window.setTimeout(() => {
       const active = document.activeElement;
       if (containerRef.current?.contains(active)) return;
+      // Close when empty and loses focus
       if (!value.trim()) {
-        setOpenedByClick(false);
+        setIsOpened(false);
       }
     }, 0);
   };
 
   const expandFromIcon = () => {
-    setOpenedByClick(true);
+    setIsOpened(true);
     requestAnimationFrame(() => inputRef.current?.focus());
   };
 
@@ -89,8 +84,6 @@ export function ServerFilterInput({
       <div
         ref={containerRef}
         className={cn("relative shrink-0", className)}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
       >
         <button
           type="button"
@@ -99,7 +92,8 @@ export function ServerFilterInput({
             "text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           )}
-          aria-label={placeholder || t("Filter servers by name, alias, or backup name...")}
+          title={t("Click to filter")}
+          aria-label={t("Click to filter")}
           aria-expanded={false}
           onClick={expandFromIcon}
         >
@@ -117,8 +111,6 @@ export function ServerFilterInput({
         collapsible && "max-w-[min(100vw-6rem,280px)]",
         className
       )}
-      onMouseEnter={() => collapsible && setIsHovered(true)}
-      onMouseLeave={() => collapsible && setIsHovered(false)}
     >
       <Search className="absolute left-3 top-1/2 z-[1] h-4 w-4 -translate-y-1/2 text-muted-foreground pointer-events-none" />
       <Input

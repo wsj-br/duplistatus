@@ -1,12 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:39.419Z'
-source_file_mtime: '2026-05-06T23:18:51.418Z'
-source_file_hash: 55f7e22ce3b1fa4868b6c112f9ed098fc3c8bf99e832fc930106cbc887815c77
-translation_language: pt-BR
-source_file_path: documentation/docs/api-reference/overview.md
-translation_models:
-  - qwen/qwen3-235b-a22b-2507
----
 # Visão Geral da API {#api-overview}
 
 Este documento descreve todos os endpoints da API disponíveis para o aplicativo duplistatus. A API segue princípios RESTful e fornece recursos abrangentes de monitoramento de backup, gerenciamento de notificações e administração do sistema.

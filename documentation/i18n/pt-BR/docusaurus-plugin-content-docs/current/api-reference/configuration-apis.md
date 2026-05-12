@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:38.587Z'
-source_file_mtime: '2026-05-10T21:42:22.919Z'
-source_file_hash: 7c4af7564bebe2a0dac1c8dc3c5face4a1ed43b3e9c8faa8357ce5864a58171f
-translation_language: pt-BR
-source_file_path: documentation/docs/api-reference/configuration-apis.md
-translation_models:
-  - anthropic/claude-3.5-haiku
-  - qwen/qwen3-235b-a22b-2507
----
 # Gerenciamento de Configuração {#configuration-management}
 
 ## Obter Configuração de E-mail - `/api/configuration/email` {#get-email-configuration---apiconfigurationemail}

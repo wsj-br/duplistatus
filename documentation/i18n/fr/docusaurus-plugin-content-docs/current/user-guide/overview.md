@@ -1,16 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:46.893Z'
-source_file_mtime: '2026-05-10T23:06:13.815Z'
-source_file_hash: 3d1ba5a81b316e3831c0ae88b5c9c7ca0139d405589c848f27360fee93a83b0e
-translation_language: fr
-source_file_path: documentation/docs/user-guide/overview.md
-translation_models:
-  - anthropic/claude-3.5-haiku
-  - anthropic/claude-haiku-4.5
-  - 'nvidia/nemotron-nano-12b-v2-vl:free'
-  - qwen/qwen3-235b-a22b-2507
-  - 'stepfun/step-3.5-flash:free'
----
 # Vue d'ensemble {#overview}
 
 Bienvenue dans le guide utilisateur duplistatus. Ce document complet fournit des instructions détaillées pour utiliser duplistatus afin de surveiller et gérer vos opérations de sauvegarde Duplicati sur plusieurs serveurs.

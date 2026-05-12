@@ -1,14 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:42.713Z'
-source_file_mtime: '2026-05-10T19:03:27.501Z'
-source_file_hash: ff45fe5f2dea04589c6b35a872a2fbb19c0c49b4c33a0951774e8556326297c0
-translation_language: de
-source_file_path: documentation/docs/installation/installation.md
-translation_models:
-  - anthropic/claude-3.5-haiku
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Installationsleitfaden {#installation-guide}
 
 Die Anwendung kann mit Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks) oder Podman bereitgestellt werden. Nach der Installation möchten Sie möglicherweise die Zeitzone konfigurieren, wie in [Zeitzone konfigurieren](./configure-tz.md) beschrieben, und müssen die Duplicati-Server so konfigurieren, dass sie Sicherungsprotokolle an **duplistatus** senden, wie im Abschnitt [Duplicati-Konfiguration](./duplicati-server-configuration.md) dargelegt.

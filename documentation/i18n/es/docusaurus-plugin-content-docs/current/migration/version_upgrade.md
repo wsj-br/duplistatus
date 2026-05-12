@@ -1,14 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:43.624Z'
-source_file_mtime: '2026-05-06T23:18:51.410Z'
-source_file_hash: 5e64fe25444d347417eef7f5a5c28139a4130cae452f2e3ac9ea593ea31bb608
-translation_language: es
-source_file_path: documentation/docs/migration/version_upgrade.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - openai/gpt-4o-mini
-  - qwen/qwen3-235b-a22b-2507
----
 # Guía de Migración {#migration-guide}
 
 Esta guía explica cómo actualizar entre versiones de duplistatus. Las migraciones son automáticas: el esquema de la base de datos se actualiza a sí mismo cuando inicia una nueva versión.

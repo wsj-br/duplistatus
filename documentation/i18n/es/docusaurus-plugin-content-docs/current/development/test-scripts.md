@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:41.849Z'
-source_file_mtime: '2026-05-06T23:18:51.394Z'
-source_file_hash: 1d2e30215eab8e6548c552a40d5a81eb9837ec96e1f22b22b2e39a0a757fe50a
-translation_language: es
-source_file_path: documentation/docs/development/test-scripts.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Scripts de Prueba {#test-scripts}
 
 El proyecto incluye varios scripts de prueba para ayudar con el desarrollo y las pruebas:

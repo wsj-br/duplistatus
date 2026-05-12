@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:47.755Z'
-source_file_mtime: '2026-05-06T23:18:51.446Z'
-source_file_hash: 6fadb27aa2b2898a91a2c277aa6ef2a380feb63069ba823e7cdf1943df204b51
-translation_language: pt-BR
-source_file_path: documentation/docs/user-guide/settings/database-maintenance.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Manutenção do banco de dados {#database-maintenance}
 
 Gerencie seus dados de backup e otimize o desempenho através de operações de manutenção do banco de dados.

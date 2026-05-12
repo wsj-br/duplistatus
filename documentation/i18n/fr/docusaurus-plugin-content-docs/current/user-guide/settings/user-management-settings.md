@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:48.428Z'
-source_file_mtime: '2026-05-10T19:03:27.501Z'
-source_file_hash: b1f073fc756bf469acd698513daa0acf449968820b163817769bb58e9e84a91a
-translation_language: fr
-source_file_path: documentation/docs/user-guide/settings/user-management-settings.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Utilisateurs {#users}
 
 Gérez les comptes utilisateur, les autorisations et le contrôle d'accès pour **duplistatus**. Cette section permet aux administrateurs de créer, modifier et supprimer des comptes utilisateur.

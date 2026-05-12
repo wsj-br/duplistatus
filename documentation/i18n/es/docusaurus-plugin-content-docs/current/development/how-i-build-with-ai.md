@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:40.930Z'
-source_file_mtime: '2026-05-06T23:18:51.406Z'
-source_file_hash: 9b48c57e8f83d8e1ba3814a476ddf8a28c68c08305ee07ca77c3b30516e8a027
-translation_language: es
-source_file_path: documentation/docs/development/how-i-build-with-ai.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Cómo construí esta aplicación utilizando herramientas de IA {#how-i-build-this-application-using-ai-tools}
 
 # Motivación {#motivation}

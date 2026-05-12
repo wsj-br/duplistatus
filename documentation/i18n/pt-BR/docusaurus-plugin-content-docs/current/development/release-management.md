@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:41.387Z'
-source_file_mtime: '2026-05-06T23:18:51.394Z'
-source_file_hash: 1b0cbbe3a12f7a343230d78134d9363a4281a2f7fe7a9366fa6509e427ba450b
-translation_language: pt-BR
-source_file_path: documentation/docs/development/release-management.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Gerenciamento de Lançamentos {#release-management}
 
 ## Versionamento (Versionamento Semântico) {#versioning-semantic-versioning}

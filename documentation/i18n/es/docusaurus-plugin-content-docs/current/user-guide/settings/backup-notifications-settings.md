@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:47.530Z'
-source_file_mtime: '2026-05-06T23:18:51.430Z'
-source_file_hash: c28881ecd9af6c672fb4a386e56703be381997ef49fd8a5db83df90528d1376e
-translation_language: es
-source_file_path: documentation/docs/user-guide/settings/backup-notifications-settings.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Notificaciones de backup {#backup-notifications}
 
 Utilice esta configuración para enviar notificaciones cuando se [reciba un nuevo registro de backup](../../installation/duplicati-server-configuration.md).

@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:46.210Z'
-source_file_mtime: '2026-05-06T23:18:51.430Z'
-source_file_hash: 74e68a394e4fc2ec0fae355e9467377c4f1bde23f973fd6555e67a0ca86af518
-translation_language: fr
-source_file_path: documentation/docs/user-guide/backup-monitoring.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 import { ZoomMermaid } from '@site/src/components/ZoomMermaid';
 
 # Surveillance des sauvegardes {#backup-monitoring}

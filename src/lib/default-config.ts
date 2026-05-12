@@ -125,7 +125,7 @@ export const defaultBackupNotificationConfig: BackupNotificationConfig = {
 
 // Default UI configuration
 export const defaultUIConfig = {
-  databaseCleanupPeriod: '2 years' as const,
+  databaseCleanupPeriod: '1 year' as const,
   tablePageSize: 5 as const,
   chartTimeRange: '1 month' as const,
   chartStyle: 'smooth-line' as const,

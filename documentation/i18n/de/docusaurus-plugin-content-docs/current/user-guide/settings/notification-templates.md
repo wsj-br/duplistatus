@@ -1,14 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:48.071Z'
-source_file_mtime: '2026-05-06T23:18:51.446Z'
-source_file_hash: 80141305b3c0238b589afcd457332db981c79b94ea2f13640c56b2203599bbd7
-translation_language: de
-source_file_path: documentation/docs/user-guide/settings/notification-templates.md
-translation_models:
-  - anthropic/claude-3.5-haiku
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Vorlagen {#templates}
 
 **duplistatus** verwendet drei Vorlagen für Benachrichtigungsnachrichten. Diese Vorlagen werden sowohl für NTFY- als auch für E-Mail-Benachrichtigungen verwendet.

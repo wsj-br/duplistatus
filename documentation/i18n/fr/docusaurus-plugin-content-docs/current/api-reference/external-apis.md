@@ -1,12 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:39.118Z'
-source_file_mtime: '2026-05-06T23:18:51.410Z'
-source_file_hash: 59b045e2f0ca88a7be16ce8ed6d2ae4476eed38416d4d0284b2f590183c45b81
-translation_language: fr
-source_file_path: documentation/docs/api-reference/external-apis.md
-translation_models:
-  - qwen/qwen3-235b-a22b-2507
----
 # API externes {#external-apis}
 
 Ces points de terminaison sont conçus pour être utilisés par d'autres applications et intégrations, par exemple [Homepage](../user-guide/homepage-integration.md).

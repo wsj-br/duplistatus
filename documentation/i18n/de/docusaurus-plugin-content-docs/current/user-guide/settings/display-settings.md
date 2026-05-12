@@ -1,14 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:47.807Z'
-source_file_mtime: '2026-05-09T23:54:51.779Z'
-source_file_hash: 535a6655527691ed8a2170729359dcc23c21fb97fa3e28a3e9c8b0e413e6b6d9
-translation_language: de
-source_file_path: documentation/docs/user-guide/settings/display-settings.md
-translation_models:
-  - anthropic/claude-3.5-haiku
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Anzeige {#display}
 
 Konfigurieren Sie die Benutzeroberfläche und Anzeigeeinstellungen.

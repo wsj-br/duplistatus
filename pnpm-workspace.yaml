@@ -2,6 +2,16 @@ packages:
   - .
   - documentation
 
+allowBuilds:
+  '@swc/core': true
+  bcrypt: true
+  better-sqlite3: true
+  core-js: true
+  esbuild: true
+  puppeteer: true
+  sharp: true
+  unrs-resolver: true
+
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
   - bcrypt

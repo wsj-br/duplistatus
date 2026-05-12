@@ -1,12 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:39.507Z'
-source_file_mtime: '2026-05-06T23:18:51.418Z'
-source_file_hash: f5c3284d1b0dd52ad80889d6741763f8018a5228b0673d443a4e02b03cf60f8e
-translation_language: de
-source_file_path: documentation/docs/api-reference/session-management-apis.md
-translation_models:
-  - qwen/qwen3-235b-a22b-2507
----
 # Sitzungsverwaltung {#session-management}
 
 ## Sitzung erstellen - `/api/session` {#create-session---apisession}

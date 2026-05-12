@@ -1,12 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:39.168Z'
-source_file_mtime: '2026-05-06T23:18:51.410Z'
-source_file_hash: eb18cd75959282575195e73b0368d4eecd23bf9684c9c5915cea3d8f6c360fce
-translation_language: es
-source_file_path: documentation/docs/api-reference/monitoring-apis.md
-translation_models:
-  - qwen/qwen3-235b-a22b-2507
----
 # Monitoreo y Estado {#monitoring-health}
 
 ## Comprobación de estado - `/api/health` {#health-check---apihealth}

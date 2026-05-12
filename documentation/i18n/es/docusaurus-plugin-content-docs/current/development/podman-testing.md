@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:41.079Z'
-source_file_mtime: '2026-05-06T23:18:51.394Z'
-source_file_hash: f647338c95a160f5fa9c03468bfb314c8f97e5e5ab00f1264f67ab14f18b1589
-translation_language: es
-source_file_path: documentation/docs/development/podman-testing.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Pruebas de Podman {#podman-testing}
 
 Copiar y ejecutar los scripts ubicados en `scripts/podman_testing` en el Servidor de prueba de Podman.

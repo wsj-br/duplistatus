@@ -1,12 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:39.286Z'
-source_file_mtime: '2026-05-06T23:18:51.418Z'
-source_file_hash: e4cf34f832ca3ceb70addd63ee65ede46d3ff7cfd213775d5722e5c02b50f44d
-translation_language: es
-source_file_path: documentation/docs/api-reference/notification-apis.md
-translation_models:
-  - qwen/qwen3-235b-a22b-2507
----
 # Sistema de notificaciones {#notification-system}
 
 ## Probar notificación - `/api/notifications/test` {#test-notification---apinotificationstest}

@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:47.083Z'
-source_file_mtime: '2026-05-06T23:18:51.446Z'
-source_file_hash: b0db7a6f1e511ae6977971d8b2cdf4eefcdfa3aea287eea9bbbc2e84542c2144
-translation_language: pt-BR
-source_file_path: documentation/docs/user-guide/settings/application-logs-settings.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Logs da aplicação {#application-logs}
 
 O Visualizador de logs do aplicativo permite que administradores monitorem todos os logs da aplicação em um único lugar, com filtragem, exportação e atualizações em tempo real diretamente da interface web.

@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:42.252Z'
-source_file_mtime: '2026-05-06T23:18:51.418Z'
-source_file_hash: fae3a81d94023aecc08c2c0b247e071f9990285fb3aa9384cc93cba826f99fe6
-translation_language: pt-BR
-source_file_path: documentation/docs/installation/configure-tz.md
-translation_models:
-  - anthropic/claude-3.5-haiku
-  - anthropic/claude-haiku-4.5
----
 # Fuso horário {#timezone}
 
 A interface do usuário da aplicação exibirá data e hora de acordo com as configurações do navegador. No entanto, para fins de registro e notificações, a aplicação utilizará o valor definido na variável de ambiente `TZ` para formatar fusos horários.

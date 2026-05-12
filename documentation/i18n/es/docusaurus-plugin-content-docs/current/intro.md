@@ -1,15 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:42.878Z'
-source_file_mtime: '2026-05-06T23:18:51.394Z'
-source_file_hash: 18c3808b355ca85cf99e63f258dc6c18f79f738a87a5623a96e332a06ea24ee7
-translation_language: es
-source_file_path: documentation/docs/intro.md
-translation_models:
-  - anthropic/claude-3.5-haiku
-  - anthropic/claude-haiku-4.5
-  - 'nvidia/nemotron-nano-12b-v2-vl:free'
-  - qwen/qwen3-235b-a22b-2507
----
 # Bienvenido a duplistatus {#welcome-to-duplistatus}
 
 **duplistatus** - Supervisar múltiples [servidores de Duplicati](https://github.com/duplicati/duplicati) desde un único Panel de control

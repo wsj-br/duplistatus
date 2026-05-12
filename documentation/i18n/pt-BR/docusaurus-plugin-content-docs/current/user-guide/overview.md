@@ -1,15 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:46.899Z'
-source_file_mtime: '2026-05-10T23:06:13.815Z'
-source_file_hash: 3d1ba5a81b316e3831c0ae88b5c9c7ca0139d405589c848f27360fee93a83b0e
-translation_language: pt-BR
-source_file_path: documentation/docs/user-guide/overview.md
-translation_models:
-  - anthropic/claude-3.5-haiku
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
-  - 'stepfun/step-3.5-flash:free'
----
 # Visão Geral {#overview}
 
 Bem-vindo ao guia do usuário duplistatus. Este documento abrangente fornece instruções detalhadas para usar duplistatus a fim de monitorar e gerenciar suas operações de backup do Duplicati em múltiplos servidores.

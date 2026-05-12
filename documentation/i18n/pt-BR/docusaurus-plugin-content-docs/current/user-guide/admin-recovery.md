@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:46.060Z'
-source_file_mtime: '2026-05-06T23:18:51.430Z'
-source_file_hash: 715719058387c53e24d6ec27814f20fb52349ff40f5e59310d6965344bb8f16a
-translation_language: pt-BR
-source_file_path: documentation/docs/user-guide/admin-recovery.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Recuperação de Conta Admin {#admin-account-recovery}
 
 Recupere o acesso de administrador ao **duplistatus** quando você tiver perdido sua senha ou sido bloqueado de sua conta. Este guia aborda o uso do script de recuperação de admin em ambientes Docker.

@@ -1,14 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:40.129Z'
-source_file_mtime: '2026-05-06T23:18:51.394Z'
-source_file_hash: df66022aefa103713391937aaf3a13f7b727d815f252518c6028f2e35c7e5e28
-translation_language: es
-source_file_path: documentation/docs/development/database.md
-translation_models:
-  - anthropic/claude-3.5-haiku
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Esquema de Base de Datos {#database-schema}
 
 Este documento describe el esquema de base de datos SQLite utilizado por duplistatus para almacenar datos de operaciones de backup.

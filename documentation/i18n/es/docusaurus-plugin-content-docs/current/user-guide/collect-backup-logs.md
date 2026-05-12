@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:46.333Z'
-source_file_mtime: '2026-05-06T23:18:51.430Z'
-source_file_hash: 82c01b068ec14a08bbafa65059c1ef8cd15f0aa41b743bd14c4313857a0dbc97
-translation_language: es
-source_file_path: documentation/docs/user-guide/collect-backup-logs.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Recopilar logs de backup {#collect-backup-logs}
 
 **duplistatus** puede recuperar logs de backup directamente desde servidores Duplicati para rellenar la base de datos o restaurar datos de logs faltantes. La aplicación omite automáticamente cualquier log duplicado que ya exista en la base de datos.

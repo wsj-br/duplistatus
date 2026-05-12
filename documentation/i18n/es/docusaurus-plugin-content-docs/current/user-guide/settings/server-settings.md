@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:48.328Z'
-source_file_mtime: '2026-05-06T23:18:51.446Z'
-source_file_hash: 3f2e9249dca9757c8c95acf36f66841a560491d15f0f0d1ecb24826a5628f983
-translation_language: es
-source_file_path: documentation/docs/user-guide/settings/server-settings.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Servidor {#server}
 
 Puede configurar un nombre alternativo (alias) para sus servidores, una nota para describir su función y las direcciones web de sus servidores Duplicati aquí.

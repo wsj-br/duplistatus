@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:38.056Z'
-source_file_mtime: '2026-05-06T23:18:51.410Z'
-source_file_hash: 66a1b7eaf428ec3f6c61417ebd66dea5bc97cfbf726189d73e18416a1b92be0c
-translation_language: de
-source_file_path: documentation/docs/api-reference/authentication-security.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Authentifizierung & Sicherheit {#authentication-security}
 
 Die API verwendet eine Kombination aus sessionbasierter Authentifizierung und CSRF-Schutz für alle Datenbankschreibvorgänge, um unbefugten Zugriff und mögliche Denial-of-Service-Angriffe zu verhindern. Externe APIs (verwendet von Duplicati) bleiben aus Kompatibilitätsgründen nicht authentifiziert.

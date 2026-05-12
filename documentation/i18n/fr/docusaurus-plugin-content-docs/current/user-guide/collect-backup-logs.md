@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:46.329Z'
-source_file_mtime: '2026-05-06T23:18:51.430Z'
-source_file_hash: 82c01b068ec14a08bbafa65059c1ef8cd15f0aa41b743bd14c4313857a0dbc97
-translation_language: fr
-source_file_path: documentation/docs/user-guide/collect-backup-logs.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Collecter les journaux de sauvegarde {#collect-backup-logs}
 
 **duplistatus** peut récupérer les journaux de sauvegarde directement à partir des serveurs Duplicati pour remplir la base de données ou restaurer les données de journaux manquantes. L'application ignore automatiquement tous les journaux en double qui existent déjà dans la base de données.

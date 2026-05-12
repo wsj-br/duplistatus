@@ -8,7 +8,7 @@
     "description": "The label for category 'Installation' in sidebar 'mainSidebar'"
   },
   "sidebar.mainSidebar.category.User Guide": {
-    "message": "Guía del Usuario",
+    "message": "Guía de Usuario",
     "description": "The label for category 'User Guide' in sidebar 'mainSidebar'"
   },
   "sidebar.mainSidebar.category.Settings": {

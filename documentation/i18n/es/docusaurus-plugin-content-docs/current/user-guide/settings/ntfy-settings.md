@@ -1,14 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:48.158Z'
-source_file_mtime: '2026-05-06T23:18:51.446Z'
-source_file_hash: 3bd58d9cbad231e20c93f90d5f2904a572e10982cc151b37c80613510401bb52
-translation_language: es
-source_file_path: documentation/docs/user-guide/settings/ntfy-settings.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
-  - 'stepfun/step-3.5-flash:free'
----
 # NTFY {#ntfy}
 
 [NTFY](https://github.com/binwiederhier/ntfy) es un servicio de notificaciones simple que puede enviar notificaciones push a su teléfono o escritorio. Esta sección le permite configurar la conexión del servidor de notificaciones y la autenticación.

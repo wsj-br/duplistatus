@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:42.241Z'
-source_file_mtime: '2026-05-06T23:18:51.418Z'
-source_file_hash: fae3a81d94023aecc08c2c0b247e071f9990285fb3aa9384cc93cba826f99fe6
-translation_language: de
-source_file_path: documentation/docs/installation/configure-tz.md
-translation_models:
-  - anthropic/claude-3.5-haiku
-  - anthropic/claude-haiku-4.5
----
 # Zeitzone {#timezone}
 
 Die Benutzeroberfläche der Anwendung zeigt Datum und Uhrzeit gemäß den Browsereinstellungen an. Für Protokollierungs- und Benachrichtigungszwecke verwendet die Anwendung jedoch den in der Umgebungsvariablen `TZ` definierten Wert zur Formatierung von Zeitzonen.

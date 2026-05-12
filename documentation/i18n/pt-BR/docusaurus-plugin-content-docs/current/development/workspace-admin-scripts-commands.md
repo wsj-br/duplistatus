@@ -1,14 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:42.167Z'
-source_file_mtime: '2026-05-06T23:18:51.394Z'
-source_file_hash: 6582520a51466f9784b01b1236c4ba689c2b3989be1150eed15fadd8137decab
-translation_language: pt-BR
-source_file_path: documentation/docs/development/workspace-admin-scripts-commands.md
-translation_models:
-  - anthropic/claude-3.5-haiku
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Scripts e Comandos do Admin do Workspace {#workspace-admin-scripts-commands}
 
 ## Limpar Banco de Dados {#clean-database}

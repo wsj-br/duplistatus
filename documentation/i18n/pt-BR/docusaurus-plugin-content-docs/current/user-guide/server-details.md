@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:47.014Z'
-source_file_mtime: '2026-05-10T19:03:27.501Z'
-source_file_hash: 6e8a3cb53bff96ec8defba9ae5c4fd654bfcf4c5249b42c64faab1e60cc2bc68
-translation_language: pt-BR
-source_file_path: documentation/docs/user-guide/server-details.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Detalhes do Servidor {#server-details}
 
 Clicar em um servidor do painel abre uma página com uma lista de backups para esse servidor. Você pode visualizar todos os backups ou selecionar um específico se o servidor tiver múltiplos backups configurados.

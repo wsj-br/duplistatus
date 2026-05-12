@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:42.502Z'
-source_file_mtime: '2026-05-06T23:18:51.418Z'
-source_file_hash: 837ff8a2eae0a48ed5b1298115447eb5f025e020cf32dee7ae20d8849e656bc0
-translation_language: de
-source_file_path: documentation/docs/installation/https-setup.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # HTTPS-Setup (Optional) {#https-setup-optional}
 
 Für Produktionsbereitstellungen wird empfohlen, **duplistatus** über HTTPS mit einem Reverse Proxy bereitzustellen. Dieser Abschnitt enthält Konfigurationsbeispiele für beliebte Reverse-Proxy-Lösungen.

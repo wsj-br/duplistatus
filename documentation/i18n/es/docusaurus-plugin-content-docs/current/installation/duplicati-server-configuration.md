@@ -1,14 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:42.336Z'
-source_file_mtime: '2026-05-10T19:00:19.989Z'
-source_file_hash: c3785bbdf46a519aee1f05ff2845a158534f37927bd8ac3eade9f28f6acdb51b
-translation_language: es
-source_file_path: documentation/docs/installation/duplicati-server-configuration.md
-translation_models:
-  - anthropic/claude-3.5-haiku
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Configuración del Servidor Duplicati (Requerido) {#duplicati-server-configuration-required}
 
 Para que esta aplicación funcione correctamente, cada uno de sus servidores Duplicati debe configurarse para enviar informes HTTP para cada ejecución de backup al servidor **duplistatus**.

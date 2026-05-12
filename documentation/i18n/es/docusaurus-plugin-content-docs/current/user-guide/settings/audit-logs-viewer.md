@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:47.196Z'
-source_file_mtime: '2026-05-06T23:18:51.442Z'
-source_file_hash: 80be5481828e5ef8fd45f7d5798ad511ae84f6dde487dd8920d6b2f458c1e1b8
-translation_language: es
-source_file_path: documentation/docs/user-guide/settings/audit-logs-viewer.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Logs de Auditoría {#audit-logs}
 
 El log de auditoría proporciona un registro completo de todos los cambios del sistema y las acciones del usuario en **duplistatus**. Esto ayuda a rastrear cambios de configuración, actividades del usuario y operaciones del sistema para propósitos de seguridad y solución de problemas.

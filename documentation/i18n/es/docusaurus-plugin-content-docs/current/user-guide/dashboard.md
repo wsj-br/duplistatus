@@ -1,14 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:46.562Z'
-source_file_mtime: '2026-05-10T23:08:38.195Z'
-source_file_hash: afafb5babfbcde75a3fc8bdefb13967a3477a08a68d802733ec33aff54a7e00f
-translation_language: es
-source_file_path: documentation/docs/user-guide/dashboard.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - 'nvidia/nemotron-nano-12b-v2-vl:free'
-  - qwen/qwen3-235b-a22b-2507
----
 # Panel de control {#dashboard}
 
 ## Panel de control {#dashboard-summary}

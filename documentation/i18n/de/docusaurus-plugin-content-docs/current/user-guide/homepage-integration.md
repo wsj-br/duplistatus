@@ -1,12 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:46.685Z'
-source_file_mtime: '2026-05-06T23:18:51.430Z'
-source_file_hash: 8efefb8f939cbc3b9a58126712fb1659e1356bd9e2e0b8461051ae715c91cd58
-translation_language: de
-source_file_path: documentation/docs/user-guide/homepage-integration.md
-translation_models:
-  - anthropic/claude-haiku-4.5
----
 # Homepage-Integration (Optional) {#homepage-integration-optional}
 
 [Homepage](https://gethomepage.dev/) ist eine anpassbare Dashboard-Anwendung. Um **duplistatus** mit Homepage zu integrieren, fügen Sie ein Widget zu Ihrer `services.yaml`-Datei hinzu, indem Sie den [Benutzerdefinierten API-Widget-Typ](https://gethomepage.dev/widgets/services/customapi/) verwenden.

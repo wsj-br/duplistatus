@@ -1,12 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:36.192Z'
-source_file_mtime: '2026-05-06T23:18:51.394Z'
-source_file_hash: 8d5695318c6e5d6296a9e2b72ec324ca2a86d7e42a3982e2cab6e18f6b7d2253
-translation_language: fr
-source_file_path: documentation/docs/LICENSE.md
-translation_models:
-  - qwen/qwen3-235b-a22b-2507
----
 # Licence Apache {#apache-license}
 
 **Version 2.0, Janvier 2004**  

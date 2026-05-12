@@ -1,12 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:37.705Z'
-source_file_mtime: '2026-05-06T23:18:51.418Z'
-source_file_hash: 0cfdb8e73eda78366ceb4b3a80b40a8b61fc778e979cc620306cb408c84c7b8e
-translation_language: pt-BR
-source_file_path: documentation/docs/api-reference/api-endpoint-list.md
-translation_models:
-  - qwen/qwen3-235b-a22b-2507
----
 # Lista de Pontos de Extensão da API {#api-endpoint-list}
 
 Este documento fornece uma tabela de referência rápida de todos os pontos de extensão da API disponíveis (em ordem alfabética de ponto de extensão).

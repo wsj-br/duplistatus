@@ -1,12 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:37.361Z'
-source_file_mtime: '2026-05-06T23:18:51.418Z'
-source_file_hash: 0cded58e5d286a2acbeba8eab5f1de8a42461da04d9e1f6f427314adadc9afc1
-translation_language: pt-BR
-source_file_path: documentation/docs/api-reference/administration-apis.md
-translation_models:
-  - qwen/qwen3-235b-a22b-2507
----
 # Administração {#administration}
 
 ## Coletar Backups - `/api/backups/collect` {#collect-backups---apibackupscollect}

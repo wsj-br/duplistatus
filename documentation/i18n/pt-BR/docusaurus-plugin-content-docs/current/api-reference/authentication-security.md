@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:38.071Z'
-source_file_mtime: '2026-05-06T23:18:51.410Z'
-source_file_hash: 66a1b7eaf428ec3f6c61417ebd66dea5bc97cfbf726189d73e18416a1b92be0c
-translation_language: pt-BR
-source_file_path: documentation/docs/api-reference/authentication-security.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Autenticação e Segurança {#authentication-security}
 
 A API usa uma combinação de autenticação baseada em sessão e proteção CSRF para todas as operações de gravação no banco de dados, a fim de impedir acesso não autorizado e possíveis ataques de negação de serviço. APIs externas (usadas pelo Duplicati) permanecem sem autenticação por compatibilidade.

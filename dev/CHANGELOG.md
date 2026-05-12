@@ -10,129 +10,83 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-### Fixed
-- **User UI preferences not persisted on page refresh (overviewSidePanel, chartTimeRange, chartStyle)**: Fixed multiple race conditions causing settings to not be saved or loaded correctly:
-  1. `useCurrentUser()` returned `null` for both "still loading" and "loaded but unauthenticated", making it impossible for consumers to wait for the auth check to complete. Fixed by changing return type to `CurrentUser | null | undefined` where `undefined` = loading, `null` = unauthenticated. Updated all consumers (`ServerSelectionProvider`, `ConfigProvider`, `CustomThemeProvider`, `DashboardTable`) to handle the three states correctly.
-  2. `setOverviewSidePanel` and `setViewMode` in `ServerSelectionProvider` captured `currentUser` in closure at render time. If user clicked toggle while `currentUser` was still `undefined`, the save was skipped permanently. Fixed by moving the localStorage save inside `setState` callback and using `currentUser?.id` from the closure at execution time.
-  3. `setChartTimeRange` and `setChartStyle` in `ConfigProvider` were raw `useState` setters that relied on a `useEffect` to persist to localStorage. If the user changed a setting before `currentUser` resolved, the effect wouldn't re-run when `currentUser` later became available. Fixed by creating wrapped setters (`persistChartTimeRange`, `persistChartStyle`) that immediately save to localStorage when called.
-  4. `isInitialized` in `ServerSelectionProvider` started as `true`, causing the dashboard to render with default values before persisted values were loaded. Fixed by starting with `isInitialized: false` and setting it to `true` atomically with loaded values.
-  Affected files: `src/hooks/use-current-user.ts`, `src/contexts/server-selection-context.tsx`, `src/contexts/config-context.tsx`, `src/contexts/theme-context.tsx`, `src/components/dashboard/dashboard-table.tsx`.
-- **Chart infinite loop on /detail page**: Fixed an infinite re-render loop that occurred on the server detail page. The `startDate` and `endDate` calculations in `MetricsChartsPanel` and `OverviewChartsPanel` were creating new Date objects on every render, causing the useEffect dependency array to trigger continuously. Fixed by wrapping date calculations in `useMemo` with `chartTimeRange` as the only dependency.
-- **Too many chart data points**: Charts now enforce a maximum of 30 data points for readability. The `bucketChartData()` function now dynamically calculates optimal bucket sizes for ranges exceeding 30 days. Data is also consolidated by calendar day (ignoring time component) before bucketing.
-- **Chart tooltip shows time**: Since data is now consolidated by calendar day, the tooltip in chart legends now displays only the date (e.g., "5/12/26") instead of date and time (e.g., "5/12/26, 12:00 AM"). Affected files: `src/components/metrics-charts-panel.tsx`, `src/components/dashboard/overview-charts-panel.tsx`.
-- **OverviewChartsPanel ignoring time range filter**: Fixed an issue where the OverviewChartsPanel was displaying all available data points (922) regardless of the selected time range. **Simplified the architecture** by removing the external `chartData` prop - `OverviewChartsPanel` now fetches its own data from the API with proper time range parameters, just like `MetricsChartsPanel`. This eliminates the need for client-side filtering and ensures consistent behavior between both panels. Affected files: `src/components/dashboard/overview-charts-panel.tsx`, `src/components/dashboard/dashboard-layout.tsx`.
-
-### Changed
-- **Chart Time Range options simplified**: Reduced from 7 options (`2W, 1M, 3M, 6M, 1Y, 2Y, All`) to 4 focused options: **1W, 2W, 1M, 3M**. This provides better chart readability by ensuring appropriate data density (max 30 points). The default is now "1 month".
-- **Time range calculations now use rolling days**: Changed from calendar-based calculations to rolling day windows:
-  - 1W = last 7 days (was calendar week)
-  - 2W = last 14 days (was 2 calendar weeks)
-  - 1M = last 30 days (was calendar month)
-  - 3M = last 90 days (was calendar quarter)
-- **Data consolidation by day**: All chart data points are now consolidated by calendar day before bucketing. Multiple backups on the same day are aggregated (SUM for cumulative metrics, LAST for storage size, MAX for backup versions).
-
 ### Added
-- **Inline Chart Time Range Selector**: Added stock-chart-style time range pill buttons (`1W | 2W | 1M | 3M`) directly in the chart panel headers of both `MetricsChartsPanel` and `OverviewChartsPanel`. This allows quick time range switching without navigating to Display Settings. The compact selector adapts to the narrow overview panel layout. The selector shares state with the existing Display Settings dropdown via `ConfigContext`. Affected files: `src/lib/chart-utils.ts` (added `getTimeRangeLabel()`, `getTimeRangeAbbreviation()`, `CHART_TIME_RANGES`), `src/components/chart-time-range-selector.tsx` (new), `src/components/metrics-charts-panel.tsx`, `src/components/dashboard/overview-charts-panel.tsx`.
-- **Inline Chart Style Toggle**: Added a chart style toggle button to the `ChartTimeRangeSelector` component, positioned before the time range buttons. Users can now switch between line chart (chart-spline icon) and bar chart (chart-column icon) directly from the chart panel header. The selection is persisted via `ConfigContext` and synced across all chart panels. Affected files: `src/components/chart-time-range-selector.tsx`, `src/components/metrics-charts-panel.tsx`, `src/components/dashboard/overview-charts-panel.tsx`.
-
-- **Chart Style setting (issue #54)**: Display Settings now includes a **Chart Style** toggle ("Smooth Lines" / "Bar Chart") rendered as a segmented button group, consistent with the Theme selector. The setting is persisted per-user in localStorage via `ConfigContext`. Both modes now use **time-bucket aggregation** (`src/lib/chart-utils.ts`) instead of the previous client-side linear interpolation, so all chart values represent real backup data — no fabricated synthetic points. Bucket granularity scales automatically with the selected time range (1-day buckets for short ranges up to 3-day buckets for "3 months"). In bar mode, empty periods render no bar (`null`), accurately communicating gaps in backup activity. Affected files: `src/lib/default-config.ts`, `src/contexts/config-context.tsx`, `src/lib/chart-utils.ts` (new), `src/components/settings/display-settings-form.tsx`, `src/components/metrics-charts-panel.tsx`, `src/components/dashboard/overview-charts-panel.tsx`.
-
-
-- **take-screenshots.ts**: Documentation screenshots are captured in **dark** mode. Puppeteer emulates `prefers-color-scheme: dark` (headless Chrome otherwise follows a light system preference), and after login the script sets the same `theme:user-<id>` localStorage key as the app (`src/lib/user-local-storage.ts`), resolving the user id via `/api/auth/me`. 
-- **take-screenshots.ts**: Updated to use cookie-based locale switching (`NEXT_LOCALE`) instead of URL prefixes. The locale is now set via `setLocale()` function that sets a cookie before navigating to pages. This aligns with the app's i18n implementation that no longer uses locale in URLs.
-- **Documentation locale**: Fixed i18n configuration mismatch where Docusaurus was using `en` as the default locale instead of `en-GB`. Updated `documentation/docusaurus.config.ts` to use `en-GB` as `defaultLocale`, changed `locales` array to `['en-GB', 'fr', 'de', 'es', 'pt-BR']`, and updated `ai-i18n-tools.config.json` `jsonSource` to point to `documentation/i18n/en-GB`. Removed outdated `i18n/en/` folder and merged its translations into `i18n/en-GB/`. The source language for documentation is now consistently `en-GB`, matching the app's source locale and `ai-i18n-tools.config.json` `sourceLocale`.
-- **Turbopack NFT warnings**: Reduced “whole project traced” NFT warnings by wrapping runtime `process.cwd()` usage in `path.join(/* turbopackIgnore: true */, …)` in `src/lib/paths.ts` (see Next.js Turbopack docs). Read app version in `next.config.ts` via `createRequire(import.meta.url)` and `./package.json` so the config does not rely on broad cwd tracing.
-
-### Added
-- **take-screenshots.ts**: Added file logging to `dev/take-screenshots-YYYYMMDD-HHMMSS.log`. All console output is now also written to timestamped log files in the `dev/` folder for easier debugging and audit trail.
-- **Theme**: Display Settings includes **System (follow OS)** alongside light and dark. The app stores a **theme preference** and applies the effective light/dark class from `prefers-color-scheme` when set to system; the root layout inline script reads the same `theme:user-*` / `theme:anonymous` keys. Export **`getResolvedSystemTheme()`** from **`src/contexts/theme-context.tsx`** for OS detection.
+- **Inline Chart Time Range Selector**: Stock-chart-style pill buttons (`1W | 2W | 1M | 3M`) in chart panel headers for quick time range switching without navigating to Display Settings. Shares state with Display Settings via `ConfigContext`.
+- **Inline Chart Style Toggle**: Toggle button in `ChartTimeRangeSelector` to switch between line and bar charts directly from the chart panel header. Persisted via `ConfigContext` and synced across all panels.
+- **Chart Style setting (issue #54)**: Display Settings includes a "Smooth Lines" / "Bar Chart" toggle. Both modes use time-bucket aggregation instead of linear interpolation. In bar mode, empty periods render no bar.
+- **take-screenshots.ts**: Documentation screenshots captured in dark mode. Puppeteer emulates `prefers-color-scheme: dark` and sets the same `theme:user-<id>` localStorage key as the app.
+- **take-screenshots.ts**: Uses cookie-based locale switching (`NEXT_LOCALE`) instead of URL prefixes.
+- **take-screenshots.ts**: File logging to `dev/take-screenshots-YYYYMMDD-HHMMSS.log`.
+- **Theme**: Display Settings includes "System (follow OS)" option. App stores theme preference and applies effective light/dark class from `prefers-color-scheme`.
+- **Format locale override (issue #59)**: Users can select a formatting locale independently of UI language in Settings > Display Settings (416 locales supported). Date, time, and number formatting respects the selected format locale with live preview.
+- **Server filtering**: Filter input to server lists in Settings > Backup Monitoring, Settings > Servers, and main Dashboard (card and table views).
 
 ### Changed
-- **Documentation (issue #40)**: Clarified that Duplicati remote access is optional and only necessary if direct links to the Duplicati UI are required from the duplistatus dashboard.
-- **Theme (Display Settings)**: Theme choice is a **button group** with Light / Dark / System; the status line sits on the **same row** as the group (wraps on narrow viewports).
-- **`usePrefixWithLocale`**: Removed unused hook from `src/contexts/locale-context.tsx` (no call sites).
-- **Notifications i18n**: Removed **`src/lib/status-translations.ts`** (static imports of **`de.json`** / **`fr.json`** / **`es.json`** / **`pt-BR.json`**). **`src/lib/notifications.ts`** uses **`getServerI18nForLanguage()`** from **`src/lib/i18n-server.ts`** and **`i18n.t()`** for backup status labels so server code matches the **`ai-i18n-tools`** stack (`setupKeyAsDefaultT`, manifest loaders).
-- **Legacy URL locale removal**: Dropped `LOCALE_REGEX` and client-side “strip locale prefix” logic (`global-refresh-context.tsx`, `global-refresh-controls.tsx`); pathnames are canonical. Root layout SSR locale no longer infers locale from the first path segment (cookie + `Accept-Language` only). `AppHeader` treats only `/` as the dashboard for “return” chrome. `src/proxy.ts` still 308-redirects old `/{locale}/...` bookmarks and sets `NEXT_LOCALE` (documented as legacy-only). `open-server-config-button.tsx` no longer references locale-prefixed paths.
-- **Help links**: `src/lib/helpMapper.ts` no longer strips a legacy locale prefix from `pathname`; routes match the cookie-driven app URLs directly.
-- **RTL**: Removed `src/lib/rtl-utils.ts` and unused `src/hooks/use-rtl.ts`. Dropped app-level RTL helpers from `src/lib/locales.ts`; **`ai-i18n-tools/runtime`** already provides **`getTextDirection`** (bundled locale catalog + **`RTL_LANGS`**), **`applyDirection`** (used in **`src/i18n.ts`**, **`src/lib/i18n-server.ts`**, **`src/contexts/locale-context.tsx`**). **`src/app/layout.tsx`** uses **`getTextDirection`** from the runtime package for SSR **`<html dir>`** (same logic as **`applyDirection`** on the client).
-- **Hardcoded locale cleanup**: Removed remaining hardcoded `'en-GB'` literals and the duplicated `["en-GB","de","fr","es","pt-BR"]` arrays/`LOCALE_COOKIE_NAME = "NEXT_LOCALE"` constants. Affected files now consume `SOURCE_LOCALE`, `LOCALE_COOKIE_NAME`, `LOCALE_CODE_LIST`, `isSupportedLocale`, and `LocaleCode` directly from `src/lib/locales.ts`: `src/proxy.ts` (uses `LOCALE_CODE_LIST` + `SOURCE_LOCALE` for cookie/`Accept-Language` detection and source-base mapping), `src/app/layout.tsx`, `src/components/i18n-provider.tsx`, `src/contexts/locale-context.tsx`, `src/components/app-header.tsx` and `src/app/login/page.tsx` (locale dropdown labels derived via `Object.fromEntries(LOCALES.map(...))`), `src/components/settings/notification-templates-form.tsx`, `src/components/metrics-charts-panel.tsx`, `src/components/dashboard/overview-charts-panel.tsx`, `src/lib/utils.ts`, `src/lib/notifications.ts`, `src/lib/db-utils.ts`, `src/app/api/configuration/templates/defaults/route.ts`, `src/lib/helpMapper.ts`, and `src/lib/default-config.ts` (`isValidTemplateLanguage` now delegates to `isSupportedLocale`; templates map keyed by `[SOURCE_LOCALE]`).
-- **Locale parsing**: Single implementation in **`src/lib/locales.ts`** (`parseLocaleTag`, `resolveLocalePreference`, `resolveLocaleFromAcceptLanguage`). Removed **`normalizeLocale`** from **`src/proxy.ts`** / **`src/lib/i18n-server.ts`** and inlined **`Accept-Language`** handling duplicated with **`src/app/layout.tsx`**; root layout and **`i18n-provider.tsx`** now use the same cookie/path rules (case-insensitive tags only).
-- **Legacy locale typos**: Removed special handling for mistaken codes such as **`en-gb-gb`** / **`en-GB-GB`**; only configured **`ui-languages.json`** codes (matched case-insensitively) are accepted.
-- **Server i18n**: **`src/lib/i18n-server.ts`** matches the client bootstrap in **`src/i18n.ts`**: **`ai-i18n-tools/runtime`** default export, **`makeLocaleLoadersFromManifest`** + dynamic **`../locales/<code>.json`** imports from **`ui-languages.json`**, **`makeLoadLocale`** for translation bundles, and **`applyDirection`** on **`languageChanged`** (replacing static imports of every locale JSON).
-- **Locale utilities**: **`src/lib/intl-locale.ts`** removed. **`src/lib/date-format.ts`** and **`src/lib/number-format.ts`** pass UI / format locale codes directly to **`Intl`** (no separate locale map); **`SOURCE_LOCALE`** is used for defaults and fallbacks instead of hardcoded **`en-GB`**.
-- **Date/time formatting**: `src/lib/date-format.ts` no longer maintains a per-locale table of `Intl.DateTimeFormatOptions`. Dates and times use standard **`dateStyle: 'short'`** / **`timeStyle: 'short'`** with **`Intl`**, using the same locale strings as number formatting.
+- **Chart Time Range options**: Reduced from 7 options to 4: **1W, 2W, 1M, 3M** (was `2W, 1M, 3M, 6M, 1Y, 2Y, All`). Default is now "1 month".
+- **Time range calculations**: Now use rolling day windows: 1W = last 7 days, 2W = last 14 days, 1M = last 30 days, 3M = last 90 days (was calendar-based).
+- **Data consolidation by day**: All chart data points consolidated by calendar day before bucketing. Multiple backups on same day aggregated (SUM for cumulative metrics, LAST for storage size, MAX for backup versions).
+- **Documentation (issue #40)**: Clarified that Duplicati remote access is optional and only necessary if direct links to Duplicati UI are required.
+- **Theme (Display Settings)**: Theme choice is a button group (Light / Dark / System); status line on same row.
+- **Dashboard server filter**: Search field moved to app header with auto-refresh and toolbar actions. State shared via `DashboardServerFilterProvider`. Control shows only search icon when empty; hover/click expands text field.
+- **Next expected backup / overdue**: `GetNextBackupRunDate` now advances day/week/month/year intervals and weekday checks in UTC instead of local time, avoiding one-hour UTC drift when host timezone crosses DST.
+- **Default overdue tolerance**: New installs and defaults now use `2h` instead of `1h`.
+- **Locale code**: English UI / cookie / i18n source locale consistently `en-GB` (replaced mistaken `en-GB-GB`).
+- **Locale consolidation**: Consolidated locale definitions to use single source of truth from `src/locales/ui-languages.json`. Created `src/lib/locales.ts` with shared utilities. Updated 12 files.
+- **ESLint**: Ignore `.intlayer/**` (generated). Turn off React Compiler-specific `react-hooks/*` rules.
+- **Tooling**: `scripts/upgrade-dependencies.sh` aligns with ai-i18n-tools upgrade flow. `scripts/upgrade-tools.sh` upgrades nvm/Node LTS/globals.
+- **i18n**: `SOURCE_LOCALE` and `LOCALE_COOKIE_NAME` defined in `src/lib/locales.ts`. Removed `src/i18n/constants.ts` and `src/i18n/` folder.
+- **UI copy / i18n**: Removed `src/i18n/generated-hooks/` and `src/i18n/backup-detail-page-translations.ts`. All UI strings use `useTranslation().t('…')` or `getServerI18n()` / `i18n.t('…')`.
+- **UI copy / i18n**: Removed shared `useCommonContent()` hook; shared labels now use `useTranslation().t('…')` inline.
+- **i18n stack**: Replaced Intlayer with i18next + ai-i18n-tools. App language is cookie-driven (no `/en/…` path segment); legacy URLs redirect via `src/proxy.ts`.
+- **Documentation translation**: Removed `documentation/scripts/translate/`; package.json scripts delegate to root `pnpm i18n:*` commands.
+- **Status labels in notifications**: `src/lib/status-translations.ts` reads same flat locale JSON as UI.
+- **Documentation locale**: Fixed i18n configuration mismatch. Docusaurus now uses `en-GB` as `defaultLocale`. Removed outdated `i18n/en/` folder.
+- **Turbopack NFT warnings**: Reduced "whole project traced" warnings by wrapping runtime `process.cwd()` usage in `path.join(/* turbopackIgnore: true */, …)`.
+- **`usePrefixWithLocale`**: Removed unused hook from `src/contexts/locale-context.tsx`.
+- **Notifications i18n**: Removed `src/lib/status-translations.ts` static imports. `src/lib/notifications.ts` uses `getServerI18nForLanguage()` and `i18n.t()` to match ai-i18n-tools stack.
+- **Legacy URL locale removal**: Dropped `LOCALE_REGEX` and client-side "strip locale prefix" logic. Root layout SSR locale no longer infers from first path segment. `src/proxy.ts` still 308-redirects old `/{locale}/...` bookmarks.
+- **Help links**: `src/lib/helpMapper.ts` no longer strips legacy locale prefix.
+- **RTL**: Removed `src/lib/rtl-utils.ts` and unused `src/hooks/use-rtl.ts`. App uses `ai-i18n-tools/runtime` `getTextDirection` and `applyDirection`.
+- **Hardcoded locale cleanup**: Removed remaining hardcoded `'en-GB'` literals and duplicated arrays. Files now consume from `src/lib/locales.ts`.
+- **Locale parsing**: Single implementation in `src/lib/locales.ts`. Removed `normalizeLocale` and inlined `Accept-Language` handling.
+- **Legacy locale typos**: Removed special handling for mistaken codes like `en-gb-gb` / `en-GB-GB`.
+- **Server i18n**: `src/lib/i18n-server.ts` matches client bootstrap: ai-i18n-tools/runtime default export, `makeLocaleLoadersFromManifest`, dynamic imports, `makeLoadLocale`, `applyDirection`.
+- **Locale utilities**: Removed `src/lib/intl-locale.ts`. `src/lib/date-format.ts` and `src/lib/number-format.ts` pass locale codes directly to `Intl`.
+- **Date/time formatting**: `src/lib/date-format.ts` no longer maintains per-locale `Intl.DateTimeFormatOptions` table. Uses standard `dateStyle: 'short'` / `timeStyle: 'short'`.
 
 ### Fixed
-- **OOM crash on backup details (issue #62)**: Prevented `JavaScript heap out of memory` crashes by optimizing database queries and UI rendering. The `getServerBackups` query no longer loads massive backup logs (`messages_array`, `warnings_array`, `errors_array`) for all backups into memory. Logs are now fetched on-demand via `getBackupLogsById` only when viewing a specific backup's details. Added a truncation limit (max 1000 lines) to prevent React rendering crashes on massive logs, and refactored the UI to use log count metadata instead of parsing full JSON arrays.
-- **Backup version parsing (issue #65)**: `convertTimestampToISO()` in `src/lib/utils.ts` previously only handled the slash-based `dd/MM/yyyy HH:mm:ss` format (en-GB / Czech Windows). Duplicati formats the "Backups to consider:" log line using the system/configured locale, so other environments produced unrecognised timestamps and the "Available Versions" column showed "Version info not received". The function now handles all common locale-specific formats: `yyyy-MM-dd HH:mm:ss` (ISO/en-CA/sv-SE), `yyyy.MM.dd HH:mm:ss` (zh-CN/ja-JP/hu-HU), `yyyy.MM.dd tt hh:mm:ss` (ko-KR, AM/PM before time), `yyyy/MM/dd hh:mm:ss tt` (es-MX/es-CO), `dd/MM/yyyy HH:mm:ss` (en-GB/fr-FR/it-IT/es-ES/pt-BR), `dd/MM/yyyy HH.mm.ss` (nn-NO/da-DK, dots as time separator), `dd.MM.yyyy HH:mm:ss` (de-DE/de-AT/ru-RU/tr-TR/fi-FI), and slash+AM/PM covering both `MM/dd/yyyy` (en-US/en-PH) and `dd/MM/yyyy` (en-AU/en-IN/en-NZ/ms-MY) — disambiguated by value range, defaulting to MM/dd when ambiguous. Single-digit day/month/hour variants are tolerated throughout. Narrow non-breaking spaces (U+202F) before AM/PM are normalised. A `to24h()` helper was extracted to deduplicate 12→24h conversion across patterns.
-- **Spanish "in the future" string**: `src/lib/utils.ts` returned `'en-GB el futuro'` for Spanish locales (an erroneous find/replace). Restored to `'en el futuro'`.
-- **Monday-first locale prefixes**: `src/lib/utils.ts` listed `'en-GB-gb'`, `'en-GB-au'`, `'en-GB-nz'` in the Monday-first locale prefix list (also a bad find/replace). Restored to `'en-gb'`, `'en-au'`, `'en-nz'` so English (UK/AU/NZ) browsers correctly default to Monday as the first day of the week.
-- **Production build (`/_not-found`)**: Server code imported **`SOURCE_LOCALE`** / **`LOCALE_COOKIE_NAME`** from **`@/i18n`**, which executes **`initReactI18next`** at module load and broke the server bundle during static generation (**`createContext is not a function`**). **`LOCALE_COOKIE_NAME`** is now exported from **`src/lib/locales.ts`** next to **`SOURCE_LOCALE`**; **`src/app/layout.tsx`**, **`src/lib/i18n-server.ts`**, and **`src/lib/status-translations.ts`** import from **`@/lib/locales`**. **`src/i18n.ts`** re-exports both constants for bundles that already load the client i18n instance.
-- **Backup monitoring (`backup-monitoring-form.tsx`)**: Resolved **`react-hooks/exhaustive-deps`** by memoizing **`getServersWithBackupAndSettings`** with **`useCallback`** and depending on it from the **`filteredServers`** **`useMemo`**.
-
-### Changed
-- **Locale consolidation**: Consolidated locale definitions across the codebase to use a single source of truth from `src/locales/ui-languages.json`. Created `src/lib/locales.ts` with shared utilities (`LOCALE_CODE_LIST`, `LABEL`, `ENGLISH_NAME`, `LOCALE_REGEX`, `getLocaleLabel()`, `getLocaleEnglishName()`, `isSupportedLocale()`). Removed duplicate `SOURCE_LOCALE` definition from `src/i18n-config.ts` (now re-exported from `src/i18n.ts`). Updated 12 files to use shared locale utilities. Language dropdowns now use the `label` field (native language name like "Deutsch"), while template language selector uses `englishName` field (English name like "German").
-
-
-
-### Fixed
-- **build-local script**: Fixed the build-local script to copy the static files to the standalone directory. Simplify the script to use the pos-build.sh script.
-
-### Added
-- **Format locale override (issue #59)**: Users can now select a formatting locale independently of their UI language in Settings > Display Settings using a searchable combobox (416 locales supported). Date, time, and number formatting across the dashboard, server details, and settings panels respects the selected format locale. A live preview shows formatted samples on selection.
-
-### Changed
-- **Locale code**: English UI / cookie / i18n source locale is consistently **`en-GB`** (replaced the mistaken `en-GB-GB` string). `src/proxy.ts`, `src/app/layout.tsx`, `src/i18n.ts`, `src/i18n-config.ts`, `src/locales/ui-languages.json`, header/refresh/detail helpers, and related defaults were updated. `Accept-Language` handling in the root layout now maps the primary tag `en` to `en-GB` (it compared to `en-GB` before, which never matched).
-
-### Fixed
-- **i18n tooltip issue**: In Settings > Servers, the password change tooltip was showing "[object Object]" instead of the correct text. Changed from `wrapI18nWithKeyTrim` to `setupKeyAsDefaultT` in `src/i18n.ts` and `src/lib/i18n-server.ts` to properly handle translation key resolution. Updated `dev/TODO.md`.
-- **Dashboard server filter (issue #53)**: The home dashboard filter now matches server id, URL, and any backup job name (cards and table use `src/lib/dashboard-server-filter-match.ts`), so queries like a backup name no longer hide all rows when the server label did not match. Fixed overview card grid not updating when only the filter changed (`OverviewCards` memo comparator omitted `serverFilter`).
-
-
-### Added
-- **Server filtering**: Added filter input to server lists in Settings > Backup Monitoring, Settings > Servers, and the main Dashboard (both card and table views). Users can filter servers by name, alias, and backup name (where applicable) to quickly find specific servers.
-
-
-### Changed
-- **Dashboard server filter**: The search field for filtering servers on the home dashboard is shown in the **app header** (with auto-refresh and toolbar actions) instead of above the overview/table content; state is shared via `DashboardServerFilterProvider` in `conditional-layout.tsx` (`src/contexts/dashboard-server-filter-context.tsx`). When the query is empty, the control shows **only the search icon**; hover or click expands the text field (`ServerFilterInput` with `variant="collapsible"`).
-- **Next expected backup / overdue**: `GetNextBackupRunDate` (`src/lib/server_intervals.ts`) now advances **day/week/month/year** intervals and weekday checks in **UTC** (`setUTCDate`, `getUTCDay`, …) instead of local `setDate`/`getDay`, avoiding a **one-hour UTC drift** when the host timezone crosses DST (e.g. Europe/London GMT→BST). Documented in `dev/OVERDUE_DETECTION_ALGORITHM.md`.
-- **Default overdue tolerance**: New installs and defaults now use **`2h`** instead of **`1h`** (`src/lib/default-config.ts`, `src/lib/db.ts` / `src/lib/db-migrations.ts` initial config paths).
-- **ESLint**: Ignore **`.intlayer/**`** (generated). Turn off React Compiler–specific **`react-hooks/*`** rules that flag common mount/sync/fetch patterns; remove obsolete **`eslint-disable-next-line react-hooks/set-state-in-effect`** comments (auto-fixed).
-- **Tooling**: **`scripts/upgrade-dependencies.sh`** aligns with the **ai-i18n-tools** upgrade flow: prefer **`source ./scripts/upgrade-dependencies.sh`** so **nvm** applies to the shell (**`CI=1`** or **`DUPLISTATUS_UPGRADE_ALLOW_EXEC=1`** when executing directly); **`scripts/upgrade-tools.sh`** upgrades nvm/Node LTS/globals; **`eslint-react-peers-allow-eslint10.js`** gates **`npm-check-updates`** so the ESLint stack is not bumped past React plugin peers; **`documentation/`** uses the **same workspace lockfile** as the app (no nested `--ignore-workspace` install).
-- **i18n**: **`SOURCE_LOCALE`** and **`LOCALE_COOKIE_NAME`** are defined in **`src/lib/locales.ts`** (with **`SOURCE_LOCALE`** matching **`ai-i18n-tools.config.json`**); **`src/i18n.ts`** re-exports them for **`@/i18n`** consumers. Removed **`src/i18n/constants.ts`** and the **`src/i18n/`** folder.
-- **UI copy / i18n**: Removed **`src/i18n/generated-hooks/`** and **`src/i18n/backup-detail-page-translations.ts`**. All UI strings use **`useTranslation().t('…')`** in client components or **`getServerI18n()`** / **`i18n.t('…')`** in Server Components (e.g. backup detail page). Regenerated **`src/locales/strings.json`** metadata via **`pnpm i18n:extract`**.
-- **UI copy / i18n**: Removed the shared `useCommonContent()` hook; shared labels (Cancel, Error, time ranges, etc.) now use **`useTranslation().t('…')` inline** at each call site. Deleted `src/i18n/generated-hooks/useCommonContent.ts`.
-- **i18n stack**: Replaced Intlayer (`.content.ts`, locale-prefixed routes) with **i18next** + **ai-i18n-tools** (`ai-i18n-tools.config.json` at repo root). UI strings use English keys in `t('…')` / generated hooks; flat JSON lives under `src/locales/`. App language is cookie-driven (no `/en/…` path segment); legacy URLs redirect via `src/proxy.ts`.
-- **Documentation translation**: Removed `documentation/scripts/translate/` and `translate.config.json`; `documentation/package.json` scripts delegate to root `pnpm i18n:*` commands. Glossary ties UI terms via `glossary.uiGlossary` → `src/locales/strings.json`; optional overrides in `documentation/glossary-user.csv`.
-- **Status labels in notifications**: `src/lib/status-translations.ts` reads the same flat locale JSON as the UI.
-- **Release notes**: Added documentation/docs/release-notes/1.3.2.md and linked it in the release notes sidebar (sidebars.ts).
-- **Documentation**: Updated Docker script names to match package.json: `docker-up` → `docker:up`, `docker-down` → `docker:down`, `docker-clean` → `docker:clean`, `docker-devel` → `docker:devel` in AGENTS.md and documentation/docs (setup.md, devel.md, release-management.md).
-- **Documentation**: Updated package versions to match package.json in AGENTS.md, documentation/docs/development/setup.md, documentation/docs/development/development-guidelines.md, and .cursor/rules/project-rule.mdc: pnpm 10.30.3, TypeScript ^5.9.3, Next.js ^16.1.6, React ^19.2.4, Tailwind CSS ^4.2.1, intlayer family ^8.1.8, lucide-react ^0.575.0, react-day-picker ^9.14.0, react-hook-form ^7.71.2, ESLint ^9.16.0, webpack ^5.105.3.
-
-### Deprecated
-
-
-### Removed
-
-
-### Fixed
-- **Documentation (Docusaurus)**: With `future.v4: true`, MDX v1 compatibility flags (including `headingIds`) default off, so classic `{#heading-id}` in `.md` files fails MDX compilation. Set `markdown.mdx1Compat` (`comments`, `admonitions`, `headingIds`) in `documentation/docusaurus.config.ts` to match pre–v4-shortcut defaults so `{#id}` works again alongside `{/* #id */}`.
-- **Documentation (Docusaurus start)**: Fixed `pnpm start:en` failing with `TypeError: pathRegexp is not a function` by pinning Express to version 4.21.0 (which uses compatible `path-to-regexp@0.1.10`). The `ai-i18n-tools@1.4.0` dependency was pulling in Express 5.x which has breaking changes incompatible with webpack-dev-server used by Docusaurus. Added explicit `express: 4.21.0` override in `pnpm.overrides`.
-- **Documentation (Docusaurus build)**: Escaped French `documentation/i18n/fr/.../intro.md` heading IDs (`{#développement}`, `{#crédits}`) so MDX does not treat them as expressions. Updated `documentation/docs/api-reference/api-endpoint-list.md` anchors to match API pages’ `{/* #…- */}` IDs (`---api…` separator, trailing dash). Updated English docs links (installation, migration, user guide, release notes, audit logs retention) to use the same trailing-dash anchor IDs—`pnpm build` in `documentation/` completes with no broken-anchor warnings.
-- **Next.js 16 proxy**: Removed `src/middleware.ts` so only `src/proxy.ts` is used (avoids "middleware and proxy both detected" build error).
-- **Login logo import**: Corrected static import path to `public/images/duplistatus_logo.png` from `src/app/login/page.tsx`.
-- **pnpm install warnings**: Resolved three install-time warnings: (1) unmet peer `webpack@5.104.1` from `next-intlayer` > `@intlayer/webpack` (project has webpack 5.105.3) by adding `pnpm.peerDependencyRules.allowedVersions.webpack: "5"` in root `package.json`; (2) deprecated subdependencies `prebuild-install@7.1.3` (from better-sqlite3) and `whatwg-encoding@3.1.1` (from documentation > docusaurus-search-local > cheerio) by adding `pnpm.allowedDeprecatedVersions` for both so install runs without warnings.
-- **application-logs-viewer useEffect exhaustive-deps**: Resolved react-hooks/exhaustive-deps warning for the auto-scroll effect. `logData` is intentionally omitted from the dependency array so we only scroll when auto-scroll or selected file changes, not on every poll; new-line scrolling is handled in loadLogs. Added an eslint-disable-next-line with a short comment.
-- **Build warning vscode-languageserver-types (documentation)**: Suppressed Webpack "Critical dependency: require function is used in a way in which dependencies cannot be statically extracted" for transitive dependency `vscode-languageserver-types` (from intlayer-editor) in the **documentation** (Docusaurus) build via an inline plugin in `documentation/docusaurus.config.ts` that adds `ignoreWarnings`. The warning occurs during the docs build only, not the main app.
+- **User UI preferences not persisted on page refresh**: Fixed race conditions in `overviewSidePanel`, `chartTimeRange`, `chartStyle` settings. `useCurrentUser()` now returns `undefined` for loading, `null` for unauthenticated. Setters now save inside `setState` callbacks. `isInitialized` starts as `false`.
+- **Chart infinite loop on /detail page**: Fixed re-render loop from `startDate`/`endDate` creating new Date objects on every render. Wrapped in `useMemo` with `chartTimeRange` as only dependency.
+- **Too many chart data points**: Charts now enforce maximum 30 data points. `bucketChartData()` dynamically calculates optimal bucket sizes for ranges exceeding 30 days. Data consolidated by calendar day before bucketing.
+- **Chart tooltip shows time**: Tooltip now displays only date (e.g., "5/12/26") instead of date and time.
+- **OverviewChartsPanel ignoring time range filter**: Fixed panel displaying all data points regardless of selected time range. Simplified architecture by removing external `chartData` prop; panel now fetches its own data from API with proper time range parameters.
+- **OOM crash on backup details (issue #62)**: Prevented `JavaScript heap out of memory` by optimizing queries and UI rendering. `getServerBackups` no longer loads massive logs; fetched on-demand via `getBackupLogsById`. Added truncation limit (max 1000 lines).
+- **Backup version parsing (issue #65)**: `convertTimestampToISO()` now handles all common locale-specific timestamp formats used by Duplicati across different system locales.
+- **Spanish "in the future" string**: Restored to `'en el futuro'` (was erroneous `'en-GB el futuro'`).
+- **Monday-first locale prefixes**: Restored to `'en-gb'`, `'en-au'`, `'en-nz'` (was bad `'en-GB-gb'`, etc.).
+- **Production build (`/_not-found`)**: Fixed server code importing from `@/i18n` which broke server bundle. `LOCALE_COOKIE_NAME` and `SOURCE_LOCALE` now exported from `@/lib/locales`.
+- **Backup monitoring**: Resolved `react-hooks/exhaustive-deps` by memoizing `getServersWithBackupAndSettings` with `useCallback`.
+- **build-local script**: Fixed to copy static files to standalone directory using post-build.sh.
+- **i18n tooltip issue**: Settings > Servers password change tooltip showed "[object Object]". Changed to `setupKeyAsDefaultT` in `src/i18n.ts` and `src/lib/i18n-server.ts`.
+- **Dashboard server filter (issue #53)**: Filter now matches server id, URL, and any backup job name. Fixed overview card grid not updating when filter changed.
+- **Documentation (Docusaurus)**: Set `markdown.mdx1Compat` for `{#heading-id}` support in MDX v4.
+- **Documentation (Docusaurus start)**: Fixed `pnpm start:en` failing with `TypeError: pathRegexp is not a function` by pinning Express to 4.21.0.
+- **Documentation (Docusaurus build)**: Escaped French heading IDs and updated anchors to match API pages' `{/* #…- */}` IDs.
+- **Next.js 16 proxy**: Removed `src/middleware.ts` so only `src/proxy.ts` is used.
+- **Login logo import**: Corrected static import path to `public/images/duplistatus_logo.png`.
+- **pnpm install warnings**: Resolved three install-time warnings via `pnpm.peerDependencyRules` and `pnpm.allowedDeprecatedVersions`.
+- **application-logs-viewer useEffect exhaustive-deps**: Added eslint-disable-next-line with comment for intentional omission.
+- **Build warning vscode-languageserver-types (documentation)**: Suppressed Webpack warning via inline plugin in `documentation/docusaurus.config.ts`.
 
 ### Security
-- **pnpm overrides (uuid, postcss)**: Added root **`pnpm.overrides`** so transitive **`uuid`** is **≥14.0.0** (GHSA-w5hq-g745-h8pq: sockjs/mermaid under Docusaurus) and **`postcss`** is **≥8.5.10** (GHSA-qx2v-qp2m-jg93: Next.js dependency chain).
-- **Dependabot dependency updates (documentation)**: Merged two Dependabot PRs to address vulnerabilities in the documentation workspace: (1) bump `ajv` in `/documentation` (8.17.1→8.18.0 and 6.12.6→6.14.0); (2) bump `fast-xml-parser` in `/documentation` (5.3.5→5.3.6). Both were merged via the dependabot multi-update for /documentation.
-- **Dependency vulnerabilities**: Fixed 4 high-severity vulnerabilities by adding pnpm overrides:
-  - `minimatch >=3.1.4`: Fixes GHSA-3ppc-4f35-3m26 (ReDoS via repeated wildcards), GHSA-7r86-cg39-jmmj (combinatorial backtracking), and GHSA-23c5-xmqv-rm74 (nested extglobs backtracking) in documentation>@docusaurus/core>serve-handler>minimatch.
-  - `serialize-javascript >=7.0.3`: Fixes GHSA-5c6j-r48x-rmvq (RCE via RegExp.flags and Date.prototype.toISOString()) in webpack>terser-webpack-plugin>serialize-javascript.
-
-
+- **npm audit vulnerabilities**: Resolved 7 vulnerabilities (1 high, 6 moderate):
+  - Updated `next` to `16.3.0-canary.19` to fix `postcss@8.4.31` (XSS)
+  - Added `.pnpmfile.cjs` to force `serialize-javascript@^7.0.5` (RCE, DoS)
+  - Updated `mermaid` override to `>=11.14.1` (4 moderate vulnerabilities)
+  - Added explicit `postcss@^8.5.14` and `serialize-javascript@^7.0.5` dependencies
+- **pnpm overrides (uuid, postcss)**: Added root `pnpm.overrides` for transitive `uuid >=14.0.0` and `postcss >=8.5.10`.
+- **Dependabot dependency updates (documentation)**: Merged PRs for `ajv` and `fast-xml-parser` vulnerabilities.
+- **Dependency vulnerabilities**: Fixed 4 high-severity vulnerabilities via pnpm overrides for `minimatch >=3.1.4` and `serialize-javascript >=7.0.3`.
 
 
 

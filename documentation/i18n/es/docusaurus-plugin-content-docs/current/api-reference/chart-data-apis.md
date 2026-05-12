@@ -1,12 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:38.180Z'
-source_file_mtime: '2026-05-06T23:18:51.418Z'
-source_file_hash: 801b44af6c628cbca7fddeda42e36809574297c98d475cd678e689dddabadc31
-translation_language: es
-source_file_path: documentation/docs/api-reference/chart-data-apis.md
-translation_models:
-  - qwen/qwen3-235b-a22b-2507
----
 # Datos del gráfico {#chart-data}
 
 ## Obtener datos agregados del gráfico - `/api/chart-data/aggregated` {#get-aggregated-chart-data---apichart-dataaggregated}

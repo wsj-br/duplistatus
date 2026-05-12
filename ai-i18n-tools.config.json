@@ -56,7 +56,7 @@
           ]
         }
       },
-      "addFrontmatter": true
+      "addFrontmatter": false
     }
   ],
   "svg": {

@@ -1,14 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:46.583Z'
-source_file_mtime: '2026-05-10T23:08:38.195Z'
-source_file_hash: afafb5babfbcde75a3fc8bdefb13967a3477a08a68d802733ec33aff54a7e00f
-translation_language: pt-BR
-source_file_path: documentation/docs/user-guide/dashboard.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
-  - 'stepfun/step-3.5-flash:free'
----
 # Painel {#dashboard}
 
 ## Painel Resumido {#dashboard-summary}

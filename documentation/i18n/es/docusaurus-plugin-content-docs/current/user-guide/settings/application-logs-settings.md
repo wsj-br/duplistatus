@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:47.081Z'
-source_file_mtime: '2026-05-06T23:18:51.446Z'
-source_file_hash: b0db7a6f1e511ae6977971d8b2cdf4eefcdfa3aea287eea9bbbc2e84542c2144
-translation_language: es
-source_file_path: documentation/docs/user-guide/settings/application-logs-settings.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Logs de aplicación {#application-logs}
 
 El Visor de Logs de aplicación permite a los administradores monitorear todos los Logs de aplicación en un solo lugar, con filtrado, Exportar y actualizaciones en tiempo real directamente desde la interfaz web.

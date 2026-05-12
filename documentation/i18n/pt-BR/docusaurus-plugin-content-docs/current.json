@@ -20,7 +20,7 @@
     "description": "The label for category 'Migration' in sidebar 'mainSidebar'"
   },
   "sidebar.mainSidebar.category.API Reference": {
-    "message": "Referência da API",
+    "message": "Referência de API",
     "description": "The label for category 'API Reference' in sidebar 'mainSidebar'"
   },
   "sidebar.mainSidebar.category.Development": {

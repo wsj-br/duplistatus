@@ -1,14 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:46.636Z'
-source_file_mtime: '2026-05-06T23:18:51.430Z'
-source_file_hash: ba54f9487a2894080dee40e174c35d9fcf1630e84c5ba9b08d4c4d2989626a61
-translation_language: pt-BR
-source_file_path: documentation/docs/user-guide/duplicati-configuration.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
-  - 'stepfun/step-3.5-flash:free'
----
 # Configuração do Duplicati {#duplicati-configuration}
 
 O botão <SvgButton svgFilename="duplicati_logo.svg" /> na [Barra de Ferramentas do Aplicativo](overview.md#application-toolbar) abre a interface da web do servidor Duplicati em uma nova aba.

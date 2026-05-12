@@ -1,14 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:43.119Z'
-source_file_mtime: '2026-05-06T23:18:51.410Z'
-source_file_hash: 8b9a230f64fd786725b53f2231596f7426ccf84e8ad7352af80d2f9b7a86410c
-translation_language: fr
-source_file_path: documentation/docs/migration/api-changes.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - openai/gpt-4o-mini
-  - qwen/qwen3-235b-a22b-2507
----
 # Modifications incompatibles avec les versions antérieures de l'API {#api-breaking-changes}
 
 Ce document décrit les modifications majeures apportées aux points de terminaison d'API externes dans différentes versions de duplistatus. Les points de terminaison d'API externes sont ceux conçus pour être utilisés par d'autres applications et intégrations (par exemple, l'intégration Homepage).

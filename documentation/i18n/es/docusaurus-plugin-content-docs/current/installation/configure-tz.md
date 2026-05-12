@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:42.249Z'
-source_file_mtime: '2026-05-06T23:18:51.418Z'
-source_file_hash: fae3a81d94023aecc08c2c0b247e071f9990285fb3aa9384cc93cba826f99fe6
-translation_language: es
-source_file_path: documentation/docs/installation/configure-tz.md
-translation_models:
-  - anthropic/claude-3.5-haiku
-  - anthropic/claude-haiku-4.5
----
 # Zona horaria {#timezone}
 
 La interfaz de usuario de la aplicación mostrará la fecha y hora según la configuración del navegador. Sin embargo, para propósitos de registro y notificaciones, la aplicación utilizará el valor definido en la variable de entorno `TZ` para formatear zonas horarias.

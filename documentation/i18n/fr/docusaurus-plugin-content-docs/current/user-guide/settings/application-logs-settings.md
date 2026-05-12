@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:47.077Z'
-source_file_mtime: '2026-05-06T23:18:51.446Z'
-source_file_hash: b0db7a6f1e511ae6977971d8b2cdf4eefcdfa3aea287eea9bbbc2e84542c2144
-translation_language: fr
-source_file_path: documentation/docs/user-guide/settings/application-logs-settings.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Journaux d'application {#application-logs}
 
 Le Visualiseur de journaux d'application permet aux administrateurs de surveiller tous les journaux d'application au même endroit, avec filtrage, export et mises à jour en temps réel directement depuis l'interface web.

@@ -1,14 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:48.226Z'
-source_file_mtime: '2026-05-06T23:18:51.446Z'
-source_file_hash: af7b88f75713fa0f5d7ea772ace5440dcf8f228e28102abda5f00ecd6477596e
-translation_language: pt-BR
-source_file_path: documentation/docs/user-guide/settings/overview.md
-translation_models:
-  - anthropic/claude-3.5-haiku
-  - anthropic/claude-haiku-4.5
-  - deepseek/deepseek-v3.2
----
 # Visão Geral {#overview}
 
 A página de Configurações oferece uma interface unificada para configurar todos os aspectos do **duplistatus**. Você pode acessá-la clicando no botão <IconButton icon="lucide:settings" /> **Configurações** na [Barra de Ferramentas do Aplicativo](../overview.md#application-toolbar). Observação: usuários regulares verão um menu simplificado com menos opções em comparação com os administradores.

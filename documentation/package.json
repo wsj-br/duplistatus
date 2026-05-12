@@ -43,14 +43,15 @@
     "prism-react-renderer": "^2.4.1",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "remark-github-alerts": "^0.1.1"
+    "remark-github-alerts": "^0.1.1",
+    "serialize-javascript": "^7.0.5"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "3.10.1",
     "@docusaurus/tsconfig": "3.10.1",
     "@docusaurus/types": "3.10.1",
     "eslint": "^9.39.4",
-    "eslint-config-next": "16.2.5",
+    "eslint-config-next": "16.2.6",
     "typescript": "~6.0.3"
   },
   "browserslist": {

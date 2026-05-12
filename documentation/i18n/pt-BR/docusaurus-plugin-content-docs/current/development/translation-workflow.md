@@ -1,14 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:41.972Z'
-source_file_mtime: '2026-05-06T23:18:51.394Z'
-source_file_hash: e7d139a531d71a9356831027194544c2e1d3243ed71eb529ff1aafbad09db413
-translation_language: pt-BR
-source_file_path: documentation/docs/development/translation-workflow.md
-translation_models:
-  - anthropic/claude-3.5-haiku
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Fluxo de Trabalho de Manutenção de Tradução {#translation-maintenance-workflow}
 
 Para comandos de documentação geral (build, deploy, screenshots, geração de README), consulte [Ferramentas de Documentação](documentation-tools.md).

@@ -1,12 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:39.414Z'
-source_file_mtime: '2026-05-06T23:18:51.418Z'
-source_file_hash: 55f7e22ce3b1fa4868b6c112f9ed098fc3c8bf99e832fc930106cbc887815c77
-translation_language: fr
-source_file_path: documentation/docs/api-reference/overview.md
-translation_models:
-  - qwen/qwen3-235b-a22b-2507
----
 # Vue d'ensemble de l'API {#api-overview}
 
 Ce document décrit tous les points de terminaison API disponibles pour l'application duplistatus. L'API suit les principes RESTful et offre des fonctionnalités complètes de surveillance des sauvegardes, de gestion des notifications et d'administration système.

@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:46.052Z'
-source_file_mtime: '2026-05-06T23:18:51.430Z'
-source_file_hash: 715719058387c53e24d6ec27814f20fb52349ff40f5e59310d6965344bb8f16a
-translation_language: de
-source_file_path: documentation/docs/user-guide/admin-recovery.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Admin-Kontowiederherstellung {#admin-account-recovery}
 
 Stellen Sie den Administrator-Zugriff auf **duplistatus** wieder her, wenn Sie Ihr Passwort vergessen haben oder aus Ihrem Konto gesperrt wurden. Diese Anleitung behandelt die Verwendung des Admin-Wiederherstellungsskripts in Docker-Umgebungen.

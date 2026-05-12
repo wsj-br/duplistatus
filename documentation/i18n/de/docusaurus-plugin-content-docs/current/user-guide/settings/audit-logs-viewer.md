@@ -1,13 +1,3 @@
----
-translation_last_updated: '2026-05-11T14:27:47.175Z'
-source_file_mtime: '2026-05-06T23:18:51.442Z'
-source_file_hash: 80be5481828e5ef8fd45f7d5798ad511ae84f6dde487dd8920d6b2f458c1e1b8
-translation_language: de
-source_file_path: documentation/docs/user-guide/settings/audit-logs-viewer.md
-translation_models:
-  - anthropic/claude-haiku-4.5
-  - qwen/qwen3-235b-a22b-2507
----
 # Audit-Protokolle {#audit-logs}
 
 Das Audit-Log bietet eine umfassende Aufzeichnung aller Systemänderungen und Benutzeraktionen in **duplistatus**. Dies hilft beim Nachverfolgen von Konfigurationsänderungen, Benutzeraktivitäten und Systemoperationen für Sicherheits- und Fehlerbehebungszwecke.

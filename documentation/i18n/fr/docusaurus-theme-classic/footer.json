@@ -28,7 +28,7 @@
     "description": "The label of footer link with label=Development Setup linking to /development/setup"
   },
   "link.item.label.API Reference": {
-    "message": "Référence API",
+    "message": "Référence de l'API",
     "description": "The label of footer link with label=API Reference linking to /api-reference/overview"
   },
   "copyright": {
