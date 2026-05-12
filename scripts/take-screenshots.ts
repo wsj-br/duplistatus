@@ -4,9 +4,78 @@
  */
 import puppeteer, { type Page } from 'puppeteer';
 import { mkdir } from 'fs/promises';
-import { existsSync } from 'fs';
-import { join, resolve } from 'path';
+import { existsSync, createWriteStream } from 'fs';
+import { join, resolve, dirname } from 'path';
 import { execSync } from 'child_process';
+import { fileURLToPath } from 'url';
+import util from 'util';
+
+// Logging setup
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const LOG_DIR = join(__dirname, '..', 'dev');
+let logStream: ReturnType<typeof createWriteStream> | null = null;
+
+function initLogFile(): string {
+  const d = new Date();
+  const Y = d.getFullYear();
+  const M = String(d.getMonth() + 1).padStart(2, '0');
+  const D = String(d.getDate()).padStart(2, '0');
+  const h = String(d.getHours()).padStart(2, '0');
+  const m = String(d.getMinutes()).padStart(2, '0');
+  const s = String(d.getSeconds()).padStart(2, '0');
+  
+  // Create dev directory if it doesn't exist
+  if (!existsSync(LOG_DIR)) {
+    mkdir(LOG_DIR, { recursive: true });
+  }
+  
+  const logPath = join(LOG_DIR, `take-screenshots-${Y}${M}${D}-${h}${m}${s}.log`);
+  logStream = createWriteStream(logPath, { flags: 'a' });
+  return logPath;
+}
+
+function getTimestamp(): string {
+  const d = new Date();
+  const h = String(d.getHours()).padStart(2, '0');
+  const m = String(d.getMinutes()).padStart(2, '0');
+  const s = String(d.getSeconds()).padStart(2, '0');
+  return `${h}:${m}:${s}`;
+}
+
+function log(msg: string, ...args: unknown[]): void {
+  const ts = getTimestamp();
+  const formatted = args.length > 0 ? util.format(msg, ...args) : msg;
+  const line = `${ts} - ${formatted}`;
+  
+  // Console output
+  console.log(line);
+  
+  // File output
+  if (logStream && logStream.writable) {
+    logStream.write(line + '\n');
+  }
+}
+
+function logError(message: string): void {
+  const ts = getTimestamp();
+  const line = `${ts} - ${colors.red}${message}${colors.reset}`;
+  console.error(line);
+  if (logStream && logStream.writable) {
+    // Strip ANSI codes for file output
+    logStream.write(`${ts} - ${message}\n`);
+  }
+}
+
+function logSuccess(message: string): void {
+  const ts = getTimestamp();
+  const line = `${ts} - ${colors.blue}${message}${colors.reset}`;
+  console.log(line);
+  if (logStream && logStream.writable) {
+    // Strip ANSI codes for file output
+    logStream.write(`${ts} - ${message}\n`);
+  }
+}
 
 const BASE_URL = 'http://localhost:8666';
 const ADMIN_USERNAME = 'admin';
@@ -172,19 +241,11 @@ const colors = {
   yellow: '\x1b[33m',
 };
 
-function logError(message: string): void {
-  console.error(`${colors.red}${message}${colors.reset}`);
-}
-
-function logSuccess(message: string): void {
-  console.log(`${colors.blue}${message}${colors.reset}`);
-}
-
 function showEnvFormat(): void {
-  console.log(`${colors.yellow}Environment variables:${colors.reset}`);
-  console.log(`ADMIN_PASSWORD="your-admin-password"`);
-  console.log(`USER_PASSWORD="your-user-password"`);
-  console.log(`${colors.reset}`);
+  log(`${colors.yellow}Environment variables:${colors.reset}`);
+  log(`ADMIN_PASSWORD="your-admin-password"`);
+  log(`USER_PASSWORD="your-user-password"`);
+  log(`${colors.reset}`);
 }
 
 function showHelp(): void {
@@ -272,7 +333,7 @@ async function waitForScreenshotTarget(
     });
     return true;
   } catch {
-    console.log(colors.yellow, `  ⚠ data-screenshot-target="${targetId}" not found within ${timeoutMs}ms`, colors.reset);
+    log(`${colors.yellow}  ⚠ data-screenshot-target="${targetId}" not found within ${timeoutMs}ms${colors.reset}`);
     return false;
   }
 }
@@ -342,7 +403,7 @@ async function waitForServerDetailContent(page: Page, maxWaitMs: number = 15000)
 }
 
 async function checkHealth(): Promise<boolean> {
-  console.log('Checking if application is running...');
+  log('Checking if application is running...');
   try {
     const response = await fetch(`${BASE_URL}/api/health`);
     if (!response.ok) {
@@ -350,7 +411,7 @@ async function checkHealth(): Promise<boolean> {
       return false;
     }
     const data = await response.json();
-    console.log(`Application is running. Status: ${data.status}`);
+    log(`Application is running. Status: ${data.status}`);
     return data.status === 'healthy' || data.status === 'degraded';
   } catch (error) {
     logError('Health check failed: ' + (error instanceof Error ? error.message : String(error)));
@@ -359,11 +420,11 @@ async function checkHealth(): Promise<boolean> {
 }
 
 async function generateTestData() {
-  console.log('Generating test data...');
+  log('Generating test data...');
   try {
     const command = 'pnpm generate-test-data --servers=12 --quiet';
-    console.log(`Executing: ${command}`);
-    console.log(`Working directory: ${process.cwd()}`);
+    log(`Executing: ${command}`);
+    log(`Working directory: ${process.cwd()}`);
     
     execSync(command, { 
       stdio: 'inherit',
@@ -380,19 +441,19 @@ async function generateTestData() {
       const serverCount = db.prepare('SELECT COUNT(*) as count FROM servers').get() as { count: number };
       const backupCount = db.prepare('SELECT COUNT(*) as count FROM backups').get() as { count: number };
       
-      console.log(`Verification: ${serverCount.count} server(s) and ${backupCount.count} backup(s) found in database`);
+      log(`Verification: ${serverCount.count} server(s) and ${backupCount.count} backup(s) found in database`);
       
       if (serverCount.count === 0 || backupCount.count === 0) {
         logError(`Warning: Test data generation completed but database appears empty (servers: ${serverCount.count}, backups: ${backupCount.count})`);
       } else {
-        console.log('Test data generated successfully');
+        log('Test data generated successfully');
       }
     } catch (verifyError) {
       logError(`Warning: Could not verify test data generation: ${verifyError instanceof Error ? verifyError.message : String(verifyError)}`);
-      console.log('Test data generation command completed (verification failed)');
+      log('Test data generation command completed (verification failed)');
     }
     
-    console.log('-------------------------------------------------------');
+    log('-------------------------------------------------------');
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     const errorDetails = error instanceof Error && 'code' in error ? ` (code: ${error.code})` : '';
@@ -403,7 +464,7 @@ async function generateTestData() {
       logError(`stderr: ${String((error as any).stderr)}`);
     }
     if (error instanceof Error && 'stdout' in error) {
-      console.log(`stdout: ${String((error as any).stdout)}`);
+      log(`stdout: ${String((error as any).stdout)}`);
     }
     
     throw error;
@@ -411,7 +472,7 @@ async function generateTestData() {
 }
 
 async function setDarkTheme(page: Page, userId: string) {
-  console.log(`Setting dark theme for user ${userId}...`);
+  log(`Setting dark theme for user ${userId}...`);
   await page.evaluate((uid) => {
     // Matches getUserLocalStorageKey('theme', userId) in src/lib/user-local-storage.ts
     localStorage.setItem(`theme:user-${uid}`, 'dark');
@@ -423,7 +484,7 @@ async function setDarkTheme(page: Page, userId: string) {
 }
 
 async function login(page: Page, username: string, password: string) {
-  console.log(`Logging in as ${username}...`);
+  log(`Logging in as ${username}...`);
   await page.goto(makeUrl('/login?redirect=%2F'), { waitUntil: 'networkidle0' });
   
   // Wait for the form to be ready
@@ -446,7 +507,7 @@ async function login(page: Page, username: string, password: string) {
     throw new Error(`Failed to login as ${username}. Still on login page.`);
   }
   
-  console.log(`Successfully logged in as ${username}`);
+  log(`Successfully logged in as ${username}`);
   
   // Resolve user id (same pattern as switchToTableView) and persist explicit dark preference
   const userId = await page.evaluate(async () => {
@@ -493,7 +554,7 @@ async function getCSRFToken(page: Page): Promise<string> {
 }
 
 async function logout(page: Page) {
-  console.log('Logging out...');
+  log('Logging out...');
   try {
     // Get CSRF token
     const csrfToken = await getCSRFToken(page);
@@ -512,7 +573,7 @@ async function logout(page: Page) {
     
     // Navigate to login page to ensure we're logged out
     await page.goto(makeUrl('/login'), { waitUntil: 'domcontentloaded' });
-    console.log('Logged out');
+    log('Logged out');
   } catch (error) {
     logError('Error during logout: ' + (error instanceof Error ? error.message : String(error)));
     // Try navigating to login page anyway
@@ -521,7 +582,7 @@ async function logout(page: Page) {
 }
 
 async function getServers(page: Page): Promise<Server[]> {
-  console.log('Fetching servers list...');
+  log('Fetching servers list...');
   const response = await page.evaluate(async () => {
     const res = await fetch('/api/servers');
     return res.json();
@@ -530,7 +591,7 @@ async function getServers(page: Page): Promise<Server[]> {
 }
 
 async function deleteServerDirect(serverId: string): Promise<{ success: boolean; backupCount: number; error?: string }> {
-  console.log(`  Deleting server ${serverId}...`);
+  log(`  Deleting server ${serverId}...`);
   
   try {
     const dbModule = await import('../src/lib/db');
@@ -567,7 +628,7 @@ async function deleteServerDirect(serverId: string): Promise<{ success: boolean;
 }
 
 async function updateServerUrl(serverId: string, serverUrl: string) {
-  console.log(`Updating server ${serverId} URL to: ${serverUrl}`);
+  log(`Updating server ${serverId} URL to: ${serverUrl}`);
   
   try {
     const dbModule = await import('../src/lib/db');
@@ -580,7 +641,7 @@ async function updateServerUrl(serverId: string, serverUrl: string) {
     if (!existingServer) {
       // Server doesn't exist - this can happen if it was deleted
       // Return early instead of throwing to allow the script to continue
-      console.log(`  Warning: Server ${serverId} not found in database, skipping URL update`);
+      log(`  Warning: Server ${serverId} not found in database, skipping URL update`);
       return;
     }
     
@@ -602,7 +663,7 @@ async function updateServerUrl(serverId: string, serverUrl: string) {
 }
 
 async function updateServerPassword(serverId: string, password: string) {
-  console.log(`Updating server ${serverId} password...`);
+  log(`Updating server ${serverId} password...`);
   
   try {
     const dbModule = await import('../src/lib/db');
@@ -643,7 +704,7 @@ async function takeScreenshot(
   const clip = options?.clip;
   const screenshotTarget = options?.screenshotTarget;
   
-  console.log(colors.cyan, ` 📸 Taking screenshot: ${filename}...`, colors.reset);
+  log(`${colors.cyan} 📸 Taking screenshot: ${filename}...${colors.reset}`);
   if (screenshotTarget) {
     await waitForScreenshotTarget(page, screenshotTarget);
     await delay(500); // Brief pause after target appears
@@ -856,14 +917,14 @@ async function waitForDashboardLoad(page: Page) {
   // Wait for dashboard content to load via data-screenshot-target
   const found = await waitForScreenshotTarget(page, 'dashboard-main', 10000);
   if (!found) {
-    console.log(colors.yellow, 'Dashboard data-screenshot-target not found, continuing anyway...', colors.reset);
+    log(`${colors.yellow}Dashboard data-screenshot-target not found, continuing anyway...${colors.reset}`);
   }
   await delay(2000); // Additional wait for animations
 }
 
 async function switchToTableView(page: Page) {
-  console.log('-------------------------------------------------------');
-  console.log('Switching to table view...');
+  log('-------------------------------------------------------');
+  log('Switching to table view...');
   try {
     // Get user ID first to construct the proper localStorage key
     const userId = await page.evaluate(async () => {
@@ -912,11 +973,11 @@ async function switchToTableView(page: Page) {
       return null;
     }, userId);
     
-    console.log(`Current view mode: ${currentViewMode || 'null (default: overview)'}`);
+    log(`Current view mode: ${currentViewMode || 'null (default: overview)'}`);
     
     // If not already in table view, set it directly and reload
     if (currentViewMode !== 'table') {
-      console.log('Setting view mode to table via localStorage...');
+      log('Setting view mode to table via localStorage...');
       
       // Set localStorage directly using the correct key format
       await page.evaluate((uid) => {
@@ -931,7 +992,7 @@ async function switchToTableView(page: Page) {
       }, userId);
       
       // Reload the page to apply the new view mode
-      console.log('Reloading page to apply table view...');
+      log('Reloading page to apply table view...');
       await page.reload({ waitUntil: 'networkidle0' });
       await waitForDashboardLoad(page);
       
@@ -944,15 +1005,15 @@ async function switchToTableView(page: Page) {
         return localStorage.getItem('dashboard-view-mode');
       }, userId);
       
-      console.log(`View mode after reload: ${newViewMode}`);
+      log(`View mode after reload: ${newViewMode}`);
       
       if (newViewMode !== 'table') {
         logError(`Failed to switch to table view. Current mode: ${newViewMode}`);
       } else {
-        console.log('Successfully switched to table view');
+        log('Successfully switched to table view');
       }
     } else {
-      console.log('Already in table view, no action needed');
+      log('Already in table view, no action needed');
     }
   } catch (error) {
     logError('Error switching to table view: ' + (error instanceof Error ? error.message : String(error)));
@@ -961,7 +1022,7 @@ async function switchToTableView(page: Page) {
 
 
 async function configureNtfyTopic(newTopic: string): Promise<void> {
-  console.log(`Configuring NTFY topic to: ${newTopic}`);
+  log(`Configuring NTFY topic to: ${newTopic}`);
   try {
     const dbUtilsModule = await import('../src/lib/db-utils');
     const defaultConfigModule = await import('../src/lib/default-config');
@@ -972,7 +1033,7 @@ async function configureNtfyTopic(newTopic: string): Promise<void> {
     };
     
     dbUtilsModule.setNtfyConfig(ntfyConfig);
-    console.log(`NTFY topic configured to "${newTopic}"`);
+    log(`NTFY topic configured to "${newTopic}"`);
   } catch (error) {
     logError('Error configuring NTFY topic: ' + (error instanceof Error ? error.message : String(error)));
     throw error;
@@ -980,7 +1041,7 @@ async function configureNtfyTopic(newTopic: string): Promise<void> {
 }
 
 async function configureSMTPConfig(): Promise<void> {
-  console.log('Configuring SMTP config...');
+  log('Configuring SMTP config...');
   try {
     const dbUtilsModule = await import('../src/lib/db-utils');
     const smtpConfig = {
@@ -995,7 +1056,7 @@ async function configureSMTPConfig(): Promise<void> {
     };
     
     dbUtilsModule.setSMTPConfig(smtpConfig);
-    console.log('SMTP config configured successfully');
+    log('SMTP config configured successfully');
   } catch (error) {
     logError('Error configuring SMTP config: ' + (error instanceof Error ? error.message : String(error)));
     throw error;
@@ -1003,7 +1064,7 @@ async function configureSMTPConfig(): Promise<void> {
 }
 
 async function resetUsers(): Promise<void> {
-  console.log('Resetting users table...');
+  log('Resetting users table...');
   try {
     const dbModule = await import('../src/lib/db');
     await dbModule.ensureDatabaseInitialized();
@@ -1014,7 +1075,7 @@ async function resetUsers(): Promise<void> {
     
     // Delete all users
     const deleteResult = db.prepare('DELETE FROM users').run();
-    console.log(`Deleted ${deleteResult.changes} users`);
+    log(`Deleted ${deleteResult.changes} users`);
     
     // Create admin user
     const adminId = randomUUID();
@@ -1023,7 +1084,7 @@ async function resetUsers(): Promise<void> {
       INSERT INTO users (id, username, password_hash, is_admin, must_change_password)
       VALUES (?, ?, ?, ?, ?)
     `).run(adminId, ADMIN_USERNAME, adminPasswordHash, 1, 0);
-    console.log(`Created admin user: ${ADMIN_USERNAME}`);
+    log(`Created admin user: ${ADMIN_USERNAME}`);
     
     // Create regular user
     const userId = randomUUID();
@@ -1044,14 +1105,14 @@ async function resetUsers(): Promise<void> {
 }
 
 async function clearAuditLog(): Promise<void> {
-  console.log('Clearing audit log...');
+  log('Clearing audit log...');
   try {
     const dbModule = await import('../src/lib/db');
     await dbModule.ensureDatabaseInitialized();
     const db = dbModule.db;
     
     const result = db.prepare('DELETE FROM audit_log').run();
-    console.log(`Deleted ${result.changes} audit log entries`);
+    log(`Deleted ${result.changes} audit log entries`);
   } catch (error) {
     logError('Error clearing audit log: ' + (error instanceof Error ? error.message : String(error)));
     throw error;
@@ -1059,7 +1120,7 @@ async function clearAuditLog(): Promise<void> {
 }
 
 async function deleteServerDeletionAuditLogs(): Promise<number> {
-  console.log('Deleting server_deletion audit log entries...');
+  log('Deleting server_deletion audit log entries...');
   try {
     // Use direct database access in Node.js context
     const dbModule = await import('../src/lib/db');
@@ -1067,7 +1128,7 @@ async function deleteServerDeletionAuditLogs(): Promise<number> {
     const db = dbModule.db;
     
     const result = db.prepare('DELETE FROM audit_log WHERE action = ?').run('server_deleted');
-    console.log(`Deleted ${result.changes} server_deletion audit log entries`);
+    log(`Deleted ${result.changes} server_deletion audit log entries`);
     return result.changes;
   } catch (error) {
     logError('Error deleting server_deletion audit logs: ' + (error instanceof Error ? error.message : String(error)));
@@ -1127,7 +1188,7 @@ async function findServersWithOverdueBackups(): Promise<string[]> {
 }
 
 async function deleteRecentBackupsToCreateOverdue(serverId: string, count: number = 1): Promise<boolean> {
-  console.log(`Deleting ${count} recent backup(s) from server ${serverId} to create overdue backup...`);
+  log(`Deleting ${count} recent backup(s) from server ${serverId} to create overdue backup...`);
   try {
     const dbModule = await import('../src/lib/db');
     await dbModule.ensureDatabaseInitialized();
@@ -1148,7 +1209,7 @@ async function deleteRecentBackupsToCreateOverdue(serverId: string, count: numbe
     
     // Use the first backup configuration
     const backupName = backupConfigs[0].backup_name;
-    console.log(`  Using backup type: ${backupName}`);
+    log(`  Using backup type: ${backupName}`);
     
     // Get the most recent backups for this server/backup_name combination
     const recentBackups = db.prepare(`
@@ -1164,7 +1225,7 @@ async function deleteRecentBackupsToCreateOverdue(serverId: string, count: numbe
       return false;
     }
     
-    console.log(`  Found ${recentBackups.length} backup(s) to delete`);
+    log(`  Found ${recentBackups.length} backup(s) to delete`);
     
     // Delete the backups
     const deleteTransaction = db.transaction(() => {
@@ -1181,7 +1242,7 @@ async function deleteRecentBackupsToCreateOverdue(serverId: string, count: numbe
     const deletedCount = deleteTransaction();
     
     if (deletedCount > 0) {
-      console.log(`  Successfully deleted ${deletedCount} backup(s) from server ${serverId}, backup type ${backupName}`);
+      log(`  Successfully deleted ${deletedCount} backup(s) from server ${serverId}, backup type ${backupName}`);
       return true;
     } else {
       logError(`Failed to delete backups (no rows affected)`);
@@ -1194,7 +1255,7 @@ async function deleteRecentBackupsToCreateOverdue(serverId: string, count: numbe
 }
 
 async function keepOnlyOneBackup(serverId: string): Promise<boolean> {
-  console.log(`Keeping only one backup for server ${serverId} (keeping from backup_name with most entries)...`);
+  log(`Keeping only one backup for server ${serverId} (keeping from backup_name with most entries)...`);
   try {
     const dbModule = await import('../src/lib/db');
     await dbModule.ensureDatabaseInitialized();
@@ -1210,7 +1271,7 @@ async function keepOnlyOneBackup(serverId: string): Promise<boolean> {
     `).all(serverId) as { backup_name: string; count: number }[];
     
     if (backupNameCounts.length === 0) {
-      console.log(`  No backups found for server ${serverId}`);
+      log(`  No backups found for server ${serverId}`);
       return false;
     }
     
@@ -1218,7 +1279,7 @@ async function keepOnlyOneBackup(serverId: string): Promise<boolean> {
     const backupNameWithMostEntries = backupNameCounts[0].backup_name;
     const entryCount = backupNameCounts[0].count;
     
-    console.log(`  Found ${backupNameCounts.length} backup_name(s), ${backupNameWithMostEntries} has the most entries (${entryCount})`);
+    log(`  Found ${backupNameCounts.length} backup_name(s), ${backupNameWithMostEntries} has the most entries (${entryCount})`);
     
     // Get all backups for this server
     const allBackups = db.prepare(`
@@ -1242,7 +1303,7 @@ async function keepOnlyOneBackup(serverId: string): Promise<boolean> {
     const backupToKeep = allBackups[0];
     const backupsToDelete = allBackups.slice(1);
     
-    console.log(`  Found ${allBackups.length} backup(s), keeping most recent from ${backupNameWithMostEntries} (date: ${backupToKeep.date}), deleting ${backupsToDelete.length} other(s)`);
+    log(`  Found ${allBackups.length} backup(s), keeping most recent from ${backupNameWithMostEntries} (date: ${backupToKeep.date}), deleting ${backupsToDelete.length} other(s)`);
     
     // Delete all backups except the one we're keeping
     const deleteTransaction = db.transaction(() => {
@@ -1259,7 +1320,7 @@ async function keepOnlyOneBackup(serverId: string): Promise<boolean> {
     const deletedCount = deleteTransaction();
     
     if (deletedCount > 0) {
-      console.log(`  Successfully deleted ${deletedCount} backup(s) from server ${serverId}, kept 1 backup from ${backupNameWithMostEntries} (${entryCount} entries originally)`);
+      log(`  Successfully deleted ${deletedCount} backup(s) from server ${serverId}, kept 1 backup from ${backupNameWithMostEntries} (${entryCount} entries originally)`);
       return true;
     } else {
       logError(`Failed to delete backups (no rows affected)`);
@@ -1280,7 +1341,7 @@ async function captureCollectButtonPopup(
   try {
     if (!skipNavigation) {
       // Navigate to blank page; use networkidle0 so header (client-rendered) is ready
-      console.log('🌐 Navigating to blank page (/blank)...');
+      log('🌐 Navigating to blank page (/blank)...');
       await page.goto(makeUrl('/blank'), { waitUntil: 'networkidle0' });
       await page.waitForSelector('[data-screenshot-target="collect-button"]', { timeout: 15000, visible: true });
     }
@@ -1335,7 +1396,7 @@ async function captureCollectButtonPopup(
         popupSuccess = await takeScreenshot(page, 'screen-collect-button-popup.png', screenshotDir, {
           clip: popupBounds
         });
-        console.log('Captured collect button popup');
+        log('Captured collect button popup');
       } else {
         logError('Could not find collect button popup bounds');
       }
@@ -1401,7 +1462,7 @@ async function captureCollectButtonPopup(
           rightClickPopupSuccess = await takeScreenshot(page, 'screen-collect-button-right-click-popup.png', screenshotDir, {
             clip: menuBounds
           });
-          console.log('Captured collect button right-click popup');
+          log('Captured collect button right-click popup');
         } else {
           logError('Could not find collect button right-click popup bounds');
         }
@@ -1432,7 +1493,7 @@ async function captureOverdueBackupHoverCard(page: Page, screenshotDir: string):
   for (let attempt = 1; attempt <= OVERDUE_HOVER_MAX_ATTEMPTS; attempt++) {
     try {
       if (attempt > 1) {
-        console.log(captureLog(`Overdue hover card attempt ${attempt}/${OVERDUE_HOVER_MAX_ATTEMPTS}...`));
+        log(captureLog(`Overdue hover card attempt ${attempt}/${OVERDUE_HOVER_MAX_ATTEMPTS}...`));
         await delay(OVERDUE_HOVER_RETRY_DELAY_MS);
       }
 
@@ -1501,7 +1562,7 @@ async function captureOverdueBackupHoverCard(page: Page, screenshotDir: string):
         clip: tooltipBounds
       });
       if (success) {
-        console.log('Captured overdue backup hover card');
+        log('Captured overdue backup hover card');
         return true;
       }
       lastError = 'Screenshot failed';
@@ -1526,7 +1587,7 @@ async function captureBackupTooltip(page: Page, locale: Locale, screenshotDir: s
     
     // Find all backup items
     const backupItems = await page.$$('[data-screenshot-trigger="backup-item"]');
-    console.log(`Found ${backupItems.length} backup item(s)`);
+    log(`Found ${backupItems.length} backup item(s)`);
     
     if (backupItems.length === 0) {
       logError('No backup items found on the page');
@@ -1554,7 +1615,7 @@ async function captureBackupTooltip(page: Page, locale: Locale, screenshotDir: s
     // If all items are overdue, use the first one anyway (we'll still get a tooltip)
     if (!backupItemHandle && backupItems.length > 0) {
       backupItemHandle = backupItems[0];
-      console.log('All backup items are overdue, using first item anyway');
+      log('All backup items are overdue, using first item anyway');
     }
     
     if (backupItemHandle) {
@@ -1646,7 +1707,7 @@ async function captureBackupTooltip(page: Page, locale: Locale, screenshotDir: s
         const success = await takeScreenshot(page, 'screen-backup-tooltip.png', screenshotDir, {
           clip: tooltipBounds
         });
-        console.log('Captured backup tooltip');
+        log('Captured backup tooltip');
         
         // Move mouse away to close tooltip
         await page.mouse.move(0, 0);
@@ -1670,7 +1731,7 @@ async function captureDuplicatiConfiguration(page: Page, locale: Locale, screens
   try {
     if (!skipNavigation) {
       // Navigate to blank page; use networkidle0 so header is ready, then wait for trigger
-      console.log('🌐 Navigating to blank page (/blank)...');
+      log('🌐 Navigating to blank page (/blank)...');
       await page.goto(makeUrl('/blank'), { waitUntil: 'networkidle0' });
       await page.waitForSelector('[data-screenshot-target="duplicati-configuration-trigger"]', { timeout: 15000, visible: true });
       await delay(500);
@@ -1711,7 +1772,7 @@ async function captureDuplicatiConfiguration(page: Page, locale: Locale, screens
         const success = await takeScreenshot(page, 'screen-duplicati-configuration.png', screenshotDir, {
           clip: dropdownBounds
         });
-        console.log('Captured Duplicati configuration dropdown');
+        log('Captured Duplicati configuration dropdown');
         
         // Close dropdown
         await page.keyboard.press('Escape');
@@ -1822,7 +1883,7 @@ async function captureUserMenu(page: Page, locale: Locale, screenshotDir: string
       const success = await takeScreenshot(page, filename, screenshotDir, {
         clip: combinedBounds
       });
-      console.log(`Captured user menu dropdown: ${filename}`);
+      log(`Captured user menu dropdown: ${filename}`);
       
       await page.keyboard.press('Escape');
       return success;
@@ -1872,7 +1933,7 @@ async function captureDashboardSummary(page: Page, locale: Locale, screenshotDir
       const success = await takeScreenshot(page, filename, screenshotDir, {
         clip: summaryBounds
       });
-      console.log(`Captured dashboard summary card: ${filename}`);
+      log(`Captured dashboard summary card: ${filename}`);
       return success;
     } else {
       logError('Could not find dashboard summary card bounds');
@@ -1979,7 +2040,7 @@ async function captureOverviewSidePanel(page: Page, locale: Locale, screenshotDi
       return { status: false, charts: false };
     }
     
-    console.log(`Current overview side panel state: ${currentState}`);
+    log(`Current overview side panel state: ${currentState}`);
     
     let statusSuccess = false;
     let chartsSuccess = false;
@@ -2172,13 +2233,13 @@ async function captureBackupHistoryTable(page: Page, locale: Locale, screenshotD
             if (!res.ok) return { error: `API returned ${res.status}` };
             return await res.json();
           }, serverId);
-          console.log(`Server API data: ${JSON.stringify({ 
+          log(`Server API data: ${JSON.stringify({ 
             hasServer: !!serverData.server, 
             backupCount: serverData.server?.backups?.length || 0,
             serverName: serverData.server?.name 
           }, null, 2)}`);
         } catch (apiError) {
-          console.log(`Failed to fetch server data: ${apiError instanceof Error ? apiError.message : String(apiError)}`);
+          log(`Failed to fetch server data: ${apiError instanceof Error ? apiError.message : String(apiError)}`);
         }
         
         return false;
@@ -2231,7 +2292,7 @@ async function captureBackupHistoryTable(page: Page, locale: Locale, screenshotD
       const success = await takeScreenshot(page, 'screen-backup-history.png', screenshotDir, {
         clip: tableBounds
       });
-      console.log('Captured backup history table');
+      log('Captured backup history table');
       return success;
     } else {
       logError('Could not find backup history table bounds');
@@ -2440,7 +2501,7 @@ async function captureServerOverdueMessage(page: Page, locale: Locale, screensho
       return false;
     }
     
-    console.log(`Found server with overdue backups: ${serverWithOverdue.name} (${serverWithOverdue.id})`);
+    log(`Found server with overdue backups: ${serverWithOverdue.name} (${serverWithOverdue.id})`);
     
     // Navigate to the server detail page of the server that has overdue backups (so the overdue message is shown)
     const overdueDetailUrl = makeUrl(`/detail/${serverWithOverdue.id}`);
@@ -2491,7 +2552,7 @@ async function captureServerOverdueMessage(page: Page, locale: Locale, screensho
       const success = await takeScreenshot(page, 'screen-server-overdue-message.png', screenshotDir, {
         clip: messageBounds
       });
-      console.log('Captured server overdue message');
+      log('Captured server overdue message');
       return success;
     } else {
       logError('Could not find server overdue message bounds');
@@ -2504,13 +2565,17 @@ async function captureServerOverdueMessage(page: Page, locale: Locale, screensho
 }
 
 async function main() {
-  const localesToRun = parseLocaleArg();
-  console.log(colors.green, '\n');
-  console.log('-------------------------------------------------------' );
-  console.log('Starting screenshot automation');
-  console.log(`Locales: ${localesToRun.join(', ')}`);
-  console.log('-------------------------------------------------------\n',colors.reset);
+  // Initialize log file
+  const logPath = initLogFile();
+  log('Log file: %s', logPath);
   
+  const localesToRun = parseLocaleArg();
+  log(`${colors.green}
+-------------------------------------------------------
+Starting screenshot automation
+Locales: ${localesToRun.join(', ')}
+-------------------------------------------------------
+${colors.reset}`);
   
   // Arrays to track screenshot results
   const successful: string[] = [];
@@ -3452,22 +3517,22 @@ async function main() {
       '| ' + row.map((cell, j) => cell.padEnd(colWidths[j])).join(' | ') + ' |';
 
     console.log('\n' + padRow(headerCells));
-    console.log(padRow(separatorCells));
-    for (const row of dataRows) console.log(padRow(row));
-    console.log(padRow(averageRow));
-    console.log(padRow(totalRow));
+    log(padRow(separatorCells));
+    for (const row of dataRows) log(padRow(row));
+    log(padRow(averageRow));
+    log(padRow(totalRow));
 
-    console.log('\n' + '='.repeat(60));
-    console.log(`Total: ${count} | ✅ ${successful.length} | ❌ ${failed.length}`);
+    log('\n' + '='.repeat(60));
+    log(`Total: ${count} | ✅ ${successful.length} | ❌ ${failed.length}`);
     const totalWithPreparationMs = preparation1Ms + preparation2Ms + totalMs;
-    console.log(`Time: capture total ${formatDurationHms(totalMs)} | with preparation ${formatDurationHms(totalWithPreparationMs)}`);
-    console.log(`Average per screenshot: ${formatDurationHms(averageMs)}`);
-    console.log('='.repeat(60) + '\n');
+    log(`Time: capture total ${formatDurationHms(totalMs)} | with preparation ${formatDurationHms(totalWithPreparationMs)}`);
+    log(`Average per screenshot: ${formatDurationHms(averageMs)}`);
+    log('='.repeat(60) + '\n');
 
     if (failed.length > 0) {
       logError(`⚠️  Warning: ${failed.length} screenshot(s) failed to generate.`);
     } else {
-      console.log('🎉 All screenshots generated successfully!');
+      log('🎉 All screenshots generated successfully!');
     }
     
   } catch (error) {
@@ -3475,11 +3540,18 @@ async function main() {
     throw error;
   } finally {
     await browser.close();
+    // Close log stream
+    if (logStream) {
+      logStream.end();
+    }
   }
 }
 
 // Run the script
 main().catch((error) => {
   logError('Fatal error: ' + (error instanceof Error ? error.message : String(error)));
+  if (logStream) {
+    logStream.end();
+  }
   process.exit(1);
 });

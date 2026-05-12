@@ -11,12 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Changed
-- **take-screenshots.ts**: Documentation screenshots are captured in **dark** mode. Puppeteer emulates `prefers-color-scheme: dark` (headless Chrome otherwise follows a light system preference), and after login the script sets the same `theme:user-<id>` localStorage key as the app (`src/lib/user-local-storage.ts`), resolving the user id via `/api/auth/me`.
+- **take-screenshots.ts**: Documentation screenshots are captured in **dark** mode. Puppeteer emulates `prefers-color-scheme: dark` (headless Chrome otherwise follows a light system preference), and after login the script sets the same `theme:user-<id>` localStorage key as the app (`src/lib/user-local-storage.ts`), resolving the user id via `/api/auth/me`. 
 - **take-screenshots.ts**: Updated to use cookie-based locale switching (`NEXT_LOCALE`) instead of URL prefixes. The locale is now set via `setLocale()` function that sets a cookie before navigating to pages. This aligns with the app's i18n implementation that no longer uses locale in URLs.
 - **Documentation locale**: Fixed i18n configuration mismatch where Docusaurus was using `en` as the default locale instead of `en-GB`. Updated `documentation/docusaurus.config.ts` to use `en-GB` as `defaultLocale`, changed `locales` array to `['en-GB', 'fr', 'de', 'es', 'pt-BR']`, and updated `ai-i18n-tools.config.json` `jsonSource` to point to `documentation/i18n/en-GB`. Removed outdated `i18n/en/` folder and merged its translations into `i18n/en-GB/`. The source language for documentation is now consistently `en-GB`, matching the app's source locale and `ai-i18n-tools.config.json` `sourceLocale`.
 - **Turbopack NFT warnings**: Reduced “whole project traced” NFT warnings by wrapping runtime `process.cwd()` usage in `path.join(/* turbopackIgnore: true */, …)` in `src/lib/paths.ts` (see Next.js Turbopack docs). Read app version in `next.config.ts` via `createRequire(import.meta.url)` and `./package.json` so the config does not rely on broad cwd tracing.
 
 ### Added
+- **take-screenshots.ts**: Added file logging to `dev/take-screenshots-YYYYMMDD-HHMMSS.log`. All console output is now also written to timestamped log files in the `dev/` folder for easier debugging and audit trail.
 - **Theme**: Display Settings includes **System (follow OS)** alongside light and dark. The app stores a **theme preference** and applies the effective light/dark class from `prefers-color-scheme` when set to system; the root layout inline script reads the same `theme:user-*` / `theme:anonymous` keys. Export **`getResolvedSystemTheme()`** from **`src/contexts/theme-context.tsx`** for OS detection.
 
 ### Changed
