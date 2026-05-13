@@ -9,6 +9,7 @@ import { NtfyMessagesButton } from '@/components/ntfy-messages-button';
 import { OpenServerConfigButton } from '@/components/open-server-config-button';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { useConnectivityError } from '@/components/ui/connectivity-error-modal';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -57,6 +58,7 @@ export function AppHeader() {
   const searchParams = useSearchParams();
   const locale = useLocale();
   const { t } = useTranslation();
+  const { showConnectivityError, hideConnectivityError } = useConnectivityError();
   const { serverFilter, setServerFilter } = useDashboardServerFilter();
   /** Home dashboard only — app routes are not locale-prefixed (language via cookie / i18n). */
   const isDashboardPage = pathname === '/';

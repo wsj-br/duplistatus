@@ -14,7 +14,7 @@ Cette page dispose d'une fonction d'enregistrement automatique. Toutes les modif
 
 <br/>
 
-## Filtrer et Rechercher {#filter-and-search}
+## Filtrer {#filter}
 
 Utilisez le champ **Filtrer par nom de serveur** en haut de la page pour trouver rapidement des sauvegardes spécifiques par nom de serveur ou alias. Le tableau se filtrera automatiquement pour afficher uniquement les entrées correspondantes.
 

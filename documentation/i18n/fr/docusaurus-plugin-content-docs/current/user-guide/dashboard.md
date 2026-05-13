@@ -16,6 +16,22 @@ Cette section affiche les statistiques agrégées pour toutes les sauvegardes.
 - **Overdue Backups** (tableau) : Le nombre de sauvegardes en retard. Voir [Paramètres des notifications de sauvegarde](settings/backup-notifications-settings.md)                          
 - **Layout Toggle** : Permet de basculer entre la disposition Cartes (par défaut) et la disposition Tableau.
 
+## Filtrage des serveurs {#server-filtering}
+
+Vous pouvez filtrer les serveurs et les sauvegardes affichés sur le tableau de bord en utilisant le champ de recherche dans la barre d'outils de l'application. Cliquez sur l'icône de filtre (<IconButton icon="lucide:search" />) pour afficher le champ de recherche.
+
+**Correspondances de filtre :**
+- ID du serveur
+- URL du serveur
+- Noms des tâches de sauvegarde
+
+**Portée :**
+- Filtre les vues en carte et en tableau sur le tableau de bord
+- L'état de session est maintenu via le fournisseur de filtres de serveurs du tableau de bord
+- Effacé quand vous actualisez ou quittez le tableau de bord
+
+Cela permet de localiser rapidement des serveurs ou des sauvegardes spécifiques parmi de nombreux systèmes surveillés.
+
 ## Disposition des cartes {#cards-layout}
 
 La disposition des cartes affiche le statut du journal de sauvegarde le plus récent reçu pour chaque sauvegarde.

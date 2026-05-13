@@ -7,6 +7,42 @@ Ein Diagramm von Sicherungsmetriken im Zeitverlauf wird sowohl auf dem Dashboard
 
 ![Backup Metrics](../assets/screen-metrics.png)
 
+## Inline-Diagrammsteuerungen {#inline-chart-controls}
+
+Schnellzugriffs-Steuerelemente sind direkt in den Diagramm-Panelüberschriften verfügbar, um eine einfache Konfiguration ohne Navigation zu den Anzeigeeinstellungen zu ermöglichen:
+
+### Zeitbereichsauswahl {#time-range-selector}
+
+Pill-Buttons erscheinen in der Diagrammkopfzeile für schnelle Zeitbereichsauswahl: **1W | 2W | 1M | 3M**
+
+- **1W**: Letzte 7 Tage (gleitendes Fenster)
+- **2W**: Letzte 14 Tage (gleitendes Fenster)
+- **1M**: Letzte 30 Tage (gleitendes Fenster, Standard)
+- **3M**: Letzte 90 Tage (gleitendes Fenster)
+
+Hier vorgenommene Änderungen synchronisieren sich mit Ihren Anzeigeeinstellungen, sodass Ihre Einstellung seitenübergreifend gespeichert wird.
+
+### Diagrammstil-Umschalter {#chart-style-toggle}
+
+Ein Umschalter in der Diagrammkopfzeile ermöglicht das Wechseln zwischen:
+
+- **Weiche Linien**: Datenpunkte mit weichen Kurven verbinden
+- **Balkendiagramm**: Daten als diskrete Balken für jeden Zeitraum anzeigen
+
+Beide Modi verwenden Zeitintervall-Aggregation für optimale Darstellung. Leere Perioden im Balkenmodus zeigen keine Balken. Ihre Einstellung bleibt über Seitenaktualisierungen hinweg erhalten und wird mit den Anzeigeeinstellungen synchronisiert.
+
+## Diagrammdatenkonsolidierung {#chart-data-consolidation}
+
+Wenn mehrere Backups am selben Tag auftreten, konsolidiert **duplistatus** die Daten vor der Anzeige im Diagramm:
+
+- **SUM**: Verwendet für kumulative Metriken (Dauer, Anzahl der Dateien, Dateigröße, Hochgeladene Größe)
+- **LAST**: Verwendet für Speichergröße (der aktuellste Wert des Tages)
+- **MAX**: Verwendet für Verfügbare Versionen (die höchste Anzahl des Tages)
+
+Diese Konsolidierung erfolgt vor der Zeitintervall-Aggregation und gewährleistet präzise aggregierte Metriken. Beispielsweise werden zwei Backups am 5.12.26 einen konsolidierten Datenpunkt im Diagramm erzeugen.
+
+## Metrikdefinitionen {#metric-definitions}
+
 - **Hochgeladene Größe**: Gesamte Menge an Daten, die täglich vom Duplicati-Server zur Sicherungsziel (lokaler Speicher, FTP, Cloud-Anbieter, ...) hochgeladen/übertragen wurden.
 - **Dauer**: Die Gesamtdauer aller täglich empfangenen Sicherungen in HH:MM.
 - **Anzahl der Dateien**: Die Summe der für alle täglichen Sicherungen empfangenen Dateianzahl-Zähler.

@@ -18,7 +18,7 @@ This page has an auto-save feature. Any changes you make will be saved automatic
 <br/>
 
 
-## Filter and Search {#filter-and-search}
+## Filter {#filter}
 
 Use the **Filter by Server Name** field at the top of the page to quickly find specific backups by server name or alias. The table will automatically filter to show only matching entries.
 

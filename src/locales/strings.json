@@ -1698,7 +1698,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 72
+        "line": 74
       }
     ]
   },
@@ -1719,7 +1719,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 73
+        "line": 75
       }
     ]
   },
@@ -1740,7 +1740,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 157
+        "line": 159
       }
     ]
   },
@@ -1761,7 +1761,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 167
+        "line": 169
       },
       {
         "file": "src/components/ui/back-button.tsx",
@@ -1786,7 +1786,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 179
+        "line": 181
       }
     ]
   },
@@ -1807,7 +1807,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 188
+        "line": 190
       },
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
@@ -1836,7 +1836,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 218
+        "line": 220
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
@@ -1861,7 +1861,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 227
+        "line": 229
       },
       {
         "file": "src/components/change-password-modal.tsx",
@@ -1902,7 +1902,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 234
+        "line": 236
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
@@ -1931,7 +1931,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 241
+        "line": 243
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
@@ -1960,7 +1960,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 247
+        "line": 249
       }
     ]
   },
@@ -1981,7 +1981,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 262
+        "line": 264
       }
     ]
   },
@@ -12029,13 +12029,13 @@
       }
     ]
   },
-  "a5c160ed": {
-    "source": "Search by server name or alias...",
+  "fd95cfd9": {
+    "source": "Filter by server name or alias...",
     "translated": {
-      "de": "Nach Servername oder Alias suchen...",
-      "pt-BR": "Pesquisar por nome ou alias do servidor...",
-      "fr": "Rechercher par nom de serveur ou alias...",
-      "es": "Buscar por nombre de servidor o alias..."
+      "de": "Nach Servernamen oder Alias filtern...",
+      "pt-BR": "Filtrar por nome do servidor ou alias...",
+      "fr": "Filtrer par nom de serveur ou alias...",
+      "es": "Filtrar por nombre de servidor o alias..."
     },
     "models": {
       "de": "anthropic/claude-3.5-haiku",
@@ -23137,27 +23137,6 @@
       }
     ]
   },
-  "1e815ebb": {
-    "source": "Please close this tab manually using your browser's close button.",
-    "translated": {
-      "es": "Cierre esta pestaña manualmente usando el botón de cerrar de su navegador.",
-      "fr": "Veuillez fermer cet onglet manuellement en utilisant le bouton de fermeture de votre navigateur.",
-      "de": "Bitte schließen Sie diesen Tab manuell über die Schaltfläche Ihres Browsers.",
-      "pt-BR": "Feche esta aba manualmente usando o botão de fechar do seu navegador."
-    },
-    "models": {
-      "es": "anthropic/claude-3.5-haiku",
-      "fr": "anthropic/claude-3.5-haiku",
-      "de": "anthropic/claude-3.5-haiku",
-      "pt-BR": "anthropic/claude-3.5-haiku"
-    },
-    "locations": [
-      {
-        "file": "src/components/ui/connectivity-error-modal.tsx",
-        "line": 56
-      }
-    ]
-  },
   "89b5fd44": {
     "source": "Connection Lost",
     "translated": {
@@ -23175,7 +23154,7 @@
     "locations": [
       {
         "file": "src/components/ui/connectivity-error-modal.tsx",
-        "line": 130
+        "line": 184
       }
     ]
   },
@@ -23196,28 +23175,7 @@
     "locations": [
       {
         "file": "src/components/ui/connectivity-error-modal.tsx",
-        "line": 134
-      }
-    ]
-  },
-  "ad513e4f": {
-    "source": "Close Window",
-    "translated": {
-      "es": "Cerrar ventana",
-      "fr": "Fermer la fenêtre",
-      "de": "Fenster schließen",
-      "pt-BR": "Fechar Janela"
-    },
-    "models": {
-      "es": "anthropic/claude-3.5-haiku",
-      "fr": "anthropic/claude-3.5-haiku",
-      "de": "anthropic/claude-3.5-haiku",
-      "pt-BR": "anthropic/claude-3.5-haiku"
-    },
-    "locations": [
-      {
-        "file": "src/components/ui/connectivity-error-modal.tsx",
-        "line": 151
+        "line": 188
       }
     ]
   },
@@ -23238,7 +23196,7 @@
     "locations": [
       {
         "file": "src/components/ui/connectivity-error-modal.tsx",
-        "line": 163
+        "line": 203
       }
     ]
   },
@@ -23259,7 +23217,7 @@
     "locations": [
       {
         "file": "src/components/ui/connectivity-error-modal.tsx",
-        "line": 163
+        "line": 203
       }
     ]
   },

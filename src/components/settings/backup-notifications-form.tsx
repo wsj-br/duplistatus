@@ -2371,7 +2371,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                 <Input
                   id="server-filter"
                   type="text"
-                  placeholder={t("Search by server name or alias...")}
+                  placeholder={t("Filter by server name or alias...")}
                   value={serverNameFilter}
                   onChange={(e) => setServerNameFilter(e.target.value)}
                   className="pr-10"

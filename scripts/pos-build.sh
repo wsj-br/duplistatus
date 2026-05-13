@@ -19,8 +19,13 @@ mkdir -p .next/standalone/.next
 # copy the static files
 cp -r .next/static .next/standalone/.next/static 
 cp -r public .next/standalone/public 
-cp -r node_modules/.pnpm/@swc+helpers@0.5.21/node_modules/@swc/helpers/esm \
-      .next/standalone/node_modules/.pnpm/@swc+helpers@0.5.21/node_modules/@swc/helpers/
+
+# Copy SWC helpers for all installed versions
+for helpers_dir in node_modules/.pnpm/@swc+helpers@*/; do
+    helpers_dir=${helpers_dir%/}  # Remove trailing slash
+    mkdir -p ".next/standalone/${helpers_dir}/node_modules/@swc/helpers"
+    cp -r "${helpers_dir}/node_modules/@swc/helpers/esm" ".next/standalone/${helpers_dir}/node_modules/@swc/helpers/"
+done
 
 # -----  end of pos-build ------
 

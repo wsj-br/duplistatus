@@ -150,7 +150,7 @@ export function GlobalRefreshControls() {
       
       // Check if this is a network/connectivity error
       if (isNetworkError(error)) {
-        showConnectivityError(error instanceof Error ? error.message : 'Network connection failed');
+        showConnectivityError();
         return;
       }
       

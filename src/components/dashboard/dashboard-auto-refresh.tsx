@@ -72,7 +72,7 @@ export function DashboardAutoRefresh({ initialData }: DashboardAutoRefreshProps)
       
       // Check if this is a network/connectivity error
       if (isNetworkError(error)) {
-        showConnectivityError(error instanceof Error ? error.message : 'Network connection failed');
+        showConnectivityError();
       }
     } finally {
       setIsLoading(false);

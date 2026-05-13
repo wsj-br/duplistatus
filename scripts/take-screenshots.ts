@@ -1,6 +1,6 @@
 /**
  * Take screenshots for documentation.
- * Options: --locale en[,de,...] (optional); -h/--help for usage.
+ * Options: --locale en[,de,...] (optional); --screenshots/-s name[,name,...] (optional); -h/--help for usage.
  */
 import puppeteer, { type Page } from 'puppeteer';
 import { mkdir } from 'fs/promises';
@@ -209,6 +209,62 @@ function parseLocaleArg(): Locale[] {
   return [...LOCALES];
 }
 
+/** Valid screenshot names that can be captured. */
+const VALID_SCREENSHOT_NAMES = new Set(ORDERED_SCREENSHOT_FILENAMES.map(f => f.replace('.png', '')));
+
+/** Parse --screenshots from argv. Returns list of screenshot names to capture; if not passed, returns all. */
+function parseScreenshotsArg(): string[] | null {
+  for (let i = 0; i < process.argv.length; i++) {
+    const arg = process.argv[i];
+    if (arg === '--screenshots' || arg === '-s') {
+      const value = process.argv[i + 1];
+      if (!value || value.startsWith('--') || value.startsWith('-')) {
+        logError('--screenshots requires one or more screenshot names (comma-separated). Example: --screenshots screen-main-dashboard-card-mode,screen-metrics');
+        process.exit(1);
+      }
+      const requested = value.split(',').map(s => s.trim()).filter(Boolean);
+      // Validate each screenshot name
+      const invalid: string[] = [];
+      for (const name of requested) {
+        // Allow matching with or without .png extension
+        const baseName = name.endsWith('.png') ? name.slice(0, -4) : name;
+        if (!VALID_SCREENSHOT_NAMES.has(baseName)) {
+          invalid.push(name);
+        }
+      }
+      if (invalid.length > 0) {
+        logError(`Invalid screenshot name(s): ${invalid.join(', ')}`);
+        log(`Valid screenshot names: ${Array.from(VALID_SCREENSHOT_NAMES).join(', ')}`);
+        process.exit(1);
+      }
+      return requested.map(s => s.endsWith('.png') ? s : `${s}.png`);
+    }
+    if (arg.startsWith('--screenshots=')) {
+      const value = arg.slice('--screenshots='.length).trim();
+      if (!value) {
+        logError('--screenshots= requires one or more screenshot names (comma-separated). Example: --screenshots=screen-main-dashboard-card-mode,screen-metrics');
+        process.exit(1);
+      }
+      const requested = value.split(',').map(s => s.trim()).filter(Boolean);
+      // Validate each screenshot name
+      const invalid: string[] = [];
+      for (const name of requested) {
+        const baseName = name.endsWith('.png') ? name.slice(0, -4) : name;
+        if (!VALID_SCREENSHOT_NAMES.has(baseName)) {
+          invalid.push(name);
+        }
+      }
+      if (invalid.length > 0) {
+        logError(`Invalid screenshot name(s): ${invalid.join(', ')}`);
+        log(`Valid screenshot names: ${Array.from(VALID_SCREENSHOT_NAMES).join(', ')}`);
+        process.exit(1);
+      }
+      return requested.map(s => s.endsWith('.png') ? s : `${s}.png`);
+    }
+  }
+  return null;
+}
+
 function getScreenshotDir(locale: Locale): string {
   if (locale === 'en-GB') {
     return 'documentation/static/assets';
@@ -260,6 +316,10 @@ Options:
 
                        note: locales are case-sensitive.
 
+  -s, --screenshots <names>
+                       Comma-separated list of specific screenshot names to capture
+                       (default: all). Example: -s screen-main-dashboard-card-mode,screen-metrics
+
   -h, --help           Show this help and exit.
 
 Environment (required unless --help):
@@ -270,9 +330,12 @@ Requirements:
   Development server running at ${BASE_URL}
 
 Examples:
-  pnpm ${script}                          # All locales
+  pnpm ${script}                          # All locales, all screenshots
   pnpm ${script} --locale en-GB           # English only
   pnpm ${script} --locale en-GB,de,pt-BR
+  pnpm ${script} -s screen-main-dashboard-card-mode
+  pnpm ${script} --screenshots screen-main-dashboard-card-mode,screen-metrics
+  pnpm ${script} --locale de -s screen-main-dashboard-card-mode
 `);
 }
 
@@ -596,7 +659,7 @@ async function deleteServerDirect(serverId: string): Promise<{ success: boolean;
     // Verify server exists before deletion
     const serverInfo = dbUtilsModule.getServerInfoById(serverId);
     if (!serverInfo) {
-      console.log(`  Server ${serverId} not found in database, skipping deletion`);
+      log(`  Server ${serverId} not found in database, skipping deletion`);
       return { success: false, backupCount: 0, error: 'Server not found' };
     }
     
@@ -608,13 +671,13 @@ async function deleteServerDirect(serverId: string): Promise<{ success: boolean;
       return { success: false, backupCount: result.backupChanges, error: 'No server was deleted' };
     }
     
-    console.log(`  Successfully deleted server ${serverId} and ${result.backupChanges} backup(s)`);
+    log(`  Successfully deleted server ${serverId} and ${result.backupChanges} backup(s)`);
     return { success: true, backupCount: result.backupChanges };
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : String(error);
     // If error is "Server not found", treat it as success (already deleted)
     if (errorMsg.includes('not found')) {
-      console.log(`  Server ${serverId} not found (may already be deleted)`);
+      log(`  Server ${serverId} not found (may already be deleted)`);
       return { success: false, backupCount: 0, error: 'Server not found' };
     }
     logError(`Failed to delete server ${serverId}: ${errorMsg}`);
@@ -651,7 +714,7 @@ async function updateServerUrl(serverId: string, serverUrl: string) {
       throw new Error(result.error || 'Failed to update server URL');
     }
     
-    console.log(`Successfully updated server ${serverId} URL`);
+    log(`Successfully updated server ${serverId} URL`);
   } catch (error) {
     throw new Error(`Failed to update server ${serverId} URL: ${error instanceof Error ? error.message : String(error)}`);
   }
@@ -672,7 +735,7 @@ async function updateServerPassword(serverId: string, password: string) {
       throw new Error('Failed to update server password');
     }
     
-    console.log(`Successfully updated server ${serverId} password`);
+    log(`Successfully updated server ${serverId} password`);
   } catch (error) {
     throw new Error(`Failed to update server ${serverId} password: ${error instanceof Error ? error.message : String(error)}`);
   }
@@ -1088,11 +1151,11 @@ async function resetUsers(): Promise<void> {
       INSERT INTO users (id, username, password_hash, is_admin, must_change_password)
       VALUES (?, ?, ?, ?, ?)
     `).run(userId, USER_USERNAME, userPasswordHash, 0, 0);
-    console.log(`Created user: ${USER_USERNAME}`);
+    log(`Created user: ${USER_USERNAME}`);
     
     // Delete all sessions to force re-login
     db.prepare('DELETE FROM sessions').run();
-    console.log('Cleared all sessions');
+    log('Cleared all sessions');
   } catch (error) {
     logError('Error resetting users: ' + (error instanceof Error ? error.message : String(error)));
     throw error;
@@ -1285,12 +1348,12 @@ async function keepOnlyOneBackup(serverId: string): Promise<boolean> {
     `).all(serverId, backupNameWithMostEntries) as { id: string; date: string; backup_name: string }[];
     
     if (allBackups.length === 0) {
-      console.log(`  No backups found for server ${serverId}`);
+      log(`  No backups found for server ${serverId}`);
       return false;
     }
     
     if (allBackups.length === 1) {
-      console.log(`  Server ${serverId} already has only one backup`);
+      log(`  Server ${serverId} already has only one backup`);
       return true;
     }
     
@@ -1602,7 +1665,7 @@ async function captureBackupTooltip(page: Page, locale: Locale, screenshotDir: s
       
       if (!isOverdue) {
         backupItemHandle = item;
-        console.log('Found non-overdue backup item');
+        log('Found non-overdue backup item');
         break;
       }
     }
@@ -1662,7 +1725,7 @@ async function captureBackupTooltip(page: Page, locale: Locale, screenshotDir: s
               })
             };
           });
-          console.log(`Debug info: ${JSON.stringify(debugInfo)}`);
+          log(`Debug info: ${JSON.stringify(debugInfo)}`);
           return false;
         }
       }
@@ -1795,7 +1858,7 @@ async function captureUserMenu(page: Page, locale: Locale, screenshotDir: string
     if (!skipNavigation) {
       // Header is client-rendered; user menu trigger appears only after /api/auth/me completes.
       // Start listening before navigation so we don't miss the response.
-      console.log('🌐 Navigating to blank page (/blank)...');
+      log('🌐 Navigating to blank page (/blank)...');
       const authMePromise = page.waitForResponse(
         (res) => res.url().includes('/api/auth/me'),
         { timeout: 18000 }
@@ -1967,7 +2030,7 @@ async function captureOverviewSidePanel(page: Page, locale: Locale, screenshotDi
     });
     
     if (currentViewMode !== 'overview') {
-      console.log('Switching to overview mode...');
+      log('Switching to overview mode...');
       // Switch to overview mode by clicking the view mode toggle
       await page.evaluate(() => {
         const buttons = Array.from(document.querySelectorAll('button'));
@@ -2093,7 +2156,7 @@ async function captureOverviewSidePanel(page: Page, locale: Locale, screenshotDi
         chartsSuccess = await takeScreenshot(page, 'screen-overview-side-charts.png', screenshotDir, {
           clip: chartsBounds
         });
-        console.log('Captured overview side panel (charts state)');
+        log('Captured overview side panel (charts state)');
       } else {
         logError('Could not find overview side panel bounds (charts)');
       }
@@ -2117,7 +2180,7 @@ async function captureOverviewSidePanel(page: Page, locale: Locale, screenshotDi
         chartsSuccess = await takeScreenshot(page, 'screen-overview-side-charts.png', screenshotDir, {
           clip: chartsBounds
         });
-        console.log('Captured overview side panel (charts state)');
+        log('Captured overview side panel (charts state)');
       } else {
         logError('Could not find overview side panel bounds (charts)');
       }
@@ -2540,10 +2603,25 @@ async function main() {
   log('Log file: %s', logPath);
   
   const localesToRun = parseLocaleArg();
+  const screenshotsToRun = parseScreenshotsArg();
+  
+  // Helper to check if a screenshot should be captured
+  const shouldCapture = (filename: string): boolean => {
+    if (screenshotsToRun === null) return true;
+    return screenshotsToRun.includes(filename);
+  };
+  
+  // Helper to check if any screenshot in a list should be captured
+  const shouldCaptureAny = (filenames: string[]): boolean => {
+    if (screenshotsToRun === null) return true;
+    return filenames.some(f => screenshotsToRun.includes(f));
+  };
+  
   log(`${colors.green}
 -------------------------------------------------------
 Starting screenshot automation
 Locales: ${localesToRun.join(', ')}
+${screenshotsToRun ? `Screenshots: ${screenshotsToRun.join(', ')}` : 'Screenshots: all'}
 -------------------------------------------------------
 ${colors.reset}`);
   
@@ -2632,7 +2710,7 @@ ${colors.reset}`);
     await dbModuleForMetrics.ensureDatabaseInitialized();
     const serversWithBackupsForMetrics = await findServersWithBackups();
     const metricsServerId = serversWithBackupsForMetrics.length > 0 ? serversWithBackupsForMetrics[0] : null;
-    if (!metricsServerId) console.log('Warning: No server with backups found for Phase A metrics screenshot');
+    if (!metricsServerId) log('Warning: No server with backups found for Phase A metrics screenshot');
 
     // -------------------------
     // Phase A (pre-cleanup): capture for requested locales
@@ -2668,62 +2746,78 @@ ${colors.reset}`);
       await waitForDashboardLoad(page);
 
       // Dashboard (card/overview) screenshot
-      console.log('-------------------------------------------------------');
-      console.log('Taking screenshot of dashboard in card mode (overview mode)...');
-      const dashboardCardMode = await takeScreenshot(page, 'screen-main-dashboard-card-mode.png', screenshotDir, { cropBottom: 80, screenshotTarget: 'dashboard-overview' });
-      if (dashboardCardMode) successful.push('screen-main-dashboard-card-mode.png');
-      else failed.push('screen-main-dashboard-card-mode.png');
+      if (shouldCapture('screen-main-dashboard-card-mode.png')) {
+        console.log('-------------------------------------------------------');
+        console.log('Taking screenshot of dashboard in card mode (overview mode)...');
+        const dashboardCardMode = await takeScreenshot(page, 'screen-main-dashboard-card-mode.png', screenshotDir, { cropBottom: 80, screenshotTarget: 'dashboard-overview' });
+        if (dashboardCardMode) successful.push('screen-main-dashboard-card-mode.png');
+        else failed.push('screen-main-dashboard-card-mode.png');
+      }
 
       // Overdue backup hover card (uses current dashboard state)
-      console.log('-------------------------------------------------------');
-      console.log('Capturing overdue backup hover card...');
-      const overdueHoverCard = await captureOverdueBackupHoverCard(page, screenshotDir);
-      if (overdueHoverCard) successful.push('screen-overdue-backup-hover-card.png');
-      else failed.push('screen-overdue-backup-hover-card.png');
+      if (shouldCapture('screen-overdue-backup-hover-card.png')) {
+        console.log('-------------------------------------------------------');
+        console.log('Capturing overdue backup hover card...');
+        const overdueHoverCard = await captureOverdueBackupHoverCard(page, screenshotDir);
+        if (overdueHoverCard) successful.push('screen-overdue-backup-hover-card.png');
+        else failed.push('screen-overdue-backup-hover-card.png');
+      }
 
       // Regular backup tooltip (navigates internally)
-      console.log('-------------------------------------------------------');
-      console.log('Capturing backup tooltip...');
-      const backupTooltip = await captureBackupTooltip(page, locale, screenshotDir);
-      if (backupTooltip) successful.push('screen-backup-tooltip.png');
-      else failed.push('screen-backup-tooltip.png');
+      if (shouldCapture('screen-backup-tooltip.png')) {
+        console.log('-------------------------------------------------------');
+        console.log('Capturing backup tooltip...');
+        const backupTooltip = await captureBackupTooltip(page, locale, screenshotDir);
+        if (backupTooltip) successful.push('screen-backup-tooltip.png');
+        else failed.push('screen-backup-tooltip.png');
+      }
 
       // Dashboard summary card (navigates internally)
-      console.log('-------------------------------------------------------');
-      console.log('Capturing dashboard summary card (screen-dashboard-summary.png)...');
-      const dashboardSummary = await captureDashboardSummary(page, locale, screenshotDir, 'screen-dashboard-summary.png');
-      if (dashboardSummary) successful.push('screen-dashboard-summary.png');
-      else failed.push('screen-dashboard-summary.png');
+      if (shouldCapture('screen-dashboard-summary.png')) {
+        console.log('-------------------------------------------------------');
+        console.log('Capturing dashboard summary card (screen-dashboard-summary.png)...');
+        const dashboardSummary = await captureDashboardSummary(page, locale, screenshotDir, 'screen-dashboard-summary.png');
+        if (dashboardSummary) successful.push('screen-dashboard-summary.png');
+        else failed.push('screen-dashboard-summary.png');
+      }
 
       // Overview side panel (navigates internally)
-      console.log('-------------------------------------------------------');
-      console.log('Capturing overview side panel...');
-      const overviewSidePanel = await captureOverviewSidePanel(page, locale, screenshotDir);
-      if (overviewSidePanel.status) successful.push('screen-overview-side-status.png');
-      else failed.push('screen-overview-side-status.png');
-      if (overviewSidePanel.charts) successful.push('screen-overview-side-charts.png');
-      else failed.push('screen-overview-side-charts.png');
+      if (shouldCaptureAny(['screen-overview-side-status.png', 'screen-overview-side-charts.png'])) {
+        console.log('-------------------------------------------------------');
+        console.log('Capturing overview side panel...');
+        const overviewSidePanel = await captureOverviewSidePanel(page, locale, screenshotDir);
+        if (overviewSidePanel.status) successful.push('screen-overview-side-status.png');
+        else failed.push('screen-overview-side-status.png');
+        if (overviewSidePanel.charts) successful.push('screen-overview-side-charts.png');
+        else failed.push('screen-overview-side-charts.png');
+      }
 
       // Toolbar elements (blank page): each capture navigates to /blank for a clean state
-      console.log('-------------------------------------------------------');
-      console.log('Capturing collect button popup...');
-      const collectPopups = await captureCollectButtonPopup(page, locale, screenshotDir);
-      if (collectPopups.popup) successful.push('screen-collect-button-popup.png');
-      else failed.push('screen-collect-button-popup.png');
-      if (collectPopups.rightClick) successful.push('screen-collect-button-right-click-popup.png');
-      else failed.push('screen-collect-button-right-click-popup.png');
+      if (shouldCaptureAny(['screen-collect-button-popup.png', 'screen-collect-button-right-click-popup.png'])) {
+        console.log('-------------------------------------------------------');
+        console.log('Capturing collect button popup...');
+        const collectPopups = await captureCollectButtonPopup(page, locale, screenshotDir);
+        if (collectPopups.popup) successful.push('screen-collect-button-popup.png');
+        else failed.push('screen-collect-button-popup.png');
+        if (collectPopups.rightClick) successful.push('screen-collect-button-right-click-popup.png');
+        else failed.push('screen-collect-button-right-click-popup.png');
+      }
 
-      console.log('-------------------------------------------------------');
-      console.log('Capturing Duplicati configuration dropdown...');
-      const duplicatiConfig = await captureDuplicatiConfiguration(page, locale, screenshotDir);
-      if (duplicatiConfig) successful.push('screen-duplicati-configuration.png');
-      else failed.push('screen-duplicati-configuration.png');
+      if (shouldCapture('screen-duplicati-configuration.png')) {
+        console.log('-------------------------------------------------------');
+        console.log('Capturing Duplicati configuration dropdown...');
+        const duplicatiConfig = await captureDuplicatiConfiguration(page, locale, screenshotDir);
+        if (duplicatiConfig) successful.push('screen-duplicati-configuration.png');
+        else failed.push('screen-duplicati-configuration.png');
+      }
 
-      console.log('-------------------------------------------------------');
-      console.log('Capturing user menu dropdown (admin)...');
-      const userMenuAdmin = await captureUserMenu(page, locale, screenshotDir, 'admin');
-      if (userMenuAdmin) successful.push('screen-user-menu-admin.png');
-      else failed.push('screen-user-menu-admin.png');
+      if (shouldCapture('screen-user-menu-admin.png')) {
+        console.log('-------------------------------------------------------');
+        console.log('Capturing user menu dropdown (admin)...');
+        const userMenuAdmin = await captureUserMenu(page, locale, screenshotDir, 'admin');
+        if (userMenuAdmin) successful.push('screen-user-menu-admin.png');
+        else failed.push('screen-user-menu-admin.png');
+      }
     }
     
     // Get list of servers from database (more reliable than API)
@@ -3076,26 +3170,32 @@ ${colors.reset}`);
         }
       }
 
-      console.log('-------------------------------------------------------');
-      console.log('Taking screenshot of dashboard in table mode...');
-      const dashboardTableMode = await takeScreenshot(page, 'screen-main-dashboard-table-mode.png', screenshotDir, { cropBottom: 80, screenshotTarget: 'dashboard-table-view' });
-      if (dashboardTableMode) successful.push('screen-main-dashboard-table-mode.png');
-      else failed.push('screen-main-dashboard-table-mode.png');
+      if (shouldCapture('screen-main-dashboard-table-mode.png')) {
+        console.log('-------------------------------------------------------');
+        console.log('Taking screenshot of dashboard in table mode...');
+        const dashboardTableMode = await takeScreenshot(page, 'screen-main-dashboard-table-mode.png', screenshotDir, { cropBottom: 80, screenshotTarget: 'dashboard-table-view' });
+        if (dashboardTableMode) successful.push('screen-main-dashboard-table-mode.png');
+        else failed.push('screen-main-dashboard-table-mode.png');
+      }
 
       // Metrics chart on dashboard table view (same page, no navigation)
-      console.log('-------------------------------------------------------');
-      console.log('Capturing metrics chart...');
-      // Wait longer for metrics chart to mount and render
-      await delay(2000);
-      const metricsChart = await captureMetricsChartOnCurrentPage(page, screenshotDir);
-      if (metricsChart) successful.push('screen-metrics.png');
-      else failed.push('screen-metrics.png');
+      if (shouldCapture('screen-metrics.png')) {
+        console.log('-------------------------------------------------------');
+        console.log('Capturing metrics chart...');
+        // Wait longer for metrics chart to mount and render
+        await delay(2000);
+        const metricsChart = await captureMetricsChartOnCurrentPage(page, screenshotDir);
+        if (metricsChart) successful.push('screen-metrics.png');
+        else failed.push('screen-metrics.png');
+      }
 
-      console.log('-------------------------------------------------------');
-      console.log('Capturing dashboard summary card (screen-dashboard-summary-table.png)...');
-      const dashboardSummaryTable = await captureDashboardSummary(page, locale, screenshotDir, 'screen-dashboard-summary-table.png');
-      if (dashboardSummaryTable) successful.push('screen-dashboard-summary-table.png');
-      else failed.push('screen-dashboard-summary-table.png');
+      if (shouldCapture('screen-dashboard-summary-table.png')) {
+        console.log('-------------------------------------------------------');
+        console.log('Capturing dashboard summary card (screen-dashboard-summary-table.png)...');
+        const dashboardSummaryTable = await captureDashboardSummary(page, locale, screenshotDir, 'screen-dashboard-summary-table.png');
+        if (dashboardSummaryTable) successful.push('screen-dashboard-summary-table.png');
+        else failed.push('screen-dashboard-summary-table.png');
+      }
 
       // Get the remaining servers from database (more reliable than API)
       const remainingDbModule = await import('../src/lib/db');
@@ -3147,61 +3247,73 @@ ${colors.reset}`);
         logError('Server detail content did not load in time');
       }
 
-      console.log('-------------------------------------------------------');
-      console.log('Capturing server backup list...');
-      const serverBackupList = await takeScreenshot(page, 'screen-server-backup-list.png', screenshotDir, { cropBottom: 80, screenshotTarget: 'server-detail-content' });
-      if (serverBackupList) successful.push('screen-server-backup-list.png');
-      else failed.push('screen-server-backup-list.png');
+      if (shouldCapture('screen-server-backup-list.png')) {
+        console.log('-------------------------------------------------------');
+        console.log('Capturing server backup list...');
+        const serverBackupList = await takeScreenshot(page, 'screen-server-backup-list.png', screenshotDir, { cropBottom: 80, screenshotTarget: 'server-detail-content' });
+        if (serverBackupList) successful.push('screen-server-backup-list.png');
+        else failed.push('screen-server-backup-list.png');
+      }
 
       // Reuse current detail page for backup history and available backups modal (no extra navigation)
-      console.log('-------------------------------------------------------');
-      console.log('Capturing backup history table...');
-      const backupHistory = await captureBackupHistoryTable(page, locale, screenshotDir, firstServer.id, true);
-      if (backupHistory) successful.push('screen-backup-history.png');
-      else failed.push('screen-backup-history.png');
+      if (shouldCapture('screen-backup-history.png')) {
+        console.log('-------------------------------------------------------');
+        console.log('Capturing backup history table...');
+        const backupHistory = await captureBackupHistoryTable(page, locale, screenshotDir, firstServer.id, true);
+        if (backupHistory) successful.push('screen-backup-history.png');
+        else failed.push('screen-backup-history.png');
+      }
 
-      console.log('-------------------------------------------------------');
-      console.log('Capturing AvailableBackupsIcon modal...');
-      const availableBackupsModal = await captureAvailableBackupsModal(page, locale, screenshotDir, firstServer.id, true);
-      if (availableBackupsModal) successful.push('screen-available-backups-modal.png');
-      else failed.push('screen-available-backups-modal.png');
+      if (shouldCapture('screen-available-backups-modal.png')) {
+        console.log('-------------------------------------------------------');
+        console.log('Capturing AvailableBackupsIcon modal...');
+        const availableBackupsModal = await captureAvailableBackupsModal(page, locale, screenshotDir, firstServer.id, true);
+        if (availableBackupsModal) successful.push('screen-available-backups-modal.png');
+        else failed.push('screen-available-backups-modal.png');
+      }
 
       const backupDetails = await page.evaluate(async (serverId) => {
         const res = await fetch(`/api/detail/${serverId}`);
         return res.json();
       }, firstServer.id);
 
-      let backupDetail = false;
-      console.log('-------------------------------------------------------');
-      console.log('Capturing backup detail...');
-      backupDetail = await (async () => {
-        if (backupDetails.server && backupDetails.server.backups && backupDetails.server.backups.length > 0) {
-          const firstBackup = backupDetails.server.backups[0];
-          console.log(`🌐 Navigating to backup detail page (/detail/${firstServer.id}/backup/${firstBackup.id})...`);
-          await page.goto(makeUrl(`/detail/${firstServer.id}/backup/${firstBackup.id}`), { waitUntil: 'networkidle0' });
+      if (shouldCapture('screen-backup-detail.png')) {
+        let backupDetail = false;
+        console.log('-------------------------------------------------------');
+        console.log('Capturing backup detail...');
+        backupDetail = await (async () => {
+          if (backupDetails.server && backupDetails.server.backups && backupDetails.server.backups.length > 0) {
+            const firstBackup = backupDetails.server.backups[0];
+            console.log(`🌐 Navigating to backup detail page (/detail/${firstServer.id}/backup/${firstBackup.id})...`);
+            await page.goto(makeUrl(`/detail/${firstServer.id}/backup/${firstBackup.id}`), { waitUntil: 'networkidle0' });
+            return takeScreenshot(page, 'screen-backup-detail.png', screenshotDir, { cropBottom: 80, screenshotTarget: 'backup-detail' });
+          }
           return takeScreenshot(page, 'screen-backup-detail.png', screenshotDir, { cropBottom: 80, screenshotTarget: 'backup-detail' });
-        }
-        return takeScreenshot(page, 'screen-backup-detail.png', screenshotDir, { cropBottom: 80, screenshotTarget: 'backup-detail' });
-      })();
-      if (backupDetail) successful.push('screen-backup-detail.png');
-      else failed.push('screen-backup-detail.png');
+        })();
+        if (backupDetail) successful.push('screen-backup-detail.png');
+        else failed.push('screen-backup-detail.png');
+      }
 
-      console.log('-------------------------------------------------------');
-      console.log('Capturing server overdue message...');
-      const serverOverdueMessage = await captureServerOverdueMessage(page, locale, screenshotDir);
-      if (serverOverdueMessage) successful.push('screen-server-overdue-message.png');
-      else failed.push('screen-server-overdue-message.png');
+      if (shouldCapture('screen-server-overdue-message.png')) {
+        console.log('-------------------------------------------------------');
+        console.log('Capturing server overdue message...');
+        const serverOverdueMessage = await captureServerOverdueMessage(page, locale, screenshotDir);
+        if (serverOverdueMessage) successful.push('screen-server-overdue-message.png');
+        else failed.push('screen-server-overdue-message.png');
+      }
 
       // Settings (admin)
       console.log('🌐 Navigating to settings page (/settings)...');
       await page.goto(makeUrl('/settings'), { waitUntil: 'domcontentloaded' });
       await delay(500);
 
-      console.log('-------------------------------------------------------');
-      console.log('Taking screenshot of settings page left panel (as admin)...');
-      const settingsLeftPanelAdmin = await takeScreenshot(page, 'screen-settings-left-panel-admin.png', screenshotDir, { isSettingsSidebar: true, screenshotTarget: 'settings-left-panel' });
-      if (settingsLeftPanelAdmin) successful.push('screen-settings-left-panel-admin.png');
-      else failed.push('screen-settings-left-panel-admin.png');
+      if (shouldCapture('screen-settings-left-panel-admin.png')) {
+        console.log('-------------------------------------------------------');
+        console.log('Taking screenshot of settings page left panel (as admin)...');
+        const settingsLeftPanelAdmin = await takeScreenshot(page, 'screen-settings-left-panel-admin.png', screenshotDir, { isSettingsSidebar: true, screenshotTarget: 'settings-left-panel' });
+        if (settingsLeftPanelAdmin) successful.push('screen-settings-left-panel-admin.png');
+        else failed.push('screen-settings-left-panel-admin.png');
+      }
 
       const adminSettingsTabs = [
         'notifications',
@@ -3228,167 +3340,179 @@ ${colors.reset}`);
         await delay(500);
 
         if (tab === 'notifications') {
+          // Check if any notifications screenshots should be captured
+          const shouldCaptureNotifications = shouldCaptureAny(['screen-settings-notifications.png', 'screen-settings-notifications-bulk.png', 'screen-settings-notifications-server.png']);
+          if (!shouldCaptureNotifications) {
+            continue;
+          }
+          
           try {
             await page.waitForSelector('table tbody tr', { timeout: 10000 });
             await delay(500);
 
             // Screenshot 1
-            const filename1 = 'screen-settings-notifications.png';
-            console.log('-------------------------------------------------------');
-            console.log(`Taking screenshot of settings tab: ${tab}...`);
-            const screenshot1 = await takeScreenshot(page, filename1, screenshotDir, { isSettingsPage: true, screenshotTarget: 'settings-content-card' });
-            if (screenshot1) successful.push(filename1);
-            else failed.push(filename1);
-            await delay(300);
+            if (shouldCapture('screen-settings-notifications.png')) {
+              const filename1 = 'screen-settings-notifications.png';
+              console.log('-------------------------------------------------------');
+              console.log(`Taking screenshot of settings tab: ${tab}...`);
+              const screenshot1 = await takeScreenshot(page, filename1, screenshotDir, { isSettingsPage: true, screenshotTarget: 'settings-content-card' });
+              if (screenshot1) successful.push(filename1);
+              else failed.push(filename1);
+              await delay(300);
+            }
 
             // Screenshot 2: Select 2 servers (server-level checkboxes)
-            console.log('Taking screenshot 2: After selecting 2 servers...');
-            const allRows = await page.$$('table tbody tr');
-            console.log(`  📍 Found ${allRows.length} total rows in table`);
-            let serverRowsFound = 0;
+            if (shouldCapture('screen-settings-notifications-bulk.png')) {
+              console.log('Taking screenshot 2: After selecting 2 servers...');
+              const allRows = await page.$$('table tbody tr');
+              console.log(`  📍 Found ${allRows.length} total rows in table`);
+              let serverRowsFound = 0;
 
-            for (let i = 0; i < allRows.length && serverRowsFound < 2; i++) {
-              const row = allRows[i];
-              const firstCell = await row.$('td:first-child');
-              if (firstCell) {
-                const classList = await firstCell.evaluate(el => Array.from(el.classList));
-                // Server rows have pl-4, backup rows have pl-12
-                const isServerRow = classList.some(cls => cls === 'pl-4' || cls.includes('pl-4'));
+              for (let i = 0; i < allRows.length && serverRowsFound < 2; i++) {
+                const row = allRows[i];
+                const firstCell = await row.$('td:first-child');
+                if (firstCell) {
+                  const classList = await firstCell.evaluate(el => Array.from(el.classList));
+                  // Server rows have pl-4, backup rows have pl-12
+                  const isServerRow = classList.some(cls => cls === 'pl-4' || cls.includes('pl-4'));
 
-                if (isServerRow) {
-                  console.log(`  📍 Row ${i + 1} is a server row`);
-                  const checkbox = await firstCell.$('[role="checkbox"]');
-                  if (checkbox) {
-                    await checkbox.click();
-                    serverRowsFound++;
-                    console.log(`  ✅ Selected server ${serverRowsFound}`);
-                    await delay(300);
-                  } else {
-                    console.log(`  ⚠️  Row ${i + 1} is a server row but no checkbox found`);
+                  if (isServerRow) {
+                    console.log(`  📍 Row ${i + 1} is a server row`);
+                    const checkbox = await firstCell.$('[role="checkbox"]');
+                    if (checkbox) {
+                      await checkbox.click();
+                      serverRowsFound++;
+                      console.log(`  ✅ Selected server ${serverRowsFound}`);
+                      await delay(300);
+                    } else {
+                      console.log(`  ⚠️  Row ${i + 1} is a server row but no checkbox found`);
+                    }
                   }
                 }
               }
-            }
 
-            if (serverRowsFound < 2) {
-              logError(`Could not select 2 servers (selected ${serverRowsFound})`);
-              recordDuration('screen-settings-notifications-bulk.png', 0);
-              recordDuration('screen-settings-notifications-server.png', 0);
-              failed.push('screen-settings-notifications-bulk.png');
-              failed.push('screen-settings-notifications-server.png');
-              continue;
-            }
-
-            await delay(300);
-
-            const filename2 = 'screen-settings-notifications-bulk.png';
-            const bulkCardBounds = await page.evaluate(() => {
-              const bulkBar = document.querySelector('[data-screenshot-target="settings-notifications-bulk-bar"]');
-              if (bulkBar) {
-                const rect = bulkBar.getBoundingClientRect();
-                return {
-                  x: Math.max(0, rect.x - 4),
-                  y: Math.max(0, rect.y - 4),
-                  width: rect.width + 8,
-                  height: rect.height + 8
-                };
+              if (serverRowsFound < 2) {
+                logError(`Could not select 2 servers (selected ${serverRowsFound})`);
+                recordDuration('screen-settings-notifications-bulk.png', 0);
+                recordDuration('screen-settings-notifications-server.png', 0);
+                failed.push('screen-settings-notifications-bulk.png');
+                failed.push('screen-settings-notifications-server.png');
+                continue;
               }
-              return null;
-            });
 
-            if (bulkCardBounds) {
-              console.log('-------------------------------------------------------');
-              console.log('Taking screenshot 2: After selecting 2 servers...');
-              const screenshot2 = await takeScreenshot(page, filename2, screenshotDir, {
-                clip: bulkCardBounds,
-                screenshotTarget: 'settings-notifications-bulk-bar'
+              await delay(300);
+
+              const filename2 = 'screen-settings-notifications-bulk.png';
+              const bulkCardBounds = await page.evaluate(() => {
+                const bulkBar = document.querySelector('[data-screenshot-target="settings-notifications-bulk-bar"]');
+                if (bulkBar) {
+                  const rect = bulkBar.getBoundingClientRect();
+                  return {
+                    x: Math.max(0, rect.x - 4),
+                    y: Math.max(0, rect.y - 4),
+                    width: rect.width + 8,
+                    height: rect.height + 8
+                  };
+                }
+                return null;
               });
-              if (screenshot2) successful.push(filename2);
-              else failed.push(filename2);
-            } else {
-              logError('Could not find bulk action bar bounds');
-              recordDuration(filename2, 0);
-              failed.push(filename2);
-            }
 
-            await delay(300);
+              if (bulkCardBounds) {
+                console.log('-------------------------------------------------------');
+                console.log('Taking screenshot 2: After selecting 2 servers...');
+                const screenshot2 = await takeScreenshot(page, filename2, screenshotDir, {
+                  clip: bulkCardBounds,
+                  screenshotTarget: 'settings-notifications-bulk-bar'
+                });
+                if (screenshot2) successful.push(filename2);
+                else failed.push(filename2);
+              } else {
+                logError('Could not find bulk action bar bounds');
+                recordDuration(filename2, 0);
+                failed.push(filename2);
+              }
+
+              await delay(300);
+            }
 
             // Screenshot 3: Expand first server and its first backup row
-            console.log('Taking screenshot 3: Expanding server and backup rows...');
-            const filename3 = 'screen-settings-notifications-server.png';
+            if (shouldCapture('screen-settings-notifications-server.png')) {
+              console.log('Taking screenshot 3: Expanding server and backup rows...');
+              const filename3 = 'screen-settings-notifications-server.png';
 
-            const expandSuccess = await page.evaluate(() => {
-              const rows = Array.from(document.querySelectorAll('table tbody tr'));
-              for (const row of rows) {
-                const firstCell = row.querySelector('td:first-child');
-                if (firstCell) {
-                  const isServerRow = firstCell.classList.contains('pl-4') || firstCell.className.includes('pl-4');
-                  if (isServerRow) {
-                    const expandBtn =
-                      row.querySelector('button svg.lucide-chevron-right')?.closest('button') ||
-                      row.querySelector('button svg.lucide-chevron-down')?.closest('button');
-                    if (expandBtn) {
-                      (expandBtn as HTMLButtonElement).click();
-                      return true;
+              const expandSuccess = await page.evaluate(() => {
+                const rows = Array.from(document.querySelectorAll('table tbody tr'));
+                for (const row of rows) {
+                  const firstCell = row.querySelector('td:first-child');
+                  if (firstCell) {
+                    const isServerRow = firstCell.classList.contains('pl-4') || firstCell.className.includes('pl-4');
+                    if (isServerRow) {
+                      const expandBtn =
+                        row.querySelector('button svg.lucide-chevron-right')?.closest('button') ||
+                        row.querySelector('button svg.lucide-chevron-down')?.closest('button');
+                      if (expandBtn) {
+                        (expandBtn as HTMLButtonElement).click();
+                        return true;
+                      }
                     }
                   }
                 }
+                return false;
+              });
+
+              if (!expandSuccess) {
+                recordDuration(filename3, 0);
+                failed.push(filename3);
+                continue;
               }
-              return false;
-            });
 
-            if (!expandSuccess) {
-              recordDuration(filename3, 0);
-              failed.push(filename3);
-              continue;
-            }
+              await delay(800);
 
-            await delay(800);
-
-            await page.evaluate(() => {
-              const rows = Array.from(document.querySelectorAll('table tbody tr'));
-              for (const row of rows) {
-                const firstCell = row.querySelector('td:first-child');
-                if (firstCell) {
-                  const isBackupRow = firstCell.classList.contains('pl-12') || firstCell.className.includes('pl-12');
-                  if (isBackupRow) {
-                    const expandBtn =
-                      row.querySelector('button svg.lucide-chevron-right')?.closest('button') ||
-                      row.querySelector('button svg.lucide-chevron-down')?.closest('button');
-                    if (expandBtn) {
-                      (expandBtn as HTMLButtonElement).click();
-                      break;
+              await page.evaluate(() => {
+                const rows = Array.from(document.querySelectorAll('table tbody tr'));
+                for (const row of rows) {
+                  const firstCell = row.querySelector('td:first-child');
+                  if (firstCell) {
+                    const isBackupRow = firstCell.classList.contains('pl-12') || firstCell.className.includes('pl-12');
+                    if (isBackupRow) {
+                      const expandBtn =
+                        row.querySelector('button svg.lucide-chevron-right')?.closest('button') ||
+                        row.querySelector('button svg.lucide-chevron-down')?.closest('button');
+                      if (expandBtn) {
+                        (expandBtn as HTMLButtonElement).click();
+                        break;
+                      }
                     }
                   }
                 }
-              }
-            });
+              });
 
-            await delay(800);
+              await delay(800);
 
-            const tableElement = await page.$('table');
-            if (tableElement) {
-              const tableBounds = await tableElement.boundingBox();
-              if (tableBounds) {
-                console.log('-------------------------------------------------------');
-                console.log('Taking screenshot 3: Expanding server and backup rows...');
-                const screenshot3 = await takeScreenshot(page, filename3, screenshotDir, {
-                  clip: {
-                    x: tableBounds.x,
-                    y: tableBounds.y,
-                    width: tableBounds.width,
-                    height: Math.min(tableBounds.height, VIEWPORT_HEIGHT - tableBounds.y - 20)
-                  }
-                });
-                if (screenshot3) successful.push(filename3);
-                else failed.push(filename3);
+              const tableElement = await page.$('table');
+              if (tableElement) {
+                const tableBounds = await tableElement.boundingBox();
+                if (tableBounds) {
+                  console.log('-------------------------------------------------------');
+                  console.log('Taking screenshot 3: Expanding server and backup rows...');
+                  const screenshot3 = await takeScreenshot(page, filename3, screenshotDir, {
+                    clip: {
+                      x: tableBounds.x,
+                      y: tableBounds.y,
+                      width: tableBounds.width,
+                      height: Math.min(tableBounds.height, VIEWPORT_HEIGHT - tableBounds.y - 20)
+                    }
+                  });
+                  if (screenshot3) successful.push(filename3);
+                  else failed.push(filename3);
+                } else {
+                  recordDuration(filename3, 0);
+                  failed.push(filename3);
+                }
               } else {
                 recordDuration(filename3, 0);
                 failed.push(filename3);
               }
-            } else {
-              recordDuration(filename3, 0);
-              failed.push(filename3);
             }
           } catch (error) {
             console.log(`  ❌ Warning: Failed to interact with notifications page: ${error instanceof Error ? error.message : String(error)}`);
@@ -3401,38 +3525,46 @@ ${colors.reset}`);
           }
         } else {
           const filename = `screen-settings-${tab}.png`;
-          console.log('-------------------------------------------------------');
-          console.log(`Taking screenshot of settings tab: ${tab}...`);
-          const settingsTabResult = await takeScreenshot(page, filename, screenshotDir, { isSettingsPage: true, screenshotTarget: 'settings-content-card' });
-          if (settingsTabResult) successful.push(filename);
-          else failed.push(filename);
+          if (shouldCapture(filename)) {
+            console.log('-------------------------------------------------------');
+            console.log(`Taking screenshot of settings tab: ${tab}...`);
+            const settingsTabResult = await takeScreenshot(page, filename, screenshotDir, { isSettingsPage: true, screenshotTarget: 'settings-content-card' });
+            if (settingsTabResult) successful.push(filename);
+            else failed.push(filename);
+          }
         }
       }
 
       // Non-admin captures (per locale)
-      console.log('Logging out and logging in as non-admin user...');
-      await logout(page);
-      await login(page, USER_USERNAME, USER_PASSWORD!);
+      if (shouldCaptureAny(['screen-user-menu-user.png', 'screen-settings-left-panel-non-admin.png'])) {
+        console.log('Logging out and logging in as non-admin user...');
+        await logout(page);
+        await login(page, USER_USERNAME, USER_PASSWORD!);
 
-      console.log('-------------------------------------------------------');
-      console.log('Capturing user menu dropdown (user)...');
-      const userMenuUser = await captureUserMenu(page, locale, screenshotDir, 'user');
-      if (userMenuUser) successful.push('screen-user-menu-user.png');
-      else failed.push('screen-user-menu-user.png');
+        if (shouldCapture('screen-user-menu-user.png')) {
+          console.log('-------------------------------------------------------');
+          console.log('Capturing user menu dropdown (user)...');
+          const userMenuUser = await captureUserMenu(page, locale, screenshotDir, 'user');
+          if (userMenuUser) successful.push('screen-user-menu-user.png');
+          else failed.push('screen-user-menu-user.png');
+        }
 
-      console.log('🌐 Navigating to settings page as non-admin (/settings)...');
-      await page.goto(makeUrl('/settings'), { waitUntil: 'domcontentloaded' });
-      await delay(500);
+        if (shouldCapture('screen-settings-left-panel-non-admin.png')) {
+          console.log('🌐 Navigating to settings page as non-admin (/settings)...');
+          await page.goto(makeUrl('/settings'), { waitUntil: 'domcontentloaded' });
+          await delay(500);
 
-      console.log('-------------------------------------------------------');
-      console.log('Taking screenshot of settings page left panel (as non-admin)...');
-      const settingsLeftPanelNonAdmin = await takeScreenshot(page, 'screen-settings-left-panel-non-admin.png', screenshotDir, { isSettingsSidebar: true, screenshotTarget: 'settings-left-panel' });
-      if (settingsLeftPanelNonAdmin) successful.push('screen-settings-left-panel-non-admin.png');
-      else failed.push('screen-settings-left-panel-non-admin.png');
+          console.log('-------------------------------------------------------');
+          console.log('Taking screenshot of settings page left panel (as non-admin)...');
+          const settingsLeftPanelNonAdmin = await takeScreenshot(page, 'screen-settings-left-panel-non-admin.png', screenshotDir, { isSettingsSidebar: true, screenshotTarget: 'settings-left-panel' });
+          if (settingsLeftPanelNonAdmin) successful.push('screen-settings-left-panel-non-admin.png');
+          else failed.push('screen-settings-left-panel-non-admin.png');
+        }
 
-      // Restore admin session for next locale in Phase B (except after last)
-      await logout(page);
-      await login(page, ADMIN_USERNAME, ADMIN_PASSWORD!);
+        // Restore admin session for next locale in Phase B (except after last)
+        await logout(page);
+        await login(page, ADMIN_USERNAME, ADMIN_PASSWORD!);
+      }
     }
 
     // Restore console so summary is not prefixed with elapsed
@@ -3486,7 +3618,7 @@ ${colors.reset}`);
     const padRow = (row: string[]) =>
       '| ' + row.map((cell, j) => cell.padEnd(colWidths[j])).join(' | ') + ' |';
 
-    console.log('\n' + padRow(headerCells));
+    log('\n' + padRow(headerCells));
     log(padRow(separatorCells));
     for (const row of dataRows) log(padRow(row));
     log(padRow(averageRow));

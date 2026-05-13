@@ -14,7 +14,7 @@ Esta página tiene una función de guardado automático. Cualquier cambio que re
 
 <br/>
 
-## Filtrar y Buscar {#filter-and-search}
+## Filtro {#filter}
 
 Utilice el campo **Filtrar por nombre del servidor** en la parte superior de la página para encontrar rápidamente backups específicos por nombre del servidor o alias. La tabla se filtrará automáticamente para mostrar solo las entradas coincidentes.
 

@@ -9,35 +9,35 @@ Administradores veem todas as configurações disponíveis.
 <table>
   <tr>
     <td>
-      ![Barra lateral de Configurações - Visualizar Admin](../../assets/screen-settings-left-panel-admin.png)
+      ![Barra Lateral de Configurações - Visão do Administrador](../../assets/screen-settings-left-panel-admin.png)
     </td>
     <td>
       <ul>
         <li>
           <strong>Notificações</strong>
           <ul>
-            <li><a href="backup-notifications-settings.md">Notificações de Backup</a>: Configurar configurações de notificação por backup</li>
+            <li><a href="backup-notifications-settings.md">Notificações de Backup</a>: Configurar definições de notificação por backup</li>
             <li><a href="backup-monitoring-settings.md">Monitoramento de Backup</a>: Configurar detecção e alertas de backup atrasado</li>
-            <li><a href="notification-templates.md">Modelos</a>: Personalizar modelos de mensagem de notificação</li>
+            <li><a href="notification-templates.md">Modelos</a>: Personalizar modelos de mensagens de notificação</li>
           </ul>
         </li><br/>
         <li>
           <strong>Integrações</strong>
           <ul>
-            <li><a href="ntfy-settings.md">NTFY</a>: Configurar serviço de notificação push NTFY</li>
-            <li><a href="email-settings.md">E-mail</a>: Configurar notificações de e-mail SMTP</li>
+            <li><a href="ntfy-settings.md">NTFY</a>: Configurar serviço de notificações push NTFY</li>
+            <li><a href="email-settings.md">E-mail</a>: Configurar notificações por e-mail SMTP</li>
           </ul>
         </li><br/>
         <li>
           <strong id="system">Sistema</strong>
           <ul>
             <li><a href="server-settings.md">Servidores</a>: Gerenciar configurações do servidor Duplicati</li>
-            <li><a href="display-settings.md">Configurações de Exibição</a>: Configurar preferências de exibição</li>
-            <li><a href="database-maintenance.md">Manutenção de Banco de Dados</a>: Executar limpeza de banco de dados (somente admin)</li>
-            <li><a href="user-management-settings.md">Usuários</a>: Gerenciar contas de usuário (somente admin)</li>
+            <li><a href="display-settings.md">Configurações de Exibição</a>: Configurar tema, intervalo de tempo do gráfico, estilo do gráfico, localidade de formatação, intervalo de atualização automática, ordem de classificação de cartões e início da semana</li>
+            <li><a href="database-maintenance.md">Manutenção do Banco de Dados</a>: Realizar limpeza do banco de dados (somente administrador)</li>
+            <li><a href="user-management-settings.md">Usuários</a>: Gerenciar contas de usuário (somente administrador)</li>
             <li><a href="audit-logs-viewer.md">Log de Auditoria</a>: Visualizar logs de auditoria do sistema</li>
-            <li><a href="audit-logs-retention.md">Retenção de log de auditoria</a>: Configurar retenção de log de auditoria (somente admin)</li>
-            <li><a href="application-logs-settings.md">Logs da aplicação</a>: Visualizar e exportar logs da aplicação (somente admin)</li>
+            <li><a href="audit-logs-retention.md">Retenção de Log de Auditoria</a>: Configurar retenção de log de auditoria (somente administrador)</li>
+            <li><a href="application-logs-settings.md">Logs do Aplicativo</a>: Visualizar e exportar logs do aplicativo (somente administrador)</li>
           </ul>
         </li>
       </ul>
@@ -52,14 +52,14 @@ Usuários regulares veem um conjunto limitado de configurações.
 <table>
   <tr>
     <td>
-      ![Barra lateral de Configurações - Visualização de não-Admin](../../assets/screen-settings-left-panel-non-admin.png)
+      ![Barra Lateral de Configurações - Visão Não Administrativa](../../assets/screen-settings-left-panel-non-admin.png)
     </td>
     <td>
       <ul>
         <li>
           <strong>Notificações</strong>
           <ul>
-            <li><a href="backup-notifications-settings.md">Notificações de backup</a>: Visualizar configurações de notificação por backup (somente leitura)</li>
+            <li><a href="backup-notifications-settings.md">Notificações de Backup</a>: Visualizar definições de notificação por backup (somente leitura)</li>
             <li><a href="backup-monitoring-settings.md">Monitoramento de backup</a>: Visualizar configurações de backup atrasado (somente leitura)</li>
             <li><a href="notification-templates.md">Modelos</a>: Visualizar modelos de notificação (somente leitura)</li>
           </ul>
@@ -67,16 +67,16 @@ Usuários regulares veem um conjunto limitado de configurações.
         <li>
           <strong>Integrações</strong>
           <ul>
-            <li><a href="ntfy-settings.md">NTFY</a>: Visualizar configurações de NTFY (somente leitura)</li>
+            <li><a href="ntfy-settings.md">NTFY</a>: Visualizar configurações do NTFY (somente leitura)</li>
             <li><a href="email-settings.md">E-mail</a>: Visualizar configurações de e-mail (somente leitura)</li>
           </ul>
         </li><br/>
         <li>
           <strong id="system">Sistema</strong>
           <ul>
-            <li><a href="server-settings.md">Servidores</a>: Visualizar configurações do servidor (somente leitura)</li>
-            <li><a href="display-settings.md">Exibição</a>: Configurar preferências de exibição</li>
-            <li><a href="audit-logs-viewer.md">Log de auditoria</a>: Visualizar logs de auditoria do sistema (somente leitura)</li>
+            <li><a href="server-settings.md">Servidores</a>: Visualizar configurações de servidor (somente leitura)</li>
+            <li><a href="display-settings.md">Exibição</a>: Configurar tema, intervalo de tempo do gráfico, estilo do gráfico, localidade de formatação, intervalo de atualização automática, ordem de classificação de cartões e início da semana</li>
+            <li><a href="audit-logs-viewer.md">Log de Auditoria</a>: Visualizar logs de auditoria do sistema (somente leitura)</li>
           </ul>
         </li>
       </ul>

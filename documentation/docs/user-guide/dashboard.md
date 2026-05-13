@@ -13,10 +13,26 @@ This section displays aggregated statistics for all backups.
 - **Total Backup Jobs**: The total number of backup jobs (types) configured for all servers.                                                                                
 - **Total Backup Runs**: The total number of backup logs from runs received or collected for all servers.                                                                   
 - **Total Backup Size**: The combined size of all source data, based on the latest backup logs received.                                                                    
-- **Total Storage Used**: The total storage space used by backups on the backup destination (e.g., cloud storage, FTP server, local drive), based on the latest backup logs. 
-- **Total Uploaded Size**: The total amount of data uploaded from the Duplicati server to the destination (e.g., local storage, FTP, cloud provider).                       
+- **Total Storage Used**: The total storage space used by backups on the backup destination (e.g., cloud storage, FTP server, local drive), based on the latest backup logs.                
+- **Total Uploaded Size**: The total amount of data uploaded from the Duplicati server to the destination (e.g., local storage, FTP, cloud provider).                                       
 - **Overdue Backups** (table): The number of backups that are overdue. See [Backup Notifications Settings](settings/backup-notifications-settings.md)                          
-- **Layout Toggle**: Switches between the Cards layout (default) and the Table layout.                                                                                  
+- **Layout Toggle**: Switches between the Cards layout (default) and the Table layout.                                                                                                  
+
+## Server Filtering {#server-filtering}
+
+You can filter the servers and backups displayed on the dashboard using the search field in the application toolbar. Click the filter icon (<IconButton icon="lucide:search" />) to reveal the search field.
+
+**Filter Matches:**
+- Server ID
+- Server URL
+- Backup job names
+
+**Scope:**
+- Filters both card and table views on the dashboard
+- Session state is maintained via the Dashboard Server Filter Provider
+- Clears when you refresh or leave the dashboard
+
+This makes it easy to quickly locate specific servers or backups among many monitored systems.
 
 ## Cards Layout {#cards-layout}
 
@@ -35,7 +51,6 @@ The cards layout shows the status of the most recent backup log received for eac
     - Time is shown in abbreviated format: `m` for minutes, `h` for hours, `d` for days, `w` for weeks, `mo` for months, `y` for years.
 
 The card sort order and other configurations can be set in the [Display Settings](settings/display-settings.md).
-
 
 The panel view offers two informational displays, accessible by clicking the top right button on the side panel:
 

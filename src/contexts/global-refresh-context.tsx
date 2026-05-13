@@ -146,7 +146,7 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
       
       // Check if this is a network/connectivity error
       if (isNetworkError(error)) {
-        showConnectivityError(error instanceof Error ? error.message : 'Network connection failed');
+        showConnectivityError();
       }
       
       setState(prev => ({
@@ -198,7 +198,7 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
       
       // Check if this is a network/connectivity error
       if (isNetworkError(error)) {
-        showConnectivityError(error instanceof Error ? error.message : 'Network connection failed');
+        showConnectivityError();
       }
       
       setState(prev => ({

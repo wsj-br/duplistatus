@@ -82,7 +82,7 @@ export function DetailAutoRefresh({ initialData }: DetailAutoRefreshProps) {
         
         // Check if this is a network/connectivity error
         if (isNetworkError(error)) {
-          showConnectivityError(errorMessage);
+          showConnectivityError();
           return;
         }
         

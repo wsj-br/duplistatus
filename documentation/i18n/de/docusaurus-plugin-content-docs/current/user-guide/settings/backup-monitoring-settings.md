@@ -2,6 +2,17 @@
 
 ![Backup alerts](../../assets/screen-settings-monitoring.png)
 
+## Server-Filterung {#server-filtering}
+
+Die Serverliste auf dieser Seite kann mithilfe des Filterfeldes gefiltert werden.
+
+**Filterergebnisse:**
+- Server-ID
+- Server-URL
+- Namen von Backup-Jobs
+
+Dies erleichtert das schnelle Auffinden bestimmter Server oder Backups in den Überwachungseinstellungen bei der Verwaltung vieler Systeme.
+
 ## Konfigurieren Sie die Überwachungseinstellungen pro Sicherung {#configure-per-backup-monitoring-settings}
 
 -  **Servername**: Der Name des Servers, der auf überfällige Sicherungen überwacht werden soll. 

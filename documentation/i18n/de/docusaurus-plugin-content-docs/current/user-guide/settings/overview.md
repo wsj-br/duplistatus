@@ -9,35 +9,35 @@ Administratoren sehen alle verfügbaren Einstellungen.
 <table>
   <tr>
     <td>
-      ![Einstellungen-Seitenleiste - Admin-Ansicht](../../assets/screen-settings-left-panel-admin.png)
+      ![Einstellungsseitenleiste - Admin-Ansicht](../../assets/screen-settings-left-panel-admin.png)
     </td>
     <td>
       <ul>
         <li>
           <strong>Benachrichtigungen</strong>
           <ul>
-            <li><a href="backup-notifications-settings.md">Sicherungsbenachrichtigungen</a>: Konfigurieren Sie Benachrichtigungseinstellungen pro Sicherung</li>
-            <li><a href="backup-monitoring-settings.md">Sicherungsüberwachung</a>: Konfigurieren Sie die Erkennung und Benachrichtigungen für überfällige Sicherungen</li>
-            <li><a href="notification-templates.md">Vorlagen</a>: Passen Sie Benachrichtigungsmeldungsvorlagen an</li>
+            <li><a href="backup-notifications-settings.md">Backup-Benachrichtigungen</a>: Pro-Backup-Benachrichtigungseinstellungen konfigurieren</li>
+            <li><a href="backup-monitoring-settings.md">Backup-Überwachung</a>: Überfällige Backup-Erkennung und Warnungen konfigurieren</li>
+            <li><a href="notification-templates.md">Vorlagen</a>: Benachrichtigungsvorlagen anpassen</li>
           </ul>
         </li><br/>
         <li>
           <strong>Integrationen</strong>
           <ul>
-            <li><a href="ntfy-settings.md">NTFY</a>: Konfigurieren Sie den NTFY-Push-Benachrichtigungsdienst</li>
-            <li><a href="email-settings.md">E-Mail</a>: Konfigurieren Sie SMTP-E-Mail-Benachrichtigungen</li>
+            <li><a href="ntfy-settings.md">NTFY</a>: NTFY-Push-Benachrichtigungsdienst konfigurieren</li>
+            <li><a href="email-settings.md">E-Mail</a>: SMTP-E-Mail-Benachrichtigungen konfigurieren</li>
           </ul>
         </li><br/>
         <li>
           <strong id="system">System</strong>
           <ul>
-            <li><a href="server-settings.md">Server</a>: Verwalten Sie Duplicati-Serverkonfigurationen</li>
-            <li><a href="display-settings.md">Anzeigeeinstellungen</a>: Konfigurieren Sie Anzeigeeinstellungen</li>
-            <li><a href="database-maintenance.md">Datenbankwartung</a>: Führen Sie Datenbankbereinigung durch (nur Admin)</li>
-            <li><a href="user-management-settings.md">Benutzer</a>: Verwalten Sie Benutzerkonten (nur Admin)</li>
-            <li><a href="audit-logs-viewer.md">Audit-Protokoll</a>: Zeigen Sie System-Audit-Protokolle an</li>
-            <li><a href="audit-logs-retention.md">Audit-Log-Aufbewahrung</a>: Konfigurieren Sie die Audit-Log-Aufbewahrung (nur Admin)</li>
-            <li><a href="application-logs-settings.md">Anwendungsprotokolle</a>: Zeigen Sie Anwendungsprotokolle an und exportieren Sie diese (nur Admin)</li>
+            <li><a href="server-settings.md">Server</a>: Duplicati-Serverkonfigurationen verwalten</li>
+            <li><a href="display-settings.md">Anzeigeeinstellungen</a>: Design, Diagramm-Zeitbereich, Diagrammstil, Gebietsschema-Format, automatisches Aktualisierungsintervall, Kartensortierreihenfolge und Wochenbeginn konfigurieren</li>
+            <li><a href="database-maintenance.md">Datenbankverwaltung</a>: Datenbankbereinigung durchführen (nur Admin)</li>
+            <li><a href="user-management-settings.md">Benutzer</a>: Benutzerkonten verwalten (nur Admin)</li>
+            <li><a href="audit-logs-viewer.md">Audit-Protokoll</a>: Systemaudit-Protokolle anzeigen</li>
+            <li><a href="audit-logs-retention.md">Prüfprotokoll-Aufbewahrung</a>: Audit-Protokoll-Aufbewahrung konfigurieren (nur Admin)</li>
+            <li><a href="application-logs-settings.md">Anwendungsprotokolle</a>: Anwendungsprotokolle anzeigen und exportieren (nur Admin)</li>
           </ul>
         </li>
       </ul>
@@ -52,31 +52,31 @@ Normale Benutzer sehen einen begrenzten Satz von Einstellungen.
 <table>
   <tr>
     <td>
-      ![Einstellungsseitenleiste – Ansicht für Nicht-Administratoren](../../assets/screen-settings-left-panel-non-admin.png)
+      ![Einstellungsseitenleiste - Nicht-Admin-Ansicht](../../assets/screen-settings-left-panel-non-admin.png)
     </td>
     <td>
       <ul>
         <li>
           <strong>Benachrichtigungen</strong>
           <ul>
-            <li><a href="backup-notifications-settings.md">Backup-Benachrichtigungen</a>: Zeigen Sie Benachrichtigungseinstellungen pro Sicherung an (schreibgeschützt)</li>
-            <li><a href="backup-monitoring-settings.md">Backup-Überwachung</a>: Zeigen Sie Einstellungen für überfällige Sicherungen an (schreibgeschützt)</li>
-            <li><a href="notification-templates.md">Vorlagen</a>: Zeigen Sie Benachrichtigungsvorlagen an (schreibgeschützt)</li>
+            <li><a href="backup-notifications-settings.md">Backup-Benachrichtigungen</a>: Pro-Backup-Benachrichtigungseinstellungen anzeigen (schreibgeschützt)</li>
+            <li><a href="backup-monitoring-settings.md">Backup-Überwachung</a>: Überfällige Backup-Einstellungen anzeigen (schreibgeschützt)</li>
+            <li><a href="notification-templates.md">Vorlagen</a>: Benachrichtigungsvorlagen anzeigen (schreibgeschützt)</li>
           </ul>
         </li><br/>
         <li>
           <strong>Integrationen</strong>
           <ul>
-            <li><a href="ntfy-settings.md">NTFY</a>: Zeigen Sie NTFY-Einstellungen an (schreibgeschützt)</li>
-            <li><a href="email-settings.md">E-Mail</a>: Zeigen Sie E-Mail-Einstellungen an (schreibgeschützt)</li>
+            <li><a href="ntfy-settings.md">NTFY</a>: NTFY-Einstellungen anzeigen (schreibgeschützt)</li>
+            <li><a href="email-settings.md">E-Mail</a>: E-Mail-Einstellungen anzeigen (schreibgeschützt)</li>
           </ul>
         </li><br/>
         <li>
           <strong id="system">System</strong>
           <ul>
-            <li><a href="server-settings.md">Server</a>: Zeigen Sie Serverkonfigurationen an (schreibgeschützt)</li>
-            <li><a href="display-settings.md">Anzeige</a>: Konfigurieren Sie Anzeigeeinstellungen</li>
-            <li><a href="audit-logs-viewer.md">Audit-Log</a>: Zeigen Sie System-Audit-Protokolle an (schreibgeschützt)</li>
+            <li><a href="server-settings.md">Server</a>: Serverkonfigurationen anzeigen (schreibgeschützt)</li>
+            <li><a href="display-settings.md">Anzeige</a>: Design, Diagramm-Zeitbereich, Diagrammstil, Gebietsschema-Format, automatisches Aktualisierungsintervall, Kartensortierreihenfolge und Wochenbeginn konfigurieren</li>
+            <li><a href="audit-logs-viewer.md">Audit-Protokoll</a>: Systemaudit-Protokolle anzeigen (schreibgeschützt)</li>
           </ul>
         </li>
       </ul>

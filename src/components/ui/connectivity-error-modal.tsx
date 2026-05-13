@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { AlertCircle, RefreshCw, X } from "lucide-react";
+import { AlertCircle, RefreshCw } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -14,72 +14,126 @@ import { Button } from "@/components/ui/button";
 
 interface ConnectivityErrorState {
   isOpen: boolean;
-  errorMessage: string;
 }
 
 interface ConnectivityErrorContextType {
-  showConnectivityError: (message: string) => void;
+  showConnectivityError: () => void;
   hideConnectivityError: () => void;
   isConnectivityErrorOpen: boolean;
 }
+
+const CHECK_INTERVAL = 30_000;
+
 
 const ConnectivityErrorContext = createContext<ConnectivityErrorContextType | undefined>(undefined);
 
 export const ConnectivityErrorProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, setState] = useState<ConnectivityErrorState>({
     isOpen: false,
-    errorMessage: "",
   });
   const [isRetrying, setIsRetrying] = useState(false);
   const { t } = useTranslation();
 
-  const showConnectivityError = useCallback((message: string) => {
+  const showConnectivityError = useCallback(() => {
     setState({
       isOpen: true,
-      errorMessage: message,
     });
   }, []);
 
   const hideConnectivityError = useCallback(() => {
     setState({
       isOpen: false,
-      errorMessage: "",
     });
   }, []);
 
-  const handleCloseWindow = useCallback(() => {
-    // Attempt to close the browser window/tab
-    window.close();
-    // Fallback: if window.close() doesn't work (most modern browsers),
-    // show an alert explaining how to close manually
-    setTimeout(() => {
-      alert(t("Please close this tab manually using your browser's close button."));
-    }, 100);
-  }, [t]);
+  const fetchWithTimeout = useCallback(
+    async (input: RequestInfo, init?: RequestInit, timeoutMs = 5000) => {
+      const controller = new AbortController();
+      const timer = window.setTimeout(() => controller.abort(), timeoutMs);
+      try {
+        return await fetch(input, {
+          ...init,
+          signal: controller.signal,
+        });
+      } finally {
+        window.clearTimeout(timer);
+      }
+    },
+    [],
+  );
+
+
 
   const handleRetry = useCallback(async () => {
     setIsRetrying(true);
     try {
-      // Try to connect to the server by making a simple health check request
-      const response = await fetch("/api/health", {
-        method: "GET",
-        credentials: "include",
-      });
+      const response = await fetchWithTimeout(
+        "/api/ping",
+        {
+          method: "GET",
+          cache: "no-store",
+          credentials: "same-origin",
+        },
+        5000,
+      );
 
       if (response.ok) {
-        // Connection restored, close the modal
         hideConnectivityError();
       } else {
-        // Server returned an error status
         throw new Error(`Server returned status ${response.status}`);
       }
     } catch (error) {
-      // Connection still failed - keep modal open
       console.error("Retry connection failed:", error);
     } finally {
       setIsRetrying(false);
     }
-  }, [hideConnectivityError]);
+  }, [fetchWithTimeout, hideConnectivityError]);
+
+  const checkPing = useCallback(async () => {
+    try {
+      const response = await fetchWithTimeout(
+        "/api/ping",
+        {
+          method: "GET",
+          cache: "no-store",
+          credentials: "same-origin",
+        },
+        5000,
+      );
+
+      if (response.ok) {
+        hideConnectivityError();
+      } else {
+        showConnectivityError();
+      }
+    } catch (error) {
+      showConnectivityError();
+    }
+  }, [fetchWithTimeout, hideConnectivityError, showConnectivityError]);
+
+  useEffect(() => {
+    checkPing();
+    const intervalId = window.setInterval(checkPing, CHECK_INTERVAL);
+    return () => window.clearInterval(intervalId);
+  }, [checkPing]);
+
+  useEffect(() => {
+    const handleOnline = () => {
+      checkPing();
+    };
+
+    const handleOffline = () => {
+      showConnectivityError();
+    };
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, [checkPing, showConnectivityError]);
 
   // Prevent all user interactions when modal is open
   useEffect(() => {
@@ -135,21 +189,7 @@ export const ConnectivityErrorProvider = ({ children }: { children: React.ReactN
             </DialogDescription>
           </DialogHeader>
           
-          {state.errorMessage && (
-            <div className="bg-muted p-3 rounded-md text-sm text-muted-foreground">
-              {state.errorMessage}
-            </div>
-          )}
-
           <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 pt-4">
-            <Button
-              variant="outline"
-              onClick={handleCloseWindow}
-              className="mt-2 sm:mt-0 w-full sm:w-auto"
-            >
-              <X className="h-4 w-4 mr-2" />
-              {t("Close Window")}
-            </Button>
             <Button
               onClick={handleRetry}
               disabled={isRetrying}

@@ -3,7 +3,7 @@
 
 # duplistatus -  Monitor Multiple [Duplicati's](https://github.com/duplicati/duplicati) Servers 
 
-![version](https://img.shields.io/badge/version-1.3.2-blue) 
+![version](https://img.shields.io/badge/version-1.4.1-blue) 
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?logo=github)](https://github.com/wsj-br/duplistatus)
 
 <br/>
@@ -30,7 +30,6 @@ Easy to deploy with Docker, Podman, or Portainer and available in 5 languages (E
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**
 
 - [Features](#features)
 - [Installation](#installation)

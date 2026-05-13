@@ -14,7 +14,7 @@ Diese Seite verfügt über eine Automatisches-Speichern-Funktion. Alle Änderung
 
 <br/>
 
-## Filtern und Suchen {#filter-and-search}
+## Filter {#filter}
 
 Verwenden Sie das Feld **Nach Servername filtern** oben auf der Seite, um schnell bestimmte Sicherungen nach Servername oder Alias zu finden. Die Tabelle wird automatisch gefiltert, um nur übereinstimmende Einträge einzublenden.
 

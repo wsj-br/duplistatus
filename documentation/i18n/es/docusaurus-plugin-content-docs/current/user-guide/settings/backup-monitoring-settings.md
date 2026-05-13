@@ -2,6 +2,17 @@
 
 ![Backup alerts](../../assets/screen-settings-monitoring.png)
 
+## Filtrado de servidores {#server-filtering}
+
+La lista de servidores en esta página se puede filtrar utilizando el campo de filtro.
+
+**Coincidencias de filtro:**
+- ID del servidor
+- URL del servidor
+- Nombres de trabajos de copia de seguridad
+
+Esto facilita la localización rápida de servidores o copias de seguridad específicos en la configuración de monitoreo cuando se administran muchos sistemas.
+
 ## Configurar la configuración de monitoreo por backup {#configure-per-backup-monitoring-settings}
 
 -  **Nombre del servidor**: El nombre del servidor que se monitoreará en busca de copias de seguridad atrasadas. 

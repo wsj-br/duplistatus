@@ -36,7 +36,7 @@ Administrators see all available settings.
           <strong id="system">System</strong>
           <ul>
             <li><a href="server-settings.md">Servers</a>: Manage Duplicati server configurations</li>
-            <li><a href="display-settings.md">Display Settings</a>: Configure display preferences</li>
+            <li><a href="display-settings.md">Display Settings</a>: Configure theme, chart time range, chart style, format locale, auto-refresh interval, card sort order, and week start</li>
             <li><a href="database-maintenance.md">Database Maintenance</a>: Perform database cleanup (admin only)</li>
             <li><a href="user-management-settings.md">Users</a>: Manage user accounts (admin only)</li>
             <li><a href="audit-logs-viewer.md">Audit Log</a>: View system audit logs</li>
@@ -79,7 +79,7 @@ Regular users see a limited set of settings.
           <strong id="system">System</strong>
           <ul>
             <li><a href="server-settings.md">Servers</a>: View server configurations (read-only)</li>
-            <li><a href="display-settings.md">Display</a>: Configure display preferences</li>
+            <li><a href="display-settings.md">Display</a>: Configure theme, chart time range, chart style, format locale, auto-refresh interval, card sort order, and week start</li>
             <li><a href="audit-logs-viewer.md">Audit Log</a>: View system audit logs (read-only)</li>
           </ul>
         </li>

@@ -16,6 +16,22 @@ Esta sección muestra estadísticas agregadas para todas las copias de seguridad
 - **Respaldos Atrasados** (tabla): El número de respaldos que están retrasados. Consulte [Configuración de notificaciones de copia de seguridad](settings/backup-notifications-settings.md)                          
 - **Alternar diseño**: Cambia entre el diseño de Tarjetas (por defecto) y el diseño de Tabla.
 
+## Filtrado de servidores {#server-filtering}
+
+Puede filtrar los servidores y copias de seguridad mostrados en el panel utilizando el campo de búsqueda en la barra de herramientas de la aplicación. Haga clic en el icono de filtro (<IconButton icon="lucide:search" />) para mostrar el campo de búsqueda.
+
+**Coincidencias de filtro:**
+- ID del servidor
+- URL del servidor
+- Nombres de trabajos de copia de seguridad
+
+**Alcance:**
+- Filtra tanto la vista de tarjetas como la vista de tabla en el panel
+- El estado de la sesión se mantiene a través del Proveedor de Filtro de Servidores del Panel
+- Se borra cuando actualiza o sale del panel
+
+Esto facilita la localización rápida de servidores o copias de seguridad específicos entre muchos sistemas monitoreados.
+
 ## Diseño de Tarjetas {#cards-layout}
 
 El diseño de tarjetas muestra el estado del registro de backup más reciente recibido para cada backup.

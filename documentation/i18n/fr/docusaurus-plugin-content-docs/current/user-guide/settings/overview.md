@@ -9,7 +9,7 @@ Les administrateurs voient tous les paramètres disponibles.
 <table>
   <tr>
     <td>
-      ![Barre latérale Paramètres - Affichage Admin](../../assets/screen-settings-left-panel-admin.png)
+      ![Barre latérale des paramètres - Vue Admin](../../assets/screen-settings-left-panel-admin.png)
     </td>
     <td>
       <ul>
@@ -17,14 +17,14 @@ Les administrateurs voient tous les paramètres disponibles.
           <strong>Notifications</strong>
           <ul>
             <li><a href="backup-notifications-settings.md">Notifications de sauvegarde</a> : Configurer les paramètres de notification par sauvegarde</li>
-            <li><a href="backup-monitoring-settings.md">Surveillance des sauvegardes</a> : Configurer la détection et les alertes de sauvegarde en retard</li>
+            <li><a href="backup-monitoring-settings.md">Surveillance des sauvegardes</a> : Configurer la détection et les alertes de sauvegardes en retard</li>
             <li><a href="notification-templates.md">Modèles</a> : Personnaliser les modèles de messages de notification</li>
           </ul>
         </li><br/>
         <li>
           <strong>Intégrations</strong>
           <ul>
-            <li><a href="ntfy-settings.md">NTFY</a> : Configurer le service de notification push NTFY</li>
+            <li><a href="ntfy-settings.md">NTFY</a> : Configurer le service de notifications push NTFY</li>
             <li><a href="email-settings.md">E-mail</a> : Configurer les notifications par e-mail SMTP</li>
           </ul>
         </li><br/>
@@ -32,12 +32,12 @@ Les administrateurs voient tous les paramètres disponibles.
           <strong id="system">Système</strong>
           <ul>
             <li><a href="server-settings.md">Serveurs</a> : Gérer les configurations du serveur Duplicati</li>
-            <li><a href="display-settings.md">Paramètres d'affichage</a> : Configurer les préférences d'affichage</li>
-            <li><a href="database-maintenance.md">Maintenance de la base de données</a> : Effectuer le nettoyage de la base de données (admin uniquement)</li>
-            <li><a href="user-management-settings.md">Utilisateurs</a> : Gérer les comptes utilisateur (admin uniquement)</li>
-            <li><a href="audit-logs-viewer.md">Journal d'audit</a> : Afficher les journaux d'audit du système</li>
-            <li><a href="audit-logs-retention.md">Rétention du journal d'audit</a> : Configurer la rétention du journal d'audit (admin uniquement)</li>
-            <li><a href="application-logs-settings.md">Journaux d'application</a> : Afficher et exporter les journaux d'application (admin uniquement)</li>
+            <li><a href="display-settings.md">Paramètres d'affichage</a> : Configurer le thème, la plage de temps du graphique, le style de graphique, les paramètres régionaux, l'intervalle d'actualisation automatique, l'ordre de tri des cartes et le début de semaine</li>
+            <li><a href="database-maintenance.md">Maintenance de la base de données</a> : Effectuer un nettoyage de la base de données (admin uniquement)</li>
+            <li><a href="user-management-settings.md">Utilisateurs</a> : Gérer les comptes utilisateurs (admin uniquement)</li>
+            <li><a href="audit-logs-viewer.md">Journal d'audit</a> : Afficher les journaux d'audit système</li>
+            <li><a href="audit-logs-retention.md">Conservation des journaux d'audit</a> : Configurer la conservation des journaux d'audit (admin uniquement)</li>
+            <li><a href="application-logs-settings.md">Journaux de l'application</a> : Afficher et exporter les journaux de l'application (admin uniquement)</li>
           </ul>
         </li>
       </ul>
@@ -52,7 +52,7 @@ Les utilisateurs standard voient un ensemble limité de paramètres.
 <table>
   <tr>
     <td>
-      ![Barre latérale Paramètres - Vue Non-Admin](../../assets/screen-settings-left-panel-non-admin.png)
+      ![Barre latérale des paramètres - Vue Non-Admin](../../assets/screen-settings-left-panel-non-admin.png)
     </td>
     <td>
       <ul>
@@ -60,22 +60,22 @@ Les utilisateurs standard voient un ensemble limité de paramètres.
           <strong>Notifications</strong>
           <ul>
             <li><a href="backup-notifications-settings.md">Notifications de sauvegarde</a> : Afficher les paramètres de notification par sauvegarde (lecture seule)</li>
-            <li><a href="backup-monitoring-settings.md">Surveillance des sauvegardes</a> : Afficher les paramètres de sauvegarde en retard (lecture seule)</li>
-            <li><a href="notification-templates.md">Modèles</a> : Afficher les modèles de notification (lecture seule)</li>
+            <li><a href="backup-monitoring-settings.md">Surveillance des sauvegardes</a> : Afficher les paramètres de sauvegardes en retard (lecture seule)</li>
+            <li><a href="notification-templates.md">Modèles</a> : Afficher les modèles de notifications (lecture seule)</li>
           </ul>
         </li><br/>
         <li>
           <strong>Intégrations</strong>
           <ul>
             <li><a href="ntfy-settings.md">NTFY</a> : Afficher les paramètres NTFY (lecture seule)</li>
-            <li><a href="email-settings.md">E-mail</a> : Afficher les paramètres e-mail (lecture seule)</li>
+            <li><a href="email-settings.md">E-mail</a> : Afficher les paramètres de messagerie (lecture seule)</li>
           </ul>
         </li><br/>
         <li>
           <strong id="system">Système</strong>
           <ul>
-            <li><a href="server-settings.md">Serveurs</a> : Afficher les configurations du serveur (lecture seule)</li>
-            <li><a href="display-settings.md">Affichage</a> : Configurer les préférences d'affichage</li>
+            <li><a href="server-settings.md">Serveurs</a> : Afficher les configurations de serveur (lecture seule)</li>
+            <li><a href="display-settings.md">Affichage</a> : Configurer le thème, la plage de temps du graphique, le style de graphique, les paramètres régionaux, l'intervalle d'actualisation automatique, l'ordre de tri des cartes et le début de semaine</li>
             <li><a href="audit-logs-viewer.md">Journal d'audit</a> : Afficher les journaux d'audit système (lecture seule)</li>
           </ul>
         </li>

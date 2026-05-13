@@ -2,6 +2,17 @@
 
 ![Backup alerts](../../assets/screen-settings-monitoring.png)
 
+## Filtrage des serveurs {#server-filtering}
+
+La liste des serveurs sur cette page peut être filtrée à l'aide du champ de filtrage.
+
+**Correspondances de filtre :**
+- ID du serveur
+- URL du serveur
+- Noms des tâches de sauvegarde
+
+Cela permet de localiser rapidement des serveurs ou des sauvegardes spécifiques dans les paramètres de surveillance lors de la gestion de nombreux systèmes.
+
 ## Configurer les paramètres de surveillance par sauvegarde {#configure-per-backup-monitoring-settings}
 
 -  **Nom du serveur** : Le nom du serveur à surveiller pour les sauvegardes en retard. 

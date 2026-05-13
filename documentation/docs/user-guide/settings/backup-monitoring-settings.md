@@ -4,6 +4,18 @@
 
 ![Backup alerts](../../assets/screen-settings-monitoring.png)
 
+## Server Filtering {#server-filtering}
+
+The server list on this page can be filtered using filter field.
+
+**Filter Matches:**
+- Server ID
+- Server URL
+- Backup job names
+
+This makes it easy to quickly locate specific servers or backups in the monitoring settings when managing many systems.
+
+
 ## Configure Per-Backup Monitoring Settings {#configure-per-backup-monitoring-settings}
 
 -  **Server Name**: The name of the server to monitor for overdue backups. 

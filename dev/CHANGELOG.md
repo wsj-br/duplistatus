@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+
+
+
+## [1.4.1] - 2026-05-13
+
 ### Added
 - **Inline Chart Time Range Selector**: Stock-chart-style pill buttons (`1W | 2W | 1M | 3M`) in chart panel headers for quick time range switching without navigating to Display Settings. Shares state with Display Settings via `ConfigContext`.
 - **Inline Chart Style Toggle**: Toggle button in `ChartTimeRangeSelector` to switch between line and bar charts directly from the chart panel header. Persisted via `ConfigContext` and synced across all panels.
@@ -28,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Documentation (issue #40)**: Clarified that Duplicati remote access is optional and only necessary if direct links to Duplicati UI are required.
 - **Theme (Display Settings)**: Theme choice is a button group (Light / Dark / System); status line on same row.
 - **Dashboard server filter**: Search field moved to app header with auto-refresh and toolbar actions. State shared via `DashboardServerFilterProvider`. Control shows only search icon when empty; hover/click expands text field.
+- **Connectivity loss detection**: Added `/api/ping` and a 30-second header-based connectivity probe. Refresh and auto-refresh failures now open the lost-connection modal without exposing raw error text.
 - **Next expected backup / overdue**: `GetNextBackupRunDate` now advances day/week/month/year intervals and weekday checks in UTC instead of local time, avoiding one-hour UTC drift when host timezone crosses DST.
 - **Default overdue tolerance**: New installs and defaults now use `2h` instead of `1h`.
 - **Locale code**: English UI / cookie / i18n source locale consistently `en-GB` (replaced mistaken `en-GB-GB`).
@@ -56,6 +62,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - **User UI preferences not persisted on page refresh**: Fixed race conditions in `overviewSidePanel`, `chartTimeRange`, `chartStyle` settings. `useCurrentUser()` now returns `undefined` for loading, `null` for unauthenticated. Setters now save inside `setState` callbacks. `isInitialized` starts as `false`.
+- **Periodic `/api/ping` connectivity health check**: Moved ping polling out of `AppHeader` into `ConnectivityErrorProvider`, ensuring the periodic health probe runs consistently and responds to browser online/offline events.
 - **Chart infinite loop on /detail page**: Fixed re-render loop from `startDate`/`endDate` creating new Date objects on every render. Wrapped in `useMemo` with `chartTimeRange` as only dependency.
 - **Too many chart data points**: Charts now enforce maximum 30 data points. `bucketChartData()` dynamically calculates optimal bucket sizes for ranges exceeding 30 days. Data consolidated by calendar day before bucketing.
 - **Chart tooltip shows time**: Tooltip now displays only date (e.g., "5/12/26") instead of date and time.

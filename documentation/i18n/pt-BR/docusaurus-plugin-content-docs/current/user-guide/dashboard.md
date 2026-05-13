@@ -16,6 +16,22 @@ Esta seção exibe estatísticas agregadas para todos os backups.
 - **Backups Atrasados** (tabela): O número de backups que estão atrasados. Veja [Configurações de Notificações de Backup](settings/backup-notifications-settings.md)                          
 - **Alternar Layout**: Alterna entre o layout de Cartões (padrão) e o layout de Tabela.
 
+## Filtragem de Servidores {#server-filtering}
+
+Você pode filtrar os servidores e backups exibidos no painel usando o campo de pesquisa na barra de ferramentas do aplicativo. Clique no ícone de filtro (<IconButton icon="lucide:search" />) para revelar o campo de pesquisa.
+
+**Correspondências de Filtro:**
+- ID do Servidor
+- URL do Servidor
+- Nomes de trabalhos de backup
+
+**Escopo:**
+- Filtra visualizações de cartão e tabela no painel
+- Estado da sessão mantido pelo Provedor de Filtro de Servidor do Painel
+- Limpa quando você atualiza ou sai do painel
+
+Isso facilita a localização rápida de servidores ou backups específicos entre vários sistemas monitorados.
+
 ## Layout de Cartões {#cards-layout}
 
 O layout de cards mostra o status do log de backup mais recente recebido para cada backup.
