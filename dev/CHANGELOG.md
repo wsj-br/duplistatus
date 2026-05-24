@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+- **Documentation assets**: Moved SVG sources (`duplistatus_dash-cards.svg`, `duplistatus_toolbar.svg`) from `documentation/static/img/` to `documentation/static/assets/` alongside PNG screenshots. English docs now use `../assets/` paths like translated docs; removed `regexAdjustments` SVG path bridge from `ai-i18n-tools.config.json`. Removed stale `duplistatus_dash-table.svg` entry from `svg.sourcePath`.
+- **pnpm 11**: Moved `overrides`, `peerDependencyRules`, `allowedDeprecatedVersions`, and `allowBuilds` from `package.json#pnpm` to `pnpm-workspace.yaml` (pnpm 11 no longer reads the `pnpm` field in `package.json`).
 
 
 

@@ -20,7 +20,7 @@ This section displays aggregated statistics for all backups.
 
 ## Server Filtering {#server-filtering}
 
-You can filter the servers and backups displayed on the dashboard using the search field in the application toolbar. Click the filter icon (<IconButton icon="lucide:search" />) to reveal the search field.
+You can filter the servers and backups displayed on the dashboard using the search field in the application toolbar. Click the filter icon <IconButton icon="lucide:search" /> to reveal the search field.
 
 **Filter Matches:**
 - Server ID
@@ -38,7 +38,7 @@ This makes it easy to quickly locate specific servers or backups among many moni
 
 The cards layout shows the status of the most recent backup log received for each backup.
 
-![Card layout](/img/duplistatus_dash-cards.svg)
+![Card layout](../assets/duplistatus_dash-cards.svg)
 
 - **Server Name**: Name of the Duplicati server (or the alias)
   - Hovering over the **Server Name** will show the server name and note

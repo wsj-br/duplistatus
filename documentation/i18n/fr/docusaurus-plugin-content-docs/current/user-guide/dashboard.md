@@ -18,7 +18,7 @@ Cette section affiche les statistiques agrégées pour toutes les sauvegardes.
 
 ## Filtrage des serveurs {#server-filtering}
 
-Vous pouvez filtrer les serveurs et les sauvegardes affichés sur le tableau de bord en utilisant le champ de recherche dans la barre d'outils de l'application. Cliquez sur l'icône de filtre (<IconButton icon="lucide:search" />) pour afficher le champ de recherche.
+Vous pouvez filtrer les serveurs et sauvegardes affichés sur le tableau de bord en utilisant le champ de recherche dans la barre d'outils de l'application. Cliquez sur l'icône de filtre <IconButton icon="lucide:search" /> pour afficher le champ de recherche.
 
 **Correspondances de filtre :**
 - ID du serveur

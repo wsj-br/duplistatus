@@ -18,7 +18,7 @@ Dieser Abschnitt zeigt aggregierte Statistiken für alle Sicherungen an.
 
 ## Server-Filterung {#server-filtering}
 
-Sie können die auf dem Dashboard angezeigten Server und Backups mithilfe des Suchfelds in der Anwendungssymbolleiste filtern. Klicken Sie auf das Filtersymbol (<IconButton icon="lucide:search" />), um das Suchfeld einzublenden.
+Sie können die auf dem Dashboard angezeigten Server und Backups mithilfe des Suchfelds in der Anwendungsleiste filtern. Klicken Sie auf das Filtersymbol <IconButton icon="lucide:search" />, um das Suchfeld einzublenden.
 
 **Filterergebnisse:**
 - Server-ID

@@ -18,7 +18,7 @@ Esta sección muestra estadísticas agregadas para todas las copias de seguridad
 
 ## Filtrado de servidores {#server-filtering}
 
-Puede filtrar los servidores y copias de seguridad mostrados en el panel utilizando el campo de búsqueda en la barra de herramientas de la aplicación. Haga clic en el icono de filtro (<IconButton icon="lucide:search" />) para mostrar el campo de búsqueda.
+Puede filtrar los servidores y backups mostrados en el panel de control utilizando el campo de búsqueda en la barra de herramientas de la aplicación. Haga clic en el icono de filtro <IconButton icon="lucide:search" /> para mostrar el campo de búsqueda.
 
 **Coincidencias de filtro:**
 - ID del servidor

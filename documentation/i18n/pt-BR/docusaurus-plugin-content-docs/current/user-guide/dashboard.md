@@ -18,7 +18,7 @@ Esta seção exibe estatísticas agregadas para todos os backups.
 
 ## Filtragem de Servidores {#server-filtering}
 
-Você pode filtrar os servidores e backups exibidos no painel usando o campo de pesquisa na barra de ferramentas do aplicativo. Clique no ícone de filtro (<IconButton icon="lucide:search" />) para revelar o campo de pesquisa.
+Você pode filtrar os servidores e backups exibidos no painel usando o campo de pesquisa na barra de ferramentas do aplicativo. Clique no ícone de filtro <IconButton icon="lucide:search" /> para revelar o campo de pesquisa.
 
 **Correspondências de Filtro:**
 - ID do Servidor

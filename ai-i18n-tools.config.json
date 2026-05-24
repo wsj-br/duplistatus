@@ -1,6 +1,11 @@
 {
   "sourceLocale": "en-GB",
-  "targetLocales": ["de", "fr", "es", "pt-BR"],
+  "targetLocales": [
+    "de",
+    "fr",
+    "es",
+    "pt-BR"
+  ],
   "openrouter": {
     "baseUrl": "https://openrouter.ai/api/v1",
     "translationModels": [
@@ -21,49 +26,26 @@
     "temperature": 0.2
   },
   "features": {
-    "extractUIStrings": true,
     "translateUIStrings": true,
-    "translateMarkdown": true,
-    "translateJSON": true,
-    "translateSVG": true
+    "translateSVG": true,
+    "translateDocs": true
   },
   "glossary": {
     "uiGlossary": "src/locales/strings.json",
     "userGlossary": "glossary-user.csv"
   },
   "ui": {
-    "sourceRoots": ["src/"],
+    "sourceRoots": [
+      "src/"
+    ],
     "stringsJson": "src/locales/strings.json",
     "flatOutputDir": "src/locales/"
   },
   "cacheDir": ".translation-cache",
-  "documentations": [
-    {
-      "description": "Docusaurus docs site",
-      "contentPaths": ["documentation/docs"],
-      "outputDir": "documentation/i18n",
-      "jsonSource": "documentation/i18n/en-GB",
-      "markdownOutput": {
-        "style": "docusaurus",
-        "docsRoot": "documentation/docs",
-        "postProcessing": {
-          "regexAdjustments": [
-            {
-              "description": "translate SVG images paths from /img to ../assets for duplistatus_ files",
-              "search": "\\(/img/duplistatus_",
-              "replace": "(../assets/duplistatus_"
-            }
-          ]
-        }
-      },
-      "addFrontmatter": false
-    }
-  ],
   "svg": {
     "sourcePath": [
-      "documentation/static/img/duplistatus_dash-cards.svg",
-      "documentation/static/img/duplistatus_dash-table.svg",
-      "documentation/static/img/duplistatus_toolbar.svg"
+      "documentation/static/assets/duplistatus_dash-cards.svg",
+      "documentation/static/assets/duplistatus_toolbar.svg"
     ],
     "outputDir": "documentation/i18n",
     "style": "nested",
@@ -74,5 +56,20 @@
   "batchConcurrency": 4,
   "batchSize": 20,
   "maxBatchChars": 4096,
-  "uiLanguagesPath": "src/locales/ui-languages.json"
+  "uiLanguagesPath": "src/locales/ui-languages.json",
+  "docs": [
+    {
+      "description": "Docusaurus docs site",
+      "contentPaths": [
+        "documentation/docs"
+      ],
+      "outputDir": "documentation/i18n",
+      "addFrontmatter": false,
+      "docusaurusCatalogDir": "documentation/i18n/en-GB",
+      "docsOutput": {
+        "style": "docusaurus",
+        "docsRoot": "documentation/docs"
+      }
+    }
+  ]
 }

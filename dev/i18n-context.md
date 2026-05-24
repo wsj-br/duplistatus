@@ -161,3 +161,70 @@ The `ai-i18n-tools editor` UI includes a **Markdown issues** tab (same `markdown
 
 - `README.md` — install, quick start, runtime helper overview.
 - `docs/PACKAGE_OVERVIEW.md` — how extract and translation pipelines fit together.
+
+---
+
+## Locale assets — Patterns C and E (Docusaurus colocated)
+
+This project uses the colocated asset approach for both raster screenshots and translated SVGs. No `regexAdjustments` is needed for any asset type.
+
+### Directory layout
+
+```
+documentation/
+├── static/
+│   ├── img/                    ← third-party icons (docker.svg, github.svg, etc.)
+│   └── assets/
+│       ├── duplistatus_dash-cards.svg   ← SVG source (translate-svg reads this)
+│       ├── duplistatus_toolbar.svg
+│       └── screen-*.png (35 files)     ← en-GB screenshots
+├── docs/
+│   └── assets → ../static/assets       ← symlink; webpack follows it for en-GB build
+└── i18n/
+    └── {locale}/docusaurus-plugin-content-docs/current/assets/
+        ├── duplistatus_dash-cards.svg   ← translate-svg output (per locale)
+        ├── duplistatus_toolbar.svg
+        └── screen-*.png (35 files)     ← locale screenshots from take-screenshots.ts
+```
+
+All docs in all locales use the same relative path:
+
+```markdown
+![Application toolbar](../assets/duplistatus_toolbar.svg)
+![Dashboard summary](../assets/screen-dashboard-summary.png)
+```
+
+For `en-GB`: `../assets/` resolves via the symlink `docs/assets → ../static/assets`.
+For translated locales: `../assets/` resolves directly to `i18n/<locale>/.../current/assets/`.
+
+### Screenshot script: `getScreenshotDir(locale)`
+
+`scripts/take-screenshots.ts` uses this split to write screenshots to the correct location:
+
+```ts
+function getScreenshotDir(locale: Locale): string {
+  if (locale === 'en-GB') {
+    return 'documentation/static/assets';
+  }
+  return `documentation/i18n/${locale}/docusaurus-plugin-content-docs/current/assets`;
+}
+```
+
+### SVG translation: `ai-i18n-tools.config.json`
+
+```json
+"svg": {
+  "sourcePath": [
+    "documentation/static/assets/duplistatus_dash-cards.svg",
+    "documentation/static/assets/duplistatus_toolbar.svg"
+  ],
+  "outputDir": "documentation/i18n",
+  "style": "nested",
+  "pathTemplate": "{outputDir}/{locale}/docusaurus-plugin-content-docs/current/assets/{basename}",
+  "forceLowercase": true
+}
+```
+
+No `regexAdjustments` needed — English source docs and translated output docs use identical `../assets/` relative paths.
+
+See the [ai-i18n-tools locale assets guide](https://github.com/wsj-br/ai-i18n-tools/blob/main/docs/locale-assets.md) for full pattern documentation (Pattern C for rasters, Pattern E for translated SVGs).
