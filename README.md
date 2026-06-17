@@ -11,7 +11,7 @@
 This web application monitors and visualises backup operations from [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** provides a comprehensive dashboard to track backup statuses, notify overdue backups, job history,
 metrics, and performance across multiple servers.
 
-Easy to deploy with Docker, Podman, or Portainer and available in 5 languages (English, German, French, Spanish, and Portuguese), with full documentation in each language.
+Easy to deploy with Docker, Podman, or Portainer and available in 6 languages (English, German, French, Spanish, Portuguese, and Simplified Chinese), with full documentation in each language.
 
 [More information](https://wsj-br.github.io/duplistatus)        |
 [Mehr informationen](https://wsj-br.github.io/duplistatus/de/)  | 

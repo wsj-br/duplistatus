@@ -381,7 +381,7 @@ export function formatTimeElapsed(dateString: string, currentTime?: Date, locale
         try {
           const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
           // For future dates, we'll just return a generic message
-          return locale === 'fr' ? 'dans le futur' : locale === 'es' ? 'en el futuro' : locale === 'de' ? 'in der Zukunft' : locale === 'pt-BR' ? 'no futuro' : 'in the future';
+          return locale === 'fr' ? 'dans le futur' : locale === 'es' ? 'en el futuro' : locale === 'de' ? 'in der Zukunft' : locale === 'pt-BR' ? 'no futuro' : locale === 'zh-CN' ? '未来' : 'in the future';
         } catch {
           return "in the future";
         }

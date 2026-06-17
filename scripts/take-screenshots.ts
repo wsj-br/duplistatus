@@ -86,7 +86,7 @@ const VIEWPORT_HEIGHT = 1080;
 /** Timeout (ms) for waiting for data-screenshot-target elements to appear. */
 const SCREENSHOT_TARGET_TIMEOUT = 15000;
 
-const LOCALES = ['en-GB', 'de', 'fr', 'es', 'pt-BR'] as const;
+const LOCALES = ['en-GB', 'de', 'fr', 'es', 'pt-BR', 'zh-CN'] as const;
 
 type Locale = (typeof LOCALES)[number];
 

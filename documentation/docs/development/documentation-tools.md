@@ -17,7 +17,8 @@ documentation/
 │   ├── de/            # German
 │   ├── es/            # Spanish
 │   ├── fr/            # French
-│   └── pt-BR/         # Brazilian Portuguese
+│   ├── pt-BR/         # Brazilian Portuguese
+│   └── zh-CN/         # Simplified Chinese
 ├── src/               # React components and pages
 │   ├── components/    # Custom React components
 │   ├── css/           # Custom styles
@@ -52,11 +53,12 @@ Only edit files in `docs/` and the source JSON files in `i18n/en/`. The translat
 | `es`    | Spanish              | `i18n/es/docusaurus-plugin-content-docs/current/`    |
 | `fr`    | French               | `i18n/fr/docusaurus-plugin-content-docs/current/`    |
 | `pt-BR` | Brazilian Portuguese | `i18n/pt-BR/docusaurus-plugin-content-docs/current/` |
+| `zh-CN` | Simplified Chinese   | `i18n/zh-CN/docusaurus-plugin-content-docs/current/`   |
 
 
 ## Translate the Documentation {#translate-the-documentation}
 
-The documentation uses an AI-powered translation system to translate both content (markdown files) and UI strings (from Docusaurus and custom components). The source content is in English (`docs/`), and translations are generated for German, French, Spanish, and Brazilian Portuguese.
+The documentation uses an AI-powered translation system to translate both content (markdown files) and UI strings (from Docusaurus and custom components). The source content is in English (`docs/`), and translations are generated for German, French, Spanish, Brazilian Portuguese, and Simplified Chinese.
 
 ### How Translation Works {#how-translation-works}
 
@@ -199,7 +201,7 @@ This script automatically takes screenshots of the application for documentation
   - `ADMIN_PASSWORD`: Password for admin account
   - `USER_PASSWORD`: Password for regular user account
 
-**Options:** `--locale` limits screenshots to one or more locales (comma-separated). If omitted, all locales are captured. Valid locales: `en`, `de`, `fr`, `es`, `pt-BR`. Use `-h` or `--help` to print usage.
+**Options:** `--locale` limits screenshots to one or more locales (comma-separated). If omitted, all locales are captured. Valid locales: `en`, `de`, `fr`, `es`, `pt-BR`, `zh-CN`. Use `-h` or `--help` to print usage.
 
 **Example:**
 ```bash

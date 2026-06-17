@@ -4,7 +4,8 @@
     "de",
     "fr",
     "es",
-    "pt-BR"
+    "pt-BR",
+    "zh-CN"
   ],
   "openrouter": {
     "baseUrl": "https://openrouter.ai/api/v1",
