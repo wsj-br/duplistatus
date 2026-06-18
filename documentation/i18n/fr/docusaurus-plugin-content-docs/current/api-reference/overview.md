@@ -2,14 +2,6 @@
 
 Ce document décrit tous les points de terminaison API disponibles pour l'application duplistatus. L'API suit les principes RESTful et offre des fonctionnalités complètes de surveillance des sauvegardes, de gestion des notifications et d'administration système.
 
-:::note
-**Français (FR) :** La documentation de l'API est disponible uniquement en anglais.    <br/>
-**Allemand (DE) :** Die API-Dokumentation ist nur auf Englisch verfügbar.              <br/>
-**Espagnol (ES) :** La documentación de la API solo está disponible en inglés.        <br/>
-**Portugais (PT-BR) :** A documentação da API está disponível apenas em inglês.    
-**Anglais (EN) :** The API documentation is available only in English.               <br/>
-:::
-
 ## Structure de l'API {#api-structure}
 
 Pour une référence rapide de tous les points de terminaison, consultez la [liste des points de terminaison de l'API](api-endpoint-list).

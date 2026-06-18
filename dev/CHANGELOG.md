@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+
+
+## [1.4.2] - 2026-06-18
+
 ### Fixed
 - **Docker standalone startup crash**: Container crashed at startup with `Cannot find module '.../@swc/helpers/esm/_interop_require_default.js'`. Fixed with two coordinated changes: (1) set `nodeLinker: hoisted` in `pnpm-workspace.yaml` so Next.js `output: 'standalone'` file tracing resolves real (non-symlinked) files and places `@swc/helpers` at top-level `node_modules`; (2) added `outputFileTracingIncludes` for `@swc/helpers/**/*` in `next.config.ts`, since tracing otherwise copied only the package's `cjs/` build and dropped the `esm/` entry that the standalone `require-hook` loads. See vercel/next.js#48017, #65636, #50072.
 - **Auth requests on dashboard load**: Current user is fetched once via shared `CurrentUserProvider` instead of each component calling `/api/auth/me` independently (header, password guard, theme/config providers, dashboard widgets).

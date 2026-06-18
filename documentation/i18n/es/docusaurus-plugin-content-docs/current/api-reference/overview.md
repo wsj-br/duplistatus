@@ -2,14 +2,6 @@
 
 Este documento describe todos los puntos finales de la API disponibles para la aplicación duplistatus. La API sigue principios RESTful y proporciona capacidades completas de monitoreo de copias de seguridad, gestión de notificaciones y administración del sistema.
 
-:::note
-**Español (ES):** La documentación de la API solo está disponible en inglés.        <br/>
-**Portuguese (PT-BR):** A documentação da API está disponível apenas em inglês.    
-**German (DE):** Die API-Dokumentation ist nur auf Englisch verfügbar.              <br/>
-**French (FR):** La documentation de l'API est disponible uniquement en anglais.    <br/>
-**English (EN):** The API documentation is available only in English.               <br/>
-:::
-
 ## Estructura de la API {#api-structure}
 
 Para una referencia rápida de todos los puntos finales, consulte la [Lista de puntos finales de la API](api-endpoint-list).

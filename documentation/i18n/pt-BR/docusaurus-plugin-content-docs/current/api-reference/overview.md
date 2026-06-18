@@ -2,14 +2,6 @@
 
 Este documento descreve todos os endpoints da API disponíveis para o aplicativo duplistatus. A API segue princípios RESTful e fornece recursos abrangentes de monitoramento de backup, gerenciamento de notificações e administração do sistema.
 
-:::note
-**Português (PT-BR):** A documentação da API está disponível apenas em inglês.    
-**Inglês (EN):** A documentação da API está disponível apenas em inglês.               <br/>
-**Alemão (DE):** Die API-Dokumentation ist nur auf Englisch verfügbar.              <br/>
-**Francês (FR):** La documentation de l'API est disponible uniquement en anglais.    <br/>
-**Espanhol (ES):** La documentación de la API solo está disponible en inglés.        <br/>
-:::
-
 ## Estrutura da API {#api-structure}
 
 Para uma referência rápida de todos os endpoints, consulte a [Lista de Endpoints da API](api-endpoint-list).
