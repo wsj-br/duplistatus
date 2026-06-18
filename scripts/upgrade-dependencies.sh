@@ -140,7 +140,11 @@ try {
 NODE
 }
 
-_uses_react_eslint_stack() {
+# True if any workspace package depends on eslint directly. The React ESLint
+# plugins are usually pulled in transitively (e.g. via eslint-config-next), so
+# gating on a direct eslint dependency - not on direct plugin deps - is what
+# matches real projects and keeps eslint pinned until the plugins catch up.
+_uses_eslint() {
   local d
   for d in "${WORKSPACE_DIRS[@]}"; do
     if node -e '
@@ -148,8 +152,7 @@ _uses_react_eslint_stack() {
       try {
         const p = JSON.parse(fs.readFileSync(process.argv[1] + "/package.json", "utf8"));
         const all = Object.assign({}, p.dependencies, p.devDependencies);
-        const ok = all["eslint"] && (all["eslint-plugin-react"] || all["eslint-plugin-react-hooks"]);
-        process.exit(ok ? 0 : 1);
+        process.exit(all["eslint"] ? 0 : 1);
       } catch (e) { process.exit(1); }' "$d"; then
       return 0
     fi
@@ -159,7 +162,7 @@ _uses_react_eslint_stack() {
 
 _compute_eslint_reject() {
   ESLINT_REJECT=""
-  if ! _uses_react_eslint_stack; then
+  if ! _uses_eslint; then
     return 0
   fi
   upgrade_log "📦  Checking registry: do the latest React ESLint plugins allow the latest ESLint major?"
@@ -197,14 +200,21 @@ _doctor_upgrade_dir() {
   fi
 
   upgrade_log "📦  [${label}] ncu --doctor (verify: ${verify})"
-  local logf rc
-  logf="$SNAPSHOT_DIR/doctor.$(printf '%s' "$label" | tr '/ ' '__').log"
+  # ncu runs --doctorTest as an argv (no shell), so a "cmd1 && cmd2" string would
+  # be passed as arguments to cmd1. Write the verify command to an executable
+  # script and hand ncu that single path instead, so the real shell evaluates it.
+  local logf rc safe_label verify_script
+  safe_label=$(printf '%s' "$label" | tr '/ .' '___')
+  logf="$SNAPSHOT_DIR/doctor.${safe_label}.log"
+  verify_script="$SNAPSHOT_DIR/verify.${safe_label}.sh"
+  printf '#!/bin/sh\ncd %q || exit 1\n%s\n' "$dir" "$verify" > "$verify_script"
+  chmod +x "$verify_script"
   (
     cd "$dir" || exit 1
     ncu --doctor --upgrade \
       --packageManager "$PKG_MGR" \
       --doctorInstall "$PKG_MGR install" \
-      --doctorTest "$verify" \
+      --doctorTest "$verify_script" \
       ${ESLINT_REJECT:+-x "$ESLINT_REJECT"} 2>&1
   ) | tee "$logf" | pr -o 4 -T
   rc=${PIPESTATUS[0]}
@@ -249,7 +259,7 @@ _pm_audit_json() {
 
 _pm_audit_fix() {
   case "$PKG_MGR" in
-    pnpm) (cd "$REPO_ROOT" && pnpm audit --fix) ;;
+    pnpm) (cd "$REPO_ROOT" && pnpm audit --fix override) ;;
     npm) (cd "$REPO_ROOT" && npm audit fix) ;;
     yarn) (cd "$REPO_ROOT" && (yarn npm audit --fix 2>/dev/null || true)) ;;
     bun) upgrade_warn "bun has no automatic audit fix; skipping." ;;
@@ -305,6 +315,24 @@ _direct_deps() {
         for (const k of Object.keys(all)) console.log(k);
       } catch (e) {}' "$d"
   done
+}
+
+# _diff_pkg OLD_JSON NEW_PKG_JSON: print "name<TAB>old<TAB>new" for every
+# dependency whose version range changed/was added/removed between the snapshot
+# and the current package.json.
+_diff_pkg() {
+  node -e '
+    const fs = require("fs");
+    const read = f => { try { return JSON.parse(fs.readFileSync(f, "utf8")); } catch (e) { return {}; } };
+    const oldp = read(process.argv[1]), newp = read(process.argv[2]);
+    const fields = ["dependencies", "devDependencies", "optionalDependencies"];
+    const collect = p => { const o = {}; for (const f of fields) Object.assign(o, p[f] || {}); return o; };
+    const a = collect(oldp), b = collect(newp);
+    const out = [];
+    for (const k of Object.keys(b)) { if (a[k] !== b[k]) out.push(k + "\t" + (a[k] || "(absent)") + "\t" + b[k]); }
+    for (const k of Object.keys(a)) { if (!(k in b)) out.push(k + "\t" + a[k] + "\t(removed)"); }
+    process.stdout.write(out.join("\n"));
+  ' "$1" "$2"
 }
 
 _is_direct_dep() {
@@ -409,6 +437,31 @@ _print_summary() {
   echo "📋  Upgrade summary"
   echo "================================"
 
+  # Packages actually upgraded: compare each snapshot package.json to the current
+  # one (captures doctor-kept upgrades and forced security upgrades alike).
+  upgrade_log "Packages upgraded (package.json changes):"
+  local any=0 idx=0 d snap changes
+  if [ -f "$SNAPSHOT_DIR/dirs.txt" ]; then
+    while IFS= read -r d; do
+      snap="$SNAPSHOT_DIR/package.${idx}.json"
+      idx=$((idx + 1))
+      [ -f "$snap" ] || continue
+      [ -f "$d/package.json" ] || continue
+      changes=$(_diff_pkg "$snap" "$d/package.json")
+      if [ -n "$changes" ]; then
+        any=1
+        echo "    [$(dir_label "$d")]"
+        printf '%s\n' "$changes" | while IFS=$'\t' read -r name oldv newv; do
+          [ -n "$name" ] && printf '      - %s: %s -> %s\n' "$name" "$oldv" "$newv"
+        done
+      fi
+    done < "$SNAPSHOT_DIR/dirs.txt"
+  fi
+  if [ "$any" -eq 0 ]; then
+    upgrade_ok "    None - no package.json versions changed."
+  fi
+
+  echo ""
   local reverted
   reverted=$(printf '%s\n' $REVERTED_PKGS | grep -v '^$' | sort -u)
   if [ -n "$reverted" ]; then

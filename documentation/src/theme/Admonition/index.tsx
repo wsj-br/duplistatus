@@ -25,7 +25,7 @@ const admonitionIcons: Record<string, string> = {
   caution: 'lucide:alert-octagon',
 };
 
-export default function AdmonitionWrapper(props: Props): JSX.Element {
+export default function AdmonitionWrapper(props: Props): React.JSX.Element {
   // Get the icon for this admonition type, default to 'note' if type is unknown
   const iconId = admonitionIcons[props.type] || admonitionIcons.note;
   

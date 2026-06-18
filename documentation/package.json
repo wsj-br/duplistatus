@@ -44,14 +44,14 @@
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "remark-github-alerts": "^0.1.1",
-    "serialize-javascript": "^7.0.5"
+    "serialize-javascript": "^7.0.6"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "3.10.1",
     "@docusaurus/tsconfig": "3.10.1",
     "@docusaurus/types": "3.10.1",
     "eslint": "^9.39.4",
-    "eslint-config-next": "16.2.6",
+    "eslint-config-next": "16.2.9",
     "typescript": "~6.0.3"
   },
   "browserslist": {

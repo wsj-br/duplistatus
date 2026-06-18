@@ -14,7 +14,7 @@ const icons: Record<string, string> = {
   history: 'lucide:history',
 };
 
-export default function DocSidebarItemWrapper(props: Props): JSX.Element {
+export default function DocSidebarItemWrapper(props: Props): React.JSX.Element {
   // Check if this is a category item with a custom icon prop
   if (props.item.type === 'category' && (props.item as any).customProps?.icon) {
     const iconName = (props.item as any).customProps.icon as keyof typeof icons;

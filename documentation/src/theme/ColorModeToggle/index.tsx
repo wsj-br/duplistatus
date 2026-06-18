@@ -3,7 +3,7 @@ import {useColorMode} from '@docusaurus/theme-common';
 import {Icon} from '@iconify/react';
 import styles from './styles.module.css';
 
-export default function ColorModeToggle(): JSX.Element {
+export default function ColorModeToggle(): React.JSX.Element {
   const {colorMode, setColorMode} = useColorMode();
   const isDark = colorMode === 'dark';
 

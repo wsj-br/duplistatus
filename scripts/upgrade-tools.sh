@@ -41,6 +41,17 @@ fi
 # shellcheck source=scripts/nvm-lts-resolve-version.sh
 . "$SCRIPT_DIR/nvm-lts-resolve-version.sh"
 
+# _ver_line LABEL BEFORE AFTER: print an aligned "before -> after" version line,
+# highlighting it when the version changed.
+_ver_line() {
+  local label=$1 before=$2 after=$3
+  if [ "$before" = "$after" ]; then
+    printf '  %-6s : %s (unchanged)\n' "$label" "$after"
+  else
+    echo -e "  $(printf '%-6s' "$label") : ${UPGRADE_YELLOW}${before} -> ${after}${UPGRADE_RESET}"
+  fi
+}
+
 _upgrade_tools() {
   echo ""
   echo "--------------------------------"
@@ -49,6 +60,12 @@ _upgrade_tools() {
 
   local PKG_MGR
   PKG_MGR=$(detect_pkg_mgr)
+
+  # Capture tool versions before the upgrade so we can report before -> after.
+  local node_before npm_before pm_before
+  node_before=$(node --version 2>/dev/null || echo "n/a")
+  npm_before=$(npm --version 2>/dev/null || echo "n/a")
+  pm_before=$("$PKG_MGR" --version 2>/dev/null || echo "n/a")
 
   # Upgrade nvm itself to the latest tagged release (nvm-sh is installed as a git clone).
   if [ -d "$NVM_DIR/.git" ]; then
@@ -135,8 +152,24 @@ _upgrade_tools() {
     upgrade_warn "⚠  Could not determine installed ${PKG_MGR} version; skipping packageManager update"
   fi
 
+  # Report tool versions before -> after.
+  local node_after npm_after pm_after
+  node_after=$(node --version 2>/dev/null || echo "n/a")
+  npm_after=$(npm --version 2>/dev/null || echo "n/a")
+  pm_after=$("$PKG_MGR" --version 2>/dev/null || echo "n/a")
+  echo ""
+  echo "--------------------------------"
+  echo "🔧 Tool versions (before -> after)"
+  echo "--------------------------------"
+  _ver_line "node" "$node_before" "$node_after"
+  _ver_line "npm" "$npm_before" "$npm_after"
+  if [ "$PKG_MGR" != "npm" ]; then
+    _ver_line "$PKG_MGR" "$pm_before" "$pm_after"
+  fi
+  echo "--------------------------------"
+  echo ""
+  
   if [ -z "${UPGRADE_TOOLS_SUPPRESS_DONE:-}" ]; then
-    echo ""
     echo "Done."
   fi
 }
