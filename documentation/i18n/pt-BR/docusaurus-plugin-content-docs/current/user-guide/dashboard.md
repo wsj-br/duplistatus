@@ -16,6 +16,10 @@ Esta seção exibe estatísticas agregadas para todos os backups.
 - **Backups Atrasados** (tabela): O número de backups que estão atrasados. Veja [Configurações de Notificações de Backup](settings/backup-notifications-settings.md)                          
 - **Alternar Layout**: Alterna entre o layout de Cartões (padrão) e o layout de Tabela.
 
+:::tip Está vendo servidores duplicados?
+Se o mesmo servidor aparecer mais de uma vez no painel, use [Configurações → Manutenção do Banco de Dados → Mesclar Servidores Duplicados](settings/database-maintenance.md#merge-duplicate-servers) para consolidá-los. Duplicatas podem ocorrer quando você reinstala ou atualiza o Duplicati, porque o `machine_id` do servidor pode mudar e o **duplistatus** então o trata como um novo servidor.
+:::
+
 ## Filtragem de Servidores {#server-filtering}
 
 Você pode filtrar os servidores e backups exibidos no painel usando o campo de pesquisa na barra de ferramentas do aplicativo. Clique no ícone de filtro <IconButton icon="lucide:search" /> para revelar o campo de pesquisa.

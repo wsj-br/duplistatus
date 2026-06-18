@@ -16,6 +16,10 @@ Cette section affiche les statistiques agrégées pour toutes les sauvegardes.
 - **Overdue Backups** (tableau) : Le nombre de sauvegardes en retard. Voir [Paramètres des notifications de sauvegarde](settings/backup-notifications-settings.md)                          
 - **Layout Toggle** : Permet de basculer entre la disposition Cartes (par défaut) et la disposition Tableau.
 
+:::tip Des serveurs en double s'affichent ?
+Si le même serveur apparaît plusieurs fois sur le tableau de bord, utilisez [Paramètres → Maintenance de la base de données → Fusionner les serveurs en double](settings/database-maintenance.md#merge-duplicate-servers) pour les consolider. Des doublons peuvent apparaître lorsque vous réinstallez ou mettez à jour Duplicati, car le `machine_id` du serveur peut changer et **duplistatus** le considère alors comme un nouveau serveur.
+:::
+
 ## Filtrage des serveurs {#server-filtering}
 
 Vous pouvez filtrer les serveurs et sauvegardes affichés sur le tableau de bord en utilisant le champ de recherche dans la barre d'outils de l'application. Cliquez sur l'icône de filtre <IconButton icon="lucide:search" /> pour afficher le champ de recherche.

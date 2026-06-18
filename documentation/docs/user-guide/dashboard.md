@@ -18,6 +18,10 @@ This section displays aggregated statistics for all backups.
 - **Overdue Backups** (table): The number of backups that are overdue. See [Backup Notifications Settings](settings/backup-notifications-settings.md)                          
 - **Layout Toggle**: Switches between the Cards layout (default) and the Table layout.                                                                                                  
 
+:::tip Seeing duplicated servers?
+If the same server appears more than once on the dashboard, use [Settings → Database Maintenance → Merge Duplicate Servers](settings/database-maintenance.md#merge-duplicate-servers) to consolidate them. Duplicates can occur when you reinstall or upgrade Duplicati, because the server's `machine_id` may change and **duplistatus** then treats it as a new server.
+:::
+
 ## Server Filtering {#server-filtering}
 
 You can filter the servers and backups displayed on the dashboard using the search field in the application toolbar. Click the filter icon <IconButton icon="lucide:search" /> to reveal the search field.

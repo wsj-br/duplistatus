@@ -16,6 +16,10 @@ Dieser Abschnitt zeigt aggregierte Statistiken für alle Sicherungen an.
 - **Überfällige Sicherungen** (Tabelle): Die Anzahl der überfälligen Sicherungen. Siehe [Einstellungen für Sicherungshinweise](settings/backup-notifications-settings.md)                          
 - **Layout-Umschaltung**: Wechselt zwischen der Kartenansicht (Standard) und der Tabellenansicht.
 
+:::tip Doppelte Server sichtbar?
+Wenn derselbe Server mehr als einmal im Dashboard erscheint, verwenden Sie [Einstellungen → Datenbankverwaltung → Doppelte Server zusammenführen](settings/database-maintenance.md#merge-duplicate-servers), um diese zu konsolidieren. Duplikate können auftreten, wenn Sie Duplicati neu installieren oder aktualisieren, da sich die `machine_id` des Servers ändern kann und **duplistatus** diesen dann als neuen Server behandelt.
+:::
+
 ## Server-Filterung {#server-filtering}
 
 Sie können die auf dem Dashboard angezeigten Server und Backups mithilfe des Suchfelds in der Anwendungsleiste filtern. Klicken Sie auf das Filtersymbol <IconButton icon="lucide:search" />, um das Suchfeld einzublenden.

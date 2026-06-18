@@ -16,6 +16,10 @@ Esta sección muestra estadísticas agregadas para todas las copias de seguridad
 - **Respaldos Atrasados** (tabla): El número de respaldos que están retrasados. Consulte [Configuración de notificaciones de copia de seguridad](settings/backup-notifications-settings.md)                          
 - **Alternar diseño**: Cambia entre el diseño de Tarjetas (por defecto) y el diseño de Tabla.
 
+:::tip ¿Ve servidores duplicados?
+Si el mismo servidor aparece más de una vez en el panel de control, use [Configuración → Mantenimiento de base de datos → Combinar servidores duplicados](settings/database-maintenance.md#merge-duplicate-servers) para consolidarlos. Los duplicados pueden ocurrir cuando reinstala o actualiza Duplicati, ya que el `machine_id` del servidor puede cambiar y **duplistatus** entonces lo trata como un servidor nuevo.
+:::
+
 ## Filtrado de servidores {#server-filtering}
 
 Puede filtrar los servidores y backups mostrados en el panel de control utilizando el campo de búsqueda en la barra de herramientas de la aplicación. Haga clic en el icono de filtro <IconButton icon="lucide:search" /> para mostrar el campo de búsqueda.
