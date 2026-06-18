@@ -1054,6 +1054,10 @@ export async function getServersSummary() {
         if (!row.backup_name || row.backup_name.trim() === '') {
           return; // Skip this row but keep the server in the map
         }
+
+        if (server.backupInfo.some((existing) => existing.name === row.backup_name)) {
+          return;
+        }
         
         // Parse status history for status bars
         const statusHistory: BackupStatus[] = [];
@@ -1430,8 +1434,72 @@ function updateConfigurationServerId(oldServerId: string, newServerId: string): 
   }
 }
 
+function mergeDuplicateBackupIds(serverId: string): number {
+  const duplicateNames = safeDbOperation(
+    () => dbOps.getDuplicateBackupNamesForServer.all(serverId),
+    'getDuplicateBackupNamesForServer',
+    []
+  ) as Array<{ backup_name: string }>;
+
+  let normalized = 0;
+
+  for (const { backup_name } of duplicateNames) {
+    const canonical = safeDbOperation(
+      () => dbOps.getCanonicalBackupId.get(serverId, backup_name),
+      'getCanonicalBackupId'
+    ) as { backup_id: string } | undefined;
+
+    if (!canonical?.backup_id) {
+      continue;
+    }
+
+    const result = safeDbOperation(
+      () => dbOps.updateBackupIdForName.run(canonical.backup_id, serverId, backup_name, canonical.backup_id),
+      'updateBackupIdForName'
+    ) as { changes: number } | undefined;
+
+    if (result && result.changes > 0) {
+      normalized++;
+    }
+  }
+
+  return normalized;
+}
+
+function alignBackupIdsToTarget(oldServerId: string, targetServerId: string): void {
+  const backupNames = safeDbOperation(
+    () => dbOps.getDistinctBackupNamesForServer.all(oldServerId),
+    'getDistinctBackupNamesForServer',
+    []
+  ) as Array<{ backup_name: string }>;
+
+  for (const { backup_name } of backupNames) {
+    const targetCanonical = safeDbOperation(
+      () => dbOps.getCanonicalBackupId.get(targetServerId, backup_name),
+      'getCanonicalBackupId'
+    ) as { backup_id: string } | undefined;
+
+    if (!targetCanonical?.backup_id) {
+      continue;
+    }
+
+    safeDbOperation(
+      () => dbOps.updateBackupIdForName.run(
+        targetCanonical.backup_id,
+        oldServerId,
+        backup_name,
+        targetCanonical.backup_id
+      ),
+      'updateBackupIdForName'
+    );
+  }
+}
+
 // Function to merge servers (move all data from old servers to target server)
-export async function mergeServers(oldServerIds: string[], targetServerId: string): Promise<{ success: boolean; error?: string }> {
+export async function mergeServers(
+  oldServerIds: string[],
+  targetServerId: string
+): Promise<{ success: boolean; error?: string; backupIdsNormalized?: number }> {
   try {
     return await withDb(async () => {
       // Get target server details first
@@ -1454,6 +1522,13 @@ export async function mergeServers(oldServerIds: string[], targetServerId: strin
       } | undefined;
       const targetHasPassword = targetServerPassword && targetServerPassword.server_password && targetServerPassword.server_password.trim() !== '';
       
+      let backupIdsNormalized = 0;
+
+      const initialNormalization = db.transaction(() => {
+        return mergeDuplicateBackupIds(targetServerId);
+      });
+      backupIdsNormalized += initialNormalization();
+
       // Process each old server
       for (const oldServerId of oldServerIds) {
         if (oldServerId === targetServerId) {
@@ -1483,6 +1558,8 @@ export async function mergeServers(oldServerIds: string[], targetServerId: strin
         
         // Use transaction for database operations
         const transaction = db.transaction(() => {
+          alignBackupIdsToTarget(oldServerId, targetServerId);
+
           // Update all backups to point to target server
           safeDbOperation(() => dbOps.updateBackupServerId.run(targetServerId, oldServerId), 'updateBackupServerId');
           
@@ -1531,8 +1608,16 @@ export async function mergeServers(oldServerIds: string[], targetServerId: strin
         // since these are async operations on configuration data
         await updateConfigurationServerId(oldServerId, targetServerId);
       }
-      
-      return { success: true };
+
+      const finalNormalization = db.transaction(() => {
+        return mergeDuplicateBackupIds(targetServerId);
+      });
+      backupIdsNormalized += finalNormalization();
+
+      invalidateDataCache();
+      clearRequestCache();
+
+      return { success: true, backupIdsNormalized };
     });
   } catch (error) {
     console.error('Error merging servers:', error instanceof Error ? error.message : String(error));

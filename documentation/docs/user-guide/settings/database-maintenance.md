@@ -172,6 +172,7 @@ This can occur when Duplicati's `machine-id` changes after an upgrade or reinsta
 
 - All old server IDs are merged into the target server (newest by creation date)
 - All backup records and configurations are transferred to the target server
+- Duplicate `backup_id` values for the same backup name are consolidated to a single ID (most recent backup row wins)
 - The old server entries are deleted
 - Dashboard statistics are updated automatically
 

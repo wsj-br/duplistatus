@@ -1252,6 +1252,34 @@ function createDbOps() {
     WHERE server_id = ?
   `, 'updateBackupServerId'),
 
+  getDuplicateBackupNamesForServer: safePrepare(`
+    SELECT backup_name
+    FROM backups
+    WHERE server_id = ?
+    GROUP BY backup_name
+    HAVING COUNT(DISTINCT backup_id) > 1
+  `, 'getDuplicateBackupNamesForServer'),
+
+  getCanonicalBackupId: safePrepare(`
+    SELECT backup_id
+    FROM backups
+    WHERE server_id = ? AND backup_name = ?
+    ORDER BY date DESC, created_at DESC
+    LIMIT 1
+  `, 'getCanonicalBackupId'),
+
+  updateBackupIdForName: safePrepare(`
+    UPDATE backups
+    SET backup_id = ?
+    WHERE server_id = ? AND backup_name = ? AND backup_id != ?
+  `, 'updateBackupIdForName'),
+
+  getDistinctBackupNamesForServer: safePrepare(`
+    SELECT DISTINCT backup_name
+    FROM backups
+    WHERE server_id = ?
+  `, 'getDistinctBackupNamesForServer'),
+
   // New query for server cards - get backup status history for status bars
   // Uses LEFT JOIN to include servers without backups
   // Returns one row per server-backup combination, or one row per server if no backups
@@ -1304,9 +1332,15 @@ function createDbOps() {
       GROUP BY server_id, backup_name
     ) lb ON lb.server_id = s.id AND (b.backup_name IS NULL OR lb.backup_name = b.backup_name)
     LEFT JOIN backups b2
-      ON b2.server_id = s.id
-      AND (b.backup_name IS NULL OR (b2.backup_name = b.backup_name AND b2.date = lb.last_backup_date))
-    GROUP BY s.id, s.name, s.server_url, s.alias, s.note, s.server_password, COALESCE(b.backup_name, ''), lb.last_backup_date, b2.id, b2.status, b2.duration_seconds, b2.examined_files, b2.size, b2.known_file_size, b2.backup_list_count, b2.uploaded_size, b2.available_backups
+      ON b2.id = (
+        SELECT b_latest.id
+        FROM backups b_latest
+        WHERE b_latest.server_id = s.id
+          AND (b.backup_name IS NULL OR b_latest.backup_name = b.backup_name)
+        ORDER BY b_latest.date DESC, b_latest.created_at DESC
+        LIMIT 1
+      )
+    GROUP BY s.id, s.name, s.server_url, s.alias, s.note, s.server_password, COALESCE(b.backup_name, ''), lb.last_backup_date, b2.id, b2.status, b2.duration_seconds, b2.examined_files, b2.size, b2.known_file_size, b2.backup_list_count, b2.uploaded_size, b2.available_backups, b2.warnings, b2.errors
     ORDER BY s.name, COALESCE(b.backup_name, '')
   `, 'getServersSummary'),
 

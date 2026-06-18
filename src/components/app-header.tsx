@@ -22,8 +22,9 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from '@/components/ui/dropdown-menu';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { ChangePasswordModal } from '@/components/change-password-modal';
+import { useCurrentUser } from '@/hooks/use-current-user';
 import { ServerFilterInput } from '@/components/ui/server-filter-input';
 import { getHelpUrl } from '@/lib/helpMapper';
 import { useLocale } from '@/contexts/locale-context';
@@ -38,13 +39,6 @@ import {
 } from '@/lib/locales';
 //import the logo image
 import DupliLogo from '../../public/images/duplistatus_logo.png';
-
-interface User {
-  id: string;
-  username: string;
-  isAdmin: boolean;
-  mustChangePassword?: boolean;
-}
 
 const LOCALES = LOCALE_CODE_LIST;
 
@@ -64,8 +58,9 @@ export function AppHeader() {
   const isDashboardPage = pathname === '/';
   const isHomeDashboard = pathname === '/';
   const isSettingsPage = /\/settings/.test(pathname ?? '');
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const currentUser = useCurrentUser();
+  const loading = currentUser === undefined;
+  const user = currentUser ?? null;
   const [changePasswordOpen, setChangePasswordOpen] = useState(false);
 
   // Get context-aware help URL and page name
@@ -73,31 +68,6 @@ export function AppHeader() {
   const helpTooltip = helpInfo.pageName === 'User Guide' 
     ? t("Help")
     : t('Help for {{pageName}}', { pageName: helpInfo.pageName });
-
-  // Check authentication status
-  useEffect(() => {
-    async function checkAuth() {
-      try {
-        const response = await fetch('/api/auth/me', {
-          cache: 'no-store', // Always fetch fresh data, but don't cache
-        });
-        const data = await response.json();
-        if (data.authenticated) {
-          setUser(data.user);
-          // Note: Auto-opening password change modal for required changes is handled
-          // by PasswordChangeGuard component, not here
-        } else {
-          setUser(null);
-        }
-      } catch (error) {
-        console.error('Error checking auth:', error);
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
-    }
-    checkAuth();
-  }, []); // Only check once on mount
 
   const handleLocaleChange = async (newLocale: string) => {
     if (newLocale === locale) return;
@@ -124,7 +94,6 @@ export function AppHeader() {
       });
 
       if (response.ok) {
-        setUser(null);
         router.push(`/login`);
       }
     } catch (error) {

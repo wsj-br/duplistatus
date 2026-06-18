@@ -1,14 +1,8 @@
 'use client';
 import { useTranslation } from "react-i18next";
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ChangePasswordModal } from '@/components/change-password-modal';
-
-interface User {
-  id: string;
-  username: string;
-  isAdmin: boolean;
-  mustChangePassword?: boolean;
-}
+import { useCurrentUser } from '@/hooks/use-current-user';
 
 interface PasswordChangeGuardProps {
   children: React.ReactNode;
@@ -21,38 +15,17 @@ interface PasswordChangeGuardProps {
  */
 export function PasswordChangeGuard({ children }: PasswordChangeGuardProps) {
   const { t } = useTranslation();
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const currentUser = useCurrentUser();
+  const loading = currentUser === undefined;
+  const user = currentUser ?? null;
   const [changePasswordOpen, setChangePasswordOpen] = useState(false);
 
-  // Check authentication status and password change requirement
   useEffect(() => {
-    async function checkAuth() {
-      try {
-        const response = await fetch('/api/auth/me', {
-          cache: 'no-store',
-        });
-        const data = await response.json();
-        if (data.authenticated && data.user) {
-          setUser(data.user);
-          // If password change is required, open modal immediately
-          if (data.user.mustChangePassword) {
-            setChangePasswordOpen(true);
-          }
-        } else {
-          setUser(null);
-        }
-      } catch (error) {
-        console.error('Error checking auth:', error);
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
+    if (user?.mustChangePassword) {
+      setChangePasswordOpen(true);
     }
-    checkAuth();
-  }, []);
+  }, [user?.mustChangePassword]);
 
-  // Show loading state while checking authentication
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">

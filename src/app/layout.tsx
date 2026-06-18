@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { cookies, headers } from "next/headers";
 import localFont from "next/font/local";
 import "./globals.css";
+import { CurrentUserProvider } from "@/contexts/current-user-context";
 import { CustomThemeProvider } from "@/contexts/theme-context";
 import { ConfigProvider } from "@/contexts/config-context";
 import { GlobalRefreshProvider } from "@/contexts/global-refresh-context";
@@ -192,6 +193,7 @@ export default async function RootLayout({
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <I18nProvider>
+          <CurrentUserProvider>
           <CustomThemeProvider>
             <ClientLocaleProvider>
             <ConfigProvider>
@@ -216,6 +218,7 @@ export default async function RootLayout({
             </ConfigProvider>
             </ClientLocaleProvider>
           </CustomThemeProvider>
+          </CurrentUserProvider>
         </I18nProvider>
       </body>
     </html>

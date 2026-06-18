@@ -237,8 +237,8 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
           <h3 className="text-xs text-muted-foreground font-medium">{t("Backups:")}</h3>
           {server.backupInfo.length > 0 ? (
             <div className="flex-1 flex flex-col divide-y divide-border/30">
-              {server.backupInfo.map((backupJob, index) => (
-                <Tooltip key={index} delayDuration={1000}>
+              {server.backupInfo.map((backupJob) => (
+                <Tooltip key={`${server.id}-${backupJob.name}`} delayDuration={1000}>
                   <TooltipTrigger asChild>
                     <div 
                       className="grid grid-cols-[45%_25%_30%] cursor-pointer hover:bg-muted/30 transition-colors duration-200 rounded px-1 -mx-1"

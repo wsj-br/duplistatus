@@ -334,7 +334,7 @@ export function DashboardTable({ servers, serverFilter = '' }: DashboardTablePro
               {sortedServers.map((server) => {              
                 return (
                   <TableRow 
-                    key={`${server.id} || 'no-backup'}`} 
+                    key={server.id} 
                     onClick={() => handleRowClick(server.serverId, server.backupName)}
                     className={`cursor-pointer hover:bg-muted/50`}
                   >
@@ -504,7 +504,7 @@ export function DashboardTable({ servers, serverFilter = '' }: DashboardTablePro
             </div>
           )}
           {sortedServers.map((server) => (
-            <Card key={`${server.id} || 'no-backup'}`} className="p-4">
+            <Card key={server.id} className="p-4">
               <div className="space-y-3">
                 {/* Header with Server, Backup Name and Status */}
                 <div className="flex items-center justify-between border-b pb-2">

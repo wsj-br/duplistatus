@@ -307,7 +307,8 @@
   ```json
   {
     "success": true,
-    "message": "Successfully merged 2 server(s) into target server"
+    "message": "Successfully merged 2 server(s) into target server",
+    "backupIdsNormalized": 1
   }
   ```
 - **Error Responses**:
@@ -319,6 +320,7 @@
   - Only administrators can perform merge operations
   - The target server must not be in the list of servers to merge
   - All backups from source servers are transferred to the target server
+  - Duplicate `backup_id` values for the same `backup_name` on the merged server are normalized to the ID from the most recent backup row
   - Source servers are deleted after successful merge
   - This operation is irreversible
   - Used for consolidating duplicate server records
