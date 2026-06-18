@@ -198,6 +198,6 @@ Before finishing, confirm:
 - [ ] The new file is listed in `documentation/sidebars.ts` (newest first).
 - [ ] `dev/CHANGELOG.md` has the new `## [<VERSION>] - <date>` section and a fresh empty
       `## Unreleased` section.
-- [ ] `pnpm install`, `pnpm lint`, `pnpm build`, and `pnpm docker:devel` all succeed.
+- [ ] `pnpm install`, `pnpm lint`, and `pnpm build` all succeed.
 
 Then summarise what you changed and the result of each verification command.
