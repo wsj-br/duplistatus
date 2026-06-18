@@ -121,7 +121,7 @@ O projeto inclui vários scripts npm para diferentes tarefas de desenvolvimento:
 - `pnpm build` - Compilar a aplicação para produção (inclui pré-verificações)
 - `pnpm lint` - Executar ESLint para verificar a qualidade do código
 - `pnpm typecheck` - Executa a verificação de tipos do TypeScript
-- `scripts/upgrade-dependencies.sh` — Atualiza os pacotes da raiz e do `documentation/` (`npm-check-updates`), atualiza o arquivo de bloqueio do workspace, atualiza o browserslist e executa `pnpm audit` / fix. Prefira `source ./scripts/upgrade-dependencies.sh` para que o **nvm** seja aplicado ao seu shell; em CI ou automação, use `CI=1` ou `DUPLISTATUS_UPGRADE_ALLOW_EXEC=1` ao executar o arquivo diretamente. Veja também `scripts/upgrade-tools.sh` para ferramentas apenas de Node/pnpm.
+- `scripts/upgrade-dependencies.sh` — Atualização segura de build de cada pacote do workspace (detectados automaticamente). Usa o modo doctor do `npm-check-updates` para manter apenas as atualizações que passam no `typecheck`/`lint` de cada pacote, revertendo aquelas que quebram o build; em seguida, executa `pnpm audit` / `audit --fix` e aplica obrigatoriamente (e reporta) qualquer correção de segurança que exija alterações no código. Atualiza o lockfile do workspace e o browserslist. Prefira `source ./scripts/upgrade-dependencies.sh` para que o **nvm** seja aplicado ao seu shell; em CI ou automação, use `CI=1` ou `UPGRADE_ALLOW_EXEC=1` ao executar o arquivo diretamente. Veja também `scripts/upgrade-tools.sh` apenas para ferramentas Node/pnpm.
 - `scripts/clean-workspace.sh` - Limpa o workspace
 
 **Nota:** O script `preinstall` aplica automaticamente o pnpm como gerenciador de pacotes.

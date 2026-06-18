@@ -121,8 +121,8 @@ Das Projekt enthält mehrere npm-Skripte für verschiedene Entwicklungsaufgaben:
 - `pnpm build` - Anwendung für die Produktion bauen (beinhaltet Vorabprüfungen)
 - `pnpm lint` - ESLint ausführen, um die Code-Qualität zu überprüfen
 - `pnpm typecheck` - TypeScript-Typüberprüfung ausführen
-- `scripts/upgrade-dependencies.sh` — Root- und `documentation/`-Pakete aktualisieren (`npm-check-updates`), die Workspace-Lockdatei aktualisieren, browserslist aktualisieren und `pnpm audit` / fix ausführen. Bevorzugen Sie `source ./scripts/upgrade-dependencies.sh`, damit **nvm** in Ihrer Shell greift; in CI oder Automatisierung verwenden Sie `CI=1` oder `DUPLISTATUS_UPGRADE_ALLOW_EXEC=1`, wenn die Datei direkt ausgeführt wird. Siehe auch `scripts/upgrade-tools.sh` für Node/pnpm-Tooling allein.
-- `scripts/clean-workspace.sh` - Arbeitsbereich bereinigen
+- `scripts/upgrade-dependencies.sh` — Build-sicheres Upgrade jedes Workspace-Pakets (automatisch erkannt). Verwendet den `npm-check-updates`-Doctor-Modus, um nur Upgrades beizubehalten, die die `typecheck`/`lint` jedes Pakets bestehen, und macht solche rückgängig, die den Build beschädigen; führt anschließend `pnpm audit` / `audit --fix` aus und wendet (und meldet) erzwungen jeden Sicherheitsfix an, der Codeänderungen erfordert. Aktualisiert die Workspace-Lockdatei und die Browserslist. Bevorzugen Sie `source ./scripts/upgrade-dependencies.sh`, damit **nvm** auf Ihre Shell angewendet wird; verwenden Sie in CI oder Automatisierungen `CI=1` oder `UPGRADE_ALLOW_EXEC=1`, wenn Sie die Datei direkt ausführen. Siehe auch `scripts/upgrade-tools.sh` nur für Node/pnpm-Tooling.
+- `scripts/clean-workspace.sh` - Workspace bereinigen
 
 **Hinweis:** Das `preinstall`-Skript erzwingt automatisch pnpm als Paketmanager.
 

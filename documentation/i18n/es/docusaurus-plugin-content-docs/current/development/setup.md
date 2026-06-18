@@ -120,8 +120,8 @@ El proyecto incluye varios scripts npm para diferentes tareas de desarrollo:
 - `pnpm dev` - Iniciar el servidor de desarrollo en el puerto 8666 (incluye verificaciones previas)
 - `pnpm build` - Compilar la aplicación para producción (incluye verificaciones previas)
 - `pnpm lint` - Ejecutar ESLint para verificar la calidad del código
-- `pnpm typecheck` - Ejecutar verificación de tipos de TypeScript
-- `scripts/upgrade-dependencies.sh` — Actualizar paquetes raíz y `documentation/` (`npm-check-updates`), actualizar el archivo de bloqueo del espacio de trabajo, actualizar browserslist y ejecutar `pnpm audit` / fix. Prefiere `source ./scripts/upgrade-dependencies.sh` para que **nvm** se aplique a tu shell; en CI o automatización, usa `CI=1` o `DUPLISTATUS_UPGRADE_ALLOW_EXEC=1` al ejecutar el archivo directamente. Consulta también `scripts/upgrade-tools.sh` para herramientas de Node/pnpm únicamente.
+- `pnpm typecheck` - Ejecutar la comprobación de tipos de TypeScript
+- `scripts/upgrade-dependencies.sh` — Actualización segura de la compilación de cada paquete del espacio de trabajo (detectado automáticamente). Utiliza el modo doctor de `npm-check-updates` para mantener solo las actualizaciones que superen los `typecheck`/`lint` de cada paquete, revirtiendo aquellas que rompan la compilación; luego ejecuta `pnpm audit` / `audit --fix` y aplica forzosamente (y reporta) cualquier corrección de seguridad que requiera cambios en el código. Actualiza el archivo de bloqueo (lockfile) del espacio de trabajo y el browserslist. Se recomienda `source ./scripts/upgrade-dependencies.sh` para que **nvm** se aplique a tu shell; en CI o automatización, usa `CI=1` o `UPGRADE_ALLOW_EXEC=1` al ejecutar el archivo directamente. Consulta también `scripts/upgrade-tools.sh` solo para herramientas de Node/pnpm.
 - `scripts/clean-workspace.sh` - Limpiar el espacio de trabajo
 
 **Nota:** El script `preinstall` aplica automáticamente pnpm como gestor de paquetes.

@@ -53,20 +53,20 @@ ncu --upgrade
 pnpm update
 ```
 
-Oder verwenden Sie das automatisierte Skript (bevorzugt `source`, damit **nvm** auf Ihre aktuelle Shell angewendet wird; für **CI** oder nicht-interaktive Ausführungen verwenden Sie `CI=1` oder `DUPLISTATUS_UPGRADE_ALLOW_EXEC=1`):
+Oder verwenden Sie das automatisierte Skript (bevorzugen Sie `source`, damit **nvm** für Ihre aktuelle Shell gilt; für **CI** oder nicht-interaktive Ausführungen verwenden Sie `CI=1` oder `UPGRADE_ALLOW_EXEC=1`):
 
 ```bash
 source ./scripts/upgrade-dependencies.sh
 ```
 
-Das `upgrade-dependencies.sh`-Skript automatisiert den gesamten Prozess der Abhängigkeitsaktualisierung:
-- Lädt die Tool-Setup-Konfiguration über `upgrade-tools.sh` (nvm / Node LTS, globale `pnpm`, `npm-check-updates`, `doctoc`)
-- Aktualisiert Root und `documentation/package.json` mithilfe von `npm-check-updates` (mit optionalem ESLint-Peer-Gate, damit `eslint`- und React-Plugin-Aktualisierungen kompatibel bleiben)
-- Aktualisiert die Workspace-pnpm-Lockdatei und installiert Abhängigkeiten
+Das `upgrade-dependencies.sh`-Skript automatisiert den gesamten Abhängigkeits-Upgrade-Prozess. Es ist projektunabhängig: Der Paketmanager, die Workspace-Pakete und der Verify-Befehl jedes Pakets werden automatisch erkannt (sodass sowohl die Root- als auch die `documentation/`-Pakete aktualisiert werden, ohne hartcodierte Pfade). Es:
+- Richtet Tools über `upgrade-tools.sh` ein (nvm / Node LTS, globale `pnpm`, `npm-check-updates`, `doctoc`)
+- Führt **build-sichere** Upgrades mit `npm-check-updates` Doctor-Modus für jedes Paket durch: Es behält Upgrades bei, die den Paket-`typecheck`/`lint` bestehen, und kehrt diejenigen zurück, die den Build unterbrechen (mit einem integrierten ESLint Peer Gate, sodass `eslint` und React-Plugin-Bumps kompatibel bleiben)
+- Aktualisiert die Workspace-pnpm-Sperrdatei und installiert Abhängigkeiten
 - Aktualisiert die Browserslist-Datenbank
-- Überprüft auf Sicherheitslücken mithilfe von `pnpm audit`
-- Behebt Sicherheitslücken automatisch mithilfe von `pnpm audit fix`
-- Überprüft erneut auf Sicherheitslücken nach der Behebung, um die Korrektheit zu verifizieren
+- Prüft auf Sicherheitslücken (`pnpm audit`) und wendet nicht-brechende Korrekturen an (`pnpm audit --fix`)
+- **Priorisiert Sicherheit**: Wenn eine anfällige direkte Abhängigkeit nur durch ein Build-unterbrechendes Upgrade behoben werden kann, wird die sichere Version erzwungen und die Build-Fehler werden gemeldet, damit der Code für Kompatibilität aktualisiert werden kann
+- Druckt eine Zusammenfassung (aktualisierte vs. übersprungene Build-brechende Pakete, behobene/verbleibende Sicherheitslücken und einen Manifest-Schnappschuss-Pfad für manuelles Rollback)
 
 Dieses Skript bietet einen vollständigen Workflow zum Aktualisieren und Sichern von Abhängigkeiten.
 

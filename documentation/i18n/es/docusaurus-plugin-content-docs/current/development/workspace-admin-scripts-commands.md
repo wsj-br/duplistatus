@@ -53,20 +53,20 @@ ncu --upgrade
 pnpm update
 ```
 
-O usa el script automatizado (prefiere `source` para que **nvm** se aplique a tu shell actual; para **CI** o ejecuciones no interactivas usa `CI=1` o `DUPLISTATUS_UPGRADE_ALLOW_EXEC=1`):
+O use el script automatizado (prefiera `source` para que **nvm** se aplique a su shell actual; para ejecuciones de **CI** o no interactivas, use `CI=1` o `UPGRADE_ALLOW_EXEC=1`):
 
 ```bash
 source ./scripts/upgrade-dependencies.sh
 ```
 
-El script `upgrade-dependencies.sh` automatiza todo el proceso de actualización de dependencias:
-- Configura las herramientas mediante `upgrade-tools.sh` (nvm / Node LTS, `pnpm` global, `npm-check-updates`, `doctoc`)
-- Actualiza la raíz y `documentation/package.json` usando `npm-check-updates` (con una puerta opcional de pares de ESLint para que las actualizaciones de `eslint` y el plugin de React sean compatibles)
-- Actualiza el archivo de bloqueo pnpm del espacio de trabajo e instala las dependencias
+El script `upgrade-dependencies.sh` automatiza todo el proceso de actualización de dependencias. Es independiente del proyecto: el gestor de paquetes, los paquetes del espacio de trabajo y el comando de verificación de cada paquete se detectan automáticamente (para que se actualicen tanto la raíz como los paquetes `documentation/`, sin rutas codificadas). Hace lo siguiente:
+- Configura herramientas mediante `upgrade-tools.sh` (nvm / Node LTS, global `pnpm`, `npm-check-updates`, `doctoc`)
+- Realiza actualizaciones **seguras de compilación** con modo doctor `npm-check-updates` para cada paquete: mantiene las actualizaciones que pasan la `typecheck`/`lint` del paquete y revierte las que rompen la compilación (con una puerta de pares ESLint integrada para que las actualizaciones de `eslint` y el complemento de React se mantengan compatibles)
+- Actualiza el archivo de bloqueo de pnpm del espacio de trabajo e instala dependencias
 - Actualiza la base de datos de browserslist
-- Verifica vulnerabilidades usando `pnpm audit`
-- Corrige automáticamente las vulnerabilidades usando `pnpm audit fix`
-- Vuelve a verificar las vulnerabilidades después de corregirlas para confirmar que se solucionaron
+- Busca vulnerabilidades (`pnpm audit`) y aplica correcciones no disruptivas (`pnpm audit --fix`)
+- **Prioriza la seguridad**: si una dependencia directa vulnerable solo puede corregirse con una actualización que rompe la compilación, se aplica forzosamente la versión segura y se informan los errores de compilación para que el código pueda actualizarse para garantizar la compatibilidad
+- Imprime un resumen (paquetes actualizados frente a paquetes omitidos por romper la compilación, vulnerabilidades corregidas/pendientes y una ruta de instantánea de manifiesto para reversión manual)
 
 Este script proporciona un flujo de trabajo completo para mantener las dependencias actualizadas y seguras.
 

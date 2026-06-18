@@ -51,19 +51,19 @@ ncu --upgrade
 pnpm update
 ```
 
-Or use the automated script (prefer `source` so **nvm** applies to your current shell; for **CI** or non-interactive runs use `CI=1` or `DUPLISTATUS_UPGRADE_ALLOW_EXEC=1`):
+Or use the automated script (prefer `source` so **nvm** applies to your current shell; for **CI** or non-interactive runs use `CI=1` or `UPGRADE_ALLOW_EXEC=1`):
 ```bash
 source ./scripts/upgrade-dependencies.sh
 ```
 
-The `upgrade-dependencies.sh` script automates the entire dependency upgrade process:
+The `upgrade-dependencies.sh` script automates the entire dependency upgrade process. It is project-agnostic: the package manager, the workspace packages, and each package's verify command are auto-detected (so the root and `documentation/` packages are both upgraded, with no hardcoded paths). It:
 - Sources tool setup via `upgrade-tools.sh` (nvm / Node LTS, global `pnpm`, `npm-check-updates`, `doctoc`)
-- Updates root and `documentation/package.json` using `npm-check-updates` (with an optional ESLint peer gate so `eslint` and React plugin bumps stay compatible)
+- Performs **build-safe** upgrades with `npm-check-updates` doctor mode for each package: it keeps upgrades that pass the package's `typecheck`/`lint` and reverts the ones that break the build (with an embedded ESLint peer gate so `eslint` and React plugin bumps stay compatible)
 - Updates the workspace pnpm lockfile and installs dependencies
 - Updates the browserslist database
-- Checks for vulnerabilities using `pnpm audit`
-- Automatically fixes vulnerabilities using `pnpm audit fix`
-- Re-checks for vulnerabilities after fixing to verify the fixes
+- Checks for vulnerabilities (`pnpm audit`) and applies non-breaking fixes (`pnpm audit --fix`)
+- **Prioritises security**: if a vulnerable direct dependency can only be fixed by a build-breaking upgrade, the safe version is force-applied and the build errors are reported so the code can be updated for compatibility
+- Prints a summary (upgraded vs. build-breaking packages skipped, vulnerabilities fixed/remaining, and a manifest snapshot path for manual rollback)
 
 This script provides a complete workflow for keeping dependencies up to date and secure.
 

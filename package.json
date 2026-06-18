@@ -3,7 +3,7 @@
   "version": "1.4.2",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@11.7.0",
+  "packageManager": "pnpm@11.8.0",
   "engines": {
     "node": ">=24.12.0",
     "pnpm": ">=10.24.0"
@@ -78,7 +78,7 @@
     "lucide-react": "^1.20.0",
     "next": "16.2.9",
     "node-cron": "^4.3.0",
-    "nodemailer": "^8.0.11",
+    "nodemailer": "^9.0.1",
     "postcss": "^8.5.15",
     "qrcode": "^1.5.4",
     "react": "^19.2.7",
@@ -102,13 +102,13 @@
     "@types/express": "^5.0.6",
     "@types/node": "^25.9.3",
     "@types/node-cron": "^3.0.11",
-    "@types/react": "19.2.14",
+    "@types/react": "19.2.17",
     "@types/string-template": "^1.0.7",
     "baseline-browser-mapping": "latest",
     "eslint": "^9.39.4",
-    "eslint-config-next": "16.2.6",
+    "eslint-config-next": "16.2.9",
     "express": "5.2.1",
-    "puppeteer": "^24.43.1",
+    "puppeteer": "^25.1.0",
     "tsx": "^4.22.4",
     "webpack": "^5.107.2"
   }

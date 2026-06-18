@@ -10,6 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+- **Dependency upgrade script**: `source ./scripts/upgrade-dependencies.sh` aborted with `_duplistatus_upgrade_tools: command not found` because `upgrade-tools.sh` still used the old `transrewrt`-era function/variable names and ran on source. The scripts now share consistent, project-neutral names and a define-only mode.
+
+### Changed
+- **Dependency upgrade scripts (generic + build-safe + security-aware)**: `scripts/upgrade-dependencies.sh` and `scripts/upgrade-tools.sh` are now project-agnostic (no hardcoded project names; auto-detect the package manager from the lockfile, the workspace packages from `pnpm-workspace.yaml`/`package.json`, and each package's verify command from its `scripts`). Upgrades are build-safe via `npm-check-updates` doctor mode (keeps upgrades that pass `typecheck`+`lint`, reverts those that break the build); security fixes (`audit` + `audit --fix`) take priority, and a vulnerable direct dependency whose safe version breaks the build is force-applied and reported so the code can be made compatible. Added a new shared `scripts/upgrade-common.sh`; removed `scripts/eslint-react-peers-allow-eslint10.js` (its ESLint peer-range check is now embedded). The exec guard env var is renamed `DUPLISTATUS_UPGRADE_ALLOW_EXEC` -> `UPGRADE_ALLOW_EXEC` (`CI=1` still works).
+- **Dependencies**: Upgraded `nodemailer` to `9.0.1` (v9's only breaking change — default TLS validation when fetching remote attachment/OAuth2/proxy content — does not affect this app, which sends inline text/HTML only). Also bumped `puppeteer` to `25.1.0`, `eslint-config-next` to `16.2.9`, and `@types/react` to `19.2.17`. ESLint kept on `9.39.4` (latest 9.x) since ESLint 10 is not yet compatible with the `eslint-config-next` toolchain.
+
 
 
 ## [1.4.2] - 2026-06-18

@@ -127,7 +127,7 @@ The project includes several npm scripts for different development tasks:
 - `pnpm build` - Build the application for production (includes pre-checks)
 - `pnpm lint` - Run ESLint to check code quality
 - `pnpm typecheck` - Run TypeScript type checking
-- `scripts/upgrade-dependencies.sh` — Upgrade root and `documentation/` packages (`npm-check-updates`), refresh the workspace lockfile, update browserslist, and run `pnpm audit` / fix. Prefer `source ./scripts/upgrade-dependencies.sh` so **nvm** applies to your shell; in CI or automation use `CI=1` or `DUPLISTATUS_UPGRADE_ALLOW_EXEC=1` when executing the file directly. See also `scripts/upgrade-tools.sh` for Node/pnpm tooling only.
+- `scripts/upgrade-dependencies.sh` — Build-safe upgrade of every workspace package (auto-detected). Uses `npm-check-updates` doctor mode to keep only upgrades that pass each package's `typecheck`/`lint`, reverting those that break the build; then runs `pnpm audit` / `audit --fix` and force-applies (and reports) any security fix that needs code changes. Refreshes the workspace lockfile and browserslist. Prefer `source ./scripts/upgrade-dependencies.sh` so **nvm** applies to your shell; in CI or automation use `CI=1` or `UPGRADE_ALLOW_EXEC=1` when executing the file directly. See also `scripts/upgrade-tools.sh` for Node/pnpm tooling only.
 - `scripts/clean-workspace.sh` - Clean the workspace
 
 **Note:** The `preinstall` script automatically enforces pnpm as the package manager.
