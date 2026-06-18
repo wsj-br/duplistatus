@@ -328,7 +328,8 @@
   ```json
   {
     "success": true,
-    "message": "Successfully merged 2 server(s) into target server"
+    "message": "Successfully merged 2 server(s) into target server",
+    "backupIdsNormalized": 1
   }
   ```
 
@@ -341,8 +342,9 @@
   - Apenas administradores podem realizar operações de mesclagem
   - O servidor de destino não deve estar na lista de servidores a mesclar
   - Todos os backups dos servidores de origem são transferidos para o servidor de destino
-  - Os servidores de origem são excluídos após a mesclagem bem-sucedida
+  - Valores duplicados `backup_id` para o mesmo `backup_name` no servidor mesclado são normalizados para o ID da linha de backup mais recente
+  - Servidores de origem são excluídos após mesclagem bem-sucedida
   - Esta operação é irreversível
-  - Utilizada para consolidar registros duplicados de servidores
+  - Usado para consolidar registros de servidores duplicados
   - Valida que oldServerIds é um array não vazio
-  - Valida que targetServerId foi fornecido e é uma string
+  - Valida que targetServerId é fornecido e é uma string

@@ -351,7 +351,7 @@
     "locations": [
       {
         "file": "src/components/settings/database-maintenance-form.tsx",
-        "line": 1091
+        "line": 1090
       }
     ]
   },
@@ -1673,7 +1673,7 @@
       },
       {
         "file": "src/components/password-change-guard.tsx",
-        "line": 60
+        "line": 33
       },
       {
         "file": "src/components/settings/backup-monitoring-form.tsx",
@@ -1698,7 +1698,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 74
+        "line": 69
       }
     ]
   },
@@ -1719,7 +1719,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 75
+        "line": 70
       }
     ]
   },
@@ -1740,7 +1740,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 159
+        "line": 128
       }
     ]
   },
@@ -1761,7 +1761,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 169
+        "line": 138
       },
       {
         "file": "src/components/ui/back-button.tsx",
@@ -1786,7 +1786,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 181
+        "line": 150
       }
     ]
   },
@@ -1807,7 +1807,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 190
+        "line": 159
       },
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
@@ -1836,7 +1836,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 220
+        "line": 189
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
@@ -1861,7 +1861,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 229
+        "line": 198
       },
       {
         "file": "src/components/change-password-modal.tsx",
@@ -1902,7 +1902,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 236
+        "line": 205
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
@@ -1931,7 +1931,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 243
+        "line": 212
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
@@ -1960,7 +1960,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 249
+        "line": 218
       }
     ]
   },
@@ -1981,7 +1981,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 264
+        "line": 233
       }
     ]
   },
@@ -3911,7 +3911,7 @@
       },
       {
         "file": "src/components/settings/database-maintenance-form.tsx",
-        "line": 1178
+        "line": 1174
       },
       {
         "file": "src/components/settings/email-configuration-form.tsx",
@@ -6809,7 +6809,7 @@
     "locations": [
       {
         "file": "src/components/password-change-guard.tsx",
-        "line": 73
+        "line": 46
       }
     ]
   },
@@ -15851,7 +15851,7 @@
     "locations": [
       {
         "file": "src/components/settings/database-maintenance-form.tsx",
-        "line": 1096
+        "line": 1093
       }
     ]
   },
@@ -15872,11 +15872,11 @@
     "locations": [
       {
         "file": "src/components/settings/database-maintenance-form.tsx",
-        "line": 1105
+        "line": 1101
       },
       {
         "file": "src/components/settings/database-maintenance-form.tsx",
-        "line": 1121
+        "line": 1117
       },
       {
         "file": "src/components/status-badge.tsx",
@@ -15945,11 +15945,11 @@
     "locations": [
       {
         "file": "src/components/settings/database-maintenance-form.tsx",
-        "line": 1107
+        "line": 1103
       },
       {
         "file": "src/components/settings/database-maintenance-form.tsx",
-        "line": 1123
+        "line": 1119
       }
     ]
   },
@@ -15970,11 +15970,11 @@
     "locations": [
       {
         "file": "src/components/settings/database-maintenance-form.tsx",
-        "line": 1109
+        "line": 1105
       },
       {
         "file": "src/components/settings/database-maintenance-form.tsx",
-        "line": 1125
+        "line": 1121
       }
     ]
   },
@@ -15995,11 +15995,11 @@
     "locations": [
       {
         "file": "src/components/settings/database-maintenance-form.tsx",
-        "line": 1112
+        "line": 1108
       },
       {
         "file": "src/components/settings/database-maintenance-form.tsx",
-        "line": 1128
+        "line": 1124
       }
     ]
   },
@@ -16020,7 +16020,7 @@
     "locations": [
       {
         "file": "src/components/settings/database-maintenance-form.tsx",
-        "line": 1133
+        "line": 1129
       }
     ]
   },
@@ -16041,7 +16041,7 @@
     "locations": [
       {
         "file": "src/components/settings/database-maintenance-form.tsx",
-        "line": 1160
+        "line": 1156
       }
     ]
   },
@@ -16062,7 +16062,7 @@
     "locations": [
       {
         "file": "src/components/settings/database-maintenance-form.tsx",
-        "line": 1165
+        "line": 1161
       }
     ]
   },
@@ -16083,7 +16083,7 @@
     "locations": [
       {
         "file": "src/components/settings/database-maintenance-form.tsx",
-        "line": 1172
+        "line": 1168
       }
     ]
   },
@@ -16104,7 +16104,7 @@
     "locations": [
       {
         "file": "src/components/settings/database-maintenance-form.tsx",
-        "line": 1174
+        "line": 1170
       }
     ]
   },
@@ -16125,7 +16125,7 @@
     "locations": [
       {
         "file": "src/components/settings/database-maintenance-form.tsx",
-        "line": 1183
+        "line": 1179
       }
     ]
   },
@@ -16146,7 +16146,7 @@
     "locations": [
       {
         "file": "src/components/settings/database-maintenance-form.tsx",
-        "line": 1199
+        "line": 1195
       }
     ]
   },
@@ -16167,7 +16167,7 @@
     "locations": [
       {
         "file": "src/components/settings/database-maintenance-form.tsx",
-        "line": 1202
+        "line": 1198
       }
     ]
   },

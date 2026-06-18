@@ -328,7 +328,8 @@
   ```json
   {
     "success": true,
-    "message": "Successfully merged 2 server(s) into target server"
+    "message": "Successfully merged 2 server(s) into target server",
+    "backupIdsNormalized": 1
   }
   ```
 
@@ -340,9 +341,10 @@
 - **Notes** :
   - Seuls les administrateurs peuvent effectuer des opérations de fusion
   - Le serveur cible ne doit pas figurer dans la liste des serveurs à fusionner
-  - Toutes les sauvegardes des serveurs sources sont transférées vers le serveur cible
-  - Les serveurs sources sont supprimés après une fusion réussie
+  - Toutes les sauvegardes des serveurs source sont transférées vers le serveur cible
+  - Les valeurs `backup_id` en double pour le même `backup_name` sur le serveur fusionné sont normalisées avec l'ID de la ligne de sauvegarde la plus récente
+  - Les serveurs source sont supprimés après une fusion réussie
   - Cette opération est irréversible
-  - Utilisé pour consolider les enregistrements de serveurs en double
+  - Utilisé pour consolider des enregistrements de serveurs en double
   - Valide que oldServerIds est un tableau non vide
   - Valide que targetServerId est fourni et est une chaîne de caractères

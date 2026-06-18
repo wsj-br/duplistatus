@@ -328,7 +328,8 @@
   ```json
   {
     "success": true,
-    "message": "Successfully merged 2 server(s) into target server"
+    "message": "Successfully merged 2 server(s) into target server",
+    "backupIdsNormalized": 1
   }
   ```
 
@@ -340,9 +341,10 @@
 - **Hinweise**:
   - Nur Administratoren können Zusammenführungsvorgänge durchführen
   - Der Zielserver darf nicht in der Liste der zusammenzuführenden Server enthalten sein
-  - Alle Sicherungen der Quellserver werden auf den Zielserver übertragen
-  - Quellserver werden nach erfolgreicher Zusammenführung gelöscht
-  - Dieser Vorgang ist unwiderruflich
-  - Wird zum Konsolidieren doppelter Serverdatensätze verwendet
-  - Überprüft, ob oldServerIds ein nicht-leeres Array ist
-  - Überprüft, ob targetServerId angegeben ist und ein String ist
+  - Alle Sicherungen von Quell-Servern werden auf den Zielserver übertragen
+  - Doppelte `backup_id` Werte für denselben `backup_name` auf dem zusammengeführten Server werden auf die ID aus der aktuellsten Sicherungszeile normalisiert
+  - Quell-Server werden nach erfolgreicher Zusammenführung gelöscht
+  - Dieser Vorgang ist unumkehrbar
+  - Wird verwendet, um doppelte Servereinträge zu konsolidieren
+  - Überprüft, dass oldServerIds ein nicht-leeres Array ist
+  - Überprüft, dass targetServerId angegeben ist und ein String ist

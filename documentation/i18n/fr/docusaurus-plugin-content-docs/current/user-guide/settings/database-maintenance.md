@@ -162,10 +162,11 @@ Cela peut se produire quand l'`machine-id` de Duplicati change après une mise �
 
 **Processus de fusion :**
 
-- Tous les anciens identifiants de serveur sont fusionnés dans le serveur cible (le plus récent par date de création)
+- Tout les anciens identifiants de serveur sont fusionnés dans le serveur cible (le plus récent selon la date de création)
 - Tous les enregistrements de sauvegarde et les configurations sont transférés vers le serveur cible
+- Les valeurs `backup_id` en double pour le même Nom de la sauvegarde sont consolidées en un seul identifiant (la ligne de sauvegarde la plus récente l'emporte)
 - Les anciennes entrées de serveur sont supprimées
-- Les statistiques du tableau de bord sont mises à jour automatiquement
+- Les Statistiques du tableau de bord sont mises à jour automatiquement
 
 :::info[IMPORTANT]
 Cette action ne peut pas être annulée. Une sauvegarde de la base de données est recommandée avant de confirmer.  

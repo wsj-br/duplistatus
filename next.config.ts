@@ -99,6 +99,15 @@ const nextConfig: NextConfig = {
   outputFileTracingExcludes: {
     "*": ["**/data/**"],
   },
+  // Force the full `@swc/helpers` package (including its `esm/` build) into the
+  // standalone output. Next's file tracing otherwise copies only the `cjs/`
+  // variant, but the standalone `require-hook` resolves the ESM entry
+  // (`esm/_interop_require_default.js`), crashing the container at startup.
+  // Relies on `nodeLinker: hoisted` (pnpm-workspace.yaml) so the package lives
+  // at top-level `node_modules`. See vercel/next.js#48017, #65636, #50072.
+  outputFileTracingIncludes: {
+    "*": ["./node_modules/@swc/helpers/**/*"],
+  },
   allowedDevOrigins: ["192.168.1.20", "g5-server"],
   typescript: { ignoreBuildErrors: false },
   env: { NEXT_PUBLIC_APP_VERSION: version },

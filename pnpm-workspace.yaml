@@ -2,6 +2,16 @@ packages:
   - .
   - documentation
 
+# Use a hoisted (non-symlinked) node_modules layout.
+#
+# Required for Next.js `output: 'standalone'` builds: with pnpm's default
+# symlinked layout, file tracing fails to copy transitive runtime deps such as
+# `@swc/helpers` into `.next/standalone/node_modules`, causing the container to
+# crash at startup with:
+#   Cannot find module '.../@swc/helpers/esm/_interop_require_default.js'
+# See vercel/next.js#48017, #65636, #50072.
+nodeLinker: hoisted
+
 overrides:
   express: 5.2.1
   qs: '>=6.14.1'
@@ -61,3 +71,6 @@ allowBuilds:
   puppeteer: true
   sharp: true
   unrs-resolver: true
+
+minimumReleaseAgeExclude:
+  - ai-i18n-tools@1.6.1

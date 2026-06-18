@@ -162,9 +162,10 @@ Dies kann auftreten, wenn sich die `machine-id` von Duplicati nach einem Upgrade
 
 **Merge-Prozess:**
 
-- Alle alten Server-IDs werden in den Ziel-Server zusammengeführt (neuester nach Erstellungsdatum)
-- Alle Sicherungsdatensätze und Konfigurationen werden auf den Ziel-Server übertragen
-- Die alten Server-Einträge werden gelöscht
+- Alle alten Server-IDs werden in den Zielserver (neuestes Erstellungsdatum) zusammengeführt
+- Alle Backup-Datensätze und Konfigurationen werden auf den Zielserver übertragen
+- Doppelte `backup_id`-Werte für denselben Backup-Name werden auf eine einzige ID konsolidiert (die aktuellste Backup-Zeile gewinnt)
+- Die alten Servereinträge werden gelöscht
 - Dashboard-Statistiken werden automatisch aktualisiert
 
 :::info[WICHTIG]

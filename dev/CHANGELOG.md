@@ -11,15 +11,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Fixed
+- **Docker standalone startup crash**: Container crashed at startup with `Cannot find module '.../@swc/helpers/esm/_interop_require_default.js'`. Fixed with two coordinated changes: (1) set `nodeLinker: hoisted` in `pnpm-workspace.yaml` so Next.js `output: 'standalone'` file tracing resolves real (non-symlinked) files and places `@swc/helpers` at top-level `node_modules`; (2) added `outputFileTracingIncludes` for `@swc/helpers/**/*` in `next.config.ts`, since tracing otherwise copied only the package's `cjs/` build and dropped the `esm/` entry that the standalone `require-hook` loads. See vercel/next.js#48017, #65636, #50072.
 - **Auth requests on dashboard load**: Current user is fetched once via shared `CurrentUserProvider` instead of each component calling `/api/auth/me` independently (header, password guard, theme/config providers, dashboard widgets).
 - **Merge duplicate servers**: Server merge now also consolidates duplicate Duplicati `backup_id` values that share the same `backup_name` on the merged server, preferring the ID from the most recent backup row (target server when available).
 - **Audit trail**: Server merge operations (`/api/servers/merge`) are now recorded in the audit log as `servers_merged`.
 - **Dashboard duplicate entries**: `getServersSummary` no longer returns multiple rows per backup name when several records share the same latest backup date; fixed malformed React list keys in the dashboard table.
 
 ### Changed
+- **Merge duplicate servers headers**: The "Target Server (newest)" and "Old Server ID" labels in Settings > Database Maintenance > Merge Duplicate Servers now render as table-header cells (subtle background fill with bottom border, theme-aware) instead of pill/button shapes; removed the muted dark-blue button look.
 - **Dev request logs**: `pnpm dev` prefixes Next.js incoming request lines with a compact timestamp (`hh:mm:ss.sss`) via `scripts/dev-log-timestamps.cjs`.
 - **Documentation assets**: Moved SVG sources (`duplistatus_dash-cards.svg`, `duplistatus_toolbar.svg`) from `documentation/static/img/` to `documentation/static/assets/` alongside PNG screenshots. English docs now use `../assets/` paths like translated docs; removed `regexAdjustments` SVG path bridge from `ai-i18n-tools.config.json`. Removed stale `duplistatus_dash-table.svg` entry from `svg.sourcePath`.
 - **pnpm 11**: Moved `overrides`, `peerDependencyRules`, `allowedDeprecatedVersions`, and `allowBuilds` from `package.json#pnpm` to `pnpm-workspace.yaml` (pnpm 11 no longer reads the `pnpm` field in `package.json`).
+- **Next.js**: Pinned `next` to stable `16.2.9` (was `16.3.0-canary.19`).
+- **Project docs**: Merged `.cursor/rules/project-rule.mdc` into `AGENTS.md` (single source of guidance). Made the tech-stack / dependency lists in `AGENTS.md`, `documentation/docs/development/development-guidelines.md`, and `documentation/docs/development/setup.md` version-light, pointing to `package.json` as the source of truth so they no longer go stale on dependency upgrades. Removed obsolete `src/i18n/generated-hooks` / `useXxxContent()` references and corrected build (`next build --webpack`), lint (`eslint .`), and docs-path references.
 
 
 

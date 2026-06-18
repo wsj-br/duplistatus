@@ -33,28 +33,33 @@
 
 ## Marcos de trabajo y bibliotecas {#frameworks--libraries}
 
+:::info
+Para obtener las versiones exactas, consulte [`package.json`](https://github.com/wsj-br/duplistatus/blob/master/package.json) (`dependencies`, `devDependencies`, `engines` y `packageManager`). La siguiente lista es intencionadamente ligera en cuanto a versiones para que siga siendo precisa tras las actualizaciones de dependencias.
+:::
+
 ### Entorno de ejecución y gestión de paquetes {#runtime--package-management}
-- Node.js >=24.12.0
-- pnpm >=10.24.0 (packageManager: pnpm@10.30.3)
+- Node.js (consulte `engines.node`)
+- pnpm (impuesto a través del script `preinstall`; consulte `engines.pnpm` / `packageManager`)
 
-### Marcos de trabajo y bibliotecas principales {#core-frameworks--libraries}
-- Next.js ^16.1.6 (App Router)
-- React ^19.2.4 y React-DOM ^19.2.4
-- Radix UI (`@radix-ui/react-*`): ^1.1.8 - ^2.2.6 (acordeón ^1.2.12, cuadro de diálogo de alerta ^1.1.15, avatar ^1.1.11, casilla de verificación ^1.3.3, diálogo ^1.1.15, menú desplegable ^2.1.16, etiqueta ^2.1.8, barra de menús ^1.1.16, ventana emergente ^1.1.15, área de desplazamiento ^1.2.10, selección ^2.2.6, separador ^1.1.8, control deslizante ^1.3.6, ranura ^1.2.4, interruptor ^1.2.6, pestañas ^1.1.13, notificación ^1.2.15, información sobre herramientas ^1.2.8)
-- Tailwind CSS ^4.2.1 + tailwindcss-animate ^1.0.7
-- Better-sqlite3 ^12.6.2
-- Recharts ^3.7.0, react-day-picker ^9.14.0, react-hook-form ^7.71.2, react-datepicker ^9.1.0
-- lucide-react ^0.575.0, clsx ^2.1.1, class-variance-authority ^0.7.1
-- date-fns ^4.1.0, uuid ^13.0.0
-- express ^5.2.1 (servicio cron), node-cron ^4.2.1
-- nodemailer ^8.0.1, qrcode ^1.5.4
-- ai-i18n-tools ^1.x, i18next ^26.x, react-i18next ^17.x (canalización de traducción de IU y documentación)
+### Frameworks y librerías principales {#core-frameworks--libraries}
+- Next.js (App Router)
+- React y React-DOM
+- Radix UI (primitivas `@radix-ui/react-*`)
+- Tailwind CSS v4 + tailwindcss-animate
+- better-sqlite3
+- Recharts, react-day-picker, react-hook-form, react-datepicker
+- lucide-react, clsx, class-variance-authority
+- date-fns, uuid
+- bcrypt
+- express (servicio cron), node-cron
+- nodemailer, qrcode
+- ai-i18n-tools, i18next, react-i18next (pipeline de traducción de UI y documentación)
 
-### Comprobación de tipos y revisión de código {#type-checking--linting}
-- TypeScript ^5.9.3
-- TSX ^4.21.0
-- ESLint ^9.16.0 (mediante `next lint`)
-- webpack ^5.105.3
+### Comprobación de tipos y linting {#type-checking--linting}
+- TypeScript (modo estricto)
+- TSX (para ejecutar scripts de TypeScript)
+- ESLint (configuración plana `eslint.config.mjs` + `eslint-config-next`; ejecute mediante `pnpm lint` → `eslint .`)
+- webpack
 
 ### Compilación e implementación {#build--deployment}
 - Salida independiente de Next.js (`output: 'standalone'`) con punto de entrada del contenedor iniciando `server.js`

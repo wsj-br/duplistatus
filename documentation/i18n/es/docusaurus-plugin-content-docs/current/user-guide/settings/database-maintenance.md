@@ -162,10 +162,11 @@ Esto puede ocurrir cuando el `machine-id` de Duplicati cambia después de una ac
 
 **Proceso de Fusión:**
 
-- Todos los ID de servidor antiguos se fusionan en el servidor objetivo (el más reciente por fecha de creación)
-- Todos los registros de backup y configuraciones se transfieren al servidor objetivo
+- Todos los ID de servidor antiguos se fusionan en el servidor destino (el más reciente según la fecha de creación)
+- Todos los registros y configuraciones de copia de seguridad se transfieren al servidor destino
+- Los valores `backup_id` duplicados para el mismo Nombre de copia de seguridad se consolidan en un único ID (prevalece la fila de copia de seguridad más reciente)
 - Las entradas del servidor antiguo se eliminan
-- Las estadísticas del panel de control se actualizan automáticamente
+- Las Estadísticas del panel de control se actualizan automáticamente
 
 :::info[IMPORTANTE]
 Esta acción no se puede deshacer. Se recomienda realizar un backup de base de datos antes de confirmar.  

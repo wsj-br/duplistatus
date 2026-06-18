@@ -1085,16 +1085,12 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
                           <div className="overflow-x-auto min-w-0">
                             <table className="w-full text-sm border-collapse min-w-0">
                               <thead>
-                                <tr className="border-b">
-                                  <th className="text-left p-2 font-medium">
-                                    <span className="inline-block px-2 py-1 rounded-md bg-blue-700 dark:bg-blue-800 text-blue-100 dark:text-blue-200 shadow-inner border border-blue-600 dark:border-blue-700">
-                                      {t("Target Server (newest)")}
-                                    </span>
+                                <tr>
+                                  <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide bg-primary/10 text-primary border-b-2 border-primary/40">
+                                    {t("Target Server (newest)")}
                                   </th>
-                                  <th className="text-left p-2 font-medium">
-                                    <span className="inline-block px-2 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-gray-600">
-                                      {t("Old Server ID")}
-                                    </span>
+                                  <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide bg-muted text-muted-foreground border-b-2 border-border">
+                                    {t("Old Server ID")}
                                   </th>
                                 </tr>
                               </thead>

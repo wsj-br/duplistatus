@@ -162,9 +162,10 @@ Isso pode ocorrer quando o `machine-id` do Duplicati muda após uma atualizaçã
 
 **Processo de Mesclagem:**
 
-- Todos os IDs de servidor antigos são mesclados no servidor de destino (mais recente pela data de criação)
+- Todos os IDs de servidores antigos são mesclados no servidor de destino (o mais recente por data de criação)
 - Todos os registros de backup e configurações são transferidos para o servidor de destino
-- As entradas do servidor antigo são deletadas
+- Valores de `backup_id` duplicados para o mesmo Nome do Backup são consolidados em um único ID (a linha de backup mais recente prevalece)
+- As entradas do servidor antigo são excluídas
 - As estatísticas do painel são atualizadas automaticamente
 
 :::info[IMPORTANTE]

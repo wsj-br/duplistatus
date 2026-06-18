@@ -3,8 +3,8 @@
 ## Voraussetzungen {#prerequisites}
 
 - Docker / Docker Compose
-- Node.js >=24.12.0
-- pnpm >=10.24.0 (packageManager: pnpm@10.30.3)
+- Node.js (siehe `engines.node` in `package.json`)
+- pnpm (siehe `engines.pnpm` / `packageManager` in `package.json`)
 - SQLite3
 - Inkscape (für die Übersetzung von Dokumentations-SVGs und PNG-Export; nur erforderlich, wenn Sie `translate` oder `translate:svg` ausführen)
 - bat/batcat (um eine ansprechende Version von `translate:help` anzuzeigen)

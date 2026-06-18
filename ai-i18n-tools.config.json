@@ -9,6 +9,7 @@
   "openrouter": {
     "baseUrl": "https://openrouter.ai/api/v1",
     "translationModels": [
+      "google/gemma-4-31b-it",
       "anthropic/claude-3.5-haiku",
       "qwen/qwen3-235b-a22b-2507",
       "openai/gpt-4o-mini",
@@ -18,7 +19,6 @@
       "anthropic/claude-3.5-haiku",
       "google/gemini-3-flash-preview",
       "~anthropic/claude-haiku-latest",
-      "google/gemma-4-31b-it",
       "~anthropic/claude-sonnet-latest",
       "openai/gpt-5.3-codex"
     ],

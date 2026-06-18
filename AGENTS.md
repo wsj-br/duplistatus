@@ -8,16 +8,21 @@ This file documents essential information for AI agents working in the duplistat
 
 ## Tech Stack
 
-| Component | Version |
-|-----------|---------|
-| Node.js | >=24.12.0 |
-| TypeScript | ^5.9.3 |
-| Next.js (App Router) | ^16.1.6 |
-| React & React-DOM | ^19.2.4 |
-| Tailwind CSS | ^4.2.1 |
-| pnpm | >=10.24.0 (packageManager: pnpm@10.30.3) |
-| SQLite | better-sqlite3 ^12.6.2 |
-| i18n | i18next + react-i18next; **ai-i18n-tools** (extract + OpenRouter translate for UI + docs + SVG) |
+> **Source of truth for versions**: `package.json` (and `engines` / `packageManager` fields). The list below is intentionally version-light so it stays accurate across dependency upgrades — check `package.json` for exact versions.
+
+| Component            | Notes                                                                                           |
+|----------------------|-------------------------------------------------------------------------------------------------|
+| Node.js              | See `engines.node` in `package.json` (currently Node 24+)                                       |
+| pnpm                 | Enforced via `preinstall` (`only-allow pnpm`); see `engines.pnpm` / `packageManager`            |
+| TypeScript           | Strict mode                                                                                     |
+| Next.js (App Router) | `output: 'standalone'`                                                                          |
+| React & React-DOM    | —                                                                                               |
+| Tailwind CSS         | v4 or newer                                                                                     |
+| SQLite               | `better-sqlite3`                                                                                |
+| i18n                 | i18next + react-i18next; **ai-i18n-tools** (extract + OpenRouter translate for UI + docs + SVG) |
+| Radix UI             | `@radix-ui/react-*` primitives                                                                  |
+| ESLint               | Flat config (`eslint.config.mjs`) + `eslint-config-next`                                        |
+| Prettier             | Not used                                                                                        |
 
 ## Architecture
 
@@ -48,6 +53,8 @@ This file documents essential information for AI agents working in the duplistat
 
 ## Essential Commands
 
+> **DO NOT run these commands automatically.** Run `pnpm lint` (and `pnpm typecheck`) before suggesting code changes.
+
 ```bash
 # Dependencies
 pnpm install              # Install dependencies (enforced via preinstall)
@@ -57,7 +64,7 @@ pnpm dev                  # Start Next.js dev server on port 8666
 pnpm cron:dev             # Start cron service in watch mode on port 8667
 
 # Build & Production
-pnpm build                # Production build (next build; pre-checks in scripts/pre-checks.sh)
+pnpm build                # Production build (next build --webpack; pre-checks in scripts/pre-checks.sh)
 pnpm start                # Production server on port 9666
 pnpm cron:start           # Start cron service in production mode
 
@@ -100,10 +107,12 @@ src/
 │   └── page.tsx            # Root page
 ├── components/             # React components
 │   ├── ui/                 # Base UI components (shadcn/ui)
-│   └── *.tsx               # Component files
-├── i18n/
-│   └── generated-hooks/    # use*Content() hooks (English keys → t())
-├── locales/                # strings.json + per-locale flat JSON
+│   ├── dashboard/          # Dashboard components
+│   ├── settings/           # Settings page components
+│   ├── server-details/     # Server detail page components
+│   └── *.tsx               # Top-level component files
+├── i18n.ts                 # i18next runtime init (key-as-default t())
+├── locales/                # strings.json + per-locale flat JSON (de, es, fr, pt-BR)
 ├── contexts/               # React contexts
 │   ├── locale-context.tsx
 │   ├── theme-context.tsx
@@ -115,6 +124,7 @@ src/
 │   ├── auth.ts             # Authentication utilities
 │   ├── notifications.ts    # Notification logic
 │   └── ...
+├── proxy.ts                # Request proxy (locale cookie, legacy URL redirects)
 └── cron-service/           # Background cron service
 
 data/                       # Data directory (SQLite, keys)
@@ -125,6 +135,13 @@ ai-i18n-tools.config.json   # i18n tooling (UI + docs + SVG)
 
 ## Code Conventions
 
+### Code Quality Rules
+1. **Never use `any`** - Always define proper TypeScript interfaces
+2. **Follow DRY** - Reuse functions from `src/lib/` instead of duplicating logic
+3. **Preserve security** - Do not modify `.duplistatus.key` permission checks
+4. **Run linter** - Use `pnpm lint` before suggesting code changes
+5. **Update docs** - When changing ports, env vars, or setup, update the English docs under `documentation/docs/development/` and `documentation/docs/installation/`
+
 ### TypeScript
 - **Strict mode**: Enabled
 - **No `any`**: Always define proper interfaces
@@ -132,8 +149,8 @@ ai-i18n-tools.config.json   # i18n tooling (UI + docs + SVG)
 - **Path mapping**: `@/*` → `./src/*`
 
 ### Translations (UI)
-- **Default**: **`const { t } = useTranslation()`** and inline **`t('…')`** next to labels, toasts, and `aria-*` text.
-- **Optional**: **`useXxxContent()`** from `src/i18n/generated-hooks/` for a large feature module (many strings in one place) — still built from `t('English')` per key, not a separate “common” indirection.
+- **Default**: **`const { t } = useTranslation()`** and inline **`t('…')`** next to labels, toasts, and `aria-*` text (the exact English phrase is the key).
+- **Do not** add feature-level wrapper hooks or shared “content” objects for UI strings — `ai-i18n-tools extract` scans literal `t('…')` calls in `src/`.
 - **Interpolation**: i18next format `{{name}}` with `t('…', { name: value })`.
 - **Server / notifications**: use `getServerI18n()` or `getServerI18nForLanguage()` from `src/lib/i18n-server.ts`, then `i18n.t('…')` with the same English keys as the UI (`setupKeyAsDefaultT` + locale bundles).
 
@@ -243,17 +260,18 @@ export async function POST(request: NextRequest) {
 
 ## Key Files Reference
 
-| File | Purpose |
-|------|---------|
-| `src/lib/db.ts` | Database connection and operations |
-| `src/lib/types.ts` | All TypeScript interfaces |
-| `src/lib/auth.ts` | Authentication utilities |
-| `src/lib/notifications.ts` | NTFY and email notifications |
-| `src/lib/cron-client.ts` | Cron service client |
-| `next.config.ts` | Next.js + Webpack configuration |
-| `ai-i18n-tools.config.json` | i18n extract/translate configuration |
-| `eslint.config.mjs` | ESLint rules |
-| `dev/CHANGELOG.md` | Change tracking (REQUIRED updates) |
+| File                        | Purpose                                             |
+|-----------------------------|-----------------------------------------------------|
+| `src/lib/db.ts`             | Database connection and operations                  |
+| `src/lib/types.ts`          | All TypeScript interfaces                           |
+| `src/lib/auth.ts`           | Authentication utilities                            |
+| `src/lib/notifications.ts`  | NTFY and email notifications                        |
+| `src/lib/cron-client.ts`    | Cron service client                                 |
+| `src/proxy.ts`              | Request proxy (locale cookie, legacy URL redirects) |
+| `next.config.ts`            | Next.js + Webpack configuration                     |
+| `ai-i18n-tools.config.json` | i18n extract/translate configuration                |
+| `eslint.config.mjs`         | ESLint rules                                        |
+| `dev/CHANGELOG.md`          | Change tracking (REQUIRED updates)                  |
 
 ## External Integrations
 
@@ -271,5 +289,4 @@ export async function POST(request: NextRequest) {
 
 ---
 
-**Last Updated**: 2026-04 (ai-i18n-tools migration)
-**Version**: 1.3.2
+**App version**: See `version` in `package.json`
