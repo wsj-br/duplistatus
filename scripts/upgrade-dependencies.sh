@@ -267,6 +267,90 @@ _pm_audit_fix() {
   esac
 }
 
+# Merge duplicate exact-version entries for the same package name in
+# pnpm-workspace.yaml's `minimumReleaseAgeExclude` into a single
+# "name@v1 || v2" disjunction. pnpm's lockfile verifier consults only the
+# FIRST matching name rule per package (pnpm#12463), so separate "pkg@a" and
+# "pkg@b" lines make every version except the first silently fail the
+# supply-chain check - which aborts `pnpm install` and therefore any fix that
+# `audit --fix override` / loose-mode auto-collect just wrote. pnpm-only;
+# no-op for other managers or when the file/key is absent.
+_dedupe_min_release_age_exclude() {
+  [ "${PKG_MGR:-}" = "pnpm" ] || return 0
+  local wf="$REPO_ROOT/pnpm-workspace.yaml"
+  [ -f "$wf" ] || return 0
+  local changed
+  changed=$(WF="$wf" node <<'NODE'
+'use strict';
+const fs = require('fs');
+const file = process.env.WF;
+let text;
+try { text = fs.readFileSync(file, 'utf8'); } catch (e) { process.exit(0); }
+const nl = text.includes('\r\n') ? '\r\n' : '\n';
+const lines = text.split(/\r?\n/);
+
+let start = -1;
+for (let i = 0; i < lines.length; i++) {
+  if (/^minimumReleaseAgeExclude:\s*(#.*)?$/.test(lines[i])) { start = i; break; }
+}
+if (start === -1) process.exit(0);
+
+const itemRe = /^(\s*)-\s+(.*\S)\s*$/;
+let end = start + 1;
+const items = [];
+let indent = null;
+while (end < lines.length && itemRe.test(lines[end])) {
+  const m = lines[end].match(itemRe);
+  if (indent === null) indent = m[1];
+  items.push(m[2]);
+  end++;
+}
+if (items.length === 0) process.exit(0);
+
+function splitNameVer(entry) {
+  let e = entry.trim();
+  if ((e.startsWith('"') && e.endsWith('"')) || (e.startsWith("'") && e.endsWith("'"))) {
+    e = e.slice(1, -1);
+  }
+  const scoped = e.startsWith('@');
+  const at = scoped ? e.indexOf('@', 1) : e.indexOf('@');
+  if (at === -1) return { name: e, versions: null };
+  const versions = e.slice(at + 1).split('||').map(s => s.trim()).filter(Boolean);
+  return { name: e.slice(0, at), versions };
+}
+
+const order = [];
+const byName = new Map();
+for (const it of items) {
+  const { name, versions } = splitNameVer(it);
+  if (!byName.has(name)) { byName.set(name, { nameOnly: false, versions: [] }); order.push(name); }
+  const rec = byName.get(name);
+  if (versions === null) rec.nameOnly = true;
+  else for (const v of versions) if (!rec.versions.includes(v)) rec.versions.push(v);
+}
+
+const newItems = order.map((name) => {
+  const rec = byName.get(name);
+  // A bare name excludes every version, so it subsumes any version pins.
+  return rec.nameOnly ? name : `${name}@${rec.versions.join(' || ')}`;
+});
+
+if (newItems.length === items.length && newItems.every((v, i) => v === items[i])) {
+  process.exit(0);
+}
+
+const ind = indent === null ? '  ' : indent;
+const rebuilt = newItems.map((v) => `${ind}- ${v}`);
+const out = lines.slice(0, start + 1).concat(rebuilt, lines.slice(end));
+fs.writeFileSync(file, out.join(nl));
+process.stdout.write('changed');
+NODE
+) || changed=""
+  if [ -n "$changed" ]; then
+    upgrade_log "🧹  Merged duplicate minimumReleaseAgeExclude entries in pnpm-workspace.yaml (pnpm#12463 workaround)."
+  fi
+}
+
 _audit_count() {
   printf '%s' "$1" | node -e '
     let s = "";
@@ -356,6 +440,7 @@ _security_phase() {
 
   upgrade_log "🔧  Applying non-breaking security fixes (${PKG_MGR} audit fix)..."
   _pm_audit_fix 2>&1 | pr -o 4 -T || true
+  _dedupe_min_release_age_exclude
   run_step "$PKG_MGR" install || upgrade_warn "Install after audit fix returned non-zero."
 
   upgrade_log "🔍  Re-checking for vulnerabilities..."
@@ -530,6 +615,7 @@ _upgrade_dependencies() {
   done
 
   upgrade_log "⬆️  Reconciling the workspace lockfile (${PKG_MGR} install)..."
+  _dedupe_min_release_age_exclude
   run_step "$PKG_MGR" install || upgrade_warn "Reconciling install returned non-zero."
 
   upgrade_log "🌐  Updating browserslist database..."
