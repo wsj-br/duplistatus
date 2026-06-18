@@ -27,6 +27,13 @@ If you see Duplicati server warnings like `HTTP Response request failed for:` an
 - **Check Network Connectivity**: Ensure the Duplicati server can connect to the **duplistatus** server. Confirm the port is correct (default: `9666`).
 - **Review Duplicati Logs**: Check for HTTP request errors in the Duplicati logs.
 
+### Duplicate Servers on the Dashboard {#duplicate-servers-on-the-dashboard}
+
+If the same server appears more than once on the dashboard:
+
+- **Cause**: Duplicates can occur when you reinstall or upgrade Duplicati, because the server's `machine_id` may change and **duplistatus** then treats it as a new server.
+- **Fix**: Use [Settings → Database Maintenance → Merge Duplicate Servers](settings/database-maintenance.md#merge-duplicate-servers) to consolidate the duplicate entries into a single server.
+
 ### Notifications Not Working (Detailed) {#notifications-not-working-detailed}
 
 If notifications are not being sent or received:

@@ -25,6 +25,13 @@ Si vous voyez des avertissements du serveur Duplicati tels que `HTTP Response re
 - **Vérifier la Connectivité Réseau** : S'assurer que le serveur Duplicati peut se connecter au serveur **duplistatus**. Confirmer que le port est correct (par défaut : `9666`).
 - **Examiner les Journaux Duplicati** : Vérifier les erreurs de requête HTTP dans les journaux Duplicati.
 
+### Serveurs en double sur le tableau de bord {#duplicate-servers-on-the-dashboard}
+
+Si le même serveur apparaît plusieurs fois sur le tableau de bord :
+
+- **Cause** : Des doublons peuvent apparaître lorsque vous réinstallez ou mettez à jour Duplicati, car le `machine_id` du serveur peut changer et **duplistatus** le considère alors comme un nouveau serveur.
+- **Solution** : Utilisez [Paramètres → Maintenance de la base de données → Fusionner les serveurs en double](settings/database-maintenance.md#merge-duplicate-servers) pour consolider les entrées en double en un seul serveur.
+
 ### Notifications non fonctionnelles (Détaillé) {#notifications-not-working-detailed}
 
 Si les notifications ne sont pas envoyées ou reçues :

@@ -25,6 +25,13 @@ Se você vir avisos do servidor Duplicati como `HTTP Response request failed for
 - **Verificar Conectividade de Rede**: Garantir que o servidor Duplicati possa se conectar ao servidor **duplistatus**. Confirmar que a porta está correta (padrão: `9666`).
 - **Revisar Logs do Duplicati**: Verificar erros de requisição HTTP nos logs do Duplicati.
 
+### Servidores Duplicados no Painel {#duplicate-servers-on-the-dashboard}
+
+Se o mesmo servidor aparecer mais de uma vez no painel:
+
+- **Causa**: Duplicatas podem ocorrer quando você reinstala ou atualiza o Duplicati, porque o `machine_id` do servidor pode mudar e o **duplistatus** então o trata como um novo servidor.
+- **Solução**: Use [Configurações → Manutenção do Banco de Dados → Mesclar Servidores Duplicados](settings/database-maintenance.md#merge-duplicate-servers) para consolidar as entradas duplicadas em um único servidor.
+
 ### Notificações Não Funcionando (Detalhado) {#notifications-not-working-detailed}
 
 Se as notificações não estão sendo enviadas ou recebidas:
