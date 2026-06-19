@@ -329,10 +329,21 @@ for (const it of items) {
   else for (const v of versions) if (!rec.versions.includes(v)) rec.versions.push(v);
 }
 
+// Quote values YAML would otherwise misparse - notably scoped packages whose
+// spec starts with '@' (a reserved indicator), plus other indicator/flow
+// characters and embedded ": "/" #". JSON double-quote form is valid YAML and
+// keeps the dedupe idempotent against an already-quoted file.
+function yamlScalar(s) {
+  const needsQuote =
+    /^[\s@`>|*&!%#?:,'"\[\]{}-]/.test(s) || /:(\s|$)/.test(s) || /\s#/.test(s);
+  return needsQuote ? JSON.stringify(s) : s;
+}
+
 const newItems = order.map((name) => {
   const rec = byName.get(name);
   // A bare name excludes every version, so it subsumes any version pins.
-  return rec.nameOnly ? name : `${name}@${rec.versions.join(' || ')}`;
+  const raw = rec.nameOnly ? name : `${name}@${rec.versions.join(' || ')}`;
+  return yamlScalar(raw);
 });
 
 if (newItems.length === items.length && newItems.every((v, i) => v === items[i])) {
