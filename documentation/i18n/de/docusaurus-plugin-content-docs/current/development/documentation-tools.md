@@ -17,7 +17,8 @@ documentation/
 │   ├── de/            # German
 │   ├── es/            # Spanish
 │   ├── fr/            # French
-│   └── pt-BR/         # Brazilian Portuguese
+│   ├── pt-BR/         # Brazilian Portuguese
+│   └── zh-CN/         # Simplified Chinese
 ├── src/               # React components and pages
 │   ├── components/    # Custom React components
 │   ├── css/           # Custom styles
@@ -52,10 +53,11 @@ Bearbeiten Sie nur Dateien in `docs/` und die Quell-JSON-Dateien in `i18n/en/`. 
 | `es`    | Spanisch              | `i18n/es/docusaurus-plugin-content-docs/current/`    |
 | `fr`    | Französisch               | `i18n/fr/docusaurus-plugin-content-docs/current/`    |
 | `pt-BR` | Brasilianisches Portugiesisch | `i18n/pt-BR/docusaurus-plugin-content-docs/current/` |
+| `zh-CN` | Vereinfachtes Chinesisch   | `i18n/zh-CN/docusaurus-plugin-content-docs/current/`   |
 
 ## Dokumentation übersetzen {#translate-the-documentation}
 
-Die Dokumentation verwendet ein KI-gestütztes Übersetzungssystem, um sowohl Inhalte (Markdown-Dateien) als auch UI-Texte (aus Docusaurus und benutzerdefinierten Komponenten) zu übersetzen. Der Quellinhalt ist in Englisch (`docs/`) verfasst, und Übersetzungen werden für Deutsch, Französisch, Spanisch und Brasilianisches Portugiesisch generiert.
+Die Dokumentation verwendet ein KI-gestütztes Übersetzungssystem, um sowohl Inhalte (Markdown-Dateien) als auch UI-Strings (von Docusaurus und benutzerdefinierten Komponenten) zu übersetzen. Die Quellinhalte sind in Englisch (`docs/`), und Übersetzungen werden für Deutsch, Französisch, Spanisch, Brasilianisches Portugiesisch und Vereinfachtes Chinesisch generiert.
 
 ### Funktionsweise der Übersetzung {#how-translation-works}
 
@@ -198,7 +200,7 @@ Dieses Skript erstellt automatisch Screenshots der Anwendung für Dokumentations
   - `ADMIN_PASSWORD`: Passwort für das Administrator-Konto
   - `USER_PASSWORD`: Passwort für das reguläre Benutzerkonto
 
-**Optionen:** `--locale` beschränkt die Screenshots auf eine oder mehrere Sprachvarianten (kommagetrennt). Wenn nicht angegeben, werden alle Sprachvarianten erfasst. Gültige Sprachvarianten: `en`, `de`, `fr`, `es`, `pt-BR`. Verwenden Sie `-h` oder `--help`, um die Nutzungshinweise anzuzeigen.
+**Optionen:** `--locale` beschränkt Screenshots auf einen oder mehrere Locales (kommagetrennt). Wenn diese Option weggelassen wird, werden alle Locales erfasst. Gültige Locales: `en`, `de`, `fr`, `es`, `pt-BR`, `zh-CN`. Verwenden Sie `-h` oder `--help`, um die Verwendung auszugeben.
 
 **Beispiel:**
 

@@ -17,7 +17,8 @@ documentation/
 │   ├── de/            # German
 │   ├── es/            # Spanish
 │   ├── fr/            # French
-│   └── pt-BR/         # Brazilian Portuguese
+│   ├── pt-BR/         # Brazilian Portuguese
+│   └── zh-CN/         # Simplified Chinese
 ├── src/               # React components and pages
 │   ├── components/    # Custom React components
 │   ├── css/           # Custom styles
@@ -52,10 +53,11 @@ Modifiez uniquement les fichiers dans `docs/` et les fichiers JSON source dans `
 | `es`    | Espagnol              | `i18n/es/docusaurus-plugin-content-docs/current/`    |
 | `fr`    | Français               | `i18n/fr/docusaurus-plugin-content-docs/current/`    |
 | `pt-BR` | Portugais brésilien | `i18n/pt-BR/docusaurus-plugin-content-docs/current/` |
+| `zh-CN` | Chinois simplifié   | `i18n/zh-CN/docusaurus-plugin-content-docs/current/`   |
 
 ## Traduire la Documentation {#translate-the-documentation}
 
-La documentation utilise un système de traduction alimenté par l'IA pour traduire à la fois le contenu (fichiers markdown) et les chaînes de l'interface (à partir de Docusaurus et des composants personnalisés). Le contenu source est en anglais (`docs/`), et des traductions sont générées pour l'allemand, le français, l'espagnol et le portugais brésilien.
+La documentation utilise un système de traduction basé sur l'IA pour traduire à la fois le contenu (fichiers markdown) et les chaînes de l'interface utilisateur (provenant de Docusaurus et de composants personnalisés). Le contenu source est en anglais (`docs/`), et des traductions sont générées pour l'allemand, le français, l'espagnol, le portugais brésilien et le chinois simplifié.
 
 ### Fonctionnement de la traduction {#how-translation-works}
 
@@ -198,7 +200,7 @@ Ce script capture automatiquement des images de l'application à des fins de doc
   - `ADMIN_PASSWORD` : Mot de passe pour le compte administrateur
   - `USER_PASSWORD` : Mot de passe pour le compte utilisateur standard
 
-**Options :** `--locale` limite les captures d'écran à une ou plusieurs locales (séparées par des virgules). Si omis, toutes les locales sont capturées. Locales valides : `en`, `de`, `fr`, `es`, `pt-BR`. Utilisez `-h` ou `--help` pour afficher l'utilisation.
+**Options :** `--locale` limite les captures d'écran à une ou plusieurs locales (séparées par des virgules). Si cette option est omise, toutes les locales sont capturées. Locales valides : `en`, `de`, `fr`, `es`, `pt-BR`, `zh-CN`. Utilisez `-h` ou `--help` pour afficher l'utilisation.
 
 **Exemple :**
 

@@ -4,7 +4,7 @@ Für allgemeine Dokumentationsbefehle (Build, Deploy, Screenshots, README-Generi
 
 ## Übersicht {#overview}
 
-Die Dokumentation verwendet Docusaurus i18n mit Englisch als Standardsprache. Die Quelldokumentation befindet sich in `docs/`; Übersetzungen werden unter `i18n/{locale}/` erstellt. Unterstützte Sprachen: en (Standard), fr, de, es, pt-BR.
+Die Dokumentation verwendet Docusaurus i18n mit Englisch als Standard-Locale. Die Quelldokumentation befindet sich in `docs/`; Übersetzungen werden unter `i18n/{locale}/` erstellt. Unterstützte Locales: en (Standard), fr, de, es, pt-BR, zh-CN.
 
 **KI-Übersetzung** für die App-Benutzeroberfläche, Docusaurus Markdown/JSON und SVG-Ressourcen wird über [**ai-i18n-tools**](https://www.npmjs.com/package/ai-i18n-tools) aus der **Repository-Wurzel** heraus verwaltet und in `ai-i18n-tools.config.json` konfiguriert (nicht innerhalb von `documentation/`). Setzen Sie `OPENROUTER_API_KEY`, wenn Sie Übersetzungsbefehle ausführen.
 

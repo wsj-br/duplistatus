@@ -17,7 +17,8 @@ documentation/
 │   ├── de/            # German
 │   ├── es/            # Spanish
 │   ├── fr/            # French
-│   └── pt-BR/         # Brazilian Portuguese
+│   ├── pt-BR/         # Brazilian Portuguese
+│   └── zh-CN/         # Simplified Chinese
 ├── src/               # React components and pages
 │   ├── components/    # Custom React components
 │   ├── css/           # Custom styles
@@ -52,10 +53,11 @@ Solo edite archivos en `docs/` y los archivos JSON de origen en `i18n/en/`. Los 
 | `es`    | Español              | `i18n/es/docusaurus-plugin-content-docs/current/`    |
 | `fr`    | Francés              | `i18n/fr/docusaurus-plugin-content-docs/current/`    |
 | `pt-BR` | Portugués brasileño  | `i18n/pt-BR/docusaurus-plugin-content-docs/current/` |
+| `zh-CN` | Chino simplificado   | `i18n/zh-CN/docusaurus-plugin-content-docs/current/`   |
 
 ## Traducir la Documentación {#translate-the-documentation}
 
-La documentación utiliza un sistema de traducción con tecnología de IA para traducir tanto el contenido (archivos markdown) como las cadenas de la interfaz de usuario (de Docusaurus y componentes personalizados). El contenido de origen está en inglés (`docs/`), y se generan traducciones para alemán, francés, español y portugués brasileño.
+La documentación utiliza un sistema de traducción basado en IA para traducir tanto el contenido (archivos markdown) como las cadenas de la IU (de Docusaurus y componentes personalizados). El contenido de origen está en inglés (`docs/`) y se generan traducciones para alemán, francés, español, portugués brasileño y chino simplificado.
 
 ### Cómo Funciona la Traducción {#how-translation-works}
 
@@ -198,7 +200,7 @@ Este script toma automáticamente capturas de pantalla de la aplicación con fin
   - `ADMIN_PASSWORD`: Contraseña para la cuenta de administrador
   - `USER_PASSWORD`: Contraseña para la cuenta de usuario normal
 
-**Opciones:** `--locale` limita las capturas de pantalla a una o más configuraciones regionales (separadas por comas). Si se omite, se capturan todas las configuraciones regionales. Configuraciones regionales válidas: `en`, `de`, `fr`, `es`, `pt-BR`. Use `-h` o `--help` para imprimir el uso.
+**Opciones:** `--locale` limita las capturas de pantalla a uno o más locales (separados por comas). Si se omite, se capturan Todos los locales. Locales válidos: `en`, `de`, `fr`, `es`, `pt-BR`, `zh-CN`. Use `-h` o `--help` para imprimir el uso.
 
 **Ejemplo:**
 

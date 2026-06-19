@@ -10,19 +10,21 @@
 Esta aplicación web supervisa y visualiza operaciones de respaldo desde [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** proporciona un panel completo para rastrear estados de respaldo, notificar respaldos atrasados, historial de trabajos,
 métricas y rendimiento en múltiples servidores.
 
-Fácil de implementar con Docker, Podman o Portainer y disponible en 5 idiomas (Español, Alemán, Francés, Español y Portugués), con documentación completa en cada idioma.
+Fácil de desplegar con Docker, Podman o Portainer y disponible en 6 idiomas (inglés, alemán, francés, español, portugués y chino simplificado), con documentación completa en cada idioma.
 
-[Más información](https://wsj-br.github.io/duplistatus)        |
+[More information](https://wsj-br.github.io/duplistatus)        |
 [Mehr informationen](https://wsj-br.github.io/duplistatus/de/)  | 
 [Plus d'informations](https://wsj-br.github.io/duplistatus/fr/) | 
 [Más información](https://wsj-br.github.io/duplistatus/es/)     |
-[Mais informações](https://wsj-br.github.io/duplistatus/pt-BR/)
+[Mais informações](https://wsj-br.github.io/duplistatus/pt-BR/) |
+[更多信息](https://wsj-br.github.io/duplistatus/zh-CN/)
 
-[Guía de instalación](https://wsj-br.github.io/duplistatus/installation)        |
+[Install guide](https://wsj-br.github.io/duplistatus/installation)        |
 [Installationsleitfaden](https://wsj-br.github.io/duplistatus/de/installation)  | 
 [Guide d'Installation](https://wsj-br.github.io/duplistatus/fr/installation) | 
 [Guía de Instalación](https://wsj-br.github.io/duplistatus/es/installation)     |
-[Guia de Instalação](https://wsj-br.github.io/duplistatus/pt-BR/installation)
+[Guia de Instalação](https://wsj-br.github.io/duplistatus/pt-BR/installation) |
+[安装指南](https://wsj-br.github.io/duplistatus/zh-CN/installation)
 
 <br/>
 

@@ -17,7 +17,8 @@ documentation/
 │   ├── de/            # German
 │   ├── es/            # Spanish
 │   ├── fr/            # French
-│   └── pt-BR/         # Brazilian Portuguese
+│   ├── pt-BR/         # Brazilian Portuguese
+│   └── zh-CN/         # Simplified Chinese
 ├── src/               # React components and pages
 │   ├── components/    # Custom React components
 │   ├── css/           # Custom styles
@@ -52,10 +53,11 @@ Edite apenas arquivos em `docs/` e os arquivos JSON de origem em `i18n/en/`. Os 
 | `es`    | Espanhol              | `i18n/es/docusaurus-plugin-content-docs/current/`    |
 | `fr`    | Francês               | `i18n/fr/docusaurus-plugin-content-docs/current/`    |
 | `pt-BR` | Português Brasileiro | `i18n/pt-BR/docusaurus-plugin-content-docs/current/` |
+| `zh-CN` | Chinês Simplificado   | `i18n/zh-CN/docusaurus-plugin-content-docs/current/`   |
 
 ## Traduzir a Documentação {#translate-the-documentation}
 
-A documentação usa um sistema de tradução com IA para traduzir tanto o conteúdo (arquivos markdown) quanto as strings de interface (do Docusaurus e componentes personalizados). O conteúdo de origem está em inglês (`docs/`), e as traduções são geradas para alemão, francês, espanhol e português brasileiro.
+A documentação utiliza um sistema de tradução baseado em IA para traduzir tanto o conteúdo (arquivos markdown) quanto as strings da IU (do Docusaurus e componentes personalizados). O conteúdo de origem está em inglês (`docs/`) e as traduções são geradas para alemão, francês, espanhol, português brasileiro e chinês simplificado.
 
 ### Como a Tradução Funciona {#how-translation-works}
 
@@ -198,7 +200,7 @@ Este script tira automaticamente capturas de tela da aplicação para fins de do
   - `ADMIN_PASSWORD`: Senha da conta de administrador
   - `USER_PASSWORD`: Senha da conta de usuário comum
 
-**Opções:** `--locale` limita capturas de tela para uma ou mais localidades (separadas por vírgula). Se omitido, todas as localidades são capturadas. Localidades válidas: `en`, `de`, `fr`, `es`, `pt-BR`. Use `-h` ou `--help` para imprimir o uso.
+**Opções:** `--locale` limita as capturas de tela a um ou mais locais (separados por vírgula). Se omitido, Todos os locais são capturados. Locais válidos: `en`, `de`, `fr`, `es`, `pt-BR`, `zh-CN`. Use `-h` ou `--help` para imprimir o uso.
 
 **Exemplo:**
 

@@ -4,6 +4,7 @@ import { defaultNotificationTemplatesDe } from './default-notifications-de';
 import { defaultNotificationTemplatesFr } from './default-notifications-fr';
 import { defaultNotificationTemplatesEs } from './default-notifications-es';
 import { defaultNotificationTemplatesPtBR } from './default-notifications-pt-BR';
+import { defaultNotificationTemplatesZhCN } from './default-notifications-zh-CN';
 import { SOURCE_LOCALE, isSupportedLocale } from './locales';
 
 // Type for notification templates (without language field)
@@ -25,6 +26,7 @@ export const defaultNotificationTemplatesByLanguage: Record<
   fr: defaultNotificationTemplatesFr,
   es: defaultNotificationTemplatesEs,
   "pt-BR": defaultNotificationTemplatesPtBR,
+  "zh-CN": defaultNotificationTemplatesZhCN,
 };
 
 /**

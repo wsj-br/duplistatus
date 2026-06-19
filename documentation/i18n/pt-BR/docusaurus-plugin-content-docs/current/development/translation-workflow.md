@@ -4,7 +4,7 @@ Para comandos de documentação geral (build, deploy, screenshots, geração de 
 
 ## Visão geral {#overview}
 
-A documentação utiliza o i18n do Docusaurus com o idioma inglês como localidade padrão. A documentação original reside em `docs/`; as traduções são escritas em `i18n/{locale}/`. Localidades suportadas: en (padrão), fr, de, es, pt-BR.
+A documentação utiliza o i18n do Docusaurus com o inglês como localidade Padrão. A documentação de origem fica em `docs/`; as traduções são escritas em `i18n/{locale}/`. Localidades suportadas: en (padrão), fr, de, es, pt-BR, zh-CN.
 
 **Tradução por IA** para a interface do aplicativo, markdown/JSON do Docusaurus e ativos SVG é gerenciada por [**ai-i18n-tools**](https://www.npmjs.com/package/ai-i18n-tools) a partir da **raiz do repositório**, configurada em `ai-i18n-tools.config.json` (não dentro de `documentation/`). Defina `OPENROUTER_API_KEY` ao executar comandos de tradução.
 

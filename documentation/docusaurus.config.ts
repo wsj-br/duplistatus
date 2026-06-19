@@ -55,7 +55,7 @@ const config: Config = {
   // Internationalization configuration for multi-language support
   i18n: {
     defaultLocale: 'en-GB',
-    locales: ['en-GB', 'fr', 'de', 'es', 'pt-BR'],
+    locales: ['en-GB', 'fr', 'de', 'es', 'pt-BR', 'zh-CN'],
     localeConfigs: {
       'en-GB': {
         label: 'English',
@@ -85,6 +85,12 @@ const config: Config = {
         label: 'Português (Brasil)',
         direction: 'ltr',
         htmlLang: 'pt-BR',
+        calendar: 'gregory',
+      },
+      'zh-CN': {
+        label: '简体中文',
+        direction: 'ltr',
+        htmlLang: 'zh-CN',
         calendar: 'gregory',
       },
     },
@@ -121,7 +127,7 @@ const config: Config = {
         indexDocs: true,
         indexBlog: false,
         indexPages: false,
-        language: ['en', 'fr', 'de', 'es', 'pt'],
+        language: ['en', 'fr', 'de', 'es', 'pt', 'zh'],
         docsRouteBasePath: '/',
         searchResultLimits: 10,
         searchBarShortcut: false,
