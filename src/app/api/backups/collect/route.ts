@@ -497,14 +497,28 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
       console.error('System info structure:', Object.keys(systemInfo));
       throw new Error('MachineName is missing from system info');
     }
-        
+
+    // Resolve the effective server id by matching the MachineName against existing
+    // servers, falling back to the Duplicati machine-id when no name match exists.
+    // This keeps backup history attached to the same server record even if the
+    // Duplicati machine-id changes. When multiple servers share the name, the most
+    // recently created record wins.
+    const matchingServers = dbOps.getAllServersByName.all(detectedServerName) as Array<{
+      id: string;
+      name: string;
+      created_at: string;
+    }>;
+    const effectiveServerId = matchingServers.length > 0
+      ? [...matchingServers].sort((a, b) => b.created_at.localeCompare(a.created_at))[0].id
+      : detectedServerId;
+
     // Check if server already exists
-    const existingServer = dbOps.getServerById.get(detectedServerId) as { id: string; name: string; server_url: string; alias: string; note: string; created_at: string } | undefined;
+    const existingServer = dbOps.getServerById.get(effectiveServerId) as { id: string; name: string; server_url: string; alias: string; note: string; created_at: string } | undefined;
     
     if (existingServer) {
       // Server exists - update server_url and password, preserve alias and note
       dbOps.upsertServer.run({
-        id: detectedServerId,
+        id: effectiveServerId,
         name: detectedServerName,
         server_url: baseUrl,
         server_password: encryptData(finalPassword),
@@ -514,7 +528,7 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
     } else {
       // Server doesn't exist - create new server with empty alias and note
       dbOps.upsertServer.run({
-        id: detectedServerId,
+        id: effectiveServerId,
         name: detectedServerName,
         server_url: baseUrl,
         server_password: encryptData(finalPassword),
@@ -529,7 +543,7 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
         'server_added',
         authContext.userId,
         authContext.username,
-        detectedServerId,
+        effectiveServerId,
         {
           serverName: detectedServerName,
           serverUrl: baseUrl,
@@ -540,7 +554,7 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
     }
     
     // Get the server information including alias from database
-    const serverInfo = dbOps.getServerById.get(detectedServerId) as { id: string; name: string; server_url: string; alias: string; note: string; created_at: string } | undefined;
+    const serverInfo = dbOps.getServerById.get(effectiveServerId) as { id: string; name: string; server_url: string; alias: string; note: string; created_at: string } | undefined;
     const serverAlias = serverInfo?.alias || '';
     
     // Ensure backup settings are complete for all servers and backups
@@ -603,7 +617,7 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
             const allowedWeekDays = parseAllowedWeekDays(allowedWeekDaysString);
             
             // Update backup settings with schedule info including lastRunTime
-            await updateBackupSettingsWithSchedule(detectedServerId, backupName, repeatInterval, allowedWeekDays, scheduleTime, lastRunTime);
+            await updateBackupSettingsWithSchedule(effectiveServerId, backupName, repeatInterval, allowedWeekDays, scheduleTime, lastRunTime);
           }
         } catch (error) {
           console.error(`Error updating backup settings for ${backupName}:`, error instanceof Error ? error.message : String(error));
@@ -689,7 +703,7 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
           if (!backupName) continue;
           
           const isDuplicate = await dbUtils.checkDuplicateBackup({
-            server_id: detectedServerId,
+            server_id: effectiveServerId,
             backup_name: backupName,
             date: backupDate
           });
@@ -708,7 +722,7 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
           // Insert backup data
           dbOps.insertBackup.run({
             id: uuidv4(),
-            server_id: detectedServerId,
+            server_id: effectiveServerId,
             backup_name: backupName,
             backup_id: backupId,
             date: backupDate,
@@ -866,7 +880,7 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
     // Log audit event - determine status based on results
     const ipAddress = getClientIpAddress(request);
     const userAgent = request.headers.get('user-agent') || 'unknown';
-    const finalServerId = providedServerId || detectedServerId || detectedServerName;
+    const finalServerId = providedServerId || effectiveServerId || detectedServerName;
     const hasErrors = errorCount > 0;
     const status = hasErrors ? 'error' : 'success';
     

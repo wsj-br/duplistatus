@@ -27,10 +27,20 @@ Si vous voyez des avertissements du serveur Duplicati tels que `HTTP Response re
 
 ### Serveurs en double sur le tableau de bord {#duplicate-servers-on-the-dashboard}
 
-Si le même serveur apparaît plusieurs fois sur le tableau de bord :
+Si le même serveur apparaît plusieurs fois sur le tableau de bord, cela se produit le plus souvent après la [collecte des journaux de sauvegarde](collect-backup-logs.md), ou après la réinstallation ou la mise à niveau du serveur Duplicati.
 
-- **Cause** : Des doublons peuvent apparaître lorsque vous réinstallez ou mettez à jour Duplicati, car le `machine_id` du serveur peut changer et **duplistatus** le considère alors comme un nouveau serveur.
-- **Solution** : Utilisez [Paramètres → Maintenance de la base de données → Fusionner les serveurs en double](settings/database-maintenance.md#merge-duplicate-servers) pour consolider les entrées en double en un seul serveur.
+**Causes :**
+
+- **`machine_id` modifié** : Quand vous réinstallez ou mettez à niveau Duplicati, le `machine_id` du serveur peut changer, et **duplistatus** le traite alors comme un nouveau serveur.
+- **Bogue de l'API Duplicati** : Dans les versions plus récentes de Duplicati, il existe un bogue où certains points de terminaison de l'API mélangent l'identifiant `identity` et le `machine_id`. Cette incohérence amène **duplistatus** à enregistrer le même serveur sous différents identifiants, générant des doublons.
+
+**Solution de contournement :**
+
+1.  Sur le **serveur Duplicati**, effectuez **l'une** des opérations suivantes :
+    - Modifiez les fichiers `identity.txt` et `machineid.txt` afin que les deux fichiers contiennent le **même** identifiant ; ou
+    - Ouvrez **Duplicati → Paramètres → Options avancées → Machine-id** et définissez une valeur (elle est remplie automatiquement — acceptez simplement la valeur suggérée).
+2.  **Redémarrez** le serveur Duplicati pour que la modification prenne effet.
+3.  Dans **duplistatus**, consolidez les entrées en double en utilisant [Paramètres → Maintenance de la base de données → Fusionner les serveurs en double](settings/database-maintenance.md#merge-duplicate-servers).
 
 ### Notifications non fonctionnelles (Détaillé) {#notifications-not-working-detailed}
 

@@ -16,7 +16,7 @@ La página incluye un selector de **Idioma de las plantillas** que establece la 
 
 ## Idioma de Plantilla {#template-language}
 
-Un selector de **Idioma de las plantillas** en la parte superior de la página le permite elegir el idioma para las plantillas por defecto (Inglés, Alemán, Francés, Español, Portugués). Cambiar el idioma actualiza la configuración regional para los valores por defecto, pero las plantillas personalizadas existentes mantienen su texto actual hasta que las actualice o utilice uno de los botones de restablecimiento.
+Un selector de **Idioma de la plantilla** en la parte superior de la página le permite elegir el idioma de las plantillas predeterminadas (inglés, alemán, francés, español, portugués, hindi (romano) y chino simplificado). Cambiar el idioma actualiza la configuración regional de los valores predeterminados, pero las plantillas personalizadas existentes mantienen su texto actual hasta que las actualice o utilice uno de los botones de restablecimiento.
 
 <br/>
 

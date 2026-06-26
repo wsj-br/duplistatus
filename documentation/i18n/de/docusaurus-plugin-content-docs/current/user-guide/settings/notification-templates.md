@@ -16,7 +16,7 @@ Die Seite enthält einen **Vorlagensprache**-Selektor, der das Gebietsschema fü
 
 ## Vorlagen-Sprache {#template-language}
 
-Ein **Vorlagensprache**-Wähler oben auf der Seite ermöglicht es Ihnen, die Sprache für Standard-Vorlagen (Englisch, Deutsch, Französisch, Spanisch, Portugiesisch) auszuwählen. Das Ändern der Sprache aktualisiert das Gebietsschema für Standards, aber vorhandene angepasste Vorlagen behalten ihren aktuellen Text bei, bis Sie diese aktualisieren oder eine der Schaltflächen zum Zurücksetzen verwenden.
+Ein **Vorlagensprache**-Auswahlfeld oben auf der Seite ermöglicht es Ihnen, die Sprache für Standardvorlagen auszuwählen (Englisch, Deutsch, Französisch, Spanisch, Portugiesisch, Hindi (Lateinisch) und vereinfachtes Chinesisch). Das Ändern der Sprache aktualisiert das Gebietsschema für die Standardwerte, jedoch behalten vorhandene angepasste Vorlagen ihren aktuellen Text bei, bis Sie diese aktualisieren oder eine der Schaltflächen zum Zurücksetzen verwenden.
 
 <br/>
 

@@ -11,7 +11,7 @@ duplistatus es un potente panel de control diseñado específicamente para siste
 - Detección automatizada de copias de seguridad atrasadas con alertas configurables
 - Métricas completas y visualización del rendimiento del respaldo
 - Sistema de notificaciones flexible mediante NTFY y correo electrónico
-- Soporte multilingüe (inglés, francés, alemán, español y portugués brasileño).
+- Soporte multilingüe (inglés, francés, alemán, español, portugués de Brasil, hindi (romanizado) y chino simplificado).
 
 ## Instalación {#installation}
 
@@ -72,7 +72,7 @@ La barra de herramientas de la aplicación proporciona acceso conveniente a func
 
 ### Menú de Usuario {#user-menu}
 
-Al hacer clic en el botón de usuario se abre un menú desplegable con opciones específicas del usuario. Las opciones del menú difieren según haya iniciado sesión como administrador o como usuario normal. Ambos roles pueden cambiar el idioma de la interfaz a través del submenú de **Idioma**. Idiomas compatibles: inglés, francés, alemán, español y portugués brasileño.
+Al hacer clic en el botón de usuario, se abre un menú desplegable con opciones específicas del usuario. Las opciones del menú varían según si se ha iniciado sesión como administrador o como usuario normal. Ambos roles pueden cambiar el idioma de la interfaz mediante el submenú **Idioma**. Idiomas admitidos: inglés, francés, alemán, español, portugués de Brasil, hindi (romanizado) y chino simplificado.
 
 <table>
   <tr>

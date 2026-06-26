@@ -112,7 +112,7 @@ This script generates test databases for multiple historical versions of the app
 
 **Requirements:**
 - Docker must be installed and configured
-- Google Chrome (via Puppeteer) must be installed
+- Chromium (via Playwright) must be installed
 - Root/sudo access for Docker operations
 - The Docker volume `duplistatus_data` must exist
 
@@ -127,7 +127,7 @@ This script generates test databases for multiple historical versions of the app
 - Port: 9666 (Docker container port)
 
 >[!CAUTION]
-> This script requires Docker and will stop/remove existing containers. It also requires sudo access for Docker operations and file system access. Need to run the `pnpm take-screenshots` script first to install Google Chrome if you haven't already.
+> This script requires Docker and will stop/remove existing containers. It also requires sudo access for Docker operations and file system access. Run `pnpm take-screenshots:install` first to install the Playwright Chromium browser if you haven't already.
 
 >[!IMPORTANT]
 > This script was supposed to run only once, as new versions the developer can copy the database file and screenshots directly to the `scripts/migration_test_data/` directory. During development, just run the `./scripts/test-migrations.sh` script to test the migrations.

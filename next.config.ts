@@ -96,8 +96,14 @@ const nextConfig: NextConfig = {
   },
   pageExtensions: ["ts", "tsx", "js", "jsx", "md", "mdx"],
   distDir: ".next",
+  // Keep runtime-only paths out of the standalone trace. Excluding the
+  // `.next/standalone` output itself stops Turbopack's tracer from pulling
+  // `.next/standalone/server.js` into route traces and then failing to copy it
+  // into a nested `.next/standalone` path (ENOENT). Do NOT exclude all of
+  // `.next` — that drops the Turbopack SSR runtime chunks the standalone server
+  // needs (`chunks/ssr/[turbopack]_runtime.js`). `data` is runtime state.
   outputFileTracingExcludes: {
-    "*": ["**/data/**"],
+    "*": ["**/data/**", "**/.next/standalone/**"],
   },
   // Force the full `@swc/helpers` package (including its `esm/` build) into the
   // standalone output. Next's file tracing otherwise copies only the `cjs/`

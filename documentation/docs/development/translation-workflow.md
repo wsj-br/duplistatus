@@ -4,7 +4,7 @@ For general documentation commands (build, deploy, screenshots, README generatio
 
 ## Overview {#overview}
 
-The documentation uses Docusaurus i18n with English as the default locale. Source documentation lives in `docs/`; translations are written under `i18n/{locale}/`. Supported locales: en (default), fr, de, es, pt-BR, zh-CN.
+The documentation uses Docusaurus i18n with English as the default locale. Source documentation lives in `docs/`; translations are written under `i18n/{locale}/`. Supported locales: en-GB (default), fr, de, es, pt-BR, hi-Latn, zh-Hans.
 
 **AI translation** for the app UI, Docusaurus markdown/JSON, and SVG assets is handled by [**ai-i18n-tools**](https://www.npmjs.com/package/ai-i18n-tools) from the **repository root**, configured in `ai-i18n-tools.config.json` (not inside `documentation/`). Set `OPENROUTER_API_KEY` when running translate commands.
 

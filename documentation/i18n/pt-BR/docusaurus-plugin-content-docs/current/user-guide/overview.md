@@ -10,8 +10,8 @@ duplistatus é um poderoso painel de monitoramento projetado especificamente par
 - Rastreamento em tempo real do status de todas as operações de backup
 - Detecção automatizada de backups atrasados com alertas configuráveis
 - Métricas abrangentes e visualização do desempenho do backup
-- Sistema flexível de notificações via NTFY e e-mail
-- Suporte a múltiplos idiomas (Português, Francês, Alemão, Espanhol e Inglês).
+- Sistema de notificação flexível via NTFY e E-mail
+- Suporte multilíngue (Inglês, Francês, Alemão, Espanhol, Português do Brasil, Hindi (Romano) e Chinês Simplificado).
 
 ## Instalação {#installation}
 
@@ -72,7 +72,7 @@ A barra de ferramentas da aplicação fornece acesso conveniente às funções e
 
 ### Menu do Usuário {#user-menu}
 
-Clicar no botão de usuário abre um menu suspenso com opções específicas do usuário. As opções do menu diferem dependendo se você está conectado como administrador ou usuário comum. Ambos os perfis podem alterar o idioma da interface através do submenu **Idioma**. Idiomas suportados: Inglês, Francês, Alemão, Espanhol e Português Brasileiro.
+Clicar no botão de usuário abre um menu suspenso com opções específicas do usuário. As opções do menu diferem dependendo se você está conectado como um administrador ou um usuário comum. Ambos os papéis podem alterar o idioma da interface pelo submenu **Idioma**. Idiomas suportados: Inglês, Francês, Alemão, Espanhol, Português do Brasil, Hindi (Romano) e Chinês Simplificado.
 
 <table>
   <tr>

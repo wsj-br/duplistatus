@@ -12,7 +12,7 @@
 - **Contrôle d'accès et sécurité des utilisateurs** : Système d'authentification sécurisé avec contrôle d'accès basé sur les rôles (rôles Administrateur/Utilisateur), politiques de mot de passe configurables, protection contre le verrouillage de compte et gestion complète des utilisateurs.
 - **Journalisation d'audit** : Journal complet de toutes les modifications du système et des actions des utilisateurs, avec des filtres avancés, des fonctionnalités d'exportation et des périodes de rétention configurables.
 - **Visionneuse des journaux d'application** : Interface réservée aux administrateurs pour afficher, rechercher et exporter les journaux d'application directement depuis l'interface web, avec des capacités de surveillance en temps réel.
-- **Prise en charge multilingue** : Interface et documentation disponibles en anglais, français, allemand, espagnol et portugais brésilien.
+- **Support multilingue** : Interface et documentation disponibles en anglais, français, allemand, espagnol, portugais du Brésil, hindi (roman) et chinois simplifié.
 
 ## Installation {#installation}
 

@@ -271,7 +271,7 @@ export function OverviewStatusPanel({ servers, totalBackups }: OverviewStatusPan
               </div>
             ) : (
               <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
-                No overdue backups
+                {t("No overdue backups")}
               </div>
             )}
           </CardContent>
@@ -369,7 +369,7 @@ export function OverviewStatusPanel({ servers, totalBackups }: OverviewStatusPan
               </div>
             ) : (
               <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
-                No warnings or errors
+                {t("No warnings and errors")}
               </div>
             )}
           </CardContent>

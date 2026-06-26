@@ -8,7 +8,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 MIGRATION_TEST_DATA_DIR="$ROOT_DIR/scripts/migration_test_data"
 DATA_DIR="/var/lib/docker/volumes/duplistatus_data/_data"
-GOOGLE_CHROME="$( find ~/.cache/puppeteer/ -name chrome -type f  -print | head -n 1 )" # /home/wsj/.cache/puppeteer/chrome/linux-142.0.7444.175/chrome-linux64/chrome"
+GOOGLE_CHROME="$( find ~/.cache/ms-playwright/ -name chrome -type f  -print | head -n 1 )" # /home/wsj/.cache/ms-playwright/chromium-*/chrome-linux/chrome"
 SERVERS=3
 
 echo "Migration test data directory: $MIGRATION_TEST_DATA_DIR"
@@ -19,8 +19,8 @@ VERSIONS="v0.4.0 v0.5.0 v0.6.1 0.7.27 0.8.21"
 VERSIONS="v0.9.9"
 
 if [ -z $GOOGLE_CHROME ]; then
-  echo "Error: Google Chrome not found, check if puppeteer is installed and you already use the 'pnpm take-screenshots' script"
-  echo "       it will automatically install Chrome."
+  echo "Error: Chromium not found. Install the Playwright browser with 'pnpm take-screenshots:install'"
+  echo "       (runs 'playwright install chromium')."
   exit 1
 fi
 

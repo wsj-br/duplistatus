@@ -11,7 +11,7 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat tzdata icu-libs icu-data-full python3 make g++
 
 # Install pnpm for workspace install/build (build-only; not copied to runner)
-RUN npm install -g pnpm@latest-10
+RUN npm install -g pnpm@latest-11
 
 WORKDIR /app
 
@@ -30,7 +30,7 @@ FROM base AS builder
 RUN apk add --no-cache libc6-compat python3 make g++
 
 # Install pnpm for build (build-only tool)
-RUN npm install -g pnpm@latest-10
+RUN npm install -g pnpm@latest-11
 
 WORKDIR /app
 

@@ -17,8 +17,9 @@ documentation/
 │   ├── de/            # German
 │   ├── es/            # Spanish
 │   ├── fr/            # French
+│   ├── hi-Latn/       # Hindi (Roman)
 │   ├── pt-BR/         # Brazilian Portuguese
-│   └── zh-CN/         # Simplified Chinese
+│   └── zh-Hans/       # Simplified Chinese
 ├── src/               # React components and pages
 │   ├── components/    # Custom React components
 │   ├── css/           # Custom styles
@@ -48,17 +49,18 @@ Only edit files in `docs/` and the source JSON files in `i18n/en/`. The translat
 
 | Locale  | Language             | Directory                                            |
 |---------|----------------------|------------------------------------------------------|
-| `en`    | English (default)    | `docs/` (source)                                     |
-| `de`    | German               | `i18n/de/docusaurus-plugin-content-docs/current/`    |
-| `es`    | Spanish              | `i18n/es/docusaurus-plugin-content-docs/current/`    |
-| `fr`    | French               | `i18n/fr/docusaurus-plugin-content-docs/current/`    |
-| `pt-BR` | Brazilian Portuguese | `i18n/pt-BR/docusaurus-plugin-content-docs/current/` |
-| `zh-CN` | Simplified Chinese   | `i18n/zh-CN/docusaurus-plugin-content-docs/current/`   |
+| `en-GB`  | English (default)    | `docs/` (source)                                      |
+| `de`     | German               | `i18n/de/docusaurus-plugin-content-docs/current/`     |
+| `es`     | Spanish              | `i18n/es/docusaurus-plugin-content-docs/current/`     |
+| `fr`     | French               | `i18n/fr/docusaurus-plugin-content-docs/current/`     |
+| `hi-Latn`| Hindi (Roman)        | `i18n/hi-Latn/docusaurus-plugin-content-docs/current/`|
+| `pt-BR`  | Brazilian Portuguese | `i18n/pt-BR/docusaurus-plugin-content-docs/current/`  |
+| `zh-Hans`| Simplified Chinese   | `i18n/zh-Hans/docusaurus-plugin-content-docs/current/`|
 
 
 ## Translate the Documentation {#translate-the-documentation}
 
-The documentation uses an AI-powered translation system to translate both content (markdown files) and UI strings (from Docusaurus and custom components). The source content is in English (`docs/`), and translations are generated for German, French, Spanish, Brazilian Portuguese, and Simplified Chinese.
+The documentation uses an AI-powered translation system to translate both content (markdown files) and UI strings (from Docusaurus and custom components). The source content is in English (`docs/`), and translations are generated for German, French, Spanish, Brazilian Portuguese, Hindi (Roman), and Simplified Chinese.
 
 ### How Translation Works {#how-translation-works}
 
@@ -189,7 +191,7 @@ pnpm take-screenshots
 Or run directly: `pnpm take-screenshots` (use `--env-file=.env` if needed for environment variables).
 
 This script automatically takes screenshots of the application for documentation purposes. It:
-- Launches a headless browser (Puppeteer)
+- Launches a headless browser (Playwright Chromium)
 - Logs in as admin and regular user
 - Navigates through various pages (dashboard, server details, settings, etc.)
 - Takes screenshots at different viewport sizes
@@ -197,11 +199,12 @@ This script automatically takes screenshots of the application for documentation
 
 **Requirements:**
 - The development server must be running on `http://localhost:8666`
+- The Playwright Chromium browser must be installed (run `pnpm take-screenshots:install` once, which runs `playwright install chromium`)
 - Environment variables must be set, add these to your `.env` file or export them:
   - `ADMIN_PASSWORD`: Password for admin account
   - `USER_PASSWORD`: Password for regular user account
 
-**Options:** `--locale` limits screenshots to one or more locales (comma-separated). If omitted, all locales are captured. Valid locales: `en`, `de`, `fr`, `es`, `pt-BR`, `zh-CN`. Use `-h` or `--help` to print usage.
+**Options:** `--locale` limits screenshots to one or more locales (comma-separated). If omitted, all locales are captured. Valid locales: `en-GB`, `de`, `fr`, `es`, `pt-BR`, `hi-Latn`, `zh-Hans`. Use `-h` or `--help` to print usage.
 
 **Example:**
 ```bash
@@ -211,9 +214,9 @@ pnpm take-screenshots
 # All locales (default):
 pnpm take-screenshots
 # Single locale:
-pnpm take-screenshots --locale en
+pnpm take-screenshots --locale en-GB
 # Multiple locales:
-pnpm take-screenshots --locale en,de,pt-BR
+pnpm take-screenshots --locale en-GB,de,pt-BR
 ```
 
 

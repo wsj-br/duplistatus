@@ -51,6 +51,10 @@ Você também pode usar o botão <IconButton icon="lucide:import" label="Coletar
 - Se a opção de download for selecionada, os dados JSON coletados serão baixados. O nome do arquivo seguirá este formato: `[serverName]_collected_[Timestamp].json`. A data e hora utilizam o formato ISO 8601 (AAAA-MM-DDTHH:MM:SS).
 - O painel é atualizado para refletir as novas informações.
 
+:::note Vendo servidores duplicados após a coleta?
+Se o mesmo servidor aparecer mais de uma vez após coletar logs de backup (ou após uma reinstalação/atualização do Duplicati), isso geralmente é causado por um `machine_id` alterado ou por um bug da API do Duplicati que mistura o id `identity` e o `machine_id`. A solução é alinhar os ids no servidor Duplicati (editar `identity.txt`/`machineid.txt` ou definir **Duplicati → Configurações → Opções Avançadas → Machine-id**), reiniciar o Duplicati e então mesclar as entradas em **duplistatus** via [Configurações → Manutenção do Banco de Dados → Mesclar Servidores Duplicados](settings/database-maintenance.md#merge-duplicate-servers). Consulte [Servidores Duplicados no Painel](troubleshooting.md#duplicate-servers-on-the-dashboard) para obter as etapas completas.
+:::
+
 ## Solução de Problemas de Coleta {#troubleshooting-collection-issues}
 
 A coleta de log de backup requer que o servidor Duplicati seja acessível a partir da instalação do **duplistatus**. Se você encontrar problemas, verifique o seguinte:

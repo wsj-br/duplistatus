@@ -51,6 +51,10 @@ Sie können auch die Schaltfläche <IconButton icon="lucide:import" label="Alle 
 - Falls die Download-Option ausgewählt ist, werden die gesammelten JSON-Daten heruntergeladen. Der Dateiname hat folgendes Format: `[serverName]_collected_[Timestamp].json`. Der Zeitstempel verwendet das ISO 8601-Datumsformat (JJJJ-MM-TTTT:MM:SS).
 - Das Dashboard wird aktualisiert, um die neuen Informationen anzuzeigen.
 
+:::note Werden nach dem Sammeln doppelte Server angezeigt?
+Wenn derselbe Server nach dem Sammeln von Backup-Protokollen mehrmals angezeigt wird (oder nach einer Neuinstallation oder einem Upgrade von Duplicati), wird dies meist durch eine geänderte `machine_id` oder einen Duplicati-API-Fehler verursacht, der die `identity`-ID und die `machine_id` vermischt. Die Lösung besteht darin, die IDs auf dem Duplicati-Server anzugleichen (bearbeiten Sie `identity.txt`/`machineid.txt` oder setzen Sie **Duplicati → Einstellungen → Erweiterte Optionen → Machine-id**), Duplicati neu zu starten und dann die Einträge in **duplistatus** über [Einstellungen → Datenbankverwaltung → Doppelte Server zusammenführen](settings/database-maintenance.md#merge-duplicate-servers) zusammenzuführen. Vollständige Schritte finden Sie unter [Doppelte Server auf dem Dashboard](troubleshooting.md#duplicate-servers-on-the-dashboard).
+:::
+
 ## Fehlerbehebung bei Sammlungsproblemen {#troubleshooting-collection-issues}
 
 Die Erfassung von Sicherungsprotokollen erfordert, dass der Duplicati-Server von der **duplistatus**-Installation aus erreichbar ist. Falls Sie auf Probleme stoßen, bestätigen Sie bitte Folgendes:

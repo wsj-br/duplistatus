@@ -110,9 +110,9 @@ Ce script génère des bases de données de test pour plusieurs versions histori
    - Vide les fichiers WAL et sauvegarde le schéma de la base de données
    - Copie le fichier de base de données vers `scripts/migration_test_data/`
 
-**Conditions requises :**
+**Prérequis :**
 - Docker doit être installé et configuré
-- Google Chrome (via Puppeteer) doit être installé
+- Chromium (via Playwright) doit être installé
 - Accès root/sudo pour les opérations Docker
 - Le volume Docker `duplistatus_data` doit exister
 
@@ -127,7 +127,7 @@ Ce script génère des bases de données de test pour plusieurs versions histori
 - Port : 9666 (port du conteneur Docker)
 
 >[!CAUTION]
-> Ce script nécessite Docker et arrêtera/supprimera les conteneurs existants. Il nécessite également un accès sudo pour les opérations Docker et l'accès au système de fichiers. Vous devez d'abord exécuter le script `pnpm take-screenshots` pour installer Google Chrome si vous ne l'avez pas déjà fait.
+> Ce script nécessite Docker et arrêtera/supprimera les conteneurs existants. Il nécessite également un accès sudo pour les opérations Docker et l'accès au système de fichiers. Exécutez `pnpm take-screenshots:install` en premier pour installer le navigateur Chromium de Playwright si vous ne l'avez pas déjà fait.
 
 >[!IMPORTANT]
 > Ce script était censé s'exécuter une seule fois. Pour les nouvelles versions, le développeur peut copier le fichier de base de données et les captures d'écran directement dans le répertoire `scripts/migration_test_data/`. Pendant le développement, exécutez simplement le script `./scripts/test-migrations.sh` pour tester les migrations.

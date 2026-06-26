@@ -17,8 +17,9 @@ documentation/
 │   ├── de/            # German
 │   ├── es/            # Spanish
 │   ├── fr/            # French
+│   ├── hi-Latn/       # Hindi (Roman)
 │   ├── pt-BR/         # Brazilian Portuguese
-│   └── zh-CN/         # Simplified Chinese
+│   └── zh-Hans/       # Simplified Chinese
 ├── src/               # React components and pages
 │   ├── components/    # Custom React components
 │   ├── css/           # Custom styles
@@ -46,18 +47,19 @@ Solo edite archivos en `docs/` y los archivos JSON de origen en `i18n/en/`. Los 
 
 ### Configuraciones Regionales Compatibles {#supported-locales}
 
-| Ubicación | Idioma               | Directorio                                             |
-|-----------|----------------------|--------------------------------------------------------|
-| `en`    | Español (por defecto) | `docs/` (fuente)                                      |
+| Locale | Idioma | Directorio |
+|---------|----------------------|------------------------------------------------------|
+| `en-GB` | English (predeterminada) | `docs/` (fuente) |
 | `de`    | Alemán               | `i18n/de/docusaurus-plugin-content-docs/current/`    |
 | `es`    | Español              | `i18n/es/docusaurus-plugin-content-docs/current/`    |
 | `fr`    | Francés              | `i18n/fr/docusaurus-plugin-content-docs/current/`    |
+| `hi-Latn` | Hindi (Romano) | `i18n/hi-Latn/docusaurus-plugin-content-docs/current/` |
 | `pt-BR` | Portugués brasileño  | `i18n/pt-BR/docusaurus-plugin-content-docs/current/` |
-| `zh-CN` | Chino simplificado   | `i18n/zh-CN/docusaurus-plugin-content-docs/current/`   |
+| `zh-Hans` | Chino simplificado | `i18n/zh-Hans/docusaurus-plugin-content-docs/current/` |
 
 ## Traducir la Documentación {#translate-the-documentation}
 
-La documentación utiliza un sistema de traducción basado en IA para traducir tanto el contenido (archivos markdown) como las cadenas de la IU (de Docusaurus y componentes personalizados). El contenido de origen está en inglés (`docs/`) y se generan traducciones para alemán, francés, español, portugués brasileño y chino simplificado.
+El sistema de documentación utiliza un sistema de traducción con IA para traducir tanto el contenido (archivos Markdown) como las cadenas de la interfaz de usuario (de Docusaurus y componentes personalizados). El contenido fuente está en inglés (`docs/`), y se generan traducciones para alemán, francés, español, portugués brasileño, hindi (romano) y chino simplificado.
 
 ### Cómo Funciona la Traducción {#how-translation-works}
 
@@ -187,20 +189,21 @@ pnpm take-screenshots
 
 O ejecutar directamente: `pnpm take-screenshots` (use `--env-file=.env` si es necesario para variables de entorno).
 
-Este script toma automáticamente capturas de pantalla de la aplicación con fines de documentación. Hace lo siguiente:
-- Inicia un navegador sin interfaz gráfica (Puppeteer)
-- Inicia sesión como administrador y como usuario normal
+Este script toma automáticamente capturas de pantalla de la aplicación para fines de documentación. Realiza las siguientes acciones:
+- Inicia un navegador sin interfaz gráfica (Playwright Chromium)
+- Inicia sesión como administrador y usuario normal
 - Navega por varias páginas (panel de control, detalles del servidor, configuración, etc.)
 - Toma capturas de pantalla en diferentes tamaños de ventana
 - Guarda las capturas en `documentation/static/assets/` (inglés) o `documentation/i18n/{locale}/docusaurus-plugin-content-docs/current/assets` (otros idiomas)
 
 **Requisitos:**
 - El servidor de desarrollo debe estar en ejecución en `http://localhost:8666`
-- Las variables de entorno deben estar configuradas; agrégalas a tu archivo `.env` o expórtalas:
-  - `ADMIN_PASSWORD`: Contraseña para la cuenta de administrador
-  - `USER_PASSWORD`: Contraseña para la cuenta de usuario normal
+- El navegador Playwright Chromium debe estar instalado (ejecute `pnpm take-screenshots:install` una vez, lo que ejecuta `playwright install chromium`)
+- Las variables de entorno deben estar configuradas, añádalas a su archivo `.env` o expórtelas:
+  - `ADMIN_PASSWORD`: Contraseña de la cuenta de Administrador
+  - `USER_PASSWORD`: Contraseña de la cuenta de Usuario normal
 
-**Opciones:** `--locale` limita las capturas de pantalla a uno o más locales (separados por comas). Si se omite, se capturan Todos los locales. Locales válidos: `en`, `de`, `fr`, `es`, `pt-BR`, `zh-CN`. Use `-h` o `--help` para imprimir el uso.
+**Opciones:** `--locale` limita las capturas de pantalla a una o varias localidades (separadas por comas). Si se omite, se capturan todas las localidades. Localidades válidas: `en-GB`, `de`, `fr`, `es`, `pt-BR`, `hi-Latn`, `zh-Hans`. Utilice `-h` o `--help` para imprimir el uso.
 
 **Ejemplo:**
 
@@ -211,9 +214,9 @@ pnpm take-screenshots
 # All locales (default):
 pnpm take-screenshots
 # Single locale:
-pnpm take-screenshots --locale en
+pnpm take-screenshots --locale en-GB
 # Multiple locales:
-pnpm take-screenshots --locale en,de,pt-BR
+pnpm take-screenshots --locale en-GB,de,pt-BR
 ```
 
 ## Implementación de la Documentación {#deploying-the-documentation}

@@ -12,7 +12,7 @@
 - **Control de acceso y seguridad de usuarios**: Sistema de autenticación seguro con control de acceso basado en roles (roles Administrador/Usuario), políticas de contraseñas configurables, protección contra bloqueo de cuentas y gestión completa de usuarios.
 - **Registro de auditoría**: Registro completo de todos los cambios del sistema y acciones de los usuarios con filtros avanzados, capacidades de exportación y períodos de retención configurables.
 - **Visor de registros de la aplicación**: Interfaz exclusiva para administradores que permite ver, buscar y exportar registros de la aplicación directamente desde la interfaz web, con capacidades de monitoreo en tiempo real.
-- **Soporte multilingüe**: Interfaz y documentación disponibles en inglés, francés, alemán, español y portugués brasileño.
+- **Soporte multilingüe**: Interfaz y documentación disponibles en inglés, francés, alemán, español, portugués de Brasil, hindi (romanizado) y chino simplificado.
 
 ## Instalación {#installation}
 

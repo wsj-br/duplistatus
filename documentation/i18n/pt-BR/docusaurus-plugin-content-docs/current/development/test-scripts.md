@@ -111,8 +111,8 @@ Este script gera bancos de dados de teste para múltiplas versões históricas d
    - Copia o arquivo de banco de dados para `scripts/migration_test_data/`
 
 **Requisitos:**
-- O Docker deve estar instalado e configurado
-- O Google Chrome (via Puppeteer) deve estar instalado
+- Docker deve estar instalado e configurado
+- Chromium (via Playwright) deve estar instalado
 - Acesso root/sudo para operações do Docker
 - O volume Docker `duplistatus_data` deve existir
 
@@ -127,7 +127,7 @@ Este script gera bancos de dados de teste para múltiplas versões históricas d
 - Porta: 9666 (porta do contêiner Docker)
 
 >[!CAUTION]
-> Este script requer Docker e irá parar/remover contêineres existentes. Também requer acesso sudo para operações do Docker e acesso ao sistema de arquivos. É necessário executar o script `pnpm take-screenshots` primeiro para instalar o Google Chrome, caso ainda não tenha feito.
+> Este script requer Docker e irá parar/remover contêineres existentes. Ele também requer acesso sudo para operações do Docker e acesso ao sistema de arquivos. Execute `pnpm take-screenshots:install` primeiro para instalar o navegador Chromium do Playwright, caso ainda não o tenha feito.
 
 >[!IMPORTANT]
 > Este script deveria ser executado apenas uma vez. Nas novas versões, o desenvolvedor pode copiar o arquivo de banco de dados e as capturas de tela diretamente para o diretório `scripts/migration_test_data/`. Durante o desenvolvimento, basta executar o script `./scripts/test-migrations.sh` para testar as migrações.

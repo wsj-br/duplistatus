@@ -66,5 +66,5 @@ export function getDataTempDir(): string {
  * Uses the same path resolution strategy as the database.
  */
 export function getApplicationLogPath(): string {
-  return join(getDataDir(), 'logs', getApplicationLogFilename());
+  return join(/* turbopackIgnore: true */ getDataDir(), 'logs', getApplicationLogFilename());
 }

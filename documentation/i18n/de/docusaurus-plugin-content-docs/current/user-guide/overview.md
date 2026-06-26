@@ -11,7 +11,7 @@ duplistatus ist ein leistungsstarkes Monitoring-Dashboard, das speziell für Dup
 - Automatische Erkennung überfälliger Sicherungen mit konfigurierbaren Warnungen
 - Umfassende Metriken und Visualisierung der Sicherungsleistung
 - Flexibles Benachrichtigungssystem über NTFY und E-Mail
-- Mehrsprachige Unterstützung (Englisch, Französisch, Deutsch, Spanisch und Brasilianisches Portugiesisch).
+- Mehrsprachunterstützung (Englisch, Französisch, Deutsch, Spanisch, Brasilianisches Portugiesisch, Hindi (Roman) und Vereinfachtes Chinesisch).
 
 ## Installation {#installation}
 
@@ -72,7 +72,7 @@ Die Anwendungssymbolleiste bietet bequemen Zugriff auf wichtige Funktionen und E
 
 ### Benutzermenü {#user-menu}
 
-Durch Klicken auf die Benutzerschaltfläche wird ein Dropdown-Menü mit benutzerspezifischen Optionen geöffnet. Die Menüoptionen unterscheiden sich je nachdem, ob Sie als Administrator oder als normaler Benutzer angemeldet sind. Beide Rollen können die Schnittstellensprache über das Untermenü **Sprache** ändern. Unterstützte Sprachen: Englisch, Französisch, Deutsch, Spanisch und Brasilianisches Portugiesisch.
+Ein Klick auf die Benutzerschaltfläche öffnet ein Dropdown-Menü mit benutzerspezifischen Optionen. Die Menüoptionen unterscheiden sich je nachdem, ob Sie als Administrator oder als normaler Benutzer angemeldet sind. Beide Rollen können die Sprache der Benutzeroberfläche über das Untermenü **Sprache** ändern. Unterstützte Sprachen: Englisch, Französisch, Deutsch, Spanisch, Brasilianisches Portugiesisch, Hindi (Roman) und Vereinfachtes Chinesisch.
 
 <table>
   <tr>

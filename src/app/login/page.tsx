@@ -39,22 +39,9 @@ function LoginForm({ t }: { t: TFunction }) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const locale = useLocale();
-  const [username, setUsername] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem(REMEMBERED_USERNAME_KEY) || "";
-    }
-    return "";
-  });
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState<boolean>(() => {
-    if (typeof window !== "undefined") {
-      return (
-        localStorage.getItem(REMEMBER_ME_ENABLED_KEY) === "true" &&
-        localStorage.getItem(REMEMBERED_USERNAME_KEY) !== ""
-      );
-    }
-    return false;
-  });
+  const [rememberMe, setRememberMe] = useState<boolean>(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showAdminTip, setShowAdminTip] = useState(false);
@@ -63,6 +50,14 @@ function LoginForm({ t }: { t: TFunction }) {
   const checkAdminTipCalledRef = useRef(false);
 
   const homeUrl = "/";
+
+  useEffect(() => {
+    const storedUsername = localStorage.getItem(REMEMBERED_USERNAME_KEY) || "";
+    const rememberEnabled =
+      localStorage.getItem(REMEMBER_ME_ENABLED_KEY) === "true" && storedUsername !== "";
+    if (storedUsername) setUsername(storedUsername);
+    if (rememberEnabled) setRememberMe(true);
+  }, []);
 
   const validateRedirectUrl = useCallback((url: string | null): string => {
     if (!url) return homeUrl;

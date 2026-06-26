@@ -110,10 +110,10 @@ Dieses Skript generiert Testdatenbanken für mehrere historische Versionen der A
    - Leert die WAL-Dateien und speichert das Datenbankschema
    - Kopiert die Datenbankdatei nach `scripts/migration_test_data/`
 
-**Anforderungen:**
+**Voraussetzungen:**
 - Docker muss installiert und konfiguriert sein
-- Google Chrome (über Puppeteer) muss installiert sein
-- Root-/Sudo-Zugriff für Docker-Operationen
+- Chromium (via Playwright) muss installiert sein
+- Root-/sudo-Zugriff für Docker-Operationen
 - Das Docker-Volume `duplistatus_data` muss existieren
 
 **Ausgabe:**
@@ -127,7 +127,7 @@ Dieses Skript generiert Testdatenbanken für mehrere historische Versionen der A
 - Port: 9666 (Docker-Container-Port)
 
 >[!CAUTION]
-> Dieses Skript erfordert Docker und stoppt/entfernt vorhandene Container. Es erfordert auch sudo-Zugriff für Docker-Operationen und Dateisystemzugriff. Das Skript `pnpm take-screenshots` muss zuerst ausgeführt werden, um Google Chrome zu installieren, falls noch nicht geschehen.
+> Dieses Skript erfordert Docker und stoppt/entfernt vorhandene Container. Es erfordert außerdem sudo-Zugriff für Docker-Operationen und Dateisystemzugriff. Führen Sie zuerst `pnpm take-screenshots:install` aus, um den Playwright Chromium-Browser zu installieren, falls Sie dies noch nicht getan haben.
 
 >[!IMPORTANT]
 > Dieses Skript sollte nur einmal ausgeführt werden. Bei neuen Versionen kann der Entwickler die Datenbankdatei und Screenshots direkt in das Verzeichnis `scripts/migration_test_data/` kopieren. Führen Sie während der Entwicklung einfach das Skript `./scripts/test-migrations.sh` aus, um die Migrationen zu testen.

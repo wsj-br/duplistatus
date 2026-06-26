@@ -12,7 +12,7 @@
 - **Benutzerzugriffskontrolle & Sicherheit**: Sicheres Authentifizierungssystem mit rollenbasierter Zugriffskontrolle (Administrator/Benutzer-Rollen), konfigurierbaren Passwortrichtlinien, Schutz vor Kontosperrung und umfassender Benutzerverwaltung.
 - **Audit-Protokollierung**: Vollständige Nachverfolgung aller Systemänderungen und Benutzeraktionen mit erweiterter Filterung, Exportfunktionen und konfigurierbaren Aufbewahrungszeiträumen.
 - **Anwendung-Protokollbetrachter**: Nur für Administratoren zugängliche Schnittstelle zum Anzeigen, Suchen und Exportieren von Anwendungsprotokollen direkt über die Weboberfläche mit Echtzeitüberwachung.
-- **Mehrsprachige Unterstützung**: Oberfläche und Dokumentation verfügbar in Englisch, Französisch, Deutsch, Spanisch und Brasilianisch-Portugiesisch.
+- **Mehrsprachige Unterstützung**: Oberfläche und Dokumentation in Englisch, Französisch, Deutsch, Spanisch, Brasilianischem Portugiesisch, Hindi (Latein) und Vereinfachtem Chinesisch verfügbar.
 
 ## Installation {#installation}
 

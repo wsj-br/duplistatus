@@ -1864,7 +1864,6 @@ export function createSafetyBackup(): string {
   
   // Clean up old safety backups, keeping only the last 5
   try {
-    const safetyBackupPattern = `${dbName}-safety-backup-*.db`;
     const files = fs.readdirSync(dbDir)
       .filter(file => {
         const fullPath = path.join(dbDir, file);

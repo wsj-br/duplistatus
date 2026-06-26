@@ -27,10 +27,20 @@ Si ve advertencias del servidor Duplicati como `HTTP Response request failed for
 
 ### Servidores duplicados en el panel de control {#duplicate-servers-on-the-dashboard}
 
-Si el mismo servidor aparece más de una vez en el panel de control:
+Si el mismo servidor aparece más de una vez en el panel, esto ocurre con mayor frecuencia después de [recopilar registros de copia de seguridad](collect-backup-logs.md), o después de reinstalar o actualizar el servidor Duplicati.
 
-- **Causa**: Los duplicados pueden ocurrir al reinstalar o actualizar Duplicati, ya que el `machine_id` del servidor puede cambiar y **duplistatus** lo trata entonces como un servidor nuevo.
-- **Solución**: Use [Configuración → Mantenimiento de base de datos → Combinar servidores duplicados](settings/database-maintenance.md#merge-duplicate-servers) para consolidar las entradas duplicadas en un único servidor.
+**Causas:**
+
+- **`machine_id` cambiado**: Cuándo reinstala o actualiza Duplicati, el `machine_id` del servidor puede cambiar y **duplistatus** entonces lo trata como un servidor nuevo.
+- **Error de la API de Duplicati**: En las versiones más recientes de Duplicati hay un error en el que algunos endpoints de la API mezclan el id de `identity` y `machine_id`. Esta incoherencia hace que **duplistatus** registre el mismo servidor con diferentes ID, generando duplicados.
+
+**Solución alternativa:**
+
+1.  En el **servidor Duplicati**, realice **una** de las siguientes acciones:
+    - Edite los archivos `identity.txt` y `machineid.txt` para que ambos archivos contengan el **mismo** id; o
+    - Abra **Duplicati → Configuración → Opciones avanzadas → Machine-id** y establezca un valor (se autocompleta; simplemente acepte el valor sugerido).
+2.  **Reinicie** el servidor Duplicati para que el cambio surta efecto.
+3.  En **duplistatus**, consolide las entradas duplicadas mediante [Configuración → Mantenimiento de base de datos → Combinar servidores duplicados](settings/database-maintenance.md#merge-duplicate-servers).
 
 ### Notificaciones No Funcionan (Detallado) {#notifications-not-working-detailed}
 

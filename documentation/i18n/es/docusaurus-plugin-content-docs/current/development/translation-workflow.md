@@ -4,7 +4,7 @@ Para comandos de documentación general (compilación, implementación, capturas
 
 ## Resumen {#overview}
 
-La documentación utiliza i18n de Docusaurus con el inglés como configuración regional Predeterminada. La documentación de origen se encuentra en `docs/`; las traducciones se escriben en `i18n/{locale}/`. Configuraciones regionales compatibles: en (predeterminada), fr, de, es, pt-BR, zh-CN.
+La documentación utiliza Docusaurus i18n con inglés como la configuración regional predeterminada. La documentación fuente se encuentra en `docs/`; las traducciones se escriben en `i18n/{locale}/`. Configuraciones regionales admitidas: en-GB (predeterminada), fr, de, es, pt-BR, hi-Latn, zh-Hans.
 
 **Traducción por IA** para la interfaz de usuario de la aplicación, markdown/JSON de Docusaurus y recursos SVG es manejada por [**ai-i18n-tools**](https://www.npmjs.com/package/ai-i18n-tools) desde la **raíz del repositorio**, configurada en `ai-i18n-tools.config.json` (no dentro de `documentation/`). Establezca `OPENROUTER_API_KEY` al ejecutar comandos de traducción.
 

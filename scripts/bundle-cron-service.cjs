@@ -89,6 +89,15 @@ async function main() {
     plugins: [aliasAtToSrcPlugin()],
     // Native addons must remain external.
     external: ['better-sqlite3', 'bcrypt'],
+    // When ESM dependencies (e.g. node-cron) use `import.meta.url` at module top
+    // level, esbuild substitutes `import.meta` with `{}` in CJS output, leaving
+    // `import.meta.url` undefined. That makes calls like
+    // `fileURLToPath(import.meta.url)` throw at load time. Point `import.meta.url`
+    // at the bundle's own file URL so those expressions resolve to a valid string.
+    define: { 'import.meta.url': '__duplistatus_import_meta_url' },
+    banner: {
+      js: 'const __duplistatus_import_meta_url = require("node:url").pathToFileURL(__filename).href;',
+    },
   });
 
   console.log('[bundle-cron-service] Wrote dist/cron-service.cjs');

@@ -13,7 +13,7 @@
 - **User Access Control & Security**: Secure authentication system with role-based access control (Admin/User roles), configurable password policies, account lockout protection, and comprehensive user management.
 - **Audit Logging**: Complete audit trail of all system changes and user actions with advanced filtering, export capabilities, and configurable retention periods.
 - **Application Logs Viewer**: Admin-only interface to view, search, and export application logs directly from the web interface with real-time monitoring capabilities.
-- **Multi-language Support**: Interface and documentation available in English, French, German, Spanish, and Brazilian Portuguese.
+- **Multi-language Support**: Interface and documentation available in English, French, German, Spanish, Brazilian Portuguese, Hindi (Roman) and Simplified Chinese.
 
 
 ## Installation {#installation}

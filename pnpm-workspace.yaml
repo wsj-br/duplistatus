@@ -70,13 +70,14 @@ allowBuilds:
   core-js: true
   core-js-pure: true
   esbuild: true
-  puppeteer: true
+  playwright: true
+  puppeteer: set this to true or false
   sharp: true
   unrs-resolver: true
 
 minimumReleaseAgeExclude:
-  - ai-i18n-tools@1.6.1
   - lucide-react@1.21.0
   - node-cron@4.4.1
   - js-yaml@4.1.2
   - http-proxy-middleware@3.0.6
+  - ai-i18n-tools@1.7.1

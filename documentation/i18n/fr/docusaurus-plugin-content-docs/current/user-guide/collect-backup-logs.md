@@ -51,6 +51,10 @@ Vous pouvez également utiliser le bouton <IconButton icon="lucide:import" label
 - Si l'option de téléchargement est sélectionnée, les données JSON collectées seront téléchargées. Le nom du fichier aura le format suivant : `[serverName]_collected_[Timestamp].json`. L'horodatage utilise le format de date ISO 8601 (AAAA-MM-JJTHH:MM:SS).
 - Le tableau de bord est mis à jour pour refléter les nouvelles informations.
 
+:::note Vous voyez des serveurs en double après la collecte ?
+Si le même serveur apparaît plusieurs fois après la collecte des journaux de sauvegarde (ou après une réinstallation/mise à niveau de Duplicati), c'est généralement dû à un changement de `machine_id` ou à un bogue de l'API Duplicati qui mélange l'`identity` id et l'`machine_id`. La solution consiste à aligner les identifiants sur le serveur Duplicati (modifier `identity.txt`/`machineid.txt` ou définir **Duplicati → Paramètres → Options avancées → Machine-id**), redémarrer Duplicati, puis fusionner les entrées dans **duplistatus** via [Paramètres → Maintenance de la base de données → Fusionner les serveurs en double](settings/database-maintenance.md#merge-duplicate-servers). Voir [Serveurs en double sur le tableau de bord](troubleshooting.md#duplicate-servers-on-the-dashboard) pour les étapes complètes.
+:::
+
 ## Dépannage des problèmes de collection {#troubleshooting-collection-issues}
 
 La collecte des journaux de sauvegarde nécessite que le Serveur Duplicati soit accessible à partir de l'installation **duplistatus**. Si vous rencontrez des problèmes, veuillez vérifier les éléments suivants :

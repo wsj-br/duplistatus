@@ -29,10 +29,20 @@ If you see Duplicati server warnings like `HTTP Response request failed for:` an
 
 ### Duplicate Servers on the Dashboard {#duplicate-servers-on-the-dashboard}
 
-If the same server appears more than once on the dashboard:
+If the same server appears more than once on the dashboard, this most often happens after [collecting backup logs](collect-backup-logs.md), or after reinstalling or upgrading the Duplicati server.
 
-- **Cause**: Duplicates can occur when you reinstall or upgrade Duplicati, because the server's `machine_id` may change and **duplistatus** then treats it as a new server.
-- **Fix**: Use [Settings → Database Maintenance → Merge Duplicate Servers](settings/database-maintenance.md#merge-duplicate-servers) to consolidate the duplicate entries into a single server.
+**Causes:**
+
+- **Changed `machine_id`**: When you reinstall or upgrade Duplicati, the server's `machine_id` may change, and **duplistatus** then treats it as a new server.
+- **Duplicati API bug**: In newer versions of Duplicati there is a bug where some API endpoints mix the `identity` id and the `machine_id`. This inconsistency causes **duplistatus** to register the same server under different IDs, generating duplicates.
+
+**Workaround:**
+
+1.  On the **Duplicati server**, do **one** of the following:
+    - Edit the `identity.txt` and `machineid.txt` files so that both files contain the **same** id; or
+    - Open **Duplicati → Settings → Advanced Options → Machine-id** and set a value (it is auto-filled — just accept the suggested value).
+2.  **Restart** the Duplicati server so the change takes effect.
+3.  In **duplistatus**, consolidate the duplicate entries using [Settings → Database Maintenance → Merge Duplicate Servers](settings/database-maintenance.md#merge-duplicate-servers).
 
 ### Notifications Not Working (Detailed) {#notifications-not-working-detailed}
 

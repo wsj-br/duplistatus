@@ -11,19 +11,23 @@
 This web application monitors and visualises backup operations from [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** provides a comprehensive dashboard to track backup statuses, notify overdue backups, job history,
 metrics, and performance across multiple servers.
 
-Easy to deploy with Docker, Podman, or Portainer and available in 6 languages (English, German, French, Spanish, Portuguese, and Simplified Chinese), with full documentation in each language.
+Easy to deploy with Docker, Podman, or Portainer and available in 7 languages (English, German, French, Spanish, Portuguese, Hindi (Roman), and Simplified Chinese), with full documentation in each language.
 
 [More information](https://wsj-br.github.io/duplistatus)        |
 [Mehr informationen](https://wsj-br.github.io/duplistatus/de/)  | 
 [Plus d'informations](https://wsj-br.github.io/duplistatus/fr/) | 
 [Más información](https://wsj-br.github.io/duplistatus/es/)     |
-[Mais informações](https://wsj-br.github.io/duplistatus/pt-BR/)
+[Mais informações](https://wsj-br.github.io/duplistatus/pt-BR/) |
+[Adhik jaankari](https://wsj-br.github.io/duplistatus/hi-Latn/) |
+[更多信息](https://wsj-br.github.io/duplistatus/zh-Hans/)
 
 [Install guide](https://wsj-br.github.io/duplistatus/installation)        |
 [Installationsleitfaden](https://wsj-br.github.io/duplistatus/de/installation)  | 
 [Guide d'Installation](https://wsj-br.github.io/duplistatus/fr/installation) | 
 [Guía de Instalación](https://wsj-br.github.io/duplistatus/es/installation)     |
-[Guia de Instalação](https://wsj-br.github.io/duplistatus/pt-BR/installation)
+[Guia de Instalação](https://wsj-br.github.io/duplistatus/pt-BR/installation) |
+[Sthaapana gaaid](https://wsj-br.github.io/duplistatus/hi-Latn/installation) |
+[安装指南](https://wsj-br.github.io/duplistatus/zh-Hans/installation)
 
 
 <br/>
@@ -61,7 +65,7 @@ Easy to deploy with Docker, Podman, or Portainer and available in 6 languages (E
 - **User Access Control & Security**: Secure authentication system with role-based access control (Admin/User roles), configurable password policies, account lockout protection, and comprehensive user management.
 - **Audit Logging**: Complete audit trail of all system changes and user actions with advanced filtering, export capabilities, and configurable retention periods.
 - **Application Logs Viewer**: Admin-only interface to view, search, and export application logs directly from the web interface with real-time monitoring capabilities.
-- **Multi-language Support**: Interface and documentation available in English, French, German, Spanish, and Brazilian Portuguese.
+- **Multi-language Support**: Interface and documentation available in English, French, German, Spanish, Brazilian Portuguese, Hindi (Roman) and Simplified Chinese.
 
 
 ## Installation

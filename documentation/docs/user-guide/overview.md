@@ -13,7 +13,7 @@ duplistatus is a powerful monitoring dashboard designed specifically for Duplica
 - Automated overdue backup detection with configurable alerts
 - Comprehensive metrics and visualisation of backup performance
 - Flexible notification system via NTFY and email
-- Multi-language support (English, French, German, Spanish, and Brazilian Portuguese).
+- Multi-language support (English, French, German, Spanish, Brazilian Portuguese, Hindi (Roman) and Simplified Chinese).
 
 ## Installation {#installation}
 
@@ -76,7 +76,7 @@ The application toolbar provides convenient access to key functions and settings
 
 ### User Menu {#user-menu}
 
-Clicking the user button opens a dropdown menu with user-specific options. The menu options differ based on whether you're logged in as an administrator or a regular user. Both roles can change the interface language via the **Language** submenu. Supported languages: English, French, German, Spanish, and Brazilian Portuguese.
+Clicking the user button opens a dropdown menu with user-specific options. The menu options differ based on whether you're logged in as an administrator or a regular user. Both roles can change the interface language via the **Language** submenu. Supported languages: English, French, German, Spanish, Brazilian Portuguese, Hindi (Roman) and Simplified Chinese.
 
 <table>
   <tr>

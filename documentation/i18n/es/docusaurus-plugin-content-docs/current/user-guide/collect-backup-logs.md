@@ -51,6 +51,10 @@ También puede utilizar el botón <IconButton icon="lucide:import" label="Recopi
 - Si se selecciona la opción de descarga, se descargarán los datos JSON recopilados. El nombre del archivo tendrá el siguiente formato: `[serverName]_collected_[Timestamp].json`. La marca de tiempo utiliza el formato de fecha ISO 8601 (AAAA-MM-DDTHH:MM:SS).
 - El panel se actualiza para reflejar la nueva información.
 
+:::note ¿Ve servidores duplicados después de recopilar?
+Si el mismo servidor aparece más de una vez después de recopilar los registros de copia de seguridad (o después de una reinstalación/actualización de Duplicati), generalmente se debe a un cambio en `machine_id` o a un error de la API de Duplicati que mezcla el id de `identity` y `machine_id`. La solución es alinear los ids en el servidor de Duplicati (editar `identity.txt`/`machineid.txt` o establecer **Duplicati → Configuración → Opciones avanzadas → Machine-id**), reiniciar Duplicati y, a continuación, combinar las entradas en **duplistatus** mediante [Configuración → Mantenimiento de base de datos → Combinar servidores duplicados](settings/database-maintenance.md#merge-duplicate-servers). Consulte [Servidores duplicados en el Panel de control](troubleshooting.md#duplicate-servers-on-the-dashboard) para ver los pasos completos.
+:::
+
 ## Solución de problemas de recopilación {#troubleshooting-collection-issues}
 
 La recopilación del registro de backup requiere que el servidor Duplicati sea accesible desde la instalación de **duplistatus**. Si encuentra problemas, verifique lo siguiente:

@@ -16,7 +16,7 @@ A página inclui um seletor de **Idioma dos Modelos** que define a localidade pa
 
 ## Idioma do Modelo {#template-language}
 
-Um seletor de **Idioma dos Modelos** no topo da página permite que você escolha o idioma para os modelos padrão (Inglês, Alemão, Francês, Espanhol, Português). Alterar o idioma atualiza a localidade dos padrões, mas os modelos personalizados existentes mantêm seu texto atual até que você os atualize ou use um dos botões de redefinição.
+Um seletor de **Idioma do Modelo** no topo da página permite que você escolha o idioma para modelos padrão (Inglês, Alemão, Francês, Espanhol, Português, Hindi (Romano) e Chinês Simplificado). Alterar o idioma atualiza a localidade para os padrões, mas os modelos personalizados existentes mantêm seu texto atual até que você os atualize ou use um dos botões de redefinição.
 
 <br/>
 

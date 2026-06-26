@@ -4,7 +4,7 @@ Pour les commandes de documentation générale (build, deploy, screenshots, gén
 
 ## Vue d'ensemble {#overview}
 
-La documentation utilise l'i18n de Docusaurus avec l'anglais comme locale Par défaut. La documentation source se trouve dans `docs/` ; les traductions sont rédigées sous `i18n/{locale}/`. Locales prises en charge : en (Par défaut), fr, de, es, pt-BR, zh-CN.
+La documentation utilise Docusaurus i18n avec l'anglais comme locale par défaut. La documentation source se trouve dans `docs/` ; les traductions sont écrites sous `i18n/{locale}/`. Locales prises en charge : en-GB (par défaut), fr, de, es, pt-BR, hi-Latn, zh-Hans.
 
 **Traduction IA** pour l'interface utilisateur de l'application, le markdown/JSON Docusaurus et les ressources SVG est gérée par [**ai-i18n-tools**](https://www.npmjs.com/package/ai-i18n-tools) depuis la **racine du dépôt**, configurée dans `ai-i18n-tools.config.json` (pas à l'intérieur de `documentation/`). Définissez `OPENROUTER_API_KEY` lors de l'exécution des commandes de traduction.
 

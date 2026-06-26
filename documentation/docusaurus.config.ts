@@ -55,7 +55,7 @@ const config: Config = {
   // Internationalization configuration for multi-language support
   i18n: {
     defaultLocale: 'en-GB',
-    locales: ['en-GB', 'fr', 'de', 'es', 'pt-BR', 'zh-CN'],
+    locales: ['en-GB', 'fr', 'de', 'es', 'pt-BR', 'hi-Latn', 'zh-Hans'],
     localeConfigs: {
       'en-GB': {
         label: 'English',
@@ -66,19 +66,19 @@ const config: Config = {
       fr: {
         label: 'Français',
         direction: 'ltr',
-        htmlLang: 'fr-FR',
+        htmlLang: 'fr',
         calendar: 'gregory',
       },
       de: {
         label: 'Deutsch',
         direction: 'ltr',
-        htmlLang: 'de-DE',
+        htmlLang: 'de',
         calendar: 'gregory',
       },
       es: {
         label: 'Español',
         direction: 'ltr',
-        htmlLang: 'es-ES',
+        htmlLang: 'es',
         calendar: 'gregory',
       },
       'pt-BR': {
@@ -87,10 +87,16 @@ const config: Config = {
         htmlLang: 'pt-BR',
         calendar: 'gregory',
       },
-      'zh-CN': {
+      'hi-Latn': {
+        label: 'Hindi',
+        direction: 'ltr',
+        htmlLang: 'hi-Latn',
+        calendar: 'gregory',
+      },
+      'zh-Hans': {
         label: '简体中文',
         direction: 'ltr',
-        htmlLang: 'zh-CN',
+        htmlLang: 'zh-Hans',
         calendar: 'gregory',
       },
     },
@@ -127,6 +133,8 @@ const config: Config = {
         indexDocs: true,
         indexBlog: false,
         indexPages: false,
+        // lunr-languages codes (not Docusaurus locale codes). hi-Latn is romanised Hindi,
+        // so it rides on the English pipeline; zh-Hans maps to zh.
         language: ['en', 'fr', 'de', 'es', 'pt', 'zh'],
         docsRouteBasePath: '/',
         searchResultLimits: 10,

@@ -20,12 +20,16 @@ mkdir -p .next/standalone/.next
 cp -r .next/static .next/standalone/.next/static 
 cp -r public .next/standalone/public 
 
-# Copy SWC helpers for all installed versions
-for helpers_dir in node_modules/.pnpm/@swc+helpers@*/; do
-    helpers_dir=${helpers_dir%/}  # Remove trailing slash
-    mkdir -p ".next/standalone/${helpers_dir}/node_modules/@swc/helpers"
-    cp -r "${helpers_dir}/node_modules/@swc/helpers/esm" ".next/standalone/${helpers_dir}/node_modules/@swc/helpers/"
-done
+# Ensure the @swc/helpers ESM build is present in the standalone output.
+# next.config.ts (outputFileTracingIncludes) normally copies this, but keep a
+# fallback for the hoisted (nodeLinker: hoisted) layout where the package lives
+# at top-level node_modules. Guard every step so a missing source never aborts.
+SWC_ESM_SRC="node_modules/@swc/helpers/esm"
+SWC_ESM_DEST=".next/standalone/node_modules/@swc/helpers/esm"
+if [ -d "$SWC_ESM_SRC" ] && [ ! -d "$SWC_ESM_DEST" ]; then
+    mkdir -p ".next/standalone/node_modules/@swc/helpers"
+    cp -r "$SWC_ESM_SRC" ".next/standalone/node_modules/@swc/helpers/"
+fi
 
 # -----  end of pos-build ------
 

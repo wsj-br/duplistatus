@@ -59,6 +59,10 @@ You can also use the <IconButton icon="lucide:import" label="Collect All"/> butt
 - If the download option is selected, it will download the JSON data collected. The file name will be in this format: `[serverName]_collected_[Timestamp].json`. The timestamp uses the ISO 8601 date format (YYYY-MM-DDTHH:MM:SS).
 - The dashboard updates to reflect the new information.
 
+:::note Seeing duplicated servers after collecting?
+If the same server appears more than once after collecting backup logs (or after a Duplicati reinstall/upgrade), it is usually caused by a changed `machine_id` or by a Duplicati API bug that mixes the `identity` id and the `machine_id`. The fix is to align the ids on the Duplicati server (edit `identity.txt`/`machineid.txt` or set **Duplicati → Settings → Advanced Options → Machine-id**), restart Duplicati, then merge the entries in **duplistatus** via [Settings → Database Maintenance → Merge Duplicate Servers](settings/database-maintenance.md#merge-duplicate-servers). See [Duplicate Servers on the Dashboard](troubleshooting.md#duplicate-servers-on-the-dashboard) for full steps.
+:::
+
 ## Troubleshooting Collection Issues {#troubleshooting-collection-issues}
 
 Backup log collection requires the Duplicati server to be accessible from the **duplistatus** installation. If you encounter issues, please verify the following:

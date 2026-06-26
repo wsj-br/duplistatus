@@ -1,8 +1,8 @@
 [
   {
     "code": "en-GB",
-    "label": "English (GB)",
-    "englishName": "English (GB)",
+    "label": "English (UK)",
+    "englishName": "English (United Kingdom)",
     "direction": "ltr",
     "isSourceLocale": true
   },
@@ -27,11 +27,17 @@
   {
     "code": "pt-BR",
     "label": "Português (Brasil)",
-    "englishName": "Portuguese (BR)",
+    "englishName": "Portuguese (Brazil)",
     "direction": "ltr"
   },
   {
-    "code": "zh-CN",
+    "code": "hi-Latn",
+    "label": "Hindi (Roman)",
+    "englishName": "Hindi (Romanized)",
+    "direction": "ltr"
+  },
+  {
+    "code": "zh-Hans",
     "label": "简体中文",
     "englishName": "Chinese (Simplified)",
     "direction": "ltr"

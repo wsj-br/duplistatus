@@ -16,7 +16,7 @@ La page inclut un sélecteur **Langue des modèles** qui définit la locale pour
 
 ## Langue du modèle {#template-language}
 
-Un sélecteur de **Langue des modèles** en haut de la page vous permet de choisir la langue pour les modèles par défaut (Anglais, Allemand, Français, Espagnol, Portugais). Le changement de langue met à jour les paramètres régionaux pour les valeurs par défaut, mais les modèles personnalisés existants conservent leur texte actuel jusqu'à ce que vous les mettiez à jour ou utilisiez l'un des boutons de réinitialisation.
+Un sélecteur de **Langue du modèle** situé en haut de la page vous permet de choisir la langue des modèles par défaut (anglais, allemand, français, espagnol, portugais, hindi (roman) et chinois simplifié). La modification de la langue met à jour les paramètres régionaux par défaut, mais les modèles personnalisés existants conservent leur texte actuel jusqu'à ce que vous les mettiez à jour ou utilisiez l'un des boutons de réinitialisation.
 
 <br/>
 

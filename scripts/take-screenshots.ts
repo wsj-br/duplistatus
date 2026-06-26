@@ -2,9 +2,9 @@
  * Take screenshots for documentation.
  * Options: --locale en[,de,...] (optional); --screenshots/-s name[,name,...] (optional); -h/--help for usage.
  */
-import puppeteer, { type Page } from 'puppeteer';
+import { chromium, type BrowserContext, type Page } from 'playwright';
 import { mkdir } from 'fs/promises';
-import { existsSync, createWriteStream } from 'fs';
+import { existsSync, createWriteStream, readFileSync } from 'fs';
 import { join, resolve, dirname } from 'path';
 import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
@@ -43,37 +43,118 @@ function getTimestamp(): string {
   return `${h}:${m}:${s}`;
 }
 
-function log(msg: string, ...args: unknown[]): void {
-  const ts = getTimestamp();
+const origConsoleLog = console.log.bind(console);
+const origConsoleError = console.error.bind(console);
+
+/** Navigation wait strategy for Next.js dev — see Next.js guidance (next.js#52265): avoid
+ *  networkidle (HMR + /api/ping never settle). Use 'domcontentloaded' as the fastest reliable
+ *  milestone, then wait for app-specific DOM signals via navigateApp(). Playwright also supports
+ *  'commit', but 'domcontentloaded' is kept to preserve existing timing behavior. */
+const PAGE_GOTO_WAIT = 'domcontentloaded' as const;
+const PAGE_GOTO_TIMEOUT_MS = 60000;
+
+/**
+ * page.goto that tolerates net::ERR_ABORTED caused by competing client-side navigations.
+ * The app can fire its own window.location redirect (e.g. the /login page redirects to "/" once it
+ * detects an authenticated session) at the same moment we issue an explicit goto. Playwright aborts
+ * the superseded navigation and throws ERR_ABORTED — unlike Puppeteer, which resolved silently. We
+ * wait for the competing redirect to settle and retry; the caller's readyTarget check then confirms
+ * the correct page actually rendered. (This race is timing-dependent and surfaces on fast prod builds.)
+ */
+async function gotoWithRetry(
+  page: Page,
+  url: string,
+  options: { waitUntil: typeof PAGE_GOTO_WAIT; timeout: number },
+  retries: number = 3
+): Promise<void> {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      await page.goto(url, options);
+      return;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      if (message.includes('net::ERR_ABORTED') && attempt <= retries) {
+        await delay(250 * attempt);
+        continue;
+      }
+      throw err;
+    }
+  }
+}
+
+/**
+ * Navigate and wait for an app element — do not rely on load/domcontentloaded/networkidle alone.
+ * Next.js client routing and dev-server HMR keep background connections open indefinitely.
+ */
+async function navigateApp(
+  page: Page,
+  path: string,
+  options?: { readyTarget?: string; timeoutMs?: number }
+): Promise<void> {
+  const timeoutMs = options?.timeoutMs ?? PAGE_GOTO_TIMEOUT_MS;
+  await gotoWithRetry(page, makeUrl(path), { waitUntil: PAGE_GOTO_WAIT, timeout: timeoutMs });
+  if (options?.readyTarget) {
+    const found = await waitForScreenshotTarget(page, options.readyTarget, timeoutMs);
+    if (!found) {
+      throw new Error(`Page ${path} did not render data-screenshot-target="${options.readyTarget}" within ${timeoutMs}ms`);
+    }
+  }
+}
+
+async function waitForAuthenticated(page: Page, timeoutMs: number = PAGE_GOTO_TIMEOUT_MS): Promise<boolean> {
+  try {
+    await page.waitForFunction(
+      async () => {
+        try {
+          const res = await fetch('/api/auth/me', { credentials: 'include' });
+          const data = (await res.json()) as { authenticated?: boolean };
+          return data.authenticated === true;
+        } catch {
+          return false;
+        }
+      },
+      undefined,
+      { timeout: timeoutMs, polling: 500 }
+    );
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function formatLogLine(msg: string, ...args: unknown[]): string {
   const formatted = args.length > 0 ? util.format(msg, ...args) : msg;
-  const line = `${ts} - ${formatted}`;
+  if (scriptStartTime == null) {
+    return `${getTimestamp()} - ${formatted}`;
+  }
+  return captureLog(formatted);
+}
+
+function log(msg: string, ...args: unknown[]): void {
+  const line = formatLogLine(msg, ...args);
   
-  // Console output
-  console.log(line);
+  // Write via original console so Phase A/B console overrides do not double-prefix.
+  origConsoleLog(line);
   
-  // File output
+  // File output (strip ANSI codes)
   if (logStream && logStream.writable) {
-    logStream.write(line + '\n');
+    logStream.write(line.replace(/\x1b\[[0-9;]*m/g, '') + '\n');
   }
 }
 
 function logError(message: string): void {
-  const ts = getTimestamp();
-  const line = `${ts} - ${colors.red}${message}${colors.reset}`;
-  console.error(line);
+  const line = formatLogLine(`${colors.red}${message}${colors.reset}`);
+  origConsoleError(line);
   if (logStream && logStream.writable) {
-    // Strip ANSI codes for file output
-    logStream.write(`${ts} - ${message}\n`);
+    logStream.write(formatLogLine(message) + '\n');
   }
 }
 
 function logSuccess(message: string): void {
-  const ts = getTimestamp();
-  const line = `${ts} - ${colors.blue}${message}${colors.reset}`;
-  console.log(line);
+  const line = formatLogLine(`${colors.blue}${message}${colors.reset}`);
+  origConsoleLog(line);
   if (logStream && logStream.writable) {
-    // Strip ANSI codes for file output
-    logStream.write(`${ts} - ${message}\n`);
+    logStream.write(formatLogLine(message) + '\n');
   }
 }
 
@@ -86,9 +167,21 @@ const VIEWPORT_HEIGHT = 1080;
 /** Timeout (ms) for waiting for data-screenshot-target elements to appear. */
 const SCREENSHOT_TARGET_TIMEOUT = 15000;
 
-const LOCALES = ['en-GB', 'de', 'fr', 'es', 'pt-BR', 'zh-CN'] as const;
+/** Shape of entries in src/locales/ui-languages.json. */
+interface UiLanguage {
+  code: string;
+  label: string;
+  englishName: string;
+  direction: string;
+  isSourceLocale?: boolean;
+}
 
-type Locale = (typeof LOCALES)[number];
+/** UI locales, read from src/locales/ui-languages.json so the list stays in sync with the app. */
+const UI_LANGUAGES_PATH = join(__dirname, '..', 'src', 'locales', 'ui-languages.json');
+const UI_LANGUAGES = JSON.parse(readFileSync(UI_LANGUAGES_PATH, 'utf-8')) as UiLanguage[];
+const LOCALES: readonly string[] = UI_LANGUAGES.map((lang) => lang.code);
+
+type Locale = string;
 
 /** Screenshot filenames in capture order (Phase A then Phase B) for summary table. */
 const ORDERED_SCREENSHOT_FILENAMES: string[] = [
@@ -279,12 +372,14 @@ function makeUrl(pathWithLeadingSlash: string): string {
 
 /** Set locale via NEXT_LOCALE cookie. */
 async function setLocale(page: Page, locale: Locale): Promise<void> {
-  await page.setCookie({
-    name: 'NEXT_LOCALE',
-    value: locale,
-    domain: 'localhost',
-    path: '/',
-  });
+  await page.context().addCookies([
+    {
+      name: 'NEXT_LOCALE',
+      value: locale,
+      domain: 'localhost',
+      path: '/',
+    },
+  ]);
 }
 
 // ANSI color codes for console output
@@ -392,11 +487,82 @@ async function waitForScreenshotTarget(
   try {
     await page.waitForSelector(`[data-screenshot-target="${targetId}"]`, {
       timeout: timeoutMs,
-      visible: true
+      state: 'visible'
     });
     return true;
   } catch {
     log(`${colors.yellow}  ⚠ data-screenshot-target="${targetId}" not found within ${timeoutMs}ms${colors.reset}`);
+    return false;
+  }
+}
+
+/**
+ * Wait until Recharts SVGs inside a container are rendered (not loading).
+ * Prefer this over delay() on chart pages — proceeds as soon as charts are ready.
+ */
+async function waitForChartsInContainer(
+  page: Page,
+  containerSelector: string,
+  options?: { minCharts?: number; timeoutMs?: number }
+): Promise<boolean> {
+  const minCharts = options?.minCharts ?? 1;
+  const timeoutMs = options?.timeoutMs ?? 15000;
+  try {
+    await page.waitForFunction(
+      ([containerSel, minCount]: [string, number]) => {
+        const container = document.querySelector(containerSel);
+        if (!container) return false;
+        if (container.querySelector('.animate-pulse')) return false;
+        const svgs = container.querySelectorAll('.recharts-wrapper svg, svg.recharts-surface');
+        let ready = 0;
+        for (const svg of svgs) {
+          const rect = svg.getBoundingClientRect();
+          if (rect.width > 10 && rect.height > 10) ready++;
+        }
+        return ready >= minCount;
+      },
+      [containerSelector, minCharts] as [string, number],
+      { timeout: timeoutMs }
+    );
+    return true;
+  } catch {
+    log(`${colors.yellow}  ⚠ Charts not rendered in ${containerSelector} within ${timeoutMs}ms${colors.reset}`);
+    return false;
+  }
+}
+
+async function waitForMetricsChartsReady(page: Page, timeoutMs: number = 15000): Promise<boolean> {
+  await waitForScreenshotTarget(page, 'metrics-chart', timeoutMs);
+  return waitForChartsInContainer(page, '[data-screenshot-target="metrics-chart"]', {
+    minCharts: 1,
+    timeoutMs,
+  });
+}
+
+async function waitForOverviewSideChartsReady(page: Page, timeoutMs: number = 15000): Promise<boolean> {
+  return waitForChartsInContainer(page, '[data-screenshot-target="overview-side-panel"]', {
+    minCharts: 1,
+    timeoutMs,
+  });
+}
+
+async function waitForOverviewPanelState(
+  page: Page,
+  expectedState: 'status' | 'chart',
+  timeoutMs: number = 10000
+): Promise<boolean> {
+  try {
+    await page.waitForFunction(
+      (state: string) => {
+        const toggle = document.querySelector('[data-screenshot-target="overview-side-panel-toggle"]');
+        return toggle?.getAttribute('data-overview-panel-state') === state;
+      },
+      expectedState,
+      { timeout: timeoutMs }
+    );
+    return true;
+  } catch {
+    log(`${colors.yellow}  ⚠ Overview side panel did not switch to "${expectedState}" within ${timeoutMs}ms${colors.reset}`);
     return false;
   }
 }
@@ -543,28 +709,51 @@ async function setDarkTheme(page: Page, userId: string) {
 
 async function login(page: Page, username: string, password: string) {
   log(`Logging in as ${username}...`);
-  await page.goto(makeUrl('/login?redirect=%2F'), { waitUntil: 'networkidle0' });
-  
-  // Wait for the form to be ready
-  await page.waitForSelector('#username', { visible: true });
-  await page.waitForSelector('#password', { visible: true });
-  
-  // Fill in credentials
-  await page.type('#username', username, { delay: 50 });
-  await page.type('#password', password, { delay: 50 });
-  
-  // Submit the form
-  await page.click('button[type="submit"]');
-  
-  // Wait for navigation after login
-  await page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 10000 });
-  
-  // Verify we're logged in by checking if we're redirected away from login page
-  const currentUrl = page.url();
-  if (currentUrl.includes('/login')) {
-    throw new Error(`Failed to login as ${username}. Still on login page.`);
+  // API login on the app origin — avoids UI form + waitForNavigation, which is unreliable with
+  // Next.js (async fetch then window.location.href). See Next.js #52265.
+  await gotoWithRetry(page, makeUrl('/login'), { waitUntil: PAGE_GOTO_WAIT, timeout: PAGE_GOTO_TIMEOUT_MS });
+
+  const loginResult = await page.evaluate(async ({ user, pass }: { user: string; pass: string }) => {
+    const csrfRes = await fetch('/api/csrf', { credentials: 'include' });
+    if (!csrfRes.ok) {
+      return { ok: false as const, errorCode: 'CSRF_FAILED' };
+    }
+    const csrfBody = (await csrfRes.json()) as { token?: string; csrfToken?: string };
+    const csrfToken = csrfBody.token ?? csrfBody.csrfToken ?? '';
+    if (!csrfToken) {
+      return { ok: false as const, errorCode: 'CSRF_MISSING' };
+    }
+
+    const loginRes = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
+      credentials: 'include',
+      body: JSON.stringify({ username: user, password: pass }),
+    });
+    const loginBody = (await loginRes.json()) as { errorCode?: string; error?: string };
+    if (!loginRes.ok) {
+      return { ok: false as const, errorCode: loginBody.errorCode ?? loginBody.error ?? 'LOGIN_FAILED' };
+    }
+    return { ok: true as const };
+  }, { user: username, pass: password });
+
+  if (!loginResult.ok) {
+    throw new Error(`Failed to login as ${username}: ${loginResult.errorCode}`);
   }
-  
+
+  const authed = await waitForAuthenticated(page);
+  if (!authed) {
+    throw new Error(`Failed to login as ${username}: session not established`);
+  }
+
+  // Land on dashboard and wait for the app shell — not navigation lifecycle events.
+  await navigateApp(page, '/', { readyTarget: 'dashboard-main' });
+  await waitForDashboardLoad(page);
+
+  if (page.url().includes('/login')) {
+    throw new Error(`Failed to login as ${username}. Redirected back to login page.`);
+  }
+
   log(`Successfully logged in as ${username}`);
   
   // Resolve user id (same pattern as switchToTableView) and persist explicit dark preference
@@ -630,12 +819,12 @@ async function logout(page: Page) {
     }, csrfToken);
     
     // Navigate to login page to ensure we're logged out
-    await page.goto(makeUrl('/login'), { waitUntil: 'domcontentloaded' });
+    await gotoWithRetry(page, makeUrl('/login'), { waitUntil: PAGE_GOTO_WAIT, timeout: PAGE_GOTO_TIMEOUT_MS });
     log('Logged out');
   } catch (error) {
     logError('Error during logout: ' + (error instanceof Error ? error.message : String(error)));
     // Try navigating to login page anyway
-    await page.goto(makeUrl('/login'), { waitUntil: 'domcontentloaded' });
+    await gotoWithRetry(page, makeUrl('/login'), { waitUntil: PAGE_GOTO_WAIT, timeout: PAGE_GOTO_TIMEOUT_MS });
   }
 }
 
@@ -899,7 +1088,7 @@ async function takeScreenshot(
     
     if (bounds) {
       const margin = 10;
-      const viewportSize = await page.viewport();
+      const viewportSize = page.viewportSize();
       const pageWidth = viewportSize?.width || VIEWPORT_WIDTH;
       const pageHeight = viewportSize?.height || VIEWPORT_HEIGHT;
       
@@ -972,12 +1161,27 @@ async function takeScreenshot(
 }
 
 async function waitForDashboardLoad(page: Page) {
-  // Wait for dashboard content to load via data-screenshot-target
   const found = await waitForScreenshotTarget(page, 'dashboard-main', 10000);
   if (!found) {
     log(`${colors.yellow}Dashboard data-screenshot-target not found, continuing anyway...${colors.reset}`);
+    return;
   }
-  await delay(2000); // Additional wait for animations
+  // Wait for the active view shell to layout — not a fixed delay (chart pages use waitForChartsInContainer).
+  try {
+    await page.waitForFunction(() => {
+      const overview = document.querySelector('[data-screenshot-target="dashboard-overview"]');
+      const table = document.querySelector('[data-screenshot-target="dashboard-table-view"]');
+      for (const el of [overview, table]) {
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.width > 0 && rect.height > 0) return true;
+        }
+      }
+      return false;
+    }, undefined, { timeout: 10000 });
+  } catch {
+    log(`${colors.yellow}Dashboard view shell not ready within timeout, continuing anyway...${colors.reset}`);
+  }
 }
 
 async function switchToTableView(page: Page) {
@@ -1051,7 +1255,7 @@ async function switchToTableView(page: Page) {
       
       // Reload the page to apply the new view mode
       log('Reloading page to apply table view...');
-      await page.reload({ waitUntil: 'networkidle0' });
+      await page.reload({ waitUntil: PAGE_GOTO_WAIT, timeout: PAGE_GOTO_TIMEOUT_MS });
       await waitForDashboardLoad(page);
       
       // Verify we're now in table view
@@ -1398,10 +1602,10 @@ async function captureCollectButtonPopup(
 ): Promise<{ popup: boolean; rightClick: boolean }> {
   try {
     if (!skipNavigation) {
-      // Navigate to blank page; use networkidle0 so header (client-rendered) is ready
+      // Navigate to blank page; wait for collect button (client-rendered header).
       log('🌐 Navigating to blank page (/blank)...');
-      await page.goto(makeUrl('/blank'), { waitUntil: 'networkidle0' });
-      await page.waitForSelector('[data-screenshot-target="collect-button"]', { timeout: 15000, visible: true });
+      await gotoWithRetry(page, makeUrl('/blank'), { waitUntil: PAGE_GOTO_WAIT, timeout: PAGE_GOTO_TIMEOUT_MS });
+      await page.waitForSelector('[data-screenshot-target="collect-button"]', { timeout: 15000, state: 'visible' });
     }
     
     // Find the collect button using locale-stable data attribute
@@ -1566,7 +1770,7 @@ async function captureOverdueBackupHoverCard(page: Page, screenshotDir: string):
       });
       if (panelState === 'chart') {
         await page.click('[data-screenshot-target="overview-side-panel-toggle"]');
-        await delay(800); // Allow panel to switch and re-render
+        await waitForOverviewPanelState(page, 'status');
       }
 
       // Wait for overdue item to be present (handles late render/expansion)
@@ -1639,7 +1843,7 @@ async function captureOverdueBackupHoverCard(page: Page, screenshotDir: string):
 async function captureBackupTooltip(page: Page, locale: Locale, screenshotDir: string): Promise<boolean> {
   try {
     // Navigate to dashboard in card mode
-    await page.goto(makeUrl('/'), { waitUntil: 'networkidle0' });
+    await navigateApp(page, '/', { readyTarget: 'dashboard-main' });
     await waitForDashboardLoad(page);
     await delay(500);
     
@@ -1788,10 +1992,10 @@ async function captureBackupTooltip(page: Page, locale: Locale, screenshotDir: s
 async function captureDuplicatiConfiguration(page: Page, locale: Locale, screenshotDir: string, skipNavigation?: boolean): Promise<boolean> {
   try {
     if (!skipNavigation) {
-      // Navigate to blank page; use networkidle0 so header is ready, then wait for trigger
+      // Navigate to blank page; wait for trigger (client-rendered header).
       log('🌐 Navigating to blank page (/blank)...');
-      await page.goto(makeUrl('/blank'), { waitUntil: 'networkidle0' });
-      await page.waitForSelector('[data-screenshot-target="duplicati-configuration-trigger"]', { timeout: 15000, visible: true });
+      await gotoWithRetry(page, makeUrl('/blank'), { waitUntil: PAGE_GOTO_WAIT, timeout: PAGE_GOTO_TIMEOUT_MS });
+      await page.waitForSelector('[data-screenshot-target="duplicati-configuration-trigger"]', { timeout: 15000, state: 'visible' });
       await delay(500);
     }
     
@@ -1804,7 +2008,7 @@ async function captureDuplicatiConfiguration(page: Page, locale: Locale, screens
       
       // Wait for dropdown to appear
       try {
-        await page.waitForSelector('[data-screenshot-target="duplicati-configuration"]', { timeout: 5000, visible: true });
+        await page.waitForSelector('[data-screenshot-target="duplicati-configuration"]', { timeout: 5000, state: 'visible' });
       } catch (e) {
         logError('Duplicati dropdown did not appear');
         await page.keyboard.press('Escape');
@@ -1863,7 +2067,7 @@ async function captureUserMenu(page: Page, locale: Locale, screenshotDir: string
         (res) => res.url().includes('/api/auth/me'),
         { timeout: 18000 }
       ).catch(() => null);
-      await page.goto(makeUrl('/blank'), { waitUntil: 'networkidle0' });
+      await gotoWithRetry(page, makeUrl('/blank'), { waitUntil: PAGE_GOTO_WAIT, timeout: PAGE_GOTO_TIMEOUT_MS });
       await authMePromise;
       // Allow React to setState and re-render the header with the user trigger
       await delay(1200);
@@ -1877,7 +2081,7 @@ async function captureUserMenu(page: Page, locale: Locale, screenshotDir: string
     // Wait for user menu trigger (data attribute only present after user is loaded)
     const buttonSelector = '[data-screenshot-target="user-menu-trigger"]';
     try {
-      await page.waitForSelector(buttonSelector, { timeout: 15000, visible: true });
+      await page.waitForSelector(buttonSelector, { timeout: 15000, state: 'visible' });
     } catch {
       logError('Could not find user menu button (wait for selector timed out)');
       return false;
@@ -1894,7 +2098,7 @@ async function captureUserMenu(page: Page, locale: Locale, screenshotDir: string
     
     // Wait for the dropdown menu to appear using data-screenshot-target
     try {
-      await page.waitForSelector('[data-screenshot-target="user-menu"]', { timeout: 5000, visible: true });
+      await page.waitForSelector('[data-screenshot-target="user-menu"]', { timeout: 5000, state: 'visible' });
     } catch (e) {
       logError('User menu dropdown did not appear');
       // Debug: Check if element exists but not visible
@@ -1959,7 +2163,7 @@ async function captureUserMenu(page: Page, locale: Locale, screenshotDir: string
 async function captureDashboardSummary(page: Page, locale: Locale, screenshotDir: string, filename: string): Promise<boolean> {
   try {
     // Navigate to dashboard
-    await page.goto(makeUrl('/'), { waitUntil: 'networkidle0' });
+    await navigateApp(page, '/', { readyTarget: 'dashboard-main' });
     await waitForDashboardLoad(page);
     await delay(500);
     
@@ -2006,7 +2210,7 @@ async function captureDashboardSummary(page: Page, locale: Locale, screenshotDir
 async function captureOverviewSidePanel(page: Page, locale: Locale, screenshotDir: string): Promise<{ status: boolean; charts: boolean }> {
   try {
     // Navigate to dashboard
-    await page.goto(makeUrl('/'), { waitUntil: 'networkidle0' });
+    await navigateApp(page, '/', { readyTarget: 'dashboard-main' });
     await waitForDashboardLoad(page);
     await delay(500);
     
@@ -2135,7 +2339,8 @@ async function captureOverviewSidePanel(page: Page, locale: Locale, screenshotDi
           (toggleButton as HTMLButtonElement).click();
         }
       });
-      await delay(1500); // Wait for the state to change
+      await waitForOverviewPanelState(page, 'chart');
+      await waitForOverviewSideChartsReady(page);
       
       // Capture the second state (charts)
       const chartsBounds = await page.evaluate(() => {
@@ -2162,6 +2367,7 @@ async function captureOverviewSidePanel(page: Page, locale: Locale, screenshotDi
       }
     } else {
       // We're in chart mode, capture charts first, then switch to status
+      await waitForOverviewSideChartsReady(page);
       const chartsBounds = await page.evaluate(() => {
         const panelDiv = document.querySelector('[data-screenshot-target="overview-side-panel"]');
         if (panelDiv) {
@@ -2192,7 +2398,7 @@ async function captureOverviewSidePanel(page: Page, locale: Locale, screenshotDi
           (toggleButton as HTMLButtonElement).click();
         }
       });
-      await delay(1500); // Wait for the state to change
+      await waitForOverviewPanelState(page, 'status');
       
       // Capture the second state (status)
       const statusBounds = await page.evaluate(() => {
@@ -2230,7 +2436,7 @@ async function captureBackupHistoryTable(page: Page, locale: Locale, screenshotD
   try {
     if (!skipNavigation) {
       // Navigate to server details page
-      await page.goto(makeUrl(`/detail/${serverId}`), { waitUntil: 'networkidle0' });
+      await gotoWithRetry(page, makeUrl(`/detail/${serverId}`), { waitUntil: PAGE_GOTO_WAIT, timeout: PAGE_GOTO_TIMEOUT_MS });
     }
     
     // Wait for content to load (client component fetches data after page load)
@@ -2384,11 +2590,12 @@ async function findMetricsChartBounds(page: Page): Promise<{ x: number; y: numbe
 /** Capture the metrics chart on the current page (no navigation). Used on dashboard table view. */
 async function captureMetricsChartOnCurrentPage(page: Page, screenshotDir: string): Promise<boolean> {
   try {
-    await waitForScreenshotTarget(page, 'metrics-chart');
+    await waitForMetricsChartsReady(page);
     const chartBounds = await findMetricsChartBounds(page);
     if (chartBounds) {
       const success = await takeScreenshot(page, 'screen-metrics.png', screenshotDir, {
-        clip: chartBounds
+        clip: chartBounds,
+        waitTime: 0,
       });
       console.log('Captured metrics chart');
       return success;
@@ -2404,17 +2611,18 @@ async function captureMetricsChartOnCurrentPage(page: Page, screenshotDir: strin
 async function captureMetricsChart(page: Page, locale: Locale, screenshotDir: string, serverId: string, skipNavigation?: boolean): Promise<boolean> {
   try {
     if (!skipNavigation) {
-      await page.goto(makeUrl(`/detail/${serverId}`), { waitUntil: 'networkidle0' });
+      await gotoWithRetry(page, makeUrl(`/detail/${serverId}`), { waitUntil: PAGE_GOTO_WAIT, timeout: PAGE_GOTO_TIMEOUT_MS });
       const contentLoaded = await waitForServerDetailContent(page, 15000);
       if (!contentLoaded) {
         logError('Server detail content did not load in time');
       }
     }
-    await waitForScreenshotTarget(page, 'metrics-chart');
+    await waitForMetricsChartsReady(page);
     const chartBounds = await findMetricsChartBounds(page);
     if (chartBounds) {
       const success = await takeScreenshot(page, 'screen-metrics.png', screenshotDir, {
-        clip: chartBounds
+        clip: chartBounds,
+        waitTime: 0,
       });
       console.log('Captured metrics chart');
       return success;
@@ -2431,7 +2639,7 @@ async function captureAvailableBackupsModal(page: Page, locale: Locale, screensh
   try {
     if (!skipNavigation) {
       // Navigate to server details page (should already be there, but ensure we're on the right page)
-      await page.goto(makeUrl(`/detail/${serverId}`), { waitUntil: 'networkidle0' });
+      await gotoWithRetry(page, makeUrl(`/detail/${serverId}`), { waitUntil: PAGE_GOTO_WAIT, timeout: PAGE_GOTO_TIMEOUT_MS });
     }
     
     // Wait for content to load (client component fetches data after page load)
@@ -2539,7 +2747,7 @@ async function captureServerOverdueMessage(page: Page, locale: Locale, screensho
     // Navigate to the server detail page of the server that has overdue backups (so the overdue message is shown)
     const overdueDetailUrl = makeUrl(`/detail/${serverWithOverdue.id}`);
     console.log(`🌐 Navigating to server-with-overdue detail page: ${overdueDetailUrl}`);
-    await page.goto(overdueDetailUrl, { waitUntil: 'networkidle0' });
+    await gotoWithRetry(page, overdueDetailUrl, { waitUntil: PAGE_GOTO_WAIT, timeout: PAGE_GOTO_TIMEOUT_MS });
     
     // Verify we are on the correct server's detail page (URL should contain this server id)
     const currentUrl = page.url();
@@ -2660,12 +2868,8 @@ ${colors.reset}`);
     await ensureDirectoryExists(getScreenshotDir(locale));
   }
   
-  const browser = await puppeteer.launch({
+  const browser = await chromium.launch({
     headless: true, // Run in headless mode for server environments
-    defaultViewport: {
-      width: VIEWPORT_WIDTH,
-      height: VIEWPORT_HEIGHT
-    },
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
@@ -2690,11 +2894,14 @@ ${colors.reset}`);
       '--safebrowsing-disable-auto-update',
     ]
   });
-  
-  const page = await browser.newPage();
-  // Headless Chrome defaults to light prefers-color-scheme; force dark so "system" theme matches docs screenshots
-  await page.emulateMediaFeatures([{ name: 'prefers-color-scheme', value: 'dark' }]);
-  await page.setViewport({ width: VIEWPORT_WIDTH, height: VIEWPORT_HEIGHT });
+
+  // Force dark prefers-color-scheme so the "system" theme matches docs screenshots; viewport is
+  // fixed on the context so every page uses the documentation capture size.
+  const context: BrowserContext = await browser.newContext({
+    viewport: { width: VIEWPORT_WIDTH, height: VIEWPORT_HEIGHT },
+    colorScheme: 'dark',
+  });
+  const page = await context.newPage();
   
   try {
     // Login once (admin) to establish auth cookies; we will switch locales via cookie.
@@ -2742,7 +2949,7 @@ ${colors.reset}`);
 
       // Navigate to dashboard
       console.log('🌐 Navigating to dashboard page (/)...');
-      await page.goto(makeUrl('/'), { waitUntil: 'networkidle0' });
+      await navigateApp(page, '/', { readyTarget: 'dashboard-main' });
       await waitForDashboardLoad(page);
 
       // Dashboard (card/overview) screenshot
@@ -2945,7 +3152,7 @@ ${colors.reset}`);
       console.log(`  Deletion complete. ${remainingServerCount.count} server(s) remaining in database.`);
       
       // Refresh the page to see updated server list
-      await page.goto(makeUrl('/'), { waitUntil: 'networkidle0' });
+      await navigateApp(page, '/', { readyTarget: 'dashboard-main' });
       await waitForDashboardLoad(page);
     }
     
@@ -3027,7 +3234,7 @@ ${colors.reset}`);
       }
       
       // Refresh the page to see updated server configurations
-      await page.goto(makeUrl('/'), { waitUntil: 'networkidle0' });
+      await navigateApp(page, '/', { readyTarget: 'dashboard-main' });
       await waitForDashboardLoad(page);
     }
     
@@ -3120,7 +3327,7 @@ ${colors.reset}`);
       // Set table view in localStorage BEFORE navigating to dashboard
       // This ensures the dashboard loads directly in table view mode
       console.log('Setting table view mode in localStorage before navigation...');
-      await page.evaluateOnNewDocument(() => {
+      await page.addInitScript(() => {
         // This runs before any scripts on the new page
         localStorage.setItem('dashboard-view-mode', 'table');
       });
@@ -3147,7 +3354,7 @@ ${colors.reset}`);
       }
       
       // Navigate to dashboard - it should now load in table view directly
-      await page.goto(makeUrl('/'), { waitUntil: 'networkidle0' });
+      await navigateApp(page, '/', { readyTarget: 'dashboard-main' });
       await waitForDashboardLoad(page);
       
       // Wait for table view to render
@@ -3182,8 +3389,6 @@ ${colors.reset}`);
       if (shouldCapture('screen-metrics.png')) {
         console.log('-------------------------------------------------------');
         console.log('Capturing metrics chart...');
-        // Wait longer for metrics chart to mount and render
-        await delay(2000);
         const metricsChart = await captureMetricsChartOnCurrentPage(page, screenshotDir);
         if (metricsChart) successful.push('screen-metrics.png');
         else failed.push('screen-metrics.png');
@@ -3240,7 +3445,7 @@ ${colors.reset}`);
 
       console.log('Navigating to first server\'s backup list page...');
       console.log(`🌐 Navigating to server detail page (/detail/${firstServer.id})...`);
-      await page.goto(makeUrl(`/detail/${firstServer.id}`), { waitUntil: 'networkidle0' });
+      await gotoWithRetry(page, makeUrl(`/detail/${firstServer.id}`), { waitUntil: PAGE_GOTO_WAIT, timeout: PAGE_GOTO_TIMEOUT_MS });
 
       const contentLoaded = await waitForServerDetailContent(page, 15000);
       if (!contentLoaded) {
@@ -3285,7 +3490,7 @@ ${colors.reset}`);
           if (backupDetails.server && backupDetails.server.backups && backupDetails.server.backups.length > 0) {
             const firstBackup = backupDetails.server.backups[0];
             console.log(`🌐 Navigating to backup detail page (/detail/${firstServer.id}/backup/${firstBackup.id})...`);
-            await page.goto(makeUrl(`/detail/${firstServer.id}/backup/${firstBackup.id}`), { waitUntil: 'networkidle0' });
+            await gotoWithRetry(page, makeUrl(`/detail/${firstServer.id}/backup/${firstBackup.id}`), { waitUntil: PAGE_GOTO_WAIT, timeout: PAGE_GOTO_TIMEOUT_MS });
             return takeScreenshot(page, 'screen-backup-detail.png', screenshotDir, { cropBottom: 80, screenshotTarget: 'backup-detail' });
           }
           return takeScreenshot(page, 'screen-backup-detail.png', screenshotDir, { cropBottom: 80, screenshotTarget: 'backup-detail' });
@@ -3304,7 +3509,7 @@ ${colors.reset}`);
 
       // Settings (admin)
       console.log('🌐 Navigating to settings page (/settings)...');
-      await page.goto(makeUrl('/settings'), { waitUntil: 'domcontentloaded' });
+      await gotoWithRetry(page, makeUrl('/settings'), { waitUntil: PAGE_GOTO_WAIT, timeout: PAGE_GOTO_TIMEOUT_MS });
       await delay(500);
 
       if (shouldCapture('screen-settings-left-panel-admin.png')) {
@@ -3336,7 +3541,7 @@ ${colors.reset}`);
           await delay(1000);
         }
 
-        await page.goto(makeUrl(`/settings?tab=${tab}`), { waitUntil: 'networkidle0' });
+        await gotoWithRetry(page, makeUrl(`/settings?tab=${tab}`), { waitUntil: PAGE_GOTO_WAIT, timeout: PAGE_GOTO_TIMEOUT_MS });
         await delay(500);
 
         if (tab === 'notifications') {
@@ -3551,7 +3756,7 @@ ${colors.reset}`);
 
         if (shouldCapture('screen-settings-left-panel-non-admin.png')) {
           console.log('🌐 Navigating to settings page as non-admin (/settings)...');
-          await page.goto(makeUrl('/settings'), { waitUntil: 'domcontentloaded' });
+          await gotoWithRetry(page, makeUrl('/settings'), { waitUntil: PAGE_GOTO_WAIT, timeout: PAGE_GOTO_TIMEOUT_MS });
           await delay(500);
 
           console.log('-------------------------------------------------------');
@@ -3567,7 +3772,7 @@ ${colors.reset}`);
       }
     }
 
-    // Restore console so summary is not prefixed with elapsed
+    // Restore console for any remaining direct console.* calls in summary helpers.
     console.log = origLog;
     console.error = origErr;
 
@@ -3582,11 +3787,11 @@ ${colors.reset}`);
     }
     const averageMs = count > 0 ? totalMs / count : 0;
 
-    console.log('\n\n' + '='.repeat(60));
-    console.log('📸 SCREENSHOT GENERATION SUMMARY');
-    console.log('='.repeat(60));
-    console.log(`Preparation (before Phase A): ${formatDurationHms(preparation1Ms)}`);
-    console.log(`Preparation (between Phase A and Phase B): ${formatDurationHms(preparation2Ms)}`);
+    log('\n\n' + '='.repeat(60));
+    log('📸 SCREENSHOT GENERATION SUMMARY');
+    log('='.repeat(60));
+    log(`Preparation (before Phase A): ${formatDurationHms(preparation1Ms)}`);
+    log(`Preparation (between Phase A and Phase B): ${formatDurationHms(preparation2Ms)}`);
 
     // Table: rows = filenames, columns = locales, cells = elapsed time (HH:MM:SS.S); fixed column width; Average row; Total row
     const sumPerLocale = localesToRun.map(locale =>

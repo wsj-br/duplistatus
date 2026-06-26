@@ -11,7 +11,7 @@ duplistatus est un puissant tableau de bord de surveillance conçu spécifiqueme
 - Détection automatique des sauvegardes en retard avec alertes configurables
 - Indicateurs complets et visualisation des performances des sauvegardes
 - Système de notification flexible via NTFY et e-mail
-- Prise en charge multilingue (anglais, français, allemand, espagnol et portugais brésilien).
+- Prise en charge de plusieurs langues (anglais, français, allemand, espagnol, portugais brésilien, hindi (roman) et chinois simplifié).
 
 ## Installation {#installation}
 
@@ -72,7 +72,7 @@ La barre d'outils de l'application fournit un accès pratique aux fonctions et p
 
 ### Menu Utilisateur {#user-menu}
 
-Cliquer sur le bouton utilisateur ouvre un menu déroulant avec des options spécifiques à l'utilisateur. Les options de menu diffèrent selon que vous êtes connecté en tant qu'administrateur ou utilisateur standard. Les deux rôles peuvent changer la langue de l'interface via le sous-menu **Langue**. Langues prises en charge : anglais, français, allemand, espagnol et portugais brésilien.
+En cliquant sur le bouton utilisateur, vous ouvrez un menu déroulant avec des options spécifiques à l'utilisateur. Les options du menu diffèrent selon que vous êtes connecté en tant qu'administrateur ou utilisateur standard. Les deux rôles peuvent modifier la langue de l'interface via le sous-menu **Langue**. Langues prises en charge : anglais, français, allemand, espagnol, portugais brésilien, hindi (roman) et chinois simplifié.
 
 <table>
   <tr>

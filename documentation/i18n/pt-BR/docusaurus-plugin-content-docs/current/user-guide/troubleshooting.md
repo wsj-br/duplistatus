@@ -27,10 +27,20 @@ Se você vir avisos do servidor Duplicati como `HTTP Response request failed for
 
 ### Servidores Duplicados no Painel {#duplicate-servers-on-the-dashboard}
 
-Se o mesmo servidor aparecer mais de uma vez no painel:
+Se o mesmo servidor aparecer mais de uma vez no painel, isso geralmente acontece após [coletar logs de backup](collect-backup-logs.md) ou após reinstalar ou atualizar o servidor Duplicati.
 
-- **Causa**: Duplicatas podem ocorrer quando você reinstala ou atualiza o Duplicati, porque o `machine_id` do servidor pode mudar e o **duplistatus** então o trata como um novo servidor.
-- **Solução**: Use [Configurações → Manutenção do Banco de Dados → Mesclar Servidores Duplicados](settings/database-maintenance.md#merge-duplicate-servers) para consolidar as entradas duplicadas em um único servidor.
+**Causas:**
+
+- **`machine_id` alterado**: Quando você reinstala ou atualiza o Duplicati, o `machine_id` do servidor pode mudar, e o **duplistatus** o trata como um novo servidor.
+- **Bug da API do Duplicati**: Nas versões mais recentes do Duplicati, há um bug em que alguns endpoints da API misturam o id `identity` e o `machine_id`. Essa inconsistência faz com que o **duplistatus** registre o mesmo servidor com IDs diferentes, gerando duplicatas.
+
+**Solução alternativa:**
+
+1.  No **servidor Duplicati**, faça **um** dos seguintes:
+    - Edite os arquivos `identity.txt` e `machineid.txt` para que ambos contenham o **mesmo** id; ou
+    - Abra **Duplicati → Configurações → Opções Avançadas → Machine-id** e defina um valor (ele é preenchido automaticamente — basta aceitar o valor sugerido).
+2.  **Reinicie** o servidor Duplicati para que a alteração entre em vigor.
+3.  No **duplistatus**, consolide as entradas duplicadas usando [Configurações → Manutenção do Banco de Dados → Mesclar Servidores Duplicados](settings/database-maintenance.md#merge-duplicate-servers).
 
 ### Notificações Não Funcionando (Detalhado) {#notifications-not-working-detailed}
 

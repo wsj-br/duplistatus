@@ -27,10 +27,20 @@ Wenn Sie Duplicati-Server-Warnungen wie `HTTP Response request failed for:` und 
 
 ### Doppelte Server auf dem Dashboard {#duplicate-servers-on-the-dashboard}
 
-Wenn derselbe Server mehr als einmal auf dem Dashboard erscheint:
+Wenn derselbe Server mehrmals auf dem Dashboard angezeigt wird, geschieht dies meistens nach dem [Sammeln von Backup-Protokollen](collect-backup-logs.md) oder nach der Neuinstallation oder dem Upgrade des Duplicati-Servers.
 
-- **Ursache**: Duplikate können auftreten, wenn Sie Duplicati neu installieren oder aktualisieren, da sich die `machine_id` des Servers ändern kann und **duplistatus** diesen dann als neuen Server behandelt.
-- **Behebung**: Verwenden Sie [Einstellungen → Datenbankverwaltung → Doppelte Server zusammenführen](settings/database-maintenance.md#merge-duplicate-servers), um die doppelten Einträge zu einem einzigen Server zusammenzuführen.
+**Ursachen:**
+
+- **Geänderte `machine_id`**: Wann Sie Duplicati neu installieren oder aktualisieren, kann sich die `machine_id` des Servers ändern, und **duplistatus** behandelt ihn dann als neuen Server.
+- **Duplicati-API-Fehler**: In neueren Versionen von Duplicati gibt es einen Fehler, bei dem einige API-Endpunkte die `identity`-ID und die `machine_id` vermischen. Diese Inkonsistenz führt dazu, dass **duplistatus** denselben Server unter verschiedenen IDs registriert, was Duplikate erzeugt.
+
+**Problemumgehung:**
+
+1.  Führen Sie auf dem **Duplicati-Server** **einen** der folgenden Schritte aus:
+    - Bearbeiten Sie die `identity.txt`- und `machineid.txt`-Dateien, damit beide Dateien die **gleiche** ID enthalten; oder
+    - Öffnen Sie **Duplicati → Einstellungen → Erweiterte Optionen → Machine-id** und setzen Sie einen Wert (er wird automatisch ausgefüllt – akzeptieren Sie einfach den vorgeschlagenen Wert).
+2.  **Starten Sie** den Duplicati-Server neu, damit die Änderung wirksam wird.
+3.  Führen Sie in **duplistatus** die doppelten Einträge zusammen über [Einstellungen → Datenbankverwaltung → Doppelte Server zusammenführen](settings/database-maintenance.md#merge-duplicate-servers).
 
 ### Benachrichtigungen funktionieren nicht (Detailliert) {#notifications-not-working-detailed}
 

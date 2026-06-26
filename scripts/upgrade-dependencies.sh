@@ -267,6 +267,17 @@ _pm_audit_fix() {
   esac
 }
 
+# Run the package manager's peer-dependency checker. Only pnpm ships a
+# first-class `pnpm peers check`; other managers have no direct equivalent, so
+# this is treated as "unsupported" for them. Exit status mirrors the tool:
+# non-zero means peer issues were found.
+_pm_peers_check() {
+  case "$PKG_MGR" in
+    pnpm) (cd "$REPO_ROOT" && pnpm peers check 2>&1) ;;
+    *) return 2 ;;
+  esac
+}
+
 # Merge duplicate exact-version entries for the same package name in
 # pnpm-workspace.yaml's `minimumReleaseAgeExclude` into a single
 # "name@v1 || v2" disjunction. pnpm's lockfile verifier consults only the
@@ -526,6 +537,33 @@ _security_phase() {
   fi
 }
 
+# --- peer dependency phase ----------------------------------------------------
+# Surface unmet peer dependencies after all upgrades/installs have settled.
+# This is informational and never changes the exit status: peer ranges are a
+# resolution concern the build-safe doctor pass does not exercise (e.g. a tool
+# whose peer range a dependency no longer satisfies, or a stale override that
+# rewrites a peer range), so they would otherwise stay invisible.
+_peers_phase() {
+  PEER_ISSUES=""
+  echo ""
+  upgrade_log "🔍  Checking peer dependencies..."
+  local out rc
+  out=$(_pm_peers_check)
+  rc=$?
+  if [ "$rc" -eq 2 ] && [ -z "$out" ]; then
+    upgrade_warn "   ↳ ${PKG_MGR} has no peer-dependency checker; skipping."
+    return 0
+  fi
+  printf '%s\n' "$out" | pr -o 4 -T
+  if [ "$rc" -ne 0 ]; then
+    PEER_ISSUES="$out"
+    upgrade_warn "   ↳ Peer dependency issues found (non-fatal; review in the summary)."
+  else
+    upgrade_ok "   ↳ No peer dependency issues."
+  fi
+  return 0
+}
+
 # --- summary ------------------------------------------------------------------
 _print_summary() {
   echo ""
@@ -584,6 +622,14 @@ _print_summary() {
   fi
 
   echo ""
+  if [ -n "${PEER_ISSUES:-}" ]; then
+    upgrade_warn "Peer dependency issues (not auto-fixed; review manually):"
+    printf '%s\n' "$PEER_ISSUES" | pr -o 4 -T
+  else
+    upgrade_ok "Peer dependencies: no issues."
+  fi
+
+  echo ""
   upgrade_log "Manifest snapshot (restore if needed): ${SNAPSHOT_DIR}"
   echo ""
 }
@@ -595,7 +641,7 @@ _upgrade_dependencies() {
 
   local PKG_MGR ESLINT_REJECT SNAPSHOT_DIR
   local REVERTED_PKGS="" FORCED_PKGS="" SEC_REMAINING="" SEC_VERIFY_LOG=""
-  local VULN_BEFORE="" VULN_AFTER="" SEC_VERIFY_FAILED=0
+  local VULN_BEFORE="" VULN_AFTER="" SEC_VERIFY_FAILED=0 PEER_ISSUES=""
   local -a WORKSPACE_DIRS=()
 
   echo ""
@@ -635,6 +681,7 @@ _upgrade_dependencies() {
   upgrade_ok "✅  Build-safe dependency upgrade completed"
 
   _security_phase
+  _peers_phase
   _print_summary
 
   cd "$orig_pwd" 2>/dev/null || true
