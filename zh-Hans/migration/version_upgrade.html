@@ -1,0 +1,288 @@
+<!doctype html><html lang=zh-Hans dir=ltr class="docs-wrapper plugin-docs plugin-id-default docs-version-current docs-doc-page docs-doc-id-migration/version_upgrade" data-has-hydrated=false><head><meta charset=UTF-8><meta name=generator content="Docusaurus v3.10.1"><title data-rh=true>迁移指南 | duplistatus</title><meta data-rh=true name=viewport content="width=device-width, initial-scale=1.0"/><meta data-rh=true name=twitter:card content=summary_large_image /><meta data-rh=true property=og:image content=https://wsj-br.github.io/duplistatus/zh-Hans/img/duplistatus_banner.png /><meta data-rh=true name=twitter:image content=https://wsj-br.github.io/duplistatus/zh-Hans/img/duplistatus_banner.png /><meta data-rh=true property=og:url content=https://wsj-br.github.io/duplistatus/zh-Hans/migration/version_upgrade /><meta data-rh=true property=og:locale content=zh_Hans /><meta data-rh=true property=og:locale:alternate content=en_GB /><meta data-rh=true property=og:locale:alternate content=fr /><meta data-rh=true property=og:locale:alternate content=de /><meta data-rh=true property=og:locale:alternate content=es /><meta data-rh=true property=og:locale:alternate content=pt_BR /><meta data-rh=true property=og:locale:alternate content=hi_Latn /><meta data-rh=true name=docusaurus_locale content=zh-Hans /><meta data-rh=true name=docsearch:language content=zh-Hans /><meta data-rh=true name=docusaurus_version content=current /><meta data-rh=true name=docusaurus_tag content=docs-default-current /><meta data-rh=true name=docsearch:version content=current /><meta data-rh=true name=docsearch:docusaurus_tag content=docs-default-current /><meta data-rh=true property=og:title content="迁移指南 | duplistatus"/><meta data-rh=true name=description content=migration-guide} /><meta data-rh=true property=og:description content=migration-guide} /><link data-rh=true rel=icon href=/duplistatus/zh-Hans/img/favicon.ico /><link data-rh=true rel=canonical href=https://wsj-br.github.io/duplistatus/zh-Hans/migration/version_upgrade /><link data-rh=true rel=alternate href=https://wsj-br.github.io/duplistatus/migration/version_upgrade hreflang=en-GB /><link data-rh=true rel=alternate href=https://wsj-br.github.io/duplistatus/fr/migration/version_upgrade hreflang=fr /><link data-rh=true rel=alternate href=https://wsj-br.github.io/duplistatus/de/migration/version_upgrade hreflang=de /><link data-rh=true rel=alternate href=https://wsj-br.github.io/duplistatus/es/migration/version_upgrade hreflang=es /><link data-rh=true rel=alternate href=https://wsj-br.github.io/duplistatus/pt-BR/migration/version_upgrade hreflang=pt-BR /><link data-rh=true rel=alternate href=https://wsj-br.github.io/duplistatus/hi-Latn/migration/version_upgrade hreflang=hi-Latn /><link data-rh=true rel=alternate href=https://wsj-br.github.io/duplistatus/zh-Hans/migration/version_upgrade hreflang=zh-Hans /><link data-rh=true rel=alternate href=https://wsj-br.github.io/duplistatus/migration/version_upgrade hreflang=x-default /><script data-rh=true type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://wsj-br.github.io/duplistatus/zh-Hans/migration/version_upgrade","name":"迁移指南","position":1}]}</script><link rel=stylesheet href=/duplistatus/zh-Hans/assets/css/styles.ea2e12f1.css /><script src=/duplistatus/zh-Hans/assets/js/runtime~main.4d756cd8.js defer></script><script src=/duplistatus/zh-Hans/assets/js/main.c9f09646.js defer></script></head><body><svg style="display: none;"><defs>
+<symbol id=theme-svg-external-link viewBox="0 0 24 24"><path fill=currentColor d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"/></symbol>
+</defs></svg>
+<script>!function(){var t=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return window.localStorage.getItem("theme-6d1")}catch(t){}}();document.documentElement.setAttribute("data-theme",t||"dark"),document.documentElement.setAttribute("data-theme-choice",t||"dark")}(),function(){try{for(var[t,e]of new URLSearchParams(window.location.search).entries())if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id=__docusaurus><link rel=preload as=image href=/duplistatus/zh-Hans/img/duplistatus_logo.png /><div role=region aria-label=跳至主要内容><a class=skipToContent_oPtH href=#__docusaurus_skipToContent_fallback>跳至主要内容</a></div><nav aria-label=主页 class="theme-layout-navbar navbar navbar--fixed-top"><div class=navbar__inner><div class="theme-layout-navbar-left navbar__items"><button aria-label=切换导航栏 aria-expanded=false class="navbar__toggle clean-btn" type=button><svg width=30 height=30 viewBox="0 0 30 30" aria-hidden=true><path stroke=currentColor stroke-linecap=round stroke-miterlimit=10 stroke-width=2 d="M4 7h22M4 15h22M4 23h22"/></svg></button><a class=navbar__brand href=/duplistatus/zh-Hans/><div class=navbar__logo><img src=/duplistatus/zh-Hans/img/duplistatus_logo.png alt="duplistatus 标志" class="themedComponent_siVc themedComponent--light_hHel" height=40 width=40 /><img src=/duplistatus/zh-Hans/img/duplistatus_logo.png alt="duplistatus 标志" class="themedComponent_siVc themedComponent--dark_yETr" height=40 width=40 /></div><b class="navbar__title text--truncate">duplistatus</b></a><a aria-current=page class="navbar__item navbar__link navbar__link--active" href=/duplistatus/zh-Hans/intro>文档</a></div><div class="theme-layout-navbar-right navbar__items navbar__items--right"><div class="navbar__item dropdown dropdown--hoverable dropdown--right"><a href=# aria-haspopup=true aria-expanded=false role=button class=navbar__link><svg viewBox="0 0 24 24" width=20 height=20 aria-hidden=true class=iconLanguage_kvP7><path fill=currentColor d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/></svg>简体中文</a><ul class=dropdown__menu><li><a href=/duplistatus/migration/version_upgrade target=_self rel="noopener noreferrer" class=dropdown__link lang=en-GB>English</a><li><a href=/duplistatus/fr/migration/version_upgrade target=_self rel="noopener noreferrer" class=dropdown__link lang=fr>Français</a><li><a href=/duplistatus/de/migration/version_upgrade target=_self rel="noopener noreferrer" class=dropdown__link lang=de>Deutsch</a><li><a href=/duplistatus/es/migration/version_upgrade target=_self rel="noopener noreferrer" class=dropdown__link lang=es>Español</a><li><a href=/duplistatus/pt-BR/migration/version_upgrade target=_self rel="noopener noreferrer" class=dropdown__link lang=pt-BR>Português (Brasil)</a><li><a href=/duplistatus/hi-Latn/migration/version_upgrade target=_self rel="noopener noreferrer" class=dropdown__link lang=hi-Latn>Hindi</a><li><a href=/duplistatus/zh-Hans/migration/version_upgrade target=_self rel="noopener noreferrer" class="dropdown__link dropdown__link--active" lang=zh-Hans>简体中文</a></ul></div><div class=navbarSearchContainer_bzqh><div class="navbar__search searchBarContainer_bpSG" dir=ltr><input placeholder=搜索 aria-label=Search class="navbar__search-input searchInput_T5pz" value="" /><div class="loadingRing_hScY searchBarLoadingRing_dMau"><div></div><div></div><div></div><div></div></div></div></div><div class=navbar__item><a href=https://github.com/wsj-br/duplistatus target=_blank rel="noopener noreferrer" aria-label="GitHub repository" class="navbar__item navbar__link github-icon-link"><svg width=24 height=24 viewBox="0 0 24 24" fill=currentColor xmlns=http://www.w3.org/2000/svg aria-hidden=true><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a></div><button class="colorModeToggle_jR5Q dark_W2Sb" type=button title="Switch to light mode" aria-label="Switch to light mode"><div class=track_brXu><div class=slider_GjI5><span></span></div></div></button></div></div><div role=presentation class=navbar-sidebar__backdrop></div></nav><div id=__docusaurus_skipToContent_fallback class="theme-layout-main main-wrapper mainWrapper_MB5r"><div class=docsWrapper__sE8><button aria-label=滚动回顶部 class="clean-btn theme-back-to-top-button backToTopButton_iEvu" type=button></button><div class=docRoot_DfVB><aside class="theme-doc-sidebar-container docSidebarContainer_c7NB"><div class=sidebarViewport_KYo0><div class=sidebar_CUen><nav aria-label=文档侧边栏 class="menu thin-scrollbar menu_jmj1"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class=menu__link href=/duplistatus/zh-Hans/intro><span title="欢迎使用 duplistatus" class=linkLabel_fEdy>欢迎使用 duplistatus</span></a><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed sidebar-category-expandable"><div class=menu__list-item-collapsible><a class="categoryLink_ROYx menu__link menu__link--sublist menu__link--sublist-caret" role=button aria-expanded=false href=/duplistatus/zh-Hans/installation><span title="[object Object]" class=categoryLinkLabel_ufhF><span style=display:inline-flex;align-items:center><span></span><span>安装</span></span></span></a></div><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed sidebar-category-expandable"><div class=menu__list-item-collapsible><a class="categoryLink_ROYx menu__link menu__link--sublist menu__link--sublist-caret" role=button aria-expanded=false href=/duplistatus/zh-Hans/user-guide/overview><span title="[object Object]" class=categoryLinkLabel_ufhF><span style=display:inline-flex;align-items:center><span></span><span>用户指南</span></span></span></a></div><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item sidebar-category-expandable"><div class=menu__list-item-collapsible><a class="categoryLink_ROYx menu__link menu__link--sublist menu__link--sublist-caret menu__link--active" role=button aria-expanded=true href=/duplistatus/zh-Hans/migration/version_upgrade><span title="[object Object]" class=categoryLinkLabel_ufhF><span style=display:inline-flex;align-items:center><span></span><span>迁移</span></span></span></a></div><ul class=menu__list><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link menu__link--active" aria-current=page tabindex=0 href=/duplistatus/zh-Hans/migration/version_upgrade><span title=迁移指南 class=linkLabel_fEdy>迁移指南</span></a><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class=menu__link tabindex=0 href=/duplistatus/zh-Hans/migration/api-changes><span title=向后不兼容的API更改 class=linkLabel_fEdy>向后不兼容的API更改</span></a></ul><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed sidebar-category-expandable"><div class=menu__list-item-collapsible><a class="categoryLink_ROYx menu__link menu__link--sublist menu__link--sublist-caret" role=button aria-expanded=false href=/duplistatus/zh-Hans/api-reference/overview><span title="[object Object]" class=categoryLinkLabel_ufhF><span style=display:inline-flex;align-items:center><span></span><span>API 参考</span></span></span></a></div><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed sidebar-category-expandable"><div class=menu__list-item-collapsible><a class="categoryLink_ROYx menu__link menu__link--sublist menu__link--sublist-caret" role=button aria-expanded=false href=/duplistatus/zh-Hans/development/setup><span title="[object Object]" class=categoryLinkLabel_ufhF><span style=display:inline-flex;align-items:center><span></span><span>开发</span></span></span></a></div><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed sidebar-category-expandable"><div class=menu__list-item-collapsible><a class="categoryLink_ROYx menu__link menu__link--sublist menu__link--sublist-caret" role=button aria-expanded=false href=/duplistatus/zh-Hans/release-notes/1.4.2><span title="[object Object]" class=categoryLinkLabel_ufhF><span style=display:inline-flex;align-items:center><span></span><span>发布说明</span></span></span></a></div></ul></nav><button type=button title=折叠侧边栏 aria-label=折叠侧边栏 class="button button--secondary button--outline collapseSidebarButton_oTwn"><svg width=20 height=20 aria-hidden=true class=collapseSidebarButtonIcon_pMEX><g fill=#7a7a7a><path d="M9.992 10.023c0 .2-.062.399-.172.547l-4.996 7.492a.982.982 0 01-.828.454H1c-.55 0-1-.453-1-1 0-.2.059-.403.168-.551l4.629-6.942L.168 3.078A.939.939 0 010 2.528c0-.548.45-.997 1-.997h2.996c.352 0 .649.18.828.45L9.82 9.472c.11.148.172.347.172.55zm0 0"/><path d="M19.98 10.023c0 .2-.058.399-.168.547l-4.996 7.492a.987.987 0 01-.828.454h-3c-.547 0-.996-.453-.996-1 0-.2.059-.403.168-.551l4.625-6.942-4.625-6.945a.939.939 0 01-.168-.55 1 1 0 01.996-.997h3c.348 0 .649.18.828.45l4.996 7.492c.11.148.168.347.168.55zm0 0"/></g></svg></button></div></div></aside><main class=docMainContainer_a9sJ><div class="container padding-top--md padding-bottom--lg"><div class=row><div class="col docItemCol_Qr34"><div class=docItemContainer_tjFy><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer_T5ub" aria-label=面包屑><ul class=breadcrumbs><li class=breadcrumbs__item><a aria-label=首页 class=breadcrumbs__link href=/duplistatus/zh-Hans/><svg viewBox="0 0 24 24" class=breadcrumbHomeIcon_sfvy><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill=currentColor /></svg></a><li class=breadcrumbs__item><span class=breadcrumbs__link>迁移</span><li class="breadcrumbs__item breadcrumbs__item--active"><span class=breadcrumbs__link>迁移指南</span></ul></nav><div class="tocCollapsible_wXna theme-doc-toc-mobile tocMobile_Ojys"><button type=button class="clean-btn tocCollapsibleButton_iI2p">在本页</button></div><div class="theme-doc-markdown markdown"><header><h1>迁移指南</h1></header>
+<p>本指南解释如何在 duplistatus 的不同版本之间升级。迁移是自动的——数据库模式会在您启动新版本时自动更新。</p>
+<p>手动步骤仅在您自定义了通知模板（版本 0.8.x 更改了模板变量）或需要更新的外部 API 集成（版本 0.7.x 更改了 API 字段名称，版本 0.9.x 需要身份验证）时才是必需的。</p>
+<h2 class="anchor anchorTargetStickyNavbar_tleR" id=overview>概览<a href=#overview class=hash-link aria-label="直接链接到 概览" title="直接链接到 概览" translate=no>​</a></h2>
+<p>duplistatus 会在升级时自动迁移您的数据库模式。系统:</p>
+<ol>
+<li class="">在进行更改之前创建数据库的备份</li>
+<li class="">更新数据库模式到最新版本</li>
+<li class="">保留所有现有数据（服务器、备份、配置）</li>
+<li class="">验证迁移是否成功完成</li>
+</ol>
+<h2 class="anchor anchorTargetStickyNavbar_tleR" id=backing-up-your-database-before-migration>升级前备份数据库<a href=#backing-up-your-database-before-migration class=hash-link aria-label="直接链接到 升级前备份数据库" title="直接链接到 升级前备份数据库" translate=no>​</a></h2>
+<p>在升级到新版本之前，建议创建数据库的备份。这确保您可以在迁移过程中出现问题时恢复数据。</p>
+<h3 class="anchor anchorTargetStickyNavbar_tleR" id=if-youre-running-version-121-or-later>如果您正在运行版本 1.2.1 或更高版本<a href=#if-youre-running-version-121-or-later class=hash-link aria-label="直接链接到 如果您正在运行版本 1.2.1 或更高版本" title="直接链接到 如果您正在运行版本 1.2.1 或更高版本" translate=no>​</a></h3>
+<p>使用内置的数据库备份功能:</p>
+<ol>
+<li class="">在 Web 界面中导航到 <a class="" href=/duplistatus/zh-Hans/user-guide/settings/database-maintenance>设置 → 数据库维护</a></li>
+<li class="">在 <strong>数据库备份</strong> 部分中，选择备份格式:<!-- -->
+<ul>
+<li class=""><strong>数据库文件 (.db)</strong>：二进制格式 - 最快的备份，保留所有数据库结构</li>
+<li class=""><strong>SQL 转储 (.sql)</strong>：文本格式 - 人类可读的 SQL 语句</li>
+</ul>
+</li>
+<li class="">点击 <strong>下载备份</strong></li>
+<li class="">备份文件将以时间戳文件名下载到您的计算机上</li>
+</ol>
+<p>有关更多详细信息，请参阅 <a class="" href=/duplistatus/zh-Hans/user-guide/settings/database-maintenance#database-backup>数据库维护</a> 文档。</p>
+<h3 class="anchor anchorTargetStickyNavbar_tleR" id=if-youre-running-a-version-before-121>如果您正在运行版本 1.2.1 之前的版本<a href=#if-youre-running-a-version-before-121 class=hash-link aria-label="直接链接到 如果您正在运行版本 1.2.1 之前的版本" title="直接链接到 如果您正在运行版本 1.2.1 之前的版本" translate=no>​</a></h3>
+<h4 class="anchor anchorTargetStickyNavbar_tleR" id=backup>备份<a href=#backup class=hash-link aria-label="直接链接到 备份" title="直接链接到 备份" translate=no>​</a></h4>
+<p>您必须在继续之前手动备份数据库。数据库文件位于 <code>/app/data/backups.db</code> 容器内。</p>
+<h5 class="anchor anchorTargetStickyNavbar_tleR" id=for-linux-users>对于 Linux 用户<a href=#for-linux-users class=hash-link aria-label="直接链接到 对于 Linux 用户" title="直接链接到 对于 Linux 用户" translate=no>​</a></h5>
+<p>如果您使用 Linux，不必担心启动辅助容器。您可以使用本机 <code>cp</code> 命令直接从运行容器中提取数据库到主机。</p>
+<h6 class="anchor anchorTargetStickyNavbar_tleR" id=using-docker-or-podman>使用 Docker 或 Podman：<a href=#using-docker-or-podman class=hash-link aria-label="直接链接到 使用 Docker 或 Podman：" title="直接链接到 使用 Docker 或 Podman：" translate=no>​</a></h6>
+<div class="language-bash codeBlockContainer_mQmQ theme-code-block" style=--prism-color:#d6deeb;--prism-background-color:#011627><div class=codeBlockContent_t_Hd><pre tabindex=0 class="prism-code language-bash codeBlock_RMoD thin-scrollbar" style=color:#d6deeb;background-color:#011627><code class=codeBlockLines_AclH><div class=token-line style=color:#d6deeb><span class="token comment" style="color:rgb(99, 119, 119);font-style:italic"># Replace 'duplistatus' with your actual container name if different</span><span class="token plain"></span><br/></div><div class=token-line style=color:#d6deeb><span class="token plain"></span><span class="token function" style="color:rgb(130, 170, 255)">docker</span><span class="token plain"> </span><span class="token function" style="color:rgb(130, 170, 255)">cp</span><span class="token plain"> duplistatus:/app/data/backups.db ./duplistatus-backup-</span><span class="token variable" style="color:rgb(214, 222, 235)">$(</span><span class="token variable function" style="color:rgb(130, 170, 255)">date</span><span class="token variable" style="color:rgb(214, 222, 235)"> +%Y%m%d</span><span class="token variable" style="color:rgb(214, 222, 235)">)</span><span class="token plain">.db</span><br/></div></code></pre></div></div>
+<p>(如果使用 Podman，只需在上面的命令中用 <code>podman</code> 替换 <code>docker</code>。)</p>
+<h5 class="anchor anchorTargetStickyNavbar_tleR" id=for-windows-users>对于 Windows 用户<a href=#for-windows-users class=hash-link aria-label="直接链接到 对于 Windows 用户" title="直接链接到 对于 Windows 用户" translate=no>​</a></h5>
+<p>如果您在 Windows 上运行 Docker Desktop，您有两种简单的方法可以处理此问题，而无需使用命令行:</p>
+<h6 class="anchor anchorTargetStickyNavbar_tleR" id=option-a-use-docker-desktop-easiest>选项 A：使用 Docker Desktop（最简单）<a href=#option-a-use-docker-desktop-easiest class=hash-link aria-label="直接链接到 选项 A：使用 Docker Desktop（最简单）" title="直接链接到 选项 A：使用 Docker Desktop（最简单）" translate=no>​</a></h6>
+<ol>
+<li class="">打开 Docker Desktop 仪表板。</li>
+<li class="">转到“容器”选项卡，并点击您的 duplistatus 容器。</li>
+<li class="">点击“文件”选项卡。</li>
+<li class="">导航到 <code>/app/data/</code>。</li>
+<li class="">右键点击 <code>backups.db</code> 并选择 <strong>另存为...</strong> 将其下载到您的 Windows 文件夹中。</li>
+</ol>
+<h6 class="anchor anchorTargetStickyNavbar_tleR" id=option-b-use-powershell>选项 B：使用 PowerShell<a href=#option-b-use-powershell class=hash-link aria-label="直接链接到 选项 B：使用 PowerShell" title="直接链接到 选项 B：使用 PowerShell" translate=no>​</a></h6>
+<p>如果您更喜欢使用终端，可以使用 PowerShell 将文件复制到您的桌面：</p>
+<div class="language-powershell codeBlockContainer_mQmQ theme-code-block" style=--prism-color:#d6deeb;--prism-background-color:#011627><div class=codeBlockContent_t_Hd><pre tabindex=0 class="prism-code language-powershell codeBlock_RMoD thin-scrollbar" style=color:#d6deeb;background-color:#011627><code class=codeBlockLines_AclH><div class=token-line style=color:#d6deeb><span class="token plain">docker cp duplistatus:/app/data/backups.db $HOME\Desktop\duplistatus-backup.db</span><br/></div></code></pre></div></div>
+<h5 class="anchor anchorTargetStickyNavbar_tleR" id=if-you-use-bind-mounts>如果您使用绑定挂载<a href=#if-you-use-bind-mounts class=hash-link aria-label="直接链接到 如果您使用绑定挂载" title="直接链接到 如果您使用绑定挂载" translate=no>​</a></h5>
+<p>如果您最初使用绑定挂载（例如，您将本地文件夹 <code>/opt/duplistatus</code> 映射到容器）设置容器，则无需使用 Docker 命令。只需使用文件管理器复制文件：</p>
+<ul>
+<li class="">Linux：<code>cp /path/to/your/folder/backups.db ~/backups.db</code></li>
+<li class="">Windows：在 <strong>文件资源管理器</strong> 中简单地复制文件到您在设置期间指定的文件夹中。</li>
+</ul>
+<h4 class="anchor anchorTargetStickyNavbar_tleR" id=restoring-your-data>恢复您的数据<a href=#restoring-your-data class=hash-link aria-label="直接链接到 恢复您的数据" title="直接链接到 恢复您的数据" translate=no>​</a></h4>
+<p>如果您需要从以前的备份中恢复数据库，请根据您的操作系统遵循以下步骤。</p>
+<div class="theme-admonition theme-admonition-info admonition_WCGJ alert alert--info"><div class=admonitionHeading_GCBg><span class=admonitionIcon_L39b><span></span></span>IMPORTANT</div><div class=admonitionContent_pbrs><p>在恢复数据库之前停止容器，以防止文件损坏。</div></div>
+<h5 class="anchor anchorTargetStickyNavbar_tleR" id=for-linux-users-1>适用于 Linux 用户<a href=#for-linux-users-1 class=hash-link aria-label="直接链接到 适用于 Linux 用户" title="直接链接到 适用于 Linux 用户" translate=no>​</a></h5>
+<p>恢复的最简单方法是将备份文件“推送”到容器的内部存储路径。</p>
+<h6 class="anchor anchorTargetStickyNavbar_tleR" id=using-docker-or-podman-1>使用 Docker 或 Podman：<a href=#using-docker-or-podman-1 class=hash-link aria-label="直接链接到 使用 Docker 或 Podman：" title="直接链接到 使用 Docker 或 Podman：" translate=no>​</a></h6>
+<div class="language-bash codeBlockContainer_mQmQ theme-code-block" style=--prism-color:#d6deeb;--prism-background-color:#011627><div class=codeBlockContent_t_Hd><pre tabindex=0 class="prism-code language-bash codeBlock_RMoD thin-scrollbar" style=color:#d6deeb;background-color:#011627><code class=codeBlockLines_AclH><div class=token-line style=color:#d6deeb><span class="token comment" style="color:rgb(99, 119, 119);font-style:italic"># stop the container</span><span class="token plain"></span><br/></div><div class=token-line style=color:#d6deeb><span class="token plain"></span><span class="token function" style="color:rgb(130, 170, 255)">docker</span><span class="token plain"> stop duplistatus</span><br/></div><div class=token-line style=color:#d6deeb><span class="token plain" style=display:inline-block></span><br/></div><div class=token-line style=color:#d6deeb><span class="token plain"></span><span class="token comment" style="color:rgb(99, 119, 119);font-style:italic"># Replace 'duplistatus-backup.db' with your actual backup filename</span><span class="token plain"></span><br/></div><div class=token-line style=color:#d6deeb><span class="token plain"></span><span class="token function" style="color:rgb(130, 170, 255)">docker</span><span class="token plain"> </span><span class="token function" style="color:rgb(130, 170, 255)">cp</span><span class="token plain"> ./duplistatus-backup.db duplistatus:/app/data/backups.db</span><br/></div><div class=token-line style=color:#d6deeb><span class="token plain" style=display:inline-block></span><br/></div><div class=token-line style=color:#d6deeb><span class="token plain"></span><span class="token comment" style="color:rgb(99, 119, 119);font-style:italic"># Restart the container</span><span class="token plain"></span><br/></div><div class=token-line style=color:#d6deeb><span class="token plain"></span><span class="token function" style="color:rgb(130, 170, 255)">docker</span><span class="token plain"> start duplistatus</span><br/></div></code></pre></div></div>
+<h5 class="anchor anchorTargetStickyNavbar_tleR" id=for-windows-users-1>适用于 Windows 用户<a href=#for-windows-users-1 class=hash-link aria-label="直接链接到 适用于 Windows 用户" title="直接链接到 适用于 Windows 用户" translate=no>​</a></h5>
+<p>如果您使用 Docker Desktop，可以通过 GUI 或 PowerShell 进行恢复。</p>
+<h6 class="anchor anchorTargetStickyNavbar_tleR" id=option-a-use-docker-desktop-gui>选项 A：使用 Docker Desktop（GUI）<a href=#option-a-use-docker-desktop-gui class=hash-link aria-label="直接链接到 选项 A：使用 Docker Desktop（GUI）" title="直接链接到 选项 A：使用 Docker Desktop（GUI）" translate=no>​</a></h6>
+<ol>
+<li class="">确保 duplistatus 容器正在运行（Docker Desktop 需要容器处于活动状态才能通过 GUI 上传文件）。</li>
+<li class="">转到容器设置中的文件选项卡。</li>
+<li class="">导航到 <code>/app/data/</code>。</li>
+<li class="">右键单击现有的 backups.db 并选择 删除。</li>
+<li class="">点击导入按钮（或右键单击文件夹区域）并从计算机中选择您的备份文件。</li>
+</ol>
+<p>将导入的文件重命名为确切的 backups.db，如果文件名中有时间戳。</p>
+<p>重新启动容器。</p>
+<h6 class="anchor anchorTargetStickyNavbar_tleR" id=option-b-use-powershell-1>选项 B：使用 PowerShell<a href=#option-b-use-powershell-1 class=hash-link aria-label="直接链接到 选项 B：使用 PowerShell" title="直接链接到 选项 B：使用 PowerShell" translate=no>​</a></h6>
+<div class="language-powershell codeBlockContainer_mQmQ theme-code-block" style=--prism-color:#d6deeb;--prism-background-color:#011627><div class=codeBlockContent_t_Hd><pre tabindex=0 class="prism-code language-powershell codeBlock_RMoD thin-scrollbar" style=color:#d6deeb;background-color:#011627><code class=codeBlockLines_AclH><div class=token-line style=color:#d6deeb><span class="token plain"># Copy the file from your Desktop back into the container</span><br/></div><div class=token-line style=color:#d6deeb><span class="token plain">docker cp $HOME\Desktop\duplistatus-backup.db duplistatus:/app/data/backups.db</span><br/></div><div class=token-line style=color:#d6deeb><span class="token plain" style=display:inline-block></span><br/></div><div class=token-line style=color:#d6deeb><span class="token plain"># Restart the container</span><br/></div><div class=token-line style=color:#d6deeb><span class="token plain">docker start duplistatus</span><br/></div></code></pre></div></div>
+<h5 class="anchor anchorTargetStickyNavbar_tleR" id=if-you-use-bind-mounts-1>如果您使用绑定挂载<a href=#if-you-use-bind-mounts-1 class=hash-link aria-label="直接链接到 如果您使用绑定挂载" title="直接链接到 如果您使用绑定挂载" translate=no>​</a></h5>
+<p>如果您使用本地文件夹映射到容器，则无需任何特殊命令。</p>
+<ol>
+<li class="">停止容器。</li>
+<li class="">手动将备份文件复制到映射的文件夹中（例如 <code>/opt/duplistatus</code> 或 <code>C:\duplistatus_data</code>）。</li>
+<li class="">确保文件名为 <code>backups.db</code>。</li>
+<li class="">启动容器。</li>
+</ol>
+<div class="language-bash codeBlockContainer_mQmQ theme-code-block" style=--prism-color:#d6deeb;--prism-background-color:#011627><div class=codeBlockContent_t_Hd><pre tabindex=0 class="prism-code language-bash codeBlock_RMoD thin-scrollbar" style=color:#d6deeb;background-color:#011627><code class=codeBlockLines_AclH><div class=token-line style=color:#d6deeb><span class="token function" style="color:rgb(130, 170, 255)">docker</span><span class="token plain"> logs </span><span class="token operator" style="color:rgb(127, 219, 202)">&lt;</span><span class="token plain">container-name</span><span class="token operator" style="color:rgb(127, 219, 202)">></span><br/></div></code></pre></div></div>
+<div class="theme-admonition theme-admonition-note admonition_WCGJ alert alert--secondary"><div class=admonitionHeading_GCBg><span class=admonitionIcon_L39b><span></span></span>注释</div><div class=admonitionContent_pbrs><p>如果您手动恢复数据库，可能会遇到权限错误。<p>检查容器日志并根据需要调整权限。请参阅下面的 <a href=#troubleshooting-your-restore--rollback class="">故障排除</a> 部分以获取更多信息。</div></div>
+<h2 class="anchor anchorTargetStickyNavbar_tleR" id=automatic-migration-process>自动迁移过程<a href=#automatic-migration-process class=hash-link aria-label="直接链接到 自动迁移过程" title="直接链接到 自动迁移过程" translate=no>​</a></h2>
+<p>启动新版本时，迁移会自动运行：</p>
+<ol>
+<li class=""><strong>备份创建</strong>：在您的数据目录中创建带时间戳的备份</li>
+<li class=""><strong>模式更新</strong>：更新数据库表和字段</li>
+<li class=""><strong>数据迁移</strong>：保留和迁移所有现有数据</li>
+<li class=""><strong>验证</strong>：记录迁移成功</li>
+</ol>
+<h3 class="anchor anchorTargetStickyNavbar_tleR" id=monitoring-migration>监控迁移<a href=#monitoring-migration class=hash-link aria-label="直接链接到 监控迁移" title="直接链接到 监控迁移" translate=no>​</a></h3>
+<p>检查 Docker 日志以监控迁移进度：</p>
+<p>查找类似以下的消息：</p>
+<ul>
+<li class=""><code>"Found X pending migrations"</code></li>
+<li class=""><code>"Running consolidated migration X.0..."</code></li>
+<li class=""><code>"Migration X.0 completed successfully"</code></li>
+<li class=""><code>"Database backup created: /path/to/backups-copy-YYYY-MM-DDTHH-MM-SS.db"</code></li>
+<li class=""><code>"All migrations completed successfully"</code></li>
+</ul>
+<h2 class="anchor anchorTargetStickyNavbar_tleR" id=version-specific-migration-notes>特定版本的迁移说明<a href=#version-specific-migration-notes class=hash-link aria-label="直接链接到 特定版本的迁移说明" title="直接链接到 特定版本的迁移说明" translate=no>​</a></h2>
+<h3 class="anchor anchorTargetStickyNavbar_tleR" id=upgrading-to-version-09x-or-later-schema-v40>升级到版本 0.9.x 或更高版本（模式 v4.0）<a href=#upgrading-to-version-09x-or-later-schema-v40 class=hash-link aria-label="直接链接到 升级到版本 0.9.x 或更高版本（模式 v4.0）" title="直接链接到 升级到版本 0.9.x 或更高版本（模式 v4.0）" translate=no>​</a></h3>
+<div class="theme-admonition theme-admonition-warning admonition_WCGJ alert alert--warning"><div class=admonitionHeading_GCBg><span class=admonitionIcon_L39b><span></span></span>警告</div><div class=admonitionContent_pbrs><p><strong>现在需要身份验证。</strong> 所有用户在升级后必须登录。</div></div>
+<h4 class="anchor anchorTargetStickyNavbar_tleR" id=what-changes-automatically>自动更改的内容<a href=#what-changes-automatically class=hash-link aria-label="直接链接到 自动更改的内容" title="直接链接到 自动更改的内容" translate=no>​</a></h4>
+<ul>
+<li class="">数据库模式从 v3.1 迁移到 v4.0</li>
+<li class="">创建新表：<code>users</code>，<code>sessions</code>，<code>audit_log</code></li>
+<li class="">自动创建默认管理员帐户</li>
+<li class="">所有现有会话都被取消</li>
+</ul>
+<h4 class="anchor anchorTargetStickyNavbar_tleR" id=what-you-must-do>您必须执行的操作<a href=#what-you-must-do class=hash-link aria-label="直接链接到 您必须执行的操作" title="直接链接到 您必须执行的操作" translate=no>​</a></h4>
+<ol>
+<li class=""><strong>登录</strong>，使用默认管理员凭据：<!-- -->
+<ul>
+<li class="">用户名：<code>admin</code></li>
+<li class="">密码：<code>Duplistatus09</code></li>
+</ul>
+</li>
+<li class="">收到提示时<strong>更改密码</strong>（首次登录时必须）</li>
+<li class=""><strong>为其他用户创建用户帐户</strong>（设置 → 用户）</li>
+<li class=""><strong>更新外部 API 集成</strong>以包含身份验证（请参阅<a class="" href=/duplistatus/zh-Hans/migration/api-changes>不兼容的 API 更改</a>)</li>
+<li class=""><strong>配置审计日志保留期</strong>（如果需要）（设置 → 审计日志）</li>
+</ol>
+<h4 class="anchor anchorTargetStickyNavbar_tleR" id=if-youre-locked-out>如果您被锁定<a href=#if-youre-locked-out class=hash-link aria-label="直接链接到 如果您被锁定" title="直接链接到 如果您被锁定" translate=no>​</a></h4>
+<p>使用管理员恢复工具：</p>
+<div class="language-bash codeBlockContainer_mQmQ theme-code-block" style=--prism-color:#d6deeb;--prism-background-color:#011627><div class=codeBlockContent_t_Hd><pre tabindex=0 class="prism-code language-bash codeBlock_RMoD thin-scrollbar" style=color:#d6deeb;background-color:#011627><code class=codeBlockLines_AclH><div class=token-line style=color:#d6deeb><span class="token function" style="color:rgb(130, 170, 255)">docker</span><span class="token plain"> </span><span class="token builtin class-name" style="color:rgb(255, 203, 139)">exec</span><span class="token plain"> </span><span class="token parameter variable" style="color:rgb(214, 222, 235)">-it</span><span class="token plain"> duplistatus /app/admin-recovery admin NewPassword123</span><br/></div></code></pre></div></div>
+<p>有关详细信息，请参阅 <a class="" href=/duplistatus/zh-Hans/user-guide/admin-recovery>管理员恢复指南</a>。</p>
+<h3 class="anchor anchorTargetStickyNavbar_tleR" id=upgrading-to-version-08x>升级到版本 0.8.x<a href=#upgrading-to-version-08x class=hash-link aria-label="直接链接到 升级到版本 0.8.x" title="直接链接到 升级到版本 0.8.x" translate=no>​</a></h3>
+<h4 class="anchor anchorTargetStickyNavbar_tleR" id=what-changes-automatically-1>自动更改的内容<a href=#what-changes-automatically-1 class=hash-link aria-label="直接链接到 自动更改的内容" title="直接链接到 自动更改的内容" translate=no>​</a></h4>
+<ul>
+<li class="">数据库架构已更新至 v3.1</li>
+<li class="">已生成用于加密的主密钥（存储在 <code>.duplistatus.key</code> 中）</li>
+<li class="">会话已失效（已创建受 CSRF 保护的新会话）</li>
+<li class="">密码已使用新系统加密</li>
+</ul>
+<h4 class="anchor anchorTargetStickyNavbar_tleR" id=what-you-must-do-1>您必须执行的操作<a href=#what-you-must-do-1 class=hash-link aria-label="直接链接到 您必须执行的操作" title="直接链接到 您必须执行的操作" translate=no>​</a></h4>
+<ol>
+<li class="">如果您自定义了通知模板，请<strong>更新通知模板</strong>：<!-- -->
+<ul>
+<li class="">将 <code>{backup_interval_value}</code> 和 <code>{backup_interval_type}</code> 替换为 <code>{backup_interval}</code></li>
+<li class="">默认模板会自动更新</li>
+</ul>
+</li>
+</ol>
+<h4 class="anchor anchorTargetStickyNavbar_tleR" id=security-notes>安全说明<a href=#security-notes class=hash-link aria-label="直接链接到 安全说明" title="直接链接到 安全说明" translate=no>​</a></h4>
+<ul>
+<li class="">确保 <code>.duplistatus.key</code> 文件已备份（具有 0400 权限）</li>
+<li class="">会话在 24 小时后过期</li>
+</ul>
+<h3 class="anchor anchorTargetStickyNavbar_tleR" id=upgrading-to-version-07x>升级到版本 0.7.x<a href=#upgrading-to-version-07x class=hash-link aria-label="直接链接到 升级到版本 0.7.x" title="直接链接到 升级到版本 0.7.x" translate=no>​</a></h3>
+<h4 class="anchor anchorTargetStickyNavbar_tleR" id=what-changes-automatically-2>自动更改的内容<a href=#what-changes-automatically-2 class=hash-link aria-label="直接链接到 自动更改的内容" title="直接链接到 自动更改的内容" translate=no>​</a></h4>
+<ul>
+<li class=""><code>machines</code> 表已重命名为 <code>servers</code></li>
+<li class=""><code>machine_id</code> 字段已重命名为 <code>server_id</code></li>
+<li class="">添加了新字段：<code>alias</code>、<code>notes</code>、<code>created_at</code>、<code>updated_at</code></li>
+</ul>
+<h4 class="anchor anchorTargetStickyNavbar_tleR" id=what-you-must-do-2>您必须执行的操作<a href=#what-you-must-do-2 class=hash-link aria-label="直接链接到 您必须执行的操作" title="直接链接到 您必须执行的操作" translate=no>​</a></h4>
+<ol>
+<li class=""><strong>更新外部 API 集成</strong>：<!-- -->
+<ul>
+<li class="">在 <code>/api/summary</code> 中将 <code>totalMachines</code> 更改为 <code>totalServers</code></li>
+<li class="">在 API 响应对象中将 <code>machine</code> 更改为 <code>server</code></li>
+<li class="">在 <code>/api/lastbackups/{serverId}</code> 中将 <code>backup_types_count</code> 更改为 <code>backup_jobs_count</code></li>
+<li class="">将端点路径从 <code>/api/machines/...</code> 更新为 <code>/api/servers/...</code></li>
+</ul>
+</li>
+<li class=""><strong>更新通知模板</strong>：<!-- -->
+<ul>
+<li class="">将 <code>{machine_name}</code> 替换为 <code>{server_name}</code></li>
+</ul>
+</li>
+</ol>
+<p>有关详细的 API 迁移步骤，请参阅 <a class="" href=/duplistatus/zh-Hans/migration/api-changes>不兼容的 API 更改</a>。</p>
+<h2 class="anchor anchorTargetStickyNavbar_tleR" id=post-migration-checklist>迁移后检查清单<a href=#post-migration-checklist class=hash-link aria-label="直接链接到 迁移后检查清单" title="直接链接到 迁移后检查清单" translate=no>​</a></h2>
+<p>升级后，请验证：</p>
+<ul class="contains-task-list containsTaskList_QWGu">
+<li class=task-list-item><input type=checkbox disabled/> <!-- -->所有服务器在仪表板中正确显示</li>
+<li class=task-list-item><input type=checkbox disabled/> <!-- -->备份历史记录完整且可访问</li>
+<li class=task-list-item><input type=checkbox disabled/> <!-- -->通知功能正常（测试NTFY/电子邮件）</li>
+<li class=task-list-item><input type=checkbox disabled/> <!-- -->外部API集成正常（如果适用）</li>
+<li class=task-list-item><input type=checkbox disabled/> <!-- -->设置可访问且正确</li>
+<li class=task-list-item><input type=checkbox disabled/> <!-- -->备份监控正常工作</li>
+<li class=task-list-item><input type=checkbox disabled/> <!-- -->登录成功（0.9.x+）</li>
+<li class=task-list-item><input type=checkbox disabled/> <!-- -->更改默认管理员密码（0.9.x+）</li>
+<li class=task-list-item><input type=checkbox disabled/> <!-- -->为其他用户创建用户账户（0.9.x+）</li>
+<li class=task-list-item><input type=checkbox disabled/> <!-- -->更新外部API集成的身份验证（0.9.x+）</li>
+</ul>
+<h2 class="anchor anchorTargetStickyNavbar_tleR" id=troubleshooting>故障排除<a href=#troubleshooting class=hash-link aria-label="直接链接到 故障排除" title="直接链接到 故障排除" translate=no>​</a></h2>
+<h3 class="anchor anchorTargetStickyNavbar_tleR" id=migration-fails>迁移失败<a href=#migration-fails class=hash-link aria-label="直接链接到 迁移失败" title="直接链接到 迁移失败" translate=no>​</a></h3>
+<ol>
+<li class="">检查磁盘空间（备份需要空间）</li>
+<li class="">验证数据目录的写入权限</li>
+<li class="">查看容器日志以获取特定的错误信息</li>
+<li class="">如果需要，从备份中恢复（请参阅下面的回滚）</li>
+</ol>
+<h3 class="anchor anchorTargetStickyNavbar_tleR" id=data-missing-after-migration>迁移后数据丢失<a href=#data-missing-after-migration class=hash-link aria-label="直接链接到 迁移后数据丢失" title="直接链接到 迁移后数据丢失" translate=no>​</a></h3>
+<ol>
+<li class="">验证备份是否创建（检查数据目录）</li>
+<li class="">查看容器日志以获取备份创建消息</li>
+<li class="">检查数据库文件的完整性</li>
+</ol>
+<h3 class="anchor anchorTargetStickyNavbar_tleR" id=authentication-issues-09x>身份验证问题（0.9.x+）<a href=#authentication-issues-09x class=hash-link aria-label="直接链接到 身份验证问题（0.9.x+）" title="直接链接到 身份验证问题（0.9.x+）" translate=no>​</a></h3>
+<ol>
+<li class="">验证默认管理员账户是否存在（检查日志）</li>
+<li class="">尝试默认凭据： <code>admin</code> / <code>Duplistatus09</code></li>
+<li class="">如果被锁定，使用管理员恢复工具</li>
+<li class="">验证 <code>users</code> 表是否存在于数据库中</li>
+</ol>
+<h3 class="anchor anchorTargetStickyNavbar_tleR" id=api-errors>API错误<a href=#api-errors class=hash-link aria-label="直接链接到 API错误" title="直接链接到 API错误" translate=no>​</a></h3>
+<ol>
+<li class="">查看 <a class="" href=/duplistatus/zh-Hans/migration/api-changes>向后不兼容的API更改</a> 以获取端点更新</li>
+<li class="">更新外部集成以使用新的字段名称</li>
+<li class="">向API请求添加身份验证（0.9.x+）</li>
+<li class="">迁移后测试API端点</li>
+</ol>
+<h3 class="anchor anchorTargetStickyNavbar_tleR" id=master-key-issues-08x>主密钥问题（0.8.x+）<a href=#master-key-issues-08x class=hash-link aria-label="直接链接到 主密钥问题（0.8.x+）" title="直接链接到 主密钥问题（0.8.x+）" translate=no>​</a></h3>
+<ol>
+<li class="">确保 <code>.duplistatus.key</code> 文件可访问</li>
+<li class="">验证文件权限为0400</li>
+<li class="">查看容器日志以获取密钥生成错误</li>
+</ol>
+<h3 class="anchor anchorTargetStickyNavbar_tleR" id=podman-dns-configuration>Podman DNS配置<a href=#podman-dns-configuration class=hash-link aria-label="直接链接到 Podman DNS配置" title="直接链接到 Podman DNS配置" translate=no>​</a></h3>
+<p>如果您使用Podman并在升级后遇到网络连接问题，您可能需要为容器配置DNS设置。请参阅安装指南中的 <a class="" href=/duplistatus/zh-Hans/installation#configuring-dns-for-podman-containers>DNS配置部分</a> 以获取详细信息。</p>
+<h2 class="anchor anchorTargetStickyNavbar_tleR" id=rollback-procedure>回滚程序<a href=#rollback-procedure class=hash-link aria-label="直接链接到 回滚程序" title="直接链接到 回滚程序" translate=no>​</a></h2>
+<p>如果您需要回滚到以前的版本：</p>
+<ol>
+<li class=""><strong>停止容器</strong>： <code>docker stop &lt;container-name></code> （或 <code>podman stop &lt;container-name></code>）</li>
+<li class=""><strong>找到您的备份</strong>：<!-- -->
+<ul>
+<li class="">如果您使用Web界面创建了备份（版本1.2.1+），请使用下载的备份文件</li>
+<li class="">如果您创建了手动卷备份，请先提取它</li>
+<li class="">自动迁移备份位于数据目录中（带有时间戳的 <code>.db</code> 文件）</li>
+</ul>
+</li>
+<li class=""><strong>恢复数据库</strong>:<!-- -->
+<ul>
+<li class=""><strong>对于 Web 界面备份（版本 1.2.1+）</strong>: 使用 <code>Settings → Database Maintenance</code> 中的恢复功能（参见 <a class="" href=/duplistatus/zh-Hans/user-guide/settings/database-maintenance#database-restore>数据库维护</a>)</li>
+<li class=""><strong>对于手动备份</strong>: 用备份文件替换数据目录/卷中的 <code>backups.db</code></li>
+</ul>
+</li>
+<li class=""><strong>使用前一版本的镜像</strong>: 拉取并运行前一容器镜像</li>
+<li class=""><strong>启动容器</strong>: 使用前一版本启动</li>
+</ol>
+<div class="theme-admonition theme-admonition-warning admonition_WCGJ alert alert--warning"><div class=admonitionHeading_GCBg><span class=admonitionIcon_L39b><span></span></span>警告</div><div class=admonitionContent_pbrs><p>如果新schema与旧版本不兼容，回滚可能会导致数据丢失。尝试回滚之前，请确保您有最近的备份。</div></div>
+<h3 class="anchor anchorTargetStickyNavbar_tleR" id=troubleshooting-your-restore--rollback>故障排除：恢复/回滚<a href=#troubleshooting-your-restore--rollback class=hash-link aria-label="直接链接到 故障排除：恢复/回滚" title="直接链接到 故障排除：恢复/回滚" translate=no>​</a></h3>
+<p>如果应用程序在恢复或回滚后无法启动，或者数据未出现，请检查以下常见问题:</p>
+<h4 class="anchor anchorTargetStickyNavbar_tleR" id=1-database-file-permissions-linuxpodman>1. 数据库文件权限（Linux/Podman）<a href=#1-database-file-permissions-linuxpodman class=hash-link aria-label="直接链接到 1. 数据库文件权限（Linux/Podman）" title="直接链接到 1. 数据库文件权限（Linux/Podman）" translate=no>​</a></h4>
+<p>如果您以 <code>root</code> 用户身份恢复了文件，容器内的应用程序可能没有读取或写入该文件的权限。</p>
+<ul>
+<li class=""><strong>症状：</strong> 日志显示 "权限被拒绝" 或 "只读数据库。"</li>
+<li class=""><strong>解决方法：</strong> 重置容器内文件的权限，以确保其可访问。</li>
+</ul>
+<div class="language-bash codeBlockContainer_mQmQ theme-code-block" style=--prism-color:#d6deeb;--prism-background-color:#011627><div class=codeBlockContent_t_Hd><pre tabindex=0 class="prism-code language-bash codeBlock_RMoD thin-scrollbar" style=color:#d6deeb;background-color:#011627><code class=codeBlockLines_AclH><div class=token-line style=color:#d6deeb><span class="token comment" style="color:rgb(99, 119, 119);font-style:italic"># Set ownership (usually UID 1000 or the app user)</span><span class="token plain"></span><br/></div><div class=token-line style=color:#d6deeb><span class="token plain"></span><span class="token function" style="color:rgb(130, 170, 255)">docker</span><span class="token plain"> </span><span class="token builtin class-name" style="color:rgb(255, 203, 139)">exec</span><span class="token plain"> </span><span class="token parameter variable" style="color:rgb(214, 222, 235)">-u</span><span class="token plain"> </span><span class="token number" style="color:rgb(247, 140, 108)">0</span><span class="token plain"> duplistatus </span><span class="token function" style="color:rgb(130, 170, 255)">chown</span><span class="token plain"> </span><span class="token number" style="color:rgb(247, 140, 108)">1000</span><span class="token plain">:1000 /app/data/backups.db</span><br/></div><div class=token-line style=color:#d6deeb><span class="token plain"></span><span class="token comment" style="color:rgb(99, 119, 119);font-style:italic"># Set read/write permissions</span><span class="token plain"></span><br/></div><div class=token-line style=color:#d6deeb><span class="token plain"></span><span class="token function" style="color:rgb(130, 170, 255)">docker</span><span class="token plain"> </span><span class="token builtin class-name" style="color:rgb(255, 203, 139)">exec</span><span class="token plain"> </span><span class="token parameter variable" style="color:rgb(214, 222, 235)">-u</span><span class="token plain"> </span><span class="token number" style="color:rgb(247, 140, 108)">0</span><span class="token plain"> duplistatus </span><span class="token function" style="color:rgb(130, 170, 255)">chmod</span><span class="token plain"> </span><span class="token number" style="color:rgb(247, 140, 108)">664</span><span class="token plain"> /app/data/backups.db</span><br/></div></code></pre></div></div>
+<h4 class="anchor anchorTargetStickyNavbar_tleR" id=2-incorrect-filename>2. 文件名不正确<a href=#2-incorrect-filename class=hash-link aria-label="直接链接到 2. 文件名不正确" title="直接链接到 2. 文件名不正确" translate=no>​</a></h4>
+<p>应用程序特意寻找名为 <code>backups.db</code> 的文件。</p>
+<ul>
+<li class=""><strong>症状：</strong> 应用程序启动，但看起来 "空"（像新安装一样）。</li>
+<li class=""><strong>解决方法：</strong> 检查 <code>/app/data/</code> 目录。如果您的文件名为 <code>duplistatus-backup-2024.db</code> 或具有 <code>.sqlite</code> 扩展名，应用程序将忽略它。使用 <code>mv</code> 命令或 Docker Desktop GUI 将其重命名为 <code>backups.db</code>。</li>
+</ul>
+<h4 class="anchor anchorTargetStickyNavbar_tleR" id=3-container-not-restarted>3. 容器未重启<a href=#3-container-not-restarted class=hash-link aria-label="直接链接到 3. 容器未重启" title="直接链接到 3. 容器未重启" translate=no>​</a></h4>
+<p>在某些系统上，容器运行时使用 <code>docker cp</code> 可能不会立即 "刷新" 应用程序与数据库的连接。</p>
+<ul>
+<li class=""><strong>解决方法：</strong> 恢复后始终执行完全重启:</li>
+</ul>
+<div class="language-bash codeBlockContainer_mQmQ theme-code-block" style=--prism-color:#d6deeb;--prism-background-color:#011627><div class=codeBlockContent_t_Hd><pre tabindex=0 class="prism-code language-bash codeBlock_RMoD thin-scrollbar" style=color:#d6deeb;background-color:#011627><code class=codeBlockLines_AclH><div class=token-line style=color:#d6deeb><span class="token function" style="color:rgb(130, 170, 255)">docker</span><span class="token plain"> restart duplistatus</span><br/></div></code></pre></div></div>
+<h4 class="anchor anchorTargetStickyNavbar_tleR" id=4-database-version-mismatch>4. 数据库版本不匹配<a href=#4-database-version-mismatch class=hash-link aria-label="直接链接到 4. 数据库版本不匹配" title="直接链接到 4. 数据库版本不匹配" translate=no>​</a></h4>
+<p>如果您将来自 duplistatus 新版本的备份恢复到应用程序的旧版本中，数据库 schema 可能不兼容。</p>
+<ul>
+<li class=""><strong>解决方法：</strong> 确保您运行的 duplistatus 镜像版本与创建备份的版本相同或更新。使用以下命令检查您的版本:</li>
+</ul>
+<div class="language-bash codeBlockContainer_mQmQ theme-code-block" style=--prism-color:#d6deeb;--prism-background-color:#011627><div class=codeBlockContent_t_Hd><pre tabindex=0 class="prism-code language-bash codeBlock_RMoD thin-scrollbar" style=color:#d6deeb;background-color:#011627><code class=codeBlockLines_AclH><div class=token-line style=color:#d6deeb><span class="token function" style="color:rgb(130, 170, 255)">docker</span><span class="token plain"> inspect duplistatus </span><span class="token parameter variable" style="color:rgb(214, 222, 235)">--format</span><span class="token plain"> </span><span class="token string" style="color:rgb(173, 219, 103)">'{{.Config.Image}}'</span><br/></div></code></pre></div></div>
+<h2 class="anchor anchorTargetStickyNavbar_tleR" id=database-schema-versions>数据库 Schema 版本<a href=#database-schema-versions class=hash-link aria-label="直接链接到 数据库 Schema 版本" title="直接链接到 数据库 Schema 版本" translate=no>​</a></h2>
+<table><thead><tr><th>应用程序版本<th>Schema 版本<th>关键更改<tbody><tr><td>0.6.x 及更早<td>v1.0<td>初始 schema<tr><td>0.7.x<td>v2.0, v3.0<td>添加配置，重命名机器 → 服务器<tr><td>0.8.x<td>v3.1<td>增强备份字段，支持加密<tr><td>0.9.x, 1.0.x, 1.1.x, 1.2.x, 1.3.x<td>v4.0<td>用户访问控制，身份验证，审计日志</table>
+<h2 class="anchor anchorTargetStickyNavbar_tleR" id=getting-help>获取帮助<a href=#getting-help class=hash-link aria-label="直接链接到 获取帮助" title="直接链接到 获取帮助" translate=no>​</a></h2>
+<ul>
+<li class=""><strong>文档</strong>: <a class="" href=/duplistatus/zh-Hans/user-guide/overview>用户指南</a></li>
+<li class=""><strong>API 参考</strong>: <a class="" href=/duplistatus/zh-Hans/api-reference/overview>API 文档</a></li>
+<li class=""><strong>API 变更</strong>: <a class="" href=/duplistatus/zh-Hans/migration/api-changes>不向后兼容的 API 变更</a></li>
+<li class=""><strong>版本说明</strong>: 检查版本特定的版本说明以获取详细的变更</li>
+<li class=""><strong>社区</strong>: <a href=https://github.com/wsj-br/duplistatus/discussions target=_blank rel="noopener noreferrer" class="">GitHub 讨论</a></li>
+<li class=""><strong>问题</strong>: <a href=https://github.com/wsj-br/duplistatus/issues target=_blank rel="noopener noreferrer" class="">GitHub 问题</a></li>
+</ul></div></article><nav class="docusaurus-mt-lg pagination-nav" aria-label=文档页><a class="pagination-nav__link pagination-nav__link--prev" href=/duplistatus/zh-Hans/user-guide/admin-recovery><div class=pagination-nav__sublabel>上一页</div><div class=pagination-nav__label>管理员账户恢复</div></a><a class="pagination-nav__link pagination-nav__link--next" href=/duplistatus/zh-Hans/migration/api-changes><div class=pagination-nav__sublabel>下一页</div><div class=pagination-nav__label>向后不兼容的API更改</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_XG6w thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href=#overview class="table-of-contents__link toc-highlight">概览</a><li><a href=#backing-up-your-database-before-migration class="table-of-contents__link toc-highlight">升级前备份数据库</a><ul><li><a href=#if-youre-running-version-121-or-later class="table-of-contents__link toc-highlight">如果您正在运行版本 1.2.1 或更高版本</a><li><a href=#if-youre-running-a-version-before-121 class="table-of-contents__link toc-highlight">如果您正在运行版本 1.2.1 之前的版本</a></ul><li><a href=#automatic-migration-process class="table-of-contents__link toc-highlight">自动迁移过程</a><ul><li><a href=#monitoring-migration class="table-of-contents__link toc-highlight">监控迁移</a></ul><li><a href=#version-specific-migration-notes class="table-of-contents__link toc-highlight">特定版本的迁移说明</a><ul><li><a href=#upgrading-to-version-09x-or-later-schema-v40 class="table-of-contents__link toc-highlight">升级到版本 0.9.x 或更高版本（模式 v4.0）</a><li><a href=#upgrading-to-version-08x class="table-of-contents__link toc-highlight">升级到版本 0.8.x</a><li><a href=#upgrading-to-version-07x class="table-of-contents__link toc-highlight">升级到版本 0.7.x</a></ul><li><a href=#post-migration-checklist class="table-of-contents__link toc-highlight">迁移后检查清单</a><li><a href=#troubleshooting class="table-of-contents__link toc-highlight">故障排除</a><ul><li><a href=#migration-fails class="table-of-contents__link toc-highlight">迁移失败</a><li><a href=#data-missing-after-migration class="table-of-contents__link toc-highlight">迁移后数据丢失</a><li><a href=#authentication-issues-09x class="table-of-contents__link toc-highlight">身份验证问题（0.9.x+）</a><li><a href=#api-errors class="table-of-contents__link toc-highlight">API错误</a><li><a href=#master-key-issues-08x class="table-of-contents__link toc-highlight">主密钥问题（0.8.x+）</a><li><a href=#podman-dns-configuration class="table-of-contents__link toc-highlight">Podman DNS配置</a></ul><li><a href=#rollback-procedure class="table-of-contents__link toc-highlight">回滚程序</a><ul><li><a href=#troubleshooting-your-restore--rollback class="table-of-contents__link toc-highlight">故障排除：恢复/回滚</a></ul><li><a href=#database-schema-versions class="table-of-contents__link toc-highlight">数据库 Schema 版本</a><li><a href=#getting-help class="table-of-contents__link toc-highlight">获取帮助</a></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="theme-layout-footer-column col footer__col"><div class=footer__title>文档</div><ul class="footer__items clean-list"><li class=footer__item><a class=footer__link-item href=/duplistatus/zh-Hans/installation>安装</a><li class=footer__item><a class=footer__link-item href=/duplistatus/zh-Hans/user-guide/overview>用户指南</a><li class=footer__item><a class=footer__link-item href=/duplistatus/zh-Hans/migration/version_upgrade>迁移</a></ul></div><div class="theme-layout-footer-column col footer__col"><div class=footer__title>开发</div><ul class="footer__items clean-list"><li class=footer__item><a class=footer__link-item href=/duplistatus/zh-Hans/development/setup>开发环境设置</a><li class=footer__item><a class=footer__link-item href=/duplistatus/zh-Hans/api-reference/overview>API 参考</a></ul></div><div class="theme-layout-footer-column col footer__col"><div class=footer__title>更多</div><ul class="footer__items clean-list"><li class=footer__item><a href=https://github.com/wsj-br/duplistatus target=_blank rel="noopener noreferrer" aria-label="GitHub repository" class="footer__link-item github-icon-link"><svg width=20 height=20 viewBox="0 0 24 24" fill=currentColor xmlns=http://www.w3.org/2000/svg aria-hidden=true style="vertical-align: middle; margin-right: 0.5rem;"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>GitHub</a><li class=footer__item><a href=https://hub.docker.com/r/wsjbr/duplistatus target=_blank rel="noopener noreferrer" aria-label="Docker Hub repository" class="footer__link-item docker-icon-link"><svg width=20 height=20 viewBox="0 0 24 24" fill=currentColor xmlns=http://www.w3.org/2000/svg aria-hidden=true style="vertical-align: middle; margin-right: 0.5rem;"><path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.186m0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.083.185.185.186m-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.185-.186h-2.12a.186.186 0 00-.185.186v1.887c0 .102.084.185.186.185m-2.92 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.082.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338.001-.676.03-1.01.087-.248-1.7-1.653-2.53-1.716-2.566l-.344-.199-.226.327c-.284.438-.49.922-.612 1.43-.23.97-.09 1.882.403 2.661-.595.332-1.55.413-1.744.42H.751a.751.751 0 00-.75.748 11.376 11.376 0 00.692 4.062c.545 1.428 1.355 2.48 2.41 3.124 1.18.723 3.1 1.137 5.275 1.137.983.003 1.963-.086 2.93-.266a12.248 12.248 0 003.823-1.389c.98-.567 1.86-1.288 2.61-2.136 1.252-1.418 1.998-2.997 2.553-4.4h.221c1.372 0 2.215-.549 2.68-1.009.309-.293.55-.65.707-1.046l.098-.288z"/></svg>Docker Hub</a></ul></div></div><div class="footer__bottom text--center"><div class=footer__copyright>Copyright © Waldemar Scudeller Jr.</div></div></div></footer></div></body>

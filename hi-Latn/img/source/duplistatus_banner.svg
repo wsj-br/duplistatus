@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="512"
+   height="128"
+   version="1.1"
+   id="svg13"
+   sodipodi:docname="duplistatus_banner.svg"
+   inkscape:export-filename="duplistatus_banner.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title13">duplistatus Logo</title>
+  <defs
+     id="defs13">
+    <rect
+       x="585.00421"
+       y="78.957626"
+       width="1451.7655"
+       height="356.79593"
+       id="rect7" />
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath5">
+      <rect
+         style="display:inline;fill:url(#linearGradient6);stroke:none;stroke-width:0.779103;stroke-dasharray:0.779103, 0.779103;stroke-opacity:0.843137"
+         id="rect5"
+         width="172.95564"
+         height="166.9045"
+         x="446.73166"
+         y="153.18451"
+         ry="19.770708"
+         inkscape:label="retangulo" />
+    </clipPath>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient10"
+       id="linearGradient6"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.35388991,0,0,0.46527664,442.4716,122.19327)"
+       x1="12.037618"
+       y1="245.96864"
+       x2="500.76489"
+       y2="245.96864" />
+    <linearGradient
+       id="linearGradient10"
+       inkscape:collect="always">
+      <stop
+         style="stop-color:#0f9b34;stop-opacity:1;"
+         offset="0"
+         id="stop10" />
+      <stop
+         style="stop-color:#1a1fbe;stop-opacity:1;"
+         offset="1"
+         id="stop11" />
+    </linearGradient>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath5-5">
+      <rect
+         style="display:inline;fill:url(#linearGradient6);stroke:none;stroke-width:0.779103;stroke-dasharray:0.779103, 0.779103;stroke-opacity:0.843137"
+         id="rect5-2"
+         width="172.95564"
+         height="166.9045"
+         x="446.73166"
+         y="153.18451"
+         ry="19.770708"
+         inkscape:label="retangulo" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath5-4">
+      <rect
+         style="display:inline;fill:url(#linearGradient6);stroke:none;stroke-width:0.779103;stroke-dasharray:0.779103, 0.779103;stroke-opacity:0.843137"
+         id="rect5-8"
+         width="172.95564"
+         height="166.9045"
+         x="446.73166"
+         y="153.18451"
+         ry="19.770708"
+         inkscape:label="retangulo" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2">
+      <rect
+         style="display:inline;fill:url(#linearGradient3);stroke:none;stroke-width:0.78066;stroke-dasharray:0.78066, 0.78066;stroke-opacity:0.843137"
+         id="rect2"
+         width="173.30156"
+         height="167.2383"
+         x="446.55872"
+         y="153.01761"
+         ry="19.810249"
+         inkscape:label="retangulo" />
+    </clipPath>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient10"
+       id="linearGradient3"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.35459769,0,0,0.46620719,442.29012,121.96438)"
+       x1="12.037618"
+       y1="245.96864"
+       x2="500.76489"
+       y2="245.96864" />
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath5-0">
+      <rect
+         style="display:inline;fill:url(#linearGradient6);stroke:none;stroke-width:0.779103;stroke-dasharray:0.779103, 0.779103;stroke-opacity:0.843137"
+         id="rect5-9"
+         width="172.95564"
+         height="166.9045"
+         x="446.73166"
+         y="153.18451"
+         ry="19.770708"
+         inkscape:label="retangulo" />
+    </clipPath>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5-9"
+       id="linearGradient4-0"
+       gradientUnits="userSpaceOnUse"
+       x1="787.71509"
+       y1="38.087749"
+       x2="1202.2083"
+       y2="341.56827"
+       gradientTransform="matrix(0.24853527,0,0,0.24853527,-167.02802,27.114895)" />
+    <linearGradient
+       id="linearGradient5-9"
+       inkscape:collect="always">
+      <stop
+         style="stop-color:#0022f0;stop-opacity:1;"
+         offset="0"
+         id="stop1-4" />
+      <stop
+         style="stop-color:#068a1c;stop-opacity:1;"
+         offset="0.9982456"
+         id="stop4-8" />
+    </linearGradient>
+  </defs>
+  <sodipodi:namedview
+     id="namedview13"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="true"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="1.5730364"
+     inkscape:cx="201.20323"
+     inkscape:cy="89.317704"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g2"
+     showgrid="false">
+    <inkscape:grid
+       id="grid7"
+       units="px"
+       originx="0"
+       originy="0"
+       spacingx="1"
+       spacingy="1"
+       empcolor="#0099e5"
+       empopacity="0.30196078"
+       color="#0099e5"
+       opacity="0.14901961"
+       empspacing="5"
+       enabled="true"
+       visible="false" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata13">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>duplistatus Logo</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="g2"
+     transform="translate(15.670864)"
+     inkscape:label="banner">
+    <text
+       xml:space="preserve"
+       id="text7"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:266.667px;font-family:Ubuntu;-inkscape-font-specification:Ubuntu;text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect7);display:inline;fill:#3a5af9;fill-opacity:1;stroke:none;stroke-width:0.3;stroke-miterlimit:0;stroke-opacity:1"
+       transform="matrix(0.25487914,0,0,0.25487914,-6.059097,6.937626)"
+       inkscape:label="name"><tspan
+         x="585.00391"
+         y="327.62192"
+         id="tspan1">duplistatus</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:81.1927px;line-height:normal;font-family:'Airswing  Headline';-inkscape-font-specification:'Airswing  Headline, Normal';font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;font-feature-settings:normal;font-variation-settings:normal;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;letter-spacing:normal;word-spacing:normal;text-transform:none;writing-mode:lr-tb;direction:ltr;text-orientation:mixed;dominant-baseline:auto;baseline-shift:baseline;text-anchor:start;white-space:normal;vector-effect:none;fill:url(#linearGradient4-0);fill-opacity:1;stroke:none;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.843137;-inkscape-stroke:none;stop-color:#000000"
+       x="-12.455302"
+       y="110.88882"
+       id="text4-2"><tspan
+         sodipodi:role="line"
+         id="tspan4-4"
+         x="-12.455302"
+         y="110.88882"
+         style="fill:url(#linearGradient4-0);stroke-width:0">ds</tspan></text>
+  </g>
+</svg>
