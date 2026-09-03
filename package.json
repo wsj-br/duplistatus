@@ -77,7 +77,7 @@
     "date-fns": "^4.4.0",
     "i18next": "^26.3.2",
     "lucide-react": "^1.21.0",
-    "next": "16.2.9",
+    "next": "16.2.11",
     "node-cron": "^4.5.0",
     "nodemailer": "^9.0.1",
     "postcss": "^8.5.15",
