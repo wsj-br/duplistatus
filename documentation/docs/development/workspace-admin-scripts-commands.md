@@ -58,7 +58,7 @@ source ./scripts/upgrade-dependencies.sh
 
 The `upgrade-dependencies.sh` script automates the entire dependency upgrade process. It is project-agnostic: the package manager, the workspace packages, and each package's verify command are auto-detected (so the root and `documentation/` packages are both upgraded, with no hardcoded paths). It:
 - Sources tool setup via `upgrade-tools.sh` (nvm / Node LTS, global `pnpm`, `npm-check-updates`, `doctoc`)
-- Performs **build-safe** upgrades with `npm-check-updates` doctor mode for each package: it keeps upgrades that pass the package's `typecheck`/`lint` and reverts the ones that break the build (with an embedded ESLint peer gate so `eslint` and React plugin bumps stay compatible)
+- Performs **build-safe** upgrades for each package: `npm-check-updates` resolves latest versions, then install and `typecheck`/`lint` run from the workspace root. Upgrades that fail verification are bisected by editing `package.json` (not `pnpm add`, which pnpm rejects at the workspace root). Embedded peer gates pin `eslint` and `typescript` when `eslint-plugin-react` / `typescript-eslint` do not yet allow the latest major.
 - Updates the workspace pnpm lockfile and installs dependencies
 - Updates the browserslist database
 - Checks for vulnerabilities (`pnpm audit`) and applies non-breaking fixes (`pnpm audit --fix`)

@@ -9,8 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+- **Dependency upgrade script**: `scripts/upgrade-dependencies.sh` no longer uses `ncu --doctor`. That mode runs `pnpm add` at the workspace root (rejected as `ERR_PNPM_ADDING_TO_ROOT`) and looks for the lockfile in nested package directories, so every bump was marked broken. Upgrades are now resolved with `ncu --upgrade`, installed from the repo root, and bisected by editing `package.json`. A TypeScript peer gate pins `typescript` when `typescript-eslint` does not allow the latest major (TypeScript 7 has no API yet and crashes ESLint).
+- **Dependencies**: Upgraded the app stack while keeping TypeScript on 6.x (`^6.0.3`). Notable bumps: `next`/`eslint-config-next` 16.3.4, `react`/`react-dom` 19.2.8, `better-sqlite3` 13.0.3, `@types/node` 26.x, `lucide-react` 1.40.0, `i18next` 26.4.2, Radix patches, Tailwind 4.3.3, plus `ai-i18n-tools` 1.8.4, `recharts`, `react-hook-form`, `playwright`, `tsx`, and `webpack`. Documentation workspace was already current. ESLint stays on 9.x (plugins do not allow 10 yet).
+
+### Added
+- **Third-party notices (`pnpm notices:write`)**: Generates root `NOTICES` from the production dependency tree via `pnpm licenses list --prod --json` (`scripts/write-third-party-notices.js` + `scripts/write-third-party-notices.json`), matching the ai-i18n-tools approach (override → real LICENSE file → SPDX template). Resolves package dirs via `require.resolve` / top-level `node_modules/<name>` when pnpm reports a missing virtual-store path (needed with `nodeLinker: hoisted`).
+
 ### Fixed
 - **Cron service crash on startup (production Docker)**: The bundled cron service (`dist/cron-service.cjs`) exited immediately with `TypeError [ERR_INVALID_ARG_TYPE]: The "path" argument must be of type string ... Received undefined` at `fileURLToPath`. `node-cron`'s ESM build evaluates `fileURLToPath(import.meta.url)` at module top level, but esbuild's CJS output replaces `import.meta` with `{}`, leaving `import.meta.url` undefined. `scripts/bundle-cron-service.cjs` now defines `import.meta.url` (via an esbuild `define` + `banner`) to the bundle's own file URL, so this and any similar dependency resolve to a valid path.
+
+### Security
+- **pnpm audit (documentation workspace)**: Cleared 8 findings (4 high, 4 moderate). Forced `undici@8.10.1` and `svgo@4.1.0` because range overrides were not rematching lockfile pins (`cheerio` → `undici@8.5.0`, `postcss-svgo` / `@svgr/plugin-svgo` → `svgo@4.0.1`). Replaced archived `image-size@2.0.2` (no patched release for GHSA-w3rx-r6r6-pgpr / GHSA-5p2g-fcmc-qvqq) with the API-compatible `image-size-next@2.1.1` fork via override + `.pnpmfile.cjs`.
 
 ---
 

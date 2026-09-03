@@ -76,6 +76,7 @@ pnpm typecheck            # Run TypeScript checks
 pnpm generate-test-data   # Generate test backup data
 pnpm validate-csv-export  # Validate CSV export functionality
 pnpm take-screenshots     # Take documentation screenshots
+pnpm notices:write        # Regenerate root NOTICES from production deps
 
 # Docker
 pnpm docker:up            # Build and start Docker containers

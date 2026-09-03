@@ -6,9 +6,12 @@
 # workspace packages, and each package's verify command are auto-detected.
 #
 #   1. Upgrades dev tools (Node/npm/PM/ncu) via upgrade-tools.sh.
-#   2. Build-safe upgrades: ncu --doctor per workspace package. Doctor upgrades
-#      everything, runs the package's verify command, and bisects on failure -
-#      keeping upgrades that pass and reverting only the ones that break it.
+#   2. Build-safe upgrades per workspace package: ncu --upgrade resolves latest
+#      versions (with ESLint / TypeScript peer gates), then install+verify from
+#      the workspace root. On failure, each bump is applied by editing
+#      package.json and reinstalling at the root - not via `pnpm add`, which
+#      pnpm rejects at the workspace root and which makes ncu --doctor look for
+#      a lockfile in nested package directories.
 #   3. Security: audit + audit fix. For a vulnerable DIRECT dependency that
 #      doctor had to revert (the safe version breaks the build), it force-applies
 #      the safe version anyway and reports the build errors so the code can be
@@ -140,28 +143,52 @@ try {
 NODE
 }
 
-# True if any workspace package depends on eslint directly. The React ESLint
-# plugins are usually pulled in transitively (e.g. via eslint-config-next), so
-# gating on a direct eslint dependency - not on direct plugin deps - is what
-# matches real projects and keeps eslint pinned until the plugins catch up.
-_uses_eslint() {
-  local d
+# True if any workspace package.json lists NAME in dependencies/devDependencies.
+_uses_direct_dep() {
+  local name=$1 d
   for d in "${WORKSPACE_DIRS[@]}"; do
     if node -e '
       const fs = require("fs");
       try {
         const p = JSON.parse(fs.readFileSync(process.argv[1] + "/package.json", "utf8"));
         const all = Object.assign({}, p.dependencies, p.devDependencies);
-        process.exit(all["eslint"] ? 0 : 1);
-      } catch (e) { process.exit(1); }' "$d"; then
+        process.exit(all[process.argv[2]] ? 0 : 1);
+      } catch (e) { process.exit(1); }' "$d" "$name"; then
       return 0
     fi
   done
   return 1
 }
 
+# React ESLint plugins are usually transitive (e.g. via eslint-config-next), so
+# a direct eslint dependency is the signal that matches real projects.
+_uses_eslint() { _uses_direct_dep eslint; }
+
+# typescript-eslint is usually transitive too; node_modules or a direct eslint
+# dep is enough to know a TypeScript 7 bump will crash lint.
+_uses_typescript_eslint() {
+  [ -d "$REPO_ROOT/node_modules/@typescript-eslint/typescript-estree" ] && return 0
+  _uses_eslint
+}
+
+_append_ncu_reject() {
+  local pkg
+  for pkg in "$@"; do
+    [ -z "$pkg" ] && continue
+    case ",${NCU_REJECT}," in
+      *",$pkg,"*) ;;
+      *)
+        if [ -z "${NCU_REJECT}" ]; then
+          NCU_REJECT="$pkg"
+        else
+          NCU_REJECT="${NCU_REJECT},${pkg}"
+        fi
+        ;;
+    esac
+  done
+}
+
 _compute_eslint_reject() {
-  ESLINT_REJECT=""
   if ! _uses_eslint; then
     return 0
   fi
@@ -172,14 +199,190 @@ _compute_eslint_reject() {
   printf '%s\n' "$out" | pr -o 4 -T
   if [ "$rc" -eq 0 ]; then
     upgrade_ok "Peer ranges include the latest ESLint major; upgrading the ESLint stack with everything else."
-    ESLINT_REJECT=""
   else
     upgrade_warn "Peer ranges exclude the latest ESLint major (or the check failed); excluding the ESLint stack from the bump."
-    ESLINT_REJECT="eslint,@eslint/js,eslint-plugin-react,eslint-plugin-react-hooks"
+    _append_ncu_reject eslint @eslint/js eslint-plugin-react eslint-plugin-react-hooks
   fi
 }
 
-# --- build-safe doctor upgrade per package ------------------------------------
+# Decide whether typescript-eslint admits the latest TypeScript major.
+# Exit: 0 = yes, 1 = no, 2 = error/offline.
+_typescript_peer_allows_latest() {
+  PKG_MGR="$PKG_MGR" node <<'NODE'
+'use strict';
+const { execSync } = require('child_process');
+const pm = process.env.PKG_MGR || 'pnpm';
+
+let semver = null;
+try { semver = require('semver'); } catch (e) { /* fall back to a crude check */ }
+
+const PACKAGES = ['@typescript-eslint/typescript-estree', 'typescript-eslint'];
+
+function jsonView(spec) {
+  let raw;
+  try { raw = execSync(`${pm} view ${JSON.stringify(spec)} --json`, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }); }
+  catch (e) { raw = execSync(`${pm} info ${JSON.stringify(spec)} --json`, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }); }
+  return JSON.parse(raw);
+}
+
+function latestTsMajor() {
+  const data = jsonView('typescript');
+  const v = (data && (data['dist-tags']?.latest || data.version)) ||
+    (data && Array.isArray(data.versions) ? data.versions[data.versions.length - 1] : null);
+  if (!v) throw new Error('cannot resolve typescript latest version');
+  return parseInt(String(v).split('.')[0], 10);
+}
+
+function peerTsRange(pkg) {
+  const data = jsonView(pkg);
+  const peer = data && data.peerDependencies;
+  return peer && peer.typescript;
+}
+
+try {
+  const major = latestTsMajor();
+  const probe = `${major}.0.0`;
+  let ok = true;
+  let found = 0;
+  for (const pkg of PACKAGES) {
+    let range;
+    try { range = peerTsRange(pkg); }
+    catch (e) {
+      console.error(`${pkg}: ${e.message}`);
+      continue;
+    }
+    if (!range || typeof range !== 'string') {
+      console.error(`${pkg}: missing peerDependencies.typescript`);
+      ok = false;
+      found += 1;
+      continue;
+    }
+    found += 1;
+    let allowed;
+    if (semver) {
+      allowed = semver.satisfies(probe, range, { includePrerelease: true });
+    } else {
+      allowed = new RegExp(`(^|[^0-9])${major}([^0-9]|$)`).test(range) || /[*]|>=/.test(range);
+    }
+    console.error(`${pkg} peer typescript "${range}" -> TypeScript ${probe} ${allowed ? 'ok' : 'no'}`);
+    if (!allowed) ok = false;
+  }
+  if (found === 0) throw new Error('could not read typescript-eslint peer ranges');
+  process.exit(ok ? 0 : 1);
+} catch (e) {
+  console.error('typescript-peer-check: ' + e.message);
+  process.exit(2);
+}
+NODE
+}
+
+_compute_typescript_reject() {
+  if ! _uses_direct_dep typescript; then
+    return 0
+  fi
+  if ! _uses_typescript_eslint; then
+    return 0
+  fi
+  upgrade_log "📦  Checking registry: does typescript-eslint allow the latest TypeScript major?"
+  local out rc
+  out=$(_typescript_peer_allows_latest 2>&1)
+  rc=$?
+  printf '%s\n' "$out" | pr -o 4 -T
+  if [ "$rc" -eq 0 ]; then
+    upgrade_ok "Peer ranges include the latest TypeScript major; upgrading typescript with everything else."
+  else
+    upgrade_warn "Peer ranges exclude the latest TypeScript major (or the check failed); leaving typescript pinned."
+    _append_ncu_reject typescript
+  fi
+}
+
+_compute_ncu_reject() {
+  NCU_REJECT=""
+  _compute_eslint_reject
+  _compute_typescript_reject
+}
+
+# --- build-safe upgrade per package (workspace-aware; not ncu --doctor) -------
+# ncu --doctor is wrong in pnpm workspaces:
+#   1. Bisection runs `pnpm add` at the workspace root, which pnpm rejects
+#      (ERR_PNPM_ADDING_TO_ROOT) unless -w / ignore-workspace-root-check.
+#   2. Doctor reads/writes the lockfile in cwd, but the lockfile lives at the
+#      workspace root, so nested packages get ENOENT and false ✗ marks.
+# ncu --upgrade still resolves latest versions. Install and bisection always
+# run `$PKG_MGR install` from REPO_ROOT after editing the package's package.json.
+
+_copy_root_lockfiles_to() {
+  local dest=$1 lf
+  mkdir -p "$dest"
+  while IFS= read -r lf; do
+    [ -z "$lf" ] && continue
+    [ -f "$REPO_ROOT/$lf" ] && cp -a "$REPO_ROOT/$lf" "$dest/$lf"
+  done < <(lockfile_names)
+}
+
+_restore_root_lockfiles_from() {
+  local src=$1 lf
+  while IFS= read -r lf; do
+    [ -z "$lf" ] && continue
+    [ -f "$src/$lf" ] && cp -a "$src/$lf" "$REPO_ROOT/$lf"
+  done < <(lockfile_names)
+}
+
+# Install from the workspace root (where the lockfile lives). Optional log
+# path tees output. Exit status is the package manager's, not tee/pr's.
+_install_workspace() {
+  local logf=${1:-}
+  if [ -n "$logf" ]; then
+    (cd "$REPO_ROOT" && "$PKG_MGR" install) 2>&1 | tee -a "$logf" | pr -o 4 -T
+  else
+    (cd "$REPO_ROOT" && "$PKG_MGR" install) 2>&1 | pr -o 4 -T
+  fi
+  return "${PIPESTATUS[0]}"
+}
+
+_run_verify() {
+  local dir=$1 verify=$2
+  (cd "$dir" && eval "$verify")
+}
+
+# Same as _run_verify but tees to LOGF. Exit status is verify's, not tee/pr's.
+_run_verify_logged() {
+  local dir=$1 verify=$2 logf=$3
+  _run_verify "$dir" "$verify" 2>&1 | tee -a "$logf" | pr -o 4 -T
+  return "${PIPESTATUS[0]}"
+}
+
+# Print name<TAB>old<TAB>new for every dependency range that changed.
+_dep_changes() {
+  node -e '
+    const fs = require("fs");
+    const fields = ["dependencies", "devDependencies", "optionalDependencies"];
+    const collect = (p) => {
+      const o = {};
+      for (const f of fields) Object.assign(o, p[f] || {});
+      return o;
+    };
+    const a = collect(JSON.parse(fs.readFileSync(process.argv[1], "utf8")));
+    const b = collect(JSON.parse(fs.readFileSync(process.argv[2], "utf8")));
+    for (const k of Object.keys(b)) {
+      if (a[k] !== b[k]) process.stdout.write(k + "\t" + (a[k] || "(absent)") + "\t" + b[k] + "\n");
+    }
+  ' "$1" "$2"
+}
+
+# Replace NAME's version string in package.json without re-serializing the file.
+_set_dep_version() {
+  node -e '
+    const fs = require("fs");
+    const file = process.argv[1], name = process.argv[2], version = process.argv[3];
+    const text = fs.readFileSync(file, "utf8");
+    const esc = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const re = new RegExp("(\"" + esc + "\"\\s*:\\s*\")[^\"]*(\")");
+    if (!re.test(text)) process.exit(1);
+    fs.writeFileSync(file, text.replace(re, "$1" + version + "$2"));
+  ' "$1" "$2" "$3"
+}
+
 _doctor_upgrade_dir() {
   local dir=$1
   local label
@@ -195,43 +398,97 @@ _doctor_upgrade_dir() {
 
   if [ -z "$verify" ]; then
     upgrade_warn "📦  [${label}] No typecheck/lint/build script; upgrading without build verification."
-    (cd "$dir" && run_step ncu --upgrade --packageManager "$PKG_MGR" ${ESLINT_REJECT:+-x "$ESLINT_REJECT"}) || true
+    (cd "$dir" && run_step ncu --upgrade --packageManager "$PKG_MGR" ${NCU_REJECT:+-x "$NCU_REJECT"}) || true
     return 0
   fi
 
-  upgrade_log "📦  [${label}] ncu --doctor (verify: ${verify})"
-  # ncu runs --doctorTest as an argv (no shell), so a "cmd1 && cmd2" string would
-  # be passed as arguments to cmd1. Write the verify command to an executable
-  # script and hand ncu that single path instead, so the real shell evaluates it.
-  local logf rc safe_label verify_script
+  local logf safe_label work
   safe_label=$(printf '%s' "$label" | tr '/ .' '___')
   logf="$SNAPSHOT_DIR/doctor.${safe_label}.log"
-  verify_script="$SNAPSHOT_DIR/verify.${safe_label}.sh"
-  printf '#!/bin/sh\ncd %q || exit 1\n%s\n' "$dir" "$verify" > "$verify_script"
-  chmod +x "$verify_script"
-  (
-    cd "$dir" || exit 1
-    ncu --doctor --upgrade \
-      --packageManager "$PKG_MGR" \
-      --doctorInstall "$PKG_MGR install" \
-      --doctorTest "$verify_script" \
-      ${ESLINT_REJECT:+-x "$ESLINT_REJECT"} 2>&1
-  ) | tee "$logf" | pr -o 4 -T
-  rc=${PIPESTATUS[0]}
+  work="$SNAPSHOT_DIR/work.${safe_label}"
+  mkdir -p "$work"
+  : > "$logf"
+  cp "$dir/package.json" "$work/package.orig.json"
+  _copy_root_lockfiles_to "$work/lock.orig"
 
-  # doctor aborts (without upgrading) if the verify command already fails on the
-  # current tree. Detect that case and tell the user to fix the build first.
-  if [ "$rc" -ne 0 ] && ! grep -qE '✓|✗|→|Upgrading' "$logf"; then
-    upgrade_warn "   ↳ [${label}] ncu doctor could not run - the verify command likely fails on the current tree. Fix the existing build, then re-run."
+  upgrade_log "📦  [${label}] build-safe upgrade (verify: ${verify})"
+
+  upgrade_log "   ↳ running verify before upgrading"
+  if ! _run_verify_logged "$dir" "$verify" "$logf"; then
+    upgrade_warn "   ↳ [${label}] verify already fails on the current tree. Fix the existing build, then re-run."
     return 0
   fi
 
-  # Capture build-breaking upgrades doctor reverted (lines marked with ✗).
-  local reverted
-  reverted=$(grep -F '✗' "$logf" 2>/dev/null | sed -E 's/.*✗[[:space:]]*//; s/[[:space:]].*$//' | grep -v '^$' || true)
-  if [ -n "$reverted" ]; then
-    upgrade_warn "   ↳ build-breaking upgrades reverted in ${label}: $(printf '%s ' $reverted)"
-    REVERTED_PKGS="${REVERTED_PKGS}"$'\n'"${reverted}"
+  upgrade_log "   ↳ resolving latest versions (ncu --upgrade)"
+  (cd "$dir" && ncu --upgrade --packageManager "$PKG_MGR" ${NCU_REJECT:+-x "$NCU_REJECT"}) 2>&1 | tee -a "$logf" | pr -o 4 -T || true
+
+  if cmp -s "$dir/package.json" "$work/package.orig.json"; then
+    upgrade_ok "   ↳ [${label}] already up to date (within the reject list)."
+    return 0
+  fi
+
+  cp "$dir/package.json" "$work/package.upgraded.json"
+
+  upgrade_log "   ↳ installing all upgrades and re-running verify"
+  local batch_ok=0
+  if _install_workspace "$logf"; then
+    if _run_verify_logged "$dir" "$verify" "$logf"; then
+      batch_ok=1
+    fi
+  fi
+  if [ "$batch_ok" -eq 1 ]; then
+    upgrade_ok "   ↳ [${label}] all upgrades passed verification."
+    return 0
+  fi
+
+  upgrade_warn "   ↳ [${label}] batch verify failed; identifying broken dependencies"
+  cp "$work/package.orig.json" "$dir/package.json"
+  _restore_root_lockfiles_from "$work/lock.orig"
+  _install_workspace "$logf" || upgrade_warn "   ↳ restore install returned non-zero."
+
+  cp "$work/package.orig.json" "$work/package.good.json"
+  _copy_root_lockfiles_to "$work/lock.good"
+
+  local changes name oldv newv dir_reverted=""
+  changes=$(_dep_changes "$work/package.orig.json" "$work/package.upgraded.json")
+  while IFS=$'\t' read -r name oldv newv; do
+    [ -n "$name" ] || continue
+    cp "$work/package.good.json" "$dir/package.json"
+    if ! _set_dep_version "$dir/package.json" "$name" "$newv"; then
+      printf '  ✗ %s %s → %s (not found in package.json)\n' "$name" "$oldv" "$newv" | tee -a "$logf"
+      dir_reverted="${dir_reverted}"$'\n'"${name}"
+      continue
+    fi
+    upgrade_log "   ↳ trying ${name} ${oldv} → ${newv}"
+    if ! _install_workspace "$logf"; then
+      printf '  ✗ %s %s → %s (install failed)\n' "$name" "$oldv" "$newv" | tee -a "$logf"
+      dir_reverted="${dir_reverted}"$'\n'"${name}"
+      cp "$work/package.good.json" "$dir/package.json"
+      _restore_root_lockfiles_from "$work/lock.good"
+      _install_workspace "$logf" || true
+      continue
+    fi
+    if _run_verify "$dir" "$verify" > "$work/verify.out" 2>&1; then
+      printf '  ✓ %s %s → %s\n' "$name" "$oldv" "$newv" | tee -a "$logf"
+      cp "$dir/package.json" "$work/package.good.json"
+      _copy_root_lockfiles_to "$work/lock.good"
+    else
+      printf '  ✗ %s %s → %s\n' "$name" "$oldv" "$newv" | tee -a "$logf"
+      tail -n 30 "$work/verify.out" | tee -a "$logf" | pr -o 4 -T || true
+      dir_reverted="${dir_reverted}"$'\n'"${name}"
+      cp "$work/package.good.json" "$dir/package.json"
+      _restore_root_lockfiles_from "$work/lock.good"
+      _install_workspace "$logf" || true
+    fi
+  done <<< "$changes"
+
+  cp "$work/package.good.json" "$dir/package.json"
+  _restore_root_lockfiles_from "$work/lock.good"
+  _install_workspace "$logf" || upgrade_warn "   ↳ final install returned non-zero."
+
+  if [ -n "$(printf '%s\n' $dir_reverted | grep -v '^$')" ]; then
+    upgrade_warn "   ↳ build-breaking upgrades reverted in ${label}: $(printf '%s ' $dir_reverted)"
+    REVERTED_PKGS="${REVERTED_PKGS}"$'\n'"${dir_reverted}"
   fi
   return 0
 }
@@ -639,7 +896,7 @@ _upgrade_dependencies() {
   local orig_pwd=$PWD
   cd "$REPO_ROOT" || return 1
 
-  local PKG_MGR ESLINT_REJECT SNAPSHOT_DIR
+  local PKG_MGR NCU_REJECT SNAPSHOT_DIR
   local REVERTED_PKGS="" FORCED_PKGS="" SEC_REMAINING="" SEC_VERIFY_LOG=""
   local VULN_BEFORE="" VULN_AFTER="" SEC_VERIFY_FAILED=0 PEER_ISSUES=""
   local -a WORKSPACE_DIRS=()
@@ -664,7 +921,7 @@ _upgrade_dependencies() {
   printf '    - %s\n' "${WORKSPACE_DIRS[@]}"
 
   _snapshot_manifests
-  _compute_eslint_reject
+  _compute_ncu_reject
 
   local d
   for d in "${WORKSPACE_DIRS[@]}"; do

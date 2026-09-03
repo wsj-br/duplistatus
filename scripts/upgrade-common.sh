@@ -161,3 +161,16 @@ dir_label() {
     echo "${1#"$REPO_ROOT"/}"
   fi
 }
+
+# lockfile_names: print candidate lockfile filenames for the detected (or every)
+# package manager, one per line. Used to snapshot/restore the workspace lockfile
+# at REPO_ROOT rather than in a nested package directory.
+lockfile_names() {
+  case "${PKG_MGR:-}" in
+    pnpm) printf '%s\n' pnpm-lock.yaml ;;
+    yarn) printf '%s\n' yarn.lock ;;
+    bun) printf '%s\n' bun.lock bun.lockb ;;
+    npm) printf '%s\n' package-lock.json npm-shrinkwrap.json ;;
+    *) printf '%s\n' pnpm-lock.yaml package-lock.json npm-shrinkwrap.json yarn.lock bun.lock bun.lockb ;;
+  esac
+}
