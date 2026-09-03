@@ -80,7 +80,7 @@
     "next": "16.2.11",
     "node-cron": "^4.5.0",
     "nodemailer": "^9.0.1",
-    "postcss": "^8.5.15",
+    "postcss": "^8.5.23",
     "qrcode": "^1.5.4",
     "react": "^19.2.7",
     "react-datepicker": "^9.1.0",
