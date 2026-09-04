@@ -4,7 +4,7 @@
 
 ## 概览 {#overview}
 
-文档使用 Docusaurus i18n，英语为默认语言环境。源文档位于 `docs/`；翻译位于 `i18n/{locale}/` 下。支持的语言环境：en-GB（默认）、fr、de、es、pt-BR、hi-Latn、zh-Hans。
+本文档使用 Docusaurus i18n，并以英语作为默认语言区域。源文档位于 `docs/`；翻译内容编写在 `i18n/{locale}/` 下。支持的语言区域包括：en-GB (默认)、fr、de、es、pt-BR、hi、zh-Hans。
 
 **AI 翻译**用于应用程序 UI、Docusaurus markdown/JSON 和 SVG 资产，处理由 [**ai-i18n-tools**](https://www.npmjs.com/package/ai-i18n-tools) 从 **仓库根** 处理，配置在 `ai-i18n-tools.config.json`（不在 `documentation/` 内）。运行翻译命令时设置 `OPENROUTER_API_KEY`。
 

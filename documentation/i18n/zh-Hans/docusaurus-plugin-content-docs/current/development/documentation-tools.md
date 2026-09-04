@@ -17,7 +17,7 @@ documentation/
 │   ├── de/            # German
 │   ├── es/            # Spanish
 │   ├── fr/            # French
-│   ├── hi-Latn/       # Hindi (Roman)
+│   ├── hi/            # Hindi (Roman)
 │   ├── pt-BR/         # Brazilian Portuguese
 │   └── zh-Hans/       # Simplified Chinese
 ├── src/               # React components and pages
@@ -53,7 +53,7 @@ documentation/
 | `de`    | 德语               | `i18n/de/docusaurus-plugin-content-docs/current/`    |
 | `es`    | 西班牙语              | `i18n/es/docusaurus-plugin-content-docs/current/`    |
 | `fr`    | 法语               | `i18n/fr/docusaurus-plugin-content-docs/current/`    |
-| `hi-Latn`| 印地语（罗马音）        | `i18n/hi-Latn/docusaurus-plugin-content-docs/current/`|
+| `hi`     | 印地语 (罗马化)        | `i18n/hi/docusaurus-plugin-content-docs/current/`     |
 | `pt-BR` | 巴西葡萄牙语 | `i18n/pt-BR/docusaurus-plugin-content-docs/current/` |
 | `zh-Hans`| 简体中文   | `i18n/zh-Hans/docusaurus-plugin-content-docs/current/`|
 
@@ -203,7 +203,7 @@ pnpm take-screenshots
   - `ADMIN_PASSWORD`: 管理员账户的密码
   - `USER_PASSWORD`: 普通用户账户的密码
 
-**选项：** `--locale` 将截图限制为一个或多个区域设置（以逗号分隔）。如果省略，则捕获所有区域设置。有效的区域设置：`en-GB`、`de`、`fr`、`es`、`pt-BR`、`hi-Latn`、`zh-Hans`。使用 `-h` 或 `--help` 打印用法。
+**选项：** `--locale` 将屏幕截图限制为一个或多个语言区域（以逗号分隔）。如果省略，则捕获所有语言区域。有效的语言区域：`en-GB`, `de`, `fr`, `es`, `pt-BR`, `hi`, `zh-Hans`。使用 `-h` 或 `--help` 打印用法说明。
 
 **示例:**
 

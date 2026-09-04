@@ -18,7 +18,7 @@ Easy to deploy with Docker, Podman, or Portainer and available in 7 languages (E
 [Plus d'informations](https://wsj-br.github.io/duplistatus/fr/) | 
 [Más información](https://wsj-br.github.io/duplistatus/es/)     |
 [Mais informações](https://wsj-br.github.io/duplistatus/pt-BR/) |
-[Adhik jaankari](https://wsj-br.github.io/duplistatus/hi-Latn/) |
+[Adhik jaankari](https://wsj-br.github.io/duplistatus/hi/) |
 [更多信息](https://wsj-br.github.io/duplistatus/zh-Hans/)
 
 [Install guide](https://wsj-br.github.io/duplistatus/installation)        |
@@ -26,7 +26,7 @@ Easy to deploy with Docker, Podman, or Portainer and available in 7 languages (E
 [Guide d'Installation](https://wsj-br.github.io/duplistatus/fr/installation) | 
 [Guía de Instalación](https://wsj-br.github.io/duplistatus/es/installation)     |
 [Guia de Instalação](https://wsj-br.github.io/duplistatus/pt-BR/installation) |
-[Sthaapana gaaid](https://wsj-br.github.io/duplistatus/hi-Latn/installation) |
+[Sthaapana gaaid](https://wsj-br.github.io/duplistatus/hi/installation) |
 [安装指南](https://wsj-br.github.io/duplistatus/zh-Hans/installation)
 
 

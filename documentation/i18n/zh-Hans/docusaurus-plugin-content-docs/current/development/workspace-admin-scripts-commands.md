@@ -59,10 +59,10 @@ pnpm update
 source ./scripts/upgrade-dependencies.sh
 ```
 
-`upgrade-dependencies.sh` 脚本自动执行整个依赖项升级过程。它是项目无关的：包管理器、工作空间包和每个包的验证命令都是自动检测的（因此根包和 `documentation/` 包都升级，没有硬编码路径）。它：
-- 通过 `upgrade-tools.sh` 设置工具（nvm / Node LTS、全局 `pnpm`、`npm-check-updates`、`doctoc`）
-- 使用 `npm-check-updates` 医生模式执行 **build-safe** 升级，每个包：它保留通过包的 `typecheck`/`lint` 的升级，并撤销破坏构建的升级（具有嵌入式 ESLint 同行网关，因此 `eslint` 和 React 插件升级保持兼容）
-- 更新工作空间 pnpm 锁定文件并安装依赖项
+`upgrade-dependencies.sh` 脚本自动化整个依赖升级过程。它与项目无关：包管理器、工作区包和每个包的验证命令都是自动检测的（因此根和 `documentation/` 包都被升级，没有硬编码路径）。它：
+- 通过 `upgrade-tools.sh`（nvm / Node LTS，全局 `pnpm`，`npm-check-updates`，`doctoc`）获取工具设置
+- 为每个包执行 **构建安全** 升级：`npm-check-updates` 解析最新版本，然后从工作区根目录安装和 `typecheck`/`lint` 运行。未通过验证的升级通过编辑 `package.json` 进行二分（而不是 `pnpm add`，pnpm 在工作区根目录拒绝该操作）。嵌入的对等门控在 `eslint-plugin-react` / `typescript-eslint` 尚未允许最新主版本时固定 `eslint` 和 `typescript`。
+- 更新工作区 pnpm 锁定文件并安装依赖项
 - 更新浏览器列表数据库
 - 检查漏洞（`pnpm audit`）并应用非破坏性修复（`pnpm audit --fix`）
 - **优先考虑安全**：如果易受攻击的直接依赖项只能通过破坏构建的升级来修复，则强制应用安全版本并报告构建错误，以便代码可以更新以保持兼容性

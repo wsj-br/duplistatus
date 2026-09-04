@@ -121,8 +121,8 @@ Das Projekt enthält mehrere npm-Skripte für verschiedene Entwicklungsaufgaben:
 - `pnpm build` - Anwendung für die Produktion bauen (beinhaltet Vorabprüfungen)
 - `pnpm lint` - ESLint ausführen, um die Code-Qualität zu überprüfen
 - `pnpm typecheck` - TypeScript-Typüberprüfung ausführen
-- `scripts/upgrade-dependencies.sh` — Build-sicheres Upgrade jedes Workspace-Pakets (automatisch erkannt). Verwendet den `npm-check-updates`-Doctor-Modus, um nur Upgrades beizubehalten, die die `typecheck`/`lint` jedes Pakets bestehen, und macht solche rückgängig, die den Build beschädigen; führt anschließend `pnpm audit` / `audit --fix` aus und wendet (und meldet) erzwungen jeden Sicherheitsfix an, der Codeänderungen erfordert. Aktualisiert die Workspace-Lockdatei und die Browserslist. Bevorzugen Sie `source ./scripts/upgrade-dependencies.sh`, damit **nvm** auf Ihre Shell angewendet wird; verwenden Sie in CI oder Automatisierungen `CI=1` oder `UPGRADE_ALLOW_EXEC=1`, wenn Sie die Datei direkt ausführen. Siehe auch `scripts/upgrade-tools.sh` nur für Node/pnpm-Tooling.
-- `scripts/clean-workspace.sh` - Workspace bereinigen
+- `scripts/upgrade-dependencies.sh` — Build-sicheres Upgrade jedes Workspace-Pakets (automatisch erkannt). Ermittelt die neuesten Versionen mit `npm-check-updates`, installiert diese vom Workspace-Root und behält nur Upgrades bei, die die jeweiligen `typecheck`/`lint` jedes Pakets bestehen (Peer-Gates fixieren `eslint` / `typescript`, wenn der Lint-Stack die neueste Major-Version nicht zulässt). Führt anschließend `pnpm audit` / `audit --fix` aus und erzwingt die Anwendung (und meldet) jegliche Sicherheitsfix, der Codeänderungen erfordert. Aktualisiert die Workspace-Lockfile und browserslist. Bevorzugen Sie `source ./scripts/upgrade-dependencies.sh`, damit **nvm** für Ihre Shell gilt; verwenden Sie in CI oder Automatisierung `CI=1` oder `UPGRADE_ALLOW_EXEC=1`, wenn die Datei direkt ausgeführt wird. Siehe auch `scripts/upgrade-tools.sh` nur für Node/pnpm-Tooling.
+- `scripts/clean-workspace.sh` - Den Workspace bereinigen
 
 **Hinweis:** Das `preinstall`-Skript erzwingt automatisch pnpm als Paketmanager.
 

@@ -17,7 +17,7 @@ documentation/
 │   ├── de/            # German
 │   ├── es/            # Spanish
 │   ├── fr/            # French
-│   ├── hi-Latn/       # Hindi (Roman)
+│   ├── hi/            # Hindi (Roman)
 │   ├── pt-BR/         # Brazilian Portuguese
 │   └── zh-Hans/       # Simplified Chinese
 ├── src/               # React components and pages
@@ -53,7 +53,7 @@ Only edit files in `docs/` and the source JSON files in `i18n/en/`. The translat
 | `de`     | German               | `i18n/de/docusaurus-plugin-content-docs/current/`     |
 | `es`     | Spanish              | `i18n/es/docusaurus-plugin-content-docs/current/`     |
 | `fr`     | French               | `i18n/fr/docusaurus-plugin-content-docs/current/`     |
-| `hi-Latn`| Hindi (Roman)        | `i18n/hi-Latn/docusaurus-plugin-content-docs/current/`|
+| `hi`     | Hindi (Roman)        | `i18n/hi/docusaurus-plugin-content-docs/current/`     |
 | `pt-BR`  | Brazilian Portuguese | `i18n/pt-BR/docusaurus-plugin-content-docs/current/`  |
 | `zh-Hans`| Simplified Chinese   | `i18n/zh-Hans/docusaurus-plugin-content-docs/current/`|
 
@@ -204,7 +204,7 @@ This script automatically takes screenshots of the application for documentation
   - `ADMIN_PASSWORD`: Password for admin account
   - `USER_PASSWORD`: Password for regular user account
 
-**Options:** `--locale` limits screenshots to one or more locales (comma-separated). If omitted, all locales are captured. Valid locales: `en-GB`, `de`, `fr`, `es`, `pt-BR`, `hi-Latn`, `zh-Hans`. Use `-h` or `--help` to print usage.
+**Options:** `--locale` limits screenshots to one or more locales (comma-separated). If omitted, all locales are captured. Valid locales: `en-GB`, `de`, `fr`, `es`, `pt-BR`, `hi`, `zh-Hans`. Use `-h` or `--help` to print usage.
 
 **Example:**
 ```bash

@@ -5,7 +5,7 @@
     "fr",
     "es",
     "pt-BR",
-    "hi-Latn",
+    "hi",
     "zh-Hans"
   ],
   "concurrency": 4,
@@ -16,9 +16,10 @@
   "providers": {
     "openrouter": {
       "translationModels": [
-        "google/gemini-2.5",
-        "z-ai/glm-4.7",
+        "mistralai/codestral-2508",
+        "google/gemma-4-26b-a4b-it",
         "openai/gpt-4o-mini",
+        "z-ai/glm-4.7",
         "qwen/qwen-2.5-72b-instruct",
         "google/gemma-4-26b-a4b-it",
         "qwen/qwen3.6-35b-a3b",
@@ -74,7 +75,6 @@
     "pathTemplate": "{outputDir}/{locale}/docusaurus-plugin-content-docs/current/assets/{basename}",
     "forceLowercase": true
   },
-  "uiLanguagesPath": "src/locales/ui-languages.json",
   "docs": [
     {
       "description": "Docusaurus docs site",
@@ -89,5 +89,6 @@
         "docsRoot": "documentation/docs"
       }
     }
-  ]
+  ],
+  "languagesManifestPath": "src/locales/ui-languages.json"
 }

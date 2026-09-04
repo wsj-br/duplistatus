@@ -59,10 +59,10 @@ Oder verwenden Sie das automatisierte Skript (bevorzugen Sie `source`, damit **n
 source ./scripts/upgrade-dependencies.sh
 ```
 
-Das `upgrade-dependencies.sh`-Skript automatisiert den gesamten Abhängigkeits-Upgrade-Prozess. Es ist projektunabhängig: Der Paketmanager, die Workspace-Pakete und der Verify-Befehl jedes Pakets werden automatisch erkannt (sodass sowohl die Root- als auch die `documentation/`-Pakete aktualisiert werden, ohne hartcodierte Pfade). Es:
-- Richtet Tools über `upgrade-tools.sh` ein (nvm / Node LTS, globale `pnpm`, `npm-check-updates`, `doctoc`)
-- Führt **build-sichere** Upgrades mit `npm-check-updates` Doctor-Modus für jedes Paket durch: Es behält Upgrades bei, die den Paket-`typecheck`/`lint` bestehen, und kehrt diejenigen zurück, die den Build unterbrechen (mit einem integrierten ESLint Peer Gate, sodass `eslint` und React-Plugin-Bumps kompatibel bleiben)
-- Aktualisiert die Workspace-pnpm-Sperrdatei und installiert Abhängigkeiten
+Das `upgrade-dependencies.sh`-Skript automatisiert den gesamten Prozess der Abhängigkeitsaktualisierung. Es ist projektunabhängig: Der Paketmanager, die Arbeitsbereichspakete und der Verifizierungsbefehl jedes Pakets werden automatisch erkannt (sodass sowohl das Root- als auch die `documentation/`-Pakete aktualisiert werden, ohne fest codierte Pfade). Es:
+- Bezieht die Tool-Einrichtung über `upgrade-tools.sh` (nvm / Node LTS, global `pnpm`, `npm-check-updates`, `doctoc`)
+- Führt **build-sichere** Aktualisierungen für jedes Paket durch: `npm-check-updates` ermittelt die neuesten Versionen, dann werden install und `typecheck`/`lint` vom Arbeitsbereichsroot ausgeführt. Aktualisierungen, die die Verifizierung nicht bestehen, werden durch Bearbeiten von `package.json` (nicht `pnpm add`, das pnpm am Arbeitsbereichsroot ablehnt) bis zur Fehlerursache eingegrenzt. Eingebettete Peer-Gates fixieren `eslint` und `typescript`, wenn `eslint-plugin-react` / `typescript-eslint` noch nicht die neueste Hauptversion zulassen.
+- Aktualisiert die pnpm-Lockdatei des Arbeitsbereichs und installiert Abhängigkeiten.
 - Aktualisiert die Browserslist-Datenbank
 - Prüft auf Sicherheitslücken (`pnpm audit`) und wendet nicht-brechende Korrekturen an (`pnpm audit --fix`)
 - **Priorisiert Sicherheit**: Wenn eine anfällige direkte Abhängigkeit nur durch ein Build-unterbrechendes Upgrade behoben werden kann, wird die sichere Version erzwungen und die Build-Fehler werden gemeldet, damit der Code für Kompatibilität aktualisiert werden kann

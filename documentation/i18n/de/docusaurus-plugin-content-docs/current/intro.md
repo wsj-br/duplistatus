@@ -34,23 +34,23 @@ Siehe die [Benutzeranleitung](user-guide/overview.md) für detaillierte Anweisun
 
 ### Dashboard {#dashboard}
 
-![dashboard](assets/screen-main-dashboard-card-mode.png)
+![Dashboard](assets/screen-main-dashboard-card-mode.png)
 
 ### Sicherungsverlauf {#backup-history}
 
-![server-detail](assets/screen-server-backup-list.png)
+![Server-Details](assets/screen-server-backup-list.png)
 
 ### Sicherungsdetails {#backup-details}
 
-![backup-detail](assets/screen-backup-detail.png)
+![Backup-Details](assets/screen-backup-detail.png)
 
 ### Überfällige Sicherungen {#overdue-backups}
 
-![overdue backups](assets/screen-overdue-backup-hover-card.png)
+![Überfällige Backups](assets/screen-overdue-backup-hover-card.png)
 
 ### Überfällige Benachrichtigungen auf Ihrem Handy {#overdue-notifications-on-your-phone}
 
-![ntfy overdue message](/img/screen-overdue-notification.png)
+![NTFY Überfällig-Nachricht](/img/screen-overdue-notification.png)
 
 ## API-Referenz {#api-reference}
 
@@ -73,12 +73,11 @@ Dieses Projekt wurde hauptsächlich mit KI-Unterstützung erstellt. Um zu erfahr
 - GitHub SVG-Icon von https://github.com/logos
 
 :::note
- Alle Produktnamen, Logos und Markenzeichen sind Eigentum ihrer jeweiligen Inhaber. Symbole und Namen werden nur zu Identifikationszwecken verwendet und implizieren keine Billigung.
+Alle Produktnamen, Logos und Marken sind Eigentum ihrer jeweiligen Eigentümer. Symbole und Namen werden ausschließlich zu Identifikationszwecken verwendet und implizieren keine Billigung.
 :::
-
 
 ## Lizenz {#license}
 
-Das Projekt ist unter der [Apache License 2.0](LICENSE.md) lizenziert.   
+Das Projekt steht unter der [Apache License 2.0](LICENSE.md).
 
 **Copyright © 2026 Waldemar Scudeller Jr.**

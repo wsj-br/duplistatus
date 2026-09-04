@@ -17,7 +17,7 @@ documentation/
 │   ├── de/            # German
 │   ├── es/            # Spanish
 │   ├── fr/            # French
-│   ├── hi-Latn/       # Hindi (Roman)
+│   ├── hi/            # Hindi (Roman)
 │   ├── pt-BR/         # Brazilian Portuguese
 │   └── zh-Hans/       # Simplified Chinese
 ├── src/               # React components and pages
@@ -53,7 +53,7 @@ Edite apenas arquivos em `docs/` e os arquivos JSON de origem em `i18n/en/`. Os 
 | `de`    | Alemão               | `i18n/de/docusaurus-plugin-content-docs/current/`    |
 | `es`    | Espanhol              | `i18n/es/docusaurus-plugin-content-docs/current/`    |
 | `fr`    | Francês               | `i18n/fr/docusaurus-plugin-content-docs/current/`    |
-| `hi-Latn`| Hindi (Romano)        | `i18n/hi-Latn/docusaurus-plugin-content-docs/current/`|
+| `hi`     | Hindi (Roman)        | `i18n/hi/docusaurus-plugin-content-docs/current/`     |
 | `pt-BR` | Português Brasileiro | `i18n/pt-BR/docusaurus-plugin-content-docs/current/` |
 | `zh-Hans`| Chinês Simplificado   | `i18n/zh-Hans/docusaurus-plugin-content-docs/current/`|
 
@@ -203,7 +203,7 @@ Este script tira automaticamente capturas de tela do aplicativo para fins de doc
   - `ADMIN_PASSWORD`: Senha para a conta de administrador
   - `USER_PASSWORD`: Senha para a conta de usuário regular
 
-**Opções:** `--locale` limita capturas de tela a uma ou mais localidades (separadas por vírgula). Se omitido, todas as localidades são capturadas. Localidades válidas: `en-GB`, `de`, `fr`, `es`, `pt-BR`, `hi-Latn`, `zh-Hans`. Use `-h` ou `--help` para imprimir o uso.
+**Opções:** `--locale` limita capturas de tela a um ou mais locais (separados por vírgula). Se omitido, todos os locais são capturados. Locais válidos: `en-GB`, `de`, `fr`, `es`, `pt-BR`, `hi`, `zh-Hans`. Use `-h` ou `--help` para imprimir o uso.
 
 **Exemplo:**
 

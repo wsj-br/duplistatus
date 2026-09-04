@@ -34,23 +34,23 @@ Consultez le [guide utilisateur](user-guide/overview.md) pour des instructions d
 
 ### Tableau de bord {#dashboard}
 
-![dashboard](assets/screen-main-dashboard-card-mode.png)
+![tableau de bord](assets/screen-main-dashboard-card-mode.png)
 
 ### Historique des sauvegardes {#backup-history}
 
-![server-detail](assets/screen-server-backup-list.png)
+![détail du serveur](assets/screen-server-backup-list.png)
 
 ### Détails de la sauvegarde {#backup-details}
 
-![backup-detail](assets/screen-backup-detail.png)
+![détail de la sauvegarde](assets/screen-backup-detail.png)
 
 ### Sauvegardes en retard {#overdue-backups}
 
-![overdue backups](assets/screen-overdue-backup-hover-card.png)
+![Sauvegardes en retard](assets/screen-overdue-backup-hover-card.png)
 
 ### Notifications sur votre téléphone {#overdue-notifications-on-your-phone}
 
-![ntfy overdue message](/img/screen-overdue-notification.png)
+![message NTFY de retard](/img/screen-overdue-notification.png)
 
 ## Référence API {#api-reference}
 
@@ -73,12 +73,11 @@ Ce projet a été principalement développé avec l'aide de l'IA. Pour en savoir
 - Icône SVG GitHub de https://github.com/logos
 
 :::note
- Tous les noms de produits, logos et marques commerciales sont la propriété de leurs propriétaires respectifs. Les icônes et les noms sont utilisés à des fins d'identification uniquement et n'impliquent pas une approbation.
+Tous les noms de produits, logos et marques déposées sont la propriété de leurs propriétaires respectifs. Les icônes et les noms sont utilisés uniquement à des fins d'identification et n'impliquent aucune approbation.
 :::
 
+## Licence {#licence}
 
-## Licence {#license}
-
-Le projet est sous licence [Apache License 2.0](LICENSE.md).   
+Le projet est sous [Apache License 2.0](LICENSE.md).
 
 **Copyright © 2026 Waldemar Scudeller Jr.**

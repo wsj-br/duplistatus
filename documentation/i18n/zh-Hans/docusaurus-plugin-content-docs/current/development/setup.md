@@ -121,8 +121,8 @@
 - `pnpm build` - 为生产环境构建应用程序（包括预检查）
 - `pnpm lint` - 运行 ESLint 检查代码质量
 - `pnpm typecheck` - 运行 TypeScript 类型检查
-- `scripts/upgrade-dependencies.sh` — 构建安全升级每个工作空间包（自动检测）。使用 `npm-check-updates` 医生模式仅保留通过每个包的 `typecheck`/`lint` 的升级，撤销那些破坏构建的升级；然后运行 `pnpm audit` / `audit --fix` 并强制应用（和报告）需要代码更改的任何安全修复。刷新工作空间锁定文件和浏览器列表。更喜欢 `source ./scripts/upgrade-dependencies.sh` 以便 **nvm** 应用于您的 shell；在 CI 或自动化中使用 `CI=1` 或 `UPGRADE_ALLOW_EXEC=1` 时直接执行文件。请参阅 `scripts/upgrade-tools.sh` 以获取仅限 Node/pnpm 工具的信息。
-- `scripts/clean-workspace.sh` - 清理工作空间
+- `scripts/upgrade-dependencies.sh` — 对每个工作区包进行构建安全的升级（自动检测）。使用 `npm-check-updates` 解析最新版本，从工作区根目录进行安装，并且仅保留通过每个包的 `typecheck`/`lint` 的升级（当 lint 栈不允许最新的主版本时，peer gates 会固定 `eslint` / `typescript`）。然后运行 `pnpm audit` / `audit --fix`，并强制应用（并报告）任何需要更改代码的安全修复。刷新工作区 lockfile 和 browserslist。优先使用 `source ./scripts/upgrade-dependencies.sh` 以便 **nvm** 应用于您的 shell；在 CI 或自动化中，直接执行文件时请使用 `CI=1` 或 `UPGRADE_ALLOW_EXEC=1`。另请参阅仅针对 Node/pnpm 工具的 `scripts/upgrade-tools.sh`。
+- `scripts/clean-workspace.sh` - 清理工作区
 
 **注意：** `preinstall` 脚本自动强制使用 pnpm 作为包管理器。
 

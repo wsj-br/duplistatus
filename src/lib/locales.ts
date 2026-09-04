@@ -50,16 +50,22 @@ export function isSupportedLocale(locale: string): locale is LocaleCode {
   return LOCALE_CODE_LIST.includes(locale as LocaleCode);
 }
 
+/** Retired locale codes that still appear in cookies or bookmarked paths. */
+const LOCALE_ALIASES: Readonly<Record<string, LocaleCode>> = {
+  'hi-latn': 'hi',
+};
+
 /**
  * Map a user-supplied locale tag to a canonical LocaleCode, or null if unsupported.
- * Case-insensitive match against configured codes.
+ * Case-insensitive match against configured codes, then {@link LOCALE_ALIASES}.
  */
 export function parseLocaleTag(raw: string): LocaleCode | null {
   const trimmed = raw.trim();
   if (!trimmed) return null;
   const lower = trimmed.toLowerCase();
   const match = LOCALE_CODE_LIST.find((c) => c.toLowerCase() === lower);
-  return match ?? null;
+  if (match) return match;
+  return LOCALE_ALIASES[lower] ?? null;
 }
 
 /**

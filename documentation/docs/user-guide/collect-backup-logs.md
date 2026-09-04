@@ -56,7 +56,7 @@ You can also use the <IconButton icon="lucide:import" label="Collect All"/> butt
 - Any logs already present in the **duplistatus** database are skipped.
 - New data is processed and stored in the local database.
 - The URL used (with the detected protocol) will be stored or updated in the local database.
-- If the download option is selected, it will download the JSON data collected. The file name will be in this format: `[serverName]_collected_[Timestamp].json`. The timestamp uses the ISO 8601 date format (YYYY-MM-DDTHH:MM:SS).
+- If the download option is selected, it will download the JSON data collected whenever any data is received from the Duplicati server — even if the logs fail validation or cannot be imported into the database. The file name will be in this format: `[serverName]_collected_[Timestamp].json`. The timestamp uses the ISO 8601 date format (YYYY-MM-DDTHH:MM:SS).
 - The dashboard updates to reflect the new information.
 
 :::note Seeing duplicated servers after collecting?
@@ -70,4 +70,5 @@ Backup log collection requires the Duplicati server to be accessible from the **
 - Confirm that the hostname (or IP address) and port number are correct. You can test this by accessing the Duplicati server UI in your browser (e.g., `http://hostname:port`).
 - Check that **duplistatus** can connect to the Duplicati server. A common problem is DNS name resolution (the system cannot find the server by its hostname). See more in [troubleshooting section](troubleshooting.md#collect-backup-logs-not-working).
 - Ensure the password you provided is correct.
+- On Duplicati 2.4+, collection reads the machine-id from Duplicati server settings when the systeminfo option default is empty.
 

@@ -81,6 +81,8 @@ If the manual backup log collection fails:
     ```
   Also check for the DNS configuration inside the container (see more at [DNS Configuration for Podman Containers](../installation/installation.md#configuring-dns-for-podman-containers))
 
+- On **Duplicati 2.4 and later**, `/api/v1/systeminfo` lists `machine-id` with an empty default. **duplistatus** reads the configured id from Duplicati server settings. If collection still cannot identify the server, set **Duplicati → Settings → Advanced Options → Machine-id** and retry.
+
 
 ### Upgrade from an earlier version (before 0.9.x) and can't login {#upgrade-from-an-earlier-version-before-09x-and-cant-login}
 

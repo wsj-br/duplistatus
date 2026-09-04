@@ -31,9 +31,9 @@
     "direction": "ltr"
   },
   {
-    "code": "hi-Latn",
-    "label": "Hindi (Roman)",
-    "englishName": "Hindi (Romanized)",
+    "code": "hi",
+    "label": "हिन्दी",
+    "englishName": "Hindi",
     "direction": "ltr"
   },
   {

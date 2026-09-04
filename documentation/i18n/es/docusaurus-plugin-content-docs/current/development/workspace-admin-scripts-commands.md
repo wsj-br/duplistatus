@@ -59,10 +59,10 @@ O use el script automatizado (prefiera `source` para que **nvm** se aplique a su
 source ./scripts/upgrade-dependencies.sh
 ```
 
-El script `upgrade-dependencies.sh` automatiza todo el proceso de actualización de dependencias. Es independiente del proyecto: el gestor de paquetes, los paquetes del espacio de trabajo y el comando de verificación de cada paquete se detectan automáticamente (para que se actualicen tanto la raíz como los paquetes `documentation/`, sin rutas codificadas). Hace lo siguiente:
-- Configura herramientas mediante `upgrade-tools.sh` (nvm / Node LTS, global `pnpm`, `npm-check-updates`, `doctoc`)
-- Realiza actualizaciones **seguras de compilación** con modo doctor `npm-check-updates` para cada paquete: mantiene las actualizaciones que pasan la `typecheck`/`lint` del paquete y revierte las que rompen la compilación (con una puerta de pares ESLint integrada para que las actualizaciones de `eslint` y el complemento de React se mantengan compatibles)
-- Actualiza el archivo de bloqueo de pnpm del espacio de trabajo e instala dependencias
+El script `upgrade-dependencies.sh` automatiza todo el proceso de actualización de dependencias. Es agnóstico al proyecto: el gestor de paquetes, los paquetes del espacio de trabajo y el comando de verificación de cada paquete se detectan automáticamente (por lo que tanto el paquete raíz como los paquetes `documentation/` se actualizan, sin rutas predefinidas). Este:
+- Obtiene la configuración de las herramientas a través de `upgrade-tools.sh` (nvm / Node LTS, `pnpm` global, `npm-check-updates`, `doctoc`)
+- Realiza actualizaciones **seguras para la compilación** (build-safe) para cada paquete: `npm-check-updates` resuelve las últimas versiones, luego se ejecutan la instalación y `typecheck`/`lint` desde la raíz del espacio de trabajo. Las actualizaciones que fallan la verificación se someten a una bisección editando `package.json` (no `pnpm add`, que pnpm rechaza en la raíz del espacio de trabajo). Las restricciones de pares (peer gates) integradas fijan `eslint` y `typescript` cuando `eslint-plugin-react` / `typescript-eslint` aún no permiten la última versión mayor.
+- Actualiza el archivo de bloqueo (lockfile) de pnpm del espacio de trabajo e instala las dependencias
 - Actualiza la base de datos de browserslist
 - Busca vulnerabilidades (`pnpm audit`) y aplica correcciones no disruptivas (`pnpm audit --fix`)
 - **Prioriza la seguridad**: si una dependencia directa vulnerable solo puede corregirse con una actualización que rompe la compilación, se aplica forzosamente la versión segura y se informan los errores de compilación para que el código pueda actualizarse para garantizar la compatibilidad

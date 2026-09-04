@@ -281,6 +281,10 @@ export interface SystemInfo {
     Deprecated: boolean;
     DeprecationMessage: string;
   }>;
+  ServerOnlyOptions?: Array<{
+    Name: string;
+    DefaultValue: string;
+  }>;
   CompressionModules?: unknown[];
   EncryptionModules?: unknown[];
   BackendModules?: unknown[];

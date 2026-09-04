@@ -6,6 +6,11 @@ import { withCSRF } from '@/lib/csrf-middleware';
 import { requireAuth } from '@/lib/auth-middleware';
 import { getClientIpAddress } from '@/lib/ip-utils';
 import { AuditLogger } from '@/lib/audit-logger';
+import {
+  DUPLICATI_SERVERSETTINGS_ENDPOINT,
+  getDuplicatiMachineNameFromSystemInfo,
+  resolveDuplicatiMachineId,
+} from '@/lib/duplicati-identity';
 import https from 'https';
 import http from 'http';
 
@@ -18,6 +23,7 @@ interface SystemInfoOption {
 interface SystemInfo {
   MachineName: string;
   Options?: SystemInfoOption[];
+  ServerOnlyOptions?: SystemInfoOption[];
   CompressionModules?: unknown[];
   EncryptionModules?: unknown[];
   BackendModules?: unknown[];
@@ -458,33 +464,41 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
 
     const systemInfo: SystemInfo = await systemInfoResponse.json() as SystemInfo;
 
-    // Check if Options array exists
-    if (!systemInfo.Options) {
-      console.error('System info Options array is missing');
-      throw new Error('System info Options array is missing - unable to find machine-id');
-    }
-   
-    const detectedServerId = systemInfo.Options.find((opt) => opt.Name === 'machine-id')?.DefaultValue;
-    const detectedServerName = systemInfo.MachineName;
+    const detectedServerName = getDuplicatiMachineNameFromSystemInfo(systemInfo);
     
     // Store server name for error logging
     serverNameForError = detectedServerName;
 
-    // Detailed error reporting
-    if (!detectedServerId) {
-      console.error('Could not find machine-id in system options');
-      console.error('Available option names:', systemInfo.Options.map(opt => opt.Name));
-      throw new Error('Could not find machine-id in system options.');
-    }
-    
     if (!detectedServerName) {
       console.error('MachineName is missing from system info');
       console.error('System info structure:', Object.keys(systemInfo));
       throw new Error('MachineName is missing from system info');
     }
+
+    // Duplicati 2.4+ lists machine-id in Options with an empty DefaultValue.
+    // The configured id is on /api/v1/serversettings as --machine-id.
+    const detectedServerId = await resolveDuplicatiMachineId(systemInfo, async () => {
+      const settingsResponse = await makeRequest(`${baseUrl}${DUPLICATI_SERVERSETTINGS_ENDPOINT}`, {
+        ...requestOptions,
+        headers: {
+          ...requestOptions.headers,
+          'Authorization': `Bearer ${authToken}`
+        }
+      });
+      if (!settingsResponse.ok) {
+        throw new Error(`Failed to get server settings: ${settingsResponse.statusText}`);
+      }
+      return settingsResponse.json();
+    });
     
     // Use detectedServerId for schedule updates
     const serverIdForSchedule = providedServerId || detectedServerId;
+
+    if (!serverIdForSchedule) {
+      console.error('Could not determine Duplicati machine-id from systeminfo or serversettings');
+      console.error('Available option names:', systemInfo.Options?.map(opt => opt.Name));
+      throw new Error('Could not determine the Duplicati machine-id. Set Duplicati → Settings → Advanced Options → Machine-id and try again.');
+    }
     
     // Ensure backup settings are complete for all servers and backups
     await getConfigBackupSettings();

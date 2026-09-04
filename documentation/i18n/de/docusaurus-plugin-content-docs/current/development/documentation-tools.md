@@ -17,7 +17,7 @@ documentation/
 │   ├── de/            # German
 │   ├── es/            # Spanish
 │   ├── fr/            # French
-│   ├── hi-Latn/       # Hindi (Roman)
+│   ├── hi/            # Hindi (Roman)
 │   ├── pt-BR/         # Brazilian Portuguese
 │   └── zh-Hans/       # Simplified Chinese
 ├── src/               # React components and pages
@@ -53,7 +53,7 @@ Bearbeiten Sie nur Dateien in `docs/` und die Quell-JSON-Dateien in `i18n/en/`. 
 | `de`    | Deutsch               | `i18n/de/docusaurus-plugin-content-docs/current/`    |
 | `es`    | Spanisch              | `i18n/es/docusaurus-plugin-content-docs/current/`    |
 | `fr`    | Französisch               | `i18n/fr/docusaurus-plugin-content-docs/current/`    |
-| `hi-Latn` | Hindi (Lateinisch) | `i18n/hi-Latn/docusaurus-plugin-content-docs/current/` |
+| `hi`     | Hindi (Roman)        | `i18n/hi/docusaurus-plugin-content-docs/current/`     |
 | `pt-BR` | Brasilianisches Portugiesisch | `i18n/pt-BR/docusaurus-plugin-content-docs/current/` |
 | `zh-Hans` | Vereinfachtes Chinesisch | `i18n/zh-Hans/docusaurus-plugin-content-docs/current/` |
 
@@ -203,7 +203,7 @@ Dieses Skript nimmt automatisch Screenshots der Anwendung für Dokumentationszwe
   - `ADMIN_PASSWORD`: Passwort für das Admin-Konto
   - `USER_PASSWORD`: Passwort für das reguläre Benutzerkonto
 
-**Optionen:** `--locale` beschränkt Screenshots auf eine oder mehrere Sprachen (durch Kommas getrennt). Wenn es weggelassen wird, werden alle Sprachen erfasst. Gültige Sprachen: `en-GB`, `de`, `fr`, `es`, `pt-BR`, `hi-Latn`, `zh-Hans`. Verwenden Sie `-h` oder `--help`, um die Verwendung anzuzeigen.
+**Optionen:** `--locale` beschränkt Screenshots auf eine oder mehrere Lokalisierungen (kommagetrennt). Wenn dieser Parameter weggelassen wird, werden Alle Lokalisierungen erfasst. Gültige Lokalisierungen: `en-GB`, `de`, `fr`, `es`, `pt-BR`, `hi`, `zh-Hans`. Verwenden Sie `-h` oder `--help`, um die Hilfe anzuzeigen.
 
 **Beispiel:**
 

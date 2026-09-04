@@ -12,6 +12,11 @@ import { withCSRF } from '@/lib/csrf-middleware';
 import { requireAuth } from '@/lib/auth-middleware';
 import { getClientIpAddress } from '@/lib/ip-utils';
 import { AuditLogger } from '@/lib/audit-logger';
+import {
+  DUPLICATI_SERVERSETTINGS_ENDPOINT,
+  getDuplicatiMachineNameFromSystemInfo,
+  resolveDuplicatiMachineId,
+} from '@/lib/duplicati-identity';
 
 // Type definitions for API responses
 interface SystemInfoOption {
@@ -22,6 +27,7 @@ interface SystemInfoOption {
 interface SystemInfo {
   MachineName: string;
   Options?: SystemInfoOption[];
+  ServerOnlyOptions?: SystemInfoOption[];
   CompressionModules?: unknown[];
   EncryptionModules?: unknown[];
   BackendModules?: unknown[];
@@ -53,6 +59,99 @@ interface BackupInfo {
 
 interface LogEntry {
   Message: string;
+}
+
+interface CollectedBackupLog {
+  backupId: string;
+  backupName: string | undefined;
+  messages: unknown[];
+}
+
+function sanitizeBackupsForDownload(backups: BackupInfo[]): BackupInfo[] {
+  if (!Array.isArray(backups)) {
+    return [];
+  }
+
+  return backups.map((backup) => ({
+    ...backup,
+    Backup: {
+      ...backup.Backup,
+      TargetURL: backup.Backup.TargetURL
+        ? `${backup.Backup.TargetURL.split(':')[0]}:***--REDACTED--***`
+        : backup.Backup.TargetURL
+    }
+  }));
+}
+
+function filterSystemInfoForDownload(systemInfo: SystemInfo): SystemInfo {
+  const filteredSystemInfo: SystemInfo = {
+    ...systemInfo
+  };
+
+  delete filteredSystemInfo.CompressionModules;
+  delete filteredSystemInfo.EncryptionModules;
+  delete filteredSystemInfo.BackendModules;
+  delete filteredSystemInfo.GenericModules;
+  delete filteredSystemInfo.WebModules;
+  delete filteredSystemInfo.ConnectionModules;
+  delete filteredSystemInfo.SecretProviderModules;
+  delete filteredSystemInfo.ServerModules;
+  delete filteredSystemInfo.LogLevels;
+  delete filteredSystemInfo.SupportedLocales;
+
+  return filteredSystemInfo;
+}
+
+function parseLogMessageForDownload(log: unknown): unknown {
+  if (!log || typeof log !== 'object') {
+    return { Message: log };
+  }
+
+  const entry = log as Record<string, unknown>;
+  if (typeof entry.Message !== 'string') {
+    return entry;
+  }
+
+  try {
+    return {
+      ...entry,
+      Message: JSON.parse(entry.Message)
+    };
+  } catch {
+    return entry;
+  }
+}
+
+function toCollectedLogMessages(rawLogs: unknown): unknown[] {
+  const logEntries = Array.isArray(rawLogs) ? rawLogs : [rawLogs];
+  return logEntries.map(parseLogMessageForDownload);
+}
+
+function buildCollectedJsonDownload(params: {
+  systemInfo?: SystemInfo;
+  backups?: BackupInfo[];
+  backupLogs: CollectedBackupLog[];
+  collectionError?: string;
+}): string {
+  const payload: Record<string, unknown> = {
+    system_info: params.systemInfo ? filterSystemInfoForDownload(params.systemInfo) : null,
+    backups: params.backups ? sanitizeBackupsForDownload(params.backups) : [],
+    backup_logs: params.backupLogs
+  };
+
+  if (params.collectionError) {
+    payload.collection_error = params.collectionError;
+  }
+
+  return JSON.stringify(payload, null, 2);
+}
+
+function hasReceivedCollectData(
+  systemInfo: SystemInfo | undefined,
+  backups: BackupInfo[] | undefined,
+  backupLogs: CollectedBackupLog[]
+): boolean {
+  return systemInfo !== undefined || backups !== undefined || backupLogs.length > 0;
 }
 
 interface RequestOptions {
@@ -309,6 +408,25 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
   // Store server info for error logging
   let providedServerId: string | undefined;
   let serverNameForError: string | undefined;
+  let downloadJson = false;
+  let receivedSystemInfo: SystemInfo | undefined;
+  let receivedBackups: BackupInfo[] | undefined;
+  const collectedJsonData: CollectedBackupLog[] = [];
+
+  const buildDownloadPayload = (collectionError?: string): string | undefined => {
+    if (!downloadJson) {
+      return undefined;
+    }
+    if (!hasReceivedCollectData(receivedSystemInfo, receivedBackups, collectedJsonData)) {
+      return undefined;
+    }
+    return buildCollectedJsonDownload({
+      systemInfo: receivedSystemInfo,
+      backups: receivedBackups,
+      backupLogs: collectedJsonData,
+      collectionError
+    });
+  };
   
   try {
     const requestBody = await request.json();
@@ -317,8 +435,9 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
       port = defaultAPIConfig.duplicatiPort, 
       password, 
       serverId,
-      downloadJson = false
+      downloadJson: downloadJsonRequested = false
     } = requestBody;
+    downloadJson = Boolean(downloadJsonRequested);
     
     providedServerId = serverId;
 
@@ -472,95 +591,119 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
     }
 
     const systemInfo: SystemInfo = await systemInfoResponse.json() as SystemInfo;
+    receivedSystemInfo = systemInfo;
 
-    // Check if Options array exists and log its contents
-    if (!systemInfo.Options) {
-      console.error('System info Options array is missing');
-      throw new Error('System info Options array is missing - unable to find machine-id');
-    }
-   
-    const detectedServerId = systemInfo.Options.find((opt) => opt.Name === 'machine-id')?.DefaultValue;
-    const detectedServerName = systemInfo.MachineName;
+    const detectedServerName = getDuplicatiMachineNameFromSystemInfo(systemInfo);
     
     // Store server name for error logging
     serverNameForError = detectedServerName;
 
-    // Detailed error reporting
-    if (!detectedServerId) {
-      console.error('Could not find machine-id in system options');
-      console.error('Available option names:', systemInfo.Options.map(opt => opt.Name));
-      throw new Error('Could not find machine-id in system options.');
-    }
-    
+    let importError: string | undefined;
     if (!detectedServerName) {
       console.error('MachineName is missing from system info');
       console.error('System info structure:', Object.keys(systemInfo));
-      throw new Error('MachineName is missing from system info');
+      importError = 'MachineName is missing from system info';
     }
+
+    // Duplicati 2.4+ lists machine-id in Options with an empty DefaultValue.
+    // The configured id is on /api/v1/serversettings as --machine-id.
+    const detectedServerId = importError
+      ? undefined
+      : await resolveDuplicatiMachineId(systemInfo, async () => {
+          const settingsResponse = await makeRequest(`${baseUrl}${DUPLICATI_SERVERSETTINGS_ENDPOINT}`, {
+            ...requestOptions,
+            headers: {
+              ...requestOptions.headers,
+              'Authorization': `Bearer ${authToken}`
+            }
+          });
+          if (!settingsResponse.ok) {
+            throw new Error(`Failed to get server settings: ${settingsResponse.statusText}`);
+          }
+          return settingsResponse.json();
+        });
 
     // Resolve the effective server id by matching the MachineName against existing
     // servers, falling back to the Duplicati machine-id when no name match exists.
     // This keeps backup history attached to the same server record even if the
     // Duplicati machine-id changes. When multiple servers share the name, the most
     // recently created record wins.
-    const matchingServers = dbOps.getAllServersByName.all(detectedServerName) as Array<{
-      id: string;
-      name: string;
-      created_at: string;
-    }>;
-    const effectiveServerId = matchingServers.length > 0
-      ? [...matchingServers].sort((a, b) => b.created_at.localeCompare(a.created_at))[0].id
-      : detectedServerId;
+    let effectiveServerId: string | undefined;
+    if (!importError && detectedServerName) {
+      const matchingServers = dbOps.getAllServersByName.all(detectedServerName) as Array<{
+        id: string;
+        name: string;
+        created_at: string;
+      }>;
+      effectiveServerId = matchingServers.length > 0
+        ? [...matchingServers].sort((a, b) => b.created_at.localeCompare(a.created_at))[0].id
+        : detectedServerId ?? providedServerId;
 
-    // Check if server already exists
-    const existingServer = dbOps.getServerById.get(effectiveServerId) as { id: string; name: string; server_url: string; alias: string; note: string; created_at: string } | undefined;
-    
-    if (existingServer) {
-      // Server exists - update server_url and password, preserve alias and note
-      dbOps.upsertServer.run({
-        id: effectiveServerId,
-        name: detectedServerName,
-        server_url: baseUrl,
-        server_password: encryptData(finalPassword),
-        alias: existingServer.alias,  // Preserve existing alias
-        note: existingServer.note     // Preserve existing note
-      });
-    } else {
-      // Server doesn't exist - create new server with empty alias and note
-      dbOps.upsertServer.run({
-        id: effectiveServerId,
-        name: detectedServerName,
-        server_url: baseUrl,
-        server_password: encryptData(finalPassword),
-        alias: '',
-        note: ''
-      });
-      
-      // Log audit event for server creation
-      const ipAddress = getClientIpAddress(request);
-      const userAgent = request.headers.get('user-agent') || 'unknown';
-      await AuditLogger.logServerOperation(
-        'server_added',
-        authContext.userId,
-        authContext.username,
-        effectiveServerId,
-        {
-          serverName: detectedServerName,
-          serverUrl: baseUrl,
-        },
-        ipAddress,
-        userAgent
-      );
+      if (!effectiveServerId) {
+        console.error('Could not determine Duplicati machine-id from systeminfo or serversettings');
+        console.error('Available option names:', systemInfo.Options?.map(opt => opt.Name));
+        importError = 'Could not determine the Duplicati machine-id. Set Duplicati → Settings → Advanced Options → Machine-id and try again.';
+      }
     }
-    
-    // Get the server information including alias from database
-    const serverInfo = dbOps.getServerById.get(effectiveServerId) as { id: string; name: string; server_url: string; alias: string; note: string; created_at: string } | undefined;
-    const serverAlias = serverInfo?.alias || '';
-    
-    // Ensure backup settings are complete for all servers and backups
-    // This will add default settings for any missing server-backup combinations
-    // Ensure backup settings are complete (now handled automatically by getConfigBackupSettings)
-    await getConfigBackupSettings();
+
+    // When the user asked to download collected JSON, keep fetching even if
+    // identity checks fail so the received payload can still be saved.
+    if (importError && !downloadJson) {
+      throw new Error(importError);
+    }
+
+    let serverAlias = '';
+    if (effectiveServerId && detectedServerName) {
+      // Check if server already exists
+      const existingServer = dbOps.getServerById.get(effectiveServerId) as { id: string; name: string; server_url: string; alias: string; note: string; created_at: string } | undefined;
+      
+      if (existingServer) {
+        // Server exists - update server_url and password, preserve alias and note
+        dbOps.upsertServer.run({
+          id: effectiveServerId,
+          name: detectedServerName,
+          server_url: baseUrl,
+          server_password: encryptData(finalPassword),
+          alias: existingServer.alias,  // Preserve existing alias
+          note: existingServer.note     // Preserve existing note
+        });
+      } else {
+        // Server doesn't exist - create new server with empty alias and note
+        dbOps.upsertServer.run({
+          id: effectiveServerId,
+          name: detectedServerName,
+          server_url: baseUrl,
+          server_password: encryptData(finalPassword),
+          alias: '',
+          note: ''
+        });
+        
+        // Log audit event for server creation
+        const ipAddress = getClientIpAddress(request);
+        const userAgent = request.headers.get('user-agent') || 'unknown';
+        await AuditLogger.logServerOperation(
+          'server_added',
+          authContext.userId,
+          authContext.username,
+          effectiveServerId,
+          {
+            serverName: detectedServerName,
+            serverUrl: baseUrl,
+          },
+          ipAddress,
+          userAgent
+        );
+      }
+      
+      // Get the server information including alias from database
+      const serverInfo = dbOps.getServerById.get(effectiveServerId) as { id: string; name: string; server_url: string; alias: string; note: string; created_at: string } | undefined;
+      serverAlias = serverInfo?.alias || '';
+      
+      // Ensure backup settings are complete for all servers and backups
+      // This will add default settings for any missing server-backup combinations
+      // Ensure backup settings are complete (now handled automatically by getConfigBackupSettings)
+      await getConfigBackupSettings();
+    }
   
     // Step 3: Get list of backups
     let backupsResponse;
@@ -583,26 +726,43 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
     }
 
     const backups: BackupInfo[] = await backupsResponse.json() as BackupInfo[];
+    receivedBackups = backups;
     const backupIds = backups.map((b) => b.Backup.ID);
 
     if (!backupIds.length) {
-      return NextResponse.json({ message: 'No backups found' });
+      if (importError) {
+        throw new Error(importError);
+      }
+      const emptyResponse: Record<string, unknown> = {
+        success: true,
+        message: 'No backups found',
+        serverName: detectedServerName,
+        serverAlias,
+        stats: {
+          processed: 0,
+          skipped: 0,
+          errors: 0
+        },
+        backupSettings: {
+          message: 'No backups found'
+        }
+      };
+      const jsonData = buildDownloadPayload();
+      if (jsonData) {
+        emptyResponse.jsonData = jsonData;
+      }
+      return NextResponse.json(emptyResponse);
     }
 
     // Step 4: Process each backup
     let processedCount = 0;
     let skippedCount = 0;
     let errorCount = 0;
-    const collectedJsonData: Array<{
-      backupId: string;
-      backupName: string | undefined;
-      messages: LogEntry[];
-    }> = [];
 
     for (const backupId of backupIds) {
       // Parse schedule information and update backup settings
       const backupName = backups.find((b) => b.Backup.ID === backupId)?.Backup.Name;
-      if (backupName) {
+      if (backupName && effectiveServerId) {
         try {
           // Get schedule information from the backup data
           const backupData = backups.find((b) => b.Backup.ID === backupId);
@@ -647,7 +807,18 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
         // Increment the received count
         // receivedCount++; // Commented out as it was unused
 
-        const logs: LogEntry[] = await logResponse.json() as LogEntry[];
+        const rawLogs = await logResponse.json();
+
+        // Save every log received for download, before any Backup-operation or import checks
+        if (downloadJson) {
+          collectedJsonData.push({
+            backupId: backupId,
+            backupName: backups.find((b) => b.Backup.ID === backupId)?.Backup.Name,
+            messages: toCollectedLogMessages(rawLogs)
+          });
+        }
+
+        const logs: LogEntry[] = Array.isArray(rawLogs) ? rawLogs as LogEntry[] : [];
         const backupMessages = logs.filter((log) => {
           try {
             // Parse the Message string into JSON
@@ -658,31 +829,6 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
             return false;
           }
         });
-
-        // Collect JSON data for download if requested
-        if (downloadJson) {
-          // Parse Message strings into proper JSON objects
-          const parsedMessages = backupMessages.map((log) => {
-            try {
-              return {
-                ...log,
-                Message: JSON.parse(log.Message)
-              };
-            } catch (error) {
-              console.error('Error parsing message for download:', error instanceof Error ? error.message : String(error));
-              return {
-                ...log,
-                Message: log.Message // Keep as string if parsing fails
-              };
-            }
-          });
-
-          collectedJsonData.push({
-            backupId: backupId,
-            backupName: backups.find((b) => b.Backup.ID === backupId)?.Backup.Name,
-            messages: parsedMessages
-          });
-        }
 
 
 
@@ -700,7 +846,7 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
 
           // Check for duplicate
           const backupName = backups.find((b) => b.Backup.ID === backupId)?.Backup.Name;
-          if (!backupName) continue;
+          if (!backupName || !effectiveServerId) continue;
           
           const isDuplicate = await dbUtils.checkDuplicateBackup({
             server_id: effectiveServerId,
@@ -797,6 +943,10 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
       }
     }
 
+    if (importError) {
+      throw new Error(importError);
+    }
+
     // Recalculate next backup run dates after collecting new backups
     // Clear the cache to ensure fresh data is used for recalculation
     clearRequestCache();
@@ -807,7 +957,7 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
       // Continue even if recalculation fails
     }
 
-      const responseData: {
+    const responseData: {
       success: boolean;
       serverName: string;
       serverAlias: string;
@@ -822,7 +972,7 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
       jsonData?: string;
     } = {
       success: true,
-      serverName: detectedServerName,
+      serverName: detectedServerName ?? 'unknown',
       serverAlias: serverAlias,
       stats: {
         processed: processedCount,
@@ -834,53 +984,16 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
       }
     };
 
-    // Include JSON data if download was requested
-    if (downloadJson) {
-       // remove sensitive data from the response 
-       // keep only the beginning of TargetURL until the first ":"
-       const backupsWithoutTargetURL = backups.map((backup) => {
-         return {
-           ...backup,
-           Backup: {
-             ...backup.Backup,
-             TargetURL: backup.Backup.TargetURL 
-               ? backup.Backup.TargetURL.split(':')[0] + ':***--REDACTED--***'
-               : backup.Backup.TargetURL
-           }
-         };
-       });
-
-       // Filter system_info to remove unnecessary data
-       const filteredSystemInfo = {
-         ...systemInfo,
-         Options: systemInfo.Options?.filter(option => option.Name === 'machine-id') || []
-       };
-       
-       // Remove module arrays and other unnecessary fields
-       const filteredSystemInfoTyped = filteredSystemInfo as SystemInfo;
-       delete filteredSystemInfoTyped.CompressionModules;
-       delete filteredSystemInfoTyped.EncryptionModules;
-       delete filteredSystemInfoTyped.BackendModules;
-       delete filteredSystemInfoTyped.GenericModules;
-       delete filteredSystemInfoTyped.WebModules;
-       delete filteredSystemInfoTyped.ConnectionModules;
-       delete filteredSystemInfoTyped.SecretProviderModules;
-       delete filteredSystemInfoTyped.ServerModules;
-       delete filteredSystemInfoTyped.LogLevels;
-       delete filteredSystemInfoTyped.SupportedLocales;
-
-      // return the response data
-      responseData.jsonData = JSON.stringify({
-        system_info: filteredSystemInfoTyped,
-        backups: backupsWithoutTargetURL,
-        backup_logs: collectedJsonData
-      }, null, 2);
+    // Include JSON data if download was requested and any data was received
+    const jsonData = buildDownloadPayload();
+    if (jsonData) {
+      responseData.jsonData = jsonData;
     }
 
     // Log audit event - determine status based on results
     const ipAddress = getClientIpAddress(request);
     const userAgent = request.headers.get('user-agent') || 'unknown';
-    const finalServerId = providedServerId || effectiveServerId || detectedServerName;
+    const finalServerId = providedServerId || effectiveServerId || detectedServerName || 'unknown';
     const hasErrors = errorCount > 0;
     const status = hasErrors ? 'error' : 'success';
     
@@ -933,8 +1046,17 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
       errorMessage,
     });
     
+    const errorResponse: Record<string, unknown> = {
+      error: errorMessage,
+      serverName: serverNameForError
+    };
+    const jsonData = buildDownloadPayload(errorMessage);
+    if (jsonData) {
+      errorResponse.jsonData = jsonData;
+    }
+
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to collect backups' },
+      errorResponse,
       { status: 500 }
     );
   }

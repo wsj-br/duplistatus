@@ -5,7 +5,7 @@ import { defaultNotificationTemplatesFr } from './default-notifications-fr';
 import { defaultNotificationTemplatesEs } from './default-notifications-es';
 import { defaultNotificationTemplatesPtBR } from './default-notifications-pt-BR';
 import { defaultNotificationTemplatesZhCN } from './default-notifications-zh-CN';
-import { SOURCE_LOCALE, isSupportedLocale } from './locales';
+import { SOURCE_LOCALE, parseLocaleTag } from './locales';
 
 // Type for notification templates (without language field)
 type NotificationTemplatesData = {
@@ -60,7 +60,7 @@ export function getDefaultNotificationTemplate(
  * Check if a language is supported for templates
  */
 export function isValidTemplateLanguage(language: string): language is SupportedTemplateLanguage {
-  return isSupportedLocale(language);
+  return parseLocaleTag(language) !== null;
 }
 
 // Default cron service configuration

@@ -1,0 +1,14 @@
+{
+  "title": {
+    "message": "duplistatus",
+    "description": "The title in the navbar"
+  },
+  "logo.alt": {
+    "message": "duplistatus लोगो",
+    "description": "The alt text of navbar logo"
+  },
+  "item.label.Documentation": {
+    "message": "प्रलेखन",
+    "description": "Navbar item with label Documentation"
+  }
+}

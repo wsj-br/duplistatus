@@ -83,7 +83,7 @@ This project was mainly built with AI help. To learn how, see [How I Build this 
 
 :::note
  All product names, logos and trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
- :::
+:::
 
 
 ## License {#license}

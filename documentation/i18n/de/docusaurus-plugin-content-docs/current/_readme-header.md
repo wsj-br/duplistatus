@@ -12,12 +12,12 @@ Metriken und Leistung über mehrere Server hinweg.
 
 Einfach mit Docker, Podman oder Portainer zu deployen und in 7 Sprachen verfügbar (Englisch, Deutsch, Französisch, Spanisch, Portugiesisch, Hindi (lateinisch) und Vereinfachtes Chinesisch), mit vollständiger Dokumentation in jeder Sprache.
 
-[Mehr Informationen](https://wsj-br.github.io/duplistatus)        |
-[Mehr Informationen](https://wsj-br.github.io/duplistatus/de/)  | 
+[Weitere Informationen](https://wsj-br.github.io/duplistatus)        |
+[Mehr informationen](https://wsj-br.github.io/duplistatus/de/)  | 
 [Plus d'informations](https://wsj-br.github.io/duplistatus/fr/) | 
 [Más información](https://wsj-br.github.io/duplistatus/es/)     |
 [Mais informações](https://wsj-br.github.io/duplistatus/pt-BR/) |
-[Adhik jaankari](https://wsj-br.github.io/duplistatus/hi-Latn/) |
+[Adhik jaankari](https://wsj-br.github.io/duplistatus/hi/) |
 [更多信息](https://wsj-br.github.io/duplistatus/zh-Hans/)
 
 [Installationsanleitung](https://wsj-br.github.io/duplistatus/installation)        |
@@ -25,7 +25,7 @@ Einfach mit Docker, Podman oder Portainer zu deployen und in 7 Sprachen verfügb
 [Guide d'Installation](https://wsj-br.github.io/duplistatus/fr/installation) | 
 [Guía de Instalación](https://wsj-br.github.io/duplistatus/es/installation)     |
 [Guia de Instalação](https://wsj-br.github.io/duplistatus/pt-BR/installation) |
-[Sthaapana gaaid](https://wsj-br.github.io/duplistatus/hi-Latn/installation) |
+[Sthaapana gaaid](https://wsj-br.github.io/duplistatus/hi/installation) |
 [安装指南](https://wsj-br.github.io/duplistatus/zh-Hans/installation)
 
 <br/>

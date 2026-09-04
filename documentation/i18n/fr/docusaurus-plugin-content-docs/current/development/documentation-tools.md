@@ -17,7 +17,7 @@ documentation/
 │   ├── de/            # German
 │   ├── es/            # Spanish
 │   ├── fr/            # French
-│   ├── hi-Latn/       # Hindi (Roman)
+│   ├── hi/            # Hindi (Roman)
 │   ├── pt-BR/         # Brazilian Portuguese
 │   └── zh-Hans/       # Simplified Chinese
 ├── src/               # React components and pages
@@ -53,7 +53,7 @@ Modifiez uniquement les fichiers dans `docs/` et les fichiers JSON source dans `
 | `de`    | Allemand               | `i18n/de/docusaurus-plugin-content-docs/current/`    |
 | `es`    | Espagnol              | `i18n/es/docusaurus-plugin-content-docs/current/`    |
 | `fr`    | Français               | `i18n/fr/docusaurus-plugin-content-docs/current/`    |
-| `hi-Latn`| Hindi (roman)        | `i18n/hi-Latn/docusaurus-plugin-content-docs/current/`|
+| `hi`     | Hindi (Roman)        | `i18n/hi/docusaurus-plugin-content-docs/current/`     |
 | `pt-BR` | Portugais brésilien | `i18n/pt-BR/docusaurus-plugin-content-docs/current/` |
 | `zh-Hans`| Chinois simplifié   | `i18n/zh-Hans/docusaurus-plugin-content-docs/current/`|
 
@@ -203,7 +203,7 @@ Ce script prend automatiquement des captures d'écran de l'application à des fi
   - `ADMIN_PASSWORD` : Mot de passe du compte admin
   - `USER_PASSWORD` : Mot de passe du compte utilisateur régulier
 
-**Options :** `--locale` limite les captures d'écran à une ou plusieurs locales (séparées par des virgules). Si omis, toutes les locales sont capturées. Locales valides : `en-GB`, `de`, `fr`, `es`, `pt-BR`, `hi-Latn`, `zh-Hans`. Utilisez `-h` ou `--help` pour afficher l'aide.
+**Options :** `--locale` limite les captures d'écran à une ou plusieurs locales (séparées par des virgules). Si omis, toutes les locales sont capturées. Locales valides : `en-GB`, `de`, `fr`, `es`, `pt-BR`, `hi`, `zh-Hans`. Utilisez `-h` ou `--help` pour imprimer l'utilisation.
 
 **Exemple :**
 

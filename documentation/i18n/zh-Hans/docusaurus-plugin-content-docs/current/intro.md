@@ -39,23 +39,23 @@
 
 ### 仪表板 {#dashboard}
 
-![dashboard](assets/screen-main-dashboard-card-mode.png)
+![仪表板](assets/screen-main-dashboard-card-mode.png)
 
 ### 备份历史记录 {#backup-history}
 
-![server-detail](assets/screen-server-backup-list.png)
+![服务器详情](assets/screen-server-backup-list.png)
 
 ### 备份详细信息 {#backup-details}
 
-![backup-detail](assets/screen-backup-detail.png)
+![备份详情](assets/screen-backup-detail.png)
 
 ### 过期备份 {#overdue-backups}
 
-![overdue backups](assets/screen-overdue-backup-hover-card.png)
+![过期备份](assets/screen-overdue-backup-hover-card.png)
 
 ### 手机上的过期通知 {#overdue-notifications-on-your-phone}
 
-![ntfy overdue message](/img/screen-overdue-notification.png)
+![NTFY 过期消息](/img/screen-overdue-notification.png)
 
 ## API 参考 {#api-reference}
 
@@ -78,12 +78,11 @@
 - GitHub SVG 图标来自 https://github.com/logos
 
 :::note
- 所有产品名称、标志和商标都是其各自所有者的财产。图标和名称仅用于识别目的，不意味着认可。
+所有产品名称、标志和商标都是其各自所有者的财产。图标和名称仅用于识别目的，不意味着认可。
 :::
-
 
 ## 许可 {#license}
 
-该项目根据 [Apache License 2.0](LICENSE.md) 许可。
+本项目采用 [Apache License 2.0](LICENSE.md) 进行许可。
 
 **Copyright 2026 Waldemar Scudeller Jr.**

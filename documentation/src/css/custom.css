@@ -1202,10 +1202,8 @@ mark {
     font-size: 1.2em;
   }
 
-  .dropdown__menu .dropdown__link[href*="/hi-Latn/"]::before,
-  .dropdown__menu .dropdown__link[href*="/hi-Latn"]::before,
-  .dropdown__menu .dropdown__link[href*="/hi-latn/"]::before,
-  .dropdown__menu .dropdown__link[href*="/hi-latn"]::before {
+  .dropdown__menu .dropdown__link[href*="/hi/"]::before,
+  .dropdown__menu .dropdown__link[href*="/hi"]::before {
     content: "🇮🇳";
     font-size: 1.2em;
   }

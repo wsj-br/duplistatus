@@ -4,7 +4,7 @@ import type { BackupStatus, NotificationEvent, BackupKey, OverdueTolerance, Back
 import { CronServiceConfig, CronInterval } from './types';
 import { cronIntervalMap } from './cron-interval-map';
 import type { NotificationFrequencyConfig } from "@/lib/types";
-import { defaultCronConfig, defaultNotificationFrequencyConfig, defaultOverdueTolerance, defaultCronInterval, defaultNtfyConfig, defaultNotificationTemplates, generateDefaultNtfyTopic, isValidTemplateLanguage, getDefaultNotificationTemplate } from './default-config';
+import { defaultCronConfig, defaultNotificationFrequencyConfig, defaultOverdueTolerance, defaultCronInterval, defaultNtfyConfig, defaultNotificationTemplates, generateDefaultNtfyTopic, getDefaultNotificationTemplate } from './default-config';
 import { previousTemplatesMessages } from './previous-defaults';
 import { formatTimeElapsed } from './utils';
 import { migrateBackupSettings } from './migration-utils';
@@ -12,7 +12,7 @@ import { getDefaultAllowedWeekDays } from './interval-utils';
 import { GetNextBackupRunDate } from './server_intervals';
 import { defaultBackupNotificationConfig } from './default-config';
 import { encryptData, decryptData } from './secrets';
-import { SOURCE_LOCALE } from './locales';
+import { SOURCE_LOCALE, parseLocaleTag } from './locales';
 
 // Request-level cache to avoid redundant function calls within a single request
 // In production mode, this is a module-level variable that persists across requests,
@@ -1794,14 +1794,12 @@ export function getNotificationTemplates(): {
         needsUpdate = true;
       }
 
-      // Ensure language field exists (backward compatibility)
-      const language = parsed.language && isValidTemplateLanguage(parsed.language)
-        ? (parsed.language as SupportedTemplateLanguage)
-        : SOURCE_LOCALE;
+      // Ensure language field exists (backward compatibility); map retired codes such as hi-Latn → hi
+      const language = parseLocaleTag(parsed.language ?? '') ?? SOURCE_LOCALE;
       updatedTemplates.language = language;
 
-      // Save updated templates if any were upgraded or language was added
-      if (needsUpdate || !parsed.language) {
+      // Save updated templates if any were upgraded, language was added, or a retired code was canonicalized
+      if (needsUpdate || !parsed.language || parsed.language !== language) {
         const templatesToSave: {
           language: SupportedTemplateLanguage;
           success: NotificationTemplate;

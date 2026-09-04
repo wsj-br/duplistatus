@@ -59,10 +59,10 @@ Ou use o script automatizado (prefira `source` para que **nvm** se aplique ao se
 source ./scripts/upgrade-dependencies.sh
 ```
 
-O script `upgrade-dependencies.sh` automatiza todo o processo de atualização de dependências. É agnóstico de projeto: o gerenciador de pacotes, os pacotes do workspace e o comando de verificação de cada pacote são detectados automaticamente (para que os pacotes raiz e `documentation/` sejam atualizados, sem caminhos codificados). Ele:
-- Configura ferramentas via `upgrade-tools.sh` (nvm / Node LTS, global `pnpm`, `npm-check-updates`, `doctoc`)
-- Realiza atualizações **seguras de build** com modo de verificação `npm-check-updates` para cada pacote: mantém atualizações que passam no `typecheck`/`lint` do pacote e reverte as que quebram o build (com um gate de pares do ESLint embutido para que atualizações do `eslint` e do plugin React permaneçam compatíveis)
-- Atualiza o arquivo de bloqueio pnpm do workspace e instala dependências
+O script `upgrade-dependencies.sh` automatiza todo o processo de atualização de dependências. Ele é agnóstico ao projeto: o gerenciador de pacotes, os pacotes do workspace e o comando de verificação de cada pacote são detectados automaticamente (assim, tanto o pacote raiz quanto os pacotes `documentation/` são atualizados, sem caminhos fixos no código). Ele:
+- Obtém a configuração das ferramentas via `upgrade-tools.sh` (nvm / Node LTS, `pnpm` global, `npm-check-updates`, `doctoc`)
+- Realiza atualizações **seguras para o build** para cada pacote: o `npm-check-updates` resolve as versões mais recentes, e então o install e o `typecheck`/`lint` são executados a partir da raiz do workspace. Atualizações que falham na verificação são submetidas a bisection editando o `package.json` (não o `pnpm add`, que o pnpm rejeita na raiz do workspace). Portões de peer embutidos fixam `eslint` e `typescript` quando o `eslint-plugin-react` / `typescript-eslint` ainda não permitem a última versão major.
+- Atualiza o lockfile do pnpm do workspace e instala as dependências
 - Atualiza o banco de dados do browserslist
 - Verifica vulnerabilidades (`pnpm audit`) e aplica correções não destrutivas (`pnpm audit --fix`)
 - **Prioriza segurança**: se uma dependência direta vulnerável só puder ser corrigida por uma atualização que quebra o build, a versão segura é aplicada à força e os erros de build são relatados para que o código possa ser atualizado para compatibilidade

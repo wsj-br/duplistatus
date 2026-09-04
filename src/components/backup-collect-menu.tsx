@@ -621,8 +621,8 @@ export function BackupCollectMenu({
               }
             }));
 
-            // Download JSON file if requested and available
-            if (result.success && result.jsonData && downloadJson) {
+            // Download JSON whenever any data was received, even if collection checks failed
+            if (downloadJson && result.jsonData) {
               downloadJsonFile(result.jsonData, result.serverName);
             }
           }
@@ -717,7 +717,17 @@ export function BackupCollectMenu({
       });
 
       if (!response.ok) {
-        const error = await response.json();
+        const error = await response.json() as {
+          error?: string;
+          masterKeyInvalid?: boolean;
+          jsonData?: string;
+          serverName?: string;
+          serverAlias?: string;
+        };
+
+        if (downloadJson && error.jsonData) {
+          downloadJsonFile(error.jsonData, error.serverAlias || error.serverName || hostname || 'unknown-server');
+        }
         
         // Check for master key error
         if (error.masterKeyInvalid) {
@@ -735,16 +745,21 @@ export function BackupCollectMenu({
         throw new Error(error.error || 'Failed to collect backups');
       }
 
-      const result = await response.json();
+      const result = await response.json() as {
+        jsonData?: string;
+        serverName?: string;
+        serverAlias?: string;
+        stats?: { processed: number; skipped: number; errors: number };
+      };
       
       // Complete progress and clear interval
       if (progressInterval) clearInterval(progressInterval);
       setProgress(100);
       
-      setStats(result.stats);
-      const serverName = result.serverAlias || result.serverName;
+      setStats(result.stats ?? null);
+      const serverName = result.serverAlias || result.serverName || hostname || 'unknown-server';
 
-      // Handle JSON download if requested and data is available
+      // Handle JSON download if requested and any data was received
       if (downloadJson && result.jsonData) {
         downloadJsonFile(result.jsonData, serverName);
       }
@@ -765,9 +780,9 @@ export function BackupCollectMenu({
       toast({
         title: t("Backups collected successfully from {{serverName}}", { serverName }),
         description: t("Processed: {{processed}}, Skipped: {{skipped}}, Errors: {{errors}}", {
-          processed: String(result.stats.processed),
-          skipped: String(result.stats.skipped),
-          errors: String(result.stats.errors),
+          processed: String(result.stats?.processed ?? 0),
+          skipped: String(result.stats?.skipped ?? 0),
+          errors: String(result.stats?.errors ?? 0),
         }),
         variant: "default",
         duration: 3000,

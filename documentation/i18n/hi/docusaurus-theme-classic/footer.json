@@ -1,0 +1,38 @@
+{
+  "link.title.Documentation": {
+    "message": "प्रलेखन",
+    "description": "The title of the footer links column with title=Documentation in the footer"
+  },
+  "link.title.Development": {
+    "message": "विकास",
+    "description": "The title of the footer links column with title=Development in the footer"
+  },
+  "link.title.More": {
+    "message": "अधिक",
+    "description": "The title of the footer links column with title=More in the footer"
+  },
+  "link.item.label.Installation": {
+    "message": "स्थापना",
+    "description": "The label of footer link with label=Installation linking to /installation"
+  },
+  "link.item.label.User Guide": {
+    "message": "उपयोगकर्ता गाइड",
+    "description": "The label of footer link with label=User Guide linking to /user-guide/overview"
+  },
+  "link.item.label.Migration": {
+    "message": "माइग्रेशन",
+    "description": "The label of footer link with label=Migration linking to /migration/version_upgrade"
+  },
+  "link.item.label.Development Setup": {
+    "message": "विकास सेटअप",
+    "description": "The label of footer link with label=Development Setup linking to /development/setup"
+  },
+  "link.item.label.API Reference": {
+    "message": "एपीआई संदर्भ",
+    "description": "The label of footer link with label=API Reference linking to /api-reference/overview"
+  },
+  "copyright": {
+    "message": "Copyright © Waldemar Scudeller Jr.",
+    "description": "The footer copyright"
+  }
+}

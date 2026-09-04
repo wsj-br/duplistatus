@@ -127,15 +127,31 @@ async function collectFromServer(
       body: JSON.stringify(requestBody),
     });
 
-    const result = await response.json();
+    const result = await response.json() as {
+      error?: string;
+      jsonData?: string;
+      stats?: {
+        processed: number;
+        skipped: number;
+        errors: number;
+      };
+      serverName?: string;
+      serverAlias?: string;
+    };
 
     if (!response.ok) {
-      throw new Error(result.error || 'Failed to collect backups');
+      return {
+        serverId: server.id,
+        serverName: result.serverAlias || result.serverName || server.alias || server.name,
+        success: false,
+        error: result.error || 'Failed to collect backups',
+        jsonData: result.jsonData
+      };
     }
 
     return {
       serverId: server.id,
-      serverName: server.alias || server.name,
+      serverName: result.serverAlias || result.serverName || server.alias || server.name,
       success: true,
       stats: result.stats,
       jsonData: result.jsonData

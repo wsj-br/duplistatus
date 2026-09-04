@@ -36,23 +36,23 @@ Consulte o [Guia do Usuário](user-guide/overview.md) para instruções detalhad
 
 ### Painel {#dashboard}
 
-![dashboard](assets/screen-main-dashboard-card-mode.png)
+![painel](assets/screen-main-dashboard-card-mode.png)
 
 ### Histórico de backups {#backup-history}
 
-![server-detail](assets/screen-server-backup-list.png)
+![detalhes-do-servidor](assets/screen-server-backup-list.png)
 
 ### Detalhes do backup {#backup-details}
 
-![backup-detail](assets/screen-backup-detail.png)
+![detalhes-do-backup](assets/screen-backup-detail.png)
 
 ### Backups atrasados {#overdue-backups}
 
-![overdue backups](assets/screen-overdue-backup-hover-card.png)
+![Backups Atrasados](assets/screen-overdue-backup-hover-card.png)
 
 ### Notificações atrasadas no seu telefone {#overdue-notifications-on-your-phone}
 
-![ntfy overdue message](/img/screen-overdue-notification.png)
+![mensagem NTFY de atraso](/img/screen-overdue-notification.png)
 
 ## Referência da API {#api-reference}
 
@@ -75,12 +75,11 @@ Este projeto foi construído principalmente com ajuda de IA. Para aprender como,
 - Ícone SVG do GitHub de https://github.com/logos
 
 :::note
- Todos os nomes de produtos, logos e marcas registradas são propriedade de seus respectivos proprietários. Ícones e nomes são usados apenas para fins de identificação e não implicam endosso.
+Todos os nomes de produtos, logotipos e marcas registradas são de propriedade de seus respectivos proprietários. Ícones e nomes são usados apenas para fins de identificação e não implicam endosso.
 :::
-
 
 ## Licença {#license}
 
-O projeto está licenciado sob a [Apache License 2.0](LICENSE.md).   
+O projeto está licenciado sob a [Apache License 2.0](LICENSE.md).
 
 **Copyright © 2026 Waldemar Scudeller Jr.**

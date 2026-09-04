@@ -55,7 +55,7 @@ const config: Config = {
   // Internationalization configuration for multi-language support
   i18n: {
     defaultLocale: 'en-GB',
-    locales: ['en-GB', 'fr', 'de', 'es', 'pt-BR', 'hi-Latn', 'zh-Hans'],
+    locales: ['en-GB', 'fr', 'de', 'es', 'pt-BR', 'hi', 'zh-Hans'],
     localeConfigs: {
       'en-GB': {
         label: 'English',
@@ -87,10 +87,10 @@ const config: Config = {
         htmlLang: 'pt-BR',
         calendar: 'gregory',
       },
-      'hi-Latn': {
+      hi: {
         label: 'Hindi',
         direction: 'ltr',
-        htmlLang: 'hi-Latn',
+        htmlLang: 'hi',
         calendar: 'gregory',
       },
       'zh-Hans': {
@@ -133,7 +133,7 @@ const config: Config = {
         indexDocs: true,
         indexBlog: false,
         indexPages: false,
-        // lunr-languages codes (not Docusaurus locale codes). hi-Latn is romanised Hindi,
+        // lunr-languages codes (not Docusaurus locale codes). hi is romanised Hindi,
         // so it rides on the English pipeline; zh-Hans maps to zh.
         language: ['en', 'fr', 'de', 'es', 'pt', 'zh'],
         docsRouteBasePath: '/',
@@ -163,6 +163,8 @@ const config: Config = {
         },
         // Disable blog completely
         blog: false,
+        // Do not enable Docusaurus analytics plugins (gtag / GA / GTM).
+        // Those only load when their preset keys are set.
         theme: {
           customCss: './src/css/custom.css',
         },

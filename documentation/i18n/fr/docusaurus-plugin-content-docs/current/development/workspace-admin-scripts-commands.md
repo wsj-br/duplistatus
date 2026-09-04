@@ -59,10 +59,10 @@ Ou utilisez le script automatisé (préférez `source` pour que **nvm** s'appliq
 source ./scripts/upgrade-dependencies.sh
 ```
 
-Le script `upgrade-dependencies.sh` automatise l'intégralité du processus de mise à niveau des dépendances. Il est agnostique au projet : le gestionnaire de packages, les packages de l'espace de travail et la commande de vérification de chaque package sont auto-détectés (donc les packages racine et `documentation/` sont tous deux mis à niveau, sans chemins codés en dur). Il :
-- Sources l'installation des outils via `upgrade-tools.sh` (nvm / Node LTS, global `pnpm`, `npm-check-updates`, `doctoc`)
-- Effectue des mises à niveau **sûres pour la construction** avec le mode médecin `npm-check-updates` pour chaque package : il conserve les mises à niveau qui passent le `typecheck`/`lint` du package et annule celles qui cassent la construction (avec une porte de pair ESLint intégrée pour que les mises à niveau `eslint` et React plugin restent compatibles)
-- Met à jour le fichier de verrouillage pnpm de l'espace de travail et installe les dépendances
+Le script `upgrade-dependencies.sh` automatise l'intégralité du processus de mise à jour des dépendances. Il est agnostique vis-à-vis du projet : le gestionnaire de paquets, les paquets de l'espace de travail et la commande de vérification de chaque paquet sont détectés automatiquement (ainsi, le paquet racine et les paquets `documentation/` sont tous deux mis à jour, sans chemins codés en dur). Il :
+- Configure les outils via `upgrade-tools.sh` (nvm / Node LTS, `pnpm` global, `npm-check-updates`, `doctoc`)
+- Effectue des mises à jour **compatibles avec le build** pour chaque paquet : `npm-check-updates` résout les dernières versions, puis l'installation et `typecheck`/`lint` sont exécutées depuis la racine de l'espace de travail. Les mises à jour qui échouent à la vérification sont traitées par bissection en modifiant `package.json` (et non `pnpm add`, que pnpm rejette à la racine de l'espace de travail). Des barrières de dépendances (peer gates) intégrées bloquent `eslint` et `typescript` quand `eslint-plugin-react` / `typescript-eslint` ne permettent pas encore la dernière version majeure.
+- Met à jour le fichier lock de pnpm de l'espace de travail et installe les dépendances
 - Met à jour la base de données browserslist
 - Vérifie les vulnérabilités (`pnpm audit`) et applique des corrections non-bloquantes (`pnpm audit --fix`)
 - **Priorise la sécurité** : si une dépendance directe vulnérable ne peut être corrigée que par une mise à niveau cassant la construction, la version sûre est appliquée de force et les erreurs de construction sont signalées pour que le code puisse être mis à jour pour la compatibilité
