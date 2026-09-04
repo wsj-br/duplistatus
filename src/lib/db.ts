@@ -7,6 +7,7 @@ import { randomBytes } from 'crypto';
 import { BackupNotificationConfig } from '@/lib/types';
 import { defaultAuthConfig } from './default-config';
 import { getDataDir } from './paths';
+import { isNextProductionBuild } from './next-build-phase';
 
 const databaseTimestamp = (): string =>
   new Date().toLocaleString(undefined, { hour12: false });
@@ -99,8 +100,14 @@ function updateDbInstance(newInstance: Database.Database): void {
   db = newInstance;
 }
 
-// Reuse existing database connection if available (hot reload in dev)
-if (global.__dbInstance) {
+// Reuse existing database connection if available (hot reload in dev).
+// During `next build`, page-data workers import this module in parallel.
+// Opening the on-disk file and setting WAL from several processes races
+// (SQLITE_BUSY). Use an in-memory stub; compile does not need real data.
+if (isNextProductionBuild()) {
+  db = new Database(':memory:');
+  global.__dbInstance = db;
+} else if (global.__dbInstance) {
   db = global.__dbInstance;
 } else {
   try {
@@ -116,6 +123,8 @@ if (global.__dbInstance) {
     
     // Configure SQLite for better concurrency and performance
     // Only set pragmas that are safe to change on existing databases
+    // busy_timeout first so a later WAL change can wait instead of failing immediately
+    db.pragma('busy_timeout = 30000'); // 30 second busy timeout
     try {
       db.pragma('journal_mode = WAL'); // Write-Ahead Logging for better concurrency
     } catch (error) {
@@ -128,7 +137,6 @@ if (global.__dbInstance) {
     db.pragma('mmap_size = 0'); // Disable memory-mapped I/O to avoid I/O errors
     // Note: page_size and auto_vacuum can only be set during database creation
     db.pragma('wal_autocheckpoint = 1000'); // Checkpoint every 1000 pages
-    db.pragma('busy_timeout = 30000'); // 30 second busy timeout
     
     // Store in global for hot reload persistence
     global.__dbInstance = db;
@@ -303,8 +311,11 @@ class DatabaseInitLock {
 let isFreshDatabase = false;
 const initLock = new DatabaseInitLock(dbPath);
 
-// Check if database is empty and initialize schema if needed
-try {
+// Check if database is empty and initialize schema if needed.
+// Skip during `next build` — the in-memory stub has no tables and compile
+// must not create a real schema or contend for the on-disk file.
+if (!isNextProductionBuild()) {
+  try {
   // Check if any tables exist by querying sqlite_master
   const tableCount = db.prepare(`
     SELECT COUNT(*) as count 
@@ -644,18 +655,19 @@ try {
     // Database already exists, not a fresh database
     isFreshDatabase = false;
   }
-} catch (error) {
-  const errorMessage = error instanceof Error ? error.message : String(error);
-  
-  // During concurrent builds, tables might already exist - this is okay
-  // Check if the error is about tables already existing
-  if (errorMessage.includes('already exists') || errorMessage.includes('table') && errorMessage.includes('exists')) {
-    logWithTimestamp('Database tables already exist (likely from concurrent build process), continuing...');
-    // Don't throw - the database is already initialized
-    isFreshDatabase = true; // Mark as fresh so migrations are skipped
-  } else {
-    errorWithTimestamp('Failed to initialize database schema:', errorMessage);
-    throw error;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    
+    // During concurrent builds, tables might already exist - this is okay
+    // Check if the error is about tables already existing
+    if (errorMessage.includes('already exists') || errorMessage.includes('table') && errorMessage.includes('exists')) {
+      logWithTimestamp('Database tables already exist (likely from concurrent build process), continuing...');
+      // Don't throw - the database is already initialized
+      isFreshDatabase = true; // Mark as fresh so migrations are skipped
+    } else {
+      errorWithTimestamp('Failed to initialize database schema:', errorMessage);
+      throw error;
+    }
   }
 }
 
@@ -769,6 +781,10 @@ let initializationError: Error | null = null;
 
 // Function to ensure database is fully initialized
 async function ensureDatabaseInitialized() {
+  if (isNextProductionBuild()) {
+    return;
+  }
+
   // Sync with global state (important for SSR chunks that have separate module instances)
   if (global.__databaseStatus) {
     databaseStatus = global.__databaseStatus;

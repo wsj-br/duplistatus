@@ -6,6 +6,7 @@ import { BackupSelectionProvider } from "@/contexts/backup-selection-context";
 import { requireServerAuth } from "@/lib/auth-server";
 
 import { getLocaleCodeList } from "@/lib/locales";
+import { isNextProductionBuild } from "@/lib/next-build-phase";
 
 const LOCALES = getLocaleCodeList();
 
@@ -19,6 +20,9 @@ export async function generateMetadata() {
 }
 
 export async function generateStaticParams() {
+  if (isNextProductionBuild()) {
+    return [];
+  }
   const servers = await getAllServers();
   if (!servers) return [];
   const list: { locale: string; serverId: string }[] = [];
