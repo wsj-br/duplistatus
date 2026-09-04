@@ -1,6 +1,7 @@
 import { defineConfig, globalIgnores } from 'eslint/config'
+import tsParser from '@typescript-eslint/parser'
 import nextVitals from 'eslint-config-next/core-web-vitals'
- 
+
 const eslintConfig = defineConfig([
   ...nextVitals,
   // Override default ignores of eslint-config-next.
@@ -18,6 +19,20 @@ const eslintConfig = defineConfig([
     '.intlayer/**',
   ]),
   {
+    // eslint-config-next still parses JS with Next's bundled Babel parser, whose
+    // ScopeManager lacks addGlobals (required by ESLint 10). typescript-eslint
+    // already implements that API and handles JSX.
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        ecmaFeatures: { jsx: true },
+      },
+    },
+    settings: {
+      // Pin version so eslint-plugin-react 7.37.5 never calls context.getFilename()
+      // (removed in ESLint 10) during "detect".
+      react: { version: '19' },
+    },
     // React Compiler rules from eslint-plugin-react-hooks: many patterns below are
     // intentional (data fetch on mount, modal reset, derived sync). Full compliance
     // would require large refactors; keep core hooks rules from eslint-config-next.

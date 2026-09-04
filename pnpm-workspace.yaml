@@ -89,6 +89,10 @@ overrides:
 peerDependencyRules:
   allowedVersions:
     webpack: '5'
+    # eslint-plugin-react / import / jsx-a11y still declare eslint ^9 only.
+    # Runtime is ESLint 10; react version is pinned in eslint.config.mjs so the
+    # plugin's detect path (removed context.getFilename) is never used.
+    eslint: '10'
 
 allowedDeprecatedVersions:
   prebuild-install: 7.1.3
