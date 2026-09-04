@@ -2,8 +2,13 @@ import { NextRequest } from 'next/server';
 import { getCronConfig } from '@/lib/db-utils';
 import { withCSRF } from '@/lib/csrf-middleware';
 
-const cronConfig = getCronConfig();
-const CRON_SERVICE_URL = process.env.CRON_SERVICE_URL || `http://localhost:${cronConfig.port}`;
+function getCronServiceUrl(): string {
+  if (process.env.CRON_SERVICE_URL) {
+    return process.env.CRON_SERVICE_URL;
+  }
+  const cronConfig = getCronConfig();
+  return `http://localhost:${cronConfig.port}`;
+}
 
 export const GET = withCSRF(async (
   request: NextRequest,
@@ -12,7 +17,7 @@ export const GET = withCSRF(async (
   try {
     const resolvedParams = await params;
     const path = resolvedParams.path.join('/');
-    const response = await fetch(`${CRON_SERVICE_URL}/${path}`);
+    const response = await fetch(`${getCronServiceUrl()}/${path}`);
     return new Response(response.body, {
       status: response.status,
       headers: {
@@ -44,7 +49,7 @@ export const POST = withCSRF(async (
     // First read the request body as a stream
     const body = await request.text();
     
-    const response = await fetch(`${CRON_SERVICE_URL}/${path}`, {
+    const response = await fetch(`${getCronServiceUrl()}/${path}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

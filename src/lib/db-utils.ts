@@ -13,6 +13,7 @@ import { GetNextBackupRunDate } from './server_intervals';
 import { defaultBackupNotificationConfig } from './default-config';
 import { encryptData, decryptData } from './secrets';
 import { SOURCE_LOCALE, parseLocaleTag } from './locales';
+import { isNextProductionBuild } from './next-build-phase';
 
 // Request-level cache to avoid redundant function calls within a single request
 // In production mode, this is a module-level variable that persists across requests,
@@ -400,6 +401,9 @@ function safeDbOperation<T>(operation: () => T, operationName: string, fallback?
 
 // Configuration data functions (moved from config-data.ts)
 export function getConfiguration(key: string): string | null {
+  if (isNextProductionBuild()) {
+    return null;
+  }
   return withDb(() => {
     try {
       const row = db.prepare('SELECT value FROM configurations WHERE key = ?').get(key) as { value: string } | undefined;

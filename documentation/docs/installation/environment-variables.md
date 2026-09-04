@@ -14,3 +14,5 @@ The application supports the following environment variables for configuration:
 | `PWD_ENFORCE`             | Set to `false` to disable password complexity requirements (uppercase, lowercase, numbers). | Enforced (full validation) |
 | `PWD_MIN_LEN`             | Minimum password length in characters  (always enforced)                                    | `8`                        |
 
+`NEXT_TELEMETRY_DISABLED=1` is set by the Docker image and by `pnpm build`, `pnpm build-local`, `pnpm start`, `pnpm start-local`, and `pnpm dev`, so Next.js does not collect anonymous CLI telemetry. To persist the opt-out in your user config instead, run `npx next telemetry disable`.
+
