@@ -34,6 +34,14 @@ pnpm generate-test-data --upload --servers=1
 pnpm generate-test-data --servers=30
 ```
 
+The script assigns Duplicati versions **per server** (the same report string is written to every backup for that server):
+
+- **70–80% current**: uses the latest cached stable release from `configurations.duplicati_versions` when available, otherwise a pinned fallback (`2.1.0.5_stable`).
+- **Remaining older**: a strictly previous stable version so the dashboard badge compares as outdated (yellow).
+- Direct-DB mode wipes `configurations` first, then restores or seeds the version cache so current/outdated comparison works immediately.
+- Small counts cannot always land in 70–80%: `--servers=1` is 100% current; `--servers=2` or `3` keeps at least one older server; `--servers=6` is 5 current (83%). `--servers=12` (used by `pnpm take-screenshots`) is **9 current / 3 older**.
+- When `pnpm take-screenshots` later reduces the dataset to three servers, it keeps the protected overdue server and **at least one older-version server**.
+
 >[!CAUTION]
 > This script deletes all previous data in the database and replaces it with test data.
 > Back up your database before running this script.

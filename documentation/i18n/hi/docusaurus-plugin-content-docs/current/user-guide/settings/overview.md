@@ -9,7 +9,7 @@ Administrators sabhi available settings dekhte hain.
 <table>
   <tr>
     <td>
-      ![Settings Sidebar - Admin View](../../assets/screen-settings-left-panel-admin.png)
+      ![Prabandhak View - Settings Sidebar](../../assets/screen-settings-left-panel-admin.png)
     </td>
     <td>
       <ul>
@@ -33,6 +33,7 @@ Administrators sabhi available settings dekhte hain.
           <ul>
             <li><a href="server-settings.md">Server</a>: Manage Duplicati server configurations</li>
             <li><a href="display-settings.md">Display settings</a>: Configure theme, chart time range, chart style, format locale, auto-refresh interval, card sort order, and week start</li>
+            <li><a href="duplicati-versions.md">डुप्लिकेटी संस्करण</a>: View cached Duplicati release versions and configure the version check schedule</li>
             <li><a href="database-maintenance.md">Database Maintenance</a>: Perform database cleanup (admin only)</li>
             <li><a href="user-management-settings.md">Upyogkarta</a>: Manage user accounts (admin only)</li>
             <li><a href="audit-logs-viewer.md">Audit log</a>: View system audit logs</li>
@@ -52,7 +53,7 @@ Regular users ek limited set of settings dekhte hain.
 <table>
   <tr>
     <td>
-      ![Settings Sidebar - Non-Admin View](../../assets/screen-settings-left-panel-non-admin.png)
+      ![Non-Admin View - Settings Sidebar](../../assets/screen-settings-left-panel-non-admin.png)
     </td>
     <td>
       <ul>
@@ -76,6 +77,7 @@ Regular users ek limited set of settings dekhte hain.
           <ul>
             <li><a href="server-settings.md">Server</a>: View server configurations (read-only)</li>
             <li><a href="display-settings.md">Display</a>: Configure theme, chart time range, chart style, format locale, auto-refresh interval, card sort order, and week start</li>
+            <li><a href="duplicati-versions.md">डुप्लिकेटी संस्करण</a>: View cached Duplicati release versions (schedule changes are administrator-only)</li>
             <li><a href="audit-logs-viewer.md">Audit log</a>: View system audit logs (read-only)</li>
           </ul>
         </li>

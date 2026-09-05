@@ -42,7 +42,7 @@
 
 **小部件显示：**
 
-![Homepage Summary Widget](/img/homepage-summary.png)
+![主页摘要小部件](/img/homepage-summary.png)
 
 ## 上次备份信息小部件 {#last-backup-information-widget}
 
@@ -77,7 +77,7 @@
 
 **小部件显示：**
 
-![Homepage Last Backup Widget](/img/homepage-lastbackup.png)
+![主页最后备份小部件](/img/homepage-lastbackup.png)
 
 ## 配置说明 {#configuration-notes}
 

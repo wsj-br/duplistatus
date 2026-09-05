@@ -125,43 +125,42 @@ docker start duplistatus
 3. 确保文件名为 `backups.db`。
 4. 启动容器。
 
-```bash
-docker logs <container-name>
-```
-
 :::note
-如果您手动恢复数据库，可能会遇到权限错误。 
+如果您手动还原数据库，可能会遇到权限错误。
 
-检查容器日志并根据需要调整权限。请参阅下面的 [故障排除](#troubleshooting-your-restore--rollback) 部分以获取更多信息。
+检查容器日志并根据需要调整权限。有关更多信息，请参阅下面的[故障排除](#troubleshooting-your-restore--rollback)部分。
 :::
 
 ## 自动迁移过程 {#automatic-migration-process}
 
-启动新版本时，迁移会自动运行：
+当您启动新版本时，迁移会自动运行：
 
-1. **备份创建**：在您的数据目录中创建带时间戳的备份
-2. **模式更新**：更新数据库表和字段
-3. **数据迁移**：保留和迁移所有现有数据
+1. **备份创建**：在您的数据目录中创建一个带时间戳的备份
+2. **架构更新**：根据需要更新数据库表和字段
+3. **数据迁移**：保留并迁移所有现有数据
 4. **验证**：记录迁移成功
 
 ### 监控迁移 {#monitoring-migration}
 
-检查 Docker 日志以监控迁移进度：
+检查Docker日志以监控迁移进度：
 
+```bash
+docker logs <container-name>
+```
 
-查找类似以下的消息：
+查找以下消息：
 - `"Found X pending migrations"`
 - `"Running consolidated migration X.0..."`
 - `"Migration X.0 completed successfully"`
 - `"Database backup created: /path/to/backups-copy-YYYY-MM-DDTHH-MM-SS.db"`
 - `"All migrations completed successfully"`
 
-## 特定版本的迁移说明 {#version-specific-migration-notes}
+## 版本特定迁移说明 {#version-specific-migration-notes}
 
-### 升级到版本 0.9.x 或更高版本（模式 v4.0） {#upgrading-to-version-09x-or-later-schema-v40}
+### 升级到版本0.9.x或更高版本（架构v4.0） {#upgrading-to-version-09x-or-later-schema-v40}
 
 :::warning
-**现在需要身份验证。** 所有用户在升级后必须登录。
+**现在需要身份验证。** 升级后，所有用户必须登录。
 :::
 
 #### 自动更改的内容 {#what-changes-automatically}

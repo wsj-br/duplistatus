@@ -35,6 +35,8 @@ interface ConfigContextProps {
   setStartOfWeek: (start: StartOfWeek) => void;
   formatLocale: FormatLocaleOverride;
   setFormatLocale: (locale: FormatLocaleOverride) => void;
+  showDashboardVersion: boolean;
+  setShowDashboardVersion: (show: boolean) => void;
   overdueTolerance: OverdueTolerance;
   refreshOverdueTolerance: () => Promise<void>;
   cleanupDatabase: () => Promise<void>;
@@ -53,6 +55,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
   const [dashboardCardsSortOrder, setDashboardCardsSortOrder] = useState<DashboardCardsSortOrder>(defaultUIConfig.dashboardCardsSortOrder);
   const [startOfWeek, setStartOfWeek] = useState<StartOfWeek>(defaultUIConfig.startOfWeek);
   const [formatLocale, setFormatLocale] = useState<FormatLocaleOverride>(defaultUIConfig.formatLocale);
+  const [showDashboardVersion, setShowDashboardVersion] = useState<boolean>(defaultUIConfig.showDashboardVersion);
   const [overdueTolerance, setOverdueTolerance] = useState<OverdueTolerance>(defaultOverdueTolerance);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const pathname = usePathname();
@@ -100,6 +103,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
         if (config.dashboardCardsSortOrder) setDashboardCardsSortOrder(config.dashboardCardsSortOrder);
         if (config.startOfWeek) setStartOfWeek(config.startOfWeek);
         if (config.formatLocale) setFormatLocale(config.formatLocale);
+        if (config.showDashboardVersion !== undefined) setShowDashboardVersion(config.showDashboardVersion === true);
       } catch (error) {
         console.error('Failed to parse saved config from localStorage:', error);
         // Clear the invalid config from localStorage
@@ -143,9 +147,10 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
         dashboardCardsSortOrder,
         startOfWeek,
         formatLocale,
+        showDashboardVersion,
       }));
     }
-  }, [databaseCleanupPeriod, tablePageSize, chartTimeRange, chartStyle, autoRefreshInterval, autoRefreshEnabled, dashboardCardsSortOrder, startOfWeek, formatLocale, currentUser]);
+  }, [databaseCleanupPeriod, tablePageSize, chartTimeRange, chartStyle, autoRefreshInterval, autoRefreshEnabled, dashboardCardsSortOrder, startOfWeek, formatLocale, showDashboardVersion, currentUser]);
 
   const cleanupDatabase = async () => {
     try {
@@ -261,6 +266,8 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
         setStartOfWeek,
         formatLocale,
         setFormatLocale,
+        showDashboardVersion,
+        setShowDashboardVersion,
         overdueTolerance,
         refreshOverdueTolerance,
         cleanupDatabase,

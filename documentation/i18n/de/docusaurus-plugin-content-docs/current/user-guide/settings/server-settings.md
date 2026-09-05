@@ -2,13 +2,14 @@
 
 Sie können hier einen alternativen Namen (Alias) für Ihre Server, einen Hinweis zur Beschreibung seiner Funktion und die Webadressen Ihrer Duplicati-Server konfigurieren.
 
-![server settings](../../assets/screen-settings-server.png)
+![Servereinstellungen](../../assets/screen-settings-server.png)
 
 | Einstellung                         | Beschreibung                                                                                                                                                                                  |
 |:--------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------|
 | **Servername**                 | Servername, der im Duplicati-Server konfiguriert ist. Ein <IIcon2 icon="lucide:key-round" color="#42A5F5"/> wird angezeigt, wenn ein Passwort für den Server festgelegt ist.                                         |
 | **Alias**                       | Ein Spitzname oder menschenlesbarer Name Ihres Servers. Beim Überfahren eines Alias wird dessen Name angezeigt; in einigen Fällen wird zur Klarheit sowohl der Alias als auch der Name in Klammern angezeigt. |
 | **Hinweis**                        | Freier Text zur Beschreibung der Serverfunktionalität, des Installationsorts oder anderer Informationen. Wenn konfiguriert, wird er neben dem Namen oder Alias des Servers angezeigt.                 |
+| **Version**                     | Die Duplicati-Version aus dem letzten Sicherungsprotokoll, mit der gleichen Farbe und demselben Tooltip wie das [Dashboard](../dashboard.md#duplicati-server-version). Ausgeblendeter Text ist aktuell oder nicht verfügbar; warme Gelb ist veraltet. |
 | **Web-Interface-Adresse (URL)** | Konfigurieren Sie die URL für den Zugriff auf die Duplicati-Server-Benutzeroberfläche. Sowohl `HTTP` als auch `HTTPS` URLs werden unterstützt.                                                                                           |
 | **Status**                      | Zeigt die Ergebnisse des Verbindungstests oder der gesammelten Backup-Logs an                                                                                                                                              |
 | **Aktionen**                     | Sie können die Verbindung testen, die Duplicati-Benutzeroberfläche öffnen, Logs sammeln und ein Passwort festlegen. Weitere Details finden Sie unten.                                                                                         |

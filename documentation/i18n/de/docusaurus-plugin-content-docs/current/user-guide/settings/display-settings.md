@@ -2,13 +2,14 @@
 
 Konfigurieren Sie die Benutzeroberfläche und Anzeigeeinstellungen.
 
-![Display Settings](../../assets/screen-settings-display.png)
+![Anzeigeeinstellungen](../../assets/screen-settings-display.png)
 
 <br/>
 
 | Einstellung                   | Beschreibung                                         | Standardwert      |
 |:------------------------------|:----------------------------------------------------|:------------------|
 | **Tabellengröße**            | Anzahl der Zeilen pro Seite auf der Serverdetailsseite. | 5 Zeilen             |
+| **Version auf dem Dashboard anzeigen** | Zeigen Sie die Duplicati-Version auf den Dashboard-Karten an oder aus. Die Dashboard-Tabelle zeigt immer die Spalte Version an. Auch verfügbar unter [Duplicati-Versionen](duplicati-versions.md). | An |
 | **Design**                 | Wählen Sie hell, dunkel oder folgen Sie der Darstellung Ihres Betriebssystems (bevorzugt Hell-/Dunkel-Modus). | Systemeinstellung bei Nicht-Festlegung |
 | **Diagramm-Zeitbereich**      | Zeitintervall, das in den Diagrammen angezeigt wird. Verfügbare Optionen: **1W** (letzte 7 Tage), **2W** (letzte 14 Tage), **1M** (letzte 30 Tage), **3M** (letzte 90 Tage). Sie können den Zeitbereich auch direkt über die Diagrammüberschriften umschalten. | 1 Monat            |
 | **Diagrammstil**           | Wählen Sie zwischen weichen Liniendiagrammen oder Balkendiagramm-Visualisierung. Beide Modi verwenden Zeitintervall-Aggregation für optimale Darstellung. Sie können auch direkt über die Diagrammüberschriften umschalten. | Weiche Linien       |

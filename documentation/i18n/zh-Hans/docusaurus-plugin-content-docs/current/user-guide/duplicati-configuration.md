@@ -4,7 +4,7 @@
 
 您可以从下拉列表中选择一个服务器。如果您已经选择了一个服务器（通过点击其卡片）或正在查看其详细信息，则按钮将直接打开该特定服务器的 Duplicati 配置。
 
-![Duplicati configuration](../assets/screen-duplicati-configuration.png)
+![Duplicati 配置](../assets/screen-duplicati-configuration.png)
 
 - 服务器列表将显示 `server name` 或 `server alias (server name)`。
 - 服务器地址在 [设置 → 服务器](settings/server-settings.md) 中配置。

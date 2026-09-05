@@ -2,7 +2,7 @@
 
 Verwalten Sie Ihre Sicherungsdaten und optimieren Sie die Leistung durch Datenbankwartungsvorgänge.
 
-![Database maintenance](../../assets/screen-settings-database-maintenance.png)
+![Datenbankverwaltung](../../assets/screen-settings-database-maintenance.png)
 
 <br/>
 

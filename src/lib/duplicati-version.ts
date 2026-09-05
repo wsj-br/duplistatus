@@ -1,14 +1,19 @@
 import {
   DUPLICATI_CHANNELS,
+  DUPLICATI_VERSION_CHECK_INTERVALS,
   type DuplicatiChannel,
   type DuplicatiChannelVersion,
   type DuplicatiParsedVersion,
   type DuplicatiVersionCache,
+  type DuplicatiVersionCheckInterval,
   type DuplicatiVersionStatus,
 } from './types';
 
 export const DUPLICATI_VERSION_CACHE_KEY = 'duplicati_versions';
+export const DUPLICATI_VERSION_CHECK_CONFIG_KEY = 'duplicati_version_check';
 export const DUPLICATI_VERSION_STALE_MS = 24 * 60 * 60 * 1000;
+export const DEFAULT_DUPLICATI_VERSION_CHECK_INTERVAL: DuplicatiVersionCheckInterval = 'daily';
+export const DEFAULT_DUPLICATI_VERSION_START_HOUR_UTC = 3;
 
 const CHANNEL_SET = new Set<string>(DUPLICATI_CHANNELS);
 
@@ -127,8 +132,71 @@ export function parseDuplicatiReleaseTag(tagName: string | null | undefined): Du
   return parseDuplicatiVersion(tagName.trim());
 }
 
+export function isDuplicatiVersionCheckInterval(
+  value: unknown
+): value is DuplicatiVersionCheckInterval {
+  return typeof value === 'string'
+    && (DUPLICATI_VERSION_CHECK_INTERVALS as readonly string[]).includes(value);
+}
+
+export function isValidUtcHour(value: unknown): value is number {
+  return typeof value === 'number' && Number.isInteger(value) && value >= 0 && value <= 23;
+}
+
+export function formatHourLabel(hour: number): string {
+  return `${String(hour).padStart(2, '0')}:00`;
+}
+
+export function localHourToUtcHour(localHour: number, reference: Date = new Date()): number {
+  const local = new Date(reference);
+  local.setHours(localHour, 0, 0, 0);
+  return local.getUTCHours();
+}
+
+export function utcHourToLocalHour(utcHour: number, reference: Date = new Date()): number {
+  const utc = new Date(reference);
+  utc.setUTCHours(utcHour, 0, 0, 0);
+  return utc.getHours();
+}
+
+export function getDuplicatiVersionStaleMs(interval: DuplicatiVersionCheckInterval): number {
+  switch (interval) {
+    case 'daily':
+      return 24 * 60 * 60 * 1000;
+    case '12h':
+      return 12 * 60 * 60 * 1000;
+    case '6h':
+      return 6 * 60 * 60 * 1000;
+    default: {
+      const exhaustive: never = interval;
+      return exhaustive;
+    }
+  }
+}
+
+export function getDuplicatiVersionRunHoursUtc(
+  interval: DuplicatiVersionCheckInterval,
+  startHourUtc: number
+): number[] {
+  const step = interval === 'daily' ? 24 : interval === '12h' ? 12 : 6;
+  const hours: number[] = [];
+  for (let offset = 0; offset < 24; offset += step) {
+    hours.push((startHourUtc + offset) % 24);
+  }
+  return hours.sort((left, right) => left - right);
+}
+
+export function buildDuplicatiVersionCronExpression(
+  interval: DuplicatiVersionCheckInterval,
+  startHourUtc: number
+): string {
+  const hours = getDuplicatiVersionRunHoursUtc(interval, startHourUtc);
+  return `0 ${hours.join(',')} * * *`;
+}
+
 export function isDuplicatiVersionCacheStale(
   cache: DuplicatiVersionCache | null,
+  staleMs: number = DUPLICATI_VERSION_STALE_MS,
   now: Date = new Date()
 ): boolean {
   if (!cache || !cache.updatedAt) {
@@ -140,7 +208,7 @@ export function isDuplicatiVersionCacheStale(
     return true;
   }
 
-  return now.getTime() - updatedAt.getTime() > DUPLICATI_VERSION_STALE_MS;
+  return now.getTime() - updatedAt.getTime() > staleMs;
 }
 
 export function compareServerVersionToCache(

@@ -31,7 +31,7 @@ Le service cron inclut :
 - **Mode observation** : Le mode développement inclut la surveillance des fichiers pour redémarrer automatiquement en cas de modification du code
 - **Surveillance des sauvegardes en retard** : Vérification automatisée et notification des sauvegardes en retard (exécutée toutes les 5 minutes par défaut)
 - **Nettoyage du journal d'audit** : Nettoyage automatique des anciennes entrées du journal d'audit (s'exécute quotidiennement à 2 h UTC)
-- **Actualisation de la version de Duplicati** : Met à jour les versions les plus récentes des canaux Duplicati mises en cache à partir des versions GitHub (s'exécute quotidiennement à 3 h UTC)
+- **Actualisation des versions de Duplicati** : Met à jour les versions de chaîne de Duplicati les plus récentes mises en cache à partir des versions GitHub. La valeur par défaut est quotidienne à 3 h UTC ; les administrateurs peuvent modifier l'intervalle et l'heure de début dans [Paramètres → Versions de Duplicati](../user-guide/settings/duplicati-versions.md).
 - **Planification flexible** : Expressions cron configurables pour différentes tâches
 - **Intégration de la base de données** : Partage la même base de données SQLite avec l'application principale
 - **API RESTful** : API complète pour la gestion et la surveillance des services

@@ -2,7 +2,7 @@
 
 配置审计日志在自动清理之前保留的时间长度。
 
-![Audit Log Retention](../../assets/screen-settings-audit-retention.png)
+![审计日志保留](../../assets/screen-settings-audit-retention.png)
 
 | 设置 | 描述 | 默认值 |
 |:-------|:-----------|:-------------|

@@ -67,9 +67,9 @@ Ich verwendete diese Prompts später, um das Design und Verhalten anzupassen und
 
 Nach dem Durchlaufen dieser Eingabeaufforderungen generierte Firebase den Prototyp wie in den folgenden Screenshots dargestellt:
 
-![prototype](/img/screen-prototype.png)
+![Prototyp](/img/screen-prototype.png)
 
-![prototype-detail](/img/screen-prototype-detail.png)
+![Prototyp-Detail](/img/screen-prototype-detail.png)
 
 :::note
 Ein interessanter Punkt war, dass Firebase Studio seit der ersten Interaktion zufällige Daten generierte, um die Seiten/Diagramme zu füllen, wodurch der Prototyp wie eine Live-Anwendung funktionierte.

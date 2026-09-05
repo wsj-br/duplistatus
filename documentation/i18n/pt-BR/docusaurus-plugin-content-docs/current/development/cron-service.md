@@ -31,7 +31,7 @@ O serviço cron inclui:
 - **Modo de observação**: O modo de desenvolvimento inclui monitoramento de arquivos para reinicialização automática em alterações de código
 - **Monitoramento de backups atrasados**: Verificação automatizada e notificação de backups atrasados (executado a cada 5 minutos por padrão)
 - **Limpeza do log de auditoria**: Limpeza automatizada de entradas antigas do log de auditoria (executa diariamente às 2h UTC)
-- **Atualização da versão do Duplicati**: Atualiza as versões mais recentes do canal Duplicati em cache a partir das versões do GitHub (executa diariamente às 3h UTC)
+- **Atualização da versão do Duplicati**: Atualiza as versões mais recentes do canal do Duplicati em cache a partir das versões do GitHub Releases. O padrão é diário às 3h UTC; administradores podem alterar o intervalo e a hora de início em [Configurações → Versões do Duplicati](../user-guide/settings/duplicati-versions.md).
 - **Agendamento flexível**: Expressões cron configuráveis para diferentes tarefas
-- **Integração com banco de dados**: Compartilha o mesmo banco de dados SQLite com o aplicativo principal
+- **Integração com banco de dados**: Compartilha o mesmo banco de dados SQLite com a aplicação principal
 - **API RESTful**: API completa para gerenciamento e monitoramento do serviço

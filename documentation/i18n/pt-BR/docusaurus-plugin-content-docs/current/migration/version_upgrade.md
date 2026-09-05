@@ -125,22 +125,18 @@ Se estiver usando uma pasta local mapeada para o contêiner, não precisará de 
 3. Garantir que o arquivo seja nomeado exatamente como `backups.db`.
 4. Iniciar o container.
 
-```bash
-docker logs <container-name>
-```
-
 :::note
-Se você restaurar o banco de dados manualmente, poderá encontrar erros de permissão. 
+Se você restaurar o banco de dados manualmente, pode enfrentar erros de permissão. 
 
-Verifique os logs do container e ajuste as permissões se necessário. Consulte a seção [Troubleshooting](#troubleshooting-your-restore--rollback) abaixo para mais informações.
-::: 
+Verifique os logs do contêiner e ajuste as permissões, se necessário. Consulte a seção [Solução de Problemas](#troubleshooting-your-restore--rollback) abaixo para obter mais informações.
+:::
 
 ## Processo de Migração Automática {#automatic-migration-process}
 
 Quando você inicia uma nova versão, as migrações são executadas automaticamente:
 
-1. **Criação de Backup**: Um backup com timestamp é criado no seu diretório de dados
-2. **Atualização de Schema**: As tabelas e campos do banco de dados são atualizados conforme necessário
+1. **Criação de Backup**: Um backup com carimbo de data e hora é criado no diretório de dados
+2. **Atualização de Esquema**: As tabelas e campos do banco de dados são atualizados conforme necessário
 3. **Migração de Dados**: Todos os dados existentes são preservados e migrados
 4. **Verificação**: O sucesso da migração é registrado
 
@@ -148,17 +144,20 @@ Quando você inicia uma nova versão, as migrações são executadas automaticam
 
 Verifique os logs do Docker para monitorar o progresso da migração:
 
+```bash
+docker logs <container-name>
+```
 
-Procure por mensagens como:
+Procure mensagens como:
 - `"Found X pending migrations"`
 - `"Running consolidated migration X.0..."`
 - `"Migration X.0 completed successfully"`
 - `"Database backup created: /path/to/backups-copy-YYYY-MM-DDTHH-MM-SS.db"`
 - `"All migrations completed successfully"`
 
-## Notas de Migração Específicas da Versão {#version-specific-migration-notes}
+## Notas de Migração Específicas de Versão {#version-specific-migration-notes}
 
-### Atualizando para Versão 0.9.x ou Posterior (Schema v4.0) {#upgrading-to-version-09x-or-later-schema-v40}
+### Atualizando para a Versão 0.9.x ou Superior (Esquema v4.0) {#upgrading-to-version-09x-or-later-schema-v40}
 
 :::warning
 **Autenticação agora é obrigatória.** Todos os usuários devem entrar após a atualização.

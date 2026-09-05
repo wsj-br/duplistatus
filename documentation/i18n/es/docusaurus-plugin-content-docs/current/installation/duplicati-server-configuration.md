@@ -6,7 +6,7 @@ Aplique esta configuración a cada uno de sus servidores Duplicati:
 
 1. **Configurar la notificación de resultados de copia de seguridad:** En la página de configuración de Duplicati, seleccione `Settings` y, en la sección `Default Options`, incluya las siguientes opciones.
 
-![Duplicati configuration](/img/duplicati-options.png)
+![Configuración de Duplicati](/img/duplicati-options.png)
 
 Reemplace 'my.local.server' con el nombre de su servidor o dirección IP donde se está ejecutando **duplistatus**.
 
@@ -42,7 +42,7 @@ Después de configurar el servidor **duplistatus**, recopile los logs de backup 
 Si no habilita el acceso remoto en Duplicati, los enlaces en **Duplistatus** para acceder a la __Interfaz de Duplicati__ no funcionarán.
 :::
 
-![Duplicati settings](/img/duplicati-settings.png)
+![Configuración de Duplicati](/img/duplicati-settings.png)
 
 :::caution
 Solo habilite el acceso remoto si su servidor Duplicati está protegido por una red segura

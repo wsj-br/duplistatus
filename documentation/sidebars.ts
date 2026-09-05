@@ -61,6 +61,7 @@ const sidebars: SidebarsConfig = {
             'user-guide/settings/email-settings',
             'user-guide/settings/server-settings',
             'user-guide/settings/display-settings',
+            'user-guide/settings/duplicati-versions',
             'user-guide/settings/database-maintenance',
             'user-guide/settings/user-management-settings',
             'user-guide/settings/audit-logs-viewer',

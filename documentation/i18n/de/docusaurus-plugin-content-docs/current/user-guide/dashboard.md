@@ -135,11 +135,11 @@ Wenn Sie den Mauszeiger über das Symbol für die Überfällige-Sicherungs-Warnu
 
 Das Dashboard zeigt die Duplicati-Version an, die im neuesten Backup-Protokoll für jeden Server (Kartenansicht) oder Backup-Job (Tabellenansicht) gemeldet wurde.
 
-- **Wo sie erscheint**: Links neben der Statusanzeige auf Karten und in der Spalte **Version** in der Tabelle (nach **Überfällig / Nächste Ausführung**).
-- **Farbe**: Gedämpfter Text bedeutet, dass die Version der neuesten Veröffentlichung für diesen Kanal entspricht (oder der Vergleich nicht verfügbar ist). Warnendes Gelb bedeutet, dass die Version älter als die neueste Veröffentlichung für diesen Kanal ist.
-- **Tooltip**: Bewegen Sie den Mauszeiger über die Versionsnummer oder klicken Sie darauf, um den Update-Kanal (`stable`, `beta`, `experimental` oder `canary`), die Serverversion und die neueste verfügbare Version für diesen Kanal anzuzeigen.
+- **Wo es erscheint**: Links neben dem Statusindikator auf den Karten und in der **Version**-Spalte der Tabelle (nach **Überfällig / Nächste Ausführung**). Sie können das Kartensymbol in den [Anzeigeeinstellungen](settings/display-settings.md) oder unter [Duplicati-Versionen](settings/duplicati-versions.md) ausblenden. Die Tabellenspalte bleibt immer sichtbar.
+- **Farbe**: Abgedunkelte Schrift bedeutet, dass die Version der neuesten Veröffentlichung für diesen Kanal entspricht (oder die Vergleich ist nicht verfügbar). Warnungsgelb bedeutet, dass die Version älter ist als die neueste Veröffentlichung für diesen Kanal.
+- **Tooltip**: Bewegen Sie den Mauszeiger über oder klicken Sie auf die Versionsnummer, um den Update-Kanal (`stable`, `beta`, `experimental`, oder `canary`), die Serverversion und die neueste verfügbare Version für diesen Kanal anzuzeigen.
 
-**duplistatus** vergleicht die Version aus dem Backup-Protokoll mit den neuesten auf GitHub veröffentlichten Duplicati-Versionen. Die neuesten Versionen pro Kanal werden einmal täglich aktualisiert (und beim Start, wenn der Cache älter als 24 Stunden ist).
+**duplistatus** vergleicht die Version aus dem Sicherungsprotokoll mit den neuesten Duplicati-Veröffentlichungen auf GitHub. Administratoren können die zwischengespeicherten Kanalversionen anzeigen und das Intervall für die Prüfung sowie die Startzeit in den [Einstellungen → Duplicati-Versionen](settings/duplicati-versions.md) konfigurieren. Der Cache wird auch beim Start aktualisiert, wenn er älter ist als das ausgewählte Intervall. Erfolgreiche und fehlgeschlagene GitHub-Updates werden im [Audit-Protokoll](settings/audit-logs-viewer.md) als `duplicati_version_refresh` (gestartet durch `startup`, `cron`, oder `manual`) aufgezeichnet.
 
 :::important
 **duplistatus** fragt den Duplicati-Server nicht nach der aktuell laufenden Version ab. Es verwendet die in der letzten empfangenen oder [gesammelten](collect-backup-logs.md) Backup-Protokoll gespeicherte Version. Nachdem Sie Duplicati aktualisiert haben, zeigt das Dashboard weiterhin die vorherige Version an, bis ein neues Backup-Protokoll eintrifft.

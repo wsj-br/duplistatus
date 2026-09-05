@@ -16,7 +16,8 @@ import { useConfig, type ChartTimeRange } from '@/contexts/config-context';
 import { CHART_TIME_RANGES } from '@/lib/chart-utils';
 import { useTheme } from '@/contexts/theme-context';
 import type { FormatLocaleOverride, StartOfWeek } from '@/lib/types';
-import { MonitorCog, Table, BarChart3, RefreshCw, SortDesc, Moon, Sun, Calendar1, Languages, Check, ChevronsUpDown, SunMoon, LineChart } from 'lucide-react';
+import { MonitorCog, Table, BarChart3, RefreshCw, SortDesc, Moon, Sun, Calendar1, Languages, Check, ChevronsUpDown, SunMoon, LineChart, GitCompare } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
 import { ColoredIcon } from '@/components/ui/colored-icon';
 import type { ChartStyle, TablePageSize } from '@/contexts/config-context';
 import {
@@ -59,6 +60,8 @@ export function DisplaySettingsForm() {
     setStartOfWeek,
     formatLocale,
     setFormatLocale,
+    showDashboardVersion,
+    setShowDashboardVersion,
   } = useConfig();
   
   const { themePreference, resolvedTheme, setThemePreference } = useTheme();
@@ -267,6 +270,24 @@ export function DisplaySettingsForm() {
 
           {/* Right Column ----------------------------------------------------------------------------------------------------- */}
           <div className="flex flex-col gap-y-8 mt-8 md:mt-0">
+
+            {/* Show dashboard version */}
+            <div className="grid gap-2">
+              <Label htmlFor="show-dashboard-version" className="flex items-center gap-2">
+                <ColoredIcon icon={GitCompare} color="blue" size="sm" />
+                {t("Show version on dashboard")}
+              </Label>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="show-dashboard-version"
+                  checked={showDashboardVersion}
+                  onCheckedChange={(checked) => setShowDashboardVersion(checked === true)}
+                />
+                <Label htmlFor="show-dashboard-version" className="text-sm font-normal cursor-pointer">
+                  {t("Show the Duplicati version in dashboard card view")}
+                </Label>
+              </div>
+            </div>
 
             {/* Theme */}
             <div className="grid gap-2">

@@ -4,7 +4,7 @@ O botão <SvgButton svgFilename="duplicati_logo.svg" /> na [Barra de Ferramentas
 
 Você pode selecionar um servidor na lista suspensa. Se você já tiver selecionado um servidor (clicando em seu cartão) ou estiver visualizando seus detalhes, o botão abrirá a Configuração do Duplicati desse servidor específico diretamente.
 
-![Duplicati configuration](../assets/screen-duplicati-configuration.png)
+![Configuração do Duplicati](../assets/screen-duplicati-configuration.png)
 
 - A lista de servidores mostrará o `Nome do servidor` ou `Alias (Nome do servidor)`.
 - Os Endereços de servidores são configurados em [Configurações → Servidor](settings/server-settings.md).

@@ -135,11 +135,11 @@ Vilambit chetaavani icon par mouse rakhne se vilambit backup ke baare mein vishe
 
 Dashboard har server (card view) ya backup job (Table view) ke liye sabse antim backup log mein report kiye gaye Duplicati sanskaran ko dikhata hai.
 
-- **Yah kahan dikhta hai**: Cards par stithi indicator ke bayin or, aur table mein **Version** column mein (**Overdue / Agla chalan** ke baad).
-- **Rang**: Muted text ka matlab hai ki sanskaran us channel ke liye sabse antim release se mel khata hai (ya tulna upalabdh nahi hai). Warning peela rang ka matlab hai ki sanskaran us channel ke liye sabse antim release se purana hai.
-- **Tooltip**: Update channel (`stable`, `beta`, `experimental`, ya `canary`), server sanskaran, aur us channel ke liye sabse antim upalabdh sanskaran dekhne ke liye version number par hover karein ya click karein.
+- **यह कहाँ दिखाई देता है**: कार्ड्स पर स्थिति संकेतक (status indicator) के बाईं ओर, और टेबल में **Sanskaran** कॉलम में (**Overdue / Agla chalan** के बाद)। आप [Display settings](settings/display-settings.md) या [डुप्लिकेटी संस्करण](settings/duplicati-versions.md) से कार्ड बैज को छिपा सकते हैं। टेबल कॉलम हमेशा दिखाई देता रहता है।
+- **रंग**: म्यूटेड टेक्स्ट का अर्थ है कि संस्करण उस चैनल के नवीनतम रिलीज़ से मेल खाता है (या तुलना अनुपलब्ध है)। Warning पीला रंग का अर्थ है कि संस्करण उस चैनल के नवीनतम रिलीज़ से पुराना है।
+- **टूलटिप**: अपडेट चैनल (`stable`, `beta`, `experimental`, या `canary`), सर्वर संस्करण, और उस चैनल के लिए नवीनतम उपलब्ध संस्करण देखने के लिए संस्करण संख्या पर होवर करें या क्लिक करें।
 
-**duplistatus** backup log se sanskaran ki GitHub par publish kiye gaye sabse antim Duplicati releases se tulna karta hai. Har channel ke liye sabse antim versions din mein ek baar (aur startup par yadi cache 24 ghante se purana hai) refresh kiye jate hain.
+**duplistatus** बैकअप लॉग से संस्करण को GitHub पर प्रकाशित नवीनतम डुप्लिकेटी रिलीज़ के साथ तुलना करता है। व्यवस्थापक कैश्ड चैनल संस्करण देख सकते हैं और जांच अंतराल और प्रारंभ समय को [Settings → Duplicati Versions](settings/duplicati-versions.md) में कॉन्फ़िगर कर सकते हैं। कैश भी शुरू पर रिफ्रेश होता है जब यह चयनित अंतराल से पुराना होता है। सफल और असफल GitHub अपडेट्स को [Audit log](settings/audit-logs-viewer.md) में `duplicati_version_refresh` के रूप में रिकॉर्ड किया जाता है (`startup`, `cron`, या `manual` द्वारा शुरू किया गया)।
 
 :::important
 **duplistatus** vartaman mein chal rahe sanskaran ke liye Duplicati server se query nahi karta hai. Yah prapt kiye gaye ya [Ekathrit](collect-backup-logs.md) antim backup log mein store kiye gaye sanskaran ka upyog karta hai. Duplicati upgrade karne ke baad, dashboard naya backup log aane tak pichla sanskaran dikhata rehta hai.

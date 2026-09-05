@@ -42,7 +42,7 @@ Este widget exibe as estatísticas gerais do backup no painel da sua página ini
 
 **Exibição do Widget:**
 
-![Homepage Summary Widget](/img/homepage-summary.png)
+![Widget de Resumo da Página Inicial](/img/homepage-summary.png)
 
 ## Widget de Informações da Última Backup {#last-backup-information-widget}
 
@@ -77,7 +77,7 @@ Este widget exibe as informações de backup mais recentes para uma máquina esp
 
 **Exibição do Widget:**
 
-![Homepage Last Backup Widget](/img/homepage-lastbackup.png)
+![Widget de Último Backup da Página Inicial](/img/homepage-lastbackup.png)
 
 ## Notas de Configuração {#configuration-notes}
 

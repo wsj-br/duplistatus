@@ -135,11 +135,11 @@ Passar o mouse sobre o ícone de aviso de backup atrasado exibe detalhes sobre o
 
 O dashboard mostra a versão do Duplicati relatada no último log de backup para cada servidor (visualização em cartão) ou job de backup (visualização em tabela).
 
-- **Onde aparece**: À esquerda do indicador de status nos cartões e na coluna **Versão** na tabela (após **Atrasado / Próxima execução**).
-- **Cor**: Texto suave significa que a versão corresponde à última versão para aquele canal (ou a comparação não está disponível). O amarelo de aviso significa que a versão é mais antiga que a última versão para aquele canal.
-- **Tooltip**: Passe o mouse ou clique no número da versão para ver o canal de atualização (`stable`, `beta`, `experimental` ou `canary`), a versão do servidor e a última versão disponível para aquele canal.
+- **Onde aparece**: À esquerda do indicador de status nos cards, e na coluna **Versão** na tabela (após **Atrasado / Próxima execução**). Você pode ocultar o badge do card nas [Configurações de Exibição](settings/display-settings.md) ou [Versões do Duplicati](settings/duplicati-versions.md). A coluna da tabela sempre permanece visível.
+- **Cor**: Texto desbotado significa que a versão corresponde à versão mais recente para esse canal (ou a comparação está indisponível). Amarelo de aviso significa que a versão é mais antiga que a versão mais recente para esse canal.
+- **Dica de ferramenta**: Passe o mouse ou clique no número da versão para ver o canal de atualização (`stable`, `beta`, `experimental`, ou `canary`), a versão do servidor e a versão mais recente disponível para esse canal.
 
-O **duplistatus** compara a versão do log de backup com os lançamentos mais recentes do Duplicati publicados no GitHub. As versões mais recentes por canal são atualizadas uma vez por dia (e na inicialização, se o cache for anterior a 24 horas).
+**duplistatus** compara a versão do log de backup com as versões mais recentes do Duplicati publicadas no GitHub. Administradores podem visualizar as versões de canal em cache e configurar o intervalo de verificação e a hora de início em [Configurações → Versões do Duplicati](settings/duplicati-versions.md). O cache também é atualizado na inicialização quando ele é mais antigo que o intervalo selecionado. Atualizações bem-sucedidas e falhas do GitHub são registradas no [log de auditoria](settings/audit-logs-viewer.md) como `duplicati_version_refresh` (iniciado por `startup`, `cron`, ou `manual`).
 
 :::important
 O **duplistatus** não consulta o servidor Duplicati para saber a versão que está sendo executada no momento. Ele usa a versão armazenada no último log de backup que foi recebido ou [Coletado](collect-backup-logs.md). Após você atualizar o Duplicati, o dashboard continuará mostrando a versão anterior até que um novo log de backup chegue.

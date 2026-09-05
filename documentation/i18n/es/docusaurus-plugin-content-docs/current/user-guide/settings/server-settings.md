@@ -2,13 +2,14 @@
 
 Puede configurar un nombre alternativo (alias) para sus servidores, una nota para describir su función y las direcciones web de sus servidores Duplicati aquí.
 
-![server settings](../../assets/screen-settings-server.png)
+![configuración del servidor](../../assets/screen-settings-server.png)
 
 | Configuración                         | Descripción                                                                                                                                                                                  |
 |:--------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Nombre del servidor**                 | Nombre del servidor configurado en el servidor Duplicati. Aparecerá un <IIcon2 icon="lucide:key-round" color="#42A5F5"/> si se establece una contraseña para el servidor.                                         |
 | **Alias**                       | Un apodo o nombre legible para humanos de tu servidor. Al pasar el ratón sobre un alias, mostrará su nombre; en algunos casos, para mayor claridad, mostrará el alias y el nombre entre paréntesis. |
 | **Nota**                        | Texto libre para describir la funcionalidad del servidor, lugar de instalación o cualquier otra información. Cuando se configura, se mostrará junto al nombre o alias del servidor.                 |
+| **Versión**                     | La versión de Duplicati del registro de copia de seguridad más reciente, con el mismo color y sugerencia de herramientas que el [panel](../dashboard.md#duplicati-server-version). El texto atenuado es actual o no disponible; el amarillo de advertencia es obsoleto. |
 | **Dirección de interfaz web (URL)** | Configura la URL para acceder a la interfaz de usuario del servidor Duplicati. Se admiten URLs `HTTP` y `HTTPS`.                                                                                           |
 | **Estado**                      | Muestra los resultados de la prueba o de la recopilación de registros de copia de seguridad                                                                                                                                              |
 | **Acciones**                     | Puedes probar, abrir la interfaz de Duplicati, recopilar registros y establecer una contraseña; consulta a continuación para obtener más detalles.                                                                                         |

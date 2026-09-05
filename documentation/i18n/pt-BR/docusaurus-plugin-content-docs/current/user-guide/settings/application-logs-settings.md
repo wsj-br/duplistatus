@@ -2,7 +2,7 @@
 
 O Visualizador de logs do aplicativo permite que administradores monitorem todos os logs da aplicação em um único lugar, com filtragem, exportação e atualizações em tempo real diretamente da interface web.
 
-![Application Log Viewer](../../assets/screen-settings-application-logs.png)
+![Visualizador de Logs da Aplicação](../../assets/screen-settings-application-logs.png)
 
 <br/>
 

@@ -4,7 +4,7 @@
 
 Die Seite enthält einen **Vorlagensprache**-Selektor, der das Gebietsschema für Standard-Vorlagen festlegt. Das Ändern der Sprache aktualisiert das Gebietsschema für neue Standards, ändert aber **nicht** den Text vorhandener Vorlagen. Um eine neue Sprache auf Ihre Vorlagen anzuwenden, bearbeiten Sie diese entweder manuell oder verwenden Sie **Diese Vorlage auf Standard zurücksetzen** (für die aktuelle Registerkarte) oder **Alle auf Standard zurücksetzen** (für alle drei Vorlagen).
 
-![notification templates](../../assets/screen-settings-templates.png)
+![Benachrichtigungsvorlagen](../../assets/screen-settings-templates.png)
 
 | Vorlage              | Beschreibung                                         |
 | :----------------- | :-------------------------------------------------- |

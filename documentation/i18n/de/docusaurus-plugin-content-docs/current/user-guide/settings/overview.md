@@ -9,22 +9,22 @@ Administratoren sehen alle verfügbaren Einstellungen.
 <table>
   <tr>
     <td>
-      ![Einstellungsseitenleiste - Admin-Ansicht](../../assets/screen-settings-left-panel-admin.png)
+      ![Einstellungen-Seitenleiste - Admin-Ansicht](../../assets/screen-settings-left-panel-admin.png)
     </td>
     <td>
       <ul>
         <li>
           <strong>Benachrichtigungen</strong>
           <ul>
-            <li><a href="backup-notifications-settings.md">Backup-Benachrichtigungen</a>: Pro-Backup-Benachrichtigungseinstellungen konfigurieren</li>
-            <li><a href="backup-monitoring-settings.md">Backup-Überwachung</a>: Überfällige Backup-Erkennung und Warnungen konfigurieren</li>
-            <li><a href="notification-templates.md">Vorlagen</a>: Benachrichtigungsvorlagen anpassen</li>
+            <li><a href="backup-notifications-settings.md">Backup-Benachrichtigungen</a>: Backup-spezifische Benachrichtigungseinstellungen konfigurieren</li>
+            <li><a href="backup-monitoring-settings.md">Backup-Überwachung</a>: Überfällige Backups erkennen und Warnungen konfigurieren</li>
+            <li><a href="notification-templates.md">Vorlagen</a>: Benachrichtigungsnachrichtenvorlagen anpassen</li>
           </ul>
         </li><br/>
         <li>
           <strong>Integrationen</strong>
           <ul>
-            <li><a href="ntfy-settings.md">NTFY</a>: NTFY-Push-Benachrichtigungsdienst konfigurieren</li>
+            <li><a href="ntfy-settings.md">NTFY</a>: NTFY Push-Benachrichtigungsdienst konfigurieren</li>
             <li><a href="email-settings.md">E-Mail</a>: SMTP-E-Mail-Benachrichtigungen konfigurieren</li>
           </ul>
         </li><br/>
@@ -32,12 +32,13 @@ Administratoren sehen alle verfügbaren Einstellungen.
           <strong id="system">System</strong>
           <ul>
             <li><a href="server-settings.md">Server</a>: Duplicati-Serverkonfigurationen verwalten</li>
-            <li><a href="display-settings.md">Anzeigeeinstellungen</a>: Design, Diagramm-Zeitbereich, Diagrammstil, Gebietsschema-Format, automatisches Aktualisierungsintervall, Kartensortierreihenfolge und Wochenbeginn konfigurieren</li>
-            <li><a href="database-maintenance.md">Datenbankverwaltung</a>: Datenbankbereinigung durchführen (nur Admin)</li>
-            <li><a href="user-management-settings.md">Benutzer</a>: Benutzerkonten verwalten (nur Admin)</li>
-            <li><a href="audit-logs-viewer.md">Audit-Protokoll</a>: Systemaudit-Protokolle anzeigen</li>
-            <li><a href="audit-logs-retention.md">Prüfprotokoll-Aufbewahrung</a>: Audit-Protokoll-Aufbewahrung konfigurieren (nur Admin)</li>
-            <li><a href="application-logs-settings.md">Anwendungsprotokolle</a>: Anwendungsprotokolle anzeigen und exportieren (nur Admin)</li>
+            <li><a href="display-settings.md">Anzeigeeinstellungen</a>: Design, Diagramm-Zeitbereich, Diagrammstil, Gebietsschema-Format, automatisches Aktualisierungsintervall, Karten-Sortierreihenfolge und Wochenstart konfigurieren</li>
+            <li><a href="duplicati-versions.md">Duplicati-Versionen</a>: Zwischengespeicherte Duplicati-Release-Versionen anzeigen und den Versionsprüfungszeitplan konfigurieren</li>
+            <li><a href="database-maintenance.md">Datenbankverwaltung</a>: Datenbankbereinigung durchführen (nur Administratoren)</li>
+            <li><a href="user-management-settings.md">Benutzer</a>: Benutzerkonten verwalten (nur Administratoren)</li>
+            <li><a href="audit-logs-viewer.md">Audit-Protokoll</a>: System-Audit-Protokolle anzeigen</li>
+            <li><a href="audit-logs-retention.md">Prüfprotokoll-Aufbewahrung</a>: Prüfprotokoll-Aufbewahrung konfigurieren (nur Administratoren)</li>
+            <li><a href="application-logs-settings.md">Anwendungsprotokolle</a>: Anwendungsprotokolle anzeigen und exportieren (nur Administratoren)</li>
           </ul>
         </li>
       </ul>
@@ -52,14 +53,14 @@ Normale Benutzer sehen einen begrenzten Satz von Einstellungen.
 <table>
   <tr>
     <td>
-      ![Einstellungsseitenleiste - Nicht-Admin-Ansicht](../../assets/screen-settings-left-panel-non-admin.png)
+      ![Einstellungen-Seitenleiste - Nicht-Admin-Ansicht](../../assets/screen-settings-left-panel-non-admin.png)
     </td>
     <td>
       <ul>
         <li>
           <strong>Benachrichtigungen</strong>
           <ul>
-            <li><a href="backup-notifications-settings.md">Backup-Benachrichtigungen</a>: Pro-Backup-Benachrichtigungseinstellungen anzeigen (schreibgeschützt)</li>
+            <li><a href="backup-notifications-settings.md">Backup-Benachrichtigungen</a>: Backup-spezifische Benachrichtigungseinstellungen anzeigen (schreibgeschützt)</li>
             <li><a href="backup-monitoring-settings.md">Backup-Überwachung</a>: Überfällige Backup-Einstellungen anzeigen (schreibgeschützt)</li>
             <li><a href="notification-templates.md">Vorlagen</a>: Benachrichtigungsvorlagen anzeigen (schreibgeschützt)</li>
           </ul>
@@ -75,8 +76,9 @@ Normale Benutzer sehen einen begrenzten Satz von Einstellungen.
           <strong id="system">System</strong>
           <ul>
             <li><a href="server-settings.md">Server</a>: Serverkonfigurationen anzeigen (schreibgeschützt)</li>
-            <li><a href="display-settings.md">Anzeige</a>: Design, Diagramm-Zeitbereich, Diagrammstil, Gebietsschema-Format, automatisches Aktualisierungsintervall, Kartensortierreihenfolge und Wochenbeginn konfigurieren</li>
-            <li><a href="audit-logs-viewer.md">Audit-Protokoll</a>: Systemaudit-Protokolle anzeigen (schreibgeschützt)</li>
+            <li><a href="display-settings.md">Anzeige</a>: Design, Diagramm-Zeitbereich, Diagrammstil, Gebietsschema-Format, automatisches Aktualisierungsintervall, Karten-Sortierreihenfolge und Wochenstart konfigurieren</li>
+            <li><a href="duplicati-versions.md">Duplicati-Versionen</a>: Zwischengespeicherte Duplicati-Release-Versionen anzeigen (Änderungen des Zeitplans sind nur für Administratoren möglich)</li>
+            <li><a href="audit-logs-viewer.md">Audit-Protokoll</a>: System-Audit-Protokolle anzeigen (schreibgeschützt)</li>
           </ul>
         </li>
       </ul>

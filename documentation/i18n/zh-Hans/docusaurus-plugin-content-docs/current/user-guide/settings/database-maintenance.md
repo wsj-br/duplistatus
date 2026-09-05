@@ -2,7 +2,7 @@
 
 通过数据库维护操作管理您的备份数据并优化性能。
 
-![Database maintenance](../../assets/screen-settings-database-maintenance.png)
+![数据库维护](../../assets/screen-settings-database-maintenance.png)
 
 <br/>
 

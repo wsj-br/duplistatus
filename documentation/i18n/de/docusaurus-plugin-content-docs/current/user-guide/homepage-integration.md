@@ -42,7 +42,7 @@ Dieses Widget zeigt die Gesamtsicherungsstatistiken auf Ihrem Homepage-Dashboard
 
 **Widget-Anzeige:**
 
-![Homepage Summary Widget](/img/homepage-summary.png)
+![Startseiten-Zusammenfassungs-Widget](/img/homepage-summary.png)
 
 ## Letzte Sicherungsinformationen Widget {#last-backup-information-widget}
 
@@ -77,7 +77,7 @@ Dieses Widget zeigt die neuesten Sicherungsinformationen für einen bestimmten C
 
 **Widget-Anzeige:**
 
-![Homepage Last Backup Widget](/img/homepage-lastbackup.png)
+![Startseiten-Letzte-Sicherung-Widget](/img/homepage-lastbackup.png)
 
 ## Konfigurationshinweise {#configuration-notes}
 

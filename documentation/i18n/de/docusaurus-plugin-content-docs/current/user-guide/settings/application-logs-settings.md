@@ -2,7 +2,7 @@
 
 Der Anwendungsprotokoll-Viewer ermöglicht Administratoren, alle Anwendungsprotokolle an einem Ort zu überwachen, mit Filterung, Exportieren und Echtzeit-Updates direkt über die Weboberfläche.
 
-![Application Log Viewer](../../assets/screen-settings-application-logs.png)
+![Anwendungsprotokoll-Viewer](../../assets/screen-settings-application-logs.png)
 
 <br/>
 

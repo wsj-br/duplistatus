@@ -5,7 +5,7 @@ Ein Diagramm von Sicherungsmetriken im Zeitverlauf wird sowohl auf dem Dashboard
 - **Dashboard**, das Diagramm zeigt die Gesamtanzahl der Sicherungen, die in der **duplistatus**-Datenbank aufgezeichnet wurden. Wenn Sie das Cards-Layout verwenden, können Sie einen Server auswählen, um seine konsolidierten Metriken anzuzeigen (wenn das Seitenpanel Metriken anzeigt).
 - **Server Details**-Seite, das Diagramm zeigt Metriken für den ausgewählten Server (für alle seine Sicherungen) oder für eine einzelne, spezifische Sicherung.
 
-![Backup Metrics](../assets/screen-metrics.png)
+![Backup-Metriken](../assets/screen-metrics.png)
 
 ## Inline-Diagrammsteuerungen {#inline-chart-controls}
 

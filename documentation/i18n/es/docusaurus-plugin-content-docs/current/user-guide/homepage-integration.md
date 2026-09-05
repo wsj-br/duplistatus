@@ -42,7 +42,7 @@ Este widget muestra las estadísticas generales del backup en tu panel de contro
 
 **Visualización de Widget:**
 
-![Homepage Summary Widget](/img/homepage-summary.png)
+![Widget de Resumen de la Página de Inicio](/img/homepage-summary.png)
 
 ## Widget de Información de Última Copia de Seguridad {#last-backup-information-widget}
 
@@ -77,7 +77,7 @@ Este widget muestra la información del backup más reciente para una máquina e
 
 **Visualización de Widget:**
 
-![Homepage Last Backup Widget](/img/homepage-lastbackup.png)
+![Widget de Última Copia de Seguridad de la Página de Inicio](/img/homepage-lastbackup.png)
 
 ## Notas de Configuración {#configuration-notes}
 

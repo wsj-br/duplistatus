@@ -10,6 +10,7 @@ Configure user interface and display preferences.
 | Setting                   | Description                                         | Default Value      |
 |:--------------------------|:----------------------------------------------------|:-------------------|
 | **Table Size**            | Number of rows per page on the server details page. | 5 rows             |
+| **Show version on dashboard** | Show or hide the Duplicati version on dashboard cards. The dashboard table always shows the Version column. Also available in [Duplicati Versions](duplicati-versions.md). | On |
 | **Theme**                 | Choose light, dark, or match your operating system appearance (prefers light/dark mode). | Follow OS when unset |
 | **Chart Time Range**      | Time interval shown in the charts. Available options: **1W** (last 7 days), **2W** (last 14 days), **1M** (last 30 days), **3M** (last 90 days). You can also toggle time range directly from chart headers. | 1 month            |
 | **Chart Style**           | Choose between smooth line charts or bar chart visualization. Both modes use time-bucket aggregation for optimal display. You can also toggle directly from chart headers. | Smooth lines       |

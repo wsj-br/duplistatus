@@ -2,7 +2,7 @@
 
 Configurar cuánto tiempo se retienen los logs de auditoría antes de la limpieza automática.
 
-![Audit Log Retention](../../assets/screen-settings-audit-retention.png)
+![Retención de Registro de Auditoría](../../assets/screen-settings-audit-retention.png)
 
 | Configuración | Descripción | Valor por defecto |
 |:-------|:-----------|:-------------|

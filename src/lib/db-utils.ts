@@ -1,6 +1,6 @@
 import { db, dbOps, waitForDatabaseReady } from './db';
 import { formatDurationFromSeconds } from "@/lib/db";
-import type { BackupStatus, NotificationEvent, BackupKey, OverdueTolerance, BackupNotificationConfig, OverdueNotifications, ChartDataPoint, SMTPConfig, SMTPConfigEncrypted, NotificationTemplate, NtfyConfig, SMTPConnectionType, SupportedTemplateLanguage, DuplicatiVersionCache, DuplicatiVersionStatus } from "@/lib/types";
+import type { BackupStatus, NotificationEvent, BackupKey, OverdueTolerance, BackupNotificationConfig, OverdueNotifications, ChartDataPoint, SMTPConfig, SMTPConfigEncrypted, NotificationTemplate, NtfyConfig, SMTPConnectionType, SupportedTemplateLanguage, DuplicatiVersionCache, DuplicatiVersionCheckConfig, DuplicatiVersionStatus } from "@/lib/types";
 import { CronServiceConfig, CronInterval } from './types';
 import { cronIntervalMap } from './cron-interval-map';
 import type { NotificationFrequencyConfig } from "@/lib/types";
@@ -15,10 +15,16 @@ import { encryptData, decryptData } from './secrets';
 import { SOURCE_LOCALE, parseLocaleTag } from './locales';
 import { isNextProductionBuild } from './next-build-phase';
 import {
+  buildDuplicatiVersionCronExpression,
   compareServerVersionToCache,
   createEmptyDuplicatiVersionCache,
   createUnavailableDuplicatiVersionStatus,
+  DEFAULT_DUPLICATI_VERSION_CHECK_INTERVAL,
+  DEFAULT_DUPLICATI_VERSION_START_HOUR_UTC,
   DUPLICATI_VERSION_CACHE_KEY,
+  DUPLICATI_VERSION_CHECK_CONFIG_KEY,
+  isDuplicatiVersionCheckInterval,
+  isValidUtcHour,
 } from './duplicati-version';
 
 // Request-level cache to avoid redundant function calls within a single request
@@ -218,7 +224,7 @@ export function getCronConfig(): CronServiceConfig {
     if (configJson && configJson.trim() !== '') {
       try {
         const config = JSON.parse(configJson);
-        return {
+        const merged = {
           ...defaultCronConfig,
           ...config,
           tasks: {
@@ -226,15 +232,73 @@ export function getCronConfig(): CronServiceConfig {
             ...config.tasks
           }
         };
+        return applyDuplicatiVersionRefreshSchedule(merged);
       } catch (parseError) {
         console.error('Failed to parse cron service config:', parseError);
-        return defaultCronConfig;
+        return applyDuplicatiVersionRefreshSchedule(defaultCronConfig);
       }
     }
   } catch (error) {
     console.error('Failed to load cron service configuration:', error instanceof Error ? error.message : String(error));
   }
-  return defaultCronConfig;
+  return applyDuplicatiVersionRefreshSchedule(defaultCronConfig);
+}
+
+function applyDuplicatiVersionRefreshSchedule(config: CronServiceConfig): CronServiceConfig {
+  const versionCheck = getDuplicatiVersionCheckConfig();
+  return {
+    ...config,
+    tasks: {
+      ...config.tasks,
+      'duplicati-version-refresh': {
+        cronExpression: buildDuplicatiVersionCronExpression(
+          versionCheck.interval,
+          versionCheck.startHourUtc
+        ),
+        enabled: true,
+      },
+    },
+  };
+}
+
+export function getDuplicatiVersionCheckConfig(): DuplicatiVersionCheckConfig {
+  try {
+    const raw = getConfiguration(DUPLICATI_VERSION_CHECK_CONFIG_KEY);
+    if (raw && raw.trim() !== '') {
+      const parsed = JSON.parse(raw) as DuplicatiVersionCheckConfig;
+      if (
+        isRecord(parsed)
+        && isDuplicatiVersionCheckInterval(parsed.interval)
+        && isValidUtcHour(parsed.startHourUtc)
+      ) {
+        return {
+          interval: parsed.interval,
+          startHourUtc: parsed.startHourUtc,
+        };
+      }
+    }
+  } catch (error) {
+    console.error(
+      'Failed to read Duplicati version check configuration:',
+      error instanceof Error ? error.message : String(error)
+    );
+  }
+
+  return {
+    interval: DEFAULT_DUPLICATI_VERSION_CHECK_INTERVAL,
+    startHourUtc: DEFAULT_DUPLICATI_VERSION_START_HOUR_UTC,
+  };
+}
+
+export function setDuplicatiVersionCheckConfig(config: DuplicatiVersionCheckConfig): void {
+  if (!isDuplicatiVersionCheckInterval(config.interval) || !isValidUtcHour(config.startHourUtc)) {
+    throw new Error('Invalid Duplicati version check configuration');
+  }
+
+  setConfiguration(DUPLICATI_VERSION_CHECK_CONFIG_KEY, JSON.stringify({
+    interval: config.interval,
+    startHourUtc: config.startHourUtc,
+  }));
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -493,14 +557,24 @@ interface ServerRow {
 export function getAllServerAddresses() {
   return withDb(() => {
     const servers = safeDbOperation(() => dbOps.getAllServers.all(), 'getAllServers', []) as Array<ServerRow & { has_password: number }>;
-    return servers.map(server => ({
-      id: server.id,
-      name: server.name,
-      server_url: server.server_url || '',
-      alias: server.alias || '',
-      note: server.note || '',
-      hasPassword: Boolean(server.has_password)
-    }));
+    const versionCache = getDuplicatiVersionCache();
+    return servers.map(server => {
+      const latestBackup = safeDbOperation(
+        () => dbOps.getLatestBackup.get(server.id),
+        'getLatestBackup',
+        undefined
+      ) as { backend_version?: string | null } | undefined;
+
+      return {
+        id: server.id,
+        name: server.name,
+        server_url: server.server_url || '',
+        alias: server.alias || '',
+        note: server.note || '',
+        hasPassword: Boolean(server.has_password),
+        duplicatiVersion: compareServerVersionToCache(latestBackup?.backend_version ?? null, versionCache),
+      };
+    });
   });
 }
 

@@ -2,7 +2,7 @@
 
 Gerencie seus dados de backup e otimize o desempenho através de operações de manutenção do banco de dados.
 
-![Database maintenance](../../assets/screen-settings-database-maintenance.png)
+![Manutenção do Banco de Dados](../../assets/screen-settings-database-maintenance.png)
 
 <br/>
 

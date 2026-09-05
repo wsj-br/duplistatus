@@ -31,6 +31,16 @@ export interface DuplicatiVersionStatus {
   comparison: DuplicatiVersionComparison;
 }
 
+export type DuplicatiVersionRefreshTrigger = 'startup' | 'cron' | 'manual';
+
+export const DUPLICATI_VERSION_CHECK_INTERVALS = ['daily', '12h', '6h'] as const;
+export type DuplicatiVersionCheckInterval = (typeof DUPLICATI_VERSION_CHECK_INTERVALS)[number];
+
+export interface DuplicatiVersionCheckConfig {
+  interval: DuplicatiVersionCheckInterval;
+  startHourUtc: number;
+}
+
 export interface DuplicatiVersionRefreshResult {
   success: boolean;
   refreshed: boolean;
@@ -285,6 +295,7 @@ export interface ServerAddress {
   alias: string;
   note: string;
   hasPassword: boolean;
+  duplicatiVersion?: DuplicatiVersionStatus;
 }
 
 // Interface for Duplicati system info

@@ -6,7 +6,7 @@
 
 1. **配置备份结果报告：** 在 Duplicati 配置页面上，选择 `Settings`，在 `Default Options` 部分中，包括以下选项。
 
-![Duplicati configuration](/img/duplicati-options.png)
+![Duplicati 配置](/img/duplicati-options.png)
 
 将 'my.local.server' 替换为 **duplistatus** 运行的服务器名称或 IP 地址。
 
@@ -42,7 +42,7 @@
 如果您不在 Duplicati 中启用远程访问，**Duplistatus** 中访问 __Duplicati UI__ 的链接将不起作用。 
 :::
 
-![Duplicati settings](/img/duplicati-settings.png)
+![Duplicati 设置](/img/duplicati-settings.png)
 
 :::caution
 仅在 Duplicati 服务器受到安全网络保护（例如 VPN、专用 LAN 或防火墙规则）时启用远程访问。未经适当安全措施将 Duplicati 界面暴露在公共互联网上可能会导致未经授权的访问。 

@@ -2,7 +2,7 @@
 
 Administre cuentas de usuario, permisos y control de acceso para **duplistatus**. Esta sección permite a los administradores crear, modificar y eliminar cuentas de usuario.
 
-![User Management](../../assets/screen-settings-users.png)
+![Gestión de usuarios](../../assets/screen-settings-users.png)
 
 >[!TIP] 
 >La cuenta `admin` por defecto puede ser eliminada. Para hacerlo, primero cree un nuevo usuario administrador, inicie sesión con esa cuenta, 

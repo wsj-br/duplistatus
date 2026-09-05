@@ -2,7 +2,7 @@
 
 [NTFY](https://github.com/binwiederhier/ntfy) est un service de notification simple qui peut envoyer des notifications push à votre téléphone ou ordinateur de bureau. Cette section vous permet de configurer votre connexion au serveur de notification et l'authentification.
 
-![Ntfy settings](../../assets/screen-settings-ntfy.png)
+![Paramètres Ntfy](../../assets/screen-settings-ntfy.png)
 
 | Paramètre               | Description                                                                                                                                   |
 |:----------------------|:----------------------------------------------------------------------------------------------------------------------------------------------|

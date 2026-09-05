@@ -138,11 +138,11 @@ Hovering over the overdue warning icon displays details about the overdue backup
 
 The dashboard shows the Duplicati version reported in the latest backup log for each server (card view) or backup job (table view).
 
-- **Where it appears**: To the left of the status indicator on cards, and in the **Version** column on the table (after **Overdue / Next run**).
+- **Where it appears**: To the left of the status indicator on cards, and in the **Version** column on the table (after **Overdue / Next run**). You can hide the card badge from [Display Settings](settings/display-settings.md) or [Duplicati Versions](settings/duplicati-versions.md). The table column always remains visible.
 - **Colour**: Muted text means the version matches the latest release for that channel (or the comparison is unavailable). Warning yellow means the version is older than the latest release for that channel.
 - **Tooltip**: Hover or click the version number to see the update channel (`stable`, `beta`, `experimental`, or `canary`), the server version, and the latest available version for that channel.
 
-**duplistatus** compares the version from the backup log against the latest Duplicati releases published on GitHub. The latest versions per channel are refreshed once a day (and on startup if the cache is older than 24 hours).
+**duplistatus** compares the version from the backup log against the latest Duplicati releases published on GitHub. Administrators can view the cached channel versions and configure the check interval and start time in [Settings → Duplicati Versions](settings/duplicati-versions.md). The cache is also refreshed on startup when it is older than the selected interval. Successful and failed GitHub updates are recorded in the [audit log](settings/audit-logs-viewer.md) as `duplicati_version_refresh` (started by `startup`, `cron`, or `manual`).
 
 :::important
 **duplistatus** does not query the Duplicati server for the version that is currently running. It uses the version stored in the last backup log that was received or [collected](collect-backup-logs.md). After you upgrade Duplicati, the dashboard keeps showing the previous version until a new backup log arrives.

@@ -216,6 +216,7 @@ const ORDERED_SCREENSHOT_FILENAMES: string[] = [
   'screen-settings-audit.png',
   'screen-settings-audit-retention.png',
   'screen-settings-display.png',
+  'screen-settings-duplicati-versions.png',
   'screen-settings-database-maintenance.png',
   'screen-settings-application-logs.png',
   'screen-user-menu-user.png',
@@ -1419,6 +1420,69 @@ async function findServersWithBackups(): Promise<string[]> {
 }
 
 // Function to find servers that have overdue backups
+async function classifyServerDuplicatiVersion(
+  serverId: string
+): Promise<'current' | 'outdated' | 'unavailable'> {
+  const dbModule = await import('../src/lib/db');
+  const dbUtilsModule = await import('../src/lib/db-utils');
+  const { compareServerVersionToCache } = await import('../src/lib/duplicati-version');
+  await dbModule.ensureDatabaseInitialized();
+  const latestBackup = dbModule.dbOps.getLatestBackup.get(serverId) as
+    | { backend_version?: string | null }
+    | undefined;
+  return compareServerVersionToCache(
+    latestBackup?.backend_version ?? null,
+    dbUtilsModule.getDuplicatiVersionCache()
+  ).comparison;
+}
+
+async function findOutdatedDuplicatiServerIds(serverIds: string[]): Promise<Set<string>> {
+  const outdatedServerIds = new Set<string>();
+  for (const serverId of serverIds) {
+    const comparison = await classifyServerDuplicatiVersion(serverId);
+    if (comparison === 'outdated') {
+      outdatedServerIds.add(serverId);
+    }
+  }
+  return outdatedServerIds;
+}
+
+function selectServersToKeepForScreenshots<T extends { id: string }>(
+  availableServers: T[],
+  protectedServerId: string | null,
+  outdatedServerIds: Set<string>,
+  keepCount: number
+): { serversToKeep: T[]; serversToDelete: T[] } {
+  const sortedServers = [...availableServers].sort((a, b) => {
+    if (a.id === protectedServerId) return -1;
+    if (b.id === protectedServerId) return 1;
+    return 0;
+  });
+
+  const serversToKeep = sortedServers.slice(0, keepCount);
+  const keepHasOutdated = serversToKeep.some((server) => outdatedServerIds.has(server.id));
+  if (!keepHasOutdated && outdatedServerIds.size > 0) {
+    const oldServer = sortedServers.find((server) => outdatedServerIds.has(server.id));
+    if (oldServer && !serversToKeep.some((server) => server.id === oldServer.id)) {
+      let replaceIndex = serversToKeep.length - 1;
+      while (replaceIndex >= 0 && serversToKeep[replaceIndex].id === protectedServerId) {
+        replaceIndex -= 1;
+      }
+      if (replaceIndex >= 0) {
+        serversToKeep[replaceIndex] = oldServer;
+      } else if (serversToKeep.length < keepCount) {
+        serversToKeep.push(oldServer);
+      }
+    }
+  }
+
+  const keepIds = new Set(serversToKeep.map((server) => server.id));
+  return {
+    serversToKeep,
+    serversToDelete: availableServers.filter((server) => !keepIds.has(server.id)),
+  };
+}
+
 async function findServersWithOverdueBackups(): Promise<string[]> {
   try {
     const dbUtilsModule = await import('../src/lib/db-utils');
@@ -3086,35 +3150,25 @@ ${colors.reset}`);
     console.log('-------------------------------------------------------');
     console.log('Keeping only 3 servers, deleting the rest...');
     if (availableServers.length > 3) {
-      // Sort servers: protected server first, then others
-      const sortedServers = [...availableServers].sort((a, b) => {
-        if (a.id === protectedServerId) return -1;
-        if (b.id === protectedServerId) return 1;
-        return 0;
-      });
-      
-      // Keep first 3 (which includes protected server if it exists)
-      const serversToKeep = sortedServers.slice(0, 3);
-      const serversToDelete = sortedServers.slice(3);
-      
-      // Double-check: if protected server is not in keep list, add it and remove last one
-      if (protectedServerId && !serversToKeep.some(s => s.id === protectedServerId)) {
-        // Remove the last server from keep list and add protected server
-        serversToKeep.pop();
-        const protectedServer = availableServers.find(s => s.id === protectedServerId);
-        if (protectedServer) {
-          serversToKeep.push(protectedServer);
-          // Remove protected server from delete list if it's there
-          const deleteIndex = serversToDelete.findIndex(s => s.id === protectedServerId);
-          if (deleteIndex >= 0) {
-            serversToDelete.splice(deleteIndex, 1);
-          }
-        }
-      }
+      const outdatedServerIds = await findOutdatedDuplicatiServerIds(availableServers.map((server) => server.id));
+      console.log(`Found ${outdatedServerIds.size} server(s) with an older Duplicati version`);
+
+      const { serversToKeep, serversToDelete } = selectServersToKeepForScreenshots(
+        availableServers,
+        protectedServerId,
+        outdatedServerIds,
+        3
+      );
       
       console.log(`Deleting ${serversToDelete.length} server(s), keeping 3...`);
       if (protectedServerId) {
         console.log(`  Protected server (has backups): ${availableServers.find(s => s.id === protectedServerId)?.name || protectedServerId}`);
+      }
+      const keptOutdated = serversToKeep.filter((server) => outdatedServerIds.has(server.id));
+      if (keptOutdated.length > 0) {
+        console.log(`  Keeping older Duplicati version on: ${keptOutdated.map((server) => server.name).join(', ')}`);
+      } else if (outdatedServerIds.size > 0) {
+        logError('Could not retain an older Duplicati version among the kept servers');
       }
       
       for (const server of serversToDelete) {
@@ -3531,6 +3585,7 @@ ${colors.reset}`);
         'audit',
         'audit-retention',
         'display',
+        'duplicati-versions',
         'database-maintenance',
         'application-logs'
       ];

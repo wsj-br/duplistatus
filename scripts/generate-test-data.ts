@@ -1,10 +1,15 @@
 import { v4 as uuidv4 } from 'uuid';
 import { createHash } from 'crypto';
 import { db, dbOps, parseDurationToSeconds } from '../src/lib/db';
-import { dbUtils, getConfigBackupSettings, setConfigBackupSettings, clearRequestCache, invalidateDataCache } from '../src/lib/db-utils';
+import { dbUtils, getConfigBackupSettings, setConfigBackupSettings, clearRequestCache, invalidateDataCache, getDuplicatiVersionCache, setDuplicatiVersionCache } from '../src/lib/db-utils';
+import { parseDuplicatiVersion, parseVersionComponents } from '../src/lib/duplicati-version';
 import { extractAvailableBackups } from '../src/lib/utils';
 import { setServerPassword } from '../src/lib/secrets';
 import { defaultBackupNotificationConfig } from '../src/lib/default-config';
+import type { DuplicatiVersionCache } from '../src/lib/types';
+
+const FALLBACK_CURRENT_VERSION = '2.1.0.5 (2.1.0.5_stable_2025-03-04)';
+const FALLBACK_OLDER_VERSION = '2.0.8.1 (2.0.8.1_stable_2024-05-01)';
 
 // Function to clean database tables before generating test data
 async function cleanDatabaseTables(quiet: boolean = false) {
@@ -74,6 +79,86 @@ const servers = [
   { id: createHash('md5').update('server-29').digest('hex'), name: 'MOBILE-PROD-01', alias: 'Mobile API', note: 'Mobile application backend services', backupName: 'S29' },
   { id: createHash('md5').update('server-30').digest('hex'), name: 'COMP-PROD-01', alias: 'Compliance Server', note: 'Regulatory compliance and audit logging', backupName: 'S30' }
 ];
+
+function formatDuplicatiReportVersion(versionNumber: string, tagName?: string | null): string {
+  const tag = (tagName && tagName.trim() !== '' ? tagName : `${versionNumber}_stable`).replace(/^v/i, '');
+  return `${versionNumber} (${tag})`;
+}
+
+function decrementVersionNumber(versionNumber: string): string | null {
+  const components = parseVersionComponents(versionNumber);
+  if (!components) {
+    return null;
+  }
+
+  const next = [components[0], components[1], components[2], components[3]];
+  for (let index = next.length - 1; index >= 0; index -= 1) {
+    if (next[index] > 0) {
+      next[index] -= 1;
+      return `${next[0]}.${next[1]}.${next[2]}.${next[3]}`;
+    }
+  }
+
+  return null;
+}
+
+function seedFallbackVersionCache(): DuplicatiVersionCache {
+  const parsed = parseDuplicatiVersion(FALLBACK_CURRENT_VERSION);
+  return {
+    updatedAt: new Date().toISOString(),
+    source: 'github',
+    channels: {
+      stable: {
+        versionNumber: parsed?.versionNumber ?? '2.1.0.5',
+        tagName: 'v2.1.0.5_stable_2025-03-04',
+        publishedAt: new Date().toISOString(),
+      },
+      beta: null,
+      experimental: null,
+      canary: null,
+    },
+  };
+}
+
+function resolveTestDuplicatiVersions(cache: DuplicatiVersionCache | null): {
+  current: string;
+  older: string;
+  cacheToRestore: DuplicatiVersionCache;
+} {
+  const stable = cache?.channels.stable ?? null;
+  const current = stable
+    ? formatDuplicatiReportVersion(stable.versionNumber, stable.tagName)
+    : FALLBACK_CURRENT_VERSION;
+  const currentParsed = parseDuplicatiVersion(current);
+  const olderNumber = currentParsed ? decrementVersionNumber(currentParsed.versionNumber) : null;
+  const older = olderNumber
+    ? formatDuplicatiReportVersion(olderNumber, `${olderNumber}_stable`)
+    : FALLBACK_OLDER_VERSION;
+
+  const cacheToRestore = cache ?? seedFallbackVersionCache();
+  if (!cacheToRestore.channels.stable && currentParsed) {
+    cacheToRestore.channels.stable = {
+      versionNumber: currentParsed.versionNumber,
+      tagName: `v${currentParsed.versionNumber}_stable`,
+      publishedAt: new Date().toISOString(),
+    };
+  }
+
+  return { current, older, cacheToRestore };
+}
+
+function latestVersionCount(serverCount: number): number {
+  const min = Math.ceil(serverCount * 0.7);
+  const max = Math.floor(serverCount * 0.8);
+  const preferred = Math.round(serverCount * 0.75);
+  if (min <= max) {
+    return Math.min(max, Math.max(min, preferred));
+  }
+  if (serverCount >= 2) {
+    return Math.max(1, serverCount - 1);
+  }
+  return serverCount;
+}
 
 // Server health check function
 async function checkServerHealth(url: string): Promise<boolean> {
@@ -235,7 +320,13 @@ function generateMessageArrays(warningsCount: number, errorsCount: number, messa
 }
 
 // Modify the generateBackupPayload function
-function generateBackupPayload(server: typeof servers[0], backupNumber: number, beginTime: string, backupJob: string = "Backup") {
+function generateBackupPayload(
+  server: typeof servers[0],
+  backupNumber: number,
+  beginTime: string,
+  backupJob: string = "Backup",
+  duplicatiVersion: string = FALLBACK_CURRENT_VERSION
+) {
   const endTime = new Date(new Date(beginTime).getTime() + Math.random() * 7200000);
   const duration = generateRandomDuration();
   const stats = generateRandomFileStats();
@@ -279,7 +370,7 @@ function generateBackupPayload(server: typeof servers[0], backupNumber: number, 
       MainOperation: "Backup",
       ParsedResult: hasErrors ? "Error" : (hasWarnings ? "Warning" : "Success"),
       Interrupted: false,
-      Version: "2.1.0.5 (2.1.0.5_stable_2025-03-04)",
+      Version: duplicatiVersion,
       BeginTime: beginTime,
       EndTime: endTime.toISOString(),
       Duration: duration,
@@ -300,7 +391,7 @@ function generateBackupPayload(server: typeof servers[0], backupNumber: number, 
         MainOperation: "Backup",
         ParsedResult: hasErrors ? "Failed" : (hasWarnings ? "Warning" : "Success"),
         Interrupted: false,
-        Version: "2.1.0.5 (2.1.0.5_stable_2025-03-04)",
+        Version: duplicatiVersion,
         BeginTime: beginTime,
         Duration: duration,
         WarningsActualLength: warningsCount,
@@ -501,6 +592,11 @@ async function sendTestData(useUpload: boolean = false, serverCount: number, por
   const HEALTH_CHECK_URL = `http://localhost:${port}/api/health`; // Adjust this URL based on your actual health endpoint
   const BACKUP_JOBS = ['Files', 'Databases', 'System', 'Users'];
 
+  // Read the latest-version cache before direct-DB cleanup wipes configurations
+  const existingVersionCache = getDuplicatiVersionCache();
+  const { current: currentDuplicatiVersion, older: olderDuplicatiVersion, cacheToRestore } =
+    resolveTestDuplicatiVersions(existingVersionCache);
+
   // Clean database tables before generating test data (only for direct DB mode)
   if (!useUpload) {
     const cleanupSuccess = await cleanDatabaseTables(quiet);
@@ -508,7 +604,14 @@ async function sendTestData(useUpload: boolean = false, serverCount: number, por
       console.error('🚨 Database cleanup failed. Aborting test data generation.');
       process.exit(1);
     }
+    setDuplicatiVersionCache(cacheToRestore);
+    clearRequestCache();
+    invalidateDataCache();
+    logConsole('  🔃 Restored Duplicati version cache for current/outdated comparison', quiet);
     logConsole('', quiet); // Add spacing after cleanup
+  } else if (!existingVersionCache?.channels.stable) {
+    setDuplicatiVersionCache(cacheToRestore);
+    logConsole('  🔃 Seeded Duplicati version cache for current/outdated comparison', quiet);
   }
 
   // Check server health before proceeding (only when using upload mode)
@@ -532,7 +635,14 @@ async function sendTestData(useUpload: boolean = false, serverCount: number, por
     selectedBackupJobs: string[];
     isOddServer: boolean;
     serverIndex: number;
+    duplicatiVersion: string;
   }> = [];
+
+  const currentVersionServerCount = latestVersionCount(selectedServersCount);
+  logConsole(
+    `  🔃 Duplicati versions: ${currentVersionServerCount} current (${currentDuplicatiVersion}), ${selectedServersCount - currentVersionServerCount} older (${olderDuplicatiVersion})`,
+    quiet
+  );
 
   for (let i = 0; i < selectedServersCount; i++) {
     const server = shuffledServers[i];
@@ -542,8 +652,9 @@ async function sendTestData(useUpload: boolean = false, serverCount: number, por
     const randomBackupCount = Math.random() < 0.6 ? 2 : Math.floor(Math.random() * 2) + 3;
     const shuffledBackupJobs = [...BACKUP_JOBS].sort(() => Math.random() - 0.5);
     const selectedBackupJobs = shuffledBackupJobs.slice(0, randomBackupCount);
+    const duplicatiVersion = i < currentVersionServerCount ? currentDuplicatiVersion : olderDuplicatiVersion;
     
-    generationPlan.push({ server, selectedBackupJobs, isOddServer, serverIndex: i });
+    generationPlan.push({ server, selectedBackupJobs, isOddServer, serverIndex: i, duplicatiVersion });
   }
 
   // Preconfigure notifications to disable ntfy (only for --upload mode to prevent spamming notifications)
@@ -579,7 +690,7 @@ async function sendTestData(useUpload: boolean = false, serverCount: number, por
 
   // Proceed with data generation
   for (const plan of generationPlan) {
-    const { server, selectedBackupJobs, isOddServer, serverIndex } = plan;
+    const { server, selectedBackupJobs, isOddServer, serverIndex, duplicatiVersion } = plan;
     const serverDisplayName = server.alias ? `${server.name} (${server.alias})` : server.name;
     
     logConsole(`\n    🔄 Generating backups for ${serverDisplayName} (${isOddServer ? 'Odd' : 'Even'} server pattern)...`, quiet);
@@ -588,6 +699,7 @@ async function sendTestData(useUpload: boolean = false, serverCount: number, por
     }
     logConsole(`      📅 Pattern: ${isOddServer ? 'Daily for 1 week, then weekly for 2 months, then monthly for 2 years' : 'Daily for 1 week, then weekly for 6 months, then monthly for 2 years'}`, quiet);
     logConsole(`      🎯 Selected backup jobs (${selectedBackupJobs.length}/${BACKUP_JOBS.length}): ${selectedBackupJobs.join(', ')}`, quiet);
+    logConsole(`      🔃 Duplicati version: ${duplicatiVersion}`, quiet);
     
     for (const backupJob of selectedBackupJobs) {
       // Generate backup dates for this specific backup job
@@ -597,7 +709,7 @@ async function sendTestData(useUpload: boolean = false, serverCount: number, por
       for (let i = 0; i < backupDates.length; i++) {
         const backupNumber = i + 1;
         const beginTime = backupDates[i];
-        const payload = generateBackupPayload(server, backupNumber, beginTime, backupJob);
+        const payload = generateBackupPayload(server, backupNumber, beginTime, backupJob, duplicatiVersion);
         
         try {
           const backupDate = new Date(beginTime).toLocaleDateString();
@@ -925,6 +1037,7 @@ logConsole('     • Random backup jobs per server (1-3 jobs from: Files, Databa
 logConsole('     • Servers include alias and note fields for testing', quiet);
 logConsole('     • After generation: Cleanup backup_settings configuration', quiet);
 logConsole('     • 90% of servers will get random URLs (http://192.168.1.100-200:8200) and password "test-password"', quiet);
+logConsole('     • 70–80% of servers use the latest cached stable Duplicati version; the rest use a previous stable (at least one older when N ≥ 2)', quiet);
 logConsole('     • 2 random backup jobs (from different servers) will have recent backups deleted to guarantee overdue status\n', quiet);
 
 

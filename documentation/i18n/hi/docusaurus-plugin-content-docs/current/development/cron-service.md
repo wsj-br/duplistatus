@@ -31,7 +31,7 @@ pnpm cron:start-local
 - **वॉच मोड**: विकास मोड में कोड परिवर्तनों पर स्वचालित पुनरारंभ के लिए फ़ाइल वॉचिंग शामिल है
 - **विलंबित बैकअप मॉनिटरिंग**: विलंबित बैकअप की स्वचालित जांच और सूचना (डिफ़ॉल्ट रूप से हर 5 मिनट में चलती है)
 - **Audit log cleanup**: Automated cleanup of old audit log entries (runs daily at 2 AM UTC)
-- **Duplicati version refresh**: Updates cached latest Duplicati channel versions from GitHub Releases (runs daily at 3 AM UTC)
+- **Duplicati version refresh**: Updates cached latest Duplicati channel versions from GitHub Releases. The default is daily at 3 AM UTC; administrators can change the interval and start time in [Settings → Duplicati Versions](../user-guide/settings/duplicati-versions.md).
 - **Flexible scheduling**: Configurable cron expressions for different tasks
 - **Database integration**: Shares the same SQLite database with the main application
 - **RESTful API**: Complete API for service management and monitoring

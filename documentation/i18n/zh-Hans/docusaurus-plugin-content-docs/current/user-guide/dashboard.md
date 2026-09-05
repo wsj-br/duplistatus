@@ -135,11 +135,11 @@
 
 仪表板显示每个服务器（卡片视图）或每个备份作业（表格视图）在最新备份日志中报告的 Duplicati 版本。
 
-- **出现位置**: 在卡片的状态指示器左侧，以及表格中的 **版本** 列（位于 **过期 / 下次运行** 之后）。
-- **颜色**: 柔和的文本表示该版本与该通道的最新发布版本匹配（或无法进行比较）。警告黄色表示该版本早于该通道的最新发布版本。
-- **工具提示**: 悬停或点击版本号以查看更新通道（`stable`、`beta`、`experimental` 或 `canary`）、服务器版本以及该通道最新的可用版本。
+- **出现位置**：在卡片的状态指示器左侧，以及表格中的**版本**列（在**过期 / 下次运行**之后）。您可以从[显示设置](settings/display-settings.md)或[Duplicati 版本](settings/duplicati-versions.md)中隐藏卡片徽章。表格列始终保持可见。
+- **颜色**：柔和的文本表示版本与该频道的最新发布版本匹配（或比较不可用）。警告黄色表示版本比该频道的最新发布版本更旧。
+- **工具提示**：将鼠标悬停或点击版本号以查看更新频道（`stable`、`beta`、`experimental`或`canary`）、服务器版本以及该频道的最新可用版本。
 
-**duplistatus** 将备份日志中的版本与 GitHub 上发布的最新 Duplicati 版本进行比较。每个通道的最新版本每天刷新一次（如果缓存早于 24 小时，则在启动时刷新）。
+**duplistatus**将备份日志中的版本与GitHub上发布的最新Duplicati版本进行比较。管理员可以在[设置 → Duplicati 版本](settings/duplicati-versions.md)中查看缓存的频道版本并配置检查间隔和开始时间。当缓存比所选间隔更旧时，启动时也会刷新缓存。成功和失败的GitHub更新记录在[审计日志](settings/audit-logs-viewer.md)中，格式为`duplicati_version_refresh`（由`startup`、`cron`或`manual`启动）。
 
 :::important
 **duplistatus** 不会向 Duplicati 服务器查询当前正在运行的版本。它使用最后一次接收或 [已收集](collect-backup-logs.md) 的备份日志中存储的版本。在您升级 Duplicati 后，仪表板会一直显示之前的版本，直到新的备份日志到达。

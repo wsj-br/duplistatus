@@ -125,29 +125,28 @@ Si está usando una carpeta local mapeada al contenedor, no necesita comandos es
 3. Asegurarse de que el archivo se denomina exactamente `backups.db`.
 4. Iniciar el contenedor.
 
+:::note
+Si restaura la base de datos manualmente, es posible que encuentre errores de permisos. 
+
+Compruebe los registros del contenedor y ajuste los permisos si es necesario. Consulte la sección [Solución de problemas](#troubleshooting-your-restore--rollback) a continuación para obtener más información.
+:::
+
+## Proceso de Migración Automática {#automatic-migration-process}
+
+Cuando inicie una nueva versión, las migraciones se ejecutarán automáticamente:
+
+1. **Creación de copia de seguridad**: Se crea una copia de seguridad con marca de tiempo en su directorio de datos
+2. **Actualización de esquema**: Las tablas y campos de la base de datos se actualizan según sea necesario
+3. **Migración de datos**: Todos los datos existentes se conservan y migran
+4. **Verificación**: Se registra el éxito de la migración
+
+### Monitoreo de Migración {#monitoring-migration}
+
+Compruebe los registros de Docker para monitorizar el progreso de la migración:
+
 ```bash
 docker logs <container-name>
 ```
-
-:::note
-Si restaura la base de datos manualmente, puede encontrar errores de permisos. 
-
-Verifique los logs del contenedor y ajuste los permisos si es necesario. Consulte la sección [Solución de problemas](#troubleshooting-your-restore--rollback) a continuación para obtener más información.
-::: 
-
-## Proceso de migración automática {#automatic-migration-process}
-
-Cuándo inicia una nueva versión, las migraciones se ejecutan automáticamente:
-
-1. **Creación de backup**: Se crea un backup con marca de tiempo en su directorio de datos
-2. **Actualización de esquema**: Las tablas y campos de la base de datos se actualizan según sea necesario
-3. **Migración de datos**: Todos los datos existentes se preservan y se migran
-4. **Verificación**: El éxito de la migración se registra
-
-### Monitoreo de migración {#monitoring-migration}
-
-Verifique los logs de Docker para monitorear el progreso de la migración:
-
 
 Busque mensajes como:
 - `"Found X pending migrations"`
@@ -156,12 +155,12 @@ Busque mensajes como:
 - `"Database backup created: /path/to/backups-copy-YYYY-MM-DDTHH-MM-SS.db"`
 - `"All migrations completed successfully"`
 
-## Notas de migración específicas de versión {#version-specific-migration-notes}
+## Notas de Migración Específicas de la Versión {#version-specific-migration-notes}
 
-### Actualización a versión 0.9.x o posterior (esquema v4.0) {#upgrading-to-version-09x-or-later-schema-v40}
+### Actualización a la Versión 0.9.x o posterior (Esquema v4.0) {#upgrading-to-version-09x-or-later-schema-v40}
 
 :::warning
-**La autenticación ahora es requerida.** Todos los usuarios deben iniciar sesión después de actualizar.
+**Ahora se requiere autenticación.** Todos los usuarios deben iniciar sesión después de la actualización.
 :::
 
 #### Qué Cambia Automáticamente {#what-changes-automatically}

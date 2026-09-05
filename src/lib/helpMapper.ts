@@ -54,6 +54,10 @@ const HELP_MAP: Record<string, HelpMapping> = {
     url: 'user-guide/settings/display-settings',
     pageName: 'Display Settings',
   },
+  'settings:duplicati-versions': {
+    url: 'user-guide/settings/duplicati-versions',
+    pageName: 'Duplicati Versions',
+  },
   'settings:database-maintenance': {
     url: 'user-guide/settings/database-maintenance',
     pageName: 'Database Maintenance',

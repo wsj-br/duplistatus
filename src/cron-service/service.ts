@@ -160,7 +160,7 @@ class CronService {
             message: result.message,
           };
         case 'duplicati-version-refresh': {
-          const refreshResult = await refreshDuplicatiVersions({ force: true });
+          const refreshResult = await refreshDuplicatiVersions({ force: true, trigger: 'cron' });
           if (!refreshResult.success) {
             throw new Error(refreshResult.message);
           }

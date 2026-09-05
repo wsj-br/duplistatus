@@ -1,13 +1,20 @@
 import fs from 'fs';
 import path from 'path';
-import { getDuplicatiVersionCache, setDuplicatiVersionCache } from './db-utils';
+import { AuditLogger } from './audit-logger';
+import { getDuplicatiVersionCache, getDuplicatiVersionCheckConfig, setDuplicatiVersionCache } from './db-utils';
 import {
+  getDuplicatiVersionStaleMs,
   isDuplicatiVersionCacheStale,
   parseDuplicatiReleaseTag,
   selectHighestChannelVersions,
 } from './duplicati-version';
 import { getDataDir } from './paths';
-import type { DuplicatiVersionCache, DuplicatiVersionRefreshResult } from './types';
+import type {
+  DuplicatiChannel,
+  DuplicatiVersionCache,
+  DuplicatiVersionRefreshResult,
+  DuplicatiVersionRefreshTrigger,
+} from './types';
 
 export const runtime = 'nodejs';
 
@@ -189,13 +196,48 @@ async function fetchLatestDuplicatiVersions(): Promise<DuplicatiVersionCache> {
   };
 }
 
+function channelVersionsForAudit(
+  cache: DuplicatiVersionCache | null
+): Partial<Record<DuplicatiChannel, string>> {
+  if (!cache) {
+    return {};
+  }
+
+  const versions: Partial<Record<DuplicatiChannel, string>> = {};
+  for (const [channel, value] of Object.entries(cache.channels)) {
+    if (value) {
+      versions[channel as DuplicatiChannel] = value.versionNumber;
+    }
+  }
+  return versions;
+}
+
+async function logDuplicatiVersionRefresh(
+  trigger: DuplicatiVersionRefreshTrigger,
+  status: 'success' | 'error',
+  details: Record<string, unknown>,
+  errorMessage?: string
+): Promise<void> {
+  await AuditLogger.logSystem(
+    'duplicati_version_refresh',
+    {
+      trigger,
+      source: 'github',
+      ...details,
+    },
+    status,
+    errorMessage
+  );
+}
+
 export async function refreshDuplicatiVersions(
-  options: { force?: boolean } = {}
+  options: { force?: boolean; trigger?: DuplicatiVersionRefreshTrigger } = {}
 ): Promise<DuplicatiVersionRefreshResult> {
   const force = options.force === true;
   const existingCache = getDuplicatiVersionCache();
+  const staleMs = getDuplicatiVersionStaleMs(getDuplicatiVersionCheckConfig().interval);
 
-  if (!force && !isDuplicatiVersionCacheStale(existingCache)) {
+  if (!force && !isDuplicatiVersionCacheStale(existingCache, staleMs)) {
     return {
       success: true,
       refreshed: false,
@@ -218,7 +260,7 @@ export async function refreshDuplicatiVersions(
 
   try {
     const cacheAfterLock = getDuplicatiVersionCache();
-    if (!force && !isDuplicatiVersionCacheStale(cacheAfterLock)) {
+    if (!force && !isDuplicatiVersionCacheStale(cacheAfterLock, staleMs)) {
       return {
         success: true,
         refreshed: false,
@@ -235,6 +277,15 @@ export async function refreshDuplicatiVersions(
       .map(([channel, value]) => `${channel}=${value?.versionNumber}`)
       .join(', ');
 
+    if (options.trigger) {
+      await logDuplicatiVersionRefresh(options.trigger, 'success', {
+        refreshed: true,
+        updatedAt: cache.updatedAt,
+        channels: channelVersionsForAudit(cache),
+        message: `Updated Duplicati versions from GitHub (${channelSummary})`,
+      });
+    }
+
     return {
       success: true,
       refreshed: true,
@@ -244,6 +295,13 @@ export async function refreshDuplicatiVersions(
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     console.error('[DuplicatiVersion] Failed to refresh versions:', errorMessage);
+    if (options.trigger) {
+      await logDuplicatiVersionRefresh(options.trigger, 'error', {
+        refreshed: false,
+        channels: channelVersionsForAudit(existingCache),
+        error: errorMessage,
+      }, errorMessage);
+    }
     return {
       success: false,
       refreshed: false,

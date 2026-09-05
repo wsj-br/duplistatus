@@ -67,9 +67,9 @@ Posteriormente utilicé estos mensajes para ajustar y refinar el diseño y el co
 
 Después de iterar a través de estos prompts, Firebase generó el prototipo como se muestra en las capturas de pantalla a continuación:
 
-![prototype](/img/screen-prototype.png)
+![prototipo](/img/screen-prototype.png)
 
-![prototype-detail](/img/screen-prototype-detail.png)
+![detalle-prototipo](/img/screen-prototype-detail.png)
 
 :::note
 Un punto interesante fue que, desde la primera interacción, Firebase Studio generó datos aleatorios para completar las páginas/gráficos, haciendo que el prototipo funcionara como una aplicación en vivo.

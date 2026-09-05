@@ -1,6 +1,6 @@
 # 备份监控 {#backup-monitoring}
 
-![Backup alerts](../../assets/screen-settings-monitoring.png)
+![备份警报](../../assets/screen-settings-monitoring.png)
 
 ## 服务器过滤 {#server-filtering}
 

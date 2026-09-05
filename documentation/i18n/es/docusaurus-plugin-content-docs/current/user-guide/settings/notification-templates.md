@@ -4,7 +4,7 @@
 
 La página incluye un selector de **Idioma de las plantillas** que establece la configuración regional para las plantillas por defecto. Cambiar el idioma actualiza la configuración regional para los nuevos valores por defecto, pero **no** cambia el texto de las plantillas existentes. Para aplicar un nuevo idioma a sus plantillas, edítelas manualmente o utilice **Restablecer esta plantilla a predeterminada** (para la pestaña actual) o **Restablecer todo a predeterminado** (para las tres plantillas).
 
-![notification templates](../../assets/screen-settings-templates.png)
+![plantillas de notificación](../../assets/screen-settings-templates.png)
 
 | Plantilla           | Descripción                                         |
 | :----------------- | :-------------------------------------------------- |

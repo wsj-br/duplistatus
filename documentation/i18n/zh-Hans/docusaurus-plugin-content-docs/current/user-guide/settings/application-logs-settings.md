@@ -2,7 +2,7 @@
 
 应用程序日志查看器允许管理员在一个地方监视所有应用程序日志，具有过滤、导出和实时更新的功能，直接从Web界面进行。
 
-![Application Log Viewer](../../assets/screen-settings-application-logs.png)
+![应用程序日志查看器](../../assets/screen-settings-application-logs.png)
 
 <br/>
 

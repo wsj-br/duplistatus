@@ -2,7 +2,7 @@
 
 Cliquer sur un serveur du tableau de bord ouvre une page avec une liste de sauvegardes pour ce serveur. Vous pouvez afficher toutes les sauvegardes ou sélectionner une sauvegarde spécifique si le serveur a plusieurs sauvegardes configurées.
 
-![Server Details](../assets/screen-server-backup-list.png)
+![Détails du serveur](../assets/screen-server-backup-list.png)
 
 ## Statistiques de serveur/sauvegarde {#serverbackup-statistics}
 
@@ -18,7 +18,7 @@ Cette section affiche les statistiques pour toutes les sauvegardes sur le serveu
 
 Si cette sauvegarde ou l'une des sauvegardes du serveur (quand **Toutes les sauvegardes** est sélectionné) est en retard, un message apparaît sous le résumé.
 
-![Server Details - Overdue Scheduled Backups](../assets/screen-server-overdue-message.png)
+![Détails du serveur - Sauvegardes programmées en retard](../assets/screen-server-overdue-message.png)
 
 Cliquez sur le <IconButton icon="lucide:settings" href="settings/backup-monitoring-settings" label="Configurer"/> pour accéder à [Paramètres → Surveillance des sauvegardes](settings/backup-monitoring-settings.md). Ou cliquez sur le <SvgButton SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> dans la barre d'outils pour ouvrir l'interface web du serveur Duplicati et vérifier les journaux.
 
@@ -28,7 +28,7 @@ Cliquez sur le <IconButton icon="lucide:settings" href="settings/backup-monitori
 
 Ce tableau répertorie les journaux de sauvegarde pour le serveur sélectionné.
 
-![Backup History](../assets/screen-backup-history.png)
+![Historique des sauvegardes](../assets/screen-backup-history.png)
 
 - **Backup Name** : Nom de la sauvegarde sur le serveur Duplicati.
 - **Date** : Horodatage de la sauvegarde et temps écoulé depuis le dernier rafraîchissement de l'écran.
@@ -37,17 +37,17 @@ Ce tableau répertorie les journaux de sauvegarde pour le serveur sélectionné.
 - **Available Versions** : Nombre de versions de sauvegarde disponibles sur la destination. Si l'icône est grisée, les informations détaillées n'ont pas été reçues.
 - **File Count, File Size, Uploaded Size, Duration, Storage Size** : Valeurs telles que rapportées par le serveur Duplicati.
 
-:::tip Tips
+:::tip Conseils
 • Utilisez le menu déroulant dans la section **Historique des sauvegardes** pour sélectionner **Toutes les sauvegardes** ou une sauvegarde spécifique pour ce serveur.
 
 • Vous pouvez trier n'importe quelle colonne en cliquant sur son en-tête, cliquez à nouveau pour inverser l'ordre de tri.
- 
+
 • Cliquez n'importe où sur une ligne pour afficher les [Détails de la sauvegarde](#backup-details).
 
 :::
 
 :::note
-Quand **Toutes les sauvegardes** est sélectionné, la liste affiche toutes les sauvegardes ordonnées de la plus récente à la plus ancienne par défaut.
+Quand **Toutes les sauvegardes** est sélectionné, la liste affiche toutes les sauvegardes, triées de la plus récente à la plus ancienne par défaut.
 :::
 
 <br/>
@@ -56,7 +56,7 @@ Quand **Toutes les sauvegardes** est sélectionné, la liste affiche toutes les 
 
 Cliquer sur un badge de statut dans le tableau de bord (vue tableau) ou sur n'importe quelle ligne du tableau de l'historique des sauvegardes affiche les informations de sauvegarde détaillées.
 
-![Backup Details](../assets/screen-backup-detail.png)
+![Détails de la sauvegarde](../assets/screen-backup-detail.png)
 
 - **Server details** : nom du serveur, alias et note.
 - **Backup Information** : Horodatage de la sauvegarde et son identifiant.

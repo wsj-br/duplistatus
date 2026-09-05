@@ -9,35 +9,36 @@ Los administradores ven todas las configuraciones disponibles.
 <table>
   <tr>
     <td>
-      ![Barra lateral de Configuración - Vista de Administrador](../../assets/screen-settings-left-panel-admin.png)
+      ![Configuración de la barra lateral - Vista de administrador](../../assets/screen-settings-left-panel-admin.png)
     </td>
     <td>
       <ul>
         <li>
           <strong>Notificaciones</strong>
           <ul>
-            <li><a href="backup-notifications-settings.md">Notificaciones de Copia de Seguridad</a>: Configurar ajustes de notificación por copia de seguridad</li>
-            <li><a href="backup-monitoring-settings.md">Monitoreo de copias de seguridad</a>: Configurar detección y alertas de copias de seguridad vencidas</li>
-            <li><a href="notification-templates.md">Plantillas</a>: Personalizar plantillas de mensajes de notificación</li>
+            <li><a href="backup-notifications-settings.md">Notificaciones de copia de seguridad</a>: Configurar la configuración de notificaciones por copia de seguridad</li>
+            <li><a href="backup-monitoring-settings.md">Monitoreo de copias de seguridad</a>: Configurar la detección y alertas de copias de seguridad vencidas</li>
+            <li><a href="notification-templates.md">Plantillas</a>: Personalizar las plantillas de mensajes de notificación</li>
           </ul>
         </li><br/>
         <li>
           <strong>Integraciones</strong>
           <ul>
-            <li><a href="ntfy-settings.md">NTFY</a>: Configurar servicio de notificaciones push NTFY</li>
+            <li><a href="ntfy-settings.md">NTFY</a>: Configurar el servicio de notificaciones push NTFY</li>
             <li><a href="email-settings.md">Correo electrónico</a>: Configurar notificaciones por correo electrónico SMTP</li>
           </ul>
         </li><br/>
         <li>
           <strong id="system">Sistema</strong>
           <ul>
-            <li><a href="server-settings.md">Servidores</a>: Administrar configuraciones de servidores Duplicati</li>
-            <li><a href="display-settings.md">Configuración de visualización</a>: Configurar tema, rango de tiempo de gráfico, estilo de gráfico, configuración regional, intervalo de actualización automática, orden de clasificación de tarjetas y inicio de semana</li>
-            <li><a href="database-maintenance.md">Mantenimiento de base de datos</a>: Realizar limpieza de base de datos (solo administrador)</li>
-            <li><a href="user-management-settings.md">Usuarios</a>: Administrar cuentas de usuario (solo administrador)</li>
-            <li><a href="audit-logs-viewer.md">Registro de auditoría</a>: Ver registros de auditoría del sistema</li>
-            <li><a href="audit-logs-retention.md">Retención de Registro de Auditoría</a>: Configurar retención de registro de auditoría (solo administrador)</li>
-            <li><a href="application-logs-settings.md">Registros de la Aplicación</a>: Ver y exportar registros de la aplicación (solo administrador)</li>
+            <li><a href="server-settings.md">Servidores</a>: Gestionar las configuraciones del servidor Duplicati</li>
+            <li><a href="display-settings.md">Configuración de visualización</a>: Configurar el tema, el rango de tiempo del gráfico, el estilo del gráfico, la configuración regional, el intervalo de actualización automática, el orden de clasificación de las tarjetas y el inicio de la semana</li>
+            <li><a href="duplicati-versions.md">Versiones de Duplicati</a>: Ver las versiones de lanzamiento de Duplicati en caché y configurar el horario de verificación de la versión</li>
+            <li><a href="database-maintenance.md">Mantenimiento de base de datos</a>: Realizar la limpieza de la base de datos (solo administrador)</li>
+            <li><a href="user-management-settings.md">Usuarios</a>: Gestionar las cuentas de usuario (solo administrador)</li>
+            <li><a href="audit-logs-viewer.md">Registro de auditoría</a>: Ver los registros de auditoría del sistema</li>
+            <li><a href="audit-logs-retention.md">Retención de registro de auditoría</a>: Configurar la retención de registros de auditoría (solo administrador)</li>
+            <li><a href="application-logs-settings.md">Registros de la aplicación</a>: Ver y exportar los registros de la aplicación (solo administrador)</li>
           </ul>
         </li>
       </ul>
@@ -52,31 +53,32 @@ Los usuarios regulares ven un conjunto limitado de configuraciones.
 <table>
   <tr>
     <td>
-      ![Barra lateral de Configuración - Vista de No Administrador](../../assets/screen-settings-left-panel-non-admin.png)
+      ![Configuración de la barra lateral - Vista de no administrador](../../assets/screen-settings-left-panel-non-admin.png)
     </td>
     <td>
       <ul>
         <li>
           <strong>Notificaciones</strong>
           <ul>
-            <li><a href="backup-notifications-settings.md">Notificaciones de Copia de Seguridad</a>: Ver ajustes de notificación por copia de seguridad (solo lectura)</li>
-            <li><a href="backup-monitoring-settings.md">Monitoreo de copias de seguridad</a>: Ver configuración de copias de seguridad vencidas (solo lectura)</li>
-            <li><a href="notification-templates.md">Plantillas</a>: Ver plantillas de notificación (solo lectura)</li>
+            <li><a href="backup-notifications-settings.md">Notificaciones de copia de seguridad</a>: Ver la configuración de notificaciones por copia de seguridad (solo lectura)</li>
+            <li><a href="backup-monitoring-settings.md">Monitoreo de copias de seguridad</a>: Ver la configuración de copias de seguridad vencidas (solo lectura)</li>
+            <li><a href="notification-templates.md">Plantillas</a>: Ver las plantillas de notificación (solo lectura)</li>
           </ul>
         </li><br/>
         <li>
           <strong>Integraciones</strong>
           <ul>
-            <li><a href="ntfy-settings.md">NTFY</a>: Ver configuración de NTFY (solo lectura)</li>
-            <li><a href="email-settings.md">Correo electrónico</a>: Ver configuración de correo electrónico (solo lectura)</li>
+            <li><a href="ntfy-settings.md">NTFY</a>: Ver la configuración de NTFY (solo lectura)</li>
+            <li><a href="email-settings.md">Correo electrónico</a>: Ver la configuración de correo electrónico (solo lectura)</li>
           </ul>
         </li><br/>
         <li>
           <strong id="system">Sistema</strong>
           <ul>
-            <li><a href="server-settings.md">Servidores</a>: Ver configuraciones de servidores (solo lectura)</li>
-            <li><a href="display-settings.md">Visualización</a>: Configurar tema, rango de tiempo de gráfico, estilo de gráfico, configuración regional, intervalo de actualización automática, orden de clasificación de tarjetas y inicio de semana</li>
-            <li><a href="audit-logs-viewer.md">Registro de auditoría</a>: Ver registros de auditoría del sistema (solo lectura)</li>
+            <li><a href="server-settings.md">Servidores</a>: Ver las configuraciones del servidor (solo lectura)</li>
+            <li><a href="display-settings.md">Visualización</a>: Configurar el tema, el rango de tiempo del gráfico, el estilo del gráfico, la configuración regional, el intervalo de actualización automática, el orden de clasificación de las tarjetas y el inicio de la semana</li>
+            <li><a href="duplicati-versions.md">Versiones de Duplicati</a>: Ver las versiones de lanzamiento de Duplicati en caché (los cambios de horario son solo para administradores)</li>
+            <li><a href="audit-logs-viewer.md">Registro de auditoría</a>: Ver los registros de auditoría del sistema (solo lectura)</li>
           </ul>
         </li>
       </ul>

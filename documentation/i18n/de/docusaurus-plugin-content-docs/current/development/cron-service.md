@@ -31,7 +31,7 @@ Der Cron-Service umfasst:
 - **Watch-Modus**: Der Entwicklungsmodus beinhaltet das Überwachen von Dateiänderungen für automatische Neustarts bei Code-Änderungen
 - **Überwachung überfälliger Sicherungen**: Automatische Prüfung und Benachrichtigung bei überfälligen Sicherungen (standardmäßig alle 5 Minuten)
 - **Audit-Protokollbereinigung**: Automatische Bereinigung alter Audit-Protokolleinträge (läuft täglich um 2 Uhr UTC)
-- **Duplicati-Version-Aktualisierung**: Aktualisiert die zwischengespeicherten neuesten Duplicati-Kanalversionen aus GitHub Releases (läuft täglich um 3 Uhr UTC)
+- **Aktualisierung der Duplicati-Versionen**: Aktualisiert die zwischengespeicherten neuesten Duplicati-Kanalversionen aus den GitHub-Releases. Standardmäßig täglich um 3 Uhr UTC; Administratoren können das Intervall und die Startzeit in [Einstellungen → Duplicati-Versionen](../user-guide/settings/duplicati-versions.md) ändern.
 - **Flexible Planung**: Konfigurierbare cron-Ausdrücke für verschiedene Aufgaben
 - **Datenbankintegration**: Teilt dieselbe SQLite-Datenbank mit der Hauptanwendung
 - **RESTful-API**: Komplette API für die Dienstverwaltung und -überwachung

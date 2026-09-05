@@ -2,7 +2,7 @@
 
 Utilice esta configuración para enviar notificaciones cuando se [reciba un nuevo registro de backup](../../installation/duplicati-server-configuration.md).
 
-![Backup alerts](../../assets/screen-settings-notifications.png)
+![Alertas de copia de seguridad](../../assets/screen-settings-notifications.png)
 
 La tabla de notificaciones de copia de seguridad está organizada por servidor. El formato de visualización depende de cuántas copias de seguridad tenga un servidor:
 - **Múltiples copias de seguridad**: Muestra una fila de encabezado del servidor con filas individuales de copias de seguridad debajo. Haga clic en el encabezado del servidor para expandir o contraer la lista de copias de seguridad.
@@ -51,7 +51,7 @@ La configuración de destino adicional se indica mediante iconos contextuales ju
 
 Si no se muestra ningún icono, el servidor o backup no tiene destinos adicionales configurados.
 
-![Server-level additional destinations](../../assets/screen-settings-notifications-server.png)
+![Destinos adicionales a nivel de servidor](../../assets/screen-settings-notifications-server.png)
 
 ### Valores Predeterminados a Nivel de Servidor {#server-level-defaults}
 
@@ -99,7 +99,7 @@ Las copias de seguridad individuales heredan automáticamente los valores predet
 
 Puede editar la configuración de destinos adicionales para múltiples backups a la vez utilizando la función de edición masiva. Esto es particularmente útil cuando necesita aplicar los mismos destinos adicionales a muchos trabajos de backup.
 
-![Bulk edit dialog](../../assets/screen-settings-notifications-bulk.png)
+![Cuadro de diálogo de edición masiva](../../assets/screen-settings-notifications-bulk.png)
 
 1. Navegue a [Configuración → Notificaciones de copia de seguridad](backup-notifications-settings.md).
 2. Use las casillas de verificación en la primera columna para seleccionar las copias de seguridad o servidores que desea editar.

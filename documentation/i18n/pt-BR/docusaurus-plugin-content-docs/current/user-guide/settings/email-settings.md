@@ -2,7 +2,7 @@
 
 **duplistatus** oferece suporte ao envio de notificações por e-mail via SMTP como alternativa ou complemento às notificações NTFY. A configuração de e-mail agora é gerenciada através da interface web com armazenamento criptografado no banco de dados para maior segurança.
 
-![Email Configuration](../../assets/screen-settings-email.png)
+![Configuração de E-mail](../../assets/screen-settings-email.png)
 
 | Configuração                 | Descrição                                                      |
 |:------------------------|:-----------------------------------------------------------------|

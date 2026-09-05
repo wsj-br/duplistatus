@@ -32,12 +32,13 @@
           <strong id="system">系统</strong>
           <ul>
             <li><a href="server-settings.md">服务器</a>: 管理 Duplicati 服务器配置</li>
-            <li><a href="display-settings.md">显示设置</a>: 配置主题、图表时间范围、图表样式、格式区域设置、自动刷新间隔、卡片排序顺序和周开始</li>
-            <li><a href="database-maintenance.md">数据库维护</a>: 执行数据库清理（仅管理员）</li>
-            <li><a href="user-management-settings.md">用户</a>: 管理用户账户（仅管理员）</li>
+            <li><a href="display-settings.md">显示设置</a>: 配置主题、图表时间范围、图表样式、格式区域、自动刷新间隔、卡片排序顺序和周开始</li>
+            <li><a href="duplicati-versions.md">Duplicati 版本</a>: 查看缓存的 Duplicati 发布版本并配置版本检查计划</li>
+            <li><a href="database-maintenance.md">数据库维护</a>: 执行数据库清理（仅限管理员）</li>
+            <li><a href="user-management-settings.md">用户</a>: 管理用户账户（仅限管理员）</li>
             <li><a href="audit-logs-viewer.md">审计日志</a>: 查看系统审计日志</li>
-            <li><a href="audit-logs-retention.md">审计日志保留</a>: 配置审计日志保留（仅管理员）</li>
-            <li><a href="application-logs-settings.md">应用程序日志</a>: 查看和导出应用程序日志（仅管理员）</li>
+            <li><a href="audit-logs-retention.md">审计日志保留</a>: 配置审计日志保留（仅限管理员）</li>
+            <li><a href="application-logs-settings.md">应用程序日志</a>: 查看和导出应用程序日志（仅限管理员）</li>
           </ul>
         </li>
       </ul>
@@ -75,7 +76,8 @@
           <strong id="system">系统</strong>
           <ul>
             <li><a href="server-settings.md">服务器</a>: 查看服务器配置（只读）</li>
-            <li><a href="display-settings.md">显示</a>: 配置主题、图表时间范围、图表样式、格式区域设置、自动刷新间隔、卡片排序顺序和周开始</li>
+            <li><a href="display-settings.md">显示</a>: 配置主题、图表时间范围、图表样式、格式区域、自动刷新间隔、卡片排序顺序和周开始</li>
+            <li><a href="duplicati-versions.md">Duplicati 版本</a>: 查看缓存的 Duplicati 发布版本（计划更改仅限管理员）</li>
             <li><a href="audit-logs-viewer.md">审计日志</a>: 查看系统审计日志（只读）</li>
           </ul>
         </li>

@@ -2,7 +2,7 @@
 
 审计日志提供了系统更改和用户操作的全面记录，包括 **duplistatus**。这有助于跟踪配置更改、用户活动和系统操作，以实现安全和故障排除目的。
 
-![Audit Log](../../assets/screen-settings-audit.png)
+![审计日志](../../assets/screen-settings-audit.png)
 
 ## 审计日志查看器 {#audit-log-viewer}
 

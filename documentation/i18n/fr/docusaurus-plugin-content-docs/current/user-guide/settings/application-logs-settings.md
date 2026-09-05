@@ -2,7 +2,7 @@
 
 Le Visualiseur de journaux d'application permet aux administrateurs de surveiller tous les journaux d'application au même endroit, avec filtrage, export et mises à jour en temps réel directement depuis l'interface web.
 
-![Application Log Viewer](../../assets/screen-settings-application-logs.png)
+![Visualiseur de journaux d'application](../../assets/screen-settings-application-logs.png)
 
 <br/>
 

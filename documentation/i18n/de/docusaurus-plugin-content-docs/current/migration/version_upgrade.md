@@ -125,29 +125,28 @@ Wenn Sie einen lokalen Ordner verwenden, der an den Container angebunden ist, be
 3. Stellen Sie sicher, dass die Datei exakt den Namen `backups.db` trägt.
 4. Starten Sie den Container.
 
-```bash
-docker logs <container-name>
-```
-
 :::note
 Wenn Sie die Datenbank manuell wiederherstellen, können Berechtigungsfehler auftreten. 
 
-Prüfen Sie die Container-Protokolle und passen Sie die Berechtigungen bei Bedarf an. Weitere Informationen finden Sie im Abschnitt [Troubleshooting](#troubleshooting-your-restore--rollback) weiter unten.
-::: 
+Überprüfen Sie die Container-Logs und passen Sie die Berechtigungen bei Bedarf an. Weitere Informationen finden Sie im Abschnitt [Troubleshooting](#troubleshooting-your-restore--rollback) weiter unten.
+:::
 
 ## Automatischer Migrationsprozess {#automatic-migration-process}
 
-Wenn Sie eine neue Version starten, werden Migrationen automatisch ausgeführt:
+Wenn Sie eine neue Version starten, werden die Migrationsvorgänge automatisch ausgeführt:
 
-1. **Sicherungserstellung**: Eine mit Zeitstempel versehene Sicherung wird in Ihrem Datenverzeichnis erstellt
-2. **Schema-Update**: Datenbanktabellen und Felder werden nach Bedarf aktualisiert
+1. **Backup-Erstellung**: Ein mit Zeitstempel versehener Backup wird in Ihrem Datenverzeichnis erstellt
+2. **Schema-Aktualisierung**: Datenbanktabellen und Felder werden nach Bedarf aktualisiert
 3. **Datenmigration**: Alle vorhandenen Daten werden beibehalten und migriert
-4. **Verifizierung**: Der Migrationserfolg wird protokolliert
+4. **Überprüfung**: Der Migrationserfolg wird protokolliert
 
-### Überwachung der Migration {#monitoring-migration}
+### Migration überwachen {#monitoring-migration}
 
-Prüfen Sie Docker-Protokolle, um den Migrationsverlauf zu überwachen:
+Überprüfen Sie die Docker-Logs, um den Migrationsfortschritt zu überwachen:
 
+```bash
+docker logs <container-name>
+```
 
 Suchen Sie nach Nachrichten wie:
 - `"Found X pending migrations"`
@@ -156,7 +155,7 @@ Suchen Sie nach Nachrichten wie:
 - `"Database backup created: /path/to/backups-copy-YYYY-MM-DDTHH-MM-SS.db"`
 - `"All migrations completed successfully"`
 
-## Versionsspezifische Migrationshinweise {#version-specific-migration-notes}
+## Version-spezifische Migrationshinweise {#version-specific-migration-notes}
 
 ### Upgrade auf Version 0.9.x oder höher (Schema v4.0) {#upgrading-to-version-09x-or-later-schema-v40}
 

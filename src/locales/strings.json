@@ -228,6 +228,10 @@
       {
         "file": "src/components/settings/backup-monitoring-form.tsx",
         "line": 544
+      },
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 182
       }
     ]
   },
@@ -393,7 +397,40 @@
       },
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 442
+        "line": 463
+      }
+    ]
+  },
+  "46264573": {
+    "source": "Duplicati Versions",
+    "translated": {
+      "de": "Duplicati-Versionen",
+      "pt-BR": "Versões do Duplicati",
+      "es": "Versiones de Duplicati",
+      "fr": "Versions de Duplicati",
+      "zh-Hans": "Duplicati 版本",
+      "hi": "डुप्लिकेटी संस्करण"
+    },
+    "models": {
+      "de": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "es": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 258
+      },
+      {
+        "file": "src/components/settings/settings-page-client.tsx",
+        "line": 466
+      },
+      {
+        "file": "src/components/settings/settings-page-client.tsx",
+        "line": 469
       }
     ]
   },
@@ -2108,7 +2145,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 69
+        "line": 70
       }
     ]
   },
@@ -2135,7 +2172,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 70
+        "line": 71
       }
     ]
   },
@@ -2162,7 +2199,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 128
+        "line": 129
       }
     ]
   },
@@ -2189,7 +2226,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 138
+        "line": 139
       },
       {
         "file": "src/components/ui/back-button.tsx",
@@ -2220,7 +2257,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 150
+        "line": 151
       }
     ]
   },
@@ -2247,7 +2284,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 159
+        "line": 160
       },
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
@@ -2255,7 +2292,7 @@
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 332
+        "line": 333
       }
     ]
   },
@@ -2282,7 +2319,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 189
+        "line": 190
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
@@ -2313,7 +2350,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 198
+        "line": 199
       },
       {
         "file": "src/components/change-password-modal.tsx",
@@ -2329,11 +2366,11 @@
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 962
+        "line": 976
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1107
+        "line": 1127
       }
     ]
   },
@@ -2360,15 +2397,15 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 205
+        "line": 206
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 480
+        "line": 493
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 483
+        "line": 496
       }
     ]
   },
@@ -2395,15 +2432,15 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 212
+        "line": 213
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 493
+        "line": 506
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 496
+        "line": 509
       }
     ]
   },
@@ -2430,7 +2467,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 218
+        "line": 219
       }
     ]
   },
@@ -2457,7 +2494,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 233
+        "line": 234
       }
     ]
   },
@@ -2607,6 +2644,18 @@
         "line": 875
       },
       {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 121
+      },
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 188
+      },
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 233
+      },
+      {
         "file": "src/components/settings/email-configuration-form.tsx",
         "line": 494
       },
@@ -2652,39 +2701,39 @@
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 284
+        "line": 286
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 294
+        "line": 296
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 448
+        "line": 450
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 520
+        "line": 522
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 576
+        "line": 578
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 588
+        "line": 590
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 599
+        "line": 601
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 684
+        "line": 686
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 692
+        "line": 694
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
@@ -2844,7 +2893,7 @@
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 330
+        "line": 332
       }
     ]
   },
@@ -3594,6 +3643,14 @@
         "line": 868
       },
       {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 174
+      },
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 181
+      },
+      {
         "file": "src/components/settings/email-configuration-form.tsx",
         "line": 537
       },
@@ -3619,15 +3676,15 @@
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 513
+        "line": 515
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 622
+        "line": 624
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 670
+        "line": 672
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
@@ -3670,11 +3727,11 @@
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 912
+        "line": 926
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1072
+        "line": 1092
       }
     ]
   },
@@ -3709,11 +3766,11 @@
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 914
+        "line": 928
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1074
+        "line": 1094
       },
       {
         "file": "src/components/ui/collect-all-button.tsx",
@@ -4827,7 +4884,7 @@
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1283
+        "line": 1303
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
@@ -4870,7 +4927,7 @@
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1181
+        "line": 1201
       }
     ]
   },
@@ -4905,7 +4962,7 @@
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1182
+        "line": 1202
       }
     ]
   },
@@ -5006,11 +5063,11 @@
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 823
+        "line": 833
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1063
+        "line": 1083
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
@@ -5377,7 +5434,7 @@
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1222
+        "line": 1242
       }
     ]
   },
@@ -5412,7 +5469,7 @@
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1229
+        "line": 1249
       }
     ]
   },
@@ -5474,7 +5531,7 @@
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1242
+        "line": 1262
       }
     ]
   },
@@ -6143,7 +6200,7 @@
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 791
+        "line": 793
       }
     ]
   },
@@ -6268,6 +6325,14 @@
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
         "line": 594
+      },
+      {
+        "file": "src/components/settings/server-settings-form.tsx",
+        "line": 817
+      },
+      {
+        "file": "src/components/settings/server-settings-form.tsx",
+        "line": 1044
       },
       {
         "file": "src/components/ui/available-backups-modal.tsx",
@@ -6460,6 +6525,14 @@
       "zh-Hans": "警告/错误",
       "hi": "चेतावनियाँ/त्रुटियाँ"
     },
+    "models": {
+      "de": "mistralai/codestral-2508",
+      "es": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
     "locations": [
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
@@ -6469,15 +6542,7 @@
         "file": "src/components/dashboard/dashboard-table.tsx",
         "line": 599
       }
-    ],
-    "models": {
-      "de": "mistralai/codestral-2508",
-      "es": "mistralai/codestral-2508",
-      "pt-BR": "mistralai/codestral-2508",
-      "fr": "mistralai/codestral-2508",
-      "zh-Hans": "mistralai/codestral-2508",
-      "hi": "mistralai/codestral-2508"
-    }
+    ]
   },
   "702a4cf2": {
     "source": "Settings/Actions",
@@ -6537,11 +6602,11 @@
       },
       {
         "file": "src/components/dashboard/overview-cards.tsx",
-        "line": 418
+        "line": 421
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 745
+        "line": 747
       }
     ]
   },
@@ -6576,7 +6641,7 @@
       },
       {
         "file": "src/components/dashboard/overview-cards.tsx",
-        "line": 420
+        "line": 423
       }
     ]
   },
@@ -6646,7 +6711,7 @@
       },
       {
         "file": "src/components/dashboard/overview-cards.tsx",
-        "line": 424
+        "line": 427
       }
     ]
   },
@@ -6939,6 +7004,10 @@
       {
         "file": "src/components/settings/backup-notifications-form.tsx",
         "line": 4881
+      },
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 335
       }
     ]
   },
@@ -7010,12 +7079,6 @@
       "zh-Hans": "稳定",
       "hi": "स्थिर"
     },
-    "locations": [
-      {
-        "file": "src/components/dashboard/duplicati-version-badge.tsx",
-        "line": 20
-      }
-    ],
     "models": {
       "de": "mistralai/codestral-2508",
       "es": "mistralai/codestral-2508",
@@ -7023,7 +7086,17 @@
       "fr": "mistralai/codestral-2508",
       "zh-Hans": "mistralai/codestral-2508",
       "hi": "mistralai/codestral-2508"
-    }
+    },
+    "locations": [
+      {
+        "file": "src/components/dashboard/duplicati-version-badge.tsx",
+        "line": 20
+      },
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 48
+      }
+    ]
   },
   "0b87d66b": {
     "source": "Beta",
@@ -7035,12 +7108,6 @@
       "zh-Hans": "测试",
       "hi": "बेटा"
     },
-    "locations": [
-      {
-        "file": "src/components/dashboard/duplicati-version-badge.tsx",
-        "line": 22
-      }
-    ],
     "models": {
       "de": "mistralai/codestral-2508",
       "es": "mistralai/codestral-2508",
@@ -7048,7 +7115,17 @@
       "fr": "mistralai/codestral-2508",
       "zh-Hans": "mistralai/codestral-2508",
       "hi": "mistralai/codestral-2508"
-    }
+    },
+    "locations": [
+      {
+        "file": "src/components/dashboard/duplicati-version-badge.tsx",
+        "line": 22
+      },
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 50
+      }
+    ]
   },
   "704b5561": {
     "source": "Experimental",
@@ -7060,12 +7137,6 @@
       "zh-Hans": "实验",
       "hi": "प्रायोगिक"
     },
-    "locations": [
-      {
-        "file": "src/components/dashboard/duplicati-version-badge.tsx",
-        "line": 24
-      }
-    ],
     "models": {
       "de": "mistralai/codestral-2508",
       "es": "mistralai/codestral-2508",
@@ -7073,7 +7144,17 @@
       "fr": "mistralai/codestral-2508",
       "zh-Hans": "mistralai/codestral-2508",
       "hi": "mistralai/codestral-2508"
-    }
+    },
+    "locations": [
+      {
+        "file": "src/components/dashboard/duplicati-version-badge.tsx",
+        "line": 24
+      },
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 52
+      }
+    ]
   },
   "ecf715d6": {
     "source": "Canary",
@@ -7085,12 +7166,6 @@
       "zh-Hans": "金丝雀",
       "hi": "कैनरी"
     },
-    "locations": [
-      {
-        "file": "src/components/dashboard/duplicati-version-badge.tsx",
-        "line": 26
-      }
-    ],
     "models": {
       "de": "mistralai/codestral-2508",
       "es": "mistralai/codestral-2508",
@@ -7098,7 +7173,17 @@
       "fr": "mistralai/codestral-2508",
       "zh-Hans": "mistralai/codestral-2508",
       "hi": "mistralai/codestral-2508"
-    }
+    },
+    "locations": [
+      {
+        "file": "src/components/dashboard/duplicati-version-badge.tsx",
+        "line": 26
+      },
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 54
+      }
+    ]
   },
   "88183b94": {
     "source": "Unknown",
@@ -7131,11 +7216,11 @@
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 353
+        "line": 355
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1078
+        "line": 1098
       },
       {
         "file": "src/components/status-badge.tsx",
@@ -7157,12 +7242,6 @@
       "zh-Hans": "通道：",
       "hi": "चैनल:"
     },
-    "locations": [
-      {
-        "file": "src/components/dashboard/duplicati-version-badge.tsx",
-        "line": 69
-      }
-    ],
     "models": {
       "de": "mistralai/codestral-2508",
       "es": "mistralai/codestral-2508",
@@ -7170,7 +7249,13 @@
       "fr": "mistralai/codestral-2508",
       "zh-Hans": "mistralai/codestral-2508",
       "hi": "mistralai/codestral-2508"
-    }
+    },
+    "locations": [
+      {
+        "file": "src/components/dashboard/duplicati-version-badge.tsx",
+        "line": 69
+      }
+    ]
   },
   "522fef64": {
     "source": "Server version:",
@@ -7182,12 +7267,6 @@
       "zh-Hans": "服务器版本：",
       "hi": "सर्वर संस्करण:"
     },
-    "locations": [
-      {
-        "file": "src/components/dashboard/duplicati-version-badge.tsx",
-        "line": 72
-      }
-    ],
     "models": {
       "de": "mistralai/codestral-2508",
       "es": "mistralai/codestral-2508",
@@ -7195,7 +7274,13 @@
       "fr": "mistralai/codestral-2508",
       "zh-Hans": "mistralai/codestral-2508",
       "hi": "mistralai/codestral-2508"
-    }
+    },
+    "locations": [
+      {
+        "file": "src/components/dashboard/duplicati-version-badge.tsx",
+        "line": 72
+      }
+    ]
   },
   "0298ba2e": {
     "source": "Version comparison is unavailable.",
@@ -7207,12 +7292,6 @@
       "zh-Hans": "版本比较不可用。",
       "hi": "संस्करण तुलना अनुपलब्ध है।"
     },
-    "locations": [
-      {
-        "file": "src/components/dashboard/duplicati-version-badge.tsx",
-        "line": 75
-      }
-    ],
     "models": {
       "de": "mistralai/codestral-2508",
       "es": "mistralai/codestral-2508",
@@ -7220,7 +7299,13 @@
       "fr": "mistralai/codestral-2508",
       "zh-Hans": "mistralai/codestral-2508",
       "hi": "mistralai/codestral-2508"
-    }
+    },
+    "locations": [
+      {
+        "file": "src/components/dashboard/duplicati-version-badge.tsx",
+        "line": 75
+      }
+    ]
   },
   "ab5c1efd": {
     "source": "Latest {{channel}} version:",
@@ -7232,12 +7317,6 @@
       "zh-Hans": "最新{{channel}}版本：",
       "hi": "नवीनतम {{channel}} संस्करण:"
     },
-    "locations": [
-      {
-        "file": "src/components/dashboard/duplicati-version-badge.tsx",
-        "line": 78
-      }
-    ],
     "models": {
       "de": "mistralai/codestral-2508",
       "es": "mistralai/codestral-2508",
@@ -7245,7 +7324,13 @@
       "fr": "mistralai/codestral-2508",
       "zh-Hans": "mistralai/codestral-2508",
       "hi": "mistralai/codestral-2508"
-    }
+    },
+    "locations": [
+      {
+        "file": "src/components/dashboard/duplicati-version-badge.tsx",
+        "line": 78
+      }
+    ]
   },
   "91f3a2c0": {
     "source": "Files",
@@ -7270,7 +7355,7 @@
     "locations": [
       {
         "file": "src/components/dashboard/overview-cards.tsx",
-        "line": 191
+        "line": 194
       }
     ]
   },
@@ -7297,7 +7382,7 @@
     "locations": [
       {
         "file": "src/components/dashboard/overview-cards.tsx",
-        "line": 200
+        "line": 203
       }
     ]
   },
@@ -7324,7 +7409,7 @@
     "locations": [
       {
         "file": "src/components/dashboard/overview-cards.tsx",
-        "line": 209
+        "line": 212
       }
     ]
   },
@@ -7351,7 +7436,7 @@
     "locations": [
       {
         "file": "src/components/dashboard/overview-cards.tsx",
-        "line": 218
+        "line": 221
       }
     ]
   },
@@ -7378,7 +7463,7 @@
     "locations": [
       {
         "file": "src/components/dashboard/overview-cards.tsx",
-        "line": 241
+        "line": 244
       }
     ]
   },
@@ -7405,7 +7490,7 @@
     "locations": [
       {
         "file": "src/components/dashboard/overview-cards.tsx",
-        "line": 325
+        "line": 328
       }
     ]
   },
@@ -10233,11 +10318,11 @@
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 506
+        "line": 519
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 509
+        "line": 522
       }
     ]
   },
@@ -10342,11 +10427,11 @@
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1147
+        "line": 1167
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1294
+        "line": 1314
       }
     ]
   },
@@ -11240,11 +11325,11 @@
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 826
+        "line": 836
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1086
+        "line": 1106
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
@@ -11283,7 +11368,7 @@
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 432
+        "line": 433
       }
     ]
   },
@@ -11808,7 +11893,7 @@
       },
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 235
+        "line": 238
       }
     ]
   },
@@ -11839,7 +11924,7 @@
       },
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 239
+        "line": 242
       }
     ]
   },
@@ -11870,7 +11955,7 @@
       },
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 240
+        "line": 243
       }
     ]
   },
@@ -12569,6 +12654,10 @@
       {
         "file": "src/components/settings/backup-notifications-form.tsx",
         "line": 2283
+      },
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 162
       }
     ]
   },
@@ -13271,11 +13360,11 @@
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 379
+        "line": 380
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 382
+        "line": 383
       }
     ]
   },
@@ -14586,7 +14675,7 @@
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 461
+        "line": 463
       }
     ]
   },
@@ -18513,11 +18602,11 @@
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 466
+        "line": 479
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 469
+        "line": 482
       }
     ]
   },
@@ -19602,7 +19691,7 @@
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1270
+        "line": 1290
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
@@ -20403,11 +20492,11 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 93
+        "line": 96
       },
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 402
+        "line": 423
       }
     ]
   },
@@ -20434,15 +20523,15 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 114
+        "line": 117
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 453
+        "line": 454
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 456
+        "line": 457
       }
     ]
   },
@@ -20469,7 +20558,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 117
+        "line": 120
       }
     ]
   },
@@ -20496,7 +20585,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 128
+        "line": 131
       }
     ]
   },
@@ -20523,7 +20612,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 135
+        "line": 138
       }
     ]
   },
@@ -20550,18 +20639,6 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 138
-      },
-      {
-        "file": "src/components/settings/display-settings-form.tsx",
-        "line": 139
-      },
-      {
-        "file": "src/components/settings/display-settings-form.tsx",
-        "line": 140
-      },
-      {
-        "file": "src/components/settings/display-settings-form.tsx",
         "line": 141
       },
       {
@@ -20579,6 +20656,18 @@
       {
         "file": "src/components/settings/display-settings-form.tsx",
         "line": 145
+      },
+      {
+        "file": "src/components/settings/display-settings-form.tsx",
+        "line": 146
+      },
+      {
+        "file": "src/components/settings/display-settings-form.tsx",
+        "line": 147
+      },
+      {
+        "file": "src/components/settings/display-settings-form.tsx",
+        "line": 148
       }
     ]
   },
@@ -20605,7 +20694,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 154
+        "line": 157
       }
     ]
   },
@@ -20632,7 +20721,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 161
+        "line": 164
       }
     ]
   },
@@ -20659,7 +20748,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 180
+        "line": 183
       }
     ]
   },
@@ -20686,7 +20775,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 200
+        "line": 203
       }
     ]
   },
@@ -20713,7 +20802,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 214
+        "line": 217
       }
     ]
   },
@@ -20740,7 +20829,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 223
+        "line": 226
       }
     ]
   },
@@ -20767,7 +20856,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 230
+        "line": 233
       }
     ]
   },
@@ -20794,7 +20883,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 233
+        "line": 236
       }
     ]
   },
@@ -20821,7 +20910,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 234
+        "line": 237
       }
     ]
   },
@@ -20848,7 +20937,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 236
+        "line": 239
       }
     ]
   },
@@ -20875,7 +20964,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 237
+        "line": 240
       }
     ]
   },
@@ -20902,7 +20991,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 238
+        "line": 241
       }
     ]
   },
@@ -20929,7 +21018,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 249
+        "line": 252
       }
     ]
   },
@@ -20956,7 +21045,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 256
+        "line": 259
       }
     ]
   },
@@ -20983,7 +21072,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 259
+        "line": 262
       }
     ]
   },
@@ -21010,7 +21099,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 260
+        "line": 263
       }
     ]
   },
@@ -21037,7 +21126,61 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 261
+        "line": 264
+      }
+    ]
+  },
+  "454f646b": {
+    "source": "Show version on dashboard",
+    "translated": {
+      "de": "Version auf dem Dashboard anzeigen",
+      "pt-BR": "Mostrar versão no painel",
+      "es": "Mostrar versión en el panel",
+      "fr": "Afficher la version sur le tableau de bord",
+      "zh-Hans": "在仪表板上显示版本",
+      "hi": "डैशबोर्ड पर संस्करण दिखाएं"
+    },
+    "models": {
+      "de": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "es": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/display-settings-form.tsx",
+        "line": 278
+      },
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 326
+      }
+    ]
+  },
+  "95fb6d5f": {
+    "source": "Show the Duplicati version in dashboard card view",
+    "translated": {
+      "de": "Zeigt die Duplicati-Version in der Dashboard-Kartenansicht an",
+      "pt-BR": "Mostrar a versão do Duplicati na visualização do cartão do painel",
+      "es": "Mostrar la versión de Duplicati en la vista de tarjeta del panel",
+      "fr": "Afficher la version de Duplicati dans la vue en carte du tableau de bord",
+      "zh-Hans": "在仪表板卡片视图中显示 Duplicati 版本",
+      "hi": "डैशबोर्ड कार्ड व्यू में डुप्लिकेटी संस्करण दिखाएं"
+    },
+    "models": {
+      "de": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "es": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/display-settings-form.tsx",
+        "line": 287
       }
     ]
   },
@@ -21064,7 +21207,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 285
+        "line": 306
       }
     ]
   },
@@ -21091,7 +21234,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 306
+        "line": 327
       }
     ]
   },
@@ -21118,7 +21261,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 320
+        "line": 341
       }
     ]
   },
@@ -21145,7 +21288,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 334
+        "line": 355
       }
     ]
   },
@@ -21172,7 +21315,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 345
+        "line": 366
       }
     ]
   },
@@ -21199,7 +21342,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 352
+        "line": 373
       }
     ]
   },
@@ -21226,7 +21369,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 355
+        "line": 376
       }
     ]
   },
@@ -21253,7 +21396,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 356
+        "line": 377
       }
     ]
   },
@@ -21280,7 +21423,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 357
+        "line": 378
       }
     ]
   },
@@ -21307,7 +21450,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 367
+        "line": 388
       }
     ]
   },
@@ -21334,7 +21477,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 384
+        "line": 405
       }
     ]
   },
@@ -21361,7 +21504,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 389
+        "line": 410
       }
     ]
   },
@@ -21388,7 +21531,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 446
+        "line": 467
       }
     ]
   },
@@ -21415,7 +21558,623 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 450
+        "line": 471
+      }
+    ]
+  },
+  "522a92d2": {
+    "source": "Once a day",
+    "translated": {
+      "de": "Einmal täglich",
+      "pt-BR": "Uma vez por dia",
+      "es": "Una vez al día",
+      "fr": "Une fois par jour",
+      "zh-Hans": "每天一次",
+      "hi": "एक दिन में एक बार"
+    },
+    "models": {
+      "de": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "es": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 65
+      }
+    ]
+  },
+  "92d06747": {
+    "source": "Every 12 hours",
+    "translated": {
+      "de": "Alle 12 Stunden",
+      "pt-BR": "A cada 12 horas",
+      "es": "Cada 12 horas",
+      "fr": "Toutes les 12 heures",
+      "zh-Hans": "每 12 小时",
+      "hi": "हर 12 घंटे में"
+    },
+    "models": {
+      "de": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "es": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 67
+      }
+    ]
+  },
+  "ccd21fd3": {
+    "source": "Every 6 hours",
+    "translated": {
+      "de": "Alle 6 Stunden",
+      "pt-BR": "A cada 6 horas",
+      "es": "Cada 6 horas",
+      "fr": "Toutes les 6 heures",
+      "zh-Hans": "每 6 小时",
+      "hi": "हर 6 घंटे में"
+    },
+    "models": {
+      "de": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "es": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 69
+      }
+    ]
+  },
+  "8732ff08": {
+    "source": "Failed to load Duplicati version settings",
+    "translated": {
+      "de": "Fehler beim Laden der Duplicati-Versions-Einstellungen",
+      "pt-BR": "Falha ao carregar as configurações de versão do Duplicati",
+      "es": "Error al cargar la configuración de la versión de Duplicati",
+      "fr": "Échec du chargement des paramètres de vérification de version de Duplicati",
+      "zh-Hans": "无法加载 Duplicati 版本设置",
+      "hi": "डुप्लिकेटी संस्करण सेटिंग्स लोड करने में विफल"
+    },
+    "models": {
+      "de": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "es": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 111
+      },
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 122
+      }
+    ]
+  },
+  "d7dc8665": {
+    "source": "Failed to update version check schedule",
+    "translated": {
+      "de": "Fehler beim Aktualisieren des Versionsprüfungsplans",
+      "pt-BR": "Falha ao atualizar a agenda de verificação de versão",
+      "es": "Error al actualizar la programación de la comprobación de versión",
+      "fr": "Échec de la mise à jour de la planification de vérification de version",
+      "zh-Hans": "无法更新版本检查计划",
+      "hi": "संस्करण चेक शेड्यूल अपडेट करने में विफल"
+    },
+    "models": {
+      "de": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "es": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 164
+      },
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 165
+      },
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 189
+      }
+    ]
+  },
+  "b1e2b7f6": {
+    "source": "Version check schedule updated successfully",
+    "translated": {
+      "de": "Versionsprüfungsplan erfolgreich aktualisiert",
+      "pt-BR": "Agenda de verificação de versão atualizada com sucesso",
+      "es": "Programación de comprobación de versión actualizada correctamente",
+      "fr": "Planification de vérification de version mise à jour avec succès",
+      "zh-Hans": "版本检查计划更新成功",
+      "hi": "संस्करण चेक शेड्यूल सफलतापूर्वक अपडेट किया गया"
+    },
+    "models": {
+      "de": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "es": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 175
+      }
+    ]
+  },
+  "a40a5f7f": {
+    "source": "You do not have permission to refresh Duplicati versions. Only administrators can perform this action.",
+    "translated": {
+      "de": "Sie haben keine Berechtigung, die Duplicati-Versionen zu aktualisieren. Nur Administratoren können diese Aktion ausführen.",
+      "pt-BR": "Você não tem permissão para atualizar as versões do Duplicati. Apenas administradores podem realizar esta ação.",
+      "es": "No tienes permiso para actualizar las versiones de Duplicati. Solo los administradores pueden realizar esta acción.",
+      "fr": "Vous n'avez pas la permission de rafraîchir les versions de Duplicati. Seuls les administrateurs peuvent effectuer cette action.",
+      "zh-Hans": "您没有权限刷新 Duplicati 版本。只有管理员才能执行此操作。",
+      "hi": "आपको डुप्लिकेटी संस्करण रीफ्रेश करने की अनुमति नहीं है। केवल व्यवस्थापक ही इस क्रिया को कर सकते हैं।"
+    },
+    "models": {
+      "de": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "es": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 219
+      }
+    ]
+  },
+  "f141f2c3": {
+    "source": "Failed to refresh Duplicati versions",
+    "translated": {
+      "de": "Fehler beim Aktualisieren der Duplicati-Versionen",
+      "pt-BR": "Falha ao atualizar as versões do Duplicati",
+      "es": "Error al actualizar las versiones de Duplicati",
+      "fr": "Échec du rafraîchissement des versions de Duplicati",
+      "zh-Hans": "无法刷新 Duplicati 版本",
+      "hi": "डुप्लिकेटी संस्करण रीफ्रेश करने में विफल"
+    },
+    "models": {
+      "de": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "es": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 222
+      },
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 234
+      }
+    ]
+  },
+  "8c9d225b": {
+    "source": "Versions updated",
+    "translated": {
+      "de": "Versionen aktualisiert",
+      "pt-BR": "Versões atualizadas",
+      "es": "Versiones actualizadas",
+      "fr": "Versions mises à jour",
+      "zh-Hans": "版本已更新",
+      "hi": "संस्करण अपडेट किए गए"
+    },
+    "models": {
+      "de": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "es": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 227
+      }
+    ]
+  },
+  "09de7926": {
+    "source": "Latest Duplicati release versions cached from GitHub, and the schedule used to refresh them.",
+    "translated": {
+      "de": "Aktuelle Duplicati-Release-Versionen aus dem GitHub-Cache und der Zeitplan zur Aktualisierung.",
+      "pt-BR": "Versões mais recentes do Duplicati armazenadas em cache do GitHub e a agenda usada para atualizá-las.",
+      "es": "Versiones de lanzamiento más recientes de Duplicati almacenadas en caché desde GitHub y la programación utilizada para actualizarlas.",
+      "fr": "Dernières versions de Duplicati mises en cache depuis GitHub, et la planification utilisée pour les actualiser.",
+      "zh-Hans": "从 GitHub 缓存的最新 Duplicati 发布版本，以及用于刷新它们的计划。",
+      "hi": "गिटहब से कैश किए गए नवीनतम डुप्लिकेटी रिलीज़ संस्करण, और उन्हें रीफ्रेश करने के लिए उपयोग किया गया शेड्यूल।"
+    },
+    "models": {
+      "de": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "es": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 260
+      }
+    ]
+  },
+  "5e74a0ef": {
+    "source": "Latest channel versions",
+    "translated": {
+      "de": "Aktuelle Kanalversionen",
+      "pt-BR": "Versões do canal mais recente",
+      "es": "Versiones del canal más reciente",
+      "fr": "Dernières versions de la chaîne",
+      "zh-Hans": "最新频道版本",
+      "hi": "नवीनतम चैनल संस्करण"
+    },
+    "models": {
+      "de": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "es": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 268
+      }
+    ]
+  },
+  "1b1ca89c": {
+    "source": "Last update: {{time}} ({{relative}})",
+    "translated": {
+      "de": "Letzte Aktualisierung: {{time}} ({{relative}})",
+      "pt-BR": "Última atualização: {{time}} ({{relative}})",
+      "es": "Última actualización: {{time}} ({{relative}})",
+      "fr": "Dernière mise à jour : {{time}} ({{relative}})",
+      "zh-Hans": "最后更新时间：{{time}} ({{relative}})",
+      "hi": "अंतिम अपडेट: {{time}} ({{relative}})"
+    },
+    "models": {
+      "de": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "es": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 271
+      }
+    ]
+  },
+  "db3dd518": {
+    "source": "The version cache has never been updated.",
+    "translated": {
+      "de": "Der Versionscache wurde noch nie aktualisiert.",
+      "pt-BR": "O cache de versão nunca foi atualizado.",
+      "es": "El caché de versiones nunca se ha actualizado.",
+      "fr": "Le cache de version n'a jamais été mis à jour.",
+      "zh-Hans": "版本缓存尚未更新过。",
+      "hi": "संस्करण कैश कभी अपडेट नहीं किया गया है।"
+    },
+    "models": {
+      "de": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "es": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 275
+      }
+    ]
+  },
+  "781dc97d": {
+    "source": "Channel",
+    "translated": {
+      "de": "Kanal",
+      "pt-BR": "Canal",
+      "es": "Canal",
+      "fr": "Chaîne",
+      "zh-Hans": "频道",
+      "hi": "चैनल"
+    },
+    "models": {
+      "de": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "es": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 283
+      }
+    ]
+  },
+  "9ca445b9": {
+    "source": "Latest version",
+    "translated": {
+      "de": "Aktuelle Version",
+      "pt-BR": "Versão mais recente",
+      "es": "Versión más reciente",
+      "fr": "Dernière version",
+      "zh-Hans": "最新版本",
+      "hi": "नवीनतम संस्करण"
+    },
+    "models": {
+      "de": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "es": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 284
+      }
+    ]
+  },
+  "8ab682c1": {
+    "source": "Release tag",
+    "translated": {
+      "de": "Release-Tag",
+      "pt-BR": "Tag de versão",
+      "es": "Etiqueta de lanzamiento",
+      "fr": "Étiquette de version",
+      "zh-Hans": "发布标签",
+      "hi": "रिलीज़ टैग"
+    },
+    "models": {
+      "de": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "es": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 285
+      }
+    ]
+  },
+  "9b9d8a97": {
+    "source": "Published",
+    "translated": {
+      "de": "Veröffentlicht",
+      "pt-BR": "Publicado",
+      "es": "Publicado",
+      "fr": "Publié",
+      "zh-Hans": "发布时间",
+      "hi": "प्रकाशित"
+    },
+    "models": {
+      "de": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "es": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 286
+      }
+    ]
+  },
+  "453e6aa3": {
+    "source": "Unavailable",
+    "translated": {
+      "de": "Nicht verfügbar",
+      "pt-BR": "Indisponível",
+      "es": "No disponible",
+      "fr": "Indisponible",
+      "zh-Hans": "不可用",
+      "hi": "अनुपलब्ध"
+    },
+    "models": {
+      "de": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "es": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 295
+      }
+    ]
+  },
+  "a7d784a6": {
+    "source": "Updating...",
+    "translated": {
+      "de": "Aktualisieren...",
+      "pt-BR": "Atualizando...",
+      "es": "Actualizando...",
+      "fr": "Mise à jour en cours...",
+      "zh-Hans": "正在更新...",
+      "hi": "अपडेट हो रहा है..."
+    },
+    "models": {
+      "de": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "es": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 318
+      }
+    ]
+  },
+  "dd9d28bf": {
+    "source": "Update now",
+    "translated": {
+      "de": "Jetzt aktualisieren",
+      "pt-BR": "Atualizar agora",
+      "es": "Actualizar ahora",
+      "fr": "Mettre à jour maintenant",
+      "zh-Hans": "立即更新",
+      "hi": "अब अपडेट करें"
+    },
+    "models": {
+      "de": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "es": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 318
+      }
+    ]
+  },
+  "521c36a3": {
+    "source": "On",
+    "translated": {
+      "de": "An",
+      "pt-BR": "Em",
+      "es": "Activado",
+      "fr": "Sur",
+      "zh-Hans": "开启",
+      "hi": "चालू"
+    },
+    "models": {
+      "de": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "es": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 335
+      }
+    ]
+  },
+  "62e703be": {
+    "source": "Version check interval",
+    "translated": {
+      "de": "Versionsprüfungsintervall",
+      "pt-BR": "Intervalo de verificação de versão",
+      "es": "Intervalo de comprobación de versión",
+      "fr": "Intervalle de vérification de version",
+      "zh-Hans": "版本检查间隔",
+      "hi": "संस्करण चेक अंतराल"
+    },
+    "models": {
+      "de": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "es": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 342
+      }
+    ]
+  },
+  "b08561b8": {
+    "source": "Start time ({{timeZone}})",
+    "translated": {
+      "de": "Startzeit ({{timeZone}})",
+      "pt-BR": "Hora de início ({{timeZone}})",
+      "es": "Hora de inicio ({{timeZone}})",
+      "fr": "Heure de début ({{timeZone}})",
+      "zh-Hans": "开始时间 ({{timeZone}})",
+      "hi": "प्रारंभ समय ({{timeZone}})"
+    },
+    "models": {
+      "de": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "es": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 364
+      }
+    ]
+  },
+  "7f8a16d1": {
+    "source": "Stored as {{time}} UTC. Runs at {{times}}.",
+    "translated": {
+      "de": "Gespeichert als {{time}} UTC. Führt aus um {{times}}.",
+      "pt-BR": "Armazenado como {{time}} UTC. Executa às {{times}}.",
+      "es": "Almacenado como {{time}} UTC. Se ejecuta a las {{times}}.",
+      "fr": "Stocké en tant que {{time}} UTC. S'exécute à {{times}}.",
+      "zh-Hans": "存储为 {{time}} UTC。在 {{times}} 运行。",
+      "hi": "{{time}} यूटीसी के रूप में संग्रहीत। {{times}} पर चलता है।"
+    },
+    "models": {
+      "de": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "es": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/duplicati-version-settings-form.tsx",
+        "line": 383
       }
     ]
   },
@@ -22041,7 +22800,7 @@
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 589
+        "line": 591
       }
     ]
   },
@@ -22076,11 +22835,11 @@
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 600
+        "line": 602
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1253
+        "line": 1273
       }
     ]
   },
@@ -22200,11 +22959,11 @@
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 685
+        "line": 687
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 693
+        "line": 695
       }
     ]
   },
@@ -23193,7 +23952,7 @@
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1236
+        "line": 1256
       }
     ]
   },
@@ -23224,7 +23983,7 @@
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1273
+        "line": 1293
       }
     ]
   },
@@ -23255,7 +24014,7 @@
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1297
+        "line": 1317
       }
     ]
   },
@@ -25587,7 +26346,7 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 285
+        "line": 287
       }
     ]
   },
@@ -25614,7 +26373,7 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 295
+        "line": 297
       }
     ]
   },
@@ -25641,7 +26400,7 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 337
+        "line": 339
       }
     ]
   },
@@ -25668,7 +26427,7 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 338
+        "line": 340
       }
     ]
   },
@@ -25695,7 +26454,7 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 352
+        "line": 354
       }
     ]
   },
@@ -25722,7 +26481,7 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 368
+        "line": 370
       }
     ]
   },
@@ -25749,7 +26508,7 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 369
+        "line": 371
       }
     ]
   },
@@ -25776,7 +26535,7 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 438
+        "line": 440
       }
     ]
   },
@@ -25803,7 +26562,7 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 439
+        "line": 441
       }
     ]
   },
@@ -25830,7 +26589,7 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 449
+        "line": 451
       }
     ]
   },
@@ -25857,7 +26616,7 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 462
+        "line": 464
       }
     ]
   },
@@ -25884,7 +26643,7 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 514
+        "line": 516
       }
     ]
   },
@@ -25911,7 +26670,7 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 521
+        "line": 523
       }
     ]
   },
@@ -25938,7 +26697,7 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 577
+        "line": 579
       }
     ]
   },
@@ -25965,7 +26724,7 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 623
+        "line": 625
       }
     ]
   },
@@ -25992,7 +26751,7 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 671
+        "line": 673
       }
     ]
   },
@@ -26019,7 +26778,7 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 744
+        "line": 746
       }
     ]
   },
@@ -26046,7 +26805,7 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 750
+        "line": 752
       }
     ]
   },
@@ -26073,7 +26832,7 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 763
+        "line": 765
       }
     ]
   },
@@ -26100,7 +26859,7 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 765
+        "line": 767
       }
     ]
   },
@@ -26127,7 +26886,7 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 776
+        "line": 778
       }
     ]
   },
@@ -26154,11 +26913,11 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 799
+        "line": 801
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1002
+        "line": 1016
       }
     ]
   },
@@ -26185,11 +26944,11 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 807
+        "line": 809
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1017
+        "line": 1031
       }
     ]
   },
@@ -26216,11 +26975,11 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 815
+        "line": 825
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1032
+        "line": 1052
       }
     ]
   },
@@ -26247,11 +27006,11 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 843
+        "line": 853
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 990
+        "line": 1004
       }
     ]
   },
@@ -26278,11 +27037,11 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 857
+        "line": 867
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1008
+        "line": 1022
       }
     ]
   },
@@ -26309,7 +27068,7 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 869
+        "line": 879
       }
     ]
   },
@@ -26336,11 +27095,11 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 892
+        "line": 906
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1050
+        "line": 1070
       }
     ]
   },
@@ -26367,11 +27126,11 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 897
+        "line": 911
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1055
+        "line": 1075
       }
     ]
   },
@@ -26398,11 +27157,11 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 910
+        "line": 924
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1070
+        "line": 1090
       }
     ]
   },
@@ -26429,11 +27188,11 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 911
+        "line": 925
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1071
+        "line": 1091
       }
     ]
   },
@@ -26460,15 +27219,15 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 913
+        "line": 927
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1073
+        "line": 1093
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1162
+        "line": 1182
       }
     ]
   },
@@ -26495,11 +27254,11 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 915
+        "line": 929
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1075
+        "line": 1095
       }
     ]
   },
@@ -26526,11 +27285,11 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 916
+        "line": 930
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1076
+        "line": 1096
       }
     ]
   },
@@ -26557,11 +27316,11 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 917
+        "line": 931
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1077
+        "line": 1097
       }
     ]
   },
@@ -26588,11 +27347,11 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 935
+        "line": 949
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1097
+        "line": 1117
       }
     ]
   },
@@ -26619,7 +27378,7 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1023
+        "line": 1037
       }
     ]
   },
@@ -26646,7 +27405,7 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1150
+        "line": 1170
       }
     ]
   },
@@ -26673,7 +27432,7 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1161
+        "line": 1181
       }
     ]
   },
@@ -26700,11 +27459,11 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1167
+        "line": 1187
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1168
+        "line": 1188
       }
     ]
   },
@@ -26731,7 +27490,7 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1212
+        "line": 1232
       }
     ]
   },
@@ -26758,7 +27517,7 @@
     "locations": [
       {
         "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1217
+        "line": 1237
       }
     ]
   },
@@ -26785,15 +27544,15 @@
     "locations": [
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 96
+        "line": 97
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 127
+        "line": 128
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 156
+        "line": 157
       }
     ]
   },
@@ -26820,15 +27579,15 @@
     "locations": [
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 97
+        "line": 98
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 128
+        "line": 129
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 157
+        "line": 158
       }
     ]
   },
@@ -26855,7 +27614,7 @@
     "locations": [
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 305
+        "line": 306
       }
     ]
   },
@@ -26882,7 +27641,7 @@
     "locations": [
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 315
+        "line": 316
       }
     ]
   },
@@ -26909,7 +27668,7 @@
     "locations": [
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 338
+        "line": 339
       }
     ]
   },
@@ -26936,7 +27695,7 @@
     "locations": [
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 348
+        "line": 349
       }
     ]
   },
@@ -26963,7 +27722,7 @@
     "locations": [
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 358
+        "line": 359
       }
     ]
   },
@@ -26990,11 +27749,11 @@
     "locations": [
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 367
+        "line": 368
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 370
+        "line": 371
       }
     ]
   },
@@ -27021,11 +27780,11 @@
     "locations": [
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 391
+        "line": 392
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 394
+        "line": 395
       }
     ]
   },
@@ -27052,7 +27811,7 @@
     "locations": [
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 401
+        "line": 402
       }
     ]
   },
@@ -27079,11 +27838,11 @@
     "locations": [
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 410
+        "line": 411
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 413
+        "line": 414
       }
     ]
   },
@@ -27110,11 +27869,11 @@
     "locations": [
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 422
+        "line": 423
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 425
+        "line": 426
       }
     ]
   },
@@ -27141,11 +27900,11 @@
     "locations": [
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 441
+        "line": 442
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 444
+        "line": 445
       }
     ]
   },
@@ -27172,11 +27931,11 @@
     "locations": [
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 520
+        "line": 533
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 523
+        "line": 536
       }
     ]
   },
@@ -27203,7 +27962,7 @@
     "locations": [
       {
         "file": "src/components/settings/settings-page-client.tsx",
-        "line": 534
+        "line": 547
       }
     ]
   },

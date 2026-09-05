@@ -2,7 +2,7 @@
 
 Verwenden Sie diese Einstellungen, um Benachrichtigungen zu senden, wenn ein [neues Sicherungsprotokoll empfangen wird](../../installation/duplicati-server-configuration.md).
 
-![Backup alerts](../../assets/screen-settings-notifications.png)
+![Backup-Warnungen](../../assets/screen-settings-notifications.png)
 
 Die Tabelle für Sicherungshinweise ist nach Servern organisiert. Das Anzeigeformat hängt davon ab, wie viele Sicherungen ein Server besitzt:
 - **Mehrere Sicherungen**: Zeigt eine Kopfzeile für den Server mit einzelnen Zeilen für jede Sicherung darunter an. Klicken Sie auf die Server-Kopfzeile, um die Liste der Sicherungen ein- oder auszuklappen.
@@ -51,7 +51,7 @@ Zusätzliche Zielkonfiguration wird durch kontextabhängige Symbole neben Server
 
 Wenn kein Symbol angezeigt wird, hat der Server oder die Sicherung keine zusätzlichen Ziele konfiguriert.
 
-![Server-level additional destinations](../../assets/screen-settings-notifications-server.png)
+![Server-Ebene zusätzliche Ziele](../../assets/screen-settings-notifications-server.png)
 
 ### Standardwerte auf Serverebene {#server-level-defaults}
 
@@ -99,7 +99,7 @@ Einzelne Sicherungen erben automatisch die Serverstandards, aber Sie können die
 
 Sie können zusätzliche Zieleinstellungen für mehrere Sicherungen gleichzeitig mithilfe der Massenbearbeitungsfunktion bearbeiten. Dies ist besonders nützlich, wenn Sie dieselben zusätzlichen Ziele auf viele Sicherungsaufträge anwenden müssen.
 
-![Bulk edit dialog](../../assets/screen-settings-notifications-bulk.png)
+![Sammelbearbeitungsdialog](../../assets/screen-settings-notifications-bulk.png)
 
 1. Navigieren Sie zu [Einstellungen → Sicherungshinweise](backup-notifications-settings.md).
 2. Verwenden Sie die Kontrollkästchen in der ersten Spalte, um die Sicherungen oder Server auszuwählen, die Sie bearbeiten möchten.

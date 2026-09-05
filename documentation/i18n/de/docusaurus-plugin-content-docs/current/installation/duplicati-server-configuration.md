@@ -6,7 +6,7 @@ Wenden Sie diese Konfiguration auf jeden Ihrer Duplicati-Server an:
 
 1. **Konfigurieren Sie die Backup-Ergebnisberichterstattung:** Wählen Sie auf der Duplicati-Konfigurationsseite `Settings` und fügen Sie im `Default Options`-Abschnitt die folgenden Optionen hinzu.
 
-![Duplicati configuration](/img/duplicati-options.png)
+![Duplicati-Konfiguration](/img/duplicati-options.png)
 
 Ersetzen Sie 'my.local.server' durch Ihren Servernamen oder Ihre IP-Adresse, auf dem **duplistatus** läuft.
 
@@ -42,7 +42,7 @@ Nach der Konfiguration des **duplistatus**-Servers sammeln Sie die Sicherungspro
 Wenn Sie den Remotezugriff in Duplicati nicht aktivieren, funktionieren die Links in **Duplistatus** zum Zugriff auf die __Duplicati-Benutzeroberfläche__ nicht.
 :::
 
-![Duplicati settings](/img/duplicati-settings.png)
+![Duplicati-Einstellungen](/img/duplicati-settings.png)
 
 :::caution
 Aktivieren Sie den Remotezugriff nur, wenn Ihr Duplicati-Server durch ein sicheres Netzwerk geschützt ist

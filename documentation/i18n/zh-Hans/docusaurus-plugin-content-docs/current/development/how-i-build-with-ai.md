@@ -67,9 +67,9 @@
 
 在迭代这些提示后，Firebase 生成了如下所示的原型：
 
-![prototype](/img/screen-prototype.png)
+![原型](/img/screen-prototype.png)
 
-![prototype-detail](/img/screen-prototype-detail.png)
+![原型详情](/img/screen-prototype-detail.png)
 
 :::note
 一个有趣的点是，从第一次交互开始，Firebase Studio 生成了随机数据来填充页面/图表，使原型像一个真实的应用程序一样运行。

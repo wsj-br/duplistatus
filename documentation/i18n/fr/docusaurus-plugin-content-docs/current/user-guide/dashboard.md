@@ -135,11 +135,11 @@ Survoler l'icône d'avertissement de sauvegarde en retard affiche les détails �
 
 Le tableau de bord affiche la version de Duplicati rapportée dans le dernier journal de sauvegarde pour chaque serveur (vue carte) ou job de sauvegarde (vue tableau).
 
-- **Où elle apparaît** : À gauche de l'indicateur d'état sur les cartes, et dans la colonne **Version** du tableau (après **En retard / Prochaine exécution**).
-- **Couleur** : Un texte atténué signifie que la version correspond à la dernière version disponible pour ce canal (ou que la comparaison est indisponible). Le jaune d'avertissement signifie que la version est plus ancienne que la dernière version disponible pour ce canal.
-- **Info-bulle** : Survolez ou cliquez sur le numéro de version pour voir le canal de mise à jour (`stable`, `beta`, `experimental`, ou `canary`), la version du serveur et la dernière version disponible pour ce canal.
+- **Où il apparaît** : À gauche de l'indicateur d'état sur les cartes, et dans la colonne **Version** du tableau (après **En retard / Prochaine exécution**). Vous pouvez masquer le badge de la carte dans les [Paramètres d'affichage](settings/display-settings.md) ou [Versions de Duplicati](settings/duplicati-versions.md). La colonne du tableau reste toujours visible.
+- **Couleur** : Le texte atténué signifie que la version correspond à la dernière version publiée pour cette chaîne (ou que la comparaison est indisponible). Le jaune d'avertissement signifie que la version est plus ancienne que la dernière version publiée pour cette chaîne.
+- **Info-bulle** : Survolez ou cliquez sur le numéro de version pour voir la chaîne de mise à jour (`stable`, `beta`, `experimental`, ou `canary`), la version du serveur, et la dernière version disponible pour cette chaîne.
 
-**duplistatus** compare la version du journal de sauvegarde avec les dernières versions de Duplicati publiées sur GitHub. Les dernières versions par canal sont actualisées une fois par jour (et au démarrage si le cache date de plus de 24 heures).
+**duplistatus** compare la version du journal de sauvegarde avec les dernières versions de Duplicati publiées sur GitHub. Les administrateurs peuvent consulter les versions de chaîne en cache et configurer l'intervalle de vérification et l'heure de début dans [Paramètres → Versions de Duplicati](settings/duplicati-versions.md). Le cache est également actualisé au démarrage s'il est plus ancien que l'intervalle sélectionné. Les mises à jour GitHub réussies et échouées sont enregistrées dans le [journal d'audit](settings/audit-logs-viewer.md) comme `duplicati_version_refresh` (démarré par `startup`, `cron`, ou `manual`).
 
 :::important
 **duplistatus** n'interroge pas le serveur Duplicati pour connaître la version qui est actuellement en cours d'exécution. Il utilise la version stockée dans le dernier journal de sauvegarde qui a été reçu ou [collecté](collect-backup-logs.md). Après avoir mis à jour Duplicati, le tableau de bord continue d'afficher la version précédente jusqu'à ce qu'un nouveau journal de sauvegarde arrive.

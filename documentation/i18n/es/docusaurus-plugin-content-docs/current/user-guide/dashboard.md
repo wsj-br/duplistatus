@@ -135,11 +135,11 @@ Al pasar el cursor sobre el icono de advertencia de backup retrasado se muestran
 
 El panel de control muestra la versión de Duplicati reportada en el último registro de copia de seguridad para cada servidor (vista de tarjetas) o trabajo de copia de seguridad (vista de tabla).
 
-- **Dónde aparece**: A la izquierda del indicador de estado en las tarjetas, y en la columna **Versión** de la tabla (después de **Pendiente / Próxima ejecución**).
-- **Color**: El texto atenuado significa que la versión coincide con el último lanzamiento para ese canal (o que la comparación no está disponible). El amarillo de advertencia significa que la versión es anterior al último lanzamiento para ese canal.
-- **Información sobre herramientas**: Pase el ratón o haga clic en el número de versión para ver el canal de actualización (`stable`, `beta`, `experimental` o `canary`), la versión del servidor y la última versión disponible para ese canal.
+- **Dónde aparece**: A la izquierda del indicador de estado en las tarjetas, y en la columna **Versión** de la tabla (después de **Pendiente / Próxima ejecución**). Puedes ocultar la insignia de la tarjeta desde [Configuración de visualización](settings/display-settings.md) o [Versiones de Duplicati](settings/duplicati-versions.md). La columna de la tabla siempre permanece visible.
+- **Color**: El texto atenuado significa que la versión coincide con la última versión publicada para ese canal (o la comparación no está disponible). El amarillo de advertencia significa que la versión es anterior a la última versión publicada para ese canal.
+- **Información sobre herramientas**: Pasa el cursor o haz clic en el número de versión para ver el canal de actualización (`stable`, `beta`, `experimental`, o `canary`), la versión del servidor y la última versión disponible para ese canal.
 
-**duplistatus** compara la versión del registro de copia de seguridad con los últimos lanzamientos de Duplicati publicados en GitHub. Las últimas versiones por canal se actualizan una vez al día (y al iniciar si la caché es anterior a 24 horas).
+**duplistatus** compara la versión del registro de copia de seguridad con las últimas versiones de Duplicati publicadas en GitHub. Los administradores pueden ver las versiones de canal en caché y configurar el intervalo de comprobación y la hora de inicio en [Configuración → Versiones de Duplicati](settings/duplicati-versions.md). La caché también se actualiza al iniciar el programa si es más antigua que el intervalo seleccionado. Las actualizaciones de GitHub exitosas y fallidas se registran en el [registro de auditoría](settings/audit-logs-viewer.md) como `duplicati_version_refresh` (iniciado por `startup`, `cron`, o `manual`).
 
 :::important
 **duplistatus** no consulta al servidor Duplicati para obtener la versión que se está ejecutando actualmente. Utiliza la versión almacenada en el último registro de copia de seguridad que fue recibido o [Recopilado](collect-backup-logs.md). Después de actualizar Duplicati, el panel de control seguirá mostrando la versión anterior hasta que llegue un nuevo registro de copia de seguridad.

@@ -6,7 +6,7 @@ Aplique esta configuração a cada um de seus servidores Duplicati:
 
 1. **Configurar relatórios de resultado de backup:** Na página de configuração do Duplicati, selecione `Settings` e, na seção `Default Options`, inclua as seguintes opções.
 
-![Duplicati configuration](/img/duplicati-options.png)
+![Configuração do Duplicati](/img/duplicati-options.png)
 
 Substitua 'my.local.server' pelo nome do seu servidor ou endereço IP onde o **duplistatus** está em execução.
 
@@ -42,7 +42,7 @@ Após configurar o servidor **duplistatus**, colete os logs de backup para todos
 Se você não habilitar o acesso remoto no Duplicati, os links no **Duplistatus** para acessar a __Interface do Duplicati__ não funcionarão.
 :::
 
-![Duplicati settings](/img/duplicati-settings.png)
+![Configurações do Duplicati](/img/duplicati-settings.png)
 
 :::caution
 Habilite o acesso remoto apenas se o seu servidor Duplicati estiver protegido por uma rede segura

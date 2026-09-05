@@ -2,7 +2,7 @@
 
 Al hacer clic en un servidor desde el panel de control se abre una página con una lista de backups para ese servidor. Puede ver todas las copias de seguridad o seleccionar una específica si el servidor tiene múltiples backups configurados.
 
-![Server Details](../assets/screen-server-backup-list.png)
+![Detalles del Servidor](../assets/screen-server-backup-list.png)
 
 ## Estadísticas del servidor/backup {#serverbackup-statistics}
 
@@ -18,7 +18,7 @@ Esta sección muestra estadísticas para todas las copias de seguridad en el ser
 
 Si este backup o cualquiera de los backups en el servidor (cuando **Todas las copias de seguridad** está seleccionado) está retrasado, aparece un mensaje debajo del resumen.
 
-![Server Details - Overdue Scheduled Backups](../assets/screen-server-overdue-message.png)
+![Detalles del Servidor - Copias de Seguridad Programadas Vencidas](../assets/screen-server-overdue-message.png)
 
 Haga clic en el <IconButton icon="lucide:settings" href="settings/backup-monitoring-settings" label="Configurar"/> para ir a [Configuración → Supervisión de backups](settings/backup-monitoring-settings.md). O haga clic en el <SvgButton SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> en la barra de herramientas para abrir la interfaz web del servidor Duplicati y verificar los logs.
 
@@ -28,7 +28,7 @@ Haga clic en el <IconButton icon="lucide:settings" href="settings/backup-monitor
 
 Esta tabla enumera los logs de backup para el servidor seleccionado.
 
-![Backup History](../assets/screen-backup-history.png)
+![Historial de Copias de Seguridad](../assets/screen-backup-history.png)
 
 - **Backup Name**: Nombre del respaldo en el servidor Duplicati.
 - **Date**: Marca de tiempo del respaldo y el tiempo transcurrido desde la última actualización de pantalla.
@@ -37,17 +37,17 @@ Esta tabla enumera los logs de backup para el servidor seleccionado.
 - **Available Versions**: Número de versiones disponibles del respaldo en el destino. Si el icono está en gris, no se recibió información detallada.
 - **File Count, File Size, Uploaded Size, Duration, Storage Size**: Valores según informados por el servidor Duplicati.
 
-:::tip Tips
-• Utilice el menú desplegable en la sección **Historial de backups** para seleccionar **Todas las copias de seguridad** o un backup específico para este servidor.
+:::tip Consejos
+• Utilice el menú desplegable en la sección **Historial de Copias de Seguridad** para seleccionar **Todas las Copias de Seguridad** o una copia de seguridad específica para este servidor.
 
-• Puede ordenar cualquier columna haciendo clic en su encabezado; haga clic de nuevo para invertir el orden de clasificación.
- 
-• Haga clic en cualquier lugar de una fila para ver los [Detalles del backup](#backup-details).
+• Puede ordenar cualquier columna haciendo clic en su encabezado, haga clic nuevamente para invertir el orden de clasificación.
+
+• Haga clic en cualquier parte de una fila para ver los [Detalles de la Copia de Seguridad](#backup-details).
 
 :::
 
 :::note
-Cuando **Todas las copias de seguridad** está seleccionado, la lista muestra todos los backups ordenados de más reciente a más antiguo por defecto.
+Cuando se selecciona **Todas las Copias de Seguridad**, la lista muestra todas las copias de seguridad ordenadas de la más nueva a la más antigua por defecto.
 :::
 
 <br/>
@@ -56,7 +56,7 @@ Cuando **Todas las copias de seguridad** está seleccionado, la lista muestra to
 
 Al hacer clic en una insignia de estado en el panel de control (vista de tabla) o en cualquier fila de la tabla del historial de backups se muestra la información detallada del backup.
 
-![Backup Details](../assets/screen-backup-detail.png)
+![Detalles de la Copia de Seguridad](../assets/screen-backup-detail.png)
 
 - **Server details**: nombre del servidor, alias y nota.
 - **Backup Information**: Marca de tiempo del respaldo y su ID.

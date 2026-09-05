@@ -42,7 +42,7 @@ Ce widget affiche les statistiques de sauvegarde globales sur votre tableau de b
 
 **Affichage du widget :**
 
-![Homepage Summary Widget](/img/homepage-summary.png)
+![Widget de résumé de la page d'accueil](/img/homepage-summary.png)
 
 ## Widget Informations de dernière sauvegarde {#last-backup-information-widget}
 
@@ -77,7 +77,7 @@ Ce widget affiche les dernières informations de sauvegarde pour une machine sp�
 
 **Affichage du widget :**
 
-![Homepage Last Backup Widget](/img/homepage-lastbackup.png)
+![Widget Dernière sauvegarde de la page d'accueil](/img/homepage-lastbackup.png)
 
 ## Notes de Configuration {#configuration-notes}
 

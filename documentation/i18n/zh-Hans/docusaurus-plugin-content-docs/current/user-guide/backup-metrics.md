@@ -5,7 +5,7 @@
 - **仪表板**，图表显示在 **duplistatus** 数据库中记录的备份总数。如果您使用卡片布局，您可以选择一个服务器以查看其整合的指标（当侧面板显示指标时）。
 - **服务器详细信息** 页面，图表显示所选服务器的指标（所有备份）或单个备份的指标。
 
-![Backup Metrics](../assets/screen-metrics.png)
+![备份指标](../assets/screen-metrics.png)
 
 ## 内联图表控制 {#inline-chart-controls}
 

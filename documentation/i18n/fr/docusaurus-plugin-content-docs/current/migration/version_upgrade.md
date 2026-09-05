@@ -125,40 +125,39 @@ Si vous utilisez un dossier local mappé vers le conteneur, vous n'avez pas beso
 3. Vérifier que le fichier est nommé exactement `backups.db`.
 4. Démarrer le conteneur.
 
-```bash
-docker logs <container-name>
-```
-
 :::note
-Si vous restaurez la base de données manuellement, vous pouvez rencontrer des erreurs de permissions. 
+Si vous restaurez la base de données manuellement, vous pouvez rencontrer des erreurs de permission.
 
-Vérifiez les journaux du conteneur et ajustez les permissions si nécessaire. Consultez la section [Troubleshooting](#troubleshooting-your-restore--rollback) ci-dessous pour plus d'informations.
-::: 
+Vérifiez les journaux du conteneur et ajustez les permissions si nécessaire. Voir la section [Dépannage](#troubleshooting-your-restore--rollback) ci-dessous pour plus d'informations.
+:::
 
-## Processus de migration automatique {#automatic-migration-process}
+## Processus de Migration Automatique {#automatic-migration-process}
 
 Quand vous démarrez une nouvelle version, les migrations s'exécutent automatiquement :
 
 1. **Création de sauvegarde** : Une sauvegarde horodatée est créée dans votre répertoire de données
-2. **Mise à jour du schéma** : Les tables et champs de la base de données sont mis à jour selon les besoins
-3. **Migration des données** : Tous les données existantes sont préservées et migrées
+2. **Mise à jour du schéma** : Les tables et champs de la base de données sont mis à jour si nécessaire
+3. **Migration des données** : Toutes les données existantes sont conservées et migrées
 4. **Vérification** : Le succès de la migration est enregistré
 
-### Surveillance de la migration {#monitoring-migration}
+### Surveillance de la Migration {#monitoring-migration}
 
 Vérifiez les journaux Docker pour surveiller la progression de la migration :
 
+```bash
+docker logs <container-name>
+```
 
 Recherchez des messages comme :
-- `« Found X pending migrations »`
-- `« Running consolidated migration X.0... »`
-- `« Migration X.0 completed successfully »`
-- `« Database backup created: /path/to/backups-copy-YYYY-MM-DDTHH-MM-SS.db »`
-- `« All migrations completed successfully »`
+- `"Found X pending migrations"`
+- `"Running consolidated migration X.0..."`
+- `"Migration X.0 completed successfully"`
+- `"Database backup created: /path/to/backups-copy-YYYY-MM-DDTHH-MM-SS.db"`
+- `"All migrations completed successfully"`
 
-## Notes de migration spécifiques à la version {#version-specific-migration-notes}
+## Notes de Migration Spécifiques à la Version {#version-specific-migration-notes}
 
-### Mise à niveau vers la version 0.9.x ou ultérieure (schéma v4.0) {#upgrading-to-version-09x-or-later-schema-v40}
+### Mise à niveau vers la Version 0.9.x ou ultérieure (Schéma v4.0) {#upgrading-to-version-09x-or-later-schema-v40}
 
 :::warning
 **L'authentification est maintenant requise.** Tous les utilisateurs doivent se connecter après la mise à niveau.

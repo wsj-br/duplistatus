@@ -20,7 +20,7 @@ import { DuplicatiVersionBadge } from "@/components/dashboard/duplicati-version-
 // Default card size constants
 const DEFAULT_MIN_CARD_WIDTH = 270;  // Minimum width of a card in pixels
 const DEFAULT_MAX_CARD_WIDTH = 330;  // Maximum width of a card in pixels
-const DEFAULT_MIN_CARD_HEIGHT = 235; // Minimum height of a card in pixels
+const DEFAULT_MIN_CARD_HEIGHT = 234; // Minimum height of a card in pixels
 const DEFAULT_MIN_GAP_HORIZONTAL = 16;  // Minimum horizontal gap between cards in pixels
 const DEFAULT_MIN_GAP_VERTICAL = 16;    // Minimum vertical gap between cards in pixels
 
@@ -138,6 +138,7 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
   const serverStatus = getServerStatus(server);
   const router = useRouter();
   const effectiveLocale = useEffectiveFormatLocale();
+  const { showDashboardVersion } = useConfig();
   const { t } = useTranslation();
 
   const handleCardClick = () => {
@@ -172,7 +173,9 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
           </CardTitle>
           <div className="flex items-center flex-shrink-0">
             <div className="flex items-center gap-1">
-              <DuplicatiVersionBadge version={server.duplicatiVersion} size="sm" />
+              {showDashboardVersion && (
+                <DuplicatiVersionBadge version={server.duplicatiVersion} size="sm" />
+              )}
               <OverviewStatusBadge 
                 status={serverStatus} 
                 haveOverdueBackups={server.haveOverdueBackups}

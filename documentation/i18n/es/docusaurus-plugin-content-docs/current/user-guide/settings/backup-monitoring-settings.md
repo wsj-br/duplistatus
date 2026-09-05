@@ -1,6 +1,6 @@
 # Monitoreo de Backups {#backup-monitoring}
 
-![Backup alerts](../../assets/screen-settings-monitoring.png)
+![Alertas de copia de seguridad](../../assets/screen-settings-monitoring.png)
 
 ## Filtrado de servidores {#server-filtering}
 

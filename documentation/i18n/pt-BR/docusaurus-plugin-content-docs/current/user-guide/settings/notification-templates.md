@@ -4,7 +4,7 @@
 
 A página inclui um seletor de **Idioma dos Modelos** que define a localidade para os modelos padrão. Alterar o idioma atualiza a localidade para novos padrões, mas **não** altera o texto dos modelos existentes. Para aplicar um novo idioma aos seus modelos, edite-os manualmente ou use **Redefinir este modelo para o padrão** (para a aba atual) ou **Redefinir tudo para o padrão** (para todos os três modelos).
 
-![notification templates](../../assets/screen-settings-templates.png)
+![modelos de notificação](../../assets/screen-settings-templates.png)
 
 | Modelo               | Descrição                                         |
 | :----------------- | :-------------------------------------------------- |

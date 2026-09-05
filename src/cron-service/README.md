@@ -72,7 +72,7 @@ Default configuration:
 - Tasks:
   - overdue-backup-check: Runs every 5 minutes (`*/5 * * * *`)
   - audit-log-cleanup: Runs daily at 2 AM UTC (`0 2 * * *`)
-  - duplicati-version-refresh: Updates cached Duplicati channel versions from GitHub daily at 3 AM UTC (`0 3 * * *`)
+  - duplicati-version-refresh: Updates cached Duplicati channel versions from GitHub. Default is daily at 3 AM UTC (`0 3 * * *`); the interval and start hour are configured in Settings → Duplicati Versions.
 
 ## API Endpoints
 

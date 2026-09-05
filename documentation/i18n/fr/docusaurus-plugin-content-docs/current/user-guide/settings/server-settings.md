@@ -2,13 +2,14 @@
 
 Vous pouvez configurer un nom alternatif (alias) pour vos serveurs, une note pour décrire sa fonction et les adresses web de vos serveurs Duplicati ici.
 
-![server settings](../../assets/screen-settings-server.png)
+![paramètres du serveur](../../assets/screen-settings-server.png)
 
 | Paramètre                         | Description                                                                                                                                                                                  |
 |:--------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Nom du serveur**                 | Nom du serveur configuré dans le serveur Duplicati. Un <IIcon2 icon="lucide:key-round" color="#42A5F5"/> apparaîtra si un mot de passe est défini pour le serveur.                                         |
 | **Alias**                       | Un surnom ou un nom lisible par l'humain pour votre serveur. Lorsque vous placez le curseur sur un alias, le nom s'affiche ; dans certains cas, pour plus de clarté, l'alias et le nom sont affichés entre parenthèses. |
 | **Note**                        | Texte libre permettant de décrire les fonctionnalités du serveur, son emplacement d'installation ou toute autre information. Une fois configuré, il s'affiche à côté du nom ou de l'alias du serveur.                 |
+| **Version**                     | La version de Duplicati à partir du dernier journal de sauvegarde, avec la même couleur et l'info-bulle que le [tableau de bord](../dashboard.md#duplicati-server-version). Le texte atténué est actuel ou indisponible ; le jaune d'avertissement est obsolète. |
 | **Adresse de l'interface web (URL)** | Configurez l'URL pour accéder à l'interface utilisateur du serveur Duplicati. Les URL `HTTP` et `HTTPS` sont prises en charge.                                                                                           |
 | **Statut**                      | Affiche les résultats du test ou de la collecte des journaux de sauvegarde                                                                                                                                              |
 | **Actions**                     | Vous pouvez tester, ouvrir l'interface Duplicati, collecter les journaux et définir un mot de passe. Voir ci-dessous pour plus de détails.                                                                                         |

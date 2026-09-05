@@ -2,7 +2,7 @@
 
 Configurer la durée de conservation des journaux d'audit avant le nettoyage automatique.
 
-![Audit Log Retention](../../assets/screen-settings-audit-retention.png)
+![Conservation des journaux d'audit](../../assets/screen-settings-audit-retention.png)
 
 | Paramètre | Description | Valeur par défaut |
 |:-------|:-----------|:-------------|

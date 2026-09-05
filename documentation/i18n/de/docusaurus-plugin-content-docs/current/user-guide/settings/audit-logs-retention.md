@@ -2,7 +2,7 @@
 
 Konfigurieren Sie, wie lange Audit-Protokolle vor der automatischen Bereinigung beibehalten werden.
 
-![Audit Log Retention](../../assets/screen-settings-audit-retention.png)
+![Prüfprotokoll-Aufbewahrung](../../assets/screen-settings-audit-retention.png)
 
 | Einstellung | Beschreibung | Standardwert |
 |:-------|:-----------|:-------------|

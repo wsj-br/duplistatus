@@ -2,13 +2,14 @@
 
 Configurar preferencias de interfaz de usuario y pantalla.
 
-![Display Settings](../../assets/screen-settings-display.png)
+![Configuración de visualización](../../assets/screen-settings-display.png)
 
 <br/>
 
 | Configuración                   | Descripción                                         | Valor predeterminado      |
 |:--------------------------------|:----------------------------------------------------|:--------------------------|
 | **Tamaño de tabla**            | Número de filas por página en la página de detalles del servidor. | 5 filas             |
+| **Mostrar versión en el panel** | Mostrar u ocultar la versión de Duplicati en las tarjetas del panel. La tabla del panel siempre muestra la columna Versión. También disponible en [Versiones de Duplicati](duplicati-versions.md). | Activado |
 | **Tema**                 | Elija claro, oscuro o coincidir con la apariencia de su sistema operativo (prefiere modo claro/oscuro). | Seguir SO cuando no esté establecido |
 | **Rango de tiempo de gráfico**      | Intervalo de tiempo mostrado en los gráficos. Opciones disponibles: **1W** (últimos 7 días), **2W** (últimos 14 días), **1M** (últimos 30 días), **3M** (últimos 90 días). También puede cambiar el rango de tiempo directamente desde los encabezados de los gráficos. | 1 mes            |
 | **Estilo de gráfico**           | Elija entre gráficos de líneas suaves o visualización de gráfico de barras. Ambos modos utilizan agregación de cubos de tiempo para una visualización óptima. También puede cambiar directamente desde los encabezados de los gráficos. | Líneas suaves       |

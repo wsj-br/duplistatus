@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { ColoredIcon } from '@/components/ui/colored-icon';
-import { Settings, Bell, AlertTriangle, Server, MessageSquare, Mail, FileText, Users, ScrollText, Clock, PanelLeftClose, PanelLeftOpen, MonitorCog, Database, Terminal } from 'lucide-react';
+import { Settings, Bell, AlertTriangle, Server, MessageSquare, Mail, FileText, Users, ScrollText, Clock, PanelLeftClose, PanelLeftOpen, MonitorCog, Database, Terminal, GitCompare } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { useConfiguration } from '@/contexts/configuration-context';
@@ -19,6 +19,7 @@ import { AuditLogRetentionForm } from '@/components/settings/audit-log-retention
 import { DisplaySettingsForm } from '@/components/settings/display-settings-form';
 import { DatabaseMaintenanceForm } from '@/components/settings/database-maintenance-form';
 import { ApplicationLogsViewer } from '@/components/settings/application-logs-viewer';
+import { DuplicatiVersionSettingsForm } from '@/components/settings/duplicati-version-settings-form';
 import { getUserLocalStorageItem, setUserLocalStorageItem } from '@/lib/user-local-storage';
 interface SettingsPageClientProps {
   currentUser: {
@@ -175,7 +176,7 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
   useEffect(() => {
     // Check for section parameter in URL first
     const sectionParam = searchParams.get('tab') || searchParams.get('section');
-    const validSections = ['notifications', 'monitoring', 'server', 'ntfy', 'email', 'templates', 'users', 'audit', 'audit-retention', 'display', 'database-maintenance', 'application-logs'];
+    const validSections = ['notifications', 'monitoring', 'server', 'ntfy', 'email', 'templates', 'users', 'audit', 'audit-retention', 'display', 'duplicati-versions', 'database-maintenance', 'application-logs'];
     const adminOnlySections = ['users', 'database-maintenance', 'audit-retention', 'application-logs'];
     
     // Redirect non-admin users away from admin-only sections
@@ -455,6 +456,18 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                     <MonitorCog className="h-4 w-4 flex-shrink-0" />
                     <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'display' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{t("Display Settings")}</span>
                   </button>
+                  <button
+                    onClick={() => handleSectionChange('duplicati-versions')}
+                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
+                      activeSection === 'duplicati-versions'
+                        ? 'bg-accent text-accent-foreground'
+                        : 'hover:bg-accent/50'
+                    }`}
+                    title={isSidebarCollapsed ? t("Duplicati Versions") : undefined}
+                  >
+                    <GitCompare className="h-4 w-4 flex-shrink-0" />
+                    <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'duplicati-versions' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{t("Duplicati Versions")}</span>
+                  </button>
                   {currentUser?.isAdmin && (
                     <button
                       onClick={() => handleSectionChange('database-maintenance')}
@@ -665,6 +678,11 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
               {/* Display Section */}
               {activeSection === 'display' && (
                 <DisplaySettingsForm />
+              )}
+
+              {/* Duplicati Versions Section */}
+              {activeSection === 'duplicati-versions' && (
+                <DuplicatiVersionSettingsForm isAdmin={currentUser?.isAdmin || false} />
               )}
 
               {/* Database Maintenance Section (Admin only) */}

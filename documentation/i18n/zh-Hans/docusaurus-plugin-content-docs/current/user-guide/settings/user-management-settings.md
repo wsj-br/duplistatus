@@ -2,7 +2,7 @@
 
 管理用户账户，权限和访问控制的 **duplistatus**。此部分允许管理员创建，修改和删除用户账户。
 
-![User Management](../../assets/screen-settings-users.png)
+![用户管理](../../assets/screen-settings-users.png)
 
 >[!TIP] 
 > 默认的 `admin` 账户可以被删除。要做到这一点，首先创建一个新的管理员用户，使用该账户登录， 

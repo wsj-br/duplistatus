@@ -2,7 +2,7 @@
 
 使用此设置来发送通知，当 [新备份日志被接收](../../installation/duplicati-server-configuration.md) 时。
 
-![Backup alerts](../../assets/screen-settings-notifications.png)
+![备份警报](../../assets/screen-settings-notifications.png)
 
 备份通知表按服务器组织。显示格式取决于服务器的备份数量：
 - **多个备份**：显示服务器标题行，下面是单个备份行。点击服务器标题以展开或折叠备份列表。
@@ -51,7 +51,7 @@
 
 如果没有显示图标，则服务器或备份没有配置其他目标。
 
-![Server-level additional destinations](../../assets/screen-settings-notifications-server.png)
+![服务器级其他目标](../../assets/screen-settings-notifications-server.png)
 
 ### 服务器级别默认值 {#server-level-defaults}
 
@@ -99,7 +99,7 @@
 
 您可以使用批量编辑功能同时编辑多个备份的其他目标设置。这在您需要将相同的其他目标应用于许多备份作业时尤其有用。
 
-![Bulk edit dialog](../../assets/screen-settings-notifications-bulk.png)
+![批量编辑对话框](../../assets/screen-settings-notifications-bulk.png)
 
 1. 导航到[设置 → 备份通知](backup-notifications-settings.md)。
 2. 使用第一列中的复选框来选择您要编辑的备份或服务器。

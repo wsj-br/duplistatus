@@ -4,7 +4,7 @@
 
 La page inclut un sélecteur **Langue des modèles** qui définit la locale pour les modèles par défaut. Changer la langue met à jour la locale pour les nouveaux modèles par défaut, mais cela ne change **pas** le texte des modèles existants. Pour appliquer une nouvelle langue à vos modèles, modifiez-les manuellement ou utilisez **Réinitialiser ce modèle à la valeur par défaut** (pour l'onglet actuel) ou **Tout réinitialiser aux valeurs par défaut** (pour les trois modèles).
 
-![notification templates](../../assets/screen-settings-templates.png)
+![modèles de notification](../../assets/screen-settings-templates.png)
 
 | Modèle           | Description                                         |
 | :----------------- | :-------------------------------------------------- |

@@ -5,7 +5,7 @@ Un graphique des métriques de sauvegarde au fil du temps est affiché à la foi
 - **Tableau de bord**, le graphique affiche le nombre total de sauvegardes enregistrées dans la base de données **duplistatus**. Si vous utilisez la disposition Cartes, vous pouvez sélectionner un serveur pour voir ses métriques consolidées (quand le panneau latéral affiche les métriques).
 - **Page Détails du serveur**, le graphique affiche les métriques du serveur sélectionné (pour toutes ses sauvegardes) ou pour une sauvegarde spécifique unique.
 
-![Backup Metrics](../assets/screen-metrics.png)
+![Métriques de sauvegarde](../assets/screen-metrics.png)
 
 ## Commandes de graphique en ligne {#inline-chart-controls}
 

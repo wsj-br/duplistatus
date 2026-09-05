@@ -20,6 +20,7 @@ import { useConfiguration } from '@/contexts/configuration-context';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { getCSRFToken, authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { TogglePasswordInput } from '@/components/ui/toggle-password-input';
+import { DuplicatiVersionBadge } from '@/components/dashboard/duplicati-version-badge';
 interface ServerSettingsFormProps {
   serverAddresses: ServerAddress[];
 }
@@ -65,6 +66,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
     name: { type: 'text' as keyof typeof sortFunctions, path: 'name' },
     alias: { type: 'text' as keyof typeof sortFunctions, path: 'alias' },
     note: { type: 'text' as keyof typeof sortFunctions, path: 'note' },
+    version: { type: 'version' as keyof typeof sortFunctions, path: 'duplicatiVersion.versionNumber' },
     server_url: { type: 'text' as keyof typeof sortFunctions, path: 'server_url' },
     connectionStatus: { type: 'text' as keyof typeof sortFunctions, path: 'connectionStatus' },
   };
@@ -806,6 +808,14 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                   >
                     {t("Note")}
                   </SortableTableHead>
+                  <SortableTableHead
+                    className="w-[120px] min-w-[90px]"
+                    column="version"
+                    sortConfig={sortConfig}
+                    onSort={handleSort}
+                  >
+                    {t("Version")}
+                  </SortableTableHead>
                   <SortableTableHead 
                     className="w-[250px] min-w-[150px]" 
                     column="server_url" 
@@ -870,6 +880,10 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                           className="text-xs"
                         />
                       </div>
+                    </TableCell>
+
+                    <TableCell>
+                      <DuplicatiVersionBadge version={connection.duplicatiVersion} size="md" />
                     </TableCell>
                     
                     <TableCell>
@@ -1025,6 +1039,12 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                     />
                   </div>
                   
+                  {/* Version */}
+                  <div className="space-y-1">
+                    <Label className="text-xs font-medium">{t("Version")}</Label>
+                    <DuplicatiVersionBadge version={connection.duplicatiVersion} size="md" />
+                  </div>
+
                   {/* Server URL */}
                   <div className="space-y-1">
                     <Label className="text-xs font-medium flex items-center gap-1">

@@ -35,6 +35,7 @@ import {
   isSupportedLocale,
   LOCALE_CODE_LIST,
   LOCALE_COOKIE_NAME,
+  SOURCE_LOCALE,
   type LocaleCode,
 } from '@/lib/locales';
 //import the logo image
@@ -215,7 +216,7 @@ export function AppHeader() {
                 <DropdownMenuSub>
                   <DropdownMenuSubTrigger>
                     <Languages className="h-4 w-4 mr-2" />
-                    {t("Language")}
+                    {t("Language")}{locale !== SOURCE_LOCALE ? ' (Language)' : ''}
                   </DropdownMenuSubTrigger>
                   <DropdownMenuSubContent>
                     <DropdownMenuRadioGroup value={locale} onValueChange={handleLocaleChange}>

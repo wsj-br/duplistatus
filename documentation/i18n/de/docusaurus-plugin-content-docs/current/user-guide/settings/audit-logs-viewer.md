@@ -2,7 +2,7 @@
 
 Das Audit-Log bietet eine umfassende Aufzeichnung aller Systemänderungen und Benutzeraktionen in **duplistatus**. Dies hilft beim Nachverfolgen von Konfigurationsänderungen, Benutzeraktivitäten und Systemoperationen für Sicherheits- und Fehlerbehebungszwecke.
 
-![Audit Log](../../assets/screen-settings-audit.png)
+![Audit-Protokoll](../../assets/screen-settings-audit.png)
 
 ## Audit-Log-Viewer {#audit-log-viewer}
 

@@ -2,7 +2,7 @@
 
 Use estas configurações para enviar notificações quando um [novo log de backup é recebido](../../installation/duplicati-server-configuration.md).
 
-![Backup alerts](../../assets/screen-settings-notifications.png)
+![Alertas de backup](../../assets/screen-settings-notifications.png)
 
 A tabela de notificações de backup é organizada por servidor. O formato de exibição depende da quantidade de backups que um servidor possui:
 - **Múltiplos backups**: Exibe uma linha de cabeçalho do servidor com linhas individuais de backup abaixo. Clique no cabeçalho do servidor para expandir ou recolher a lista de backups.
@@ -51,7 +51,7 @@ A configuração de destino adicional é indicada por ícones contextuais próxi
 
 Se nenhum ícone for exibido, o servidor ou backup não possui destinos adicionais configurados.
 
-![Server-level additional destinations](../../assets/screen-settings-notifications-server.png)
+![Destinos adicionais no nível do servidor](../../assets/screen-settings-notifications-server.png)
 
 ### Padrões em Nível de Servidor {#server-level-defaults}
 
@@ -99,7 +99,7 @@ Os backups individuais herdam automaticamente os padrões do servidor, mas você
 
 Você pode editar configurações de destinos adicionais para múltiplos backups de uma vez usando o recurso de edição em massa. Isto é particularmente útil quando você precisa aplicar os mesmos destinos adicionais a muitos trabalhos de backup.
 
-![Bulk edit dialog](../../assets/screen-settings-notifications-bulk.png)
+![Caixa de diálogo de edição em lote](../../assets/screen-settings-notifications-bulk.png)
 
 1. Navegue até [Configurações → Notificações de Backup](backup-notifications-settings.md).
 2. Use as caixas de seleção na primeira coluna para selecionar os backups ou servidores que deseja editar.

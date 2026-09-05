@@ -6,7 +6,7 @@ Appliquez cette configuration à chacun de vos serveurs Duplicati :
 
 1. **Configurer la création de rapports de sauvegarde :** Sur la page de configuration de Duplicati, sélectionnez `Settings` et, dans la section `Default Options`, incluez les options suivantes.
 
-![Duplicati configuration](/img/duplicati-options.png)
+![Configuration de Duplicati](/img/duplicati-options.png)
 
 Remplacez 'my.local.server' par le nom de votre serveur ou l'adresse IP où **duplistatus** est en cours d'exécution.
 
@@ -42,7 +42,7 @@ Après avoir configuré le serveur **duplistatus**, collectez les journaux de sa
 Si vous n'activez pas l'accès distant dans Duplicati, les liens dans **Duplistatus** pour accéder à l'__interface utilisateur de Duplicati__ ne fonctionneront pas.
 :::
 
-![Duplicati settings](/img/duplicati-settings.png)
+![Paramètres de Duplicati](/img/duplicati-settings.png)
 
 :::caution
 N'activez l'accès distant que si votre serveur Duplicati est protégé par un réseau sécurisé

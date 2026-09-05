@@ -124,7 +124,7 @@ export async function clearSessionsOnStartup() {
 export async function refreshDuplicatiVersionsOnStartup() {
   try {
     await ensureDatabaseInitialized();
-    const result = await refreshDuplicatiVersions({ force: false });
+    const result = await refreshDuplicatiVersions({ force: false, trigger: 'startup' });
     if (result.refreshed) {
       console.log('[Instrumentation] Duplicati versions updated:', result.message);
       return;

@@ -2,7 +2,7 @@
 
 **duplistatus** 支持通过 SMTP 发送电子邮件通知作为 NTFY 通知的替代或补充。电子邮件配置现在通过 Web 界面管理，并在数据库中使用加密存储以增强安全性。
 
-![Email Configuration](../../assets/screen-settings-email.png)
+![电子邮件配置](../../assets/screen-settings-email.png)
 
 | 设置                 | 描述                                                      |
 |:------------------------|:-----------------------------------------------------------------|

@@ -5,7 +5,7 @@ Um gráfico de métricas de backup ao longo do tempo é mostrado tanto no Painel
 - **Painel**, o gráfico mostra o número total de backups registrados no banco de dados **duplistatus**. Se você usar o layout de Cards, pode selecionar um servidor para ver suas métricas consolidadas (quando o painel lateral está exibindo métricas).
 - **Página de Detalhes do Servidor**, o gráfico mostra métricas para o servidor selecionado (para todos os seus backups) ou para um backup específico individual.
 
-![Backup Metrics](../assets/screen-metrics.png)
+![Métricas de Backup](../assets/screen-metrics.png)
 
 ## Controles Inline do Gráfico {#inline-chart-controls}
 

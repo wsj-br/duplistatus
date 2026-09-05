@@ -30,8 +30,8 @@ El servicio cron incluye:
 - **Reinicio automático**: El servicio se reinicia automáticamente si falla (gestionado por `docker-entrypoint.sh` en despliegues con Docker)
 - **Modo vigilancia**: El modo desarrollo incluye la vigilancia de archivos para reinicios automáticos ante cambios en el código
 - **Monitoreo de respaldos atrasados**: Verificación automatizada y notificación de respaldos retrasados (se ejecuta cada 5 minutos por defecto)
-- **Limpieza del registro de auditoría**: Limpieza automatizada de entradas antiguas del registro de auditoría (se ejecuta diariamente a las 2 AM UTC)
-- **Actualización de la versión de Duplicati**: Actualiza las versiones más recientes de los canales de Duplicati almacenadas en caché desde GitHub Releases (se ejecuta diariamente a las 3 AM UTC)
+- **Limpieza del registro de auditoría**: Limpieza automatizada de las entradas antiguas del registro de auditoría (se ejecuta diariamente a las 2 AM UTC)
+- **Actualización de la versión de Duplicati**: Actualiza las versiones más recientes de los canales de Duplicati almacenadas en caché desde GitHub Releases. La predeterminada es diariamente a las 3 AM UTC; los administradores pueden cambiar el intervalo y la hora de inicio en [Configuración → Versiones de Duplicati](../user-guide/settings/duplicati-versions.md).
 - **Programación flexible**: Expresiones cron configurables para diferentes tareas
 - **Integración de base de datos**: Comparte la misma base de datos SQLite con la aplicación principal
 - **API RESTful**: API completa para la gestión y monitorización del servicio

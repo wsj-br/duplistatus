@@ -138,7 +138,8 @@ export const defaultUIConfig = {
   autoRefreshInterval: 1 as const,
   dashboardCardsSortOrder: 'Server name (a-z)' as const,
   startOfWeek: 'locale' as const, // Default to locale-based (en-US Sunday, en-GB Monday)
-  formatLocale: 'locale-default' as FormatLocaleOverride
+  formatLocale: 'locale-default' as FormatLocaleOverride,
+  showDashboardVersion: true as const,
 };
 
 // Default API configuration
