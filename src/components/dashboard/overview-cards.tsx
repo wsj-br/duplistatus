@@ -16,6 +16,7 @@ import { getStatusSortValue } from "@/lib/sort-utils";
 import { ServerConfigurationButton } from "@/components/ui/server-configuration-button";
 import { BackupTooltipContent } from "@/components/ui/backup-tooltip-content";
 import { serverMatchesDashboardFilter } from "@/lib/dashboard-server-filter-match";
+import { DuplicatiVersionBadge } from "@/components/dashboard/duplicati-version-badge";
 // Default card size constants
 const DEFAULT_MIN_CARD_WIDTH = 270;  // Minimum width of a card in pixels
 const DEFAULT_MAX_CARD_WIDTH = 330;  // Maximum width of a card in pixels
@@ -170,10 +171,13 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
             </button>
           </CardTitle>
           <div className="flex items-center flex-shrink-0">
-            <OverviewStatusBadge 
-              status={serverStatus} 
-              haveOverdueBackups={server.haveOverdueBackups}
-            />
+            <div className="flex items-center gap-1">
+              <DuplicatiVersionBadge version={server.duplicatiVersion} size="sm" />
+              <OverviewStatusBadge 
+                status={serverStatus} 
+                haveOverdueBackups={server.haveOverdueBackups}
+              />
+            </div>
           </div>
         </div>
       </CardHeader>
@@ -479,6 +483,8 @@ export const OverviewCards = memo(function OverviewCards({
            server.name === nextServer.name &&
            server.lastBackupStatus === nextServer.lastBackupStatus &&
            server.lastBackupDate === nextServer.lastBackupDate &&
+           server.duplicatiVersion?.versionNumber === nextServer.duplicatiVersion?.versionNumber &&
+           server.duplicatiVersion?.comparison === nextServer.duplicatiVersion?.comparison &&
            server.totalBackupCount === nextServer.totalBackupCount &&
            server.backupInfo.length === nextServer.backupInfo.length &&
            JSON.stringify(server.backupInfo) === JSON.stringify(nextServer.backupInfo);

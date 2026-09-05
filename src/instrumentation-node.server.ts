@@ -5,6 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import { dbOps, ensureDatabaseInitialized } from '@/lib/db';
 import { clearAllSessions } from '@/lib/session-csrf';
+import { refreshDuplicatiVersions } from '@/lib/duplicati-version-service';
 import { getDataDir } from '@/lib/paths';
 
 export async function clearSessionsOnStartup() {
@@ -117,5 +118,24 @@ export async function clearSessionsOnStartup() {
   } catch (error) {
     console.error('[Instrumentation] Error in startup initialization:', error);
     // Don't throw - allow server to start
+  }
+}
+
+export async function refreshDuplicatiVersionsOnStartup() {
+  try {
+    await ensureDatabaseInitialized();
+    const result = await refreshDuplicatiVersions({ force: false });
+    if (result.refreshed) {
+      console.log('[Instrumentation] Duplicati versions updated:', result.message);
+      return;
+    }
+    if (!result.success) {
+      console.warn('[Instrumentation] Duplicati version refresh failed; using cached versions:', result.message);
+    }
+  } catch (error) {
+    console.warn(
+      '[Instrumentation] Duplicati version refresh failed; using cached versions:',
+      error instanceof Error ? error.message : String(error)
+    );
   }
 }

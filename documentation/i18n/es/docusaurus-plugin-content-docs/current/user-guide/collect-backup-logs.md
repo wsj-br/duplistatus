@@ -8,7 +8,7 @@
 
 1.  Haga clic en el icono <IconButton icon="lucide:download" /> **Recopilar Registros de Copia de Seguridad** en la [Barra de Herramientas de la Aplicación](overview.md#application-toolbar).
 
-![Collect Backup Logs Popup](../assets/screen-collect-button-popup.png)
+![Ventana emergente Recopilar registros de copias de seguridad](../assets/screen-collect-button-popup.png)
 
 2.  Seleccionar servidor
 
@@ -35,7 +35,7 @@ Los botones <IconButton icon="lucide:download" /> están disponibles en [Configu
 
 _Haga clic con el botón derecho_ en el botón <IconButton icon="lucide:download" /> **Recopilar logs de backup** en la barra de herramientas de la aplicación para recopilar desde todos los servidores configurados.
 
-![Collect All Right-Click Menu](../assets/screen-collect-button-right-click-popup.png)
+![Menú contextual Recopilar todo](../assets/screen-collect-button-right-click-popup.png)
 
 :::tip
 También puede utilizar el botón <IconButton icon="lucide:import" label="Recopilar todo"/> en las páginas [Configuración → Monitoreo de backups](settings/backup-monitoring-settings.md) y [Configuración → Configuración de servidores](settings/server-settings.md) para recopilar desde todos los servidores configurados.
@@ -44,11 +44,11 @@ También puede utilizar el botón <IconButton icon="lucide:import" label="Recopi
 ## Cómo funciona el proceso de recopilación {#how-the-collection-process-works}
 
 - **duplistatus** detecta automáticamente el mejor protocolo de conexión y se conecta al servidor Duplicati especificado.
-- Recupera el historial de copias de seguridad, la información de registros y la configuración de copias de seguridad (para monitoreo de copias de seguridad).
-- Se omiten cualquier registro ya presente en la base de datos de **duplistatus**.
-- Los nuevos datos se procesan y almacenan en la base de datos local.
+- Recupera el historial de copias de seguridad, información de registros y configuración de copias de seguridad (para el monitoreo de copias de seguridad).
+- Cualquier registro ya presente en la base de datos de **duplistatus** se omite.
+- Los nuevos datos se procesan y almacenan en la base de datos local, incluyendo la versión de Duplicati reportada en cada registro de copia de seguridad. La [versión del panel](dashboard.md#duplicati-server-version) se toma del último registro almacenado — **duplistatus** no lee la versión que se está ejecutando actualmente en el servidor. Después de una actualización de Duplicati, recopile o espere una nueva copia de seguridad para que el panel pueda mostrar la nueva versión.
 - La URL utilizada (con el protocolo detectado) se almacenará o actualizará en la base de datos local.
-- Si se selecciona la opción de descarga, se descargarán los datos JSON recopilados. El nombre del archivo tendrá el siguiente formato: `[serverName]_collected_[Timestamp].json`. La marca de tiempo utiliza el formato de fecha ISO 8601 (AAAA-MM-DDTHH:MM:SS).
+- Si se selecciona la opción de descarga, descargará los datos JSON recopilados cada vez que se reciba algún dato del servidor Duplicati — incluso si los registros fallan la validación o no pueden importarse a la base de datos. El nombre del archivo tendrá el siguiente formato: `[serverName]_collected_[Timestamp].json`. La marca de tiempo utiliza el formato de fecha ISO 8601 (AAAA-MM-DDTHH:MM:SS).
 - El panel se actualiza para reflejar la nueva información.
 
 :::note ¿Ve servidores duplicados después de recopilar?
@@ -59,6 +59,7 @@ Si el mismo servidor aparece más de una vez después de recopilar los registros
 
 La recopilación del registro de backup requiere que el servidor Duplicati sea accesible desde la instalación de **duplistatus**. Si encuentra problemas, verifique lo siguiente:
 
-- Confirmar que el nombre de host (o dirección IP) y número de puerto son correctos. Puede probar esto accediendo a la interfaz de usuario del servidor Duplicati en su navegador (p. ej., `http://hostname:port`).
-- Verificar que **duplistatus** pueda conectarse al servidor Duplicati. Un problema común es la resolución de nombres DNS (el sistema no puede encontrar el servidor por su nombre de host). Consulte más en [sección de solución de problemas](troubleshooting.md#collect-backup-logs-not-working).
-- Asegurar que la contraseña que proporcionó es correcta.
+- Confirme que el nombre de host (o dirección IP) y el número de puerto son correctos. Puede probar esto accediendo a la interfaz de usuario del servidor Duplicati en su navegador (por ejemplo, `http://hostname:port`).
+- Compruebe que **duplistatus** puede conectarse al servidor Duplicati. Un problema común es la resolución de nombres DNS (el sistema no puede encontrar el servidor por su nombre de host). Vea más en la [sección de solución de problemas](troubleshooting.md#collect-backup-logs-not-working).
+- Asegúrese de que la contraseña que proporcionó es correcta.
+- En Duplicati 2.4+, la recopilación lee el machine-id de la configuración del servidor Duplicati cuando la opción systeminfo predeterminada está vacía.

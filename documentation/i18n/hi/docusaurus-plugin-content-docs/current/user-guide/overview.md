@@ -43,10 +43,10 @@ duplistatus आपके पूरे इन्फ्रास्ट्रक्
 
 उपयोगकर्ता इंटरफ़ेस को एक स्पष्ट और व्यापक निगरानी अनुभव प्रदान करने के लिए कई प्रमुख अनुभागों में संगठित किया गया है:
 
-1. [एप्लिकेशन टूलबार](#application-toolbar): आवश्यक कार्य और कॉन्फ़िगरेशन तक त्वरित पहुंच
-2. [डैशबोर्ड सारांश](dashboard.md#dashboard-summary): सभी मॉनिटर किए गए सर्वरों के लिए अवलोकन आँकड़े
-3. सर्वर अवलोकन: [कार्ड लेआउट](dashboard.md#cards-layout) या [टेबल लेआउट](dashboard.md#table-layout) जो सभी बैकअप की नवीनतम स्थिति दिखाता है
-4. [विलंबित विवरण](dashboard.md#overdue-details): विलंबित बैकअप के लिए विज़ुअल चेतावनियाँ, हॉवर पर विस्तृत जानकारी के साथ
+1. [Application Toolbar](#application-toolbar): Muleemaan chiz aur sankalpan ke liye tathyaayogya pratyaksh prastuta
+2. [Dashboard Summary](dashboard.md#dashboard-summary): Sabhi nigaar kiye gaye server ke liye aankde ka samkshipt chakkar
+3. Servers Overview: [Cards layout](dashboard.md#cards-layout) ya [table layout](dashboard.md#table-layout) jo sabhi backups ki tathyaayogya stithi dikhaata hai, shamil karke [Duplicati server version](dashboard.md#duplicati-server-version) jo antim backup log se mila hai
+4. [Overdue Details](dashboard.md#overdue-details): Samay se adhik backups ke liye darshaayogya chetaavaniyaan, jisme hover par vistrit jankari hoti hai
 5. [उपलब्ध बैकअप संस्करण](dashboard.md#available-backup-versions): डिस्टिनेशन पर उपलब्ध बैकअप संस्करण देखने के लिए नीले आइकन पर क्लिक करें
 6. [बैकअप मेट्रिक्स](backup-metrics.md): बैकअप प्रदर्शन को समय के साथ इंटरैक्टिव चार्ट्स प्रदर्शित करता है
 7. [सर्वर विवरण](server-details.md): विशिष्ट सर्वरों के लिए रिकॉर्ड किए गए बैकअप की व्यापक सूची, विस्तृत आँकड़ों सहित

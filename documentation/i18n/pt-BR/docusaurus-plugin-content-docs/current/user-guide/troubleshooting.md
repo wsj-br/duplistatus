@@ -80,6 +80,8 @@ Se a coleta manual do log de backup falhar:
 
 Verifique também a configuração de DNS dentro do container (veja mais em [DNS Configuration for Podman Containers](../installation/installation.md#configuring-dns-for-podman-containers))
 
+- No **Duplicati 2.4 e posteriores**, `/api/v1/systeminfo` lista `machine-id` com um padrão vazio. **duplistatus** lê o id configurado das configurações do servidor Duplicati. Se a coleção ainda não puder identificar o servidor, defina **Duplicati → Configurações → Opções Avançadas → Machine-id** e tente novamente.
+
 ### Atualização de uma versão anterior (anterior à 0.9.x) e não é possível fazer login {#upgrade-from-an-earlier-version-before-09x-and-cant-login}
 
 **duplistatus** desde a versão 0.9.x requer autenticação de usuário. Uma conta `admin` padrão é criada automaticamente ao instalar a aplicação pela primeira vez ou ao atualizar de uma versão anterior:

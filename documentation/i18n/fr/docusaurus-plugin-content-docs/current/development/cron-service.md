@@ -30,7 +30,8 @@ Le service cron inclut :
 - **Redémarrage automatique** : Le service redémarre automatiquement en cas de panne (géré par `docker-entrypoint.sh` dans les déploiements Docker)
 - **Mode observation** : Le mode développement inclut la surveillance des fichiers pour redémarrer automatiquement en cas de modification du code
 - **Surveillance des sauvegardes en retard** : Vérification automatisée et notification des sauvegardes en retard (exécutée toutes les 5 minutes par défaut)
-- **Nettoyage du journal d'audit** : Nettoyage automatisé des anciennes entrées du journal d'audit (exécuté quotidiennement à 2h00 UTC)
+- **Nettoyage du journal d'audit** : Nettoyage automatique des anciennes entrées du journal d'audit (s'exécute quotidiennement à 2 h UTC)
+- **Actualisation de la version de Duplicati** : Met à jour les versions les plus récentes des canaux Duplicati mises en cache à partir des versions GitHub (s'exécute quotidiennement à 3 h UTC)
 - **Planification flexible** : Expressions cron configurables pour différentes tâches
-- **Intégration avec la base de données** : Partage la même base de données SQLite que l'application principale
-- **API RESTful** : API complète pour la gestion et la surveillance du service
+- **Intégration de la base de données** : Partage la même base de données SQLite avec l'application principale
+- **API RESTful** : API complète pour la gestion et la surveillance des services

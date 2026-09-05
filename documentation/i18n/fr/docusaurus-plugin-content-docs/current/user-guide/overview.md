@@ -39,14 +39,14 @@ Sélectionnez la langue de l'interface utilisateur dans le coin supérieur droit
 
 duplistatus fournit un tableau de bord intuitif pour surveiller les opérations de sauvegarde Duplicati dans l'ensemble de votre infrastructure.
 
-![Dashboard Overview](../assets/screen-main-dashboard-card-mode.png)
+![Aperçu du tableau de bord](../assets/screen-main-dashboard-card-mode.png)
 
 L'interface utilisateur est organisée en plusieurs sections clés pour offrir une expérience de surveillance claire et complète :
 
-1. [Barre d'outils de l'application](#application-toolbar) : Accès rapide aux fonctions et configurations essentielles
-2. [Résumé du tableau de bord](dashboard.md#dashboard-summary) : Statistiques générales pour tous les serveurs surveillés
-3. Vue d'ensemble des serveurs : [Disposition en cartes](dashboard.md#cards-layout) ou [disposition en tableau](dashboard.md#table-layout) affichant le statut le plus récent de toutes les sauvegardes
-4. [Détails du retard](dashboard.md#overdue-details) : Avertissements visuels pour les sauvegardes en retard, avec des informations détaillées au survol
+1. [Barre d'outils de l'application](#application-toolbar): Accès rapide aux fonctions et configurations essentielles
+2. [Résumé du tableau de bord](dashboard.md#dashboard-summary): Statistiques générales pour tous les serveurs surveillés
+3. Aperçu des serveurs : [disposition en cartes](dashboard.md#cards-layout) ou [disposition en tableau](dashboard.md#table-layout) montrant le dernier état de toutes les sauvegardes, y compris la [version du serveur Duplicati](dashboard.md#duplicati-server-version) de la dernière sauvegarde reçue
+4. [Détails du retard](dashboard.md#overdue-details): Avertissements visuels pour les sauvegardes en retard avec des informations détaillées au survol
 5. [Versions de sauvegarde disponibles](dashboard.md#available-backup-versions) : Cliquez sur l'icône bleue pour afficher les versions de sauvegarde disponibles à la destination
 6. [Indicateurs de sauvegarde](backup-metrics.md) : Graphiques interactifs affichant les performances des sauvegardes dans le temps
 7. [Détails du serveur](server-details.md) : Liste complète des sauvegardes enregistrées pour des serveurs spécifiques, incluant des statistiques détaillées
@@ -56,7 +56,7 @@ L'interface utilisateur est organisée en plusieurs sections clés pour offrir u
 
 La barre d'outils de l'application fournit un accès pratique aux fonctions et paramètres clés, organisés pour un flux de travail efficace.
 
-![Application toolbar](../assets/duplistatus_toolbar.svg)
+![Barre d'outils de l'application](../assets/duplistatus_toolbar.svg)
 
 | Bouton                                                                                                                                           | Description                                                                                                                                                                                |
 |--------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

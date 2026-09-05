@@ -1,6 +1,6 @@
 import { db, dbOps, waitForDatabaseReady } from './db';
 import { formatDurationFromSeconds } from "@/lib/db";
-import type { BackupStatus, NotificationEvent, BackupKey, OverdueTolerance, BackupNotificationConfig, OverdueNotifications, ChartDataPoint, SMTPConfig, SMTPConfigEncrypted, NotificationTemplate, NtfyConfig, SMTPConnectionType, SupportedTemplateLanguage } from "@/lib/types";
+import type { BackupStatus, NotificationEvent, BackupKey, OverdueTolerance, BackupNotificationConfig, OverdueNotifications, ChartDataPoint, SMTPConfig, SMTPConfigEncrypted, NotificationTemplate, NtfyConfig, SMTPConnectionType, SupportedTemplateLanguage, DuplicatiVersionCache, DuplicatiVersionStatus } from "@/lib/types";
 import { CronServiceConfig, CronInterval } from './types';
 import { cronIntervalMap } from './cron-interval-map';
 import type { NotificationFrequencyConfig } from "@/lib/types";
@@ -14,6 +14,12 @@ import { defaultBackupNotificationConfig } from './default-config';
 import { encryptData, decryptData } from './secrets';
 import { SOURCE_LOCALE, parseLocaleTag } from './locales';
 import { isNextProductionBuild } from './next-build-phase';
+import {
+  compareServerVersionToCache,
+  createEmptyDuplicatiVersionCache,
+  createUnavailableDuplicatiVersionStatus,
+  DUPLICATI_VERSION_CACHE_KEY,
+} from './duplicati-version';
 
 // Request-level cache to avoid redundant function calls within a single request
 // In production mode, this is a module-level variable that persists across requests,
@@ -229,6 +235,54 @@ export function getCronConfig(): CronServiceConfig {
     console.error('Failed to load cron service configuration:', error instanceof Error ? error.message : String(error));
   }
   return defaultCronConfig;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+export function getDuplicatiVersionCache(): DuplicatiVersionCache | null {
+  try {
+    const raw = getConfiguration(DUPLICATI_VERSION_CACHE_KEY);
+    if (!raw || raw.trim() === '') {
+      return null;
+    }
+
+    const parsed = JSON.parse(raw) as DuplicatiVersionCache;
+    if (!isRecord(parsed) || parsed.source !== 'github' || !isRecord(parsed.channels)) {
+      return null;
+    }
+
+    const cache = createEmptyDuplicatiVersionCache();
+    cache.updatedAt = typeof parsed.updatedAt === 'string' ? parsed.updatedAt : '';
+    cache.source = 'github';
+
+    for (const channel of Object.keys(cache.channels) as Array<keyof typeof cache.channels>) {
+      const value = parsed.channels[channel];
+      if (!value || typeof value.versionNumber !== 'string' || typeof value.tagName !== 'string') {
+        cache.channels[channel] = null;
+        continue;
+      }
+
+      cache.channels[channel] = {
+        versionNumber: value.versionNumber,
+        tagName: value.tagName,
+        publishedAt: typeof value.publishedAt === 'string' ? value.publishedAt : null,
+      };
+    }
+
+    return cache;
+  } catch (error) {
+    console.error(
+      'Failed to read Duplicati version cache:',
+      error instanceof Error ? error.message : String(error)
+    );
+    return null;
+  }
+}
+
+export function setDuplicatiVersionCache(cache: DuplicatiVersionCache): void {
+  setConfiguration(DUPLICATI_VERSION_CACHE_KEY, JSON.stringify(cache));
 }
 
 export function setCronConfig(config: CronServiceConfig): void {
@@ -971,6 +1025,7 @@ export async function getServersSummary() {
         uploaded_size: number;
         warnings: number;
         errors: number;
+        backend_version: string | null;
         status_history: string | null;
       }>;
       
@@ -1003,6 +1058,7 @@ export async function getServersSummary() {
           expectedBackupDate: string;
           expectedBackupElapsed: string;
           lastNotificationSent: string;
+          duplicatiVersion: DuplicatiVersionStatus;
         }>;
         totalBackupCount: number;
         totalStorageSize: number;
@@ -1018,9 +1074,13 @@ export async function getServersSummary() {
         lastBackupId: string | null;
         lastOverdueCheck: string;
         backupNames: string[];
+        backendVersion: string | null;
+        duplicatiVersion: DuplicatiVersionStatus;
       }>();
       
       
+      const versionCache = getDuplicatiVersionCache();
+
       rows.forEach(row => {
         const serverId = row.server_id;
         
@@ -1048,6 +1108,8 @@ export async function getServersSummary() {
             lastOverdueCheck: getLastOverdueBackupCheckTime(),
             haveOverdueBackups: false,
             backupNames: [],
+            backendVersion: null,
+            duplicatiVersion: createUnavailableDuplicatiVersionStatus(),
           });
         }
         
@@ -1102,7 +1164,8 @@ export async function getServersSummary() {
           notificationEvent: undefined,
           expectedBackupDate: 'N/A',
           expectedBackupElapsed: 'N/A',
-          lastNotificationSent: 'N/A'
+          lastNotificationSent: 'N/A',
+          duplicatiVersion: compareServerVersionToCache(row.backend_version, versionCache)
         };
         
         server.backupInfo.push(backupInfo);
@@ -1124,6 +1187,8 @@ export async function getServersSummary() {
           server.lastBackupDuration = row.last_backup_duration ? formatDurationFromSeconds(row.last_backup_duration) : 'N/A';
           server.lastBackupListCount = row.backup_versions || null;
           server.lastBackupId = row.last_backup_id || 'N/A';
+          server.backendVersion = row.backend_version || null;
+          server.duplicatiVersion = compareServerVersionToCache(row.backend_version, versionCache);
         }
         
       });

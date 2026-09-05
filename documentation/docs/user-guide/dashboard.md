@@ -47,6 +47,7 @@ The cards layout shows the status of the most recent backup log received for eac
 - **Server Name**: Name of the Duplicati server (or the alias)
   - Hovering over the **Server Name** will show the server name and note
 - **Overall Status**: The status of the server. Overdue backups will show as a **Warning** status
+- **Version**: The Duplicati version from the latest backup log, shown to the left of the status indicator. See [Duplicati Server Version](#duplicati-server-version).
 - **Summary information**: The consolidated number of files, size and storage used for all backups of this server. Also shows the elapsed time of the most recent backup received (hover over to show the timestamp)
 - **Backups list**: A table with all the backups configured for this server, with 3 columns:
   - **Backup Name**: Name of the backup in the Duplicati server
@@ -95,12 +96,13 @@ The table layout lists the most recent backup logs received for all servers and 
 - **Server Name**: The name of the Duplicati server (or alias)
   - Under the name is the server note
 - **Backup Name**: The name of the backup in the Duplicati server.
+- **Version**: The Duplicati version from the latest backup log for that backup job. See [Duplicati Server Version](#duplicati-server-version).
 - **Available Versions**: The number of backup versions stored on the backup destination. If the icon is greyed out, detailed information was not received in the log. See the [Duplicati Configuration instructions](../installation/duplicati-server-configuration.md) for details.
 - **Backup Count**: The number of backups reported by the Duplicati server.
 - **Last Backup Date**: The timestamp of the last backup log received and the elapsed time since the last screen refresh.
 - **Last Backup Status**: The status of the last backup received (Success, Warning, Error, Fatal).
 - **Duration**: The duration of the backup in HH:MM:SS.
-- **Warnings/Errors**: The number of warnings/errors reported in the backup log.
+- **Warnings/Errors**: The number of warnings and errors reported in the backup log, shown as `warnings/errors` (for example `0/0`).
 - **Settings**:
   - **Notification**: An icon showing the configured notification setting for new backup logs.
   - **Duplicati configuration**: A button to open the Duplicati server's web interface
@@ -131,6 +133,20 @@ Hovering over the overdue warning icon displays details about the overdue backup
 - **Last Backup**: When the last backup log was received.
 - **Expected Backup**: The time the backup was expected, including the configured grace period (extra time allowed before marking as overdue).
 - **Last Notification**: When the last overdue notification was sent.
+
+## Duplicati Server Version {#duplicati-server-version}
+
+The dashboard shows the Duplicati version reported in the latest backup log for each server (card view) or backup job (table view).
+
+- **Where it appears**: To the left of the status indicator on cards, and in the **Version** column on the table (after **Overdue / Next run**).
+- **Colour**: Muted text means the version matches the latest release for that channel (or the comparison is unavailable). Warning yellow means the version is older than the latest release for that channel.
+- **Tooltip**: Hover or click the version number to see the update channel (`stable`, `beta`, `experimental`, or `canary`), the server version, and the latest available version for that channel.
+
+**duplistatus** compares the version from the backup log against the latest Duplicati releases published on GitHub. The latest versions per channel are refreshed once a day (and on startup if the cache is older than 24 hours).
+
+:::important
+**duplistatus** does not query the Duplicati server for the version that is currently running. It uses the version stored in the last backup log that was received or [collected](collect-backup-logs.md). After you upgrade Duplicati, the dashboard keeps showing the previous version until a new backup log arrives.
+:::
 
 ### Available Backup Versions {#available-backup-versions}
 

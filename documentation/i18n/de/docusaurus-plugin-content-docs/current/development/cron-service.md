@@ -30,7 +30,8 @@ Der Cron-Service umfasst:
 - **Automatischer Neustart**: Der Service startet automatisch neu, falls er abstürzt (wird bei Docker-Deployments von `docker-entrypoint.sh` verwaltet)
 - **Watch-Modus**: Der Entwicklungsmodus beinhaltet das Überwachen von Dateiänderungen für automatische Neustarts bei Code-Änderungen
 - **Überwachung überfälliger Sicherungen**: Automatische Prüfung und Benachrichtigung bei überfälligen Sicherungen (standardmäßig alle 5 Minuten)
-- **Bereinigung des Audit-Logs**: Automatische Bereinigung alter Audit-Log-Einträge (täglich um 2 Uhr UTC)
-- **Flexible Planung**: Konfigurierbare Cron-Ausdrücke für verschiedene Aufgaben
-- **Datenbankintegration**: Nutzt dieselbe SQLite-Datenbank wie die Hauptanwendung
-- **RESTful-API**: Vollständige API zur Serviceverwaltung und -überwachung
+- **Audit-Protokollbereinigung**: Automatische Bereinigung alter Audit-Protokolleinträge (läuft täglich um 2 Uhr UTC)
+- **Duplicati-Version-Aktualisierung**: Aktualisiert die zwischengespeicherten neuesten Duplicati-Kanalversionen aus GitHub Releases (läuft täglich um 3 Uhr UTC)
+- **Flexible Planung**: Konfigurierbare cron-Ausdrücke für verschiedene Aufgaben
+- **Datenbankintegration**: Teilt dieselbe SQLite-Datenbank mit der Hauptanwendung
+- **RESTful-API**: Komplette API für die Dienstverwaltung und -überwachung

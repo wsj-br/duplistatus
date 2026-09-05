@@ -39,14 +39,14 @@ Selecione o idioma da interface do usuário no canto superior direito <IconButto
 
 duplistatus fornece um painel intuitivo para monitorar operações de backup do Duplicati em toda sua infraestrutura.
 
-![Dashboard Overview](../assets/screen-main-dashboard-card-mode.png)
+![Visão Geral do Painel](../assets/screen-main-dashboard-card-mode.png)
 
 A interface do usuário é organizada em várias seções principais para proporcionar uma experiência de monitoramento clara e abrangente:
 
-1. [Barra de ferramentas do aplicativo](#application-toolbar): Acesso rápido às funções e configurações essenciais
-2. [Resumo do painel](dashboard.md#dashboard-summary): Estatísticas gerais para todos os servidores monitorados
-3. Visão geral dos servidores: [layout em cartões](dashboard.md#cards-layout) ou [layout em tabela](dashboard.md#table-layout) mostrando o status mais recente de todos os backups
-4. [Detalhes de atraso](dashboard.md#overdue-details): Avisos visuais para backups atrasados com informações detalhadas ao passar o mouse
+1. [Barra de Ferramentas do Aplicativo](#application-toolbar): Acesso rápido a funções essenciais e configurações
+2. [Resumo do Painel](dashboard.md#dashboard-summary): Estatísticas gerais para todos os servidores monitorados
+3. Visão Geral dos Servidores: [Layout de cards](dashboard.md#cards-layout) ou [layout de tabela](dashboard.md#table-layout) mostrando o status mais recente de todos os backups, incluindo a [versão do servidor Duplicati](dashboard.md#duplicati-server-version) do último log de backup recebido
+4. [Detalhes do Atraso](dashboard.md#overdue-details): Avisos visuais para backups atrasados com informações detalhadas ao passar o mouse
 5. [Versões de backup disponíveis](dashboard.md#available-backup-versions): Clique no ícone azul para visualizar as versões de backup disponíveis no destino
 6. [Métricas de backup](backup-metrics.md): Gráficos interativos que exibem o desempenho do backup ao longo do tempo
 7. [Detalhes do servidor](server-details.md): Lista completa dos backups registrados para servidores específicos, incluindo estatísticas detalhadas
@@ -56,7 +56,7 @@ A interface do usuário é organizada em várias seções principais para propor
 
 A barra de ferramentas da aplicação fornece acesso conveniente às funções e configurações principais, organizada para um fluxo de trabalho eficiente.
 
-![Application toolbar](../assets/duplistatus_toolbar.svg)
+![Barra de Ferramentas do Aplicativo](../assets/duplistatus_toolbar.svg)
 
 | Botão                                                                                                                                           | Descrição                                                                                                                                                                                |
 |--------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

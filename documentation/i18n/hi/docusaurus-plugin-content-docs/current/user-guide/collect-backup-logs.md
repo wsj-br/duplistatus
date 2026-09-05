@@ -43,13 +43,13 @@ You can also use the <IconButton icon="lucide:import" label="Sab Kuch Ikattha Ka
 
 ## Collection Process Kaise Kaam Karta Hai {#how-the-collection-process-works}
 
-- **duplistatus** automatically detects the best connection protocol and connects to the specified Duplicati server.
-- It retrieves backup history, log information, and backup settings (for backup monitoring).
-- Any logs already present in the **duplistatus** database are skipped.
-- New data is processed and stored in the local database.
-- The URL used (with the detected protocol) will be stored or updated in the local database.
-- If the download option is selected, it will download the JSON data collected. The file name will be in this format: `[serverName]_collected_[Timestamp].json`. The timestamp uses the ISO 8601 date format (YYYY-MM-DDTHH:MM:SS).
-- The dashboard updates to reflect the new information.
+- **duplistatus** स्वचालित रूप से सर्वोत्तम कनेक्शन प्रोटोकॉल का पता लगाता है और निर्दिष्ट Duplicati सर्वर से कनेक्ट होता है।
+- यह बैकअप इतिहास, लॉग जानकारी, और बैकअप सम्मान (बैकअप मॉनिटरिंग के लिए) प्राप्त करता है।
+- **duplistatus** डेटाबेस में पहले से मौजूद किसी भी लॉग को छोड़ देता है।
+- नया डेटा संसाधित और स्थानीय डेटाबेस में संग्रहीत किया जाता है, जिसमें प्रत्येक बैकअप लॉग में रिपोर्ट की गई Duplicati संस्करण शामिल है। [डैशबोर्ड संस्करण](dashboard.md#duplicati-server-version) नवीनतम संग्रहीत लॉग से लिया जाता है — **duplistatus** सर्वर पर वर्तमान में चल रहे संस्करण को नहीं पढ़ता। Duplicati अपग्रेड के बाद, डैशबोर्ड नए संस्करण दिखाने के लिए एक नया बैकअप संग्रहित करें या प्रतीक्षा करें।
+- उपयोग किया गया URL (पता लगाए गए प्रोटोकॉल के साथ) स्थानीय डेटाबेस में संग्रहीत या अपडेट किया जाएगा।
+- यदि डाउनलोड विकल्प चुना गया है, तो यह डुप्लिकेटी सर्वर से किसी भी डेटा प्राप्त होने पर JSON डेटा डाउनलोड करेगा — भले ही लॉग्स वैधता विफल हों या डेटाबेस में आयात नहीं हो सकें। फ़ाइल का नाम इस प्रारूप में होगा: `[serverName]_collected_[Timestamp].json`। टाइमस्टैम्प आईएसओ 8601 तिथि प्रारूप का उपयोग करता है (YYYY-MM-DDTHH:MM:SS)।
+- डैशबोर्ड नए जानकारी को दर्शाने के लिए अपडेट होता है।
 
 :::note Seeing duplicated servers after collecting?
 If the same server appears more than once after collecting backup logs (or after a Duplicati reinstall/upgrade), it is usually caused by a changed `machine_id` or by a Duplicati API bug that mixes the `identity` id and the `machine_id`. The fix is to align the ids on the Duplicati server (edit `identity.txt`/`machineid.txt` or set **Duplicati → Settings → Advanced Options → Machine-id**), restart Duplicati, then merge the entries in **duplistatus** via [Settings → Database Maintenance → Duplicate servers merge karein](settings/database-maintenance.md#merge-duplicate-servers). See [Duplicate Servers on the Dashboard](troubleshooting.md#duplicate-servers-on-the-dashboard) for full steps.
@@ -59,6 +59,7 @@ If the same server appears more than once after collecting backup logs (or after
 
 Backup log collection requires the Duplicati server to be accessible from the **duplistatus** installation. If you encounter issues, please verify the following:
 
-- Confirm that the hostname (or IP address) and port number are correct. You can test this by accessing the Duplicati server UI in your browser (e.g., `http://hostname:port`).
-- Check that **duplistatus** can connect to the Duplicati server. A common problem is DNS name resolution (the system cannot find the server by its hostname). See more in [troubleshooting section](troubleshooting.md#collect-backup-logs-not-working).
-- Ensure the password you provided is correct.
+- पुष्टि करें कि होस्टनेम (या आईपी पता) और पोर्ट संख्या सही है। आप इसे ब्राउज़र में डुप्लिकेटी सर्वर यूआई को एक्सेस करके परीक्षण कर सकते हैं (उदाहरण के लिए, `http://hostname:port`)।
+- जांचें कि **duplistatus** डुप्लिकेटी सर्वर से कनेक्ट कर सकता है। एक सामान्य समस्या DNS नाम रिज़ॉल्यूशन है (प्रणाली होस्टनेम द्वारा सर्वर को नहीं ढूंढ पाती है)। अधिक जानकारी के लिए [ट्रबलशूटिंग अनुभाग](troubleshooting.md#collect-backup-logs-not-working) देखें।
+- सुनिश्चित करें कि आपने प्रदान किया गया पासवर्ड सही है।
+- डुप्लिकेटी 2.4+ में, संग्रह प्रणाली की डिफ़ॉल्ट खाली होने पर डुप्लिकेटी सर्वर सेटिंग्स से मशीन-आईडी पढ़ता है।

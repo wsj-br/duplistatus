@@ -4,8 +4,8 @@
 
 ## Recursos {#features}
 
-- **Configuração Rápida**: Implantação simples em contêiner, com imagens disponíveis no Docker Hub e no GitHub.
-- **Painel Unificado**: Visualize status, histórico e detalhes de backups de todos os servidores em um único local.
+- **Configuração Rápida**: Implantação simplificada em contêineres, com imagens disponíveis no Docker Hub e GitHub.
+- **Painel Unificado**: Visualize o status, histórico, versão do Duplicati e detalhes de todos os servidores em um só lugar.
 - **Monitoramento de Backup**: Verificação automatizada e alertas para backups agendados atrasados.
 - **Visualização de Dados e Logs**: Gráficos interativos e coleta automática de logs dos servidores Duplicati.
 - **Notificações e Alertas**: Suporte integrado ao NTFY e e-mail SMTP para alertas de backup, incluindo notificações de backups atrasados.

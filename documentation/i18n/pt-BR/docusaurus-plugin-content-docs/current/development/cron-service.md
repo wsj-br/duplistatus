@@ -30,7 +30,8 @@ O serviço cron inclui:
 - **Reinicialização automática**: O serviço reinicia automaticamente se falhar (gerenciado por `docker-entrypoint.sh` em implantações Docker)
 - **Modo de observação**: O modo de desenvolvimento inclui monitoramento de arquivos para reinicialização automática em alterações de código
 - **Monitoramento de backups atrasados**: Verificação automatizada e notificação de backups atrasados (executado a cada 5 minutos por padrão)
-- **Limpeza do registro de auditoria**: Limpeza automatizada de entradas antigas do registro de auditoria (executado diariamente às 2h UTC)
+- **Limpeza do log de auditoria**: Limpeza automatizada de entradas antigas do log de auditoria (executa diariamente às 2h UTC)
+- **Atualização da versão do Duplicati**: Atualiza as versões mais recentes do canal Duplicati em cache a partir das versões do GitHub (executa diariamente às 3h UTC)
 - **Agendamento flexível**: Expressões cron configuráveis para diferentes tarefas
-- **Integração com banco de dados**: Compartilha o mesmo banco de dados SQLite com a aplicação principal
+- **Integração com banco de dados**: Compartilha o mesmo banco de dados SQLite com o aplicativo principal
 - **API RESTful**: API completa para gerenciamento e monitoramento do serviço

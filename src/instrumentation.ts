@@ -11,8 +11,9 @@ export async function register() {
   // Use conditional import to avoid Edge Runtime static analysis
   if (process.env.NEXT_RUNTIME === 'nodejs' || !process.env.NEXT_RUNTIME) {
     // Default to Node.js if NEXT_RUNTIME is not set (development)
-    const { clearSessionsOnStartup } = await import('./instrumentation-node.server');
+    const { clearSessionsOnStartup, refreshDuplicatiVersionsOnStartup } = await import('./instrumentation-node.server');
     await clearSessionsOnStartup();
+    await refreshDuplicatiVersionsOnStartup();
   }
   // If Edge Runtime, do nothing (instrumentation doesn't need to run there)
 }

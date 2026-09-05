@@ -39,14 +39,14 @@ Wählen Sie die Sprache der Benutzeroberfläche in der oberen rechten Ecke <Icon
 
 duplistatus bietet ein intuitives Dashboard zur Überwachung von Duplicati-Sicherungsvorgängen in Ihrer gesamten Infrastruktur.
 
-![Dashboard Overview](../assets/screen-main-dashboard-card-mode.png)
+![Dashboard-Übersicht](../assets/screen-main-dashboard-card-mode.png)
 
 Die Benutzeroberfläche ist in mehrere Schlüsselbereiche unterteilt, um ein klares und umfassendes Überwachungserlebnis zu bieten:
 
-1. [Anwendungsleiste](#application-toolbar): Schneller Zugriff auf wesentliche Funktionen und Konfigurationen
-2. [Dashboard-Zusammenfassung](dashboard.md#dashboard-summary): Übersichtsstatistiken für alle überwachten Server
-3. Serverübersicht: [Kartenansicht](dashboard.md#cards-layout) oder [Tabellenansicht](dashboard.md#table-layout), die den letzten Status aller Sicherungen anzeigt
-4. [Überfällig-Details](dashboard.md#overdue-details): Visuelle Warnungen bei überfälligen Sicherungen mit detaillierten Informationen beim Hovern
+1. [Anwendungssymbolleiste](#application-toolbar): Schneller Zugriff auf essenzielle Funktionen und Konfigurationen
+2. [Dashboard-Zusammenfassung](dashboard.md#dashboard-summary): Übersicht der Statistiken für alle überwachten Server
+3. Server-Übersicht: [Kartenlayout](dashboard.md#cards-layout) oder [Tabellenlayout](dashboard.md#table-layout) mit dem aktuellen Status aller Sicherungen, einschließlich der [Duplicati-Server-Version](dashboard.md#duplicati-server-version) aus dem letzten empfangenen Sicherungsprotokoll
+4. [Details zu überfälligen Sicherungen](dashboard.md#overdue-details): Visuelle Warnungen für überfällige Sicherungen mit detaillierten Informationen bei Mouseover
 5. [Verfügbare Sicherungsversionen](dashboard.md#available-backup-versions): Klicken Sie auf das blaue Symbol, um die am Zielort verfügbaren Sicherungsversionen anzuzeigen
 6. [Sicherungsmetriken](backup-metrics.md): Interaktive Diagramme zur Anzeige der Sicherungsleistung im Zeitverlauf
 7. [Serverdetails](server-details.md): Umfassende Liste der aufgezeichneten Sicherungen für bestimmte Server, einschließlich detaillierter Statistiken
@@ -56,7 +56,7 @@ Die Benutzeroberfläche ist in mehrere Schlüsselbereiche unterteilt, um ein kla
 
 Die Anwendungssymbolleiste bietet bequemen Zugriff auf wichtige Funktionen und Einstellungen, organisiert für einen effizienten Arbeitsablauf.
 
-![Application toolbar](../assets/duplistatus_toolbar.svg)
+![Anwendungssymbolleiste](../assets/duplistatus_toolbar.svg)
 
 | Schaltfläche                                                                                                                                           | Beschreibung                                                                                                                                                                                |
 |--------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

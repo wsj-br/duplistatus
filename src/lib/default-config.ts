@@ -89,6 +89,10 @@ export const defaultCronConfig: CronServiceConfig = {
     'audit-log-cleanup': {
       cronExpression: '0 2 * * *', // Daily at 2 AM UTC
       enabled: true
+    },
+    'duplicati-version-refresh': {
+      cronExpression: '0 3 * * *', // Daily at 3 AM UTC
+      enabled: true
     }
   }
 };

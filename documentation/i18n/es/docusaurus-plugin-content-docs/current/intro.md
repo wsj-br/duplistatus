@@ -4,10 +4,10 @@
 
 ## Características {#features}
 
-- **Configuración rápida**: Despliegue sencillo mediante contenedores, con imágenes disponibles en Docker Hub y GitHub.
-- **Panel unificado**: Visualice el estado, historial y detalles de las copias de seguridad de todos los servidores en un solo lugar.
-- **Monitoreo de Copias de Seguridad**: Verificación y alertas automatizadas para copias de seguridad programadas atrasadas.
-- **Visualización de datos y registros**: Gráficos interactivos y recolección automática de registros desde servidores Duplicati.
+- **Configuración rápida**: Implementación sencilla en contenedores, con imágenes disponibles en Docker Hub y GitHub.
+- **Panel unificado**: Visualiza el estado de las copias de seguridad, el historial, la versión de Duplicati y los detalles de todos los servidores en un solo lugar.
+- **Monitoreo de copias de seguridad**: Comprobación automatizada y alertas para copias de seguridad programadas vencidas.
+- **Visualización de datos y registros**: Gráficos interactivos y recopilación automática de registros de los servidores Duplicati.
 - **Notificaciones y alertas**: Soporte integrado para NTFY y correo electrónico SMTP para alertas de copias de seguridad, incluyendo notificaciones de copias de seguridad atrasadas.
 - **Control de acceso y seguridad de usuarios**: Sistema de autenticación seguro con control de acceso basado en roles (roles Administrador/Usuario), políticas de contraseñas configurables, protección contra bloqueo de cuentas y gestión completa de usuarios.
 - **Registro de auditoría**: Registro completo de todos los cambios del sistema y acciones de los usuarios con filtros avanzados, capacidades de exportación y períodos de retención configurables.

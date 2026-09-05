@@ -71,6 +71,8 @@ Default configuration:
 - Port: `CRON_PORT` or `PORT+1` or defaults to 9667 (see Environment Variables below)
 - Tasks:
   - overdue-backup-check: Runs every 5 minutes (`*/5 * * * *`)
+  - audit-log-cleanup: Runs daily at 2 AM UTC (`0 2 * * *`)
+  - duplicati-version-refresh: Updates cached Duplicati channel versions from GitHub daily at 3 AM UTC (`0 3 * * *`)
 
 ## API Endpoints
 

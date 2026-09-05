@@ -39,14 +39,14 @@ Seleccione el idioma de la interfaz de usuario en la esquina superior derecha <I
 
 duplistatus proporciona un panel de control intuitivo para monitorear operaciones de backup de Duplicati en toda su infraestructura.
 
-![Dashboard Overview](../assets/screen-main-dashboard-card-mode.png)
+![Vista general del panel](../assets/screen-main-dashboard-card-mode.png)
 
 La interfaz de usuario está organizada en varias secciones clave para proporcionar una experiencia de monitoreo clara y completa:
 
-1. [Barra de herramientas de la aplicación](#application-toolbar): Acceso rápido a funciones y configuraciones esenciales
-2. [Resumen del panel de control](dashboard.md#dashboard-summary): Estadísticas generales para todos los servidores supervisados
-3. Resumen de servidores: [Diseño de tarjetas](dashboard.md#cards-layout) o [diseño de tabla](dashboard.md#table-layout) que muestra el estado más reciente de todas las copias de seguridad
-4. [Detalles de atraso](dashboard.md#overdue-details): Advertencias visuales para copias de seguridad atrasadas con información detallada al pasar el cursor
+1. [Barra de herramientas de la aplicación](#application-toolbar): Acceso rápido a funciones esenciales y configuraciones
+2. [Resumen del panel](dashboard.md#dashboard-summary): Estadísticas generales para todos los servidores monitorizados
+3. Vista general de servidores: [Diseño de tarjetas](dashboard.md#cards-layout) o [diseño de tabla](dashboard.md#table-layout) mostrando el último estado de todas las copias de seguridad, incluyendo la [versión del servidor Duplicati](dashboard.md#duplicati-server-version) de la última copia de seguridad recibida
+4. [Detalles de vencimiento](dashboard.md#overdue-details): Advertencias visuales para copias de seguridad pendientes con información detallada al pasar el cursor
 5. [Versiones de respaldo disponibles](dashboard.md#available-backup-versions): Haga clic en el icono azul para ver las versiones de respaldo disponibles en el destino
 6. [Métricas de respaldo](backup-metrics.md): Gráficos interactivos que muestran el rendimiento del respaldo a lo largo del tiempo
 7. [Detalles del servidor](server-details.md): Lista completa de respaldos registrados para servidores específicos, incluyendo estadísticas detalladas
@@ -56,7 +56,7 @@ La interfaz de usuario está organizada en varias secciones clave para proporcio
 
 La barra de herramientas de la aplicación proporciona acceso conveniente a funciones y configuración clave, organizada para un flujo de trabajo eficiente.
 
-![Application toolbar](../assets/duplistatus_toolbar.svg)
+![Barra de herramientas de la aplicación](../assets/duplistatus_toolbar.svg)
 
 | Botón                                                                                                                                           | Descripción                                                                                                                                                                                |
 |--------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

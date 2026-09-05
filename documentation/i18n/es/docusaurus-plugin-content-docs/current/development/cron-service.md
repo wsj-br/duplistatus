@@ -31,6 +31,7 @@ El servicio cron incluye:
 - **Modo vigilancia**: El modo desarrollo incluye la vigilancia de archivos para reinicios automáticos ante cambios en el código
 - **Monitoreo de respaldos atrasados**: Verificación automatizada y notificación de respaldos retrasados (se ejecuta cada 5 minutos por defecto)
 - **Limpieza del registro de auditoría**: Limpieza automatizada de entradas antiguas del registro de auditoría (se ejecuta diariamente a las 2 AM UTC)
+- **Actualización de la versión de Duplicati**: Actualiza las versiones más recientes de los canales de Duplicati almacenadas en caché desde GitHub Releases (se ejecuta diariamente a las 3 AM UTC)
 - **Programación flexible**: Expresiones cron configurables para diferentes tareas
-- **Integración con base de datos**: Comparte la misma base de datos SQLite con la aplicación principal
-- **API RESTful**: API completa para gestión y monitoreo del servicio
+- **Integración de base de datos**: Comparte la misma base de datos SQLite con la aplicación principal
+- **API RESTful**: API completa para la gestión y monitorización del servicio

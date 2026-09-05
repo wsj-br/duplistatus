@@ -4,10 +4,10 @@
 
 ## Funktionen {#features}
 
-- **Schnelleinrichtung**: Einfache containerbasierte Bereitstellung mit verfügbaren Images auf Docker Hub und GitHub.
-- **Einheitliches Dashboard**: Anzeige des Sicherungsstatus, Verlaufs und Details für alle Server an einem Ort.
-- **Backup-Überwachung**: Automatische Überprüfung und Warnungen bei überfälligen geplanten Sicherungen.
-- **Datenvisualisierung & Protokolle**: Interaktive Diagramme und automatische Protokollsammlung von Duplicati-Servern.
+- **Schnelle Einrichtung**: Einfache containerisierte Bereitstellung, mit Bildern auf Docker Hub und GitHub verfügbar.
+- **Einheitliches Dashboard**: Anzeige des Backup-Status, der Historie, der Duplicati-Version und der Details für alle Server an einem Ort.
+- **Backup-Überwachung**: Automatische Überprüfung und Benachrichtigung für überfällige geplante Backups.
+- **Datenvisualisierung & Protokolle**: Interaktive Diagramme und automatische Protokollierung von Duplicati-Servern.
 - **Benachrichtigungen & Warnungen**: Integrierte NTFY- und SMTP-E-Mail-Unterstützung für Sicherungswarnungen, einschließlich Hinweisen zu überfälligen Sicherungen.
 - **Benutzerzugriffskontrolle & Sicherheit**: Sicheres Authentifizierungssystem mit rollenbasierter Zugriffskontrolle (Administrator/Benutzer-Rollen), konfigurierbaren Passwortrichtlinien, Schutz vor Kontosperrung und umfassender Benutzerverwaltung.
 - **Audit-Protokollierung**: Vollständige Nachverfolgung aller Systemänderungen und Benutzeraktionen mit erweiterter Filterung, Exportfunktionen und konfigurierbaren Aufbewahrungszeiträumen.

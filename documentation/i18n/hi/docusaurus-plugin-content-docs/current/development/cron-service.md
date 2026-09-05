@@ -30,7 +30,8 @@ pnpm cron:start-local
 - **स्वचालित पुनरारंभ**: सेवा क्रैश होने पर स्वचालित रूप से पुनरारंभ होती है (डॉकर डिप्लॉयमेंट में `docker-entrypoint.sh` द्वारा प्रबंधित)
 - **वॉच मोड**: विकास मोड में कोड परिवर्तनों पर स्वचालित पुनरारंभ के लिए फ़ाइल वॉचिंग शामिल है
 - **विलंबित बैकअप मॉनिटरिंग**: विलंबित बैकअप की स्वचालित जांच और सूचना (डिफ़ॉल्ट रूप से हर 5 मिनट में चलती है)
-- **ऑडिट लॉग साफ़ करना**: पुराने ऑडिट लॉग प्रविष्टियों की स्वचालित सफाई (UTC समय में हर रोज़ सुबह 2 बजे चलती है)
-- **फ्लेक्सिबल शेड्यूलिंग**: विभिन्न कार्यों के लिए कॉन्फ़िगर करने योग्य क्रॉन अभिव्यक्तियाँ
-- **डेटाबेस एकीकरण**: मुख्य ऐप्लिकेशन के साथ उसी SQLite डेटाबेस का उपयोग करता है
-- **RESTful API**: सेवा प्रबंधन और मॉनिटरिंग के लिए पूर्ण API
+- **Audit log cleanup**: Automated cleanup of old audit log entries (runs daily at 2 AM UTC)
+- **Duplicati version refresh**: Updates cached latest Duplicati channel versions from GitHub Releases (runs daily at 3 AM UTC)
+- **Flexible scheduling**: Configurable cron expressions for different tasks
+- **Database integration**: Shares the same SQLite database with the main application
+- **RESTful API**: Complete API for service management and monitoring

@@ -5,6 +5,7 @@ import { AuditLogger } from '@/lib/audit-logger';
 import { getConfiguration } from '@/lib/db-utils';
 import { CronServiceStatus, TaskExecutionResult, CronServiceConfig, OverdueBackupCheckResult } from '@/lib/types';
 import { getCronConfig } from '@/lib/db-utils';
+import { refreshDuplicatiVersions } from '@/lib/duplicati-version-service';
 
 const timestamp = () => new Date().toLocaleString(undefined, { hour12: false, timeZoneName: 'short' }).replace(',', '');
 
@@ -158,6 +159,20 @@ class CronService {
             success: true,
             message: result.message,
           };
+        case 'duplicati-version-refresh': {
+          const refreshResult = await refreshDuplicatiVersions({ force: true });
+          if (!refreshResult.success) {
+            throw new Error(refreshResult.message);
+          }
+          console.log(`[CronService] ${timestamp()}: Task ${taskName} executed successfully: ${refreshResult.message}`);
+          this.lastRunTimes[taskName] = new Date().toISOString();
+          delete this.errors[taskName];
+          return {
+            taskName,
+            success: true,
+            message: refreshResult.message,
+          };
+        }
         default:
           throw new Error(`Unknown task: ${taskName}`);
       }

@@ -7,7 +7,9 @@
 | `PORT`                    | मुख्य वेब आवेदन के लिए पोर्ट                                                           | `9666`                     |
 | `CRON_PORT`               | क्रॉन सेवा (शेड्यूलिंग) के लिए पोर्ट। यदि सेट नहीं है, तो `PORT + 1` का उपयोग करता है                                      | `9667`                     |
 | `NODE_ENV`                | Node.js वातावरण (`development` या `production`)                                         | `production`               |
-| `NEXT_TELEMETRY_DISABLED` | Next.js टेलीमेट्री अक्षम करें                                                                   | `1`                        |
+| `NEXT_TELEMETRY_DISABLED` | Next.js टेलीमेट्री को अक्षम करें (सभी Next.js स्क्रिप्ट्स पर सेट और Docker में)                        | `1`                        |
 | `TZ`                      | आवेदन के लिए समय क्षेत्र                                                                | `Europe/London`            |
 | `PWD_ENFORCE`             | `false` सेट करें पासवर्ड जटिलता आवश्यकताओं को अक्षम करने के लिए (अप्परकेस, लोअरकेस, नंबर)। | बलपूर्वक लागू किया जाता है (पूर्ण सत्यापन) |
 | `PWD_MIN_LEN`             | वर्णों में न्यूनतम पासवर्ड लंबाई  (हमेशा लागू किया जाता है)                                    | `8`                        |
+
+`NEXT_TELEMETRY_DISABLED=1` Docker इमेज द्वारा और `pnpm build`, `pnpm build-local`, `pnpm start`, `pnpm start-local`, और `pnpm dev` द्वारा सेट किया जाता है, इसलिए Next.js अनाम CLI टेलीमेट्री संग्रहित नहीं करता है। आपकी उपयोगकर्ता कॉन्फ़िग में ऑप्ट-आउट को स्थायी बनाने के लिए, `npx next telemetry disable` चलाएँ।

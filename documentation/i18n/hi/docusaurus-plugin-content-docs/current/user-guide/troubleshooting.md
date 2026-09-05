@@ -80,6 +80,8 @@ Agar backup versions dashboard ya details page par nahi dikh rahe hain:
 
 कंटेनर के अंदर DNS कॉन्फ़िगरेशन की जाँच भी करें (अधिक जानकारी के लिए [Podman कंटेनर के लिए DNS कॉन्फ़िगरेशन](../installation/installation.md#configuring-dns-for-podman-containers) देखें)
 
+- **Duplicati 2.4 aur baad** par, `/api/v1/systeminfo` `machine-id` ko khali Default ke saath list karta hai. **duplistatus** Duplicati server sammaan se configured id padhta hai. Agar collection ab bhi server ko identify nahi kar sakta, to **Duplicati → Sammaan → Advanced Options → Machine-id** set karein aur phir se try karein.
+
 ### एक पूर्व संस्करण से अपग्रेड (0.9.x से पहले) और लॉगिन नहीं कर पा रहे {#upgrade-from-an-earlier-version-before-09x-and-cant-login}
 
 **duplistatus** since version 0.9.x requires user authentication. A default `admin` account is created automatically when installing the application for the first time or upgrading from an earlier version: 

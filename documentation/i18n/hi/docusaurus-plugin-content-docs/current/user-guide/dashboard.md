@@ -42,15 +42,16 @@
 
 ![कार्ड लेआउट](../assets/duplistatus_dash-cards.svg)
 
-- **सर्वर नाम**: डुप्लिकेट सर्वर का नाम (या उपनाम)
-  - **सर्वर नाम** पर होवर करने से सर्वर नाम और नोट दिखाई देगा
-- **सामान्य स्थिति**: सर्वर की स्थिति। विलंबित बैकअप को **चेतावनी** स्थिति के रूप में दिखाया जाएगा
-- **सारांश जानकारी**: इस सर्वर के सभी बैकअप के लिए एकत्रित फ़ाइलें, साइज़ और उपयोग की गई स्टोरेज की संख्या। नवीनतम बैकअप प्राप्त होने के समय की भी अवधि दिखाता है (टाइमस्टैम्प दिखाने के लिए होवर करें)
-- **बैकअप सूची**: इस सर्वर के लिए कॉन्फ़िगर किए गए सभी बैकअप के साथ एक तालिका, जिसमें 3 कॉलम हैं:
-  - **बैकअप नाम**: डुप्लिकेट सर्वर में बैकअप का नाम
-  - **स्थिति इतिहास**: प्राप्त नवीनतम 10 बैकअप की स्थिति।
-  - **अंतिम बैकअप प्राप्त**: नवीनतम लॉग प्राप्त होने के समय से वर्तमान समय तक की अवधि। यदि बैकअप विलंबित है तो यह चेतावनी आइकन दिखाएगा।
-    - समय संक्षिप्त प्रारूप में दिखाया जाता है: `m` मिनट के लिए, `h` घंटे के लिए, `d` दिन के लिए, `w` सप्ताह के लिए, `mo` महीने के लिए, `y` साल के लिए।
+- **Server Naam**: Duplicati server ka naam (ya Upnaam)
+  - **Server Naam** पर होवर करने से server naam aur note dikhayi dega
+- **Overall Stithi**: Server ki stithi. Vilambit backups **Warning** stithi ke roop mein dikhayi denge
+- **Sanskaran**: Sabse antim backup log se Duplicati sanskaran, jo stithi indicator ke bayin or dikhaya jata hai. [Duplicati Server Version](#duplicati-server-version) dekhein.
+- **Summary jankari**: Is server ke sabhi backups ke liye ekathrit File sankhya, aakar aur upyog kiya gaya sanchayan. Yah sabse haliya prapt backup ka beeta hua samay bhi dikhata hai (samay chinh dekhne ke liye hover karein)
+- **Backups list**: Is server ke liye configured sabhi backups ke saath ek table, 3 columns ke saath:
+  - **Backup Naam**: Duplicati server mein backup ka naam
+  - **Stithi itihas**: Prapt antim 10 backups ki stithi.
+  - **Antim backup prapt**: Antim prapt log ke vartaman samay se beeta hua samay. Yadi backup overdue hai to yah warning icon dikhayega.
+    - Samay sankshipt format mein dikhaya jata hai: `m` minutes ke liye, `h` hours ke liye, `d` days ke liye, `w` weeks ke liye, `mo` months ke liye, `y` years ke liye.
 
 कार्ड सॉर्ट ऑर्डर और अन्य कॉन्फ़िगरेशन [डिस्प्ले सेटिंग्स](settings/display-settings.md) में सेट किए जा सकते हैं।
 
@@ -90,18 +91,19 @@ Table layout lists the most recent backup logs received for all servers and back
 
 ![Dashboard Table Mode](../assets/screen-main-dashboard-table-mode.png)
 
-- **Server Naam**: Duplicati server ka naam (ya upnaam)
-  - Name ke neeche server note
+- **Server Naam**: Duplicati server ka naam (ya Upnaam)
+  - Naam ke neeche server note hai
 - **Backup Naam**: Duplicati server mein backup ka naam.
-- **Upalabdh Versions**: Backup destination par stored backup versions ki sankhya. Agar icon greyed out hai, toh detailed information log mein nahi mila. Details ke liye [Duplicati Configuration instructions](../installation/duplicati-server-configuration.md) dekhiye.
-- **Backup Ginti**: Duplicati server ke dwara report kiye gaye backups ki sankhya.
-- **Antim Backup Tithi**: Last backup log received ka samay chinh aur last screen refresh se lekar elapsed samay.
-- **Antim Backup Stithi**: Last received backup ki stithi (Safalta, Warning, Truti, Gambhir).
-- **Avadhi**: Backup ki avadhi HH:MM:SS mein.
-- **Chetaavaniyaan/Trutiyon**: Backup log mein report kiye gaye chetaavaniyaan/trutiyon ki sankhya.
+- **Sanskaran**: Us backup job ke liye sabse antim backup log se Duplicati sanskaran. [Duplicati Server Version](#duplicati-server-version) dekhein.
+- **Upalabdh Versions**: Backup destination par store kiye gaye backup versions ki sankhya. Yadi icon greyed out hai, to log mein vistrit vivaran prapt nahi hua tha. Vivaran ke liye [Duplicati Configuration instructions](../installation/duplicati-server-configuration.md) dekhein.
+- **Backup Ginti**: Duplicati server dwara report ki gayi backups ki sankhya.
+- **Antim Backup Tithi**: Prapt antim backup log ka samay chinh aur antim screen refresh se beeta hua samay.
+- **Antim Backup Stithi**: Prapt antim backup ki stithi (Safalta, Warning, Truti, Gambhir).
+- **Avadhi**: HH:MM:SS mein backup ki avadhi.
+- **चेतावनियाँ/त्रुटियाँ**: Backup log mein report ki gayi chetavaniyon aur trutiyon ki sankhya, `warnings/errors` ke roop mein dikhayi jati hai (udaharan ke liye `0/0`).
 - **Sammaan**:
-  - **Suchnaayein**: Naye backup logs ke liye configured notification setting ko dikhane wala icon.
-  - **Duplicati configuration**: Duplicati server's web interface kholne wala button
+  - **Notification**: Naye backup logs ke liye configured notification setting dikhane wala ek icon.
+  - **Duplicati configuration**: Duplicati server ke web interface ko kholne ke liye ek button
 
 Aap [Display Settings](settings/display-settings.md) use kar sakte hain table size aur other configurations configure karne ke liye.
 
@@ -128,6 +130,20 @@ Vilambit chetaavani icon par mouse rakhne se vilambit backup ke baare mein vishe
 - **Antim Backup**: Kab aakhiri backup log praapt kiya gaya tha.
 - **Anumati Backup**: Backup ka anumati samay, vilambit ke roop mein mark kiye jaane se pehle anumati samay (extra samay) shamil kiya gaya tha.
 - **Antim Suchnaayein**: Kab aakhiri vilambit suchnaayein bheji gayi thi.
+
+## Duplicati Server Version {#duplicati-server-version}
+
+Dashboard har server (card view) ya backup job (Table view) ke liye sabse antim backup log mein report kiye gaye Duplicati sanskaran ko dikhata hai.
+
+- **Yah kahan dikhta hai**: Cards par stithi indicator ke bayin or, aur table mein **Version** column mein (**Overdue / Agla chalan** ke baad).
+- **Rang**: Muted text ka matlab hai ki sanskaran us channel ke liye sabse antim release se mel khata hai (ya tulna upalabdh nahi hai). Warning peela rang ka matlab hai ki sanskaran us channel ke liye sabse antim release se purana hai.
+- **Tooltip**: Update channel (`stable`, `beta`, `experimental`, ya `canary`), server sanskaran, aur us channel ke liye sabse antim upalabdh sanskaran dekhne ke liye version number par hover karein ya click karein.
+
+**duplistatus** backup log se sanskaran ki GitHub par publish kiye gaye sabse antim Duplicati releases se tulna karta hai. Har channel ke liye sabse antim versions din mein ek baar (aur startup par yadi cache 24 ghante se purana hai) refresh kiye jate hain.
+
+:::important
+**duplistatus** vartaman mein chal rahe sanskaran ke liye Duplicati server se query nahi karta hai. Yah prapt kiye gaye ya [Ekathrit](collect-backup-logs.md) antim backup log mein store kiye gaye sanskaran ka upyog karta hai. Duplicati upgrade karne ke baad, dashboard naya backup log aane tak pichla sanskaran dikhata rehta hai.
+:::
 
 ### Upalabdh Backup Sanskaran {#available-backup-versions}
 

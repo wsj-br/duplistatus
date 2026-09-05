@@ -80,6 +80,8 @@
 
 还要检查容器内的 DNS 配置（请参阅 [Podman 容器的 DNS 配置](../installation/installation.md#configuring-dns-for-podman-containers) 以获取更多信息）
 
+- 在 **Duplicati 2.4 及更高版本**上，`/api/v1/systeminfo` 列出 `machine-id`，默认值为空。**duplistatus** 从 Duplicati 服务器设置中读取配置的 id。如果仍然无法识别服务器，请设置 **Duplicati → 设置 → 高级选项 → 机器 ID** 并重试。
+
 ### 从早期版本升级（在 0.9.x 之前）并且无法登录 {#upgrade-from-an-earlier-version-before-09x-and-cant-login}
 
 **duplistatus** 从版本 0.9.x 开始需要用户身份验证。默认 `admin` 账户在安装应用程序或从早期版本升级时自动创建：

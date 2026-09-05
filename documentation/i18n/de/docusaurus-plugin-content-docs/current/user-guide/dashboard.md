@@ -40,16 +40,17 @@ Dies erleichtert das schnelle Auffinden bestimmter Server oder Backups unter vie
 
 Das Kartenlayout zeigt den Status des zuletzt empfangenen Sicherungsprotokolls für jede Sicherung.
 
-![Card layout](../assets/duplistatus_dash-cards.svg)
+![Kartenlayout](../assets/duplistatus_dash-cards.svg)
 
 - **Servername**: Name des Duplicati-Servers (oder der Alias)
-  - Beim Hovern über den **Servernamen** werden Servername und Notiz angezeigt
+  - Beim Bewegen des Mauszeigers über den **Servernamen** werden der Servername und eine Notiz angezeigt
 - **Gesamtstatus**: Der Status des Servers. Überfällige Sicherungen werden als **Warnung** angezeigt
-- **Zusammenfassungsinformationen**: Die zusammengefasste Anzahl der Dateien, Größe und genutzter Speicher für alle Sicherungen dieses Servers. Zeigt auch die Dauer der zuletzt empfangenen Sicherung an (beim Hovern wird der Zeitstempel angezeigt)
-- **Sicherungsliste**: Eine Tabelle mit allen für diesen Server konfigurierten Sicherungen, mit 3 Spalten:
-  - **Sicherungsname**: Name der Sicherung auf dem Duplicati-Server
+- **Version**: Die Duplicati-Version aus dem neuesten Backup-Protokoll, links neben der Statusanzeige. Siehe [Duplicati Server Version](#duplicati-server-version).
+- **Zusammenfassende Informationen**: Die konsolidierte Anzahl der Dateien, die Größe und der verwendete Speicher für alle Sicherungen dieses Servers. Zeigt auch die vergangene Zeit der letzten empfangenen Sicherung an (fahren Sie mit der Maus darüber, um den Zeitstempel anzuzeigen)
+- **Backups-Liste**: Eine Tabelle mit allen für diesen Server konfigurierten Sicherungen, mit 3 Spalten:
+  - **Backup-Name**: Name des Backups im Duplicati-Server
   - **Statusverlauf**: Status der letzten 10 empfangenen Sicherungen.
-  - **Letzte empfangene Sicherung**: Die verstrichene Zeit seit dem aktuellen Zeitpunkt der zuletzt empfangenen Protokolldatei. Ein Warnsymbol wird angezeigt, wenn die Sicherung überfällig ist.
+  - **Zuletzt empfangene Sicherung**: Die vergangene Zeit seit dem aktuellen Zeitpunkt des zuletzt empfangenen Protokolls. Ein Warnsymbol wird angezeigt, wenn das Backup überfällig ist.
     - Die Zeit wird im abgekürzten Format angezeigt: `m` für Minuten, `h` für Stunden, `d` für Tage, `w` für Wochen, `mo` für Monate, `y` für Jahre.
 
 Die Kartensortierreihenfolge und andere Konfigurationen können in den [Anzeigeeinstellungen](settings/display-settings.md) festgelegt werden.
@@ -58,17 +59,17 @@ Die Panelansicht bietet zwei Informationsanzeigen, auf die durch Klicken auf die
 
 - Status: Einblenden von Statistiken der Sicherungsaufträge pro Status, mit einer Liste von überfälligen Sicherungen und Sicherungsaufträgen mit Warnungen/Fehler-Status.
 
-![status panel](../assets/screen-overview-side-status.png)
+![Statuspanel](../assets/screen-overview-side-status.png)
 
 - Metriken: Einblenden von Diagrammen mit Dauer, Dateigröße und Speichergröße über die Zeit für den aggregierten oder ausgewählten Server.
 
-![charts panel](../assets/screen-overview-side-charts.png)
+![Diagrammpanel](../assets/screen-overview-side-charts.png)
 
 ### Sicherungsdetails {#backup-details}
 
 Wenn Sie den Mauszeiger über eine Sicherung in der Liste bewegen, werden Details des zuletzt empfangenen Sicherungsprotokolls und alle überfälligen Informationen angezeigt.
 
-![Overdue details](../assets/screen-backup-tooltip.png)
+![Details zu überfälligen Sicherungen](../assets/screen-backup-tooltip.png)
 
 - **Servername : Sicherung**: Der Name oder Alias des Duplicati-Servers und der Sicherung; zeigt auch den Servernamen und die Notiz an.
   - Der Alias und die Notiz können unter [Einstellungen → Servereinstellungen](settings/server-settings.md) konfiguriert werden.
@@ -88,20 +89,21 @@ Sie können auch auf die Schaltflächen unten klicken, um [Einstellungen → Bac
 
 Die Tabellenlayout listet die neuesten empfangenen Sicherungsprotokolle für alle Server und Sicherungen auf.
 
-![Dashboard Table Mode](../assets/screen-main-dashboard-table-mode.png)
+![Dashboard-Tabellenmodus](../assets/screen-main-dashboard-table-mode.png)
 
 - **Servername**: Der Name des Duplicati-Servers (oder Alias)
   - Unter dem Namen befindet sich die Servernotiz
-- **Sicherungsname**: Der Name der Sicherung im Duplicati-Server.
-- **Verfügbare Versionen**: Die Anzahl der Sicherungsversionen, die am Sicherungsziel gespeichert sind. Ist das Symbol ausgegraut, wurden keine detaillierten Informationen im Protokoll empfangen. Weitere Informationen finden Sie in den [Anweisungen zur Duplicati-Konfiguration](../installation/duplicati-server-configuration.md).
-- **Anzahl Sicherungen**: Die Anzahl der vom Duplicati-Server gemeldeten Sicherungen.
-- **Datum der letzten Sicherung**: Der Zeitstempel des zuletzt empfangenen Sicherungsprotokolls und die verstrichene Zeit seit der letzten Bildschirmaktualisierung.
-- **Status der letzten Sicherung**: Der Status der zuletzt empfangenen Sicherung (Erfolg, Warnung, Fehler, Schwerwiegend).
-- **Dauer**: Die Dauer der Sicherung im Format HH:MM:SS.
-- **Warnungen/Fehler**: Die Anzahl der Warnungen/Fehler, die im Sicherungsprotokoll gemeldet wurden.
+- **Backup-Name**: Der Name des Backups im Duplicati-Server.
+- **Version**: Die Duplicati-Version aus dem neuesten Backup-Protokoll für diesen Backup-Job. Siehe [Duplicati Server Version](#duplicati-server-version).
+- **Verfügbare Versionen**: Die Anzahl der auf dem Backup-Ziel gespeicherten Backup-Versionen. Wenn das Symbol ausgegraut ist, wurden keine detaillierten Informationen im Protokoll empfangen. Weitere Details finden Sie in der [Duplicati-Konfigurationsanleitung](../installation/duplicati-server-configuration.md).
+- **Backup-Anzahl**: Die vom Duplicati-Server gemeldete Anzahl der Sicherungen.
+- **Datum des letzten Backups**: Der Zeitstempel des zuletzt empfangenen Backup-Protokolls und die vergangene Zeit seit der letzten Aktualisierung des Bildschirms.
+- **Status des letzten Backups**: Der Status der letzten empfangenen Sicherung (Erfolgreich, Warnung, Fehler, Fatal).
+- **Dauer**: Die Dauer des Backups in HH:MM:SS.
+- **Warnungen/Fehler**: Die Anzahl der im Backup-Protokoll gemeldeten Warnungen und Fehler, angezeigt als `warnings/errors` (zum Beispiel `0/0`).
 - **Einstellungen**:
-  - **Benachrichtigung**: Ein Symbol, das die konfigurierte Benachrichtigungseinstellung für neue Sicherungsprotokolle anzeigt.
-  - **Duplicati-Konfiguration**: Eine Schaltfläche zum Öffnen der Web-Oberfläche des Duplicati-Servers
+  - **Benachrichtigung**: Ein Symbol, das die konfigurierte Benachrichtigungseinstellung für neue Backup-Protokolle anzeigt.
+  - **Duplicati-Konfiguration**: Eine Schaltfläche zum Öffnen der Weboberfläche des Duplicati-Servers
 
 Sie können die [Anzeigeeinstellungen](settings/display-settings.md) verwenden, um die Tabellengröße und andere Konfigurationen zu konfigurieren.
 
@@ -122,18 +124,32 @@ Diese Benachrichtigungseinstellung gilt nur, wenn **duplistatus** ein neues Sich
 
 Wenn Sie den Mauszeiger über das Symbol für die Überfällige-Sicherungs-Warnung bewegen, werden Details zur überfälligen Sicherung angezeigt.
 
-![Overdue details](../assets/screen-overdue-backup-hover-card.png)
+![Details zu überfälligen Sicherungen](../assets/screen-overdue-backup-hover-card.png)
 
 - **Geprüft**: Wann die letzte überfällige Prüfung durchgeführt wurde. Konfigurieren Sie die Häufigkeit in [Backup-Benachrichtigungen Einstellungen](settings/backup-notifications-settings.md).
 - **Letzte Sicherung**: Wann das letzte Sicherungsprotokoll empfangen wurde.
 - **Erwartete Sicherung**: Der Zeitpunkt, zu dem die Sicherung erwartet wurde, einschließlich der konfigurierten Kulanzfrist (zusätzliche Zeit, bevor sie als überfällig markiert wird).
 - **Letzte Benachrichtigung**: Wann die letzte überfällige Benachrichtigung gesendet wurde.
 
+## Duplicati Server Version {#duplicati-server-version}
+
+Das Dashboard zeigt die Duplicati-Version an, die im neuesten Backup-Protokoll für jeden Server (Kartenansicht) oder Backup-Job (Tabellenansicht) gemeldet wurde.
+
+- **Wo sie erscheint**: Links neben der Statusanzeige auf Karten und in der Spalte **Version** in der Tabelle (nach **Überfällig / Nächste Ausführung**).
+- **Farbe**: Gedämpfter Text bedeutet, dass die Version der neuesten Veröffentlichung für diesen Kanal entspricht (oder der Vergleich nicht verfügbar ist). Warnendes Gelb bedeutet, dass die Version älter als die neueste Veröffentlichung für diesen Kanal ist.
+- **Tooltip**: Bewegen Sie den Mauszeiger über die Versionsnummer oder klicken Sie darauf, um den Update-Kanal (`stable`, `beta`, `experimental` oder `canary`), die Serverversion und die neueste verfügbare Version für diesen Kanal anzuzeigen.
+
+**duplistatus** vergleicht die Version aus dem Backup-Protokoll mit den neuesten auf GitHub veröffentlichten Duplicati-Versionen. Die neuesten Versionen pro Kanal werden einmal täglich aktualisiert (und beim Start, wenn der Cache älter als 24 Stunden ist).
+
+:::important
+**duplistatus** fragt den Duplicati-Server nicht nach der aktuell laufenden Version ab. Es verwendet die in der letzten empfangenen oder [gesammelten](collect-backup-logs.md) Backup-Protokoll gespeicherte Version. Nachdem Sie Duplicati aktualisiert haben, zeigt das Dashboard weiterhin die vorherige Version an, bis ein neues Backup-Protokoll eintrifft.
+:::
+
 ### Verfügbare Sicherungsversionen {#available-backup-versions}
 
 Wenn Sie auf das blaue Uhrsymbol klicken, wird eine Liste der verfügbaren Sicherungsversionen zum Zeitpunkt der Sicherung angezeigt, wie vom Duplicati-Server gemeldet.
 
-![Available versions](../assets/screen-available-backups-modal.png)
+![Verfügbare Versionen](../assets/screen-available-backups-modal.png)
 
 - **Sicherungsdetails**: Zeigt den Servernamen und Alias, Serverhinweis, Sicherungsnamen und an, wann die Sicherung ausgeführt wurde.
 - **Versionsdetails**: Zeigt die Versionsnummer, das Erstellungsdatum und das Alter an.

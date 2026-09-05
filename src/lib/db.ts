@@ -1325,6 +1325,7 @@ function createDbOps() {
       COALESCE(b2.uploaded_size, 0) AS uploaded_size,
       COALESCE(b2.warnings, 0) AS warnings,
       COALESCE(b2.errors, 0) AS errors,
+      b2.backend_version AS backend_version,
       (
         SELECT GROUP_CONCAT(b_hist_status, ',')
         FROM (
@@ -1356,7 +1357,7 @@ function createDbOps() {
         ORDER BY b_latest.date DESC, b_latest.created_at DESC
         LIMIT 1
       )
-    GROUP BY s.id, s.name, s.server_url, s.alias, s.note, s.server_password, COALESCE(b.backup_name, ''), lb.last_backup_date, b2.id, b2.status, b2.duration_seconds, b2.examined_files, b2.size, b2.known_file_size, b2.backup_list_count, b2.uploaded_size, b2.available_backups, b2.warnings, b2.errors
+    GROUP BY s.id, s.name, s.server_url, s.alias, s.note, s.server_password, COALESCE(b.backup_name, ''), lb.last_backup_date, b2.id, b2.status, b2.duration_seconds, b2.examined_files, b2.size, b2.known_file_size, b2.backup_list_count, b2.uploaded_size, b2.available_backups, b2.warnings, b2.errors, b2.backend_version
     ORDER BY s.name, COALESCE(b.backup_name, '')
   `, 'getServersSummary'),
 

@@ -33,6 +33,7 @@ The cron service includes:
 - **Watch mode**: Development mode includes file watching for automatic restarts on code changes
 - **Overdue backup monitoring**: Automated checking and notification of overdue backups (runs every 5 minutes by default)
 - **Audit log cleanup**: Automated cleanup of old audit log entries (runs daily at 2 AM UTC)
+- **Duplicati version refresh**: Updates cached latest Duplicati channel versions from GitHub Releases (runs daily at 3 AM UTC)
 - **Flexible scheduling**: Configurable cron expressions for different tasks
 - **Database integration**: Shares the same SQLite database with the main application
 - **RESTful API**: Complete API for service management and monitoring

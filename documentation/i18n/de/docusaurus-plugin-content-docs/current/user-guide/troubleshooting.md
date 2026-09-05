@@ -80,6 +80,8 @@ Wenn die manuelle Sicherungsprotokollerfassung fehlschlägt:
 
 Prüfen Sie auch die DNS-Konfiguration im Container (siehe [DNS-Konfiguration für Podman-Container](../installation/installation.md#configuring-dns-for-podman-containers))
 
+- Bei **Duplicati 2.4 und später** listet `/api/v1/systeminfo` `machine-id` mit einem leeren Standardwert auf. **duplistatus** liest die konfigurierte ID aus den Duplicati-Server-Einstellungen. Falls die Sammlung den Server weiterhin nicht identifizieren kann, legen Sie **Duplicati → Einstellungen → Erweiterte Optionen → Machine-id** fest und versuchen Sie es erneut.
+
 ### Upgrade von einer früheren Version (vor 0.9.x) und Anmeldung nicht möglich {#upgrade-from-an-earlier-version-before-09x-and-cant-login}
 
 **duplistatus** ab Version 0.9.x erfordert Benutzerauthentifizierung. Ein Standard-`admin`-Konto wird automatisch erstellt, wenn die Anwendung zum ersten Mal installiert oder von einer früheren Version aktualisiert wird:

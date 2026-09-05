@@ -6,7 +6,7 @@
 ## Features {#features}
 
 - **Quick Setup**: Simple containerised deployment, with images available on Docker Hub and GitHub.
-- **Unified Dashboard**: View backup status, history, and details for all servers in one place.
+- **Unified Dashboard**: View backup status, history, Duplicati version, and details for all servers in one place.
 - **Backup Monitoring**: Automated checking and alerting for overdue scheduled backups.
 - **Data Visualisation & Logs**: Interactive charts and automatic log collection from Duplicati servers.
 - **Notifications & Alerts**: Integrated NTFY and SMTP email support for backup alerts, including overdue backup notifications.

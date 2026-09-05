@@ -44,11 +44,11 @@ Vous pouvez également utiliser le bouton <IconButton icon="lucide:import" label
 ## Comment fonctionne le processus de collecte {#how-the-collection-process-works}
 
 - **duplistatus** détecte automatiquement le meilleur protocole de connexion et se connecte au serveur Duplicati spécifié.
-- Il récupère l'historique des sauvegardes, les informations des journaux et les paramètres de sauvegarde (pour la surveillance des sauvegardes).
-- Tous les journaux déjà présents dans la base de données **duplistatus** sont ignorés.
-- Les nouvelles données sont traitées et stockées dans la base de données locale.
+- Il récupère l'historique des sauvegardes, les informations de journalisation et les paramètres de sauvegarde (pour la surveillance des sauvegardes).
+- Les journaux déjà présents dans la base de données **duplistatus** sont ignorés.
+- Les nouvelles données sont traitées et stockées dans la base de données locale, y compris la version de Duplicati signalée dans chaque journal de sauvegarde. La [version du tableau de bord](dashboard.md#duplicati-server-version) est prise à partir du dernier journal stocké — **duplistatus** ne lit pas la version qui est actuellement en cours d'exécution sur le serveur. Après une mise à jour de Duplicati, collectez ou attendez une nouvelle sauvegarde afin que le tableau de bord puisse afficher la nouvelle version.
 - L'URL utilisée (avec le protocole détecté) sera stockée ou mise à jour dans la base de données locale.
-- Si l'option de téléchargement est sélectionnée, les données JSON collectées seront téléchargées. Le nom du fichier aura le format suivant : `[serverName]_collected_[Timestamp].json`. L'horodatage utilise le format de date ISO 8601 (AAAA-MM-JJTHH:MM:SS).
+- Si l'option de téléchargement est sélectionnée, elle téléchargera les données JSON collectées chaque fois que des données sont reçues du serveur Duplicati — même si les journaux échouent à la validation ou ne peuvent pas être importés dans la base de données. Le nom du fichier sera au format suivant : `[serverName]_collected_[Timestamp].json`. L'horodatage utilise le format de date ISO 8601 (AAAA-MM-JJTHH:MM:SS).
 - Le tableau de bord est mis à jour pour refléter les nouvelles informations.
 
 :::note Vous voyez des serveurs en double après la collecte ?
@@ -59,6 +59,7 @@ Si le même serveur apparaît plusieurs fois après la collecte des journaux de 
 
 La collecte des journaux de sauvegarde nécessite que le Serveur Duplicati soit accessible à partir de l'installation **duplistatus**. Si vous rencontrez des problèmes, veuillez vérifier les éléments suivants :
 
-- Confirmer que le nom d'hôte (ou l'adresse IP) et le numéro de port sont corrects. Vous pouvez tester cela en accédant à l'interface utilisateur du serveur Duplicati dans votre navigateur (par exemple, `http://hostname:port`).
-- Vérifier que **duplistatus** peut se connecter au serveur Duplicati. Un problème courant est la résolution des noms DNS (le système ne peut pas trouver le serveur par son nom d'hôte). Voir plus dans la [section dépannage](troubleshooting.md#collect-backup-logs-not-working).
-- S'assurer que le mot de passe que vous avez fourni est correct.
+- Vérifiez que le nom d'hôte (ou l'adresse IP) et le numéro de port sont corrects. Vous pouvez tester cela en accédant à l'interface utilisateur du serveur Duplicati dans votre navigateur (par exemple, `http://hostname:port`).
+- Vérifiez que **duplistatus** peut se connecter au serveur Duplicati. Un problème courant est la résolution de noms DNS (le système ne peut pas trouver le serveur par son nom d'hôte). Voir plus dans la [section de dépannage](troubleshooting.md#collect-backup-logs-not-working).
+- Assurez-vous que le mot de passe que vous avez fourni est correct.
+- Sur Duplicati 2.4+, la collecte lit l'identifiant de la machine à partir des paramètres du serveur Duplicati lorsque l'option systeminfo par défaut est vide.

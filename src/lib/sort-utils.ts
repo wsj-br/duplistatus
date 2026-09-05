@@ -1,4 +1,5 @@
 import type { BackupStatus, NotificationEvent } from "./types";
+import { compareVersionNumbers } from "./duplicati-version";
 
 export type SortDirection = 'asc' | 'desc';
 export type SortColumn = string;
@@ -102,6 +103,15 @@ export const sortFunctions = {
 
   notificationEvent: (a: NotificationEvent, b: NotificationEvent): number => {
     return getNotificationEventSortValue(a) - getNotificationEventSortValue(b);
+  },
+
+  version: (a: string | null, b: string | null): number => {
+    const aEmpty = !a || a.trim() === '';
+    const bEmpty = !b || b.trim() === '';
+    if (aEmpty && bEmpty) return 0;
+    if (aEmpty) return 1;
+    if (bEmpty) return -1;
+    return compareVersionNumbers(a, b);
   },
 
   serverUrl: (a: string, b: string): number => {

@@ -37,6 +37,7 @@ import { useCurrentUser } from "@/hooks/use-current-user";
 import { useRef } from "react";
 import { useEffectiveFormatLocale } from "@/contexts/config-context";
 import { backupRowMatchesDashboardFilter } from "@/lib/dashboard-server-filter-match";
+import { DuplicatiVersionBadge } from "@/components/dashboard/duplicati-version-badge";
 interface DashboardTableProps {
   servers: ServerSummary[];
   serverFilter?: string;
@@ -168,6 +169,9 @@ export function DashboardTable({ servers, serverFilter = '' }: DashboardTablePro
           lastBackupDuration: backup.lastBackupDuration,
           warnings: backup.warnings || 0,
           errors: backup.errors || 0,
+          warningsErrors: (backup.warnings || 0) * 1_000_000 + (backup.errors || 0),
+          duplicatiVersion: backup.duplicatiVersion,
+          versionNumber: backup.duplicatiVersion?.versionNumber ?? '',
           notificationEvent: backup.notificationEvent as NotificationEvent | undefined,
           availableBackups: backup.availableBackups || [],
           server_url: server.server_url
@@ -183,13 +187,13 @@ export function DashboardTable({ servers, serverFilter = '' }: DashboardTablePro
     name: { type: 'text' as const, path: 'displayName' },
     backupName: { type: 'text' as const, path: 'backupName' },
     isBackupOverdue: { type: 'date' as const, path: 'expectedBackupDate' },
+    version: { type: 'version' as const, path: 'versionNumber' },
     lastBackupListCount: { type: 'number' as const, path: 'lastBackupListCount' },
     backupCount: { type: 'number' as const, path: 'backupCount' },
     lastBackupDate: { type: 'date' as const, path: 'lastBackupDate' },
     lastBackupStatus: { type: 'status' as const, path: 'lastBackupStatus' },
     lastBackupDuration: { type: 'duration' as const, path: 'lastBackupDuration' },
-    warnings: { type: 'number' as const, path: 'warnings' },
-    errors: { type: 'number' as const, path: 'errors' },
+    warningsErrors: { type: 'number' as const, path: 'warningsErrors' },
     notification: { type: 'notificationEvent' as const, path: 'notificationEvent' },
     server_url: { type: 'serverUrl' as const, path: 'server_url' }
   }), []);
@@ -283,6 +287,9 @@ export function DashboardTable({ servers, serverFilter = '' }: DashboardTablePro
                     );
                   })()}
                 </SortableTableHead>
+                <SortableTableHead column="version" sortConfig={sortConfig} onSort={handleSort} align="center">
+                  {t("Version")}
+                </SortableTableHead>
                 <SortableTableHead column="lastBackupListCount" sortConfig={sortConfig} onSort={handleSort} align="center">
                   {t("Available Versions")}
                 </SortableTableHead>
@@ -298,11 +305,8 @@ export function DashboardTable({ servers, serverFilter = '' }: DashboardTablePro
                 <SortableTableHead column="lastBackupDuration" sortConfig={sortConfig} onSort={handleSort} align="right">
                   {t("Duration")}
                 </SortableTableHead>
-                <SortableTableHead column="warnings" sortConfig={sortConfig} onSort={handleSort} align="center">
-                  {t("Warnings")}
-                </SortableTableHead>
-                <SortableTableHead column="errors" sortConfig={sortConfig} onSort={handleSort} align="center">
-                  {t("Errors")}
+                <SortableTableHead column="warningsErrors" sortConfig={sortConfig} onSort={handleSort} align="center">
+                  {t("Warnings/Errors")}
                 </SortableTableHead>
                 <SortableTableHead column="notification" sortConfig={sortConfig} onSort={handleSort} align="center">
                   {t("Settings/Actions")}
@@ -312,7 +316,7 @@ export function DashboardTable({ servers, serverFilter = '' }: DashboardTablePro
             <TableBody>
               {sortedServers.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={10} className="text-center h-24">
+                  <TableCell colSpan={11} className="text-center h-24">
                     <div className="flex items-center justify-center p-8">
                       <div className="text-center space-y-3">
                         <HardDrive className="h-12 w-12 text-muted-foreground mx-auto" />
@@ -403,6 +407,9 @@ export function DashboardTable({ servers, serverFilter = '' }: DashboardTablePro
                       )}
                     </TableCell>
                     <TableCell className="text-center">
+                      <DuplicatiVersionBadge version={server.duplicatiVersion} size="md" />
+                    </TableCell>
+                    <TableCell className="text-center">
                       <AvailableBackupsIcon
                         availableBackups={server.availableBackups}
                         currentBackupDate={server.lastBackupDate}
@@ -435,8 +442,7 @@ export function DashboardTable({ servers, serverFilter = '' }: DashboardTablePro
                       </div>
                     </TableCell>
                     <TableCell className="text-right">{server.lastBackupDuration}</TableCell>
-                    <TableCell className="text-center">{server.warnings}</TableCell>
-                    <TableCell className="text-center">{server.errors}</TableCell>
+                    <TableCell className="text-center">{server.warnings}/{server.errors}</TableCell>
                     <TableCell className="text-center">
                       <div className="flex items-center justify-center gap-0">
                         <div className="h-9 px-3 flex items-center justify-center mr-1">
@@ -585,13 +591,13 @@ export function DashboardTable({ servers, serverFilter = '' }: DashboardTablePro
 
                   {/* Row 3 */}
                   <div className="space-y-1">
-                    <Label className="text-xs text-muted-foreground">{t("Warnings")}</Label>
-                    <div className="text-sm">{server.warnings}</div>
+                    <Label className="text-xs text-muted-foreground">{t("Version")}</Label>
+                    <DuplicatiVersionBadge version={server.duplicatiVersion} size="md" />
                   </div>
                   
                   <div className="space-y-1">
-                    <Label className="text-xs text-muted-foreground">{t("Errors")}</Label>
-                    <div className="text-sm">{server.errors}</div>
+                    <Label className="text-xs text-muted-foreground">{t("Warnings/Errors")}</Label>
+                    <div className="text-sm">{server.warnings}/{server.errors}</div>
                   </div>
                 </div>
 

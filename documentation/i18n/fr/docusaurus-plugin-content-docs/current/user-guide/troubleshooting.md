@@ -80,6 +80,8 @@ Si la collecte du journal de sauvegarde manuel échoue :
 
 Vérifiez également la configuration DNS à l'intérieur du conteneur (voir plus à [DNS Configuration for Podman Containers](../installation/installation.md#configuring-dns-for-podman-containers))
 
+- Sur **Duplicati 2.4 et versions ultérieures**, `/api/v1/systeminfo` répertorie `machine-id` avec une valeur par défaut vide. **duplistatus** lit l'identifiant configuré dans les paramètres du serveur Duplicati. Si la collection ne peut toujours pas identifier le serveur, définissez **Duplicati → Paramètres → Options avancées → Machine-id** et réessayez.
+
 ### Mise à niveau depuis une version antérieure (avant 0.9.x) et impossible de se connecter {#upgrade-from-an-earlier-version-before-09x-and-cant-login}
 
 **duplistatus** depuis la version 0.9.x nécessite une authentification utilisateur. Un compte `admin` par défaut est créé automatiquement lors de la première installation de l'application ou lors de la mise à niveau à partir d'une version antérieure :

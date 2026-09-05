@@ -49,7 +49,7 @@ The user interface is organised into several key sections to provide a clear and
 
 1. [Application Toolbar](#application-toolbar): Quick access to essential functions and configurations
 2. [Dashboard Summary](dashboard.md#dashboard-summary): Overview statistics for all monitored servers
-3. Servers Overview: [Cards layout](dashboard.md#cards-layout) or [table layout](dashboard.md#table-layout) showing the latest status of all backups
+3. Servers Overview: [Cards layout](dashboard.md#cards-layout) or [table layout](dashboard.md#table-layout) showing the latest status of all backups, including the [Duplicati server version](dashboard.md#duplicati-server-version) from the last backup log received
 4. [Overdue Details](dashboard.md#overdue-details): Visual warnings for overdue backups with detailed information on hover
 5. [Available Backup Versions](dashboard.md#available-backup-versions): Click the blue icon to view backup versions available at the destination
 6. [Backup Metrics](backup-metrics.md): Interactive charts displaying backup performance over time

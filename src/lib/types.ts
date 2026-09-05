@@ -1,5 +1,43 @@
 export type BackupStatus = "Success" | "Unknown" | "Warning" | "Error" | "Fatal";
 
+export const DUPLICATI_CHANNELS = ['stable', 'beta', 'experimental', 'canary'] as const;
+export type DuplicatiChannel = (typeof DUPLICATI_CHANNELS)[number];
+
+export type DuplicatiVersionComparison = 'current' | 'outdated' | 'unavailable';
+
+export interface DuplicatiParsedVersion {
+  versionNumber: string;
+  channel: DuplicatiChannel | null;
+  components: readonly [number, number, number, number];
+}
+
+export interface DuplicatiChannelVersion {
+  versionNumber: string;
+  tagName: string;
+  publishedAt: string | null;
+}
+
+export interface DuplicatiVersionCache {
+  updatedAt: string;
+  source: 'github';
+  channels: Record<DuplicatiChannel, DuplicatiChannelVersion | null>;
+}
+
+export interface DuplicatiVersionStatus {
+  raw: string | null;
+  versionNumber: string | null;
+  channel: DuplicatiChannel | null;
+  latestVersionNumber: string | null;
+  comparison: DuplicatiVersionComparison;
+}
+
+export interface DuplicatiVersionRefreshResult {
+  success: boolean;
+  refreshed: boolean;
+  message: string;
+  cache: DuplicatiVersionCache | null;
+}
+
 export interface Backup {
   id: string;
   server_id: string;
@@ -72,6 +110,7 @@ export interface ServerSummary {
     expectedBackupElapsed: string;
     lastNotificationSent: string;
     availableBackups: string[];
+    duplicatiVersion: DuplicatiVersionStatus;
   }>;
   totalBackupCount: number;
   totalStorageSize: number;
@@ -87,6 +126,7 @@ export interface ServerSummary {
   lastBackupId: string | null;
   lastOverdueCheck: string;
   backupNames: string[];
+  duplicatiVersion: DuplicatiVersionStatus;
 }
 
 export interface OverallSummary {

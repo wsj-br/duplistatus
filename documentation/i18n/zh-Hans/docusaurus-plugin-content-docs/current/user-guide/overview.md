@@ -39,14 +39,14 @@ duplistatus 是一种为 Duplicati 备份系统设计的强大监控仪表盘。
 
 duplistatus 提供了一个直观的仪表盘，用于监控 Duplicati 备份操作，涵盖整个基础设施。
 
-![Dashboard Overview](../assets/screen-main-dashboard-card-mode.png)
+![仪表盘概览](../assets/screen-main-dashboard-card-mode.png)
 
 用户界面分为几个关键部分，以提供清晰和全面监控体验：
 
-1. [应用程序工具栏](#application-toolbar)：快速访问基本功能和配置
-2. [仪表盘摘要](dashboard.md#dashboard-summary)：所有监控服务器的概览统计信息
-3. 服务器概览：[卡片布局](dashboard.md#cards-layout) 或 [表格布局](dashboard.md#table-layout) 显示所有备份的最新状态
-4. [逾期详情](dashboard.md#overdue-details)：对于逾期备份，悬停时显示详细信息的视觉警告
+1. [应用工具栏](#application-toolbar): 快速访问基本功能和配置
+2. [仪表盘摘要](dashboard.md#dashboard-summary): 所有监控服务器的概览统计
+3. 服务器概览: [卡片布局](dashboard.md#cards-layout) 或 [表格布局](dashboard.md#table-layout) 显示所有备份的最新状态，包括最后备份日志中收到的 [Duplicati 服务器版本](dashboard.md#duplicati-server-version)
+4. [过期详情](dashboard.md#overdue-details): 过期备份的可视化警告，悬停时显示详细信息
 5. [可用备份版本](dashboard.md#available-backup-versions)：单击蓝色图标以查看目标位置的可用备份版本
 6. [备份指标](backup-metrics.md)：显示备份性能随时间变化的交互式图表
 7. [服务器详情](server-details.md)：特定服务器的记录备份的综合列表，包括详细统计信息
@@ -56,7 +56,7 @@ duplistatus 提供了一个直观的仪表盘，用于监控 Duplicati 备份操
 
 应用程序工具栏提供了方便的访问关键功能和设置，组织了高效的工作流程。
 
-![Application toolbar](../assets/duplistatus_toolbar.svg)
+![应用工具栏](../assets/duplistatus_toolbar.svg)
 
 | 按钮                                                                                                                                           | 描述                                                                                                                                                                                |
 |--------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

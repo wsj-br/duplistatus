@@ -54,7 +54,7 @@ You can also use the <IconButton icon="lucide:import" label="Collect All"/> butt
 - **duplistatus** automatically detects the best connection protocol and connects to the specified Duplicati server.
 - It retrieves backup history, log information, and backup settings (for backup monitoring).
 - Any logs already present in the **duplistatus** database are skipped.
-- New data is processed and stored in the local database.
+- New data is processed and stored in the local database, including the Duplicati version reported in each backup log. The [dashboard version](dashboard.md#duplicati-server-version) is taken from the latest stored log — **duplistatus** does not read the version that is currently running on the server. After a Duplicati upgrade, collect or wait for a new backup so the dashboard can show the new version.
 - The URL used (with the detected protocol) will be stored or updated in the local database.
 - If the download option is selected, it will download the JSON data collected whenever any data is received from the Duplicati server — even if the logs fail validation or cannot be imported into the database. The file name will be in this format: `[serverName]_collected_[Timestamp].json`. The timestamp uses the ISO 8601 date format (YYYY-MM-DDTHH:MM:SS).
 - The dashboard updates to reflect the new information.
