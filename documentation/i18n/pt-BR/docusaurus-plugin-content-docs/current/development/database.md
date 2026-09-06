@@ -21,9 +21,11 @@ As seguintes são versões históricas de migração que trouxeram o banco de da
 - **Esquema v2.0** (Aplicativo v0.7.x): Adicionadas colunas ausentes e tabela de configurações
 - **Esquema v3.0** (Aplicativo v0.7.x): Renomeada a tabela de máquinas para servidores, adicionada a coluna server_url
 - **Esquema v3.1** (Aplicativo v0.8.x): Aprimorados os campos de dados de backup, adicionada a coluna server_password
-- **Esquema v4.0** (Aplicativo v0.9.x / v1.0.x): Adicionado Controle de Acesso do Usuário (tabelas users, sessions, audit_log)
+- **Schema v4.0** (Aplicação v0.9.x / v1.0.x): Adicionado Controle de Acesso do Usuário (tabelas users, sessions, audit_log)
+- **Schema v4.1** (Aplicação v1.5.x): Adicionado `api_keys` e chaves de configuração padrão para autenticação opcional por chave de API, listas de permissões de IP e limites de upload
+- **Schema v4.2** (Aplicação v1.5.x): Adicionado `daily_summary_deliveries` ledger e configuração padrão `daily_summary` para notificações diárias opcionais
 
-Versão atual da aplicação (v1.3.x) usa **Schema v4.0** como a versão mais recente do esquema de banco de dados.
+Versão atual da aplicação (v1.5.x) usa **Schema v4.2** como a versão mais recente do esquema de banco de dados.
 
 ### Processo de Migração {#migration-process}
 
@@ -161,6 +163,8 @@ Armazena as configurações de aplicação.
 - `ntfy_config`: Configurações de notificação NTFY
 - `overdue_tolerance`: Configurações de tolerância para backup atrasado
 - `notification_templates`: Modelos de mensagens de notificação
+- `daily_summary`: Modo de Resumo Diário, agendamento, fuso horário e entrega opcional NTFY
+- `cron_service`: Agendamentos de tarefas Cron, incluindo `daily-summary-dispatch`
 - `audit_retention_days`: Período de retenção de log de auditoria (padrão: 90 dias)
 
 ### Tabela de Versão do Banco de Dados {#database-version-table}
@@ -234,6 +238,58 @@ Armazena a trilha de auditoria de ações do usuário e eventos do sistema.
 | `status`        | TEXT NOT NULL                     | Status da ação ('success', 'failure', 'error')                  |
 | `error_message` | TEXT                              | Mensagem de erro se a ação falhou                                    |
 
+### Tabela de Chaves de API {#api-keys-table}
+
+Armazena chaves de API com hash para as APIs HTTP externas. O segredo em texto simples é mostrado apenas na criação e nunca é armazenado.
+
+#### Campos {#fields-6}
+
+| Campo          | Tipo             | Descrição                                              |
+|----------------|------------------|----------------------------------------------------------|
+| `id`           | TEXT PRIMARY KEY | Identificador único da chave                                    |
+| `name`         | TEXT NOT NULL    | Nome de exibição                                             |
+| `key_hash`     | TEXT UNIQUE      | Hash SHA-256 do segredo                               |
+| `key_prefix`   | TEXT             | Primeiros quatro caracteres do segredo (para impressões digitais)   |
+| `key_suffix`   | TEXT             | Últimos quatro caracteres do segredo (para impressões digitais)    |
+| `scope`        | TEXT NOT NULL    | `upload` ou `read`                                       |
+| `description`  | TEXT             | Descrição opcional                                     |
+| `enabled`      | INTEGER          | `1` quando a chave está ativa                               |
+| `created_at`   | DATETIME         | Timestamp de criação                                       |
+| `created_by`   | TEXT             | ID do usuário do administrador que criou a chave         |
+| `expires_at`   | DATETIME         | Expiração opcional                                          |
+| `last_used_at` | DATETIME         | Último uso bem-sucedido                                      |
+| `usage_count`  | INTEGER          | Contagem de usos bem-sucedidos                                     |
+
+Chaves de configuração relacionadas na tabela `configurations`: `external_api_require_api_key`, `ip_trusted_proxies`, `admin_ip_allowlist`, `external_api_ip_allowlist`, `upload_limits`.
+
+### Tabela de Entregas de Resumo Diário {#daily-summary-deliveries-table}
+
+Ledger por canal para e-mail de Resumo Diário e NTFY. Cada ocorrência agendada (ou envio manual único) tem no máximo uma linha por canal. Os payloads renderizados são armazenados antes do envio para que as tentativas repetidas mantenham o mesmo instantâneo. Linhas mais antigas que 30 dias são removidas.
+
+Se o processo morre após um provedor aceitar uma mensagem, mas antes de registrar o sucesso, esse canal pode ser reenviado (pelo menos uma vez).
+
+#### Campos {#fields-7}
+
+| Campo              | Tipo             | Descrição                                                                 |
+|--------------------|------------------|-----------------------------------------------------------------------------|
+| `id`               | TEXT PRIMARY KEY | Identificador único de entrega                                                  |
+| `occurrence_key`   | TEXT NOT NULL    | Chave de data local agendada ou `manual:{uuid}`                                 |
+| `channel`          | TEXT NOT NULL    | `email` ou `ntfy`                                                           |
+| `trigger`          | TEXT NOT NULL    | `scheduled`, `manual`, ou `retry`                                           |
+| `summary_date`     | TEXT NOT NULL    | Data do calendário local para o instantâneo                                        |
+| `time_zone`        | TEXT NOT NULL    | Fuso horário IANA salvo                                                         |
+| `payload_json`     | TEXT             | Assunto renderizado, HTML, texto e campos NTFY                               |
+| `state`            | TEXT NOT NULL    | `pending`, `sending`, `sent`, ou `failed`                                   |
+| `attempt_count`    | INTEGER          | Tentativas de entrega                                                           |
+| `next_retry_at`    | DATETIME         | Quando um canal falho pode ser reivindicado novamente                                  |
+| `lease_expires_at` | DATETIME         | Reivindicação de aluguel; um aluguel obsoleto pode ser recuperado                                 |
+| `error`            | TEXT             | Último erro, se houver                                                          |
+| `created_at`       | DATETIME         | Timestamp de criação da linha                                                      |
+| `updated_at`            | DATETIME             | Data e hora da última atualização               |
+| `sent_at`          | DATETIME         | Timestamp de sucesso                                                           |
+
+Um índice único em `(occurrence_key, channel)` impede o envio duplicado da mesma ocorrência no mesmo canal.
+
 ## Gerenciamento de Sessão {#session-management}
 
 ### Armazenamento de Sessão com Suporte a Banco de Dados {#database-backed-session-storage}
@@ -263,15 +319,17 @@ O banco de dados inclui vários índices para desempenho ideal de consultas:
 - **Índices de Data**: Índices em campos de data para consultas baseadas em tempo
 - **Índices de Usuário**: Índice de nome de usuário para buscas rápidas de usuários
 - **Índices de Sessão**: Índices de expiração e user_id para gerenciamento de sessões
-- **Índices de Auditoria**: Índices de data e hora, user_id, ação, categoria e status para consultas de auditoria
+- **Índices de Auditoria**: Índices de timestamp, user_id, ação, categoria e status para consultas de auditoria
+- **Índices de Chave de API**: Hash único, além de buscas por habilitado/escopo para autenticação
 
 ## Relacionamentos {#relationships}
 
 - **Servidores → Backups**: Relacionamento um-para-muitos
 - **Usuários → Sessões**: Relacionamento um-para-muitos (sessões podem existir sem usuários)
-- **Usuários → Registro de Auditoria**: Relacionamento um-para-muitos (entradas de auditoria podem existir sem usuários)
-- **Backups → Mensagens**: Arrays JSON embutidos
-- **Configurações**: Armazenamento chave-valor
+- **Usuários → Log de Auditoria**: Relacionamento um-para-muitos (entradas de auditoria podem existir sem usuários)
+- **Usuários → Chaves de API**: Relacionamento um-para-muitos via `created_by` (chaves permanecem após a exclusão do usuário)
+- **Backups → Mensagens**: Arrays JSON incorporados
+- **Configurações**: Armazenamento de chave-valor
 
 ## Tipos de Dados {#data-types}
 

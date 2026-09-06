@@ -36,7 +36,7 @@
 |:-----------------------------------------------------------------|:---------------------------------------------------------|
 | <IconButton label="Save Settings" />                             | Save the changes made to the NTFY settings.              |
 | <IconButton icon="lucide:mail" label="Send Test Email"/>         | Sends a test email message using the SMTP configuration. The test email displays SMTP server hostname, port, connection type, authentication status, username (if applicable), recipient email, from address, sender name, and test timestamp. |
-| <IconButton icon="lucide:trash-2" label="Delete SMTP Settings"/> | Delete / Clear the SMTP configuration.                   |
+| <IconButton icon="lucide:trash-2" label="Delete SMTP Settings"/> | Delete / Clear the SMTP configuration. Disabled while [Daily Summary](daily-summary-settings.md) is enabled, because that mode requires email. |
     
 
 <br/>

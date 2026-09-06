@@ -1,6 +1,7 @@
 "use client";
 import { useTranslation } from "react-i18next";
 import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -71,6 +72,7 @@ interface DatabaseMaintenanceFormProps {
 
 export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProps) {
   const { t } = useTranslation();
+  const router = useRouter();
   const {
     databaseCleanupPeriod,
     setDatabaseCleanupPeriod,
@@ -502,7 +504,7 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
         // If reauth is required, redirect to login after a short delay
         if (result.requiresReauth) {
           setTimeout(() => {
-            window.location.href = '/login';
+            router.push('/login');
           }, 2000);
           return;
         }
@@ -586,10 +588,7 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
       
       toast({
         title: t("Servers merged successfully"),
-        description: t("Successfully merged {{totalMerged}} server(s) across {{groupCount}} server group(s).", {
-          totalMerged,
-          groupCount: successfulMerges.length,
-        }),
+        description: `${t("Successfully merged {{count}} servers", { plurals: true, count: totalMerged })} ${t("across {{count}} server groups.", { plurals: true, count: successfulMerges.length })}`,
         variant: "default",
         duration: 3000,
       });
@@ -1158,7 +1157,7 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
                         ) : (
                           <>
                             <GitMerge className="mr-2 h-4 w-4" />
-                            {t("Merge Selected Servers ({{count}})", { count: selectedDuplicateNames.size })}
+                            {t("Merge Selected Servers ({{count}})", { plurals: true, count: selectedDuplicateNames.size })}
                           </>
                         )}
                       </Button>
@@ -1167,7 +1166,7 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
                       <AlertDialogHeader>
                         <AlertDialogTitle>{t("Merge Duplicate Servers?")}</AlertDialogTitle>
                         <AlertDialogDescription>
-                          {t("This will merge {{count}} server group(s). For each group, all old server IDs will be merged into the target server (newest by creation date). All backup records and configurations will be transferred to the target servers. The old server entries will be deleted. This action cannot be undone.", { count: selectedDuplicateNames.size })}
+                          {t("This will merge {{count}} server groups. For each group, all old server IDs will be merged into the target server (newest by creation date). All backup records and configurations will be transferred to the target servers. The old server entries will be deleted. This action cannot be undone.", { plurals: true, count: selectedDuplicateNames.size })}
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>

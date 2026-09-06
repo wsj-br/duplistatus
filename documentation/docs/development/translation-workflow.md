@@ -22,6 +22,23 @@ The documentation uses Docusaurus i18n with English as the default locale. Sourc
 
 From inside `documentation/`, the same flows are wired as `pnpm translate` → root `i18n:translate`, plus `pnpm translate:docs`, `translate:ui`, `translate:svg`, `translate:status`, `i18n:extract`, `i18n:sync`.
 
+## UI plurals {#ui-plurals}
+
+Cardinal plurals in the Next.js app use **ai-i18n-tools**, not hand-written `_one` / `_other` keys.
+
+Write one English source string (usually the plural) and pass a **plain object literal** with `plurals: true` and a numeric `count`:
+
+```tsx
+t("{{count}} backups selected", { plurals: true, count: selectedBackups.size })
+```
+
+Rules:
+
+- Do not use `item(s)` hedges or `count === 1 ? t('…') : t('…')` pairs.
+- Independent counts need separate `t()` calls. A string with two or more interpolations must include `{{count}}` as the plural axis.
+- `pnpm i18n:extract` marks the catalog row `"plural": true`. `pnpm i18n:translate:ui` fills CLDR forms and writes `src/locales/en-GB.json` (plural keys only).
+- `src/i18n.ts` and `src/lib/i18n-server.ts` load that file as `sourcePluralFlatBundle` so English singular/plural resolve at runtime.
+
 ## Glossary {#glossary}
 
 - **UI terminology** for documentation is driven by `glossary.uiGlossary` in `ai-i18n-tools.config.json`, pointing at `src/locales/strings.json` (the catalog produced by `pnpm i18n:extract`).

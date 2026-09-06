@@ -779,6 +779,52 @@
   - 配置更改记录到审计日志
   - 保留期影响自动和手动清理操作
 
+## API 密钥 {#api-keys}
+
+### 列出 API 密钥 - `/api/api-keys` {#list-api-keys---apiapi-keys}
+- **端点**: `/api/api-keys`
+- **方法**: GET
+- **描述**: 列出所有 API 密钥。密钥不会返回；每个密钥包含一个指纹（`Qk7v…3xTa`）。
+- **认证**: 需要管理员权限、有效的会话和 CSRF 令牌
+- **错误响应**:
+  - `401`: 未授权 - 无效的会话或 CSRF 令牌
+  - `403`: 禁止 - 需要管理员权限
+  - `500`: 内部服务器错误
+
+### 创建 API 密钥 - `/api/api-keys` {#create-api-key---apiapi-keys}
+- **端点**: `/api/api-keys`
+- **方法**: POST
+- **描述**: 创建一个范围限定的 API 密钥。明文密钥仅在此响应中返回。
+- **身份验证**: 需要管理员权限、有效会话和 CSRF 令牌
+- **请求体**:
+
+  ```json
+  {
+    "name": "Duplicati uploads",
+    "scope": "upload",
+    "description": "Optional",
+    "expiresAt": null
+  }
+  ```
+
+- **错误响应**:
+  - `400`: 缺少名称或无效范围（`upload` 或 `read`）
+  - `401`: 未授权 - 无效的会话或 CSRF 令牌
+  - `403`: 禁止 - 需要管理员权限
+  - `500`: 内部服务器错误
+
+### 更新 API 密钥 - `/api/api-keys/:id` {#update-api-key---apiapi-keysid}
+- **端点**: `/api/api-keys/:id`
+- **方法**: PATCH
+- **描述**: 启用或禁用密钥。
+- **认证**: 需要管理员权限、有效的会话和 CSRF 令牌
+
+### 删除 API 密钥 - `/api/api-keys/:id` {#delete-api-key---apiapi-keysid}
+- **端点**: `/api/api-keys/:id`
+- **方法**: DELETE
+- **描述**: 删除密钥。使用该密钥的现有客户端立即失去访问权限。
+- **认证**: 需要管理员权限、有效的会话和 CSRF 令牌
+
 ## 数据库管理 {#database-management}
 
 ### 备份数据库 - `/api/database/backup` {#backup-database---apidatabasebackup}

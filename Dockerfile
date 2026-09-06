@@ -95,6 +95,7 @@ COPY --chown=node:node --from=builder /app/dist ./dist
 # Copy shell scripts with execute permissions
 COPY --chown=node:node --chmod=755 docker-entrypoint.sh /app/docker-entrypoint.sh
 COPY --chown=node:node --chmod=755 admin-recovery /app/admin-recovery
+COPY --chown=node:node --from=builder /app/scripts/peer-ip.cjs /app/scripts/peer-ip.cjs
 
 # Create data directory & adjust permissions
 # Use node:node to match existing volume ownership (UID 1000)

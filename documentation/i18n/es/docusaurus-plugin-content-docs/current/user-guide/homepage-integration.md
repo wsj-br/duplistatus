@@ -12,7 +12,7 @@ Este widget muestra las estadísticas generales del backup en tu panel de contro
     href: http://your-server:9666/
     widget:
       type: customapi
-      url: http://your-server:9666/api/summary
+      url: http://your-server:9666/api/summary?api_key=YOUR_READ_KEY
       display: list
       refreshInterval: 60000
       mappings:
@@ -53,7 +53,7 @@ Este widget muestra la información del backup más reciente para una máquina e
     icon: mdi-test-tube
     widget:
       type: customapi
-      url: http://your-server:9666/api/lastbackup/Test%20Machine%201
+      url: http://your-server:9666/api/lastbackup/Test%20Machine%201?api_key=YOUR_READ_KEY
       display: list
       refreshInterval: 60000
       mappings:
@@ -85,3 +85,5 @@ Este widget muestra la información del backup más reciente para una máquina e
 - Ajuste el `refreshInterval` según sea necesario (en milisegundos).
 - Reemplace espacios en nombres de máquinas con `%20` en la URL (por ejemplo, `Test Machine 1` se convierte en `Test%20Machine%201`).
 - Los valores de `scale` convierten bytes a unidades más legibles (GB, MB).
+- Utilice una clave de API con ámbito de **leer** cuando se requieran [claves de API](settings/api-keys-settings.md). Omita `?api_key=` cuando las claves sean opcionales.
+- Si la [lista de IPs permitidas de la API externa](settings/ip-allowlist-settings.md) está habilitada, incluya el host de la página de inicio.

@@ -2,6 +2,8 @@
 
 Prabandhak **duplistatus** ka prabandhak pratisthapan karne ke liye, jab aap apna password ghum gaye ho ya apne khate se bahar ho gaye ho. Yeh gaid Docker visheshak par prabandhak punyuhar script ka istemal karne ka vishleshan deti hai.
 
+यदि ब्राउज़र लॉगिन फॉर्म से पहले **Access denied** (HTTP 403) दिखाता है, तो [Prabandhak आईपी अनुमति सूची](settings/ip-allowlist-settings.md) अनुरोध को ब्लॉक कर रहा है। इस स्क्रिप्ट के बजाय [Locked Out by IP Allowlist](troubleshooting.md#locked-out-by-ip-allowlist) का उपयोग करें।
+
 ## Docker mein Script ka Istemal {#using-the-script-in-docker}
 
 Dockerfile mein `scripts` directory aur ek suvidha shell wrapper shamil hai.

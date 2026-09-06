@@ -8,11 +8,13 @@
 - **संयुक्त डैशबोर्ड**: एक ही स्थान पर सभी सर्वरों के लिए बैकअप स्थिति, इतिहास, डुप्लिकेटी संस्करण और विवरण देखें।
 - **बैकअप मॉनिटरिंग**: विलंबित अनुसूचित बैकअप के लिए स्वचालित जांच और अलर्ट।
 - **डेटा विज़ुअलाइज़ेशन और लॉग्स**: डुप्लिकेटी सर्वरों से इंटरैक्टिव चार्ट्स और स्वचालित लॉग संग्रहण।
-- **सूचनाएं और चेतावनियाँ**: बैकअप चेतावनियों के लिए एकीकृत NTFY और SMTP ईमेल समर्थन, जिसमें विलंबित बैकअप सूचनाएं शामिल हैं।
-- **उपयोगकर्ता एक्सेस कंट्रोल और सुरक्षा**: एडमिन/उपयोगकर्ता भूमिकाओं के साथ सुरक्षित प्रमाणीकरण प्रणाली, कॉन्फ़िगर करने योग्य पासवर्ड नीति, खाता लॉकआउट संरक्षण और व्यापक उपयोगकर्ता प्रबंधन।
-- **ऑडिट लॉगिंग**: सभी प्रणाली परिवर्तनों और उपयोगकर्ता क्रियाओं के लिए पूर्ण ऑडिट ट्रेल, उन्नत फ़िल्टरिंग, निर्यात क्षमताएं और कॉन्फ़िगर करने योग्य रिटेंशन अवधि।
-- **एप्लिकेशन लॉग्स व्यूअर**: वेब इंटरफ़ेस से एप्लिकेशन लॉग्स देखने, खोजने और निर्यात करने के लिए एडमिन-केवल इंटरफ़ेस, रीयल-टाइम निगरानी क्षमताओं के साथ।
-- **मल्टी-लैंग्वेज समर्थन**: इंटरफ़ेस और दस्तावेज़ अंग्रेजी, फ्रेंच, जर्मन, स्पेनिश, ब्राज़ीलियन पुर्तगाली, हिंदी (रोमन) और सरलीकृत चीनी में उपलब्ध हैं।
+- **Suchnaayein aur Chhote**: NTFY aur SMTP email support backup alerts ke liye, shamil vilambit backup suchnaayein.
+- **Upyogkarta Prabandhan aur Suraksha**: Bhumika-based access control (Prabandhak/Upyogkarta) ke saath secure authentication system, configurable password niyam, account lockout suraksha, aur poore upyogkarta prabandhan.
+- **API Keys**: Duplicati uploads aur Homepage widgets ke liye optional scoped keys, plus configurable upload size aur rate limits.
+- **IP Allowlists**: Admin interface aur external APIs ke liye alag CIDR lists (`/api/upload`, `/api/summary`, `/api/lastbackup*`).
+- **Audit Logging**: System aur upyogkarta actions ke sabhi changes ka poora audit trail, advanced filtering, export capabilities, aur configurable retention periods.
+- **Application Log Viewer**: Web interface se application logs dekhne, khojne, aur export karne ke liye Prabandhak ke liye interface, real-time monitoring capabilities ke saath.
+- **Multi-language Support**: Interface aur documentation English, French, German, Spanish, Brazilian Portuguese, Hindi (Roman) aur Simplified Chinese me available hai.
 
 ## स्थापना {#installation}
 

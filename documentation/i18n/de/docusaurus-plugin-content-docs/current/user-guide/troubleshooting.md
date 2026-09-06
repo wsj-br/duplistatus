@@ -21,9 +21,14 @@
 
 Wenn Sie Duplicati-Server-Warnungen wie `HTTP Response request failed for:` und `Failed to send message: System.Net.Http.HttpRequestException:` sehen und neue Sicherungen nicht im Dashboard oder Sicherungsverlauf angezeigt werden:
 
-- **Prüfen Sie die Duplicati-Konfiguration**: Bestätigen Sie, dass Duplicati korrekt konfiguriert ist, um Daten an **duplistatus** zu senden. Bestätigen Sie die HTTP-URL-Einstellungen in Duplicati.
-- **Prüfen Sie die Netzwerkkonnektivität**: Stellen Sie sicher, dass der Duplicati-Server eine Verbindung zum **duplistatus**-Server herstellen kann. Bestätigen Sie, dass der Port korrekt ist (Standard: `9666`).
-- **Prüfen Sie die Duplicati-Protokolle**: Suchen Sie in den Duplicati-Protokollen nach HTTP-Request-Fehlern.
+- **Duplicati-Konfiguration prüfen**: Stellen Sie sicher, dass Duplicati korrekt konfiguriert ist, um JSON an **duplistatus** zu senden. Bei Duplicati 2.0.9.106 und später verwenden Sie `--send-http-json-urls`, das auf `/api/upload` zeigt. Bei älteren Duplicati-Versionen verwenden Sie `--send-http-url` mit `--send-http-result-output-format=Json`. Siehe [Duplicati Server-Konfiguration](../installation/duplicati-server-configuration.md).
+- **Netzwerkverbindung prüfen**: Stellen Sie sicher, dass der Duplicati-Server eine Verbindung zum **duplistatus**-Server herstellen kann. Prüfen Sie, ob der Port korrekt ist (Standard: `9666`).
+- **HTTP 401**: API-Schlüssel sind erforderlich, und die Upload-URL fehlt einen gültigen Upload-Bereichsschlüssel. Fügen Sie `?api_key=` hinzu, wie in [API-Schlüssel](settings/api-keys-settings.md) beschrieben.
+- **HTTP 403**: Der Schlüsselbereich ist falsch (ein Leseschlüssel kann nicht hochladen), oder der Duplicati-Host steht nicht auf der [externen API-IP-Zulassungsliste](settings/ip-allowlist-settings.md).
+- **HTTP 413**: Der JSON-Bericht ist größer als das Upload-Größenlimit (Standard 5 MB). Verringern Sie `--send-http-max-log-lines` oder erhöhen Sie das Limit in Einstellungen → API-Schlüssel.
+- **HTTP 429**: Das pro-IP-Upload-Rate-Limit wurde überschritten. Warten Sie `Retry-After`, oder erhöhen Sie die Limits, wenn viele Jobs gleichzeitig abgeschlossen werden.
+- **Duplicati-Protokolle überprüfen**: Prüfen Sie die Duplicati-Protokolle auf HTTP-Anforderungsfehler.
+- **Doppelte Berichterstattung**: Wenn Sie auch Formberichte an [Duplicati Monitoring](https://www.duplicati-monitoring.com/) senden, kann ein Fehler oder HTTP 500 von diesem Dienst Duplicati daran hindern, den JSON-Bericht an **duplistatus** zu senden. Form-URLs werden zuerst gesendet. Siehe [Berichterstattung an duplistatus und Duplicati Monitoring](../installation/duplicati-server-configuration.md#reporting-to-duplistatus-and-duplicati-monitoring).
 
 ### Doppelte Server auf dem Dashboard {#duplicate-servers-on-the-dashboard}
 
@@ -54,7 +59,7 @@ Wenn Benachrichtigungen nicht gesendet oder empfangen werden:
 
 Wenn Sicherungsversionen auf dem Dashboard oder der Detailseite nicht angezeigt werden:
 
-- **Prüfen Sie die Duplicati-Konfiguration**: Stellen Sie sicher, dass `send-http-log-level=Information` und `send-http-max-log-lines=0` in den erweiterten Optionen von Duplicati konfiguriert sind.
+- **Duplicati-Konfiguration prüfen**: Stellen Sie sicher, dass `send-http-log-level=Information` und `send-http-max-log-lines=500` in den erweiterten Optionen von Duplicati konfiguriert sind. Duplicati behält die ersten N Protokollzeilen bei. Wenn die Versionsliste immer noch fehlt, erhöhen Sie die Obergrenze oder verwenden Sie `0`, wenn Sie keine Berichte an Duplicati Monitoring senden. Die Versions**anzahl** kann weiterhin aus den JSON-Statistiken erscheinen, wenn die detaillierte Liste fehlt. Siehe [Protokollzeilen und verfügbare Versionen](../installation/duplicati-server-configuration.md#log-lines-and-available-versions).
 
 ### Überfällige Sicherung Warnungen funktionieren nicht {#overdue-backup-alerts-not-working}
 
@@ -92,10 +97,50 @@ Sie können zusätzliche Benutzerkonten in [Einstellungen > Benutzer](settings/u
 
 ### Verlorenes Admin-Passwort oder gesperrt {#lost-admin-password-or-locked-out}
 
-Wenn Sie Ihr Administratorpasswort verloren haben oder aus Ihrem Konto gesperrt wurden:
+Wenn Sie Ihr Administrator-Passwort verloren haben oder von Ihrem Konto gesperrt wurden (Sie können `/login` immer noch öffnen):
 
 - **Admin-Wiederherstellungsskript verwenden**: Siehe den Leitfaden [Admin Account Recovery](admin-recovery.md) für Anweisungen zur Wiederherstellung des Administrator-Zugriffs in Docker-Umgebungen.
 - **Container-Zugriff bestätigen**: Stellen Sie sicher, dass Sie Docker exec-Zugriff auf den Container haben, um das Wiederherstellungsskript auszuführen.
+
+Wenn der Browser **Zugriff verweigert** (HTTP 403) anzeigt, bevor Sie sich anmelden, handelt es sich um eine [IP-Zulassungslisten-Sperre](#locked-out-by-ip-allowlist), nicht um ein vergessenes Passwort. Das Admin-Wiederherstellungsskript kann diese Sperre nicht umgehen.
+
+### Gesperrt durch IP-Zulassungsliste {#locked-out-by-ip-allowlist}
+
+Wenn Einstellungen → [IP-Zulassungsliste](settings/ip-allowlist-settings.md) aktiviert ist, aber die CIDR fehlt oder falsch ist, lehnt der Proxy die Anfrage vor der Authentifizierung ab. Typische Symptome:
+
+- Seiten (`/`, `/login`, `/settings`, …) geben **Zugriff verweigert** (HTTP 403) als Klartext zurück.
+- Session- und Admin-APIs geben JSON `{ "errorCode": "IP_NOT_ALLOWED" }` zurück.
+- `/api/health` und `/api/ping` antworten weiterhin (sie sind ausgenommen). Login-Cookies helfen nicht.
+
+Der Speicherpfad versucht, dies zu verhindern: Sie können die **Admin**-Liste nicht aktivieren, es sei denn, Ihre aktuelle IP ist bereits in den CIDRs enthalten (außer beim Speichern von der Loopback-Adresse). Sie können sich trotzdem durch eine CIDR sperren, die jetzt passt, aber später nicht mehr (VPN, DHCP, anderes Netzwerk), durch eine falsche Konfiguration vertrauenswürdiger Proxies oder durch das Aktivieren der Liste von `127.0.0.1` / `::1` ohne das Hinzufügen dieser Adresse.
+
+Umgebungsvariablen überschreiben die Datenbank, sodass Sie sich ohne die Benutzeroberfläche wiederherstellen können. Sie schreiben Einstellungen nicht um; ein Neustart ist erforderlich, damit der Prozess die Änderungen aufnimmt.
+
+**Deaktivieren Sie die Admin-Liste** (gewöhnliche Wiederherstellung):
+
+```bash
+ADMIN_IP_ALLOWLIST_ENABLED=false
+```
+
+**Oder behalten Sie sie aktiviert und fügen Sie eine CIDR hinzu, die Ihre aktuelle IP enthält:**
+
+```bash
+ADMIN_IP_ALLOWLIST=203.0.113.10/32
+```
+
+Starten Sie dann die Anwendung neu:
+
+- **Docker Compose**: Legen Sie die gleichen Schlüssel unter `environment` in `docker-compose.yml` fest (die Datei enthält kommentierte Beispiele) und erstellen Sie den App-Container neu. `docker exec` ändert die Umgebungsvariablen eines laufenden Containers nicht.
+- **Lokal / systemd**: Exportieren Sie die Variable in der Service-Umgebung und starten Sie den Next.js-Prozess neu (nicht nur den Cron-Service).
+
+Sobald Sie die Benutzeroberfläche wieder öffnen können:
+
+1. Melden Sie sich an und korrigieren Sie die CIDRs und vertrauenswürdigen Proxies in Einstellungen → IP-Zulassungsliste.
+2. Entfernen Sie die Umgebungsüberschreibung, sodass Einstellungen wieder die Quelle der Wahrheit ist.
+
+Die **externe API**-Zulassungsliste (`/api/upload`, `/api/summary`, `/api/lastbackup*`) sperrt das Dashboard nicht. Wiederherstellen Sie sie auf die gleiche Weise mit `EXTERNAL_API_IP_ALLOWLIST_ENABLED=false` oder `EXTERNAL_API_IP_ALLOWLIST`. Wenn Duplicati-Uploads nach dem Aktivieren dieser Liste mit HTTP 403 fehlschlagen, siehe [Neue Backups werden nicht angezeigt](#new-backups-not-showing). Die Wiederherstellung vertrauenswürdiger Proxies verwendet `IP_TRUSTED_PROXIES` (ein nicht-leerer Wert impliziert auch trust-proxy).
+
+Siehe [IP-Zulassungsliste](settings/ip-allowlist-settings.md#environment-overrides) und [Umgebungsvariablen](../installation/environment-variables.md).
 
 ### Datenbanksicherung und Migration {#database-backup-and-migration}
 

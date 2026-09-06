@@ -2,7 +2,11 @@
 
 # External APIs {#external-apis}
 
-These endpoints are designed for use by other applications and integrations, for instance [Homepage](../user-guide/homepage-integration.md).
+These endpoints are designed for use by other applications and integrations, for instance [Homepage](../user-guide/homepage-integration.md). They are CSRF-exempt and do not use session cookies.
+
+Authentication is optional and off by default. When **Require API keys** is enabled in [API Keys](../user-guide/settings/api-keys-settings.md), send the key as `?api_key=`, `X-Api-Key`, or `Authorization: Bearer`. Upload keys work only on `POST /api/upload`. Read keys work only on `/api/summary` and `/api/lastbackup*`. Query-string keys appear in reverse-proxy access logs.
+
+An [IP allowlist](../user-guide/settings/ip-allowlist-settings.md) can also restrict these routes. `/api/health` and `/api/ping` stay open.
 
 ## Get Overall Summary - `/api/summary` {#get-overall-summary---apisummary}
 - **Endpoint**: `/api/summary`
@@ -22,6 +26,9 @@ These endpoints are designed for use by other applications and integrations, for
   }
   ```
 - **Error Responses**:
+  - `401`: Missing or invalid API key when keys are required
+  - `403`: Key scope is not `read`, or the client IP is not on the external allowlist
+  - `429`: Read-API rate limit exceeded
   - `500`: Server error fetching summary data
 - **Notes**:
   - In version 0.5.x, the field `totalBackupedSize` was replaced by `totalBackupSize`
@@ -78,7 +85,10 @@ The server identifier has to be URL Encoded.
   }
   ```
 - **Error Responses**:
+  - `401`: Missing or invalid API key when keys are required
+  - `403`: Key scope is not `read`, or the client IP is not on the external allowlist
   - `404`: Server not found
+  - `429`: Read-API rate limit exceeded
   - `500`: Internal server error
 - **Notes**:
   - In version 0.7.x, the response object key changed from `machine` to `server`
@@ -159,7 +169,10 @@ The server identifier has to be URL Encoded.
   }
   ```
 - **Error Responses**:
+  - `401`: Missing or invalid API key when keys are required
+  - `403`: Key scope is not `read`, or the client IP is not on the external allowlist
   - `404`: Server not found
+  - `429`: Read-API rate limit exceeded
   - `500`: Internal server error
 - **Notes**:
   - In version 0.7.x, the response object key changed from `machine` to `server`, and the field `backup_types_count` was renamed to `backup_jobs_count`
@@ -175,10 +188,12 @@ The server identifier has to be URL Encoded.
 - **Request Body**: JSON sent by Duplicati with the following options:
 
   ```bash
-  --send-http-url=http://my.local.server:9666/api/upload
-  --send-http-result-output-format=Json
+  --send-http-json-urls=http://my.local.server:9666/api/upload?api_key=YOUR_UPLOAD_KEY
   --send-http-log-level=Information
-  ```
+  --send-http-max-log-lines=500
+```
+
+  On Duplicati older than 2.0.9.106, use `--send-http-url` with `--send-http-result-output-format=Json`. See [Duplicati Server Configuration](../installation/duplicati-server-configuration.md).
   
 - **Response**: 
   ```json
@@ -188,7 +203,11 @@ The server identifier has to be URL Encoded.
   ```
 - **Error Responses**:
   - `400`: Missing required fields in Extra or Data sections, or invalid MainOperation
+  - `401`: Missing or invalid API key when keys are required
+  - `403`: Key scope is not `upload`, or the client IP is not on the external allowlist
   - `409`: Duplicate backup data (ignored)
+  - `413`: Request body exceeds the configured upload size limit (default 5 MB)
+  - `429`: Upload or authentication-failure rate limit exceeded (`Retry-After` is set)
   - `500`: Server error processing backup data
 - **Notes**:
   - Only processes backup operations (MainOperation must be "Backup")

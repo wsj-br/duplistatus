@@ -1,6 +1,6 @@
 # Authentifizierung & Sicherheit {#authentication-security}
 
-Die API verwendet eine Kombination aus sessionbasierter Authentifizierung und CSRF-Schutz für alle Datenbankschreibvorgänge, um unbefugten Zugriff und mögliche Denial-of-Service-Angriffe zu verhindern. Externe APIs (verwendet von Duplicati) bleiben aus Kompatibilitätsgründen nicht authentifiziert.
+Die API verwendet eine Kombination aus sessionbasierter Authentifizierung und CSRF-Schutz für alle Datenbank-Schreiboperationen, um unbefugten Zugriff und potenzielle Denial-of-Service-Angriffe zu verhindern. Externe APIs, die von Duplicati und Homepage verwendet werden, bleiben CSRF-frei. Sie können optional einen bereichsspezifischen API-Schlüssel und/oder eine IP-Zulassungsliste erfordern (beide sind standardmäßig aus). `/api/upload` verfügt auch über eine konfigurierbare Begrenzung der Anforderungskörpergröße und eine Rate-Limitierung.
 
 ## Sessionbasierte Authentifizierung {#session-based-authentication}
 
@@ -20,10 +20,10 @@ Alle statusändernden Operationen erfordern einen gültigen CSRF-Token, der mit 
 Alle Endpunkte, die Datenbankdaten ändern, erfordern eine Sitzungsauthentifizierung und einen CSRF-Token:
 
 - **Serververwaltung**: `/api/servers/:id` (PATCH, DELETE), `/api/servers/:id/server-url` (PATCH), `/api/servers/:id/password` (PATCH, GET)
-- **Konfigurationsverwaltung**: `/api/configuration/email` (GET, POST, DELETE), `/api/configuration/unified` (GET), `/api/configuration/ntfy` (GET), `/api/configuration/notifications` (GET, POST), `/api/configuration/backup-settings` (POST), `/api/configuration/templates` (POST), `/api/configuration/overdue-tolerance` (GET, POST)
-- **Benachrichtigungssystem**: `/api/notifications/test` (POST)
+- **Konfigurationsverwaltung**: `/api/configuration/email` (GET, POST, DELETE), `/api/configuration/unified` (GET), `/api/configuration/ntfy` (GET), `/api/configuration/notifications` (GET, POST), `/api/configuration/backup-settings` (POST), `/api/configuration/templates` (POST), `/api/configuration/overdue-tolerance` (GET, POST), `/api/configuration/daily-summary` (GET, POST), `/api/configuration/daily-summary/send` (POST), `/api/configuration/daily-summary/retry` (POST), `/api/configuration/daily-summary/preview` (POST)
+- **Benachrichtigungssystem**: `/api/notifications/test` (POST), `/api/notifications/preview` (POST)
 - **Cron-Konfiguration**: `/api/cron-config` (GET, POST)
-- **Cron-Proxy**: `/api/cron/*` (GET, POST) – leitet Anfragen an den Cron-Dienst weiter
+- **Cron-Proxy**: `/api/cron/*` (GET, POST) - leitet Anfragen an den Cron-Dienst weiter. POST erfordert Administratorrechte. Der Cron-Prozess bindet standardmäßig an `127.0.0.1`; die Änderung von Cron-Dienst-Routen erfordert `X-Cron-Service-Secret`, wenn `CRON_SERVICE_SECRET` gesetzt ist.
 - **Sitzungsverwaltung**: `/api/session` (POST, GET, DELETE), `/api/csrf` (GET)
 - **Diagrammdaten**: `/api/chart-data/*` (GET)
 - **Dashboard**: `/api/dashboard` (GET)
@@ -37,14 +37,17 @@ Alle Endpunkte, die Datenbankdaten ändern, erfordern eine Sitzungsauthentifizie
 - **Überfälligkeitsprüfung**: `/api/notifications/check-overdue` (POST) – erfordert Sitzung und CSRF-Token
 - **Überfällige Zeitstempel löschen**: `/api/notifications/clear-overdue-timestamps` (POST) – erfordert Sitzung und CSRF-Token
 
-### Ungeschützte Endpunkte {#unprotected-endpoints}
-Externe APIs bleiben für die Duplicati-Integration nicht authentifiziert:
+### Externe Endpunkte {#external-endpoints}
+Diese Routen verwenden keine Session-Cookies oder CSRF. Die Authentifizierung ist optional und in den Einstellungen konfiguriert:
 
-- `/api/upload` – Upload von Backup-Daten aus Duplicati
-- `/api/lastbackup/:serverId` – Aktueller Backup-Status
-- `/api/lastbackups/:serverId` – Status der letzten Backups
-- `/api/summary` – Gesamte Zusammenfassungsdaten
-- `/api/health` – Health-Check-Endpunkt
+- `/api/upload` - Sicherungsdaten-Hochladen von Duplicati (Schlüssel mit Upload-Bereich, Größen- und Rate-Limits)
+- `/api/lastbackup/:serverId` - Aktueller Sicherungsstatus (Schlüssel mit Lese-Bereich)
+- `/api/lastbackups/:serverId` - Aktuelle Sicherungsstatus (Schlüssel mit Lese-Bereich)
+- `/api/summary` - Zusammenfassungsdaten (Schlüssel mit Lese-Bereich)
+- `/api/health` - Health-Check-Endpunkt (kein Schlüssel erforderlich)
+- `/api/ping` - Connectivity-Probe (kein Schlüssel erforderlich)
+
+Wenn **API-Schlüssel erfordern** aktiviert ist, geben die ersten vier Routen `401` ohne einen gültigen Schlüssel zurück und `403`, wenn der Schlüsselbereich nicht übereinstimmt. Siehe [API-Schlüssel](../user-guide/settings/api-keys-settings.md) und [IP-Zulassungsliste](../user-guide/settings/ip-allowlist-settings.md).
 
 ### Verwendungsbeispiel (Sitzung + CSRF) {#usage-example-session--csrf}
 

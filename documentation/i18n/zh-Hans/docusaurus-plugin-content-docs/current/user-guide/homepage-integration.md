@@ -12,7 +12,7 @@
     href: http://your-server:9666/
     widget:
       type: customapi
-      url: http://your-server:9666/api/summary
+      url: http://your-server:9666/api/summary?api_key=YOUR_READ_KEY
       display: list
       refreshInterval: 60000
       mappings:
@@ -53,7 +53,7 @@
     icon: mdi-test-tube
     widget:
       type: customapi
-      url: http://your-server:9666/api/lastbackup/Test%20Machine%201
+      url: http://your-server:9666/api/lastbackup/Test%20Machine%201?api_key=YOUR_READ_KEY
       display: list
       refreshInterval: 60000
       mappings:
@@ -85,3 +85,5 @@
 - 根据需要调整 `refreshInterval`（以毫秒为单位）。
 - 在 URL 中将机器名称中的空格替换为 `%20`（例如，`Test Machine 1` 变为 `Test%20Machine%201`）。
 - `scale` 值将字节转换为更易读的单位（GB、MB）。
+- 当需要[API 密钥](settings/api-keys-settings.md)时，使用**读取**-范围的 API 密钥。当密钥是可选时，删除`?api_key=`。
+- 如果[外部 API IP 白名单](settings/ip-allowlist-settings.md)已启用，请包含主页主机。

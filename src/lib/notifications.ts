@@ -1,13 +1,13 @@
-import format from 'string-template';
 import nodemailer from 'nodemailer';
-import { getConfigBackupSettings, getNtfyConfig, getServerInfoById, getSMTPConfig, getNotificationTemplates } from './db-utils';
-import { NotificationTemplate, Backup, BackupStatus, BackupKey, SMTPConnectionType, SupportedTemplateLanguage } from './types';
+import { getConfigBackupSettings, getNtfyConfig, getServerInfoById, getSMTPConfig, getNotificationTemplates, isDailySummaryEnabled } from './db-utils';
+import { NotificationTemplate, Backup, BackupStatus, BackupKey, SMTPConnectionType, SupportedTemplateLanguage, NotificationDeliveryOutcome } from './types';
 import { defaultNotificationTemplates } from './default-config';
 import { isDevelopmentMode } from './utils';
 import { formatDateTime } from './date-format';
 import { formatInteger, formatBytes as formatBytesLocale } from './number-format';
 import { SOURCE_LOCALE } from './locales';
 import { getServerI18nForLanguage } from './i18n-server';
+import { htmlList, renderMarkdownEmail } from './notification-template-renderer';
 
 // Ensure this runs in Node.js runtime, not Edge Runtime
 export const runtime = 'nodejs';
@@ -26,9 +26,9 @@ export interface NotificationContext {
   errors_count: number;
   duration: string;
   file_count: number;
-  file_size: string; // formatted size string
-  uploaded_size: string; // formatted size string
-  storage_size: string; // formatted size string
+  file_size: string | number; // raw bytes or formatted size; formatted with locale before send
+  uploaded_size: string | number;
+  storage_size: string | number;
   available_versions: number;
   log_text?: string; // Plain text, one item per line (warnings + errors, or messages as fallback)
 }
@@ -208,7 +208,8 @@ export async function sendNtfyNotification(
   message: string,
   priority: string,
   tags: string,
-  accessToken?: string
+  accessToken?: string,
+  options?: { timeoutMs?: number; maxRetries?: number }
 ): Promise<void> {
   if (!ntfyUrl || !topic) {
     throw new Error('NTFY URL and topic are required');
@@ -244,8 +245,9 @@ export async function sendNtfyNotification(
     headers['Authorization'] = `Bearer ${accessToken}`;
   }
 
-  const maxRetries = 5;
+  const maxRetries = options?.maxRetries ?? 5;
   const retryDelay = 3000; // 3 seconds
+  const timeoutMs = options?.timeoutMs;
   
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     let response;
@@ -254,6 +256,7 @@ export async function sendNtfyNotification(
         method: 'POST',
         body: messageBytes,
         headers,
+        ...(timeoutMs ? { signal: AbortSignal.timeout(timeoutMs) } : {}),
       });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
@@ -418,9 +421,9 @@ export async function createEmailTransporter(): Promise<nodemailer.Transporter |
       port: config.port,
       secure: useSecure,
       // Connection timeout settings
-      connectionTimeout: 20000, // 20 seconds connection timeout
-      greetingTimeout: 20000,   // 20 seconds greeting timeout
-      socketTimeout: 20000,     // 20 seconds socket timeout
+      connectionTimeout: 45000,
+      greetingTimeout: 45000,
+      socketTimeout: 45000,
     };
     
     switch (connectionType) {
@@ -577,16 +580,8 @@ export async function sendEmailNotification(
 
 // Helper function to convert plain text to HTML
 export function convertTextToHtml(text: string): string {
-  return text
-    // First handle URLs before converting newlines to avoid conflicts
-    .replace(/(https?:\/\/[^\s<>]+)/g, '<a href="$1" target="_blank">$1</a>')
-    .replace(/\n/g, '<br>')
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.*?)\*/g, '<em>$1</em>');
+  return renderMarkdownEmail('duplistatus', text, {}).html;
 }
-
-// Helper function to format date strings using locale-aware formatting
-// Removed - now using formatDateTime from date-format.ts
 
 async function processTemplate(
   template: NotificationTemplate,
@@ -595,27 +590,25 @@ async function processTemplate(
 ): Promise<{
   title: string;
   message: string;
+  emailHtml: string;
+  emailText: string;
   priority: string;
   tags: string;
 }> {
   const i18n = await getServerI18nForLanguage(locale);
 
-  // Create a copy of the context with formatted dates and numbers
   const formattedContext = { ...context } as Record<string, unknown>;
 
-  // Add additional server variables to context 
   const serverInfo = getServerInfoById(context.server_id);
   formattedContext.server_url = serverInfo?.server_url || '';
-  formattedContext.server_alias = serverInfo?.alias 
-    ? `${serverInfo.alias} (${context.server_name})` 
+  formattedContext.server_alias = serverInfo?.alias
+    ? `${serverInfo.alias} (${context.server_name})`
     : context.server_name;
   formattedContext.server_note = serverInfo?.note || '';
 
-  // backward compatibility
   formattedContext.backup_interval_value = 'backup_interval' in context ? context.backup_interval : '';
-  formattedContext.backup_interval_type = ""; 
+  formattedContext.backup_interval_type = '';
 
-  // Format date fields using locale-aware formatting
   if ('backup_date' in formattedContext) {
     formattedContext.backup_date = formatDateTime(formattedContext.backup_date as string, locale);
   }
@@ -626,7 +619,6 @@ async function processTemplate(
     formattedContext.expected_date = formatDateTime(formattedContext.expected_date as string, locale);
   }
 
-  // Format numeric fields using locale-aware integer formatting
   const numericFields = ['messages_count', 'warnings_count', 'errors_count', 'file_count', 'available_versions'] as const;
   for (const field of numericFields) {
     if (formattedContext[field] !== undefined && formattedContext[field] !== null) {
@@ -637,16 +629,13 @@ async function processTemplate(
     }
   }
 
-  // Format bytes fields using locale-aware byte formatting
   const bytesFields = ['file_size', 'uploaded_size', 'storage_size'] as const;
   for (const field of bytesFields) {
     if (formattedContext[field] !== undefined && formattedContext[field] !== null) {
-      // These might be numbers or already-formatted strings from the API
       const value = Number(formattedContext[field]);
       if (!isNaN(value)) {
         formattedContext[field] = formatBytesLocale(value, locale);
       }
-      // If it's already a string, we could try to parse it but better to rely on the API to pass numbers
     }
   }
 
@@ -658,9 +647,22 @@ async function processTemplate(
     formattedContext.overdue_tolerance = i18n.t(String(formattedContext.overdue_tolerance));
   }
 
+  const values: Record<string, string> = {};
+  for (const [key, value] of Object.entries(formattedContext)) {
+    values[key] = value === null || value === undefined ? '' : String(value);
+  }
+  if (typeof formattedContext.log_text === 'string' && formattedContext.log_text.length > 0) {
+    values.log_list = htmlList(String(formattedContext.log_text).split('\n').filter((line) => line.length > 0));
+  } else {
+    values.log_list = '';
+  }
+
+  const rendered = renderMarkdownEmail(template.title, template.message, values);
   return {
-    title: format(template.title, formattedContext),
-    message: format(template.message, formattedContext),
+    title: rendered.subject,
+    message: rendered.text,
+    emailHtml: rendered.html,
+    emailText: rendered.text,
     priority: template.priority,
     tags: template.tags,
   };
@@ -671,17 +673,22 @@ export async function sendBackupNotification(
   serverId: string,
   serverName: string,
   context: NotificationContext
-): Promise<void> {
+): Promise<NotificationDeliveryOutcome> {
+  if (isDailySummaryEnabled()) {
+    console.log(`Daily summary mode is enabled; suppressing individual notification for backup ${backup.name} on server ${serverName}`);
+    return 'suppressed';
+  }
+
   const config = await getNotificationConfig();
   if (!config) {
     console.log('No notification configuration found, skipping notification');
-    return;
+    return 'skipped';
   }
 
   const backupConfig = await getBackupSettings(config, serverId, backup.name);
   if (!backupConfig) {
     console.log(`No backup configuration found for backup ${backup.name} on server ${serverName}, skipping`);
-    return;
+    return 'skipped';
   }
 
   const status = backup.status;
@@ -732,7 +739,7 @@ export async function sendBackupNotification(
   // If neither standard nor additional notifications should be sent, return early
   if (!shouldSendStandard && !shouldSendToAdditional) {
     console.log(`No notifications needed for backup ${backup.name} on server ${serverName}, status: ${status}, standard: ${notificationConf}, additional: ${additionalNotificationEvent}`);
-    return;
+    return 'skipped';
   }
 
   // Determine which template to use based on backup status
@@ -818,7 +825,7 @@ export async function sendBackupNotification(
 
     // Send email notification if enabled and configured
     if (backupConfig.emailEnabled === true && getSMTPConfig()) {
-      const htmlContent = convertTextToHtml(processedTemplate.message);
+      const htmlContent = processedTemplate.emailHtml;
       const smtpConfig = getSMTPConfig();
       notifications.push(
         sendEmailNotification(
@@ -923,7 +930,7 @@ export async function sendBackupNotification(
 
   // Send to additional destinations if configured and needed
   if (!shouldSendToAdditional) {
-    return;
+    return 'sent';
   }
 
   const additionalNotifications: Promise<void>[] = [];
@@ -937,7 +944,7 @@ export async function sendBackupNotification(
       .filter(email => email.length > 0 && email.includes('@'));
     
     if (emailAddresses.length > 0) {
-      const htmlContent = convertTextToHtml(processedTemplate.message);
+      const htmlContent = processedTemplate.emailHtml;
       for (const email of emailAddresses) {
         const smtpConfig = getSMTPConfig();
         additionalNotifications.push(
@@ -1105,23 +1112,29 @@ export async function sendBackupNotification(
       console.error(`Some additional notifications failed for backup ${backup.name} on server ${serverName}:`, error instanceof Error ? error.message : String(error));
     }
   }
+
+  return 'sent';
 }
 
 export async function sendOverdueBackupNotification(
   context: OverdueBackupContext
-): Promise<void> {
-  
+): Promise<NotificationDeliveryOutcome> {
+  if (isDailySummaryEnabled()) {
+    console.log(`Daily summary mode is enabled; suppressing overdue notification for backup ${context.backup_name} on server ${context.server_name}`);
+    return 'suppressed';
+  }
+
   const notificationConfig = await getNotificationConfig();
   
   if (!notificationConfig) {
-    return;
+    return 'skipped';
   }
 
   // Get backup settings for this specific backup
   const backupConfig = await getBackupSettings(notificationConfig, context.server_id, context.backup_name);
   if (!backupConfig) {
     console.log(`No backup configuration found for overdue backup ${context.backup_name} on server ${context.server_name}, skipping`);
-    return;
+    return 'skipped';
   }
 
   try {
@@ -1190,7 +1203,7 @@ export async function sendOverdueBackupNotification(
 
     // Send email notification if enabled and configured
     if (backupConfig.emailEnabled === true && getSMTPConfig()) {
-      const htmlContent = convertTextToHtml(processedTemplate.message);
+      const htmlContent = processedTemplate.emailHtml;
       const smtpConfig = getSMTPConfig();
       notifications.push(
         sendEmailNotification(
@@ -1307,7 +1320,7 @@ export async function sendOverdueBackupNotification(
           .filter(email => email.length > 0 && email.includes('@'));
         
         if (emailAddresses.length > 0) {
-          const htmlContent = convertTextToHtml(processedTemplate.message);
+          const htmlContent = processedTemplate.emailHtml;
           for (const email of emailAddresses) {
             const smtpConfig = getSMTPConfig();
             additionalNotifications.push(
@@ -1477,4 +1490,6 @@ export async function sendOverdueBackupNotification(
     console.error(`Failed to send overdue backup notification for ${context.backup_name} on server ${context.server_name}:`, error instanceof Error ? error.message : String(error));
     throw error;
   }
+
+  return 'sent';
 }

@@ -1,10 +1,11 @@
 import { db, dbOps, waitForDatabaseReady } from './db';
 import { formatDurationFromSeconds } from "@/lib/db";
-import type { BackupStatus, NotificationEvent, BackupKey, OverdueTolerance, BackupNotificationConfig, OverdueNotifications, ChartDataPoint, SMTPConfig, SMTPConfigEncrypted, NotificationTemplate, NtfyConfig, SMTPConnectionType, SupportedTemplateLanguage, DuplicatiVersionCache, DuplicatiVersionCheckConfig, DuplicatiVersionStatus } from "@/lib/types";
+import type { BackupStatus, NotificationEvent, BackupKey, OverdueTolerance, BackupNotificationConfig, OverdueNotifications, ChartDataPoint, SMTPConfig, SMTPConfigEncrypted, NotificationTemplate, NtfyConfig, SMTPConnectionType, SupportedTemplateLanguage, DuplicatiVersionCache, DuplicatiVersionCheckConfig, DuplicatiVersionStatus, DailySummaryConfig, StoredNotificationTemplates, DailySummaryTemplateSet } from "@/lib/types";
+import { DAILY_SUMMARY_CONFIG_KEY, DAILY_SUMMARY_DISPATCH_TASK } from '@/lib/types';
 import { CronServiceConfig, CronInterval } from './types';
 import { cronIntervalMap } from './cron-interval-map';
 import type { NotificationFrequencyConfig } from "@/lib/types";
-import { defaultCronConfig, defaultNotificationFrequencyConfig, defaultOverdueTolerance, defaultCronInterval, defaultNtfyConfig, defaultNotificationTemplates, generateDefaultNtfyTopic, getDefaultNotificationTemplate } from './default-config';
+import { defaultCronConfig, defaultNotificationFrequencyConfig, defaultOverdueTolerance, defaultCronInterval, defaultNtfyConfig, defaultNotificationTemplates, generateDefaultNtfyTopic, getDefaultNotificationTemplate, getDefaultDailySummaryTemplates, defaultDailySummaryConfig } from './default-config';
 import { previousTemplatesMessages } from './previous-defaults';
 import { formatTimeElapsed } from './utils';
 import { migrateBackupSettings } from './migration-utils';
@@ -13,6 +14,7 @@ import { GetNextBackupRunDate } from './server_intervals';
 import { defaultBackupNotificationConfig } from './default-config';
 import { encryptData, decryptData } from './secrets';
 import { SOURCE_LOCALE, parseLocaleTag } from './locales';
+import { isValidIanaTimeZone, isValidLocalTime } from './daily-summary-schedule';
 import { isNextProductionBuild } from './next-build-phase';
 import {
   buildDuplicatiVersionCronExpression,
@@ -232,16 +234,16 @@ export function getCronConfig(): CronServiceConfig {
             ...config.tasks
           }
         };
-        return applyDuplicatiVersionRefreshSchedule(merged);
+        return applyDailySummaryDispatchSchedule(applyDuplicatiVersionRefreshSchedule(merged));
       } catch (parseError) {
         console.error('Failed to parse cron service config:', parseError);
-        return applyDuplicatiVersionRefreshSchedule(defaultCronConfig);
+        return applyDailySummaryDispatchSchedule(applyDuplicatiVersionRefreshSchedule(defaultCronConfig));
       }
     }
   } catch (error) {
     console.error('Failed to load cron service configuration:', error instanceof Error ? error.message : String(error));
   }
-  return applyDuplicatiVersionRefreshSchedule(defaultCronConfig);
+  return applyDailySummaryDispatchSchedule(applyDuplicatiVersionRefreshSchedule(defaultCronConfig));
 }
 
 function applyDuplicatiVersionRefreshSchedule(config: CronServiceConfig): CronServiceConfig {
@@ -255,6 +257,19 @@ function applyDuplicatiVersionRefreshSchedule(config: CronServiceConfig): CronSe
           versionCheck.interval,
           versionCheck.startHourUtc
         ),
+        enabled: true,
+      },
+    },
+  };
+}
+
+function applyDailySummaryDispatchSchedule(config: CronServiceConfig): CronServiceConfig {
+  return {
+    ...config,
+    tasks: {
+      ...config.tasks,
+      [DAILY_SUMMARY_DISPATCH_TASK]: {
+        cronExpression: '* * * * *',
         enabled: true,
       },
     },
@@ -302,7 +317,7 @@ export function setDuplicatiVersionCheckConfig(config: DuplicatiVersionCheckConf
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null;
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
 export function getDuplicatiVersionCache(): DuplicatiVersionCache | null {
@@ -356,6 +371,60 @@ export function setCronConfig(config: CronServiceConfig): void {
     console.error('Failed to save cron service configuration:', error instanceof Error ? error.message : String(error));
     throw error;
   }
+}
+
+export function parseDailySummaryConfig(value: unknown): DailySummaryConfig {
+  if (!isRecord(value)) {
+    throw new Error('Invalid daily summary configuration');
+  }
+  const enabled = value.enabled === true;
+  const localTime = typeof value.localTime === 'string' ? value.localTime : '';
+  const timeZone = typeof value.timeZone === 'string' ? value.timeZone : '';
+  const sendNtfy = value.sendNtfy === true;
+  const effectiveFromIso = typeof value.effectiveFromIso === 'string' ? value.effectiveFromIso : '';
+  if (!isValidLocalTime(localTime)) {
+    throw new Error('Invalid daily summary time');
+  }
+  if (!isValidIanaTimeZone(timeZone)) {
+    throw new Error('Invalid daily summary timezone');
+  }
+  if (!effectiveFromIso || Number.isNaN(new Date(effectiveFromIso).getTime())) {
+    throw new Error('Invalid daily summary effective-from timestamp');
+  }
+  return { enabled, localTime, timeZone, sendNtfy, effectiveFromIso };
+}
+
+export function getDailySummaryConfig(): DailySummaryConfig {
+  const raw = getConfiguration(DAILY_SUMMARY_CONFIG_KEY);
+  if (!raw || raw.trim() === '') {
+    return defaultDailySummaryConfig();
+  }
+  try {
+    return parseDailySummaryConfig(JSON.parse(raw));
+  } catch (error) {
+    console.error('Failed to parse daily summary configuration:', error instanceof Error ? error.message : String(error));
+    return defaultDailySummaryConfig();
+  }
+}
+
+export function setDailySummaryConfig(config: DailySummaryConfig): void {
+  setConfiguration(DAILY_SUMMARY_CONFIG_KEY, JSON.stringify(parseDailySummaryConfig(config)));
+}
+
+export function isDailySummaryEnabled(): boolean {
+  return getDailySummaryConfig().enabled === true;
+}
+
+export function getRawBackupSettingsMap(): Record<BackupKey, BackupNotificationConfig> {
+  const json = getConfiguration('backup_settings');
+  if (!json || json.trim() === '') {
+    return {};
+  }
+  const parsed: unknown = JSON.parse(json);
+  if (!isRecord(parsed)) {
+    throw new Error('backup_settings is not an object');
+  }
+  return parsed as Record<BackupKey, BackupNotificationConfig>;
 }
 
 export function getCurrentCronInterval(): CronInterval {
@@ -1891,21 +1960,17 @@ function getPreviousMessages(templateType: 'success' | 'warning' | 'overdueBacku
 }
 
 // New: Functions to get/set Notification Templates under 'notification_templates'
-export function getNotificationTemplates(): {
-  language: SupportedTemplateLanguage;
-  success: NotificationTemplate;
-  warning: NotificationTemplate;
-  overdueBackup: NotificationTemplate;
-} {
+export function getNotificationTemplates(): StoredNotificationTemplates {
   return getCachedOrCompute('notification_templates', () => {
     try {
       const templatesJson = getConfiguration('notification_templates');
       if (!templatesJson || templatesJson.trim() === '') {
-        const defaultTemplates = {
-          language: SOURCE_LOCALE as SupportedTemplateLanguage,
+        const defaultTemplates: StoredNotificationTemplates = {
+          language: SOURCE_LOCALE,
           success: defaultNotificationTemplates.success,
           warning: defaultNotificationTemplates.warning,
           overdueBackup: defaultNotificationTemplates.overdueBackup,
+          dailySummary: defaultNotificationTemplates.dailySummary,
         };
         setNotificationTemplates(defaultTemplates);
         return defaultTemplates;
@@ -1915,44 +1980,44 @@ export function getNotificationTemplates(): {
         success?: NotificationTemplate;
         warning?: NotificationTemplate;
         overdueBackup?: NotificationTemplate;
+        dailySummary?: DailySummaryTemplateSet;
       };
 
-      // Lazy upgrade: check if templates match old defaults and upgrade if needed
       const updatedTemplates: {
         language?: SupportedTemplateLanguage;
         success?: NotificationTemplate;
         warning?: NotificationTemplate;
         overdueBackup?: NotificationTemplate;
+        dailySummary?: DailySummaryTemplateSet;
       } = {
         success: parsed.success,
         warning: parsed.warning,
         overdueBackup: parsed.overdueBackup,
+        dailySummary: parsed.dailySummary,
       };
       let needsUpdate = false;
 
-      // Check and replace warning template if it matches old defaults
       if (parsed.warning && isOldDefaultMessage(parsed.warning.message, getPreviousMessages('warning'))) {
         console.log('Lazy upgrade: Detected old warning template, replacing with new default');
         updatedTemplates.warning = defaultNotificationTemplates.warning;
         needsUpdate = true;
       }
 
-      // Ensure language field exists (backward compatibility); map retired codes such as hi-Latn → hi
       const language = parseLocaleTag(parsed.language ?? '') ?? SOURCE_LOCALE;
       updatedTemplates.language = language;
 
-      // Save updated templates if any were upgraded, language was added, or a retired code was canonicalized
+      if (!parsed.dailySummary) {
+        updatedTemplates.dailySummary = getDefaultDailySummaryTemplates(language);
+        needsUpdate = true;
+      }
+
       if (needsUpdate || !parsed.language || parsed.language !== language) {
-        const templatesToSave: {
-          language: SupportedTemplateLanguage;
-          success: NotificationTemplate;
-          warning: NotificationTemplate;
-          overdueBackup: NotificationTemplate;
-        } = {
+        const templatesToSave: StoredNotificationTemplates = {
           language: updatedTemplates.language || SOURCE_LOCALE,
           success: updatedTemplates.success || defaultNotificationTemplates.success,
           warning: updatedTemplates.warning || defaultNotificationTemplates.warning,
           overdueBackup: updatedTemplates.overdueBackup || defaultNotificationTemplates.overdueBackup,
+          dailySummary: updatedTemplates.dailySummary || getDefaultDailySummaryTemplates(language),
         };
         setNotificationTemplates(templatesToSave);
         return templatesToSave;
@@ -1962,15 +2027,17 @@ export function getNotificationTemplates(): {
         language,
         success: parsed.success || defaultNotificationTemplates.success,
         warning: parsed.warning || defaultNotificationTemplates.warning,
-        overdueBackup: parsed.overdueBackup || defaultNotificationTemplates.overdueBackup
+        overdueBackup: parsed.overdueBackup || defaultNotificationTemplates.overdueBackup,
+        dailySummary: parsed.dailySummary || getDefaultDailySummaryTemplates(language),
       };
     } catch (error) {
       console.error('Failed to get notification templates:', error instanceof Error ? error.message : String(error));
-      const defaultTemplates = {
-        language: SOURCE_LOCALE as SupportedTemplateLanguage,
+      const defaultTemplates: StoredNotificationTemplates = {
+        language: SOURCE_LOCALE,
         success: defaultNotificationTemplates.success,
         warning: defaultNotificationTemplates.warning,
         overdueBackup: defaultNotificationTemplates.overdueBackup,
+        dailySummary: defaultNotificationTemplates.dailySummary,
       };
       setNotificationTemplates(defaultTemplates);
       return defaultTemplates;
@@ -1978,15 +2045,8 @@ export function getNotificationTemplates(): {
   }, 'getNotificationTemplates');
 }
 
-export function setNotificationTemplates(templates: {
-  language?: SupportedTemplateLanguage;
-  success: NotificationTemplate;
-  warning: NotificationTemplate;
-  overdueBackup: NotificationTemplate;
-}): void {
+export function setNotificationTemplates(templates: StoredNotificationTemplates): void {
   try {
-    // Simply save the provided templates directly
-    // The caller is responsible for providing a complete object
     setConfiguration('notification_templates', JSON.stringify(templates));
   } catch (error) {
     console.error('Failed to save notification templates:', error instanceof Error ? error.message : String(error));

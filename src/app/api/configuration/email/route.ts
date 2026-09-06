@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { withCSRF } from '@/lib/csrf-middleware';
-import { getSMTPConfig, setSMTPConfig, deleteSMTPConfig } from '@/lib/db-utils';
+import { getSMTPConfig, setSMTPConfig, deleteSMTPConfig, isDailySummaryEnabled } from '@/lib/db-utils';
 import type { SMTPConfig } from '@/lib/types';
 import { requireAdmin } from '@/lib/auth-middleware';
 import { getClientIpAddress } from '@/lib/ip-utils';
@@ -251,6 +251,13 @@ export const DELETE = withCSRF(requireAdmin(async (request: NextRequest, authCon
       return NextResponse.json(
         { error: 'No SMTP configuration found to delete' },
         { status: 404 }
+      );
+    }
+
+    if (isDailySummaryEnabled()) {
+      return NextResponse.json(
+        { error: 'SMTP settings cannot be deleted while Daily Summary mode is enabled' },
+        { status: 400 }
       );
     }
 

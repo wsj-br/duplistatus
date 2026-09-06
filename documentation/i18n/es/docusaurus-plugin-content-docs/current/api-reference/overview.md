@@ -34,9 +34,11 @@ Todos los puntos finales siguen un patrón consistente de manejo de errores:
 - **401 No autorizado**: Sesión no válida o faltante, sesión expirada o falló la validación del token CSRF
 - **403 Prohibido**: Operación no permitida (por ejemplo, eliminación de copia de seguridad en producción) o falló la validación del token CSRF
 - **404 No encontrado**: Recurso no encontrado
-- **409 Conflicto**: Datos duplicados (para puntos de acceso de carga)
+- **409 Conflicto**: Datos duplicados (para puntos finales de carga)
+- **413 Entidad demasiado grande**: El cuerpo de `/api/upload` supera el límite de tamaño configurado
+- **429 Demasiadas solicitudes**: Límite de velocidad excedido para subir, leer-API o fallos de autenticación
 - **500 Error interno del servidor**: Errores del lado del servidor con mensajes de error detallados
-- **503 Servicio no disponible**: Fallos en la comprobación de estado, problemas de conexión a la base de datos o servicio Cron no disponible
+- **503 Servicio no disponible**: Fallos en la comprobación de salud, problemas de conexión a la base de datos o servicio cron no disponible
 
 Las respuestas de error incluyen:
 - `error`: Mensaje de error legible para humanos

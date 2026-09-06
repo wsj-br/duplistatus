@@ -4,6 +4,7 @@ import * as React from 'react';
 import DatePickerLib from 'react-datepicker';
 import { Calendar as CalendarIcon } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 import 'react-datepicker/dist/react-datepicker.css';
 
 interface DatePickerProps {
@@ -13,6 +14,76 @@ interface DatePickerProps {
   disabled?: boolean;
   id?: string;
 }
+
+type DatePickerInputProps = {
+  value?: string;
+  onClick?: React.MouseEventHandler<HTMLInputElement>;
+  onChange?: React.ChangeEventHandler<HTMLInputElement>;
+  onFocus?: React.FocusEventHandler<HTMLInputElement>;
+  onBlur?: React.FocusEventHandler<HTMLInputElement>;
+  onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
+  disabled?: boolean;
+  id?: string;
+  placeholder?: string;
+  className?: string;
+  title?: string;
+  onIconClick?: React.MouseEventHandler<HTMLDivElement>;
+};
+
+function stripDatePickerTitles(root: ParentNode | null): void {
+  if (!root) {
+    return;
+  }
+  root.querySelectorAll('[title]').forEach((element) => {
+    element.removeAttribute('title');
+  });
+}
+
+const DatePickerInput = React.forwardRef<HTMLInputElement, DatePickerInputProps>(
+  function DatePickerInput(
+    {
+      value,
+      onClick,
+      onChange,
+      onFocus,
+      onBlur,
+      onKeyDown,
+      disabled,
+      id,
+      placeholder,
+      className,
+      title: _title,
+      onIconClick,
+    },
+    ref
+  ) {
+    return (
+      <div className="relative">
+        <Input
+          ref={ref}
+          id={id}
+          type="text"
+          value={value ?? ''}
+          onClick={onClick}
+          onChange={onChange}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          onKeyDown={onKeyDown}
+          placeholder={placeholder}
+          className={cn('pr-10', className)}
+          disabled={disabled}
+          autoComplete="off"
+        />
+        <div
+          className="absolute right-0 top-0 z-10 flex h-full cursor-pointer items-center pr-3 pointer-events-auto"
+          onClick={onIconClick}
+        >
+          <CalendarIcon className="h-4 w-4 text-muted-foreground" />
+        </div>
+      </div>
+    );
+  }
+);
 
 export function DatePicker({
   value,
@@ -27,7 +98,6 @@ export function DatePicker({
   const [inputValue, setInputValue] = React.useState(value || '');
   const [isOpen, setIsOpen] = React.useState(false);
 
-  // Sync with external value changes
   React.useEffect(() => {
     if (value) {
       const date = new Date(value + 'T00:00:00');
@@ -41,10 +111,20 @@ export function DatePicker({
     }
   }, [value]);
 
-  // Handle date selection from calendar
+  React.useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+    const frame = window.requestAnimationFrame(() => {
+      document.querySelectorAll('.react-datepicker-popper').forEach((popper) => {
+        stripDatePickerTitles(popper);
+      });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [isOpen]);
+
   const handleDateChange = (date: Date | null) => {
     if (date) {
-      // Format as YYYY-MM-DD
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const day = String(date.getDate()).padStart(2, '0');
@@ -52,7 +132,6 @@ export function DatePicker({
       setSelectedDate(date);
       setInputValue(dateString);
       onChange(dateString);
-      // Close the popup when a date is selected
       setIsOpen(false);
     } else {
       setSelectedDate(null);
@@ -62,12 +141,10 @@ export function DatePicker({
     }
   };
 
-  // Handle manual input
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setInputValue(newValue);
-    
-    // Validate date format (YYYY-MM-DD)
+
     if (newValue === '' || /^\d{4}-\d{2}-\d{2}$/.test(newValue)) {
       if (newValue) {
         const parsed = new Date(newValue + 'T00:00:00');
@@ -81,10 +158,8 @@ export function DatePicker({
     }
   };
 
-  // Handle input blur - validate and format
   const handleInputBlur = () => {
     if (inputValue && !/^\d{4}-\d{2}-\d{2}$/.test(inputValue)) {
-      // Try to parse and reformat
       const parsed = new Date(inputValue);
       if (!isNaN(parsed.getTime())) {
         const year = parsed.getFullYear();
@@ -95,7 +170,6 @@ export function DatePicker({
         setSelectedDate(parsed);
         onChange(formatted);
       } else {
-        // Invalid date, clear it
         setInputValue('');
         setSelectedDate(null);
         onChange('');
@@ -103,8 +177,7 @@ export function DatePicker({
     }
   };
 
-  // Handle calendar icon click
-  const handleIconClick = (e: React.MouseEvent) => {
+  const handleIconClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     if (!disabled) {
@@ -123,26 +196,22 @@ export function DatePicker({
         onCalendarOpen={() => setIsOpen(true)}
         onCalendarClose={() => setIsOpen(false)}
         onClickOutside={() => setIsOpen(false)}
+        showPopperArrow={false}
+        previousMonthAriaLabel="Previous month"
+        nextMonthAriaLabel="Next month"
+        previousMonthButtonLabel=""
+        nextMonthButtonLabel=""
         customInput={
-          <div className="relative">
-            <Input
-              id={id}
-              type="text"
-              value={inputValue}
-              onChange={handleInputChange}
-              onBlur={handleInputBlur}
-              onFocus={() => setIsOpen(true)}
-              placeholder={placeholder}
-              className="pr-10"
-              disabled={disabled}
-            />
-            <div
-              className="absolute right-0 top-0 h-full flex items-center pr-3 cursor-pointer z-10 pointer-events-auto"
-              onClick={handleIconClick}
-            >
-              <CalendarIcon className="h-4 w-4 text-muted-foreground" />
-            </div>
-          </div>
+          <DatePickerInput
+            id={id}
+            value={inputValue}
+            onChange={handleInputChange}
+            onBlur={handleInputBlur}
+            onFocus={() => setIsOpen(true)}
+            placeholder={placeholder}
+            disabled={disabled}
+            onIconClick={handleIconClick}
+          />
         }
         popperClassName="react-datepicker-popper"
         popperPlacement="bottom-end"

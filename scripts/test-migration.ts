@@ -5,7 +5,7 @@ import { DatabaseMigrator } from '../src/lib/db-migrations';
 import * as fs from 'fs';
 import * as path from 'path';
 
-// Required tables after migration to version 4.0
+// Required tables after migration to version 4.2
 const REQUIRED_TABLES = [
   'servers',
   'backups',
@@ -13,6 +13,8 @@ const REQUIRED_TABLES = [
   'users',
   'sessions',
   'audit_log',
+  'api_keys',
+  'daily_summary_deliveries',
   'db_version'
 ];
 
@@ -24,6 +26,8 @@ const REQUIRED_COLUMNS: Record<string, string[]> = {
   sessions: ['id', 'user_id', 'expires_at'],
   audit_log: ['id', 'timestamp', 'action', 'status'],
   configurations: ['key', 'value'],
+  api_keys: ['id', 'name', 'key_hash', 'key_prefix', 'key_suffix', 'scope'],
+  daily_summary_deliveries: ['id', 'occurrence_key', 'channel', 'state', 'payload_json'],
   db_version: ['version', 'applied_at']
 };
 
@@ -49,8 +53,8 @@ function validateDatabase(db: Database.Database): ValidationResult {
     if (!versionResult) {
       result.errors.push('db_version table exists but contains no version record');
       result.success = false;
-    } else if (versionResult.version !== '4.0') {
-      result.errors.push(`Expected version 4.0, but found ${versionResult.version}`);
+    } else if (versionResult.version !== '4.2') {
+      result.errors.push(`Expected version 4.2, but found ${versionResult.version}`);
       result.success = false;
     } else {
       console.log(`  ✓ Database version: ${versionResult.version}`);

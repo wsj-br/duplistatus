@@ -9,7 +9,7 @@ Administrators sabhi available settings dekhte hain.
 <table>
   <tr>
     <td>
-      ![Prabandhak View - Settings Sidebar](../../assets/screen-settings-left-panel-admin.png)
+      ![व्यवस्थापक इंटरफेस - व्यवस्थापक दृश्य](../../assets/screen-settings-left-panel-admin.png)
     </td>
     <td>
       <ul>
@@ -18,6 +18,7 @@ Administrators sabhi available settings dekhte hain.
           <ul>
             <li><a href="backup-notifications-settings.md">Backup suchnaayein</a>: Configure per-backup notification settings</li>
             <li><a href="backup-monitoring-settings.md">Backup Monitoring</a>: Configure overdue backup detection and alerts</li>
+            <li><a href="daily-summary-settings.md">दैनिक सारांश</a>: Optional daily snapshot that replaces individual backup and overdue notifications</li>
             <li><a href="notification-templates.md">Templates</a>: Customise notification message templates</li>
           </ul>
         </li><br/>
@@ -32,9 +33,11 @@ Administrators sabhi available settings dekhte hain.
           <strong id="system">Pranali</strong>
           <ul>
             <li><a href="server-settings.md">Server</a>: Manage Duplicati server configurations</li>
-            <li><a href="display-settings.md">Display settings</a>: Configure theme, chart time range, chart style, format locale, auto-refresh interval, card sort order, and week start</li>
+            <li><a href="display-settings.md">Display settings</a>: Configure theme, chart samay pariman, chart shaili, format sthaniya, auto-refresh antaral, card sort order, and week start</li>
             <li><a href="duplicati-versions.md">डुप्लिकेटी संस्करण</a>: View cached Duplicati release versions and configure the version check schedule</li>
             <li><a href="database-maintenance.md">Database Maintenance</a>: Perform database cleanup (admin only)</li>
+            <li><a href="api-keys-settings.md">एपीआई कुंजियाँ</a>: Manage scoped keys and बाहरी एपीआई सुरक्षा (admin only)</li>
+            <li><a href="ip-allowlist-settings.md">आईपी अनुमति सूची</a>: Restrict the व्यवस्थापक इंटरफेस and बाहरी एपीआई (admin only)</li>
             <li><a href="user-management-settings.md">Upyogkarta</a>: Manage user accounts (admin only)</li>
             <li><a href="audit-logs-viewer.md">Audit log</a>: View system audit logs</li>
             <li><a href="audit-logs-retention.md">Audit Log Retention</a>: Configure audit log retention (admin only)</li>
@@ -53,7 +56,7 @@ Regular users ek limited set of settings dekhte hain.
 <table>
   <tr>
     <td>
-      ![Non-Admin View - Settings Sidebar](../../assets/screen-settings-left-panel-non-admin.png)
+      ![Settings Sidebar - Non-Admin View](../../assets/screen-settings-left-panel-non-admin.png)
     </td>
     <td>
       <ul>
@@ -62,6 +65,7 @@ Regular users ek limited set of settings dekhte hain.
           <ul>
             <li><a href="backup-notifications-settings.md">Backup suchnaayein</a>: View per-backup notification settings (read-only)</li>
             <li><a href="backup-monitoring-settings.md">Backup monitoring</a>: View overdue backup settings (read-only)</li>
+            <li><a href="daily-summary-settings.md">दैनिक सारांश</a>: View daily summary settings (read-only)</li>
             <li><a href="notification-templates.md">Templates</a>: View notification templates (read-only)</li>
           </ul>
         </li><br/>

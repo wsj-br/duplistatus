@@ -73,6 +73,7 @@ Default configuration:
   - overdue-backup-check: Runs every 5 minutes (`*/5 * * * *`)
   - audit-log-cleanup: Runs daily at 2 AM UTC (`0 2 * * *`)
   - duplicati-version-refresh: Updates cached Duplicati channel versions from GitHub. Default is daily at 3 AM UTC (`0 3 * * *`); the interval and start hour are configured in Settings → Duplicati Versions.
+  - daily-summary-dispatch: Evaluates Daily Summary due time every minute (`* * * * *`). Always registered; schedule changes do not require a cron reload. Generic `POST /trigger/daily-summary-dispatch` is rejected.
 
 ## API Endpoints
 
@@ -92,6 +93,8 @@ Start a stopped task.
 
 - `CRON_SERVICE_URL`: Base URL of the cron service (default: http://localhost:9667)
 - `CRON_PORT`: Port for the cron service (if not set, uses PORT + 1, or defaults to 9667)
+- `CRON_BIND_HOST`: Address the service listens on (default: `127.0.0.1`)
+- `CRON_SERVICE_SECRET`: Required when `CRON_BIND_HOST` is not loopback; mutating routes check `X-Cron-Service-Secret`
 - `PORT`: Base port for the main application (used to calculate CRON_PORT if CRON_PORT is not set)
 
 ## Client Usage

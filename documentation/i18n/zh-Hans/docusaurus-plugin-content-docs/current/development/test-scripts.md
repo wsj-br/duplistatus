@@ -19,7 +19,10 @@ pnpm generate-test-data --servers=N
 
 ```bash
 pnpm generate-test-data --servers=N --upload
+pnpm generate-test-data --servers=N --upload --api-key=YOUR_UPLOAD_KEY
 ```
+
+当设置 → API 密钥设置为需要密钥时，`--api-key` 是必需的。脚本在 HTTP 429 时重试一次，以便大型 `--upload` 运行保持在默认速率限制内。
 
 **示例：**
 
@@ -33,6 +36,14 @@ pnpm generate-test-data --upload --servers=1
 # Generate data for all 30 servers
 pnpm generate-test-data --servers=30
 ```
+
+该脚本为每个服务器分配 Duplicati 版本 **每个服务器**（相同的报告字符串写入该服务器的每个备份）：
+
+- **70–80% 当前**：使用最新的缓存稳定版本（`configurations.duplicati_versions`），否则使用固定的后备版本（`2.1.0.5_stable`）。
+- **其余较旧**：使用严格的上一页稳定版本，以便仪表板徽章显示为过期（黄色）。
+- 直接-DB 模式首先清除 `configurations`，然后恢复或播种版本缓存，以便当前/过期比较立即生效。
+- 小数量无法总是落在 70–80%：`--servers=1` 是 100% 当前；`--servers=2` 或 `3` 保持至少一个较旧的服务器；`--servers=6` 是 5 个当前（83%）。`--servers=12`（由 `pnpm take-screenshots` 使用）是 **9 个当前 / 3 个较旧**。
+- 当 `pnpm take-screenshots` 稍后将数据集减少到三个服务器时，它保留受保护的过期服务器和 **至少一个旧版本服务器**。
 
 >[!CAUTION]
 > 此脚本将删除数据库中的所有以前数据，并用测试数据替换它。
@@ -255,3 +266,11 @@ pnpm test-entrypoint
 - 验证日志轮换和日志记录功能
 - 测试正常关闭和信号处理
 - 在本地环境中调试入口脚本行为
+
+## 每日摘要验证 {#daily-summary-validation}
+
+```bash
+pnpm validate-daily-summary
+```
+
+运行确定性检查以验证每日摘要的调度（包括夏令时）、快照聚合、Markdown 消毒、交付账本索赔以及使用自定义模板进行架构 4.1 → 4.2 迁移。不会发送电子邮件或 NTFY。

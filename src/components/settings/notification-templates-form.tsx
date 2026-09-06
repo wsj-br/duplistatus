@@ -19,13 +19,21 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { ClipboardPaste, Send, RotateCcw, CheckCircle, AlertTriangle, Clock, Type, Star, Tag, MessageSquare, Info } from 'lucide-react';
+import { ClipboardPaste, Send, RotateCcw, CheckCircle, AlertTriangle, Clock, Type, Star, Tag, MessageSquare, Info, CalendarClock, Eye } from 'lucide-react';
 import { ColoredIcon } from '@/components/ui/colored-icon';
+import { EmailHtmlPreviewIframe } from '@/components/settings/email-html-preview-iframe';
 import { useToast } from '@/components/ui/use-toast';
-import { NotificationTemplate, SUPPORTED_TEMPLATE_LANGUAGES, type SupportedTemplateLanguage } from '@/lib/types';
+import { NotificationTemplate, SUPPORTED_TEMPLATE_LANGUAGES, type SupportedTemplateLanguage, type DailySummaryTemplateSet } from '@/lib/types';
 import { getLocaleEnglishName, SOURCE_LOCALE } from '@/lib/locales';
-import { defaultNotificationTemplates, getDefaultNotificationTemplate } from '@/lib/default-config';
+import { defaultNotificationTemplates, getDefaultNotificationTemplate, getDefaultDailySummaryTemplates } from '@/lib/default-config';
 import { getUserLocalStorageItem, setUserLocalStorageItem } from '@/lib/user-local-storage';
 import { useCurrentUser } from '@/hooks/use-current-user';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
@@ -50,6 +58,28 @@ const createTemplateVariables = (t: TFunction) => [
   { name: 'available_versions', description: t("Number of available versions") },
 ];
 
+const createTemplateVariablesDailySummary = (t: TFunction) => [
+  { name: 'summary_date', description: t("Local calendar date of the summary") },
+  { name: 'generated_at', description: t("Time the snapshot was generated") },
+  { name: 'time_zone', description: t("Saved IANA timezone") },
+  { name: 'server_count', description: t("Number of servers with known jobs") },
+  { name: 'job_count', description: t("Number of known backup jobs") },
+  { name: 'success_count', description: t("Jobs whose latest result is Success") },
+  { name: 'warning_count', description: t("Jobs whose latest result is Warning") },
+  { name: 'error_count', description: t("Jobs whose latest result is Error") },
+  { name: 'fatal_count', description: t("Jobs whose latest result is Fatal") },
+  { name: 'unknown_count', description: t("Jobs whose latest result is Unknown") },
+  { name: 'no_report_count', description: t("Configured jobs with no report received") },
+  { name: 'overdue_count', description: t("Jobs that are overdue") },
+  { name: 'latest_uploaded_size', description: t("Sum of latest uploaded sizes") },
+  { name: 'latest_source_size', description: t("Sum of latest source sizes") },
+  { name: 'latest_storage_size', description: t("Sum of latest storage sizes") },
+  { name: 'latest_file_count', description: t("Sum of latest examined files") },
+  { name: 'total_warnings', description: t("Sum of latest warning counts") },
+  { name: 'total_errors', description: t("Sum of latest error counts") },
+  { name: 'problem_table', description: t("Table of jobs that need attention") },
+  { name: 'all_jobs_table', description: t("Table of all latest backup results") },
+];
 const createTemplateVariablesOverdueBackup = (t: TFunction) => [
   { name: 'server_name', description: t("Name of the server") },
   { name: 'server_alias', description: t("Alias of the server (server_name if not set)") },
@@ -69,11 +99,13 @@ interface NotificationTemplatesFormProps {
     success?: NotificationTemplate;
     warning?: NotificationTemplate;
     overdueBackup?: NotificationTemplate;
+    dailySummary?: DailySummaryTemplateSet;
   };
   onSave: (templates: {
     success: NotificationTemplate;
     warning: NotificationTemplate;
     overdueBackup: NotificationTemplate;
+    dailySummary: DailySummaryTemplateSet;
   }) => void;
   onSendTest?: (template: NotificationTemplate) => Promise<void>;
 }
@@ -108,7 +140,7 @@ const TemplateEditor = ({
   ) => void;
   fieldRefs: React.MutableRefObject<Record<string, HTMLInputElement | HTMLTextAreaElement | null>>;
   onFieldFocus: (field: keyof NotificationTemplate) => void;
-  activeTab: 'success' | 'warning' | 'overdue';
+  activeTab: 'success' | 'warning' | 'overdue' | 'daily-summary';
   createRefCallback: (key: string) => (el: HTMLInputElement | HTMLTextAreaElement | null) => void;
   t: TFunction;
 }) => {
@@ -216,6 +248,12 @@ const TemplateEditor = ({
             <ColoredIcon icon={MessageSquare} color="purple" size="sm" />
             {t("Message Template")}
           </Label>
+          <p className="text-sm text-muted-foreground">
+            {t('Email body is Markdown. Headings, lists, links, and tables are supported. Titles, priority, and tags stay plain text.')}
+          </p>
+          <pre className="rounded-md border bg-muted/40 p-2 text-xs overflow-x-auto">{`| Metric | Value |
+| --- | ---: |
+| Uploaded | {uploaded_size} |`}</pre>
           <Textarea
             ref={createRefCallback(`${templateType}-message`)}
             id={`${templateType}-message`}
@@ -241,12 +279,22 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
     return t(getLocaleEnglishName(lang));
   };
 
-  const notificationTemplateTitleForTab = (tab: "success" | "warning" | "overdue") =>
-    tab === "success"
-      ? t("Success Notification Template")
-      : tab === "warning"
-        ? t("Warning/Error Notification Template")
-        : t("Overdue Backup Notification Template");
+  const notificationTemplateTitleForTab = (tab: "success" | "warning" | "overdue" | "daily-summary") => {
+    switch (tab) {
+      case "success":
+        return t("Success Notification Template");
+      case "warning":
+        return t("Warning/Error Notification Template");
+      case "overdue":
+        return t("Overdue Backup Notification Template");
+      case "daily-summary":
+        return t("Daily Summary");
+      default: {
+        const exhaustive: never = tab;
+        return exhaustive;
+      }
+    }
+  };
   const { toast } = useToast();
   const currentUser = useCurrentUser();
   const [formData, setFormData] = useState(() => {
@@ -255,10 +303,17 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
       success: templates?.success || defaultNotificationTemplates.success,
       warning: templates?.warning || defaultNotificationTemplates.warning,
       overdueBackup: templates?.overdueBackup || defaultNotificationTemplates.overdueBackup,
+      dailySummary: templates?.dailySummary || defaultNotificationTemplates.dailySummary,
     };
   });
   const [isSaving, setIsSaving] = useState(false);
   const [isSendingTest, setIsSendingTest] = useState(false);
+  const [isPreviewing, setIsPreviewing] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [previewHtml, setPreviewHtml] = useState('');
+  const [previewText, setPreviewText] = useState('');
+  const [previewNtfy, setPreviewNtfy] = useState('');
+  const [previewView, setPreviewView] = useState<'html' | 'text' | 'ntfy'>('html');
   const [selectedVariable, setSelectedVariable] = useState<string>('');
   const [templateLanguage, setTemplateLanguage] = useState<SupportedTemplateLanguage>(SOURCE_LOCALE);
   const [isLoadingLanguage, setIsLoadingLanguage] = useState(true);
@@ -267,7 +322,7 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
   const hasLoadedUserTabRef = useRef(false);
   
   // Initialize activeTab from localStorage or default to 'success'
-  const [activeTab, setActiveTab] = useState<'success' | 'warning' | 'overdue'>(() => {
+  const [activeTab, setActiveTab] = useState<'success' | 'warning' | 'overdue' | 'daily-summary'>(() => {
     return 'success';
   });
 
@@ -276,7 +331,7 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
     if (typeof window !== 'undefined' && currentUser && !hasLoadedUserTabRef.current) {
       hasLoadedUserTabRef.current = true;
       const savedTab = getUserLocalStorageItem('notification-templates-active-tab', currentUser.id);
-      if (savedTab === 'success' || savedTab === 'warning' || savedTab === 'overdue') {
+      if (savedTab === 'success' || savedTab === 'warning' || savedTab === 'overdue' || savedTab === 'daily-summary') {
         setActiveTab(savedTab);
       }
     }
@@ -320,7 +375,7 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
 
   // Update localStorage when activeTab changes
   const handleTabChange = (value: string) => {
-    const newTab = value as 'success' | 'warning' | 'overdue';
+    const newTab = value as 'success' | 'warning' | 'overdue' | 'daily-summary';
     setActiveTab(newTab);
     setSelectedVariable(''); // Reset selection when changing tabs
     
@@ -411,6 +466,39 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
     }, 0);
   };
 
+  const handlePreview = async () => {
+    setIsPreviewing(true);
+    try {
+      const body = activeTab === 'daily-summary'
+        ? { kind: 'dailySummaryEmail' as const, dailySummary: formData.dailySummary }
+        : (() => {
+            const kind = activeTab === 'overdue' ? 'overdueBackup' as const : activeTab;
+            return { kind, template: formData[kind] };
+          })();
+      const response = await authenticatedRequestWithRecovery('/api/notifications/preview', {
+        method: 'POST',
+        body: JSON.stringify(body),
+      });
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: t('Failed to generate preview') }));
+        throw new Error(errorData.error || t('Failed to generate preview'));
+      }
+      const data = await response.json() as { emailHtml?: string; emailText?: string; ntfyMessage?: string };
+      setPreviewHtml(data.emailHtml || '');
+      setPreviewText(data.emailText || '');
+      setPreviewNtfy(data.ntfyMessage || '');
+      setIsPreviewOpen(true);
+    } catch (error) {
+      toast({
+        title: t('Preview failed'),
+        description: error instanceof Error ? error.message : t('Failed to generate preview'),
+        variant: 'destructive',
+      });
+    } finally {
+      setIsPreviewing(false);
+    }
+  };
+
   const handleSave = async () => {
     setIsSaving(true);
     try {
@@ -439,6 +527,17 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
 
     setIsSendingTest(true);
     try {
+      if (activeTab === 'daily-summary') {
+        await onSendTest(formData.dailySummary.ntfy);
+        toast({
+          duration: 2000,
+          title: t("Success"),
+          description: t("Test notification sent using {{template}} template", {
+            template: t("Daily Summary"),
+          }),
+        });
+        return;
+      }
       const templateType = activeTab === 'overdue' ? 'overdueBackup' : activeTab;
       const template = formData[templateType];
 
@@ -479,6 +578,21 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
     setIsResetSingleDialogOpen(false);
     setIsSaving(true);
     try {
+      if (activeTab === 'daily-summary') {
+        const defaults = getDefaultDailySummaryTemplates(templateLanguage);
+        setFormData(prev => ({
+          ...prev,
+          dailySummary: defaults,
+        }));
+        toast({
+          duration: 2000,
+          title: t("Reset Complete"),
+          description: t("{{template}} has been reset to default", {
+            template: t("Daily Summary"),
+          }),
+        });
+        return;
+      }
       const templateType = activeTab === 'overdue' ? 'overdueBackup' : activeTab;
       const response = await fetch(
         `/api/configuration/templates/defaults?language=${templateLanguage}`
@@ -551,6 +665,7 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
           title: defaults.overdueBackup.title,
           message: defaults.overdueBackup.message,
         },
+        dailySummary: defaults.dailySummary || prev.dailySummary,
       }));
 
       toast({
@@ -574,7 +689,7 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
   return (
     <div className="space-y-6" data-screenshot-target="settings-content-card">
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-        <TabsList className="grid w-full grid-cols-1 md:grid-cols-3 h-auto">
+        <TabsList className="grid w-full grid-cols-1 md:grid-cols-4 h-auto">
           <TabsTrigger value="success" className="text-xs md:text-sm py-2 px-3 flex items-center gap-2">
             <CheckCircle className="h-4 w-4" />
             {t("Success")}
@@ -588,6 +703,10 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
             <Clock className="h-4 w-4" />
             <span className="hidden md:inline">{t("Overdue Backup")}</span>
             <span className="md:hidden">{t("Overdue")}</span>
+          </TabsTrigger>
+          <TabsTrigger value="daily-summary" className="text-xs md:text-sm py-2 px-3 flex items-center gap-2">
+            <CalendarClock className="h-4 w-4" />
+            {t("Daily Summary")}
           </TabsTrigger>
         </TabsList>
 
@@ -644,6 +763,133 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
             createRefCallback={createRefCallback}
           />
         </TabsContent>
+
+        <TabsContent value="daily-summary" className="mt-6 space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('Daily Summary email')}</CardTitle>
+              <CardDescription>{t('Markdown email subject and body for the daily snapshot.')}</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label>{t('Subject')}</Label>
+                <Input
+                  value={formData.dailySummary.email.title}
+                  onChange={(event) => setFormData((prev) => ({
+                    ...prev,
+                    dailySummary: {
+                      ...prev.dailySummary,
+                      email: { ...prev.dailySummary.email, title: event.target.value },
+                    },
+                  }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>{t('Email body (Markdown)')}</Label>
+                <Textarea
+                  className="min-h-[280px]"
+                  value={formData.dailySummary.email.message}
+                  onChange={(event) => setFormData((prev) => ({
+                    ...prev,
+                    dailySummary: {
+                      ...prev.dailySummary,
+                      email: { ...prev.dailySummary.email, message: event.target.value },
+                    },
+                  }))}
+                />
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('Daily Summary NTFY')}</CardTitle>
+              <CardDescription>{t('Compact NTFY title, body, priority, and tags.')}</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label>{t('Title')}</Label>
+                  <Input
+                    value={formData.dailySummary.ntfy.title}
+                    onChange={(event) => setFormData((prev) => ({
+                      ...prev,
+                      dailySummary: {
+                        ...prev.dailySummary,
+                        ntfy: { ...prev.dailySummary.ntfy, title: event.target.value },
+                      },
+                    }))}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>{t('Priority')}</Label>
+                  <Select
+                    value={formData.dailySummary.ntfy.priority || 'default'}
+                    onValueChange={(value) => setFormData((prev) => ({
+                      ...prev,
+                      dailySummary: {
+                        ...prev.dailySummary,
+                        ntfy: { ...prev.dailySummary.ntfy, priority: value },
+                      },
+                    }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="max">{t("Max/Urgent")}</SelectItem>
+                      <SelectItem value="high">{t("High")}</SelectItem>
+                      <SelectItem value="default">{t("Default")}</SelectItem>
+                      <SelectItem value="low">{t("Low")}</SelectItem>
+                      <SelectItem value="min">{t("Min")}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>{t('Tags')}</Label>
+                  <Input
+                    value={formData.dailySummary.ntfy.tags}
+                    onChange={(event) => setFormData((prev) => ({
+                      ...prev,
+                      dailySummary: {
+                        ...prev.dailySummary,
+                        ntfy: { ...prev.dailySummary.ntfy, tags: event.target.value },
+                      },
+                    }))}
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label>{t('NTFY body')}</Label>
+                <Textarea
+                  className="min-h-[160px]"
+                  value={formData.dailySummary.ntfy.message}
+                  onChange={(event) => setFormData((prev) => ({
+                    ...prev,
+                    dailySummary: {
+                      ...prev.dailySummary,
+                      ntfy: { ...prev.dailySummary.ntfy, message: event.target.value },
+                    },
+                  }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>{t('Insert variable')}</Label>
+                <Select value={selectedVariable} onValueChange={setSelectedVariable}>
+                  <SelectTrigger>
+                    <SelectValue placeholder={t("Select variable...")} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {createTemplateVariablesDailySummary(t).map((variable) => (
+                      <SelectItem key={variable.name} value={variable.name}>
+                        <span className="font-mono">{'{' + variable.name + '}'}</span>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
       </Tabs>
 
       <div className="pt-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -651,6 +897,15 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
         <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
           <Button onClick={handleSave} disabled={isSaving} variant="gradient" className="w-full sm:w-auto">
             {isSaving ? t("Saving...") : t("Save Template Settings")}
+          </Button>
+          <Button
+            onClick={() => void handlePreview()}
+            variant="outline"
+            disabled={isPreviewing}
+            className="flex items-center gap-2 w-full sm:w-auto"
+          >
+            <Eye className="h-4 w-4" />
+            {isPreviewing ? t("Generating...") : t("Preview")}
           </Button>
           {onSendTest && (
             <Button
@@ -716,6 +971,41 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
           </Select>
         </div>
       </div>
+
+      {(previewHtml || previewText || previewNtfy) && (
+        <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
+          <DialogContent className="flex max-h-[90vh] max-w-4xl flex-col overflow-hidden sm:max-w-4xl">
+            <DialogHeader>
+              <DialogTitle>{t('Preview')}</DialogTitle>
+              <DialogDescription>
+                {t('Email HTML, plain text, and NTFY rendered from the current template without sending.')}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden">
+              <div className="flex flex-wrap gap-2">
+                <Button type="button" size="sm" variant={previewView === 'html' ? 'default' : 'outline'} onClick={() => setPreviewView('html')}>{t('Email HTML')}</Button>
+                <Button type="button" size="sm" variant={previewView === 'text' ? 'default' : 'outline'} onClick={() => setPreviewView('text')}>{t('Plain text')}</Button>
+                <Button type="button" size="sm" variant={previewView === 'ntfy' ? 'default' : 'outline'} onClick={() => setPreviewView('ntfy')}>{t('NTFY')}</Button>
+              </div>
+              <div className="min-h-0 flex-1 overflow-auto">
+                {previewView === 'html' && (
+                  <EmailHtmlPreviewIframe
+                    title={t('Email HTML preview')}
+                    html={previewHtml}
+                    className="min-h-[50vh]"
+                  />
+                )}
+                {previewView === 'text' && (
+                  <pre className="whitespace-pre-wrap rounded-md border bg-muted/30 p-3 text-sm">{previewText}</pre>
+                )}
+                {previewView === 'ntfy' && (
+                  <pre className="whitespace-pre-wrap rounded-md border bg-muted/30 p-3 text-sm">{previewNtfy}</pre>
+                )}
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
 
       {/* Reset Single Template Confirmation Dialog */}
       <AlertDialog open={isResetSingleDialogOpen} onOpenChange={setIsResetSingleDialogOpen}>

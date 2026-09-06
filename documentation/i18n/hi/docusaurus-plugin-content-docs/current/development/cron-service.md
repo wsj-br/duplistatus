@@ -22,16 +22,18 @@ pnpm cron:start-local
 
 क्रॉन सेवा एक अलग पोर्ट पर चलती है (विकास में 8667, उत्पादन में 9667) और अनुसूचित कार्य जैसे विलंबित बैकअप सूचनाएं संभालती है। पोर्ट को `CRON_PORT` पर्यावरण चर का उपयोग करके कॉन्फ़िगर किया जा सकता है।
 
-क्रॉन सेवा में शामिल हैं:
-- **स्वास्थ्य जांच एंडपॉइंट**: `/health` - सेवा स्थिति और सक्रिय कार्य लौटाता है
-- **मैनुअल कार्य ट्रिगरिंग**: `POST /trigger/:taskName` - अनुसूचित कार्य मैन्युअल रूप से चलाएं
+क्रॉन सेवा में शामिल है:
+- **स्वास्थ्य जाँच एंडपॉइंट**: `/health` - सेवा स्थिति और सक्रिय कार्य लौटाता है
+- **मैनुअल कार्य ट्रिगरिंग**: `POST /trigger/:taskName` - अनुसूचित कार्य मैन्युअल रूप से चलाएं। `daily-summary-dispatch` इस रूट पर कार्य अस्वीकृत होता है; इसके बजाय Sammmaan → दैनिक सारांश **अब सारांश भेजें** का उपयोग करें
 - **कार्य प्रबंधन**: `POST /start/:taskName` और `POST /stop/:taskName` - व्यक्तिगत कार्यों को नियंत्रित करें
 - **कॉन्फ़िगरेशन रीलोड**: `POST /reload-config` - डेटाबेस से कॉन्फ़िगरेशन पुनः लोड करें
 - **स्वचालित पुनरारंभ**: सेवा क्रैश होने पर स्वचालित रूप से पुनरारंभ होती है (डॉकर डिप्लॉयमेंट में `docker-entrypoint.sh` द्वारा प्रबंधित)
 - **वॉच मोड**: विकास मोड में कोड परिवर्तनों पर स्वचालित पुनरारंभ के लिए फ़ाइल वॉचिंग शामिल है
 - **विलंबित बैकअप मॉनिटरिंग**: विलंबित बैकअप की स्वचालित जांच और सूचना (डिफ़ॉल्ट रूप से हर 5 मिनट में चलती है)
-- **Audit log cleanup**: Automated cleanup of old audit log entries (runs daily at 2 AM UTC)
-- **Duplicati version refresh**: Updates cached latest Duplicati channel versions from GitHub Releases. The default is daily at 3 AM UTC; administrators can change the interval and start time in [Settings → Duplicati Versions](../user-guide/settings/duplicati-versions.md).
-- **Flexible scheduling**: Configurable cron expressions for different tasks
-- **Database integration**: Shares the same SQLite database with the main application
-- **RESTful API**: Complete API for service management and monitoring
+- **दैनिक सारांश प्रेषण**: UTC में हर मिनट सहेजे गए दैनिक सारांश अनुसूची का मूल्यांकन करता है और वर्तमान स्थिति का स्नैपशॉट भेजता है जब समय आता है
+- **ऑडिट लॉग सफाई**: पुराने ऑडिट लॉग प्रविष्टियों की स्वचालित सफाई (UTC में 2 AM को दैनिक चलता है)
+- **डुप्लिकेटी संस्करण रीफ्रेश**: GitHub रिलीज़ से कैश किए गए नवीनतम डुप्लिकेटी चैनल संस्करण अपडेट करता है। डिफ़ॉल्ट दैनिक 3 AM UTC है; व्यवस्थापक [Sammaan → डुप्लिकेटी संस्करण](../user-guide/settings/duplicati-versions.md) में अंतराल और प्रारंभ समय बदल सकते हैं
+- **फ्लेक्सिबल शेड्यूलिंग**: विभिन्न कार्यों के लिए कॉन्फ़िगर करने योग्य क्रॉन अभिव्यक्तियाँ
+- **डेटाबेस एकीकरण**: मुख्य एप्लिकेशन के साथ एक ही SQLite डेटाबेस साझा करता है
+- **RESTful API**: सेवा प्रबंधन और मॉनिटरिंग के लिए पूर्ण API
+- **स्थानीय बाइंड**: डिफ़ॉल्ट रूप से `127.0.0.1` पर सुनता है (`CRON_BIND_HOST`)। नॉन-लूपबैक बाइंड के लिए `CRON_SERVICE_SECRET` की आवश्यकता होती है

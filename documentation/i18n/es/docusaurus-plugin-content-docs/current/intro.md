@@ -8,11 +8,13 @@
 - **Panel unificado**: Visualiza el estado de las copias de seguridad, el historial, la versión de Duplicati y los detalles de todos los servidores en un solo lugar.
 - **Monitoreo de copias de seguridad**: Comprobación automatizada y alertas para copias de seguridad programadas vencidas.
 - **Visualización de datos y registros**: Gráficos interactivos y recopilación automática de registros de los servidores Duplicati.
-- **Notificaciones y alertas**: Soporte integrado para NTFY y correo electrónico SMTP para alertas de copias de seguridad, incluyendo notificaciones de copias de seguridad atrasadas.
-- **Control de acceso y seguridad de usuarios**: Sistema de autenticación seguro con control de acceso basado en roles (roles Administrador/Usuario), políticas de contraseñas configurables, protección contra bloqueo de cuentas y gestión completa de usuarios.
-- **Registro de auditoría**: Registro completo de todos los cambios del sistema y acciones de los usuarios con filtros avanzados, capacidades de exportación y períodos de retención configurables.
-- **Visor de registros de la aplicación**: Interfaz exclusiva para administradores que permite ver, buscar y exportar registros de la aplicación directamente desde la interfaz web, con capacidades de monitoreo en tiempo real.
-- **Soporte multilingüe**: Interfaz y documentación disponibles en inglés, francés, alemán, español, portugués de Brasil, hindi (romanizado) y chino simplificado.
+- **Notificaciones y Alertas**: Soporte integrado de NTFY y SMTP para correo electrónico de alertas de copia de seguridad, incluyendo notificaciones de copia de seguridad vencida.
+- **Control de Acceso de Usuario y Seguridad**: Sistema de autenticación seguro con control de acceso basado en roles (roles de Administrador/Usuario), políticas de contraseña configurables, protección de bloqueo de cuenta y gestión de usuarios completa.
+- **Claves de API**: Claves opcionales con alcance para subidas de Duplicati y widgets de Homepage, más límites configurables de tamaño y velocidad de subida.
+- **Listas de Permitidos de IP**: Listas CIDR separadas para la interfaz de administración y las APIs externas (`/api/upload`, `/api/summary`, `/api/lastbackup*`).
+- **Registro de Auditoría**: Registro completo de todos los cambios del sistema y acciones de usuario con filtrado avanzado, capacidades de exportación y períodos de retención configurables.
+- **Visor de Registros de Aplicación**: Interfaz solo para administradores para ver, buscar y exportar registros de la aplicación directamente desde la interfaz web con capacidades de monitoreo en tiempo real.
+- **Soporte Multilingüe**: Interfaz y documentación disponibles en inglés, francés, alemán, español, portugués brasileño, hindi (romano) y chino simplificado.
 
 ## Instalación {#installation}
 

@@ -712,6 +712,50 @@
   - Configuration change is logged to audit log
   - Retention period affects automatic and manual cleanup operations
 
+## API Keys {#api-keys}
+
+### List API Keys - `/api/api-keys` {#list-api-keys---apiapi-keys}
+- **Endpoint**: `/api/api-keys`
+- **Method**: GET
+- **Description**: Lists all API keys. Secrets are never returned; each key includes a fingerprint (`Qk7v…3xTa`).
+- **Authentication**: Requires admin privileges, valid session and CSRF token
+- **Error Responses**:
+  - `401`: Unauthorized - Invalid session or CSRF token
+  - `403`: Forbidden - Admin privileges required
+  - `500`: Internal server error
+
+### Create API Key - `/api/api-keys` {#create-api-key---apiapi-keys}
+- **Endpoint**: `/api/api-keys`
+- **Method**: POST
+- **Description**: Creates a scoped API key. The plaintext secret is returned only in this response.
+- **Authentication**: Requires admin privileges, valid session and CSRF token
+- **Request Body**:
+  ```json
+  {
+    "name": "Duplicati uploads",
+    "scope": "upload",
+    "description": "Optional",
+    "expiresAt": null
+  }
+  ```
+- **Error Responses**:
+  - `400`: Missing name or invalid scope (`upload` or `read`)
+  - `401`: Unauthorized - Invalid session or CSRF token
+  - `403`: Forbidden - Admin privileges required
+  - `500`: Internal server error
+
+### Update API Key - `/api/api-keys/:id` {#update-api-key---apiapi-keysid}
+- **Endpoint**: `/api/api-keys/:id`
+- **Method**: PATCH
+- **Description**: Enables or disables a key.
+- **Authentication**: Requires admin privileges, valid session and CSRF token
+
+### Delete API Key - `/api/api-keys/:id` {#delete-api-key---apiapi-keysid}
+- **Endpoint**: `/api/api-keys/:id`
+- **Method**: DELETE
+- **Description**: Deletes a key. Existing clients using that secret immediately lose access.
+- **Authentication**: Requires admin privileges, valid session and CSRF token
+
 ## Database Management {#database-management}
 
 ### Backup Database - `/api/database/backup` {#backup-database---apidatabasebackup}

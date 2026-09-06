@@ -51,7 +51,7 @@
 - **Endpoint**: `/api/cron/*`
 - **Method**: GET, POST
 - **Description**: Proxies requests to the cron service. This endpoint forwards all requests to the cron service running on a separate port.
-- **Authentication**: Requires valid session and CSRF token
+- **Authentication**: Requires valid session and CSRF token. GET is allowed for authenticated users; POST (start/stop/trigger/reload) requires an administrator.
 - **Parameters**:
   - `*`: Any path that will be forwarded to the cron service
 - **Response**: Depends on the cron service endpoint being accessed
@@ -63,7 +63,9 @@
   }
   ```
 - **Notes**:
-  - Proxies requests to the cron service
+  - Proxies requests to the cron service on `127.0.0.1`
+  - Forwards `CRON_SERVICE_SECRET` as `X-Cron-Service-Secret` when set
   - Returns 503 if cron service is not available
   - Supports both GET and POST methods
   - Used for cron service management from the web interface
+  - `POST /trigger/daily-summary-dispatch` is rejected by the cron service; use `/api/configuration/daily-summary/send` instead

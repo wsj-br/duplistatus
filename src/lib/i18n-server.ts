@@ -3,6 +3,7 @@ import { createInstance, type i18n as I18nType } from 'i18next';
 import aiI18n from 'ai-i18n-tools/runtime';
 import stringsJson from '@/locales/strings.json';
 import uiLanguages from '@/locales/ui-languages.json';
+import sourcePluralFlat from '@/locales/en-GB.json';
 import {
   SOURCE_LOCALE,
   LOCALE_COOKIE_NAME,
@@ -26,6 +27,7 @@ async function buildServerI18n(locale: LocaleCode): Promise<I18nType> {
 
   aiI18n.setupKeyAsDefaultT(instance, {
     stringsJson,
+    sourcePluralFlatBundle: { lng: SOURCE_LOCALE, bundle: sourcePluralFlat },
   });
 
   instance.on('languageChanged', aiI18n.applyDirection);

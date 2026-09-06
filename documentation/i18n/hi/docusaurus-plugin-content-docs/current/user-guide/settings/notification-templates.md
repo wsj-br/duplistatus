@@ -1,8 +1,8 @@
 # Templates {#templates}
 
-**duplistatus** uses three templates for notification messages. These templates are used for both NTFY and Email notifications.
+**duplistatus** नोटिफिकेशन संदेशों के लिए चार टेम्प्लेट्स का उपयोग करता है। ईमेल बॉडी मार्कडाउन होती हैं (शीर्षक, सूचियाँ, लिंक, और टेबल)। सफलता, चेतावनी/त्रुटि, और विलंबित के लिए NTFY एक ही सामग्री से व्युत्पन्न होता है; दैनिक सारांश के लिए एक अलग संक्षिप्त NTFY टेम्प्लेट होता है।
 
-The page includes a **Template Language** selector that sets the locale for default templates. Changing the language updates the locale for new defaults, but it does **not** change the text of existing templates. To apply a new language to your templates, either edit them manually or use **Reset this template to default** (for the current tab) or **Reset all to default** (for all three templates).
+प्रश्ठ में एक **Templeit Bhasha** चयनकर्ता शामिल है जो डिफ़ॉल्ट टेम्प्लेट्स के लिए लोकल सेट करता है। भाषा बदलने से नए डिफ़ॉल्ट्स के लिए लोकल अपडेट होता है, लेकिन यह मौजूदा टेम्प्लेट्स के पाठ को **बदलता नहीं है**। अपने टेम्प्लेट्स पर नई भाषा लागू करने के लिए, उन्हें मैन्युअल रूप से संपादित करें या **इस परनाली को डिफ़ॉल्ट पर पुनः स्थापित करें** (वर्तमान टैब के लिए) या **सभी को डिफ़ॉल्ट पर पुनः स्थापित करें** (सभी टेम्प्लेट्स के लिए) का उपयोग करें।
 
 ![notification templates](../../assets/screen-settings-templates.png)
 
@@ -11,6 +11,7 @@ The page includes a **Template Language** selector that sets the locale for defa
 | **Success**        | Used when backups complete successfully.            |
 | **Warning/Error**  | Used when backups complete with warnings or errors. |
 | **Overdue Backup** | Used when backups are overdue.                      |
+| **दैनिक सारांश**  | वैकल्पिक दैनिक स्नैपशॉट के लिए ईमेल और संक्षिप्त NTFY टेम्प्लेट्स। |
 
 <br/>
 
@@ -22,26 +23,28 @@ A **Template Language** selector at the top of the page lets you choose the lang
 
 ## Available Actions {#available-actions}
 
-| Button                                                              | Description                                                                                         |
+| बटन                                                              | विवरण                                                                                         |
 |:--------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------|
-| <IconButton label="Save Template Settings" />                      | Saves the settings when changing the template. The button saves the template being displayed (Success, Warning/Error or Overdue Backup). |
+| <IconButton label="टेम्प्लेट सेटिंग्स सहेजें" />                      | टेम्प्लेट बदलते समय सेटिंग्स सहेजता है। बटन वह टेम्प्लेट सहेजता है जो प्रदर्शित किया जा रहा है (सफलता, चेतावनी/त्रुटि, विलंबित बैकअप, या दैनिक सारांश)। |
 | <IconButton icon="lucide:send" label="Send Test Notification"/>     | Checks the template after updating it. The variables will be replaced with their names for the test. For email notifications, the template title becomes the email subject line. |
 | <IconButton icon="lucide:rotate-ccw" label="Reset this template to default"/> | Restores the default template for the **selected template** (the current tab). Remember to save after resetting. |
-| <IconButton icon="lucide:rotate-ccw" label="Reset all to default"/> | Restores all three templates (Success, Warning/Error, Overdue Backup) to the defaults for the selected Template Language. Remember to save after resetting. |
+| <IconButton icon="lucide:rotate-ccw" label="सभी को डिफ़ॉल्ट पर रीसेट करें"/> | सभी टेम्प्लेट्स (सफलता, चेतावनी/त्रुटि, विलंबित बैकअप, और दैनिक सारांश) को चयनित टेम्प्लेट भाषा के लिए डिफ़ॉल्ट पर रीसेट करता है। रीसेट करने के बाद सहेजने को याद रखें। |
 
 <br/>
 
 ## Variables {#variables}
 
-All templates support variables that will be replaced with actual values. The following table shows the available variables:
+ईमेल बॉडी मार्कडाउन होती हैं। शीर्षक, सूचियाँ, लिंक, और टेबल समर्थित हैं। प्लेसहोल्डर मान एस्केप्ड टेक्स्ट के रूप में इन्सर्ट किए जाते हैं और मार्कडाउन या HTML को परिचय नहीं दे सकते। पहले से एम्बेडेड रॉ HTML को कस्टमाइज़ किए गए टेम्प्लेट्स में अब एस्केप किया गया है।
 
-| Variable               | Description                                     | Available In     |
+सभी सफलता, चेतावनी/त्रुटि, और विलंबित टेम्प्लेट्स वेरिएबल्स का समर्थन करते हैं जो वास्तविक मानों से बदल दिए जाएंगे। निम्नलिखित टेबल उपलब्ध वेरिएबल्स दिखाता है:
+
+| वेरिएबल               | विवरण                                     | उपलब्ध है     |
 |:-----------------------|:------------------------------------------------|:-----------------|
-| `{server_name}`        | Name of the server.                             | All templates    |
-| `{server_alias}`       | Alias of the server.                            | All templates    |
-| `{server_note}`        | Note for the server.                            | All templates    |
-| `{server_url}`         | URL of the Duplicati Server web configuration   | All templates    |
-| `{backup_name}`        | Name of the backup.                             | All templates    |
+| `{server_name}`        | सर्वर का नाम।                             | सफलता, चेतावनी, विलंबित |
+| `{server_alias}`       | सर्वर का उपनाम।                            | सफलता, चेतावनी, विलंबित |
+| `{server_note}`        | सर्वर के लिए नोट।                            | सफलता, चेतावनी, विलंबित |
+| `{server_url}`         | डुप्लिकेट सर्वर वेब कॉन्फ़िगरेशन का URL   | सफलता, चेतावनी, विलंबित |
+| `{backup_name}`        | बैकअप का नाम।                             | सफलता, चेतावनी, विलंबित |
 | `{status}`             | Backup की स्थिति (Safalta, Chetavaniya, Truti, Gambhir). | Safalta, Chetavaniya |
 | `{backup_date}`        | Backup की तारीख और समय.                    | Safalta, Chetavaniya |
 | `{duration}`           | Backup की अवधि.                         | Safalta, Chetavaniya |
@@ -60,3 +63,18 @@ All templates support variables that will be replaced with actual values. The fo
 | `{expected_elapsed}`   | अपेक्षित तारीख से बीते समय.           | Vilambit          |
 | `{backup_interval}`    | अंतराल स्ट्रिंग (उदाहरण, "1D", "2W", "1M").       | Vilambit          |
 | `{overdue_tolerance}`  | विलंब सहनशीलता सेटिंग.                      | Vilambit          |
+
+दैनिक सारांश टेम्प्लेट्स वर्तमान-स्थिति स्नैपशॉट के लिए एक अलग सेट वेरिएबल्स का उपयोग करते हैं:
+
+| वेरिएबल | विवरण |
+|:---------|:------------|
+| `{summary_date}` | स्नैपशॉट का स्थानीय कैलेंडर तिथि |
+| `{generated_at}` | स्नैपशॉट जनरेट किया गया तिथि और समय |
+| `{time_zone}` | सहेजा गया IANA समय क्षेत्र |
+| `{server_count}` / `{job_count}` | सर्वर और ज्ञात कार्य |
+| `{success_count}` / `{warning_count}` / `{error_count}` / `{fatal_count}` / `{unknown_count}` / `{no_report_count}` | परस्परविरोधी स्थिति बकेट्स |
+| `{overdue_count}` | विलंबित कार्य (स्थिति के लंबवत) |
+| `{problem_table}` / `{all_jobs_table}` | ध्यान देने वाले और सभी कार्य के लिए उत्पन्न किए गए तालिकाएँ। कॉलम: सर्वर, बैकअप, विलंबित, अंतिम स्थिति, अंतिम परिणाम, अवधि, चेतावनियाँ, त्रुटियाँ, अपलोड किया गया। |
+| `{latest_uploaded_size}` / `{latest_source_size}` / `{latest_storage_size}` / `{latest_file_count}` / `{total_warnings}` / `{total_errors}` | नवीनतम परिणाम कुल |
+
+ईमेल HTML, सादा पाठ, और NTFY को भेजे बिना रेंडर करने के लिए **पूर्वावलोकन** का उपयोग करें। पूर्वावलोकन एक डायलॉग में खुलता है। ईमेल HTML वर्तमान उज्जवल या अंधकार विषय शैली का पालन करता है।

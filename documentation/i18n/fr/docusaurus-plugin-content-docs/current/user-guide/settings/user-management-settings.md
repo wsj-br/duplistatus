@@ -61,3 +61,5 @@ Les comptes sont automatiquement verrouillés après plusieurs tentatives de con
 ## Récupération de l'accès Admin {#recovering-admin-access}
 
 Si vous avez perdu votre mot de passe admin ou êtes verrouillé de votre compte, vous pouvez récupérer l'accès en utilisant le script de récupération admin. Consultez le guide [Admin Account Recovery](../admin-recovery.md) pour des instructions détaillées sur la récupération de l'accès administrateur dans les environnements Docker.
+
+Si le navigateur affiche **Accès refusé** (HTTP 403) avant le formulaire de connexion, utilisez [Verrouillé par la Liste d'adresses IP autorisées](../troubleshooting.md#locked-out-by-ip-allowlist) pour récupérer.

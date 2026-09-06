@@ -1,4 +1,5 @@
 import type { NotificationTemplate } from '@/lib/types';
+import { defaultDailySummaryFr } from './default-daily-summary-templates';
 
 /**
  * French (fr) default notification templates
@@ -7,6 +8,7 @@ export const defaultNotificationTemplatesFr: {
   overdueBackup: NotificationTemplate;
   success: NotificationTemplate;
   warning: NotificationTemplate;
+  dailySummary: typeof defaultDailySummaryFr;
 } = {
   success: {
     title: '✅ {status} - {backup_name} @ {server_alias}',
@@ -45,4 +47,5 @@ export const defaultNotificationTemplatesFr: {
     priority: 'default',
     tags: 'duplicati, duplistatus, overdue',
   },
+  dailySummary: defaultDailySummaryFr,
 };

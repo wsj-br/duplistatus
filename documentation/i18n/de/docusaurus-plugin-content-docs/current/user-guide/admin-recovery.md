@@ -2,6 +2,8 @@
 
 Stellen Sie den Administrator-Zugriff auf **duplistatus** wieder her, wenn Sie Ihr Passwort vergessen haben oder aus Ihrem Konto gesperrt wurden. Diese Anleitung behandelt die Verwendung des Admin-Wiederherstellungsskripts in Docker-Umgebungen.
 
+Wenn der Browser **Zugriff verweigert** (HTTP 403) anzeigt, bevor das Anmeldeformular erscheint, blockiert die [Admin-IP-Zulassungsliste](settings/ip-allowlist-settings.md) die Anfrage. Verwenden Sie stattdessen [Gesperrt durch IP-Zulassungsliste](troubleshooting.md#locked-out-by-ip-allowlist).
+
 ## Verwendung des Skripts in Docker {#using-the-script-in-docker}
 
 Die Dockerfile enthält das Verzeichnis `scripts` und einen praktischen Shell-Wrapper.

@@ -19,7 +19,10 @@ Verwenden Sie die Option `--upload`, um die generierten Daten an `/api/upload` z
 
 ```bash
 pnpm generate-test-data --servers=N --upload
+pnpm generate-test-data --servers=N --upload --api-key=YOUR_UPLOAD_KEY
 ```
+
+`--api-key` ist erforderlich, wenn in Einstellungen → API-Schlüssel der Wert „Schlüssel erforderlich“ festgelegt ist. Das Skript wiederholt einmal bei HTTP 429, sodass ein großer `--upload` Lauf innerhalb der Standard-Ratenlimits bleibt.
 
 **Beispiele:**
 
@@ -33,6 +36,14 @@ pnpm generate-test-data --upload --servers=1
 # Generate data for all 30 servers
 pnpm generate-test-data --servers=30
 ```
+
+Das Skript weist Duplicati-Versionen **pro Server** zu (der gleiche Bericht-String wird für jedes Backup desselben Servers geschrieben):
+
+- **70–80% aktuell**: verwendet die neueste zwischengespeicherte stabile Version aus `configurations.duplicati_versions`, falls verfügbar, sonst eine festgelegte Fallback-Version (`2.1.0.5_stable`).
+- **Verbleibende ältere**: eine streng vorherige stabile Version, damit das Dashboard-Badge als veraltet (gelb) angezeigt wird.
+- Der Direkt-DB-Modus löscht `configurations` zuerst, dann wird der Versionscache wiederhergestellt oder mit der Version versorgt, damit die Vergleichbarkeit zwischen aktuellen und veralteten Versionen sofort funktioniert.
+- Kleine Mengen können nicht immer in 70–80% liegen: `--servers=1` ist 100% aktuell; `--servers=2` oder `3` behält mindestens einen älteren Server; `--servers=6` ist 5 aktuell (83%). `--servers=12` (verwendet von `pnpm take-screenshots`) ist **9 aktuell / 3 älter**.
+- Wenn `pnpm take-screenshots` später die Datenmenge auf drei Server reduziert, behält es den geschützten überfälligen Server und **mindestens einen Server mit einer älteren Version**.
 
 >[!CAUTION]
 > Dieses Skript löscht alle vorherigen Daten in der Datenbank und ersetzt sie durch Testdaten.
@@ -255,3 +266,11 @@ pnpm test-entrypoint
 - Überprüfung der Protokollrotation und Protokollierungsfunktionen
 - Testen des geordneten Herunterfahrens und der Signalverarbeitung
 - Debuggen des Verhaltens des Entrypoint-Skripts in einer lokalen Umgebung
+
+## Tägliche Zusammenfassung Validierung {#daily-summary-validation}
+
+```bash
+pnpm validate-daily-summary
+```
+
+Führt deterministische Prüfungen für die Planung der Täglichen Zusammenfassung (einschließlich DST), Snapshot-Aggregation, Markdown-Sanitisierung, Lieferungsbuchungsansprüche und Schema 4.1 → 4.2-Migration mit benutzerdefinierten Vorlagen durch. Sendet keine E-Mail oder NTFY.

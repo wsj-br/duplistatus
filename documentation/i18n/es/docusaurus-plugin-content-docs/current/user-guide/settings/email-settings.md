@@ -30,7 +30,7 @@ Cuando la configuración no está completamente configurada, se muestra un cuadr
 |:-----------------------------------------------------------------|:---------------------------------------------------------|
 | <IconButton label="Guardar configuración" />                             | Guarda los cambios realizados en la configuración de NTFY.              |
 | <IconButton icon="lucide:mail" label="Enviar correo de prueba"/>         | Envía un correo de prueba usando la configuración SMTP. El correo de prueba muestra el nombre de host del servidor SMTP, puerto, tipo de conexión, estado de autenticación, nombre de usuario (si corresponde), correo del destinatario, dirección de origen, nombre del remitente y marca de tiempo de la prueba. |
-| <IconButton icon="lucide:trash-2" label="Eliminar configuración SMTP"/> | Eliminar / Borrar la configuración SMTP.                   |
+| <IconButton icon="lucide:trash-2" label="Eliminar Configuración SMTP"/> | Eliminar / Borrar la configuración SMTP. Desactivado mientras [Resumen Diario](daily-summary-settings.md) está habilitado, porque ese modo requiere correo electrónico. |
 
 <br/>
 

@@ -102,8 +102,9 @@
   - `404`: Keine SMTP-Konfiguration zum Löschen vorhanden
   - `500`: Löschen der SMTP-Konfiguration fehlgeschlagen
 - **Hinweise**:
-  - Dieser Vorgang entfernt die SMTP-Konfiguration dauerhaft
-  - Gibt 404 zurück, wenn keine Konfiguration zum Löschen vorhanden ist
+  - Diese Operation entfernt die SMTP-Konfiguration dauerhaft
+  - Gibt 404 zurück, wenn keine Konfiguration zum Löschen existiert
+  - Gibt 400 zurück, wenn der Tägliche Zusammenfassungsmodus aktiviert ist, da dieser Modus SMTP erfordert
 
 ## E-Mail-Passwort aktualisieren - `/api/configuration/email/password` {#update-email-password---apiconfigurationemailpassword}
 - **Endpunkt**: `/api/configuration/email/password`
@@ -196,6 +197,18 @@
         "message": "The backup {backup_name} is overdue on {server_name}.",
         "priority": "default",
         "tags": "duplicati, duplistatus, overdue"
+      },
+      "dailySummary": {
+        "email": {
+          "title": "duplistatus — Daily backup summary — {summary_date}",
+          "message": "## Daily backup summary"
+        },
+        "ntfy": {
+          "title": "duplistatus daily summary",
+          "message": "Servers {server_count}, jobs {job_count}",
+          "priority": "default",
+          "tags": "duplicati, duplistatus, daily-summary"
+        }
       }
     },
     "email": {
@@ -438,8 +451,37 @@ Für die Benachrichtigungshäufigkeit:
   - `500`: Serverfehler bei der Aktualisierung der Benachrichtigungsvorlagen
 - **Hinweise**:
   - Aktualisiert Benachrichtigungsvorlagen für verschiedene Sicherungsstatus
-  - Behält vorhandene Konfigurationseinstellungen bei
-  - Vorlagen unterstützen Variablensubstitution
+  - Behält bestehende Konfigurationseinstellungen bei
+  - Vorlagen unterstützen Markdown-E-Mail-Inhalte und `{placeholder}`-Ersetzung
+  - Ein `dailySummary`-Vorlagensatz (E-Mail-Betreff/Inhalt und kompakte NTFY) ist erforderlich
+
+## Tägliche Zusammenfassung - `/api/configuration/daily-summary` {#daily-summary---apiconfigurationdaily-summary}
+- **Endpunkt**: `/api/configuration/daily-summary`
+- **Methode**: GET, POST
+- **Beschreibung**: Liest oder aktualisiert den Täglichen Zusammenfassungsmodus. GET gibt bereinigte Einstellungen, Dispatcher-Status, nächste Ausführung und Zustellstatus pro Kanal zurück. POST speichert `enabled`, `localTime` (`HH:mm`), `timeZone` (IANA) und `sendNtfy`. Die Aktivierung erfordert gültige SMTP und einen gesunden `daily-summary-dispatch`-Task. Die Aktivierung von NTFY erfordert gespeicherte NTFY-Einstellungen. Das Ändern des Zeitplans setzt die nächste **zukünftige** Ausführung.
+- **Authentifizierung**: GET erfordert eine gültige Sitzung und CSRF-Token. POST erfordert eine Administrator-Sitzung und CSRF-Token.
+- **Fehlerantworten**:
+  - `400`: Ungültige Zeit/Zeitzone, fehlende SMTP/NTFY oder Dispatcher nicht gesund
+  - `401`: Unbefugt
+  - `500`: Tägliche Zusammenfassung konnte nicht gelesen oder aktualisiert werden
+
+## Tägliche Zusammenfassung senden - `/api/configuration/daily-summary/send` {#send-daily-summary---apiconfigurationdaily-summarysend}
+- **Endpunkt**: `/api/configuration/daily-summary/send`
+- **Methode**: POST
+- **Beschreibung**: Sendet eine zusätzliche Momentaufnahme des aktuellen Status sofort. Verbraucht nicht die nächste geplante Ausführung. Verwendet gespeicherte SMTP (und gespeicherte NTFY, wenn ausgewählt). Akzeptiert keine Empfängeradressen oder Endpunkte in der Anfrage.
+- **Authentifizierung**: Erfordert Administrator-Sitzung und CSRF-Token
+
+## Tägliche Zusammenfassung wiederholen - `/api/configuration/daily-summary/retry` {#retry-daily-summary---apiconfigurationdaily-summaryretry}
+- **Endpunkt**: `/api/configuration/daily-summary/retry`
+- **Methode**: POST
+- **Beschreibung**: Wiederholt fehlgeschlagene Kanäle aus dem persistierten Payload. Optionaler Körper `{ "occurrenceKey": "..." }`; andernfalls wird die neueste fehlgeschlagene Ausführung wiederholt.
+- **Authentifizierung**: Erfordert Administrator-Sitzung und CSRF-Token
+
+## Tägliche Zusammenfassung Vorschau - `/api/configuration/daily-summary/preview` {#preview-daily-summary---apiconfigurationdaily-summarypreview}
+- **Endpunkt**: `/api/configuration/daily-summary/preview`
+- **Methode**: POST
+- **Beschreibung**: Rendert die aktuelle Momentaufnahme ohne Senden und ohne Schreiben von Zustellprotokollzeilen.
+- **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
 
 ## Überfälligkeitstoleranz abrufen - `/api/configuration/overdue-tolerance` {#get-overdue-tolerance---apiconfigurationoverdue-tolerance}
 - **Endpunkt**: `/api/configuration/overdue-tolerance`
@@ -488,3 +530,28 @@ Für die Benachrichtigungshäufigkeit:
   - Aktualisiert die Einstellung für die Toleranz überfälliger Sicherungen (akzeptiert Stringformate wie `"1h"`, `"2h"` usw.; Standard für neue Installationen ist `2h`)
   - Beeinflusst, wann Sicherungen als überfällig gelten
   - Wird vom Prüfer für überfällige Sicherungen verwendet
+
+## Externe API-Sicherheit - `/api/configuration/external-api-security` {#external-api-security---apiconfigurationexternal-api-security}
+- **Endpunkt**: `/api/configuration/external-api-security`
+- **Methoden**: GET, PATCH
+- **Beschreibung**: Liest oder aktualisiert, ob externe APIs einen Schlüssel erfordern, sowie die `/api/upload` Größe und die Rate Limits.
+- **Authentifizierung**: Erfordert Admin-Rechte, gültige Sitzung und CSRF-Token
+- **PATCH-Body**:
+
+  ```json
+  {
+    "requireApiKey": false,
+    "uploadLimits": {
+      "enabled": true,
+      "maxBytes": 5242880,
+      "perMinute": 20,
+      "perHour": 200
+    }
+  }
+  ```
+
+## IP-Zulassungsliste - `/api/configuration/ip-allowlist` {#ip-allowlist---apiconfigurationip-allowlist}
+- **Endpunkt**: `/api/configuration/ip-allowlist`
+- **Methoden**: GET, PATCH
+- **Beschreibung**: Liest oder aktualisiert vertrauenswürdige Proxies und die Admin- / Externe-API-CIDR-Zulassungslisten. Die Aktivierung der Admin-Liste schlägt fehl, wenn die aktuelle Client-IP nicht bereits aufgelistet ist (Loopback ist ausgenommen).
+- **Authentifizierung**: Erfordert Admin-Rechte, gültige Sitzung und CSRF-Token

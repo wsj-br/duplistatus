@@ -6,7 +6,7 @@ import { SOURCE_LOCALE } from '@/lib/locales';
 // Project locale files — paths must match `ui` in ai-i18n-tools.config.json (paths there are relative to the project root).
 import uiLanguages from './locales/ui-languages.json'; // `ui.uiLanguagesPath` (defaults to `{ui.flatOutputDir}/ui-languages.json`)
 import stringsJson from './locales/strings.json'; // `ui.stringsJson`
-//import sourcePluralFlat from './public/locales/en-GB.json'; // `{ui.flatOutputDir}/{SOURCE_LOCALE}.json` from translate-ui
+import sourcePluralFlat from './locales/en-GB.json'; // `{ui.flatOutputDir}/{SOURCE_LOCALE}.json` from translate-ui
 
 export { SOURCE_LOCALE, LOCALE_COOKIE_NAME } from '@/lib/locales';
 
@@ -16,7 +16,7 @@ void i18n.use(initReactI18next).init(aiI18n.defaultI18nInitOptions(SOURCE_LOCALE
 // set up the key-as-default translation
 aiI18n.setupKeyAsDefaultT(i18n, {
   stringsJson,
- // sourcePluralFlatBundle: { lng: SOURCE_LOCALE, bundle: sourcePluralFlat },
+  sourcePluralFlatBundle: { lng: SOURCE_LOCALE, bundle: sourcePluralFlat },
 });
 
 // apply the direction to the i18n instance

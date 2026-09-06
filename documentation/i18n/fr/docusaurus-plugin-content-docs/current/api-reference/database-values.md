@@ -1,6 +1,6 @@
 # Exemple de rapport de sauvegarde (valeurs de la base de données) {#database-values}
 
-Ce document contient un exemple de charge utile JSON envoyée par Duplicati lors de l'utilisation de l'option `--send-http-url`. Il illustre la structure et les champs que duplistatus reçoit et conserve. Certains champs peuvent être effacés ou masqués dans cet exemple.
+Ce document contient un exemple de la charge utile JSON envoyée par Duplicati lors de l'utilisation de `--send-http-json-urls` (ou de l'option legacy `--send-http-url` avec `--send-http-result-output-format=Json`). Il illustre la structure et les champs que duplistatus reçoit et persiste. Certains champs peuvent être effacés ou masqués dans cet exemple.
 
 ```json
 {

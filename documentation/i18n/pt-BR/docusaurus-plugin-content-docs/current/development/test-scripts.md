@@ -19,7 +19,10 @@ Use a opção `--upload` para enviar os dados gerados para `/api/upload`
 
 ```bash
 pnpm generate-test-data --servers=N --upload
+pnpm generate-test-data --servers=N --upload --api-key=YOUR_UPLOAD_KEY
 ```
+
+`--api-key` é necessário quando Configurações → Chaves de API está definida para exigir chaves. O script tenta novamente uma vez em HTTP 429 para que uma execução grande de `--upload` permaneça dentro dos limites de taxa padrão.
 
 **Exemplos:**
 
@@ -33,6 +36,14 @@ pnpm generate-test-data --upload --servers=1
 # Generate data for all 30 servers
 pnpm generate-test-data --servers=30
 ```
+
+O script atribui versões do Duplicati **por servidor** (a mesma string de relatório é escrita para cada backup desse servidor):
+
+- **70–80% atual**: usa a versão estável mais recente em cache disponível em `configurations.duplicati_versions`, caso contrário, uma versão fixada de fallback (`2.1.0.5_stable`).
+- **Restante mais antiga**: uma versão estável anterior para que o distintivo do painel seja comparado como desatualizado (amarelo).
+- O modo Direct-DB apaga `configurations` primeiro, em seguida, restaura ou semente o cache de versões para que a comparação atual/desatualizado funcione imediatamente.
+- Pequenas quantidades não sempre caem em 70–80%: `--servers=1` é 100% atual; `--servers=2` ou `3` mantém pelo menos um servidor mais antigo; `--servers=6` é 5 atual (83%). `--servers=12` (usado por `pnpm take-screenshots`) é **9 atual / 3 mais antigo**.
+- Quando `pnpm take-screenshots` reduz mais tarde o conjunto de dados para três servidores, ele mantém o servidor protegido com atraso e **pelo menos um servidor com versão mais antiga**.
 
 >[!CAUTION]
 > Este script deleta todos os dados anteriores no banco de dados e os substitui por dados de teste.
@@ -255,3 +266,11 @@ pnpm test-entrypoint
 - Verificar rotação de logs e funcionalidade de registro
 - Testar desligamento gracioso e tratamento de sinais
 - Depurar o comportamento do script de entrada em um ambiente local
+
+## Validação do Resumo Diário {#daily-summary-validation}
+
+```bash
+pnpm validate-daily-summary
+```
+
+Executa verificações determinísticas para agendamento do Resumo Diário (incluindo horário de verão), agregação de instantâneos, sanitização de Markdown, reivindicações de registro de entrega e migração de esquema 4.1 → 4.2 com modelos personalizados. Não envia e-mail ou NTFY.

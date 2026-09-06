@@ -779,6 +779,52 @@ Avec erreurs :
   - La modification de la configuration est enregistrée dans le journal d'audit
   - La période de rétention affecte les opérations de nettoyage automatique et manuel
 
+## Clés API {#api-keys}
+
+### Lister les clés API - `/api/api-keys` {#list-api-keys---apiapi-keys}
+- **Point de terminaison**: `/api/api-keys`
+- **Méthode**: GET
+- **Description**: Liste toutes les clés API. Les secrets ne sont jamais retournés ; chaque clé inclut une empreinte digitale (`Qk7v…3xTa`).
+- **Authentification**: Nécessite des privilèges d'administrateur, une session valide et un jeton CSRF
+- **Réponses d'erreur**:
+  - `401`: Non autorisé - Session ou jeton CSRF invalide
+  - `403`: Interdit - Privilèges d'administrateur requis
+  - `500`: Erreur interne du serveur
+
+### Créer une clé API - `/api/api-keys` {#create-api-key---apiapi-keys}
+- **Point de terminaison**: `/api/api-keys`
+- **Méthode**: POST
+- **Description**: Crée une clé API avec une portée définie. Le secret en clair n'est retourné que dans cette réponse.
+- **Authentification**: Nécessite des privilèges d'administrateur, une session valide et un jeton CSRF
+- **Corps de la requête**:
+
+  ```json
+  {
+    "name": "Duplicati uploads",
+    "scope": "upload",
+    "description": "Optional",
+    "expiresAt": null
+  }
+  ```
+
+- **Réponses d'erreur**:
+  - `400`: Nom manquant ou portée invalide (`upload` ou `read`)
+  - `401`: Non autorisé - Session ou jeton CSRF invalide
+  - `403`: Interdit - Privilèges d'administrateur requis
+  - `500`: Erreur interne du serveur
+
+### Mettre à jour une clé API - `/api/api-keys/:id` {#update-api-key---apiapi-keysid}
+- **Point de terminaison**: `/api/api-keys/:id`
+- **Méthode**: PATCH
+- **Description**: Active ou désactive une clé.
+- **Authentification**: Nécessite des privilèges d'administrateur, une session valide et un jeton CSRF
+
+### Supprimer une clé API - `/api/api-keys/:id` {#delete-api-key---apiapi-keysid}
+- **Point de terminaison**: `/api/api-keys/:id`
+- **Méthode**: DELETE
+- **Description**: Supprime une clé. Les clients existants utilisant ce secret perdent immédiatement l'accès.
+- **Authentification**: Nécessite des privilèges d'administrateur, une session valide et un jeton CSRF
+
 ## Gestion de la base de données {#database-management}
 
 ### Sauvegarder la base de données - `/api/database/backup` {#backup-database---apidatabasebackup}

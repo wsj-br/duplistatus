@@ -1,6 +1,6 @@
 # Authentification et sécurité {#authentication-security}
 
-L'API utilise une combinaison d'authentification basée sur des sessions et de protection CSRF pour toutes les opérations d'écriture dans la base de données afin d'éviter les accès non autorisés et les attaques par déni de service potentielles. Les API externes (utilisées par Duplicati) restent non authentifiées pour des raisons de compatibilité.
+L'API utilise une combinaison d'authentification basée sur les sessions et de protection CSRF pour toutes les opérations d'écriture dans la base de données afin d'empêcher l'accès non autorisé et les attaques de type déni de service. Les API externes utilisées par Duplicati et Homepage restent exemptes de CSRF. Elles peuvent éventuellement nécessiter une clé API à portée limitée et/ou une liste d'adresses IP autorisées (toutes deux désactivées par défaut). `/api/upload` dispose également d'une limite configurable de taille de corps et d'un taux de limitation.
 
 ## Authentification basée sur les sessions {#session-based-authentication}
 
@@ -19,13 +19,13 @@ Toutes les opérations modifiant l'état nécessitent un jeton CSRF valide corre
 ### Points de terminaison protégés {#protected-endpoints}
 Tous les points de terminaison qui modifient les données de la base nécessitent une authentification de session et un jeton CSRF :
 
-- **Gestion du serveur** : `/api/servers/:id` (PATCH, DELETE), `/api/servers/:id/server-url` (PATCH), `/api/servers/:id/password` (PATCH, GET)
-- **Gestion de la configuration** : `/api/configuration/email` (GET, POST, DELETE), `/api/configuration/unified` (GET), `/api/configuration/ntfy` (GET), `/api/configuration/notifications` (GET, POST), `/api/configuration/backup-settings` (POST), `/api/configuration/templates` (POST), `/api/configuration/overdue-tolerance` (GET, POST)
-- **Système de notifications** : `/api/notifications/test` (POST)
+- **Gestion des serveurs** : `/api/servers/:id` (PATCH, DELETE), `/api/servers/:id/server-url` (PATCH), `/api/servers/:id/password` (PATCH, GET)
+- **Gestion de la configuration** : `/api/configuration/email` (GET, POST, DELETE), `/api/configuration/unified` (GET), `/api/configuration/ntfy` (GET), `/api/configuration/notifications` (GET, POST), `/api/configuration/backup-settings` (POST), `/api/configuration/templates` (POST), `/api/configuration/overdue-tolerance` (GET, POST), `/api/configuration/daily-summary` (GET, POST), `/api/configuration/daily-summary/send` (POST), `/api/configuration/daily-summary/retry` (POST), `/api/configuration/daily-summary/preview` (POST)
+- **Système de notifications** : `/api/notifications/test` (POST), `/api/notifications/preview` (POST)
 - **Configuration Cron** : `/api/cron-config` (GET, POST)
-- **Proxy Cron** : `/api/cron/*` (GET, POST) - transmet les requêtes au service cron
+- **Proxy Cron** : `/api/cron/*` (GET, POST) - transmet les requêtes au service cron. POST nécessite un administrateur. Le processus cron s'attache par défaut à `127.0.0.1` ; les routes de service cron mutantes nécessitent `X-Cron-Service-Secret` quand `CRON_SERVICE_SECRET` est défini.
 - **Gestion des sessions** : `/api/session` (POST, GET, DELETE), `/api/csrf` (GET)
-- **Données des graphiques** : `/api/chart-data/*` (GET)
+- **Données du graphique** : `/api/chart-data/*` (GET)
 - **Tableau de bord** : `/api/dashboard` (GET)
 - **Détails du serveur** : `/api/servers` (GET), `/api/servers/:id` (GET), `/api/detail/:serverId` (GET)
 - **Journal d'audit** : `/api/audit-log` (GET), `/api/audit-log/download` (GET), `/api/audit-log/filters` (GET), `/api/audit-log/retention` (PATCH), `/api/audit-log/cleanup` (POST) - administrateur requis pour les opérations d'écriture
@@ -37,14 +37,17 @@ Tous les points de terminaison qui modifient les données de la base nécessiten
 - **Vérification en retard** : `/api/notifications/check-overdue` (POST) - nécessite une session et un jeton CSRF
 - **Effacer les horodatages en retard** : `/api/notifications/clear-overdue-timestamps` (POST) - nécessite une session et un jeton CSRF
 
-### Points de terminaison non protégés {#unprotected-endpoints}
-Les API externes restent non authentifiées pour l'intégration avec Duplicati :
+### Points de terminaison externes {#external-endpoints}
+Ces routes n'utilisent pas de cookies de session ou de CSRF. L'authentification est facultative et configurée dans Paramètres :
 
-- `/api/upload` - Téléversement des données de sauvegarde depuis Duplicati
-- `/api/lastbackup/:serverId` - Statut de la dernière sauvegarde
-- `/api/lastbackups/:serverId` - Statut des dernières sauvegardes
-- `/api/summary` - Données récapitulatives générales
-- `/api/health` - Point de terminaison de vérification de santé
+- `/api/upload` - Téléchargements de données de sauvegarde depuis Duplicati (clé à portée de téléchargement, limites de taille et de taux)
+- `/api/lastbackup/:serverId` - Dernier état de sauvegarde (clé à portée de lecture)
+- `/api/lastbackups/:serverId` - Derniers états de sauvegarde (clé à portée de lecture)
+- `/api/summary` - Données de résumé globales (clé à portée de lecture)
+- `/api/health` - Point de terminaison de vérification de santé (jamais avec clé)
+- `/api/ping` - Sonde de connectivité (jamais avec clé)
+
+Quand **Exiger des clés API** est sur, les quatre premières routes renvoient `401` sans une clé valide et `403` quand la portée de la clé ne correspond pas. Voir [Clés API](../user-guide/settings/api-keys-settings.md) et [Liste d'adresses IP autorisées](../user-guide/settings/ip-allowlist-settings.md).
 
 ### Exemple d'utilisation (Session + CSRF) {#usage-example-session--csrf}
 

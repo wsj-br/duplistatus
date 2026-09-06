@@ -2,6 +2,8 @@
 
 当您丢失密码或被锁定出您的账户时，恢复管理员访问 **duplistatus**。本指南介绍了在 Docker 环境中使用管理员恢复脚本。
 
+如果浏览器在登录表单之前显示**拒绝访问**（HTTP 403），则[管理员IP白名单](settings/ip-allowlist-settings.md)正在阻止请求。请改用[IP白名单锁定](troubleshooting.md#locked-out-by-ip-allowlist)，而不是此脚本。
+
 ## 在 Docker 中使用脚本 {#using-the-script-in-docker}
 
 Dockerfile 包括 `scripts` 目录和一个方便的 shell 包装器。

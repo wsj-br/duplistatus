@@ -1,8 +1,8 @@
 # Modèles {#templates}
 
-**duplistatus** utilise trois modèles pour les messages de notification. Ces modèles sont utilisés à la fois pour les notifications NTFY et par e-mail.
+**duplistatus** utilise quatre modèles pour les messages de notification. Les corps des e-mails sont en Markdown (titres, listes, liens et tableaux). NTFY pour Succès, Avertissement/Erreur et En retard est dérivé du même contenu ; le Résumé quotidien a un modèle NTFY séparé et compact.
 
-La page inclut un sélecteur **Langue des modèles** qui définit la locale pour les modèles par défaut. Changer la langue met à jour la locale pour les nouveaux modèles par défaut, mais cela ne change **pas** le texte des modèles existants. Pour appliquer une nouvelle langue à vos modèles, modifiez-les manuellement ou utilisez **Réinitialiser ce modèle à la valeur par défaut** (pour l'onglet actuel) ou **Tout réinitialiser aux valeurs par défaut** (pour les trois modèles).
+La page comprend un sélecteur de **Langue du modèle** qui définit la locale pour les modèles par défaut. Changer la langue met à jour la locale pour les nouveaux paramètres par défaut, mais cela ne modifie **pas** le texte des modèles existants. Pour appliquer une nouvelle langue à vos modèles, modifiez-les manuellement ou utilisez **Réinitialiser ce modèle à la valeur par défaut** (pour l'onglet actuel) ou **Réinitialiser tout par défaut** (pour tous les modèles).
 
 ![modèles de notification](../../assets/screen-settings-templates.png)
 
@@ -11,6 +11,7 @@ La page inclut un sélecteur **Langue des modèles** qui définit la locale pour
 | **Succès**        | Utilisé lorsque les sauvegardes se terminent avec succès.            |
 | **Avertissement/Erreur**  | Utilisé lorsque les sauvegardes se terminent avec des avertissements ou des erreurs. |
 | **Sauvegarde en retard** | Utilisé lorsque les sauvegardes sont en retard.                      |
+| **Résumé quotidien**  | Modèles d'e-mail et NTFY compacts pour la capture instantanée quotidienne optionnelle. |
 
 <br/>
 
@@ -24,24 +25,26 @@ Un sélecteur de **Langue du modèle** situé en haut de la page vous permet de 
 
 | Bouton                                                              | Description                                                                                         |
 |:--------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------|
-| <IconButton label="Enregistrer les paramètres du modèle" />                      | Enregistre les paramètres lors de la modification du modèle. Le bouton enregistre le modèle affiché (Succès, Avertissement/Erreur ou Sauvegarde en retard). |
+| <IconButton label="Enregistrer les paramètres du modèle" />                      | Enregistre les paramètres lors du changement de modèle. Le bouton enregistre le modèle affiché (Succès, Avertissement/Erreur, Sauvegarde en retard ou Résumé quotidien). |
 | <IconButton icon="lucide:send" label="Envoyer la notification de test"/>     | Vérifie le modèle après sa mise à jour. Les variables seront remplacées par leurs noms pour le test. Pour les notifications par courriel, le titre du modèle devient l'objet du courriel. |
 | <IconButton icon="lucide:rotate-ccw" label="Réinitialiser ce modèle à la valeur par défaut"/> | Restaure le modèle par défaut pour le **modèle sélectionné** (l'onglet actuel). N'oubliez pas d'enregistrer après la réinitialisation. |
-| <IconButton icon="lucide:rotate-ccw" label="Réinitialiser tout à la valeur par défaut"/> | Restaure les trois modèles (Succès, Avertissement/Erreur, Sauvegarde en retard) aux valeurs par défaut pour la Langue du modèle sélectionnée. N'oubliez pas d'enregistrer après la réinitialisation. |
+| <IconButton icon="lucide:rotate-ccw" label="Réinitialiser tout par défaut"/> | Restaure tous les modèles (Succès, Avertissement/Erreur, Sauvegarde en retard et Résumé quotidien) aux valeurs par défaut pour la Langue du modèle sélectionnée. N'oubliez pas d'enregistrer après la réinitialisation. |
 
 <br/>
 
 ## Variables {#variables}
 
-Tous les modèles supportent les variables qui seront remplacées par des valeurs réelles. Le tableau suivant montre les variables disponibles :
+Les corps des e-mails sont en Markdown. Les titres, listes, liens et tableaux sont pris en charge. Les valeurs des variables sont insérées comme texte échappé et ne peuvent pas introduire de Markdown ou de HTML. Les balises HTML brutes intégrées précédemment dans les modèles personnalisés sont maintenant échappées.
+
+Tous les modèles Succès, Avertissement/Erreur et En retard prennent en charge des variables qui seront remplacées par des valeurs réelles. Le tableau suivant montre les variables disponibles :
 
 | Variable               | Description                                     | Disponible dans     |
 |:-----------------------|:------------------------------------------------|:-----------------|
-| `{server_name}`        | Nom du serveur.                             | Tous les modèles    |
-| `{server_alias}`       | Alias du serveur.                            | Tous les modèles    |
-| `{server_note}`        | Note pour le serveur.                            | Tous les modèles    |
-| `{server_url}`         | URL de la configuration web du serveur Duplicati   | Tous les modèles    |
-| `{backup_name}`        | Nom de la sauvegarde.                             | Tous les modèles    |
+| `{server_name}`        | Nom du serveur.                             | Succès, Avertissement, En retard |
+| `{server_alias}`       | Alias du serveur.                            | Succès, Avertissement, En retard |
+| `{server_note}`        | Note pour le serveur.                            | Succès, Avertissement, En retard |
+| `{server_url}`         | URL de la configuration web du serveur Duplicati   | Succès, Avertissement, En retard |
+| `{backup_name}`        | Nom de la sauvegarde.                             | Succès, Avertissement, En retard |
 | `{status}`             | Statut de la sauvegarde (Succès, Avertissement, Erreur, Fatal). | Succès, Avertissement |
 | `{backup_date}`        | Date et heure de la sauvegarde.                    | Succès, Avertissement |
 | `{duration}`           | Durée de la sauvegarde.                         | Succès, Avertissement |
@@ -60,3 +63,18 @@ Tous les modèles supportent les variables qui seront remplacées par des valeur
 | `{expected_elapsed}`   | Temps écoulé depuis la date prévue.           | En retard          |
 | `{backup_interval}`    | Chaîne d'intervalle (par exemple, "1D", "2W", "1M").       | En retard          |
 | `{overdue_tolerance}`  | Paramètre de tolérance de retard.                      | En retard          |
+
+Les modèles de Résumé quotidien utilisent un ensemble différent de variables pour la capture instantanée de l'état actuel :
+
+| Variable | Description |
+|:---------|:------------|
+| `{summary_date}` | Date du calendrier locale de la capture instantanée |
+| `{generated_at}` | Date et heure de génération de la capture instantanée |
+| `{time_zone}` | Fuseau horaire IANA enregistré |
+| `{server_count}` / `{job_count}` | Serveurs et tâches connues |
+| `{success_count}` / `{warning_count}` / `{error_count}` / `{fatal_count}` / `{unknown_count}` / `{no_report_count}` | Paniers d'état mutuellement exclusifs |
+| `{overdue_count}` | Tâches en retard (orthogonales à l'état) |
+| `{problem_table}` / `{all_jobs_table}` | Tables générées des tâches nécessitant une attention et de toutes les tâches. Colonnes : Serveur, Sauvegarde, En retard, Dernier statut, Dernier résultat, Durée, Avertissements, Erreurs, Téléchargé. |
+| `{latest_uploaded_size}` / `{latest_source_size}` / `{latest_storage_size}` / `{latest_file_count}` / `{total_warnings}` / `{total_errors}` | Totaux des derniers résultats |
+
+Utilisez **Aperçu** pour afficher Email HTML, texte brut et NTFY sans envoi. L'aperçu s'ouvre dans une boîte de dialogue. Email HTML suit le thème clair ou sombre actuel.

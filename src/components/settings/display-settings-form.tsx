@@ -11,8 +11,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import { useConfig, type ChartTimeRange } from '@/contexts/config-context';
+import { cn, formatRelativeTime } from '@/lib/utils';
+import { useConfig, useRelativeTimeLocale, type ChartTimeRange } from '@/contexts/config-context';
 import { CHART_TIME_RANGES } from '@/lib/chart-utils';
 import { useTheme } from '@/contexts/theme-context';
 import type { FormatLocaleOverride, StartOfWeek } from '@/lib/types';
@@ -60,12 +60,15 @@ export function DisplaySettingsForm() {
     setStartOfWeek,
     formatLocale,
     setFormatLocale,
+    relativeTimeInUiLocale,
+    setRelativeTimeInUiLocale,
     showDashboardVersion,
     setShowDashboardVersion,
   } = useConfig();
   
   const { themePreference, resolvedTheme, setThemePreference } = useTheme();
   const uiLocale = useLocale();
+  const relativeTimeLocale = useRelativeTimeLocale();
   // Track if component has mounted on client (prevents hydration mismatch)
   // Use useState initializer to avoid set-state-in-effect warning
   const [mounted, setMounted] = useState(false);
@@ -82,15 +85,17 @@ export function DisplaySettingsForm() {
     const locale = formatLocale === 'locale-default' ? uiLocale : formatLocale;
     const sampleDate = new Date('2024-12-31T14:30:00');
     const sampleNumber = 1234.56;
+    const relativeSampleDate = new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString();
+    const relative = formatRelativeTime(relativeSampleDate, undefined, relativeTimeLocale);
     try {
       const dateStr = new Intl.DateTimeFormat(locale, { year: 'numeric', month: '2-digit', day: '2-digit' }).format(sampleDate);
       const timeStr = new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit' }).format(sampleDate);
       const numStr = new Intl.NumberFormat(locale).format(sampleNumber);
-      return { date: dateStr, time: timeStr, number: numStr };
+      return { date: dateStr, time: timeStr, number: numStr, relative };
     } catch {
-      return { date: '31/12/2024', time: '14:30', number: '1,234.56' };
+      return { date: '31/12/2024', time: '14:30', number: '1,234.56', relative };
     }
-  }, [formatLocale, uiLocale]);
+  }, [formatLocale, uiLocale, relativeTimeLocale]);
 
   const selectedLocaleLabel = formatLocale === 'locale-default'
     ? t("UI locale") + ` (${uiLocale})`
@@ -138,14 +143,14 @@ export function DisplaySettingsForm() {
                   <SelectValue placeholder={t("Select page size")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="5">{t("{{count}} rows", { count: 5 })}</SelectItem>
-                  <SelectItem value="10">{t("{{count}} rows", { count: 10 })}</SelectItem>
-                  <SelectItem value="15">{t("{{count}} rows", { count: 15 })}</SelectItem>
-                  <SelectItem value="20">{t("{{count}} rows", { count: 20 })}</SelectItem>
-                  <SelectItem value="25">{t("{{count}} rows", { count: 25 })}</SelectItem>
-                  <SelectItem value="30">{t("{{count}} rows", { count: 30 })}</SelectItem>
-                  <SelectItem value="40">{t("{{count}} rows", { count: 40 })}</SelectItem>
-                  <SelectItem value="50">{t("{{count}} rows", { count: 50 })}</SelectItem>
+                  <SelectItem value="5">{t("{{count}} rows", { plurals: true, count: 5 })}</SelectItem>
+                  <SelectItem value="10">{t("{{count}} rows", { plurals: true, count: 10 })}</SelectItem>
+                  <SelectItem value="15">{t("{{count}} rows", { plurals: true, count: 15 })}</SelectItem>
+                  <SelectItem value="20">{t("{{count}} rows", { plurals: true, count: 20 })}</SelectItem>
+                  <SelectItem value="25">{t("{{count}} rows", { plurals: true, count: 25 })}</SelectItem>
+                  <SelectItem value="30">{t("{{count}} rows", { plurals: true, count: 30 })}</SelectItem>
+                  <SelectItem value="40">{t("{{count}} rows", { plurals: true, count: 40 })}</SelectItem>
+                  <SelectItem value="50">{t("{{count}} rows", { plurals: true, count: 50 })}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -451,14 +456,24 @@ export function DisplaySettingsForm() {
                   </Command>
                 </PopoverContent>
               </Popover>
+              <div className="flex items-start space-x-2">
+                <Checkbox
+                  id="relative-time-in-ui-locale"
+                  className="mt-0.5"
+                  checked={relativeTimeInUiLocale}
+                  onCheckedChange={(checked) => setRelativeTimeInUiLocale(checked === true)}
+                />
+                <div className="grid gap-1">
+                  <Label htmlFor="relative-time-in-ui-locale" className="text-sm font-normal cursor-pointer">
+                    {t("Keep relative time in the UI language")}
+                  </Label>
+                  <p className="text-xs text-muted-foreground">
+                    {t('Phrases such as "in 2 hours" follow User > Language instead of Format Locale.')}
+                  </p>
+                </div>
+              </div>
               {mounted && (
                 <div className="mt-1 rounded-md border bg-muted/50 p-3 text-xs space-y-1">
-                  {/* {formatLocale === 'locale-default' && (
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t("Locale")}:</span>
-                      <span className="font-mono">{selectedLocaleLabel}</span>
-                    </div>
-                  )} */}
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">{t("Date")}:</span>
                     <span className="font-mono">{formatLocalePreview().date}</span>
@@ -470,6 +485,10 @@ export function DisplaySettingsForm() {
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">{t("Number")}:</span>
                     <span className="font-mono">{formatLocalePreview().number}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">{t("Relative")}:</span>
+                    <span className="font-mono">{formatLocalePreview().relative}</span>
                   </div>
                 </div>
               )}

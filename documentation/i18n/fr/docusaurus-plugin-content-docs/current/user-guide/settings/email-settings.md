@@ -30,7 +30,7 @@ Lorsque la configuration n'est pas entièrement configurée, une boîte d'alerte
 |:-----------------------------------------------------------------|:---------------------------------------------------------|
 | <IconButton label="Enregistrer les paramètres" />                             | Enregistrer les modifications apportées aux paramètres NTFY.              |
 | <IconButton icon="lucide:mail" label="Envoyer un courriel de test"/>         | Envoie un courriel de test en utilisant la configuration SMTP. Le courriel de test affiche le nom d'hôte du serveur SMTP, le port, le type de connexion, l'état d'authentification, le nom d'utilisateur (le cas échéant), le courriel du destinataire, l'adresse d'expédition, le nom de l'expéditeur et l'horodatage du test. |
-| <IconButton icon="lucide:trash-2" label="Supprimer les paramètres SMTP"/> | Supprimer / Effacer la configuration SMTP.                   |
+| <IconButton icon="lucide:trash-2" label="Supprimer les paramètres SMTP"/> | Supprimer / Effacer la configuration SMTP. Désactivé lorsque le [Résumé quotidien](daily-summary-settings.md) est activé, car ce mode nécessite un e-mail. |
 
 <br/>
 

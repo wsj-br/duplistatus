@@ -103,7 +103,8 @@
   - `500`: No se pudo eliminar la configuración SMTP
 - **Notas**:
   - Esta operación elimina permanentemente la configuración SMTP
-  - Devuelve 404 si no existe ninguna configuración para eliminar
+  - Devuelve 404 si no existe una configuración para eliminar
+  - Devuelve 400 mientras el modo Resumen Diario está habilitado, porque ese modo requiere SMTP
 
 ## Actualizar la contraseña de correo electrónico - `/api/configuration/email/password` {#update-email-password---apiconfigurationemailpassword}
 - **Endpoint**: `/api/configuration/email/password`
@@ -196,6 +197,18 @@
         "message": "The backup {backup_name} is overdue on {server_name}.",
         "priority": "default",
         "tags": "duplicati, duplistatus, overdue"
+      },
+      "dailySummary": {
+        "email": {
+          "title": "duplistatus — Daily backup summary — {summary_date}",
+          "message": "## Daily backup summary"
+        },
+        "ntfy": {
+          "title": "duplistatus daily summary",
+          "message": "Servers {server_count}, jobs {job_count}",
+          "priority": "default",
+          "tags": "duplicati, duplistatus, daily-summary"
+        }
       }
     },
     "email": {
@@ -437,9 +450,38 @@ Para la frecuencia de notificación:
   - `400`: Las plantillas son obligatorias
   - `500`: Error del servidor al actualizar las plantillas de notificaciones
 - **Notas**:
-  - Actualiza las plantillas de notificaciones para diferentes estados de copia de seguridad
-  - Mantiene la configuración existente
-  - Las plantillas admiten sustitución de variables
+  - Actualiza las plantillas de notificación para diferentes estados de copia de seguridad
+  - Preserva la configuración existente
+  - Las plantillas admiten cuerpos de correo electrónico en Markdown y sustitución de `{placeholder}`
+  - Se requiere un conjunto de plantillas `dailySummary` (asunto/cuerpo del correo electrónico y NTFY compacto)
+
+## Resumen Diario - `/api/configuration/daily-summary` {#daily-summary---apiconfigurationdaily-summary}
+- **Punto final**: `/api/configuration/daily-summary`
+- **Método**: GET, POST
+- **Descripción**: Lee o actualiza el modo Resumen Diario. GET devuelve la configuración sanitizada, la salud del despachador, la próxima ocurrencia y el estado de entrega por canal. POST guarda `enabled`, `localTime` (`HH:mm`), `timeZone` (IANA) y `sendNtfy`. Habilitar requiere SMTP válido y una tarea `daily-summary-dispatch` saludable. Habilitar NTFY requiere configuración de NTFY almacenada. Cambiar el horario establece la próxima ocurrencia **futura**.
+- **Autenticación**: GET requiere una sesión válida y un token CSRF. POST requiere una sesión de administrador y un token CSRF.
+- **Respuestas de error**:
+  - `400`: Tiempo/zona horaria no válidos, falta SMTP/NTFY o el despachador no está saludable
+  - `401`: No autorizado
+  - `500`: Error al leer o actualizar el Resumen Diario
+
+## Enviar Resumen Diario - `/api/configuration/daily-summary/send` {#send-daily-summary---apiconfigurationdaily-summarysend}
+- **Endpoint**: `/api/configuration/daily-summary/send`
+- **Método**: POST
+- **Descripción**: Envía una instantánea adicional del estado actual inmediatamente. No consume la próxima ocurrencia programada. Utiliza el SMTP almacenado (y el NTFY almacenado cuando se selecciona). No acepta direcciones de destinatarios o puntos finales en la solicitud.
+- **Autenticación**: Requiere una sesión de administrador y un token CSRF
+
+## Reintentar Resumen Diario - `/api/configuration/daily-summary/retry` {#retry-daily-summary---apiconfigurationdaily-summaryretry}
+- **Endpoint**: `/api/configuration/daily-summary/retry`
+- **Método**: POST
+- **Descripción**: Reintenta los canales fallidos desde la carga útil persistente. Cuerpo opcional `{ "occurrenceKey": "..." }`; de lo contrario, reintenta la última ocurrencia fallida.
+- **Autenticación**: Requiere una sesión de administrador y un token CSRF
+
+## Vista previa del Resumen Diario - `/api/configuration/daily-summary/preview` {#preview-daily-summary---apiconfigurationdaily-summarypreview}
+- **Endpoint**: `/api/configuration/daily-summary/preview`
+- **Método**: POST
+- **Descripción**: Representa la instantánea actual sin enviar y sin escribir filas del registro de entrega.
+- **Autenticación**: Requiere una sesión válida y un token CSRF
 
 ## Obtener la tolerancia de retraso - `/api/configuration/overdue-tolerance` {#get-overdue-tolerance---apiconfigurationoverdue-tolerance}
 - **Endpoint**: `/api/configuration/overdue-tolerance`
@@ -488,3 +530,28 @@ Para la frecuencia de notificación:
   - Actualiza la configuración de tolerancia de copias de seguridad vencidas (acepta formato de cadena como `"1h"`, `"2h"`, etc.; predeterminada para nuevas instalaciones es `2h`)
   - Afecta cuándo se consideran vencidas las copias de seguridad
   - Utilizada por el verificador de copias de seguridad vencidas
+
+## Seguridad de APIs externas - `/api/configuration/external-api-security` {#external-api-security---apiconfigurationexternal-api-security}
+- **Punto final**: `/api/configuration/external-api-security`
+- **Métodos**: GET, PATCH
+- **Descripción**: Lee o actualiza si las APIs externas requieren una clave, además del tamaño de `/api/upload` y los límites de tasa.
+- **Autenticación**: Requiere privilegios de administrador, sesión válida y token CSRF
+- **Cuerpo PATCH**:
+
+  ```json
+  {
+    "requireApiKey": false,
+    "uploadLimits": {
+      "enabled": true,
+      "maxBytes": 5242880,
+      "perMinute": 20,
+      "perHour": 200
+    }
+  }
+  ```
+
+## Lista de IPs permitidas - `/api/configuration/ip-allowlist` {#ip-allowlist---apiconfigurationip-allowlist}
+- **Punto final**: `/api/configuration/ip-allowlist`
+- **Métodos**: GET, PATCH
+- **Descripción**: Lee o actualiza los proxies de confianza y las listas de CIDR permitidas para administradores y APIs externas. Habilitar la lista de administradores fallará a menos que la IP del cliente actual ya esté en la lista (el bucle de retroalimentación está exento).
+- **Autenticación**: Requiere privilegios de administrador, sesión válida y token CSRF

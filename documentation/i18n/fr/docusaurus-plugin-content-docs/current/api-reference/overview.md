@@ -34,9 +34,11 @@ Tous les points de terminaison suivent un modèle de gestion des erreurs cohére
 - **401 Non autorisé** : Session invalide ou manquante, session expirée, ou échec de la validation du jeton CSRF
 - **403 Interdit** : Opération non autorisée (par exemple, suppression d'une sauvegarde en production) ou échec de la validation du jeton CSRF
 - **404 Introuvable** : Ressource introuvable
-- **409 Conflit** : Données en double (pour les points de terminaison de chargement)
-- **500 Erreur interne du serveur** : Erreurs côté serveur accompagnées de messages d'erreur détaillés
-- **503 Service indisponible** : Échec des vérifications d'intégrité, problèmes de connexion à la base de données ou service Cron indisponible
+- **409 Conflit** : Données en double (pour les points de terminaison de téléchargement)
+- **413 Entité de requête trop volumineuse** : Le corps de la requête `/api/upload` dépasse la limite de taille configurée
+- **429 Trop de requêtes** : Limite de taux dépassée pour le téléchargement, l'API de lecture ou les échecs d'authentification
+- **500 Erreur interne du serveur** : Erreurs côté serveur avec des messages d'erreur détaillés
+- **503 Service indisponible** : Échecs de vérification de santé, problèmes de connexion à la base de données ou service cron indisponible
 
 Les réponses d'erreur incluent :
 - `error` : Message d'erreur lisible par l'utilisateur

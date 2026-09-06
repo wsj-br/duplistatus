@@ -19,7 +19,10 @@ Utilisez l'option `--upload` pour envoyer les données générées vers `/api/up
 
 ```bash
 pnpm generate-test-data --servers=N --upload
+pnpm generate-test-data --servers=N --upload --api-key=YOUR_UPLOAD_KEY
 ```
+
+`--api-key` est requis lorsque Paramètres → Clés API est défini sur exiger des clés. Le script réessaye une fois sur HTTP 429 afin qu'une exécution de grande envergure `--upload` reste dans les limites de débit par défaut.
 
 **Exemples :**
 
@@ -33,6 +36,14 @@ pnpm generate-test-data --upload --servers=1
 # Generate data for all 30 servers
 pnpm generate-test-data --servers=30
 ```
+
+Le script attribue des versions de Duplicati **par serveur** (la même chaîne de rapport est écrite dans chaque sauvegarde pour ce serveur) :
+
+- **70–80% actuel** : utilise la dernière version stable mise en cache disponible à partir de `configurations.duplicati_versions`, sinon une version de secours fixée (`2.1.0.5_stable`).
+- **Les versions plus anciennes restantes** : une version stable strictement antérieure afin que le badge du tableau de bord s'affiche comme obsolète (jaune).
+- Le mode Direct-DB efface d'abord `configurations`, puis restaure ou initialise le cache de versions afin que la comparaison entre les versions actuelles et obsolètes fonctionne immédiatement.
+- Les petits nombres ne peuvent pas toujours être répartis en 70–80% : `--servers=1` est 100% actuel ; `--servers=2` ou `3` conserve au moins un serveur de version antérieure ; `--servers=6` est 5 actuels (83%). `--servers=12` (utilisé par `pnpm take-screenshots`) est **9 actuels / 3 anciens**.
+- Quand `pnpm take-screenshots` réduit plus tard le jeu de données à trois serveurs, il conserve le serveur en retard protégé et **au moins un serveur de version antérieure**.
 
 >[!CAUTION]
 > Ce script supprime toutes les données précédentes de la base de données et les remplace par des données de test.
@@ -255,3 +266,11 @@ pnpm test-entrypoint
 - Vérifier la rotation des journaux et les fonctionnalités de journalisation
 - Tester l'arrêt gracieux et la gestion des signaux
 - Déboguer le comportement du script d'entrée dans un environnement local
+
+## Validation du Résumé quotidien {#daily-summary-validation}
+
+```bash
+pnpm validate-daily-summary
+```
+
+Exécute des vérifications déterministes pour la planification du Résumé quotidien (y compris l'heure d'été), l'agrégation des instantanés, la désinfection Markdown, les réclamations du registre de livraison et la migration du schéma 4.1 → 4.2 avec des modèles personnalisés. N'envoie pas d'E-mail ou de NTFY.

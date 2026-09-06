@@ -89,10 +89,10 @@ function LoginForm({ t }: { t: TFunction }) {
             /\/login$/.test(targetUrl) ||
             /\/login\?/.test(targetUrl)
           ) {
-            window.location.href = homeUrl;
+            router.push(homeUrl);
             return;
           }
-          window.location.href = targetUrl;
+          router.push(targetUrl);
         }
       } catch {
         // ignore
@@ -100,7 +100,7 @@ function LoginForm({ t }: { t: TFunction }) {
     }
     const timeoutId = setTimeout(checkAuth, 100);
     return () => clearTimeout(timeoutId);
-  }, [searchParams, homeUrl, validateRedirectUrl]);
+  }, [searchParams, homeUrl, validateRedirectUrl, router]);
 
   useEffect(() => {
     if (checkAdminTipCalledRef.current) return;
@@ -198,7 +198,7 @@ function LoginForm({ t }: { t: TFunction }) {
 
       const redirectUrl = searchParams.get("redirect");
       const targetUrl = validateRedirectUrl(redirectUrl);
-      window.location.href = targetUrl;
+      router.push(targetUrl);
     } catch {
       setError(t("An unexpected error occurred"));
       setLoading(false);
@@ -342,7 +342,7 @@ function LoginForm({ t }: { t: TFunction }) {
           if (!open) {
             const redirectUrl = searchParams.get("redirect");
             const targetUrl = validateRedirectUrl(redirectUrl);
-            window.location.href = targetUrl;
+            router.push(targetUrl);
           }
         }}
       />

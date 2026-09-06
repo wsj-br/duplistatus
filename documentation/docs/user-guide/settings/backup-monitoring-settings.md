@@ -8,6 +8,8 @@
 
 The server list on this page can be filtered using filter field.
 
+When **Daily Summary** is enabled, overdue detection continues but individual overdue notifications are suppressed. See [Daily Summary](daily-summary-settings.md).
+
 **Filter Matches:**
 - Server ID
 - Server URL

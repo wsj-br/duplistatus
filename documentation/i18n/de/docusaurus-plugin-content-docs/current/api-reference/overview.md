@@ -34,9 +34,11 @@ Alle Endpunkte folgen einem konsistenten Muster zur Fehlerbehandlung:
 - **401 Unauthorized**: Ungültige oder fehlende Sitzung, abgelaufene Sitzung oder fehlgeschlagene CSRF-Token-Validierung
 - **403 Forbidden**: Vorgang nicht erlaubt (z. B. Löschung einer Sicherung in der Produktionsumgebung) oder fehlgeschlagene CSRF-Token-Validierung
 - **404 Not Found**: Ressource nicht gefunden
-- **409 Conflict**: Doppeldaten (bei Upload-Endpunkten)
-- **500 Internal Server Error**: Serverseitige Fehler mit detaillierten Fehlermeldungen
-- **503 Service Unavailable**: Fehler bei Zustandsprüfungen, Probleme mit der Datenbankverbindung oder nicht verfügbarer Cron-Dienst
+- **409 Konflikt**: Doppelte Daten (für Upload-Endpunkte)
+- **413 Payload zu groß**: `/api/upload`-Körper überschreitet das konfigurierte Größenlimit
+- **429 Zu viele Anfragen**: Upload-, Read-API- oder Authentifizierungsfehler-Rate-Limit überschritten
+- **500 Interner Serverfehler**: Serverseitige Fehler mit detaillierten Fehlermeldungen
+- **503 Dienst nicht verfügbar**: Fehler bei der Gesundheitsprüfung, Datenbankverbindungsprobleme oder Cron-Dienst nicht verfügbar
 
 Fehlerantworten enthalten:
 - `error`: Menschlich lesbare Fehlermeldung

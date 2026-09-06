@@ -12,6 +12,8 @@ La tabla de notificaciones de copia de seguridad está organizada por servidor. 
 
 Esta página tiene una función de guardado automático. Cualquier cambio que realice se guardará automáticamente.
 
+Cuando **Resumen Diario** está habilitado, las notificaciones individuales y adicionales de copia de seguridad se suprimen. La configuración de esta página se conserva y vuelve a estar activa cuando se desactiva el Resumen Diario. Consulte [Resumen Diario](daily-summary-settings.md).
+
 <br/>
 
 ## Filtro {#filter}

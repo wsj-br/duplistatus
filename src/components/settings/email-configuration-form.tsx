@@ -661,6 +661,13 @@ export function EmailConfigurationForm() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
+          {config?.dailySummary?.enabled && (
+            <Alert>
+              <AlertDescription>
+                {t('Daily Summary mode requires SMTP. These settings cannot be deleted while Daily Summary is enabled.')}
+              </AlertDescription>
+            </Alert>
+          )}
           {/* Configuration Notice */}
           {!isFormValid() && (
             <Alert className="bg-yellow-50 dark:bg-yellow-950/20 border-yellow-200 dark:border-yellow-800 flex items-start gap-6 [&>svg]:relative [&>svg]:left-0 [&>svg]:top-0 [&>svg~*]:pl-0">
@@ -881,7 +888,8 @@ export function EmailConfigurationForm() {
             <Button
               onClick={handleSaveConfig}
               disabled={isSaving}
-              className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700"
+              variant="gradient"
+              className="w-full sm:w-auto"
             >
               {isSaving ? t("Saving...") : t("Save Settings")}
             </Button>
@@ -909,7 +917,7 @@ export function EmailConfigurationForm() {
               <AlertDialogTrigger asChild>
                 <Button
                   variant="destructive"
-                  disabled={isDeleting}
+                  disabled={isDeleting || config?.dailySummary?.enabled === true}
                   className="w-full sm:w-auto"
                 >
                   <Trash2 className="w-4 h-4 mr-2" />
@@ -1014,7 +1022,7 @@ export function EmailConfigurationForm() {
                   type="button"
                   onClick={handlePasswordSave}
                   disabled={isSavingPassword || isDeletingPassword || !newPassword || (!showPassword && (!confirmPassword || newPassword !== confirmPassword))}
-                  className="bg-blue-600 hover:bg-blue-700"
+                  variant="gradient"
                 >
                   {isSavingPassword ? (
                     <>

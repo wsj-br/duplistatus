@@ -886,8 +886,121 @@ const migrations: Migration[] = [
       }
       logMigration('log', 'Sessions table created with nullable user_id to support unauthenticated sessions');
     }
+  },
+  {
+    version: '4.1',
+    description: 'Add API keys and default security configuration',
+    up: (db: Database.Database) => {
+      const apiKeysExists = db.prepare(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='api_keys'"
+      ).get();
+
+      if (apiKeysExists) {
+        throw new Error('MIGRATION_ALREADY_COMPLETED');
+      }
+
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS api_keys (
+          id TEXT PRIMARY KEY,
+          name TEXT NOT NULL,
+          key_hash TEXT UNIQUE NOT NULL,
+          key_prefix TEXT NOT NULL,
+          key_suffix TEXT NOT NULL,
+          scope TEXT NOT NULL DEFAULT 'read',
+          description TEXT DEFAULT '',
+          enabled INTEGER NOT NULL DEFAULT 1,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          created_by TEXT,
+          expires_at DATETIME,
+          last_used_at DATETIME,
+          usage_count INTEGER DEFAULT 0,
+          FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_api_keys_key_hash ON api_keys(key_hash);
+        CREATE INDEX IF NOT EXISTS idx_api_keys_enabled ON api_keys(enabled);
+      `);
+
+      const insertConfig = db.prepare(
+        'INSERT OR IGNORE INTO configurations (key, value) VALUES (?, ?)'
+      );
+      insertConfig.run('external_api_require_api_key', 'false');
+      insertConfig.run(
+        'ip_trusted_proxies',
+        JSON.stringify({ trustProxy: false, trustedProxies: [] })
+      );
+      insertConfig.run(
+        'admin_ip_allowlist',
+        JSON.stringify({ enabled: false, cidrs: ['127.0.0.1', '::1'] })
+      );
+      insertConfig.run(
+        'external_api_ip_allowlist',
+        JSON.stringify({ enabled: false, cidrs: ['127.0.0.1', '::1'] })
+      );
+      insertConfig.run(
+        'upload_limits',
+        JSON.stringify({ enabled: true, maxBytes: 5242880, perMinute: 20, perHour: 200 })
+      );
+    }
+  },
+  {
+    version: '4.2',
+    description: 'Add daily summary delivery ledger and default daily_summary configuration',
+    up: (db: Database.Database) => {
+      const ledgerExists = db.prepare(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='daily_summary_deliveries'"
+      ).get();
+
+      if (ledgerExists) {
+        throw new Error('MIGRATION_ALREADY_COMPLETED');
+      }
+
+      db.exec(DAILY_SUMMARY_DELIVERIES_SCHEMA);
+
+      const insertConfig = db.prepare(
+        'INSERT OR IGNORE INTO configurations (key, value) VALUES (?, ?)'
+      );
+      insertConfig.run(
+        'daily_summary',
+        JSON.stringify({
+          enabled: false,
+          localTime: '08:00',
+          timeZone: 'UTC',
+          sendNtfy: false,
+          effectiveFromIso: new Date().toISOString(),
+        })
+      );
+    }
   }
 ];
+
+export const LATEST_SCHEMA_VERSION = '4.2';
+
+export const DAILY_SUMMARY_DELIVERIES_SCHEMA = `
+        CREATE TABLE IF NOT EXISTS daily_summary_deliveries (
+          id TEXT PRIMARY KEY,
+          occurrence_key TEXT NOT NULL,
+          channel TEXT NOT NULL CHECK (channel IN ('email', 'ntfy')),
+          trigger TEXT NOT NULL CHECK (trigger IN ('scheduled', 'manual', 'retry')),
+          summary_date TEXT NOT NULL,
+          time_zone TEXT NOT NULL,
+          payload_json TEXT,
+          state TEXT NOT NULL CHECK (state IN ('pending', 'sending', 'sent', 'failed')),
+          attempt_count INTEGER NOT NULL DEFAULT 0,
+          next_retry_at DATETIME,
+          lease_expires_at DATETIME,
+          error TEXT,
+          created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          sent_at DATETIME,
+          UNIQUE (occurrence_key, channel)
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_daily_summary_deliveries_state
+          ON daily_summary_deliveries(state, next_retry_at);
+        CREATE INDEX IF NOT EXISTS idx_daily_summary_deliveries_created
+          ON daily_summary_deliveries(created_at);
+`;
 
 // Database migration functions
 export class DatabaseMigrator {
@@ -983,9 +1096,9 @@ export class DatabaseMigrator {
     try {
       const currentVersion = this.getCurrentVersion();
       
-      // If database is already at the latest version (4.0), skip all migrations
-      // This handles the case where a fresh database was created with version 4.0
-      if (currentVersion === '4.0') {
+      // If database is already at the latest version, skip all migrations
+      // This handles the case where a fresh database was created with the latest schema
+      if (currentVersion === LATEST_SCHEMA_VERSION) {
         // Silent - no migrations needed
         return;
       }
@@ -1118,9 +1231,9 @@ export class DatabaseMigrator {
     try {
       const currentVersion = this.getCurrentVersion();
       
-      // If database is already at the latest version (4.0), skip all migrations
-      // This handles the case where a fresh database was created with version 4.0
-      if (currentVersion === '4.0') {
+      // If database is already at the latest version, skip all migrations
+      // This handles the case where a fresh database was created with the latest schema
+      if (currentVersion === LATEST_SCHEMA_VERSION) {
         // Silent - no migrations needed
         return;
       }

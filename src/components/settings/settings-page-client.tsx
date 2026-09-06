@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { ColoredIcon } from '@/components/ui/colored-icon';
-import { Settings, Bell, AlertTriangle, Server, MessageSquare, Mail, FileText, Users, ScrollText, Clock, PanelLeftClose, PanelLeftOpen, MonitorCog, Database, Terminal, GitCompare } from 'lucide-react';
+import { CalendarClock, Settings, Bell, AlertTriangle, Server, MessageSquare, Mail, FileText, Users, ScrollText, Clock, PanelLeftClose, PanelLeftOpen, MonitorCog, Database, Terminal, GitCompare, KeyRound, Shield } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { useConfiguration } from '@/contexts/configuration-context';
@@ -11,6 +11,7 @@ import { NtfyForm } from '@/components/settings/ntfy-form';
 import { BackupNotificationsForm } from '@/components/settings/backup-notifications-form';
 import { BackupMonitoringForm } from '@/components/settings/backup-monitoring-form';
 import { NotificationTemplatesForm } from '@/components/settings/notification-templates-form';
+import { DailySummaryForm } from '@/components/settings/daily-summary-form';
 import { ServerSettingsForm } from '@/components/settings/server-settings-form';
 import { EmailConfigurationForm } from '@/components/settings/email-configuration-form';
 import { UserManagementForm } from '@/components/settings/user-management-form';
@@ -20,6 +21,8 @@ import { DisplaySettingsForm } from '@/components/settings/display-settings-form
 import { DatabaseMaintenanceForm } from '@/components/settings/database-maintenance-form';
 import { ApplicationLogsViewer } from '@/components/settings/application-logs-viewer';
 import { DuplicatiVersionSettingsForm } from '@/components/settings/duplicati-version-settings-form';
+import { ApiKeysForm } from '@/components/settings/api-keys-form';
+import { IpAllowlistForm } from '@/components/settings/ip-allowlist-form';
 import { getUserLocalStorageItem, setUserLocalStorageItem } from '@/lib/user-local-storage';
 interface SettingsPageClientProps {
   currentUser: {
@@ -176,8 +179,8 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
   useEffect(() => {
     // Check for section parameter in URL first
     const sectionParam = searchParams.get('tab') || searchParams.get('section');
-    const validSections = ['notifications', 'monitoring', 'server', 'ntfy', 'email', 'templates', 'users', 'audit', 'audit-retention', 'display', 'duplicati-versions', 'database-maintenance', 'application-logs'];
-    const adminOnlySections = ['users', 'database-maintenance', 'audit-retention', 'application-logs'];
+    const validSections = ['notifications', 'monitoring', 'daily-summary', 'server', 'ntfy', 'email', 'templates', 'users', 'audit', 'audit-retention', 'display', 'duplicati-versions', 'database-maintenance', 'application-logs', 'api-keys', 'ip-allowlist'];
+    const adminOnlySections = ['users', 'database-maintenance', 'audit-retention', 'application-logs', 'api-keys', 'ip-allowlist'];
     
     // Redirect non-admin users away from admin-only sections
     if (sectionParam && adminOnlySections.includes(sectionParam) && !currentUser?.isAdmin) {
@@ -383,6 +386,18 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                     <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'monitoring' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{t("Backup Monitoring")}</span>
                   </button>
                   <button
+                    onClick={() => handleSectionChange('daily-summary')}
+                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
+                      activeSection === 'daily-summary'
+                        ? 'bg-accent text-accent-foreground'
+                        : 'hover:bg-accent/50'
+                    }`}
+                    title={isSidebarCollapsed ? t("Daily Summary") : undefined}
+                  >
+                    <CalendarClock className={`h-4 w-4 flex-shrink-0 ${config?.dailySummary?.enabled ? 'text-green-600' : ''}`} />
+                    <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'daily-summary' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{t("Daily Summary")}</span>
+                  </button>
+                  <button
                     onClick={() => handleSectionChange('templates')}
                     className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
                       activeSection === 'templates'
@@ -484,6 +499,34 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                   )}
                   {currentUser?.isAdmin && (
                     <button
+                      onClick={() => handleSectionChange('api-keys')}
+                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
+                        activeSection === 'api-keys'
+                          ? 'bg-accent text-accent-foreground'
+                          : 'hover:bg-accent/50'
+                      }`}
+                      title={isSidebarCollapsed ? t("API Keys") : undefined}
+                    >
+                      <KeyRound className="h-4 w-4 flex-shrink-0" />
+                      <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'api-keys' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{t("API Keys")}</span>
+                    </button>
+                  )}
+                  {currentUser?.isAdmin && (
+                    <button
+                      onClick={() => handleSectionChange('ip-allowlist')}
+                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
+                        activeSection === 'ip-allowlist'
+                          ? 'bg-accent text-accent-foreground'
+                          : 'hover:bg-accent/50'
+                      }`}
+                      title={isSidebarCollapsed ? t("IP Allowlist") : undefined}
+                    >
+                      <Shield className="h-4 w-4 flex-shrink-0" />
+                      <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'ip-allowlist' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{t("IP Allowlist")}</span>
+                    </button>
+                  )}
+                  {currentUser?.isAdmin && (
+                    <button
                       onClick={() => handleSectionChange('users')}
                       className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
                         activeSection === 'users'
@@ -567,6 +610,10 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                 <BackupMonitoringForm 
                   backupSettings={config.backupSettings || {}}
                 />
+              )}
+
+              {activeSection === 'daily-summary' && (
+                <DailySummaryForm />
               )}
 
               {/* Server Settings Section */}
@@ -658,6 +705,14 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                     });
                   }}
                 />
+              )}
+
+              {activeSection === 'api-keys' && currentUser?.isAdmin && (
+                <ApiKeysForm />
+              )}
+
+              {activeSection === 'ip-allowlist' && currentUser?.isAdmin && (
+                <IpAllowlistForm />
               )}
 
               {/* Users Section (Admin only) */}

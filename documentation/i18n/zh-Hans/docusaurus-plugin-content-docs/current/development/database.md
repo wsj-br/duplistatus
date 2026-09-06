@@ -21,9 +21,11 @@ duplistatus 使用自动化迁移系统来处理不同版本之间的数据库�
 - **模式 v2.0** (应用程序 v0.7.x): 添加缺失的列和配置表
 - **模式 v3.0** (应用程序 v0.7.x): 将机器表重命名为服务器，添加服务器 URL 列
 - **模式 v3.1** (应用程序 v0.8.x): 增强备份数据字段，添加服务器密码列
-- **模式 v4.0** (应用程序 v0.9.x / v1.0.x): 添加用户访问控制（用户、会话、审计日志表）
+- **Schema v4.0** (Application v0.9.x / v1.0.x): 添加了用户访问控制（用户、会话、审计日志表）
+- **Schema v4.1** (Application v1.5.x): 添加了`api_keys`和默认配置键，用于可选的API密钥认证、IP允许列表和上传限制
+- **Schema v4.2** (Application v1.5.x): 添加了`daily_summary_deliveries`分类账和默认`daily_summary`配置，用于可选的每日摘要通知
 
-当前应用程序版本（v1.3.x）使用 **模式 v4.0** 作为最新的数据库模式版本。
+当前应用程序版本（v1.5.x）使用**Schema v4.2**作为最新的数据库架构版本。
 
 ### 迁移过程 {#migration-process}
 
@@ -161,7 +163,9 @@ duplistatus 使用自动化迁移系统来处理不同版本之间的数据库�
 - `ntfy_config`: NTFY 通知设置
 - `overdue_tolerance`: 逾期备份容忍度设置
 - `notification_templates`: 通知消息模板
-- `audit_retention_days`: 审计日志保留期 (默认: 90 天)
+- `daily_summary`: 每日摘要模式、计划、时区和可选的NTFY传递
+- `cron_service`: 定时任务计划，包括`daily-summary-dispatch`
+- `audit_retention_days`: 审计日志保留期（默认：90天）
 
 ### 数据库版本表 {#database-version-table}
 
@@ -234,6 +238,58 @@ duplistatus 使用自动化迁移系统来处理不同版本之间的数据库�
 | `status`        | 文本 NOT NULL                     | 操作状态（'成功'，'失败'，'错误'）                  |
 | `error_message` | 文本                              | 如果操作失败，显示错误消息                                    |
 
+### API 密钥表 {#api-keys-table}
+
+存储外部 HTTP API 的哈希 API 密钥。明文密钥仅在创建时显示一次，永远不会存储。
+
+#### 字段 {#fields-6}
+
+| 字段           | 类型             | 描述                                              |
+|----------------|------------------|----------------------------------------------------------|
+| `id`           | TEXT PRIMARY KEY | 唯一的密钥标识符                                    |
+| `name`         | TEXT NOT NULL    | 显示名称                                             |
+| `key_hash`     | TEXT UNIQUE      | 密钥的 SHA-256 哈希                               |
+| `key_prefix`   | TEXT             | 密钥的前四个字符 (用于指纹)   |
+| `key_suffix`   | TEXT             | 密钥的后四个字符 (用于指纹)    |
+| `scope`        | TEXT NOT NULL    | `upload` 或 `read`                                       |
+| `description`  | TEXT             | 可选描述                                     |
+| `enabled`      | INTEGER          | 密钥激活时的 `1`                               |
+| `created_at`   | DATETIME         | 创建时间戳                                       |
+| `created_by`   | TEXT             | 创建密钥的管理员的用户 ID         |
+| `expires_at`   | DATETIME         | 可选到期时间                                          |
+| `last_used_at` | DATETIME         | 最近成功使用时间                                      |
+| `usage_count`  | INTEGER          | 成功使用次数                                     |
+
+在 `configurations` 表中的相关配置密钥: `external_api_require_api_key`, `ip_trusted_proxies`, `admin_ip_allowlist`, `external_api_ip_allowlist`, `upload_limits`。
+
+### 每日摘要传递表 {#daily-summary-deliveries-table}
+
+每个频道的每日摘要电子邮件和NTFY的分类账。每个计划发生（或唯一的手动发送）最多有一个频道行。渲染的有效载荷在发送前存储，因此重试会保持相同的快照。超过30天的行将被修剪。
+
+如果进程在提供者接受消息后但在记录成功之前死亡，该频道可能会被重试（至少一次）。
+
+#### 字段 {#fields-7}
+
+| 字段               | 类型             | 描述                                                                 |
+|--------------------|------------------|-----------------------------------------------------------------------------|
+| `id`               | TEXT PRIMARY KEY | 唯一的传递标识符                                                  |
+| `occurrence_key`   | TEXT NOT NULL    | 计划的本地日期键或`manual:{uuid}`                                 |
+| `channel`          | TEXT NOT NULL    | `email`或`ntfy`                                                           |
+| `trigger`          | TEXT NOT NULL    | `scheduled`、`manual`或`retry`                                           |
+| `summary_date`     | TEXT NOT NULL    | 快照的本地日历日期                                        |
+| `time_zone`        | TEXT NOT NULL    | 已保存的IANA时区                                                         |
+| `payload_json`     | TEXT             | 渲染的主题、HTML、文本和NTFY字段                               |
+| `state`            | TEXT NOT NULL    | `pending`、`sending`、`sent`或`failed`                                   |
+| `attempt_count`    | INTEGER          | 传递尝试                                                           |
+| `next_retry_at`    | DATETIME         | 最近失败的频道可能被再次声明                                  |
+| `lease_expires_at` | DATETIME         | 声明租约；过时的租约可以被恢复                                 |
+| `error`            | TEXT             | 最后一个错误（如果有）                                                          |
+| `created_at`       | DATETIME         | 行创建时间戳                                                      |
+| `updated_at`            | DATETIME             | 上次更新时间戳               |
+| `sent_at`          | DATETIME         | 成功时间戳                                                           |
+
+对`(occurrence_key, channel)`的唯一索引可防止在同一频道上重复发送相同的事件。
+
 ## 会话管理 {#session-management}
 
 ### 数据库支持的会话存储 {#database-backed-session-storage}
@@ -261,16 +317,18 @@ duplistatus 使用自动化迁移系统来处理不同版本之间的数据库�
 - **外键**：备份表中的服务器引用，会话和审计日志中的用户引用
 - **查询优化**：频繁查询字段的索引
 - **日期索引**：日期字段的索引，用于时间基于的查询
-- **用户索引**：用户名索引，用于快速用户查找
-- **会话索引**：过期和用户ID索引，用于会话管理
-- **审计索引**：时间戳、用户ID、操作、类别和状态索引，用于审计查询
+- **用户索引**: 用户名索引，用于快速用户查找
+- **会话索引**: 到期时间和用户 ID 索引，用于会话管理
+- **审计索引**: 时间戳、用户 ID、操作、类别和状态索引，用于审计查询
+- **API 密钥索引**: 唯一哈希，以及启用/范围查找，用于认证
 
 ## 关系 {#relationships}
 
 - **服务器 → 备份**：一对多关系
 - **用户 → 会话**：一对多关系（会话可以在没有用户的情况下存在）
 - **用户 → 审计日志**：一对多关系（审计条目可以在没有用户的情况下存在）
-- **备份 → 消息**：嵌入式JSON数组
+- **用户 → API 密钥**：通过 `created_by` 一对多关系（密钥在用户被删除后仍然存在）
+- **备份 → 消息**：嵌入式 JSON 数组
 - **配置**：键值存储
 
 ## 数据类型 {#data-types}

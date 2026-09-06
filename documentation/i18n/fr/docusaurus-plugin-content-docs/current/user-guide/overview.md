@@ -10,8 +10,10 @@ duplistatus est un puissant tableau de bord de surveillance conçu spécifiqueme
 - Suivi en temps réel de l'état de toutes les opérations de sauvegarde
 - Détection automatique des sauvegardes en retard avec alertes configurables
 - Indicateurs complets et visualisation des performances des sauvegardes
-- Système de notification flexible via NTFY et e-mail
-- Prise en charge de plusieurs langues (anglais, français, allemand, espagnol, portugais brésilien, hindi (roman) et chinois simplifié).
+- Système de notifications flexible via NTFY et e-mail
+- [Clés API](settings/api-keys-settings.md) optionnelles pour les téléchargements Duplicati et les widgets Homepage, avec limites de taille et de débit de téléchargement
+- [Listes d'adresses IP autorisées](settings/ip-allowlist-settings.md) optionnelles pour l'interface d'administration et les API externes
+- Prise en charge multilingue (anglais, français, allemand, espagnol, portugais brésilien, hindi (roman) et chinois simplifié)
 
 ## Installation {#installation}
 
@@ -91,8 +93,9 @@ En cliquant sur le bouton utilisateur, vous ouvrez un menu déroulant avec des o
 2. Collectez les journaux de sauvegarde initiaux – utilisez la fonctionnalité [Collecter les journaux de sauvegarde](collect-backup-logs.md) pour remplir la base de données avec les données historiques de sauvegarde provenant de tous vos serveurs Duplicati. Cela met également à jour automatiquement les intervalles de surveillance des sauvegardes en fonction de la configuration de chaque serveur.
 3. Configurez les paramètres du serveur – définissez des alias et des notes pour les serveurs dans [Paramètres → Serveur](settings/server-settings.md) afin de rendre votre tableau de bord plus informatif.
 4. Configurez les paramètres NTFY – configurez les notifications via NTFY dans [Paramètres → NTFY](settings/ntfy-settings.md).
-5. Configurez les paramètres de messagerie – configurez les notifications par courriel dans [Paramètres → E-mail](settings/email-settings.md).
-6. Configurez les notifications de sauvegarde – configurez des notifications par sauvegarde ou par serveur dans [Paramètres → Notifications de sauvegarde](settings/backup-notifications-settings.md).
+5. Configurer les paramètres de messagerie – configurer les notifications par e-mail dans [Paramètres → E-mail](settings/email-settings.md).
+6. Configurer les notifications de sauvegarde – configurer les notifications par sauvegarde ou par serveur dans [Paramètres → Notifications de sauvegarde](settings/backup-notifications-settings.md).
+7. Optionnellement restreindre l'accès – créer des [clés API](settings/api-keys-settings.md) et/ou des [listes de contrôle d'accès par IP](settings/ip-allowlist-settings.md) si vous souhaitez protéger `/api/upload` et l'interface d'administration. Les deux sont désactivés par défaut.
 
 <br/>
 

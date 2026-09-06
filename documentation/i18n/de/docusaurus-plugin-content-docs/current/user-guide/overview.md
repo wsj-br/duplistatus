@@ -11,7 +11,9 @@ duplistatus ist ein leistungsstarkes Monitoring-Dashboard, das speziell für Dup
 - Automatische Erkennung überfälliger Sicherungen mit konfigurierbaren Warnungen
 - Umfassende Metriken und Visualisierung der Sicherungsleistung
 - Flexibles Benachrichtigungssystem über NTFY und E-Mail
-- Mehrsprachunterstützung (Englisch, Französisch, Deutsch, Spanisch, Brasilianisches Portugiesisch, Hindi (Roman) und Vereinfachtes Chinesisch).
+- Optionale [API-Schlüssel](settings/api-keys-settings.md) für Duplicati-Uploads und Homepage-Widgets mit Upload-Größen- und Rate-Limits
+- Optionale [IP-Zulassungslisten](settings/ip-allowlist-settings.md) für die Administrationsinterface und die externen APIs
+- Mehrsprachige Unterstützung (Englisch, Französisch, Deutsch, Spanisch, Brasilianisches Portugiesisch, Hindi (Roman) und Chinesisch (vereinfacht)).
 
 ## Installation {#installation}
 
@@ -91,8 +93,9 @@ Ein Klick auf die Benutzerschaltfläche öffnet ein Dropdown-Menü mit benutzers
 2. Sammeln Sie anfängliche Sicherungsprotokolle – verwenden Sie die Funktion [Backup-Logs sammeln](collect-backup-logs.md), um die Datenbank mit historischen Sicherungsdaten von allen Ihren Duplicati-Servern zu füllen. Dadurch werden auch automatisch die Intervalle für die Sicherungsüberwachung basierend auf der Konfiguration jedes Servers aktualisiert.
 3. Konfigurieren Sie die Servereinstellungen – richten Sie Server-Aliase und Notizen in [Einstellungen → Server](settings/server-settings.md) ein, um Ihr Dashboard informativer zu gestalten.
 4. Konfigurieren Sie die NTFY-Einstellungen – richten Sie Benachrichtigungen über NTFY in [Einstellungen → NTFY](settings/ntfy-settings.md) ein.
-5. Konfigurieren Sie die E-Mail-Einstellungen – richten Sie E-Mail-Benachrichtigungen in [Einstellungen → E-Mail](settings/email-settings.md) ein.
-6. Konfigurieren Sie Sicherungsbenachrichtigungen – richten Sie benachrichtigungen pro Sicherung oder pro Server in [Einstellungen → Sicherungshinweise](settings/backup-notifications-settings.md) ein.
+5. E-Mail-Einstellungen konfigurieren – richten Sie E-Mail-Benachrichtigungen in [Einstellungen → E-Mail](settings/email-settings.md) ein.
+6. Backup-Benachrichtigungen konfigurieren – richten Sie pro-Backup- oder pro-Server-Benachrichtigungen in [Einstellungen → Backup-Benachrichtigungen](settings/backup-notifications-settings.md) ein.
+7. Optional den Zugriff einschränken – erstellen Sie [API-Schlüssel](settings/api-keys-settings.md) und/oder [IP-Zulassungslisten](settings/ip-allowlist-settings.md), wenn Sie `/api/upload` und die Administrationsinterface schützen möchten. Beide sind standardmäßig aus.
 
 <br/>
 

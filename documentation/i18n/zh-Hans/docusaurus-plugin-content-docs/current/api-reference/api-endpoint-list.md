@@ -10,6 +10,10 @@
 | [`/api/audit-log/filters`](administration-apis#get-audit-log-filter-values---apiaudit-logfilters)                                                   | GET    | 获取审计日志过滤值       | 管理员                    |
 | [`/api/audit-log/retention`](administration-apis#get-audit-log-retention---apiaudit-logretention)                                                   | GET    | 获取审计日志保留期           | 管理员                    |
 | [`/api/audit-log/retention`](administration-apis#update-audit-log-retention---apiaudit-logretention)                                                | PATCH  | 更新审计日志保留期        | 管理员                    |
+| [`/api/api-keys`](administration-apis#list-api-keys---apiapi-keys)                                                                                   | GET    | 列出 API 密钥                     | 管理            |
+| [`/api/api-keys`](administration-apis#create-api-key---apiapi-keys)                                                                                  | POST   | 创建 API 密钥                    | 管理            |
+| [`/api/api-keys/:id`](administration-apis#update-api-key---apiapi-keysid)                                                                            | PATCH  | 更新 API 密钥                    | 管理            |
+| [`/api/api-keys/:id`](administration-apis#delete-api-key---apiapi-keysid)                                                                            | DELETE | 删除 API 密钥                    | 管理            |
 | [`/api/application-logs`](administration-apis#get-application-logs---apiapplication-logs)                                                           | GET    | 获取应用程序日志              | 管理员                    |
 | [`/api/application-logs/export`](administration-apis#export-application-logs---apiapplication-logsexport)                                           | GET    | 导出应用程序日志           | 管理员                    |
 | [`/api/database/backup`](administration-apis#backup-database---apidatabasebackup)                                                                   | GET    | 备份数据库                   | 管理员                    |
@@ -29,6 +33,15 @@
 | [`/api/chart-data/server/:serverId`](chart-data-apis#get-server-chart-data---apichart-dataserverserverid)                                           | GET    | 获取服务器图表数据         | 图表数据                |
 | [`/api/chart-data/server/:serverId/backup/:backupName`](chart-data-apis#get-server-backup-chart-data---apichart-dataserverserveridbackupbackupname) | GET    | 获取服务器备份图表数据      | 图表数据                |
 | [`/api/configuration/backup-settings`](configuration-apis#update-backup-settings---apiconfigurationbackup-settings)                                 | POST   | 更新备份设置            | 配置管理              |
+| [`/api/configuration/external-api-security`](configuration-apis#external-api-security---apiconfigurationexternal-api-security)                      | GET    | 获取外部 API 安全性         | 配置管理  |
+| [`/api/configuration/external-api-security`](configuration-apis#external-api-security---apiconfigurationexternal-api-security)                      | PATCH  | 更新外部 API 安全性      | 配置管理  |
+| [`/api/configuration/ip-allowlist`](configuration-apis#ip-allowlist---apiconfigurationip-allowlist)                                                 | GET    | 获取 IP 白名单                  | 配置管理  |
+| [`/api/configuration/ip-allowlist`](configuration-apis#ip-allowlist---apiconfigurationip-allowlist)                                                 | PATCH  | 更新 IP 白名单               | 配置管理  |
+| [`/api/configuration/daily-summary`](configuration-apis#daily-summary---apiconfigurationdaily-summary)                                               | GET    | 获取每日摘要状态          | 配置管理  |
+| [`/api/configuration/daily-summary`](configuration-apis#daily-summary---apiconfigurationdaily-summary)                                               | POST   | 更新每日摘要              | 配置管理  |
+| [`/api/configuration/daily-summary/preview`](configuration-apis#preview-daily-summary---apiconfigurationdaily-summarypreview)                        | POST   | 预览每日摘要             | 配置管理  |
+| [`/api/configuration/daily-summary/retry`](configuration-apis#retry-daily-summary---apiconfigurationdaily-summaryretry)                              | POST   | 重试每日摘要               | 配置管理  |
+| [`/api/configuration/daily-summary/send`](configuration-apis#send-daily-summary---apiconfigurationdaily-summarysend)                                 | POST   | 立即发送每日摘要            | 配置管理  |
 | [`/api/configuration/email`](configuration-apis#delete-email-configuration---apiconfigurationemail)                                                 | DELETE | 删除电子邮件配置        | 配置管理              |
 | [`/api/configuration/email`](configuration-apis#get-email-configuration---apiconfigurationemail)                                                    | GET    | 获取电子邮件配置         | 配置管理              |
 | [`/api/configuration/email`](configuration-apis#update-email-configuration---apiconfigurationemail)                                                 | POST   | 更新电子邮件配置        | 配置管理              |
@@ -53,6 +66,7 @@
 | [`/api/lastbackups/:serverId`](external-apis#get-latest-backups---apilastbackupsserverid)                                                           | GET    | 获取最新备份列表                | 外部API             |
 | [`/api/notifications/check-overdue`](notification-apis#check-overdue-backups---apinotificationscheck-overdue)                                       | POST   | 检查逾期备份             | 通知系统       |
 | [`/api/notifications/clear-overdue-timestamps`](notification-apis#clear-overdue-timestamps---apinotificationsclear-overdue-timestamps)              | POST   | 清除逾期时间戳          | 通知系统       |
+| [`/api/notifications/preview`](notification-apis#preview-notification-template---apinotificationspreview)                                           | POST   | 预览通知模板     | 通知系统       |
 | [`/api/notifications/test`](notification-apis#test-notification---apinotificationstest)                                                             | POST   | 测试通知                 | 通知系统       |
 | [`/api/servers`](core-operations#get-all-servers---apiservers)                                                                                      | GET    | 获取全部服务器                   | 核心操作           |
 | [`/api/servers/:id`](core-operations#delete-server---apiserversid)                                                                                  | DELETE | 删除服务器                     | 核心操作           |

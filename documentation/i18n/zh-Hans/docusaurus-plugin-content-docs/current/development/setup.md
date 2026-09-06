@@ -6,9 +6,10 @@
 - Node.js (参见 `engines.node` 在 `package.json`)
 - pnpm (参见 `engines.pnpm` / `packageManager` 在 `package.json`)
 - SQLite3
-- Inkscape (用于文档 SVG 翻译和 PNG 导出；仅当您运行 `translate` 或 `translate:svg` 时才需要)
-- bat/batcat (显示漂亮的 `translate:help` 版本)
-- direnv (自动加载 `.env*` 文件)
+- Inkscape（用于文档SVG翻译和PNG导出；仅在运行`translate`或`translate:svg`时需要）
+- bat/batcat（用于显示`translate:help`的漂亮版本）
+- direnv（用于自动加载`.env*`文件）
+- Playwright Chromium（在`pnpm install`后运行`pnpm take-screenshots:install`；这将运行`playwright install chromium`）
 
 ## 步骤 {#steps}
 
@@ -117,7 +118,7 @@
 该项目包括几个 npm 脚本，用于不同的开发任务：
 
 ### 开发脚本 {#development-scripts}
-- `pnpm dev` - 在端口 8666 上启动开发服务器（包括预检查）
+- `pnpm dev` - 在端口 8666 上启动开发服务器（包括预检查）。 `NODE_OPTIONS` 加载 `scripts/dev-preload.cjs`，该脚本应用 `scripts/peer-ip.cjs`（TCP 对等地址用于 IP 允许列表）和请求日志时间戳。
 - `pnpm build` - 为生产环境构建应用程序（包括预检查）
 - `pnpm lint` - 运行 ESLint 检查代码质量
 - `pnpm typecheck` - 运行 TypeScript 类型检查
@@ -144,9 +145,9 @@
 开发服务器（`start:*`）提供热模块替换以实现快速开发。默认端口为 3000。
 
 ### 生产脚本 {#production-scripts}
-- `pnpm build-local` - 为本地生产环境构建和准备（包括预检查，复制静态文件到独立目录）
-- `pnpm start-local` - 在本地启动生产服务器（端口 8666，包括预检查）。**注意：** 先运行 `pnpm build-local`。
-- `pnpm start` - 启动生产服务器（端口 9666）
+- `pnpm build-local` - 构建并准备本地生产环境（包括预检查，将静态文件复制到独立目录）
+- `pnpm start-local` - 在本地启动生产服务器（端口 8666，包括预检查）。 **注意：** 先运行 `pnpm build-local`。 启动独立服务器并加载 `--require ./scripts/peer-ip.cjs`。
+- `pnpm start` - 在端口 9666 上启动生产服务器，并使用相同的对等 IP 预加载。 Docker 使用 `docker-entrypoint.sh` 加载相同的脚本。
 
 ### Docker 脚本 {#docker-scripts}
 - `pnpm docker:up` - 启动 Docker Compose 堆栈

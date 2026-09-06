@@ -21,9 +21,11 @@ Die folgenden sind historische Migrationsversionenen, die die Datenbank in ihren
 - **Schema v2.0** (Anwendung v0.7.x): Hinzufügen fehlender Spalten und Tabelle für Konfigurationen
 - **Schema v3.0** (Anwendung v0.7.x): Umbenennung der machines-Tabelle in servers, Hinzufügen der Spalte server_url
 - **Schema v3.1** (Anwendung v0.8.x): Verbesserung der Sicherungsdatenfelder, Hinzufügen der Spalte server_password
-- **Schema v4.0** (Anwendung v0.9.x / v1.0.x): Hinzufügen der Benutzerzugriffskontrolle (Tabellen users, sessions, audit_log)
+- **Schema v4.0** (Anwendung v0.9.x / v1.0.x): Hinzugefügt Benutzerzugriffskontrolle (Benutzer, Sitzungen, audit_log-Tabellen)
+- **Schema v4.1** (Anwendung v1.5.x): Hinzugefügt `api_keys` und Standardkonfigurationsschlüssel für optionale API-Schlüssel-Authentifizierung, IP-Zulassungslisten und Upload-Limits
+- **Schema v4.2** (Anwendung v1.5.x): Hinzugefügt `daily_summary_deliveries`-Buchhaltung und Standard-`daily_summary`-Konfiguration für optionale tägliche Zusammenfassungsbenachrichtigungen
 
-Die aktuelle Anwendungsversion (v1.3.x) verwendet **Schema v4.0** als neueste Datenbankschema-Version.
+Aktuelle Anwendungsversion (v1.5.x) verwendet **Schema v4.2** als neueste Datenbankschema-Version.
 
 ### Migrationsprozess {#migration-process}
 
@@ -161,7 +163,9 @@ Speichert Anwendungskonfigurationseinstellungen.
 - `ntfy_config`: NTFY-Benachrichtigungseinstellungen
 - `overdue_tolerance`: Toleranzeinstellungen für verspätete Sicherungen
 - `notification_templates`: Vorlagen für Benachrichtigungsnachrichten
-- `audit_retention_days`: Dauer der Audit-Protokoll-Beibehaltung (Standard: 90 Tage)
+- `daily_summary`: Zusammenfassungsmodus, Zeitplan, Zeitzone und optionale NTFY-Lieferung
+- `cron_service`: Cron-Aufgabenpläne, einschließlich `daily-summary-dispatch`
+- `audit_retention_days`: Prüfprotokoll-Aufbewahrungsdauer (Standard: 90 Tage)
 
 ### Datenbankversionstabelle {#database-version-table}
 
@@ -234,6 +238,58 @@ Speichert ein Audit-Trail von Benutzeraktionen und Systemereignissen.
 | `status`        | TEXT NOT NULL                     | Status der Aktion ('success', 'failure', 'error')                  |
 | `error_message` | TEXT                              | Fehlermeldung, falls die Aktion fehlgeschlagen ist                                    |
 
+### API-Schlüssel-Tabelle {#api-keys-table}
+
+Speichert gehaschte API-Schlüssel für die externen HTTP-APIs. Das Klartext-Geheimnis wird einmal bei der Erstellung angezeigt und wird nie gespeichert.
+
+#### Felder {#fields-6}
+
+| Feld           | Typ              | Beschreibung                                              |
+|----------------|------------------|----------------------------------------------------------|
+| `id`           | TEXT PRIMARY KEY | Eindeutiger Schlüsselbezeichner                                    |
+| `name`         | TEXT NOT NULL    | Anzeigename                                             |
+| `key_hash`     | TEXT UNIQUE      | SHA-256-Hash des Geheimnisses                               |
+| `key_prefix`   | TEXT             | Erste vier Zeichen des Geheimnisses (für Fingerabdrücke)   |
+| `key_suffix`   | TEXT             | Letzte vier Zeichen des Geheimnisses (für Fingerabdrücke)    |
+| `scope`        | TEXT NOT NULL    | `upload` oder `read`                                       |
+| `description`  | TEXT             | Optionale Beschreibung                                     |
+| `enabled`      | INTEGER          | `1` wenn der Schlüssel aktiv ist                               |
+| `created_at`   | DATETIME         | Erstellungszeitstempel                                       |
+| `created_by`   | TEXT             | Benutzer-ID des Administrators, der den Schlüssel erstellt hat         |
+| `expires_at`   | DATETIME         | Optionales Ablaufdatum                                          |
+| `last_used_at` | DATETIME         | Letzte erfolgreiche Verwendung                                      |
+| `usage_count`  | INTEGER          | Anzahl der erfolgreichen Verwendungen                                     |
+
+Verwandte Konfigurationsschlüssel in der `configurations`-Tabelle: `external_api_require_api_key`, `ip_trusted_proxies`, `admin_ip_allowlist`, `external_api_ip_allowlist`, `upload_limits`.
+
+### Tägliche Zusammenfassungslieferungen Tabelle {#daily-summary-deliveries-table}
+
+Pro-Kanal-Buchhaltung für tägliche Zusammenfassungs-E-Mails und NTFY. Jeder geplante Auftritt (oder eindeutige manuelle Sendung) hat maximal eine Zeile pro Kanal. Die gerenderten Nutzlasten werden vor dem Senden gespeichert, damit Wiederholungen die gleiche Momentaufnahme verwenden. Zeilen älter als 30 Tage werden gelöscht.
+
+Wenn der Prozess nach dem Akzeptieren einer Nachricht durch einen Anbieter stirbt, bevor der Erfolg aufgezeichnet wird, kann dieser Kanal erneut versucht werden (mindestens einmal).
+
+#### Felder {#fields-7}
+
+| Feld               | Typ              | Beschreibung                                                                 |
+|--------------------|------------------|-----------------------------------------------------------------------------|
+| `id`               | TEXT PRIMARY KEY | Eindeutiger Lieferungsbezeichner                                                  |
+| `occurrence_key`   | TEXT NOT NULL    | Geplanter lokaler Datenschlüssel oder `manual:{uuid}`                                 |
+| `channel`          | TEXT NOT NULL    | `email` oder `ntfy`                                                           |
+| `trigger`          | TEXT NOT NULL    | `scheduled`, `manual` oder `retry`                                           |
+| `summary_date`     | TEXT NOT NULL    | Lokales Kalenderdatum für die Momentaufnahme                                        |
+| `time_zone`        | TEXT NOT NULL    | Gespeicherte IANA-Zeitzone                                                         |
+| `payload_json`     | TEXT             | Gerendert Betreff, HTML, Text und NTFY-Felder                               |
+| `state`            | TEXT NOT NULL    | `pending`, `sending`, `sent` oder `failed`                                   |
+| `attempt_count`    | INTEGER          | Lieferungsversuche                                                           |
+| `next_retry_at`    | DATETIME         | Wann ein fehlgeschlagener Kanal erneut versucht werden kann                                  |
+| `lease_expires_at` | DATETIME         | Anspruchsverpachtung; eine veraltete Verpachtung kann wiederhergestellt werden                                 |
+| `error`            | TEXT             | Letzter Fehler, falls vorhanden                                                          |
+| `created_at`       | DATETIME         | Zeitstempel der Zeilen-Erstellung                                                      |
+| `updated_at`            | DATETIME             | Zeitstempel der letzten Aktualisierung               |
+| `sent_at`          | DATETIME         | Erfolgreich Zeitstempel                                                           |
+
+Ein eindeutiger Index auf `(occurrence_key, channel)` verhindert das doppelte Senden desselben Vorkommens auf demselben Kanal.
+
 ## Sitzungsverwaltung {#session-management}
 
 ### Datenbankgestützter Speicherplatz für Sitzungen {#database-backed-session-storage}
@@ -261,16 +317,18 @@ Die Datenbank enthält mehrere Indizes für optimale Abfrageleistung:
 - **Fremdschlüssel**: Server-Referenzen in der Backups-Tabelle, Benutzer-Referenzen in den Tabellen sessions und audit_log
 - **Abfrageoptimierung**: Indizes für häufig abgefragte Felder
 - **Datumsindizes**: Indizes für Datumsfelder zur Unterstützung zeitbasierter Abfragen
-- **Benutzerindizes**: Index für Benutzernamen zur schnellen Benutzersuche
-- **Sitzungsindizes**: Indizes für Ablaufdatum und user_id zur Sitzungsverwaltung
-- **Audit-Indizes**: Indizes für Zeitstempel, user_id, Aktion, Kategorie und Status für Audit-Abfragen
+- **Benutzer-Indexe**: Benutzername-Index für schnelle Benutzerabfragen
+- **Sitzungs-Indexe**: Ablauf- und Benutzer-ID-Indexe für Sitzungsverwaltung
+- **Audit-Indexe**: Zeitstempel-, Benutzer-ID-, Aktions-, Kategorien- und Status-Indexe für Audit-Abfragen
+- **API-Schlüssel-Indexe**: Eindeutiger Hash, plus aktiviert/Bereichsabfragen für Authentifizierung
 
 ## Beziehungen {#relationships}
 
-- **Server → Sicherungen**: Eins-zu-viele-Beziehung
-- **Benutzer → Sitzungen**: Eins-zu-viele-Beziehung (Sitzungen können ohne Benutzer existieren)
-- **Benutzer → Audit-Log**: Eins-zu-viele-Beziehung (Audit-Einträge können ohne Benutzer existieren)
-- **Sicherungen → Nachrichten**: Eingebettete JSON-Arrays
+- **Server → Backups**: Ein-zu-viele-Beziehung
+- **Benutzer → Sessions**: Ein-zu-viele-Beziehung (Sitzungen können ohne Benutzer existieren)
+- **Benutzer → Audit-Protokoll**: Ein-zu-viele-Beziehung (Audit-Einträge können ohne Benutzer existieren)
+- **Benutzer → API-Schlüssel**: Ein-zu-viele-Beziehung über `created_by` (Schlüssel bleiben nach dem Löschen des Benutzers erhalten)
+- **Backups → Nachrichten**: Eingebettete JSON-Arrays
 - **Konfigurationen**: Schlüssel-Wert-Speicher
 
 ## Datentypen {#data-types}

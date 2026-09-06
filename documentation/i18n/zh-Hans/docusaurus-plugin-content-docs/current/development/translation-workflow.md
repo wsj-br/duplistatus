@@ -22,6 +22,23 @@
 
 从 `documentation/` 内部，相同的流程被连接为 `pnpm translate` → 根 `i18n:translate`，加上 `pnpm translate:docs`、`translate:ui`、`translate:svg`、`translate:status`、`i18n:extract`、`i18n:sync`。
 
+## UI 复数 {#ui-plurals}
+
+Next.js 应用中的基数复数使用 **ai-i18n-tools**，而不是手动编写的 `_one` / `_other` 键。
+
+编写一个英语源字符串（通常是复数）并传递一个 **纯对象字面量**，其中包含 `plurals: true` 和一个数字 `count`：
+
+```tsx
+t("{{count}} backups selected", { plurals: true, count: selectedBackups.size })
+```
+
+规则：
+
+- 不要使用 `item(s)` 修饰语或 `count === 1 ? t('…') : t('…')` 对。
+- 独立计数需要单独的 `t()` 调用。包含两个或更多插值的字符串必须包含 `{{count}}` 作为复数轴。
+- `pnpm i18n:extract` 标记目录行 `"plural": true`。 `pnpm i18n:translate:ui` 填充 CLDR 表格并写入 `src/locales/en-GB.json`（仅限复数键）。
+- `src/i18n.ts` 和 `src/lib/i18n-server.ts` 将该文件加载为 `sourcePluralFlatBundle`，以便英语单数/复数在运行时解析。
+
 ## 词汇表 {#glossary}
 
 - **UI 术语**用于文档，驱动由 `glossary.uiGlossary` 在 `ai-i18n-tools.config.json` 中指向 `src/locales/strings.json`（由 `pnpm i18n:extract` 生成的目录）。

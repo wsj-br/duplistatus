@@ -55,10 +55,10 @@
 - **Endpoint**: `/api/cron/*`
 - **Methode**: GET, POST
 - **Beschreibung**: Leitet Anfragen an den Cron-Dienst weiter. Dieser Endpoint leitet alle Anfragen an den Cron-Dienst weiter, der auf einem separaten Port läuft.
-- **Authentifizierung**: Gültige Sitzung und CSRF-Token erforderlich
+- **Authentifizierung**: Erfordert eine gültige Sitzung und ein CSRF-Token. GET ist für authentifizierte Benutzer erlaubt; POST (start/stop/trigger/reload) erfordert einen Administrator.
 - **Parameter**:
-  - `*`: Beliebiger Pfad, der an den Cron-Dienst weitergeleitet wird
-- **Antwort**: Hängt vom jeweils aufgerufenen Endpunkt des Cron-Dienstes ab
+  - `*`: Jeder Pfad, der an den Cron-Dienst weitergeleitet wird
+- **Antwort**: Hängt vom zugreifenden Cron-Dienst-Endpunkt ab
 - **Fehlerantwort** (503):
 
   ```json
@@ -69,7 +69,9 @@
   ```
 
 - **Hinweise**:
-  - Leitet Anfragen an den Cron-Dienst weiter
+  - Proxies Anfragen an den Cron-Dienst auf `127.0.0.1`
+  - Leitet `CRON_SERVICE_SECRET` als `X-Cron-Service-Secret` weiter, wenn gesetzt
   - Gibt 503 zurück, wenn der Cron-Dienst nicht verfügbar ist
   - Unterstützt sowohl GET- als auch POST-Methoden
-  - Wird für die Verwaltung des Cron-Dienstes über die Weboberfläche verwendet
+  - Wird für die Verwaltung des Cron-Dienstes über die Webschnittstelle verwendet
+  - `POST /trigger/daily-summary-dispatch` wird vom Cron-Dienst abgelehnt; stattdessen `/api/configuration/daily-summary/send` verwenden

@@ -1,6 +1,6 @@
 # Authentication & Security {#authentication-security}
 
-API session-based authentication aur CSRF protection ka istemal karte hain sabhi database write operations ke liye unauthorized access aur potential denial-of-service attacks se bachne ke liye. External APIs (Duplicati ke liye istemal kiye jaate hain) compatibility ke liye unauthenticated rehte hain.
+API सत्र-आधारित प्रमाणीकरण और CSRF सुरक्षा का उपयोग सभी डेटाबेस लिखने संचालनों के लिए अनधिकृत पहुंच और संभावित सेवा अस्वीकृति हमलों को रोकने के लिए करता है। डुप्लिकेटी और होमपेज द्वारा उपयोग किए जाने वाले बाहरी एपीआई CSRF-रहित रहते हैं। वे वैकल्पिक रूप से एक स्कोप्ड एपीआई कुंजी और/या एक आईपी अनुमति सूची की आवश्यकता रख सकते हैं (दोनों डिफ़ॉल्ट रूप से बंद हैं)। `/api/upload` में एक कॉन्फ़िगर करने योग्य बॉडी-साइज़ कैप और रेट लिमिट भी है।
 
 ## Session-Based Authentication {#session-based-authentication}
 
@@ -19,14 +19,14 @@ Sabhi state-changing operations ke liye valid CSRF token ki zaroorat hoti hai jo
 ### Protected Endpoints {#protected-endpoints}
 Sabhi endpoints jo database data modify karte hain, session authentication aur CSRF token ki zaroorat hoti hai:
 
-- **Server Management**: `/api/servers/:id` (PATCH, DELETE), `/api/servers/:id/server-url` (PATCH), `/api/servers/:id/password` (PATCH, GET)
-- **Configuration Management**: `/api/configuration/email` (GET, POST, DELETE), `/api/configuration/unified` (GET), `/api/configuration/ntfy` (GET), `/api/configuration/notifications` (GET, POST), `/api/configuration/backup-settings` (POST), `/api/configuration/templates` (POST), `/api/configuration/overdue-tolerance` (GET, POST)
-- **Notification System**: `/api/notifications/test` (POST)
-- **Cron Configuration**: `/api/cron-config` (GET, POST)
-- **Cron Proxy**: `/api/cron/*` (GET, POST) - proxies requests to the cron service
-- **Session Management**: `/api/session` (POST, GET, DELETE), `/api/csrf` (GET)
-- **Chart Data**: `/api/chart-data/*` (GET)
-- **Dashboard**: `/api/dashboard` (GET)
+- **सर्वर प्रबंधन**: `/api/servers/:id` (PATCH, DELETE), `/api/servers/:id/server-url` (PATCH), `/api/servers/:id/password` (PATCH, GET)
+- **कॉन्फ़िगरेशन प्रबंधन**: `/api/configuration/email` (GET, POST, DELETE), `/api/configuration/unified` (GET), `/api/configuration/ntfy` (GET), `/api/configuration/notifications` (GET, POST), `/api/configuration/backup-settings` (POST), `/api/configuration/templates` (POST), `/api/configuration/overdue-tolerance` (GET, POST), `/api/configuration/daily-summary` (GET, POST), `/api/configuration/daily-summary/send` (POST), `/api/configuration/daily-summary/retry` (POST), `/api/configuration/daily-summary/preview` (POST)
+- **सूचना प्रणाली**: `/api/notifications/test` (POST), `/api/notifications/preview` (POST)
+- **क्रॉन कॉन्फ़िगरेशन**: `/api/cron-config` (GET, POST)
+- **क्रॉन प्रॉक्सी**: `/api/cron/*` (GET, POST) - क्रॉन सेवा के लिए अनुरोधों को प्रॉक्सी करता है। POST के लिए एक व्यवस्थापक की आवश्यकता होती है। क्रॉन प्रक्रिया डिफ़ॉल्ट रूप से `127.0.0.1` पर बाइंड होती है; क्रॉन-सेवा रूट्स को बदलने के लिए `X-Cron-Service-Secret` की आवश्यकता होती है जब `CRON_SERVICE_SECRET` सेट होती है।
+- **सत्र प्रबंधन**: `/api/session` (POST, GET, DELETE), `/api/csrf` (GET)
+- **चार्ट डेटा**: `/api/chart-data/*` (GET)
+- **डैशबोर्ड**: `/api/dashboard` (GET)
 - **Server Details**: `/api/servers` (GET), `/api/servers/:id` (GET), `/api/detail/:serverId` (GET)
 - **Audit Log**: `/api/audit-log` (GET), `/api/audit-log/download` (GET), `/api/audit-log/filters` (GET), `/api/audit-log/retention` (PATCH), `/api/audit-log/cleanup` (POST) - admin required for write operations
 - **User Management**: `/api/users` (GET, POST, PATCH, DELETE) - admin required
@@ -37,14 +37,17 @@ Sabhi endpoints jo database data modify karte hain, session authentication aur C
 - **Overdue Check**: `/api/notifications/check-overdue` (POST) - requires session and CSRF token
 - **Clear Overdue Timestamps**: `/api/notifications/clear-overdue-timestamps` (POST) - requires session and CSRF token
 
-### Unprotected Endpoints {#unprotected-endpoints}
-External APIs Duplicati integration ke liye unauthenticated rehte hain:
+### बाहरी एंडपॉइंट्स {#external-endpoints}
+ये रूट सत्र कुकीज़ या CSRF का उपयोग नहीं करते। प्रमाणीकरण वैकल्पिक है और सेटिंग्स में कॉन्फ़िगर किया गया है:
 
-- `/api/upload` - Backup data uploads from Duplicati
-- `/api/lastbackup/:serverId` - Latest backup status
-- `/api/lastbackups/:serverId` - Latest backups status
-- `/api/summary` - Overall summary data
-- `/api/health` - Health check endpoint
+- `/api/upload` - डुप्लिकेटी से बैकअप डेटा अपलोड (अपलोड-स्कोप कुंजी, साइज़ और रेट लिमिट)
+- `/api/lastbackup/:serverId` - नवीनतम बैकअप स्थिति (पढ़ने-स्कोप कुंजी)
+- `/api/lastbackups/:serverId` - नवीनतम बैकअप स्थिति (पढ़ने-स्कोप कुंजी)
+- `/api/summary` - सारांश डेटा (पढ़ने-स्कोप कुंजी)
+- `/api/health` - स्वास्थ्य चेक एंडपॉइंट (कभी कुंजी नहीं)
+- `/api/ping` - कनेक्टिविटी प्रोब (कभी कुंजी नहीं)
+
+जब **एपीआई कुंजियाँ आवश्यक** चालू है, तो पहले चार रूट एक मान्य कुंजी के बिना `401` लौटाते हैं और `403` जब कुंजी स्कोप मैच नहीं करता। [एपीआई कुंजियाँ](../user-guide/settings/api-keys-settings.md) और [आईपी अनुमति सूची](../user-guide/settings/ip-allowlist-settings.md) देखें।
 
 ### Usage Example (Session + CSRF) {#usage-example-session--csrf}
 

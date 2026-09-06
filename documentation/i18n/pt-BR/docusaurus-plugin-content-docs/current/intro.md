@@ -8,11 +8,13 @@
 - **Painel Unificado**: Visualize o status, histórico, versão do Duplicati e detalhes de todos os servidores em um só lugar.
 - **Monitoramento de Backup**: Verificação automatizada e alertas para backups agendados atrasados.
 - **Visualização de Dados e Logs**: Gráficos interativos e coleta automática de logs dos servidores Duplicati.
-- **Notificações e Alertas**: Suporte integrado ao NTFY e e-mail SMTP para alertas de backup, incluindo notificações de backups atrasados.
-- **Controle de Acesso e Segurança do Usuário**: Sistema de autenticação seguro com controle de acesso baseado em função (funções Administrador/Usuário), políticas de senha configuráveis, proteção contra bloqueio de conta e gerenciamento completo de usuários.
-- **Registro de Auditoria**: Trilha completa de auditoria de todas as alterações no sistema e ações dos usuários, com filtros avançados, capacidade de exportação e períodos de retenção configuráveis.
-- **Visualizador de Logs da Aplicação**: Interface exclusiva para administradores visualizar, pesquisar e exportar logs da aplicação diretamente pela interface web, com capacidades de monitoramento em tempo real.
-- **Suporte multilíngue**: Interface e documentação disponíveis em inglês, francês, alemão, espanhol, português do Brasil, hindi (romano) e chinês simplificado.
+- **Notificações e Alertas**: Suporte integrado a NTFY e SMTP para e-mails de alerta de backup, incluindo notificações de backup atrasado.
+- **Controle de Acesso de Usuário e Segurança**: Sistema de autenticação segura com controle de acesso baseado em funções (funções de Administrador/Usuário), políticas de senha configuráveis, proteção contra bloqueio de conta e gerenciamento de usuários abrangente.
+- **Chaves de API**: Chaves opcionais com escopo para uploads do Duplicati e widgets do Homepage, além de limites de tamanho e taxa de upload configuráveis.
+- **Listas de Permissão de IP**: Listas CIDR separadas para a interface de administração e as APIs externas (`/api/upload`, `/api/summary`, `/api/lastbackup*`).
+- **Registro de Auditoria**: Trilha de auditoria completa de todas as alterações do sistema e ações do usuário com filtragem avançada, capacidade de exportação e períodos de retenção configuráveis.
+- **Visualizador de Logs do Aplicativo**: Interface apenas para administradores para visualizar, pesquisar e exportar logs do aplicativo diretamente da interface web com capacidades de monitoramento em tempo real.
+- **Suporte a Múltiplos Idiomas**: Interface e documentação disponíveis em inglês, francês, alemão, espanhol, português brasileiro, hindi (romano) e chinês simplificado.
 
 ## Instalação {#installation}
 

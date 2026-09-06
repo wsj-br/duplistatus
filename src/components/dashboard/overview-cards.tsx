@@ -11,7 +11,7 @@ import { formatInteger, formatBytes } from "@/lib/number-format";
 import { HardDrive, AlertTriangle, Download, Server, Database, Calendar } from "lucide-react";
 import { ColoredIcon } from "@/components/ui/colored-icon";
 import { useRouter } from "next/navigation";
-import { useConfig, useEffectiveFormatLocale } from "@/contexts/config-context";
+import { useConfig, useEffectiveFormatLocale, useRelativeTimeLocale } from "@/contexts/config-context";
 import { getStatusSortValue } from "@/lib/sort-utils";
 import { ServerConfigurationButton } from "@/components/ui/server-configuration-button";
 import { BackupTooltipContent } from "@/components/ui/backup-tooltip-content";
@@ -138,6 +138,7 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
   const serverStatus = getServerStatus(server);
   const router = useRouter();
   const effectiveLocale = useEffectiveFormatLocale();
+  const relativeTimeLocale = useRelativeTimeLocale();
   const { showDashboardVersion } = useConfig();
   const { t } = useTranslation();
 
@@ -225,7 +226,7 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <span className="cursor-help">{formatRelativeTime(server.lastBackupDate, undefined, effectiveLocale)}</span>
+                      <span className="cursor-help">{formatRelativeTime(server.lastBackupDate, undefined, relativeTimeLocale)}</span>
                     </TooltipTrigger>
                     <TooltipContent>
                       {formatDateTime(server.lastBackupDate, effectiveLocale)}
@@ -275,7 +276,7 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
                         {/* Time ago - use backup job's last backup date */}
                         <span className="text-muted-foreground text-xs truncate">
                           {backupJob.lastBackupDate !== "N/A" 
-                            ? formatShortTimeAgo(backupJob.lastBackupDate)
+                            ? formatShortTimeAgo(backupJob.lastBackupDate, undefined, undefined, relativeTimeLocale)
                             : "N/A"}
                         </span>
 

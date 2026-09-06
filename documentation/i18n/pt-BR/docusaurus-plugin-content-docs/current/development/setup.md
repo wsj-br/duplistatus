@@ -6,9 +6,10 @@
 - Node.js (consulte `engines.node` em `package.json`)
 - pnpm (consulte `engines.pnpm` / `packageManager` em `package.json`)
 - SQLite3
-- Inkscape (para tradução de SVGs da documentação e exportação para PNG; necessário apenas se você executar `translate` ou `translate:svg`)
-- bat/batcat (para exibir uma versão formatada do `translate:help`)
+- Inkscape (para tradução de documentação SVG e exportação PNG; necessário apenas se você executar `translate` ou `translate:svg`)
+- bat/batcat (para mostrar uma versão bonita do `translate:help`)
 - direnv (para carregar automaticamente os arquivos `.env*`)
+- Playwright Chromium (execute `pnpm take-screenshots:install` após `pnpm install`; isso executa `playwright install chromium`)
 
 ## Etapas {#steps}
 
@@ -117,8 +118,8 @@ com este comando:
 O projeto inclui vários scripts npm para diferentes tarefas de desenvolvimento:
 
 ### Scripts de Desenvolvimento {#development-scripts}
-- `pnpm dev` - Iniciar servidor de desenvolvimento na Porta 8666 (inclui pré-verificações)
-- `pnpm build` - Compilar a aplicação para produção (inclui pré-verificações)
+- `pnpm dev` - Iniciar servidor de desenvolvimento na porta 8666 (inclui pré-verificações). `NODE_OPTIONS` carrega `scripts/dev-preload.cjs`, que aplica `scripts/peer-ip.cjs` (endereço do peer TCP para listas de permissões de IP) e carimbos de data/hora de registro de solicitações.
+- `pnpm build` - Construir a aplicação para produção (inclui pré-verificações)
 - `pnpm lint` - Executar ESLint para verificar a qualidade do código
 - `pnpm typecheck` - Executa a verificação de tipos do TypeScript
 - `scripts/upgrade-dependencies.sh` — Atualização segura de todos os pacotes do workspace (detectados automaticamente). Resolve as versões mais recentes com `npm-check-updates`, instala a partir da raiz do workspace e mantém apenas as atualizações que passam em cada `typecheck`/`lint` do pacote (peer gates fixam `eslint` / `typescript` quando a stack de lint não permite a última versão major). Em seguida, executa `pnpm audit` / `audit --fix` e aplica à força (e reporta) qualquer correção de segurança que exija alterações de código. Atualiza o lockfile do workspace e o browserslist. Prefira `source ./scripts/upgrade-dependencies.sh` para que o **nvm** seja aplicado ao seu shell; em CI ou automação, use `CI=1` ou `UPGRADE_ALLOW_EXEC=1` ao executar o arquivo diretamente. Veja também `scripts/upgrade-tools.sh` apenas para ferramentas Node/pnpm.
@@ -144,9 +145,9 @@ Estes scripts devem ser executados a partir do diretório `documentation/`:
 Os servidores de desenvolvimento (`start:*`) fornecem substituição de módulo em tempo real para desenvolvimento rápido. A porta padrão é 3000.
 
 ### Scripts de Produção {#production-scripts}
-- `pnpm build-local` - Compilar e preparar para produção local (inclui pré-verificações, copia arquivos estáticos para diretório standalone)
-- `pnpm start-local` - Iniciar servidor de produção localmente (porta 8666, inclui pré-verificações). **Nota:** Execute `pnpm build-local` primeiro.
-- `pnpm start` - Iniciar servidor de produção (porta 9666)
+- `pnpm build-local` - Construir e preparar para produção local (inclui pré-verificações, copia arquivos estáticos para um diretório independente)
+- `pnpm start-local` - Iniciar servidor de produção localmente (porta 8666, inclui pré-verificações). **Nota:** Execute `pnpm build-local` primeiro. Inicia o servidor independente com `--require ./scripts/peer-ip.cjs`.
+- `pnpm start` - Iniciar servidor de produção (porta 9666) com o mesmo pré-carregamento de peer-ip. O Docker usa `docker-entrypoint.sh` para carregar o mesmo script.
 
 ### Scripts do Docker {#docker-scripts}
 - `pnpm docker:up` - Iniciar stack do Docker Compose

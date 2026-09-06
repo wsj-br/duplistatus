@@ -114,7 +114,9 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "*": ["./node_modules/@swc/helpers/**/*"],
   },
-  allowedDevOrigins: ["192.168.1.20", "g5-server"],
+  // Next.js treats localhost and 127.0.0.1 as different origins. The default
+  // allowlist includes localhost; 127.0.0.1 is needed when opening the app by IP.
+  allowedDevOrigins: ["127.0.0.1", "192.168.1.20", "g5-server"],
   typescript: { ignoreBuildErrors: false },
   env: { NEXT_PUBLIC_APP_VERSION: version },
   images: {

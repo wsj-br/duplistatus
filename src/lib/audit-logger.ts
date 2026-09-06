@@ -435,22 +435,23 @@ export class AuditLogger {
     // List of sensitive keys to remove or redact
     const sensitiveKeys = [
       'password',
-      'passwordHash',
+      'passwordhash',
       'password_hash',
-      'csrfToken',
+      'csrftoken',
       'csrf_token',
-      'sessionId',
+      'sessionid',
       'session_id',
       'token',
       'secret',
-      'apiKey',
+      'apikey',
       'api_key',
     ];
 
     // List of keys that contain sensitive words but are safe to log
     const safeKeys = [
       'must_change_password',
-      'mustChangePassword'
+      'mustChangePassword',
+      'requireApiKey',
     ];
 
     // Remove or redact sensitive keys

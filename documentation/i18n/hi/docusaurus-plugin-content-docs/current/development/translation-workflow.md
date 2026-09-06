@@ -22,6 +22,23 @@
 
 `documentation/` के अंदर, वही फ़्लो `pnpm translate` → रूट `i18n:translate` के रूप में जुड़े हुए हैं, साथ ही `pnpm translate:docs`, `translate:ui`, `translate:svg`, `translate:status`, `i18n:extract`, `i18n:sync`.
 
+## UI बहुवचन {#ui-plurals}
+
+Next.js ऐप में कार्डिनल बहुवचन **ai-i18n-tools** का उपयोग करते हैं, न कि हस्तलिखित `_one` / `_other` कुंजी।
+
+एक अंग्रेजी स्रोत स्ट्रिंग लिखें (आमतौर पर बहुवचन) और एक **सादा ऑब्जेक्ट लिटरल** पास करें जिसमें `plurals: true` और एक संख्यात्मक `count`:
+
+```tsx
+t("{{count}} backups selected", { plurals: true, count: selectedBackups.size })
+```
+
+नियम:
+
+- `item(s)` हेज़ या `count === 1 ? t('…') : t('…')` जोड़ी का उपयोग न करें।
+- स्वतंत्र गिनती के लिए अलग `t()` कॉल की आवश्यकता होती है। दो या अधिक इंटरपोलेशन वाली एक स्ट्रिंग में `{{count}}` को बहुवचन के अक्ष के रूप में शामिल करना होगा।
+- `pnpm i18n:extract` कैटलॉग पंक्ति को चिह्नित करता है `"plural": true`। `pnpm i18n:translate:ui` CLDR फॉर्म भरता है और `src/locales/en-GB.json` लिखता है (बहुवचन कुंजी केवल)।
+- `src/i18n.ts` और `src/lib/i18n-server.ts` उस फ़ाइल को `sourcePluralFlatBundle` के रूप में लोड करते हैं ताकि अंग्रेजी एकवचन/बहुवचन रनटाइम पर हल हो।
+
 ## शब्दावली {#glossary}
 
 - **UI शब्दावली** दस्तावेज़ के लिए `glossary.uiGlossary` में ड्राइव की जाती है `ai-i18n-tools.config.json` में, जो `src/locales/strings.json` पर इंगित करता है (जो `pnpm i18n:extract` द्वारा उत्पादित की गई कैटलॉग है).

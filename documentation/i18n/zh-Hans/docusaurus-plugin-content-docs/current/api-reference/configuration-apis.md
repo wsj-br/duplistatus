@@ -102,8 +102,9 @@
   - `404`: 没有找到SMTP配置来删除
   - `500`: 删除SMTP配置失败
 - **注意**:
-  - 此操作永久删除SMTP配置
-  - 如果没有配置存在以删除，则返回404
+  - 此操作将永久删除SMTP配置
+  - 如果没有配置可删除，则返回404
+  - 在每日摘要模式启用时返回400，因为该模式需要SMTP
 
 ## 更新电子邮件密码 - `/api/configuration/email/password` {#update-email-password---apiconfigurationemailpassword}
 - **端点**: `/api/configuration/email/password`
@@ -196,6 +197,18 @@
         "message": "The backup {backup_name} is overdue on {server_name}.",
         "priority": "default",
         "tags": "duplicati, duplistatus, overdue"
+      },
+      "dailySummary": {
+        "email": {
+          "title": "duplistatus — Daily backup summary — {summary_date}",
+          "message": "## Daily backup summary"
+        },
+        "ntfy": {
+          "title": "duplistatus daily summary",
+          "message": "Servers {server_count}, jobs {job_count}",
+          "priority": "default",
+          "tags": "duplicati, duplistatus, daily-summary"
+        }
       }
     },
     "email": {
@@ -438,8 +451,37 @@
   - `500`: 更新通知模板时发生服务器错误
 - **注意**:
   - 更新不同备份状态的通知模板
-  - 保留现有的配置设置
-  - 模板支持变量替换
+  - 保留现有配置设置
+  - 模板支持Markdown电子邮件正文和`{placeholder}`替换
+  - 需要一个`dailySummary`模板集（电子邮件主题/正文和紧凑型NTFY）
+
+## 每日摘要 - `/api/configuration/daily-summary` {#daily-summary---apiconfigurationdaily-summary}
+- **端点**: `/api/configuration/daily-summary`
+- **方法**: GET, POST
+- **描述**: 读取或更新每日摘要模式。GET返回净化的设置、调度程序健康状况、下一次发生时间和每个频道的发送状态。POST保存`enabled`、`localTime`（`HH:mm`）、`timeZone`（IANA）和`sendNtfy`。启用需要有效的SMTP和健康的`daily-summary-dispatch`任务。启用NTFY需要存储的NTFY设置。更改计划会设置下一次**未来**发生时间。
+- **认证**: GET需要有效的会话和CSRF令牌。POST需要管理员会话和CSRF令牌。
+- **错误响应**:
+  - `400`: 无效的时间/时区、缺少SMTP/NTFY或调度程序不健康
+  - `401`: 未授权
+  - `500`: 无法读取或更新每日摘要
+
+## 发送每日摘要 - `/api/configuration/daily-summary/send` {#send-daily-summary---apiconfigurationdaily-summarysend}
+- **端点**: `/api/configuration/daily-summary/send`
+- **方法**: POST
+- **描述**: 立即发送当前状态的额外快照。不消耗下一次计划的发生时间。使用存储的SMTP（在选择时使用存储的NTFY）。不接受请求中的收件人地址或端点。
+- **认证**: 需要管理员会话和CSRF令牌
+
+## 重试每日摘要 - `/api/configuration/daily-summary/retry` {#retry-daily-summary---apiconfigurationdaily-summaryretry}
+- **端点**: `/api/configuration/daily-summary/retry`
+- **方法**: POST
+- **描述**: 从持久化有效负载中重试失败的频道。可选的正文`{ "occurrenceKey": "..." }`；否则重试最新的失败发生时间。
+- **认证**: 需要管理员会话和CSRF令牌
+
+## 预览每日摘要 - `/api/configuration/daily-summary/preview` {#preview-daily-summary---apiconfigurationdaily-summarypreview}
+- **端点**: `/api/configuration/daily-summary/preview`
+- **方法**: POST
+- **描述**: 渲染当前快照而不发送，也不写入发送账本行。
+- **认证**: 需要有效的会话和CSRF令牌
 
 ## 获取逾期容忍度 - `/api/configuration/overdue-tolerance` {#get-overdue-tolerance---apiconfigurationoverdue-tolerance}
 - **端点**: `/api/configuration/overdue-tolerance`
@@ -488,3 +530,28 @@
   - 更新逾期容忍度设置（接受字符串格式，如 `"1h"`、`"2h"` 等；新安装的默认值为 `2h`）
   - 影响何时认为备份已逾期
   - 由逾期备份检查器使用
+
+## 外部API安全 - `/api/configuration/external-api-security` {#external-api-security---apiconfigurationexternal-api-security}
+- **端点**: `/api/configuration/external-api-security`
+- **方法**: GET, PATCH
+- **描述**: 读取或更新外部API是否需要密钥，以及`/api/upload`大小和速率限制。
+- **认证**: 需要管理员权限、有效会话和CSRF令牌
+- **PATCH主体**:
+
+  ```json
+  {
+    "requireApiKey": false,
+    "uploadLimits": {
+      "enabled": true,
+      "maxBytes": 5242880,
+      "perMinute": 20,
+      "perHour": 200
+    }
+  }
+  ```
+
+## IP白名单 - `/api/configuration/ip-allowlist` {#ip-allowlist---apiconfigurationip-allowlist}
+- **端点**: `/api/configuration/ip-allowlist`
+- **方法**: GET, PATCH
+- **描述**: 读取或更新受信任的代理和管理员/外部API CIDR白名单。启用管理员列表时，除非当前客户端IP已列入白名单（回环除外），否则会失败。
+- **认证**: 需要管理员权限、有效的会话和 CSRF 令牌

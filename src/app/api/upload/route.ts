@@ -10,12 +10,114 @@ import { formatDurationHuman } from '@/lib/utils';
 import { formatBytes } from '@/lib/number-format';
 import { BackupStatus } from '@/lib/types';
 import { AuditLogger } from '@/lib/audit-logger';
-import { getClientIpAddress } from '@/lib/ip-utils';
+import { getClientIpAddress, getPeerIp } from '@/lib/ip-utils';
 import { getDataDir } from '@/lib/paths';
+import { authenticateExternalApiKey, getUploadLimitsConfig } from '@/lib/api-key-auth';
+import { checkRateLimit } from '@/lib/rate-limit';
+import { readBoundedJson, RequestBodyTooLargeError } from '@/lib/request-body';
+
+interface DuplicatiBackendStatistics {
+  BytesUploaded?: number;
+  BytesDownloaded?: number;
+  KnownFileSize?: number;
+  LastBackupDate?: string;
+  BackupListCount?: number;
+  ReportedQuotaError?: boolean;
+  ReportedQuotaWarning?: boolean;
+  MainOperation?: string;
+  ParsedResult?: string;
+  Interrupted?: boolean;
+  Version?: string;
+  BeginTime?: string;
+  Duration?: string;
+  WarningsActualLength?: number;
+  ErrorsActualLength?: number;
+}
+
+interface DuplicatiDataSection {
+  MainOperation?: string;
+  ParsedResult?: BackupStatus;
+  BeginTime?: string;
+  Duration?: string;
+  EndTime?: string;
+  Version?: string;
+  Interrupted?: boolean;
+  PartialBackup?: boolean;
+  Dryrun?: boolean;
+  Warnings?: unknown;
+  Errors?: unknown;
+  Messages?: unknown;
+  Exception?: string;
+  WarningsActualLength?: number;
+  ErrorsActualLength?: number;
+  MessagesActualLength?: number;
+  SizeOfExaminedFiles?: number;
+  ExaminedFiles?: number;
+  DeletedFiles?: number;
+  DeletedFolders?: number;
+  ModifiedFiles?: number;
+  OpenedFiles?: number;
+  AddedFiles?: number;
+  SizeOfModifiedFiles?: number;
+  SizeOfAddedFiles?: number;
+  SizeOfOpenedFiles?: number;
+  NotProcessedFiles?: number;
+  AddedFolders?: number;
+  TooLargeFiles?: number;
+  FilesWithError?: number;
+  ModifiedFolders?: number;
+  ModifiedSymlinks?: number;
+  AddedSymlinks?: number;
+  DeletedSymlinks?: number;
+  BackendStatistics?: DuplicatiBackendStatistics;
+}
+
+interface DuplicatiUploadPayload {
+  Extra?: Record<string, string>;
+  Data?: DuplicatiDataSection;
+  LogLines?: unknown;
+  Exception?: string;
+}
 
 export async function POST(request: NextRequest) {
   try {
-    const data = await request.json();
+    const limits = getUploadLimitsConfig();
+    const peerIp = getPeerIp(request) || getClientIpAddress(request) || 'unknown';
+
+    if (limits.enabled) {
+      const limit = checkRateLimit(`upload:${peerIp}`, limits.perMinute, limits.perHour);
+      if (!limit.allowed) {
+        return NextResponse.json(
+          { error: 'Too many upload requests', errorCode: 'UPLOAD_RATE_LIMITED', retryAfter: limit.retryAfterSeconds },
+          { status: 429, headers: { 'Retry-After': String(limit.retryAfterSeconds) } }
+        );
+      }
+    }
+
+    let data: DuplicatiUploadPayload;
+    try {
+      data = await readBoundedJson(request, limits.maxBytes) as DuplicatiUploadPayload;
+    } catch (error) {
+      if (error instanceof RequestBodyTooLargeError) {
+        return NextResponse.json(
+          { error: 'Upload payload is too large', errorCode: 'UPLOAD_TOO_LARGE', maxBytes: error.maxBytes },
+          { status: 413 }
+        );
+      }
+      if (error instanceof SyntaxError) {
+        return NextResponse.json(
+          { error: 'Invalid JSON', errorCode: 'INVALID_JSON' },
+          { status: 400 }
+        );
+      }
+      throw error;
+    }
+
+    const extra = data.Extra && typeof data.Extra === 'object' ? data.Extra : null;
+    const keyAuth = await authenticateExternalApiKey(request, 'upload', extra);
+    if (!keyAuth.ok) {
+      return keyAuth.response;
+    }
 
     // Log received data in development mode
     if (process.env.NODE_ENV != 'production') {
@@ -109,11 +211,23 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const extraFields = data.Extra;
+    const report = data.Data;
+    const beginTime = report.BeginTime;
+    const duration = report.Duration;
+    const parsedResult = report.ParsedResult;
+    if (!beginTime || !duration || !parsedResult) {
+      return NextResponse.json(
+        { error: 'Missing required fields in Extra or Data sections' },
+        { status: 400 }
+      );
+    }
+
     // Check for duplicate backup
-    const backupDate = new Date(data.Data.BeginTime).toISOString();
+    const backupDate = new Date(beginTime).toISOString();
     const isDuplicate = await dbUtils.checkDuplicateBackup({
-      server_id: data.Extra['machine-id'], // Note: Duplicati API uses 'machine-id' field name
-      backup_name: data.Extra['backup-name'],
+      server_id: extraFields['machine-id'], // Note: Duplicati API uses 'machine-id' field name
+      backup_name: extraFields['backup-name'],
       date: backupDate
     });
 
@@ -125,7 +239,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Declare status in the outer scope so it can be used in the notification block
-    let status: string = data.Data.ParsedResult;
+    let status: string = parsedResult;
 
     // Generate backup ID before transaction
     const backupId = uuidv4();
@@ -138,13 +252,13 @@ export async function POST(request: NextRequest) {
     const transaction = db.transaction(() => {
       // Insert server information only if it doesn't exist
       dbOps.insertServerIfNotExistsWithDefaults.run({
-        id: data.Extra['machine-id'], // Note: Duplicati API uses 'machine-id' field name
-        name: data.Extra['machine-name'] // Note: Duplicati API uses 'machine-name' field name
+        id: extraFields['machine-id'], // Note: Duplicati API uses 'machine-id' field name
+        name: extraFields['machine-name'] // Note: Duplicati API uses 'machine-name' field name
       });
 
       // Map backup status
-      status = data.Data.ParsedResult;
-      if (status === "Success" && data.Data.WarningsActualLength > 0) {
+      status = parsedResult;
+      if (status === "Success" && (report.WarningsActualLength ?? 0) > 0) {
         status = "Warning";
       }
 
@@ -152,29 +266,29 @@ export async function POST(request: NextRequest) {
       dbOps.insertBackup.run({
         // Primary fields
         id: backupId,
-        server_id: data.Extra['machine-id'], // Note: Duplicati API uses 'machine-id' field name
-        backup_name: data.Extra['backup-name'],
-        backup_id: data.Extra['backup-id'],
-        date: new Date(data.Data.BeginTime).toISOString(),
+        server_id: extraFields['machine-id'], // Note: Duplicati API uses 'machine-id' field name
+        backup_name: extraFields['backup-name'],
+        backup_id: extraFields['backup-id'],
+        date: new Date(beginTime).toISOString(),
         status: status,
-        duration_seconds: parseDurationToSeconds(data.Data.Duration),
-        size: data.Data.SizeOfExaminedFiles || 0,
-        uploaded_size: data.Data.BackendStatistics?.BytesUploaded || 0,
-        examined_files: data.Data.ExaminedFiles || 0,
-        warnings: data.Data.WarningsActualLength || 0,
-        errors: data.Data.ErrorsActualLength || 0,
+        duration_seconds: parseDurationToSeconds(duration),
+        size: report.SizeOfExaminedFiles || 0,
+        uploaded_size: report.BackendStatistics?.BytesUploaded || 0,
+        examined_files: report.ExaminedFiles || 0,
+        warnings: report.WarningsActualLength || 0,
+        errors: report.ErrorsActualLength || 0,
 
         // Message arrays stored as JSON blobs
         messages_array:  data.LogLines ? JSON.stringify(data.LogLines) : // look for LogLines or Data.Messages
-                        (data.Data.Messages ? JSON.stringify(data.Data.Messages) : null), 
-        warnings_array: data.Data.Warnings ? JSON.stringify(data.Data.Warnings) : null,
+                        (report.Messages ? JSON.stringify(report.Messages) : null), 
+        warnings_array: report.Warnings ? JSON.stringify(report.Warnings) : null,
         errors_array: (() => {
           // If Errors array exists and is not empty, use it
-          if (data.Data.Errors && Array.isArray(data.Data.Errors) && data.Data.Errors.length > 0) {
-            return JSON.stringify(data.Data.Errors);
+          if (report.Errors && Array.isArray(report.Errors) && report.Errors.length > 0) {
+            return JSON.stringify(report.Errors);
           }
           // If Exception exists and errors_array is null/empty, use Exception
-          const exception = data.Data.Exception || data.Exception;
+          const exception = report.Exception || data.Exception;
           if (exception && exception.trim() !== '') {
             return JSON.stringify([exception]);
           }
@@ -182,54 +296,54 @@ export async function POST(request: NextRequest) {
         })(),
         available_backups: JSON.stringify(extractAvailableBackups(
           data.LogLines ? JSON.stringify(data.LogLines) : 
-          (data.Data.Messages ? JSON.stringify(data.Data.Messages) : null)
+          (report.Messages ? JSON.stringify(report.Messages) : null)
         )),
 
         // Data fields
-        deleted_files: data.Data.DeletedFiles || 0,
-        deleted_folders: data.Data.DeletedFolders || 0,
-        modified_files: data.Data.ModifiedFiles || 0,
-        opened_files: data.Data.OpenedFiles || 0,
-        added_files: data.Data.AddedFiles || 0,
-        size_of_modified_files: data.Data.SizeOfModifiedFiles || 0,
-        size_of_added_files: data.Data.SizeOfAddedFiles || 0,
-        size_of_examined_files: data.Data.SizeOfExaminedFiles || 0,
-        size_of_opened_files: data.Data.SizeOfOpenedFiles || 0,
-        not_processed_files: data.Data.NotProcessedFiles || 0,
-        added_folders: data.Data.AddedFolders || 0,
-        too_large_files: data.Data.TooLargeFiles || 0,
-        files_with_error: data.Data.FilesWithError || 0,
-        modified_folders: data.Data.ModifiedFolders || 0,
-        modified_symlinks: data.Data.ModifiedSymlinks || 0,
-        added_symlinks: data.Data.AddedSymlinks || 0,
-        deleted_symlinks: data.Data.DeletedSymlinks || 0,
-        partial_backup: data.Data.PartialBackup ? 1 : 0,
-        dryrun: data.Data.Dryrun ? 1 : 0,
-        main_operation: data.Data.MainOperation,
-        parsed_result: data.Data.ParsedResult,
-        interrupted: data.Data.Interrupted ? 1 : 0,
-        version: data.Data.Version,
-        begin_time: new Date(data.Data.BeginTime).toISOString(),
-        end_time: new Date(data.Data.EndTime).toISOString(),
-        warnings_actual_length: data.Data.WarningsActualLength || 0,
-        errors_actual_length: data.Data.ErrorsActualLength || 0,
-        messages_actual_length: data.Data.MessagesActualLength || 0,
+        deleted_files: report.DeletedFiles || 0,
+        deleted_folders: report.DeletedFolders || 0,
+        modified_files: report.ModifiedFiles || 0,
+        opened_files: report.OpenedFiles || 0,
+        added_files: report.AddedFiles || 0,
+        size_of_modified_files: report.SizeOfModifiedFiles || 0,
+        size_of_added_files: report.SizeOfAddedFiles || 0,
+        size_of_examined_files: report.SizeOfExaminedFiles || 0,
+        size_of_opened_files: report.SizeOfOpenedFiles || 0,
+        not_processed_files: report.NotProcessedFiles || 0,
+        added_folders: report.AddedFolders || 0,
+        too_large_files: report.TooLargeFiles || 0,
+        files_with_error: report.FilesWithError || 0,
+        modified_folders: report.ModifiedFolders || 0,
+        modified_symlinks: report.ModifiedSymlinks || 0,
+        added_symlinks: report.AddedSymlinks || 0,
+        deleted_symlinks: report.DeletedSymlinks || 0,
+        partial_backup: report.PartialBackup ? 1 : 0,
+        dryrun: report.Dryrun ? 1 : 0,
+        main_operation: report.MainOperation,
+        parsed_result: parsedResult,
+        interrupted: report.Interrupted ? 1 : 0,
+        version: report.Version,
+        begin_time: new Date(beginTime).toISOString(),
+        end_time: new Date(report.EndTime ?? beginTime).toISOString(),
+        warnings_actual_length: report.WarningsActualLength || 0,
+        errors_actual_length: report.ErrorsActualLength || 0,
+        messages_actual_length: report.MessagesActualLength || 0,
 
         // BackendStatistics fields
-        bytes_downloaded: data.Data.BackendStatistics?.BytesDownloaded || 0,
-        known_file_size: data.Data.BackendStatistics?.KnownFileSize || 0,
-        last_backup_date: data.Data.BackendStatistics?.LastBackupDate ? new Date(data.Data.BackendStatistics.LastBackupDate).toISOString() : null,
-        backup_list_count: data.Data.BackendStatistics?.BackupListCount || 0,
-        reported_quota_error: data.Data.BackendStatistics?.ReportedQuotaError ? 1 : 0,
-        reported_quota_warning: data.Data.BackendStatistics?.ReportedQuotaWarning ? 1 : 0,
-        backend_main_operation: data.Data.BackendStatistics?.MainOperation,
-        backend_parsed_result: data.Data.BackendStatistics?.ParsedResult,
-        backend_interrupted: data.Data.BackendStatistics?.Interrupted ? 1 : 0,
-        backend_version: data.Data.BackendStatistics?.Version,
-        backend_begin_time: data.Data.BackendStatistics?.BeginTime ? new Date(data.Data.BackendStatistics.BeginTime).toISOString() : null,
-        backend_duration: data.Data.BackendStatistics?.Duration,
-        backend_warnings_actual_length: data.Data.BackendStatistics?.WarningsActualLength || 0,
-        backend_errors_actual_length: data.Data.BackendStatistics?.ErrorsActualLength || 0
+        bytes_downloaded: report.BackendStatistics?.BytesDownloaded || 0,
+        known_file_size: report.BackendStatistics?.KnownFileSize || 0,
+        last_backup_date: report.BackendStatistics?.LastBackupDate ? new Date(report.BackendStatistics.LastBackupDate).toISOString() : null,
+        backup_list_count: report.BackendStatistics?.BackupListCount || 0,
+        reported_quota_error: report.BackendStatistics?.ReportedQuotaError ? 1 : 0,
+        reported_quota_warning: report.BackendStatistics?.ReportedQuotaWarning ? 1 : 0,
+        backend_main_operation: report.BackendStatistics?.MainOperation,
+        backend_parsed_result: report.BackendStatistics?.ParsedResult,
+        backend_interrupted: report.BackendStatistics?.Interrupted ? 1 : 0,
+        backend_version: report.BackendStatistics?.Version,
+        backend_begin_time: report.BackendStatistics?.BeginTime ? new Date(report.BackendStatistics.BeginTime).toISOString() : null,
+        backend_duration: report.BackendStatistics?.Duration,
+        backend_warnings_actual_length: report.BackendStatistics?.WarningsActualLength || 0,
+        backend_errors_actual_length: report.BackendStatistics?.ErrorsActualLength || 0
       });
     });
 
@@ -249,18 +363,20 @@ export async function POST(request: NextRequest) {
         null, // username - null for external API
         backupId,
         {
-          server_id: data.Extra['machine-id'],
-          server_name: data.Extra['machine-name'],
-          backup_name: data.Extra['backup-name'],
-          backup_id: data.Extra['backup-id'],
+          server_id: extraFields['machine-id'],
+          server_name: extraFields['machine-name'],
+          backup_name: extraFields['backup-name'],
+          backup_id: extraFields['backup-id'],
           status: status,
-          date: new Date(data.Data.BeginTime).toISOString(),
-          duration_seconds: parseDurationToSeconds(data.Data.Duration),
-          size: data.Data.SizeOfExaminedFiles || 0,
-          uploaded_size: data.Data.BackendStatistics?.BytesUploaded || 0,
-          examined_files: data.Data.ExaminedFiles || 0,
-          warnings: data.Data.WarningsActualLength || 0,
-          errors: data.Data.ErrorsActualLength || 0,
+          date: new Date(beginTime).toISOString(),
+          duration_seconds: parseDurationToSeconds(duration),
+          size: report.SizeOfExaminedFiles || 0,
+          uploaded_size: report.BackendStatistics?.BytesUploaded || 0,
+          examined_files: report.ExaminedFiles || 0,
+          warnings: report.WarningsActualLength || 0,
+          errors: report.ErrorsActualLength || 0,
+          keyFingerprint: keyAuth.fingerprint,
+          keyId: keyAuth.key?.id ?? null,
         },
         ipAddress,
         userAgent
@@ -277,39 +393,39 @@ export async function POST(request: NextRequest) {
 
     // Send notification after successful backup insertion
     try {
-      const serverId = data.Extra['machine-id']; // Note: Duplicati API uses 'machine-id' field name
-      const serverName = data.Extra['machine-name']; // Note: Duplicati API uses 'machine-name' field name
-      const backupName = data.Extra['backup-name'];
+      const serverId = extraFields['machine-id']; // Note: Duplicati API uses 'machine-id' field name
+      const serverName = extraFields['machine-name']; // Note: Duplicati API uses 'machine-name' field name
+      const backupName = extraFields['backup-name'];
       
       // Create backup object for notification service
       const backup = {
         id: backupId, // Use the same ID that was used in the transaction
         server_id: serverId,
         name: backupName,
-        date: new Date(data.Data.BeginTime).toISOString(),
+        date: new Date(beginTime).toISOString(),
         status: status as BackupStatus,
-        warnings: data.Data.WarningsActualLength || 0,
-        errors: data.Data.ErrorsActualLength || 0,
-        messages: data.Data.MessagesActualLength || 0,
-        fileCount: data.Data.ExaminedFiles || 0,
-        fileSize: data.Data.SizeOfExaminedFiles || 0,
-        uploadedSize: data.Data.BackendStatistics?.BytesUploaded || 0,
-        duration: formatDurationHuman(parseDurationToSeconds(data.Data.Duration)),
-        duration_seconds: parseDurationToSeconds(data.Data.Duration),
-        durationInMinutes: parseDurationToSeconds(data.Data.Duration) / 60,
-        knownFileSize: data.Data.BackendStatistics?.KnownFileSize || 0,
-        backup_list_count: data.Data.BackendStatistics?.BackupListCount || 0,
+        warnings: report.WarningsActualLength || 0,
+        errors: report.ErrorsActualLength || 0,
+        messages: report.MessagesActualLength || 0,
+        fileCount: report.ExaminedFiles || 0,
+        fileSize: report.SizeOfExaminedFiles || 0,
+        uploadedSize: report.BackendStatistics?.BytesUploaded || 0,
+        duration: formatDurationHuman(parseDurationToSeconds(duration)),
+        duration_seconds: parseDurationToSeconds(duration),
+        durationInMinutes: parseDurationToSeconds(duration) / 60,
+        knownFileSize: report.BackendStatistics?.KnownFileSize || 0,
+        backup_list_count: report.BackendStatistics?.BackupListCount || 0,
         // Populate arrays with the same logic used for database insertion
         messages_array: data.LogLines ? JSON.stringify(data.LogLines) : 
-                        (data.Data.Messages ? JSON.stringify(data.Data.Messages) : null),
-        warnings_array: data.Data.Warnings ? JSON.stringify(data.Data.Warnings) : null,
+                        (report.Messages ? JSON.stringify(report.Messages) : null),
+        warnings_array: report.Warnings ? JSON.stringify(report.Warnings) : null,
         errors_array: (() => {
           // If Errors array exists and is not empty, use it
-          if (data.Data.Errors && Array.isArray(data.Data.Errors) && data.Data.Errors.length > 0) {
-            return JSON.stringify(data.Data.Errors);
+          if (report.Errors && Array.isArray(report.Errors) && report.Errors.length > 0) {
+            return JSON.stringify(report.Errors);
           }
           // If Exception exists and errors_array is null/empty, use Exception
-          const exception = data.Data.Exception || data.Exception;
+          const exception = report.Exception || data.Exception;
           if (exception && exception.trim() !== '') {
             return JSON.stringify([exception]);
           }
@@ -317,7 +433,7 @@ export async function POST(request: NextRequest) {
         })(),
         available_backups: extractAvailableBackups(
           data.LogLines ? JSON.stringify(data.LogLines) : 
-          (data.Data.Messages ? JSON.stringify(data.Data.Messages) : null)
+          (report.Messages ? JSON.stringify(report.Messages) : null)
         ),
       };
 

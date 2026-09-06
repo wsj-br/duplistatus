@@ -1,22 +1,21 @@
-import { NotificationTemplate, CronServiceConfig, CronInterval, BackupNotificationConfig, SupportedTemplateLanguage, StartOfWeek, FormatLocaleOverride } from './types';
+import { NotificationTemplate, CronServiceConfig, CronInterval, BackupNotificationConfig, SupportedTemplateLanguage, StartOfWeek, FormatLocaleOverride, UploadLimitsConfig, CidrAllowlistConfig, TrustedProxiesConfig, DailySummaryTemplateSet, DAILY_SUMMARY_DISPATCH_TASK } from './types';
 import { defaultNotificationTemplatesEn } from './default-notifications-en';
 import { defaultNotificationTemplatesDe } from './default-notifications-de';
 import { defaultNotificationTemplatesFr } from './default-notifications-fr';
 import { defaultNotificationTemplatesEs } from './default-notifications-es';
 import { defaultNotificationTemplatesPtBR } from './default-notifications-pt-BR';
-import { defaultNotificationTemplatesZhCN } from './default-notifications-zh-CN';
+import { defaultNotificationTemplatesHi } from './default-notifications-hi';
+import { defaultNotificationTemplatesZhHans } from './default-notifications-zh-Hans';
 import { SOURCE_LOCALE, parseLocaleTag } from './locales';
+import { defaultDailySummaryConfig as defaultDailySummaryScheduleConfig } from './daily-summary-schedule';
 
-// Type for notification templates (without language field)
 type NotificationTemplatesData = {
   overdueBackup: NotificationTemplate;
   success: NotificationTemplate;
   warning: NotificationTemplate;
+  dailySummary: DailySummaryTemplateSet;
 };
 
-/**
- * Map of all default notification templates by language
- */
 export const defaultNotificationTemplatesByLanguage: Record<
   SupportedTemplateLanguage,
   NotificationTemplatesData
@@ -26,7 +25,8 @@ export const defaultNotificationTemplatesByLanguage: Record<
   fr: defaultNotificationTemplatesFr,
   es: defaultNotificationTemplatesEs,
   "pt-BR": defaultNotificationTemplatesPtBR,
-  "zh-CN": defaultNotificationTemplatesZhCN,
+  hi: defaultNotificationTemplatesHi,
+  "zh-Hans": defaultNotificationTemplatesZhHans,
 };
 
 /**
@@ -43,6 +43,12 @@ export function getDefaultNotificationTemplates(
   language: SupportedTemplateLanguage = SOURCE_LOCALE
 ): NotificationTemplatesData {
   return defaultNotificationTemplatesByLanguage[language] || defaultNotificationTemplatesByLanguage[SOURCE_LOCALE];
+}
+
+export function getDefaultDailySummaryTemplates(
+  language: SupportedTemplateLanguage = SOURCE_LOCALE
+): DailySummaryTemplateSet {
+  return getDefaultNotificationTemplates(language).dailySummary;
 }
 
 /**
@@ -93,6 +99,10 @@ export const defaultCronConfig: CronServiceConfig = {
     'duplicati-version-refresh': {
       cronExpression: '0 3 * * *', // Daily at 3 AM UTC
       enabled: true
+    },
+    [DAILY_SUMMARY_DISPATCH_TASK]: {
+      cronExpression: '* * * * *',
+      enabled: true
     }
   }
 };
@@ -103,6 +113,8 @@ export const defaultNtfyConfig = {
   topic: '', // Will be generated dynamically
   accessToken: '' // Optional access token for authenticated servers
 };
+
+export const defaultDailySummaryConfig = defaultDailySummaryScheduleConfig;
 
 // Global overdue tolerance configuration
 export const defaultOverdueTolerance = '2h' as const;
@@ -139,6 +151,7 @@ export const defaultUIConfig = {
   dashboardCardsSortOrder: 'Server name (a-z)' as const,
   startOfWeek: 'locale' as const, // Default to locale-based (en-US Sunday, en-GB Monday)
   formatLocale: 'locale-default' as FormatLocaleOverride,
+  relativeTimeInUiLocale: false as const,
   showDashboardVersion: true as const,
 };
 
@@ -153,6 +166,33 @@ export const defaultAPIConfig = {
 export const defaultAuthConfig = {
   defaultPassword: 'Duplistatus09' as const
 };
+
+export const defaultUploadLimits: UploadLimitsConfig = {
+  enabled: true,
+  maxBytes: 5 * 1024 * 1024,
+  perMinute: 20,
+  perHour: 200,
+};
+
+export const defaultTrustedProxies: TrustedProxiesConfig = {
+  trustProxy: false,
+  trustedProxies: [],
+};
+
+export const defaultAdminIpAllowlist: CidrAllowlistConfig = {
+  enabled: false,
+  cidrs: [],
+};
+
+export const defaultExternalApiIpAllowlist: CidrAllowlistConfig = {
+  enabled: false,
+  cidrs: [],
+};
+
+export const AUTH_FAILURE_PER_MINUTE = 5;
+export const AUTH_FAILURE_PER_HOUR = 30;
+export const READ_API_PER_MINUTE = 60;
+export const READ_API_PER_HOUR = 600;
 
 
 // Note: Legacy createDefaultNotificationConfig was removed in favor of split keys

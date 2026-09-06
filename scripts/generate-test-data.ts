@@ -416,10 +416,12 @@ function logConsole(message: string, quiet: boolean): void {
 }
 
 // Parse command line arguments
-function parseArgs(): { useUpload: boolean; serverCount: number; port: number; quiet: boolean } {
+function parseArgs(): { useUpload: boolean; serverCount: number; port: number; quiet: boolean; apiKey: string | null } {
   const args = process.argv.slice(2);
   const useUpload = args.includes('--upload');
   const quiet = args.includes('--quiet') || args.includes('-q');
+  const apiKeyArg = args.find(arg => arg.startsWith('--api-key='));
+  const apiKey = apiKeyArg ? apiKeyArg.slice('--api-key='.length) : null;
   
   // Parse server count parameter (mandatory)
   const serverCountArg = args.find(arg => arg.startsWith('--servers='));
@@ -427,11 +429,12 @@ function parseArgs(): { useUpload: boolean; serverCount: number; port: number; q
     console.error('🚨 Error: --servers parameter is required!');
     console.log('');
     console.log('Usage:');
-    console.log('  pnpm run generate-test-data --servers=N [--upload] [--port=N] [--quiet|-q]');
+    console.log('  pnpm run generate-test-data --servers=N [--upload] [--api-key=KEY] [--port=N] [--quiet|-q]');
     console.log('');
     console.log('Parameters:');
     console.log('  --servers=N    Number of servers to generate (1-30, mandatory)');
     console.log('  --upload       Optional: Send data via API instead of direct DB write');
+    console.log('  --api-key=KEY  Optional: API key for /api/upload when keys are required');
     console.log('  --port=N       Optional: Port number for API endpoints (default: 8666)');
     console.log('  --quiet, -q    Optional: Suppress output (quiet mode)');
     console.log('');
@@ -462,7 +465,7 @@ function parseArgs(): { useUpload: boolean; serverCount: number; port: number; q
     port = parsedPort;
   }
   
-  return { useUpload, serverCount: count, port, quiet };
+  return { useUpload, serverCount: count, port, quiet, apiKey };
 }
 
 // Function to write backup data directly to database
@@ -587,7 +590,7 @@ async function writeBackupToDatabase(payload: any, quiet: boolean = false): Prom
 }
 
 // Main function to send test data
-async function sendTestData(useUpload: boolean = false, serverCount: number, port: number = 8666, quiet: boolean = false) {
+async function sendTestData(useUpload: boolean = false, serverCount: number, port: number = 8666, quiet: boolean = false, apiKey: string | null = null) {
   const API_URL = `http://localhost:${port}/api/upload`;
   const HEALTH_CHECK_URL = `http://localhost:${port}/api/health`; // Adjust this URL based on your actual health endpoint
   const BACKUP_JOBS = ['Files', 'Databases', 'System', 'Users'];
@@ -717,13 +720,26 @@ async function sendTestData(useUpload: boolean = false, serverCount: number, por
 
           if (useUpload) {
             // Upload via API endpoint
-            const response = await fetch(API_URL, {
+            const uploadUrl = apiKey ? `${API_URL}?api_key=${encodeURIComponent(apiKey)}` : API_URL;
+            let response = await fetch(uploadUrl, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify(payload)
             });
+
+            if (response.status === 429) {
+              const retryAfter = Number(response.headers.get('Retry-After') || '3');
+              await new Promise(resolve => setTimeout(resolve, Math.max(retryAfter, 1) * 1000));
+              response = await fetch(uploadUrl, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload)
+              });
+            }
 
             if (!response.ok) {
               throw new Error(`HTTP error! status: ${response.status}`);
@@ -1019,7 +1035,7 @@ async function deleteRecentBackupsForOverdue(quiet: boolean = false) {
 }
 
 // Run the script
-const { useUpload, serverCount, port, quiet } = parseArgs();
+const { useUpload, serverCount, port, quiet, apiKey } = parseArgs();
 
 logConsole('🛫 Starting test data generation...\n', quiet);
 if (useUpload) {
@@ -1041,7 +1057,7 @@ logConsole('     • 70–80% of servers use the latest cached stable Duplicati 
 logConsole('     • 2 random backup jobs (from different servers) will have recent backups deleted to guarantee overdue status\n', quiet);
 
 
-sendTestData(useUpload, serverCount, port, quiet).then(() => {
+sendTestData(useUpload, serverCount, port, quiet, apiKey).then(() => {
   if (quiet) {
     console.log('✅ Test data generation completed successfully!');
   } else {

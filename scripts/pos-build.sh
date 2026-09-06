@@ -31,6 +31,12 @@ if [ -d "$SWC_ESM_SRC" ] && [ ! -d "$SWC_ESM_DEST" ]; then
     cp -r "$SWC_ESM_SRC" ".next/standalone/node_modules/@swc/helpers/"
 fi
 
+# Peer-IP preload used by `pnpm start` / `pnpm start-local` lives at repo
+# scripts/; copy it next to standalone/server.js so a cwd of .next/standalone
+# can also `--require ./scripts/peer-ip.cjs`.
+mkdir -p .next/standalone/scripts
+cp scripts/peer-ip.cjs .next/standalone/scripts/peer-ip.cjs
+
 # -----  end of pos-build ------
 
 exit 0

@@ -6,9 +6,10 @@
 - Node.js (voir `engines.node` dans `package.json`)
 - pnpm (voir `engines.pnpm` / `packageManager` dans `package.json`)
 - SQLite3
-- Inkscape (pour la traduction des SVG de documentation et l'exportation en PNG ; requis uniquement si vous exécutez `translate` ou `translate:svg`)
-- bat/batcat (pour afficher une version mise en forme de `translate:help`)
+- Inkscape (pour la traduction de documentation SVG et l'export PNG ; requis uniquement si vous exécutez `translate` ou `translate:svg`)
+- bat/batcat (pour afficher une version esthétique du `translate:help`)
 - direnv (pour charger automatiquement les fichiers `.env*`)
+- Playwright Chromium (exécuter `pnpm take-screenshots:install` après `pnpm install` ; cela exécute `playwright install chromium`)
 
 ## Étapes {#steps}
 
@@ -117,7 +118,7 @@ avec cette commande :
 Le projet inclut plusieurs scripts npm pour différentes tâches de développement :
 
 ### Scripts de développement {#development-scripts}
-- `pnpm dev` - Démarrer le serveur de développement sur le port 8666 (inclut des vérifications préalables)
+- `pnpm dev` - Démarrer le serveur de développement sur le port 8666 (inclut des vérifications préalables). `NODE_OPTIONS` charge `scripts/dev-preload.cjs`, qui applique `scripts/peer-ip.cjs` (adresse de pair TCP pour les listes d'adresses IP autorisées) et les horodatages des journaux de requêtes.
 - `pnpm build` - Construire l'application pour la production (inclut des vérifications préalables)
 - `pnpm lint` - Exécuter ESLint pour vérifier la qualité du code
 - `pnpm typecheck` - Exécuter la vérification des types TypeScript
@@ -143,10 +144,10 @@ Ces scripts doivent être exécutés depuis le répertoire `documentation/` :
 
 Les serveurs de développement (`start:*`) offrent un remplacement de module à chaud pour un développement rapide. Le port par défaut est 3000.
 
-### Scripts de Production {#production-scripts}
-- `pnpm build-local` - Construire et préparer pour la production locale (inclut les pré-vérifications, copie les fichiers statiques dans le répertoire autonome)
-- `pnpm start-local` - Démarrer le serveur de production localement (port 8666, inclut les pré-vérifications). **Note :** Exécutez d'abord `pnpm build-local`.
-- `pnpm start` - Démarrer le serveur de production (port 9666)
+### Scripts de production {#production-scripts}
+- `pnpm build-local` - Construire et préparer pour la production locale (inclut des vérifications préalables, copie les fichiers statiques dans un répertoire autonome)
+- `pnpm start-local` - Démarrer le serveur de production localement (port 8666, inclut des vérifications préalables). **Remarque :** Exécutez `pnpm build-local` en premier. Démarre le serveur autonome avec `--require ./scripts/peer-ip.cjs`.
+- `pnpm start` - Démarrer le serveur de production (port 9666) avec le même préchargement d'IP de pair. Docker utilise `docker-entrypoint.sh` pour charger le même script.
 
 ### Scripts Docker {#docker-scripts}
 - `pnpm docker:up` - Démarrer la pile Docker Compose

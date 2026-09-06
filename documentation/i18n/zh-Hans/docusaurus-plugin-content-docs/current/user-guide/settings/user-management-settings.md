@@ -61,3 +61,5 @@
 ## 恢复管理员访问 {#recovering-admin-access}
 
 如果您丢失了管理员密码或被锁定出您的账户，您可以使用管理员恢复脚本恢复访问权限。请参阅[管理员账户恢复](../admin-recovery.md)指南，以获取在Docker环境中恢复管理员访问权限的详细说明。
+
+如果浏览器在登录表单之前显示**访问被拒绝**（HTTP 403），请改用[IP白名单锁定](../troubleshooting.md#locked-out-by-ip-allowlist)恢复。

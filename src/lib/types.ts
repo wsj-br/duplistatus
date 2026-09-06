@@ -196,6 +196,127 @@ export interface NotificationTemplate {
   message: string;
 }
 
+export const NOTIFICATION_PRIORITIES = ['max', 'high', 'default', 'low', 'min'] as const;
+export type NotificationPriority = (typeof NOTIFICATION_PRIORITIES)[number];
+
+export function isNotificationPriority(value: string): value is NotificationPriority {
+  return (NOTIFICATION_PRIORITIES as readonly string[]).includes(value);
+}
+
+export interface DailySummaryEmailTemplate {
+  title: string;
+  message: string;
+}
+
+export interface DailySummaryTemplateSet {
+  email: DailySummaryEmailTemplate;
+  ntfy: NotificationTemplate;
+}
+
+export interface StoredNotificationTemplates {
+  language: SupportedTemplateLanguage;
+  success: NotificationTemplate;
+  warning: NotificationTemplate;
+  overdueBackup: NotificationTemplate;
+  dailySummary: DailySummaryTemplateSet;
+}
+
+export const DAILY_SUMMARY_CONFIG_KEY = 'daily_summary';
+export const DAILY_SUMMARY_DISPATCH_TASK = 'daily-summary-dispatch';
+
+export interface DailySummaryConfig {
+  enabled: boolean;
+  localTime: string;
+  timeZone: string;
+  sendNtfy: boolean;
+  effectiveFromIso: string;
+}
+
+export type DailySummaryChannel = 'email' | 'ntfy';
+export type DailySummaryDeliveryState = 'pending' | 'sending' | 'sent' | 'failed';
+export type DailySummaryTrigger = 'scheduled' | 'manual' | 'retry';
+export type NotificationDeliveryOutcome = 'sent' | 'suppressed' | 'skipped';
+
+export interface DailySummaryRenderedPayload {
+  subject: string;
+  emailHtml: string;
+  emailText: string;
+  ntfyTitle: string;
+  ntfyMessage: string;
+  ntfyPriority: string;
+  ntfyTags: string;
+}
+
+export interface DailySummaryChannelPublicStatus {
+  enabled: boolean;
+  state: DailySummaryDeliveryState | 'idle';
+  lastAttemptAt: string | null;
+  lastSuccessAt: string | null;
+  lastError: string | null;
+  nextRetryAt: string | null;
+  occurrenceKey: string | null;
+}
+
+export interface DailySummaryPublicStatus {
+  enabled: boolean;
+  localTime: string;
+  timeZone: string;
+  sendNtfy: boolean;
+  nextOccurrenceIso: string | null;
+  dispatcherHealthy: boolean;
+  emailConfigured: boolean;
+  ntfyConfigured: boolean;
+  channels: {
+    email: DailySummaryChannelPublicStatus;
+    ntfy: DailySummaryChannelPublicStatus;
+  };
+}
+
+export interface DailySummaryJobRow {
+  serverId: string;
+  serverName: string;
+  serverAlias: string;
+  serverNote: string;
+  serverUrl: string;
+  backupName: string;
+  lastBackupId: string | null;
+  lastBackupDate: string | null;
+  lastBackupStatus: BackupStatus | null;
+  durationSeconds: number | null;
+  uploadedSize: number;
+  sourceSize: number;
+  storageSize: number;
+  examinedFiles: number;
+  warnings: number;
+  errors: number;
+  isOverdue: boolean;
+  expectedBackupDate: string | null;
+  hasReport: boolean;
+}
+
+export interface DailySummarySnapshot {
+  generatedAt: string;
+  timeZone: string;
+  summaryDate: string;
+  jobs: DailySummaryJobRow[];
+  serverCount: number;
+  jobCount: number;
+  successCount: number;
+  warningCount: number;
+  errorCount: number;
+  fatalCount: number;
+  unknownCount: number;
+  noReportCount: number;
+  overdueCount: number;
+  latestUploadedSize: number;
+  latestSourceSize: number;
+  latestStorageSize: number;
+  latestFileCount: number;
+  totalWarnings: number;
+  totalErrors: number;
+  omittedJobCount: number;
+}
+
 import { LOCALE_CODE_LIST, type LocaleCode } from '@/lib/locales';
 
 /**
@@ -243,6 +364,7 @@ export interface OverdueBackupCheckResult {
     checkedBackups: number;
     overdueBackupsFound: number;
     notificationsSent: number;
+    notificationsSuppressed?: number;
   };
 }
 
@@ -361,6 +483,56 @@ export interface SMTPConfig {
   senderName?: string; // Optional sender display name (defaults to "duplistatus")
   fromAddress?: string; // Optional from email address (defaults to username)
   requireAuth?: boolean; // Whether SMTP server requires authentication (defaults to true)
+}
+
+export const API_KEY_SCOPES = ['upload', 'read'] as const;
+export type ApiKeyScope = (typeof API_KEY_SCOPES)[number];
+
+export function isApiKeyScope(value: string): value is ApiKeyScope {
+  return (API_KEY_SCOPES as readonly string[]).includes(value);
+}
+
+export function assertApiKeyScope(scope: ApiKeyScope): ApiKeyScope {
+  switch (scope) {
+    case 'upload':
+    case 'read':
+      return scope;
+    default: {
+      const exhaustive: never = scope;
+      throw new Error(`Unhandled API key scope: ${String(exhaustive)}`);
+    }
+  }
+}
+
+export interface ApiKeyPublic {
+  id: string;
+  name: string;
+  description: string;
+  scope: ApiKeyScope;
+  fingerprint: string;
+  enabled: boolean;
+  createdAt: string;
+  createdBy: string | null;
+  expiresAt: string | null;
+  lastUsedAt: string | null;
+  usageCount: number;
+}
+
+export interface UploadLimitsConfig {
+  enabled: boolean;
+  maxBytes: number;
+  perMinute: number;
+  perHour: number;
+}
+
+export interface CidrAllowlistConfig {
+  enabled: boolean;
+  cidrs: string[];
+}
+
+export interface TrustedProxiesConfig {
+  trustProxy: boolean;
+  trustedProxies: string[];
 }
 
 export interface SMTPConfigEncrypted {

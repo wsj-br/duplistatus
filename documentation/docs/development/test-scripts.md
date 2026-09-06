@@ -20,7 +20,10 @@ Use the option `--upload` to send the generated data to the `/api/upload`
 
 ```bash
 pnpm generate-test-data --servers=N --upload
+pnpm generate-test-data --servers=N --upload --api-key=YOUR_UPLOAD_KEY
 ```
+
+`--api-key` is required when Settings → API Keys is set to require keys. The script retries once on HTTP 429 so a large `--upload` run stays within the default rate limits.
 
 **Examples:**
 ```bash
@@ -260,5 +263,13 @@ pnpm test-entrypoint
 - Verifying log rotation and logging functionality
 - Testing graceful shutdown and signal handling
 - Debugging entrypoint script behavior in a local environment
+
+## Daily Summary validation {#daily-summary-validation}
+
+```bash
+pnpm validate-daily-summary
+```
+
+Runs deterministic checks for Daily Summary scheduling (including DST), snapshot aggregation, Markdown sanitization, delivery-ledger claims, and schema 4.1 → 4.2 migration with customized templates. Does not send email or NTFY.
 
 

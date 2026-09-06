@@ -779,6 +779,52 @@ For "Delete all data" option:
   - Configuration change is logged to audit log
   - Retention period affects automatic and manual cleanup operations
 
+## एपीआई कुंजियाँ {#api-keys}
+
+### एपीआई कुंजियाँ की सूची - `/api/api-keys` {#list-api-keys---apiapi-keys}
+- **Endpoint**: `/api/api-keys`
+- **Method**: GET
+- **Description**: सभी एपीआई कुंजियों की सूची बनाता है। सीक्रेट्स कभी नहीं लौटाए जाते; प्रत्येक कुंजी में एक फिंगरप्रिंट शामिल होता है (`Qk7v…3xTa`).
+- **Authentication**: एडमिन प्राइविलेज, वैध सेशन और CSRF टोकन की आवश्यकता होती है
+- **Error Responses**:
+  - `401`: Unauthorized - Invalid session or CSRF token
+  - `403`: Forbidden - Admin privileges required
+  - `500`: Internal server error
+
+### एपीआई कुंजी बनाएँ - `/api/api-keys` {#create-api-key---apiapi-keys}
+- **Endpoint**: `/api/api-keys`
+- **Method**: POST
+- **Description**: एक स्कोप्ड एपीआई कुंजी बनाता है। प्लेनटेक्स्ट सीक्रेट केवल इस प्रतिक्रिया में लौटाया जाता है।
+- **Authentication**: Requires admin privileges, valid session and CSRF token
+- **Request Body**:
+
+  ```json
+  {
+    "name": "Duplicati uploads",
+    "scope": "upload",
+    "description": "Optional",
+    "expiresAt": null
+  }
+  ```
+
+- **Error Responses**:
+  - `400`: Missing name or invalid scope (`upload` or `read`)
+  - `401`: Unauthorized - Invalid session or CSRF token
+  - `403`: Forbidden - Admin privileges required
+  - `500`: Internal server error
+
+### एपीआई कुंजी अपडेट करें - `/api/api-keys/:id` {#update-api-key---apiapi-keysid}
+- **Endpoint**: `/api/api-keys/:id`
+- **Method**: PATCH
+- **Description**: एक कुंजी को सक्षम या अक्षम करता है।
+- **Authentication**: एडमिन प्राइविलेज, वैध सेशन और CSRF टोकन की आवश्यकता होती है
+
+### एपीआई कुंजी डिलीट करें - `/api/api-keys/:id` {#delete-api-key---apiapi-keysid}
+- **Endpoint**: `/api/api-keys/:id`
+- **Method**: DELETE
+- **Description**: एक कुंजी को डिलीट करता है। उस सीक्रेट का उपयोग करने वाले मौजूदा क्लाइंट्स तुरंत पहुंच खो देते हैं।
+- **Authentication**: एडमिन प्राइविलेज, वैध सेशन और CSRF टोकन की आवश्यकता होती है
+
 ## डेटाबेस प्रबंधन {#database-management}
 
 ### डेटाबेस बैकअप - `/api/database/backup` {#backup-database---apidatabasebackup}

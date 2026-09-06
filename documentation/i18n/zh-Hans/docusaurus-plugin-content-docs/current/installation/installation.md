@@ -19,6 +19,8 @@
 
 您可以在 [设置 > 用户](../user-guide/settings/user-management-settings.md) 中创建额外的用户账户，第一次登录后。
 
+管理员也可以选择为 Duplicati 和 Homepage 设置 [API 密钥](../user-guide/settings/api-keys-settings.md)，并通过 [IP 允许列表](../user-guide/settings/ip-allowlist-settings.md) 限制访问。两者默认均为关闭状态。
+
 ::::info[重要]
 系统强制执行最小密码长度和复杂性。这些要求可以使用 `PWD_ENFORCE` 和 `PWD_MIN_LEN` [环境变量](environment-variables.md) 进行调整。使用不够复杂或长度较短的密码可能会损害安全性。请谨慎使用这些设置。
 ::::
@@ -251,10 +253,10 @@ podman pod rm -f duplistatus-pod
 
 ## 基本配置 {#essential-configuration}
 
-1. 配置您的 [Duplicati 服务器](duplicati-server-configuration.md) 将备份日志消息发送到 duplistatus （必填）。 
-2. 登录到 duplistatus - 参见 [用户指南](../user-guide/overview.md#accessing-the-dashboard) 中的说明。 
-3. 收集初始备份日志 - 使用 [收集备份日志](../user-guide/collect-backup-logs.md) 功能用所有 Duplicati 服务器的历史备份数据填充数据库。这也会根据每个服务器的配置自动更新备份监控间隔。 
-4. 配置服务器设置 - 在 [设置 → 服务器](../user-guide/settings/server-settings.md) 中设置服务器别名和注释，以使您的仪表盘更具信息量。
+1. 配置您的 [Duplicati 服务器](duplicati-server-configuration.md) 将备份日志消息发送到 duplistatus (必填)。在 Duplicati 2.0.9.106 及更高版本中，使用 `--send-http-json-urls`，如该指南所述。
+2. 登录 duplistatus – 请参阅 [用户指南](../user-guide/overview.md#accessing-the-dashboard)。
+3. 收集初始备份日志 – 使用 [收集备份日志](../user-guide/collect-backup-logs.md) 功能，从所有 Duplicati 服务器中填充数据库，以获取历史备份数据。这也会自动更新每个服务器的备份监控间隔，基于每个服务器的配置。
+4. 配置服务器设置 – 在 [设置 → 服务器](../user-guide/settings/server-settings.md) 中设置服务器别名和备注，以使您的仪表板更具信息性。
 5. 配置 NTFY 设置 - 在 [设置 → NTFY](../user-guide/settings/ntfy-settings.md) 中设置 NTFY 通知。 
 6. 配置电子邮件设置 - 在 [设置 → 电子邮件](../user-guide/settings/email-settings.md) 中设置电子邮件通知。 
 7. 配置备份通知 - 在 [设置 → 备份通知](../user-guide/settings/backup-notifications-settings.md) 中设置每个备份或每个服务器的通知。

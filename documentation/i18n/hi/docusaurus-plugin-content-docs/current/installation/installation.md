@@ -19,6 +19,8 @@ Ensure you have the following installed:
 
 You can create additional users accounts in [Settings > Users](../user-guide/settings/user-management-settings.md) after the first login.
 
+प्रशासक [एपीआई कुंजियाँ](../user-guide/settings/api-keys-settings.md) के लिए डुप्लिकेटी और होमपेज के लिए वैकल्पिक रूप से आवश्यक कर सकते हैं, और [आईपी अनुमति सूचियों](../user-guide/settings/ip-allowlist-settings.md) के साथ पहुंच को प्रतिबंधित कर सकते हैं। दोनों डिफ़ॉल्ट रूप से बंद हैं।
+
 ::::info[IMPORTANT]
 The system enforces a minimum password length and complexity. These requirements can be adjusted using the `PWD_ENFORCE` and `PWD_MIN_LEN` [environment variables](environment-variables.md). Using a password without sufficient complexity or with a short length can compromise security. Please use these settings carefully.
 ::::
@@ -251,10 +253,10 @@ podman pod rm -f duplistatus-pod
 
 ## Anivarya Sammaan {#essential-configuration}
 
-1. Apne [Duplicati servers](duplicati-server-configuration.md) ko configure karein taaki vo backup log messages ko duplistatus par bhejen (anivarya).
-2. duplistatus mein pravesh karein – [User Guide](../user-guide/overview.md#accessing-the-dashboard) mein anusaran karein.
-3. Shuruwat ke backup logs ko sankalan karein – [Collect Backup Logs](../user-guide/collect-backup-logs.md) feature ka upyog karein taaki database mein apne sabhi Duplicati servers se historical backup data se bhara jaaye. Yeh automatically har server ke configuration ke anusar backup monitoring intervals ko bhi update karta hai.
-4. Server settings ko configure karein – [Settings → Server](../user-guide/settings/server-settings.md) mein server aliases aur notes set up karein taaki apka dashboard zyada informative ho.
+1. Apne [Duplicati servers](duplicati-server-configuration.md) ko (anivarya) duplistatus ko backup log messages bhejne ke liye Configure karein. Duplicati 2.0.9.106 aur uske baad ke versions mein, us guide mein vishesh kiye gaye `--send-http-json-urls` ka istemal karein.
+2. duplistatus mein Pravesh karein – [User Guide](../user-guide/overview.md#accessing-the-dashboard) mein vishesh kiye gaye instructions dekhein.
+3. Initial backup logs Sankalan karein – [Backup Logs Ikattha Karein](../user-guide/collect-backup-logs.md) feature ka istemal karein taaki aapke sabhi Duplicati servers se historical backup data ke saath database ko bhar saken. Yeh automatically har server ke configuration ke hisaab se backup monitoring intervals ko bhi update karta hai.
+4. Server settings Configure karein – [Settings → Server](../user-guide/settings/server-settings.md) mein server aliases aur notes set up karein taaki aapka dashboard zyada informative ho.
 5. NTFY settings ko configure karein – [Settings → NTFY](../user-guide/settings/ntfy-settings.md) mein NTFY ke through notifications set up karein.
 6. Email settings ko configure karein – [Settings → Email](../user-guide/settings/email-settings.md) mein email notifications set up karein.
 7. Backup notifications ko configure karein – [Settings → Backup Notifications](../user-guide/settings/backup-notifications-settings.md) mein per-backup ya per-server notifications set up karein.

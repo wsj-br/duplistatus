@@ -6,6 +6,8 @@
 
 Die Serverliste auf dieser Seite kann mithilfe des Filterfeldes gefiltert werden.
 
+Wenn **Tägliche Zusammenfassung** aktiviert ist, wird die Überfälligerkennung fortgesetzt, aber individuelle Überfälligkeitsbenachrichtigungen werden unterdrückt. Siehe [Tägliche Zusammenfassung](daily-summary-settings.md).
+
 **Filterergebnisse:**
 - Server-ID
 - Server-URL

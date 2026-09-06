@@ -15,6 +15,8 @@
 Ein <IIcon2 icon="lucide:message-square" color="green"/> grünes Symbol neben **NTFY** in der Seitenleiste bedeutet, dass Ihre Einstellungen gültig sind. Wenn das Symbol <IIcon2 icon="lucide:message-square" color="yellow"/> gelb ist, sind Ihre Einstellungen nicht gültig.
 Wenn die Konfiguration nicht gültig ist, werden die NTFY-Kontrollkästchen auf der Registerkarte [`Sicherungsbenachrichtigungen`](backup-notifications-settings.md) ebenfalls ausgegraut.
 
+Wenn [Tägliche Zusammenfassung](daily-summary-settings.md) mit **Zusammenfassung an NTFY senden** aktiviert ist, können die gespeicherte NTFY-URL und das Thema nicht gelöscht werden, bis diese Option ausgeschaltet ist.
+
 ## Verfügbare Aktionen {#available-actions}
 
 | Schaltfläche                                                                | Beschreibung                                                                                                  |

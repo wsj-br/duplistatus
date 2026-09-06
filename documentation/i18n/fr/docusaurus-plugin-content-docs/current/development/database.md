@@ -21,9 +21,11 @@ Les versions de migration historiques suivantes ont amené la base de données �
 - **Schéma v2.0** (Application v0.7.x) : Ajout de colonnes manquantes et table configurations
 - **Schéma v3.0** (Application v0.7.x) : Renommage de la table machines en servers, ajout de la colonne server_url
 - **Schéma v3.1** (Application v0.8.x) : Amélioration des champs de données de sauvegarde, ajout de la colonne server_password
-- **Schéma v4.0** (Application v0.9.x / v1.0.x) : Ajout du contrôle d'accès utilisateur (tables users, sessions, audit_log)
+- **Schéma v4.0** (Application v0.9.x / v1.0.x) : Ajouté le contrôle d'accès utilisateur (tables users, sessions, audit_log)
+- **Schéma v4.1** (Application v1.5.x) : Ajouté `api_keys` et clés de configuration par défaut pour l'authentification optionnelle par clé API, les listes de contrôle d'accès IP et les limites de téléchargement
+- **Schéma v4.2** (Application v1.5.x) : Ajouté `daily_summary_deliveries` et configuration par défaut `daily_summary` pour les notifications de résumé quotidien optionnelles
 
-La version actuelle de l'application (v1.3.x) utilise **Schema v4.0** comme dernière version du schéma de base de données.
+La version actuelle de l'application (v1.5.x) utilise **Schéma v4.2** comme dernière version du schéma de base de données.
 
 ### Processus de Migration {#migration-process}
 
@@ -161,7 +163,9 @@ Stocke les paramètres de configuration de l'application.
 - `ntfy_config` : Paramètres de notification NTFY
 - `overdue_tolerance` : Paramètres de tolérance pour les sauvegardes en retard
 - `notification_templates` : Modèles de messages de notification
-- `audit_retention_days` : Durée de rétention des journaux d'audit (par défaut : 90 jours)
+- `daily_summary` : Mode de résumé quotidien, planning, fuseau horaire et option de livraison NTFY
+- `cron_service` : Planifications des tâches Cron, y compris `daily-summary-dispatch`
+- `audit_retention_days` : Période de conservation des journaux d'audit (par défaut : 90 jours)
 
 ### Tableau des versions de base de données {#database-version-table}
 
@@ -234,6 +238,58 @@ Stocke la piste d'audit des actions des utilisateurs et des événements systèm
 | `status`        | TEXT NOT NULL                     | Statut de l'action ('success', 'failure', 'error')                  |
 | `error_message` | TEXT                              | Message d'erreur si l'action a échoué                                    |
 
+### Tableau des clés API {#api-keys-table}
+
+Stocke les clés API hachées pour les API HTTP externes. Le secret en texte clair n'est affiché qu'une fois à la création et n'est jamais stocké.
+
+#### Champs {#fields-6}
+
+| Champ          | Type             | Description                                              |
+|----------------|------------------|----------------------------------------------------------|
+| `id`           | TEXT PRIMARY KEY | Identifiant unique de la clé                                    |
+| `name`         | TEXT NOT NULL    | Nom d'affichage                                             |
+| `key_hash`     | TEXT UNIQUE      | Hachage SHA-256 du secret                               |
+| `key_prefix`   | TEXT             | Premiers quatre caractères du secret (pour les empreintes digitales)   |
+| `key_suffix`   | TEXT             | Derniers quatre caractères du secret (pour les empreintes digitales)    |
+| `scope`        | TEXT NOT NULL    | `upload` ou `read`                                       |
+| `description`  | TEXT             | Description optionnelle                                     |
+| `enabled`      | INTEGER          | `1` quand la clé est active                               |
+| `created_at`   | DATETIME         | Horodatage de création                                       |
+| `created_by`   | TEXT             | Identifiant de l'utilisateur de l'administrateur qui a créé la clé         |
+| `expires_at`   | DATETIME         | Expiration optionnelle                                          |
+| `last_used_at` | DATETIME         | Dernière utilisation réussie                                      |
+| `usage_count`  | INTEGER          | Nombre d'utilisations réussies                                     |
+
+Clés de configuration associées dans la table `configurations` : `external_api_require_api_key`, `ip_trusted_proxies`, `admin_ip_allowlist`, `external_api_ip_allowlist`, `upload_limits`.
+
+### Table des livraisons de résumé quotidien {#daily-summary-deliveries-table}
+
+Journal par chaîne pour les e-mails de résumé quotidien et NTFY. Chaque occurrence planifiée (ou envoi manuel unique) a au plus une ligne par chaîne. Les charges utiles rendues sont stockées avant l'envoi afin que les tentatives de réessai gardent la même capture instantanée. Les lignes plus anciennes de 30 jours sont supprimées.
+
+Si le processus se termine après qu'un fournisseur ait accepté un message mais avant que le succès ne soit enregistré, cette chaîne peut être réessayée (au moins une fois).
+
+#### Champs {#fields-7}
+
+| Champ              | Type             | Description                                                                 |
+|--------------------|------------------|-----------------------------------------------------------------------------|
+| `id`               | TEXT PRIMARY KEY | Identifiant unique de livraison                                                  |
+| `occurrence_key`   | TEXT NOT NULL    | Clé de date locale planifiée ou `manual:{uuid}`                                 |
+| `channel`          | TEXT NOT NULL    | `email` ou `ntfy`                                                           |
+| `trigger`          | TEXT NOT NULL    | `scheduled`, `manual`, ou `retry`                                           |
+| `summary_date`     | TEXT NOT NULL    | Date du calendrier local pour la capture instantanée                                        |
+| `time_zone`        | TEXT NOT NULL    | Fuseau horaire IANA enregistré                                                         |
+| `payload_json`     | TEXT             | Sujet rendu, HTML, texte et champs NTFY                               |
+| `state`            | TEXT NOT NULL    | `pending`, `sending`, `sent`, ou `failed`                                   |
+| `attempt_count`    | INTEGER          | Tentatives de livraison                                                           |
+| `next_retry_at`    | DATETIME         | Quand une chaîne en échec peut être réclamée à nouveau                                  |
+| `lease_expires_at` | DATETIME         | Bail de réclamation ; un bail périmé peut être récupéré                                 |
+| `error`            | TEXT             | Dernière erreur, le cas échéant                                                          |
+| `created_at`       | DATETIME         | Horodatage de création de la ligne                                                      |
+| `updated_at`            | DATETIME             | Horodatage de la dernière mise à jour               |
+| `sent_at`          | DATETIME         | Horodatage de succès                                                           |
+
+Un index unique sur `(occurrence_key, channel)` empêche l'envoi de doublons de la même occurrence sur la même chaîne.
+
 ## Gestion des sessions {#session-management}
 
 ### Stockage de session sauvegardé par base de données {#database-backed-session-storage}
@@ -261,15 +317,17 @@ La base de données comprend plusieurs index pour des performances de requête o
 - **Clés étrangères** : Références aux serveurs dans la table des sauvegardes, références aux utilisateurs dans les tables sessions et audit_log
 - **Optimisation des requêtes** : Index sur les champs fréquemment interrogés
 - **Index de date** : Index sur les champs de date pour les requêtes basées sur le temps
-- **Index utilisateur** : Index sur le nom d'utilisateur pour des recherches rapides
-- **Index de session** : Index sur expiration et user_id pour la gestion des sessions
-- **Index d'audit** : Index sur horodatage, user_id, action, catégorie et statut pour les requêtes d'audit
+- **Index des utilisateurs** : Index du nom d'utilisateur pour les recherches rapides des utilisateurs
+- **Index des sessions** : Index d'expiration et d'identifiant d'utilisateur pour la gestion des sessions
+- **Index des audits** : Index de l'horodatage, de l'identifiant d'utilisateur, de l'action, de la catégorie et de l'état pour les requêtes d'audit
+- **Index des clés API** : Hachage unique, ainsi que les recherches d'état et de portée pour l'authentification
 
 ## Relations {#relationships}
 
 - **Serveurs → Sauvegardes** : Relation un-à-plusieurs
 - **Utilisateurs → Sessions** : Relation un-à-plusieurs (les sessions peuvent exister sans utilisateurs)
-- **Utilisateurs → Journal d'audit** : Relation un-à-plusieurs (les entrées d'audit peuvent exister sans utilisateurs)
+- **Utilisateurs → Journal d'audit** : Relation un-à-plusieurs (les entrées de journal peuvent exister sans utilisateurs)
+- **Utilisateurs → Clés API** : Relation un-à-plusieurs via `created_by` (les clés restent après la suppression de l'utilisateur)
 - **Sauvegardes → Messages** : Tableaux JSON intégrés
 - **Configurations** : Stockage clé-valeur
 

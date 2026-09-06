@@ -6,9 +6,10 @@
 - Node.js (consulta `engines.node` en `package.json`)
 - pnpm (consulta `engines.pnpm` / `packageManager` en `package.json`)
 - SQLite3
-- Inkscape (para la traducción de SVGs de documentación y exportación a PNG; requerido solo si ejecutas `translate` o `translate:svg`)
-- bat/batcat (para mostrar una versión bonita de `translate:help`)
+- Inkscape (para la traducción de documentación SVG y exportación PNG; necesario solo si ejecutas `translate` o `translate:svg`)
+- bat/batcat (para mostrar una versión bonita del `translate:help`)
 - direnv (para cargar automáticamente los archivos `.env*`)
+- Playwright Chromium (ejecutar `pnpm take-screenshots:install` después de `pnpm install`; esto ejecuta `playwright install chromium`)
 
 ## Pasos {#steps}
 
@@ -116,9 +117,9 @@ con este comando:
 
 El proyecto incluye varios scripts npm para diferentes tareas de desarrollo:
 
-### Scripts de desarrollo {#development-scripts}
-- `pnpm dev` - Iniciar el servidor de desarrollo en el puerto 8666 (incluye verificaciones previas)
-- `pnpm build` - Compilar la aplicación para producción (incluye verificaciones previas)
+### Scripts de Desarrollo {#development-scripts}
+- `pnpm dev` - Iniciar servidor de desarrollo en el puerto 8666 (incluye pre-comprobaciones). `NODE_OPTIONS` carga `scripts/dev-preload.cjs`, que aplica `scripts/peer-ip.cjs` (dirección del par TCP para listas de permitidos de IP) y marcas de tiempo de registro de solicitudes.
+- `pnpm build` - Compilar la aplicación para producción (incluye pre-comprobaciones)
 - `pnpm lint` - Ejecutar ESLint para verificar la calidad del código
 - `pnpm typecheck` - Ejecutar la comprobación de tipos de TypeScript
 - `scripts/upgrade-dependencies.sh` — Actualización segura de cada paquete del espacio de trabajo (detectado automáticamente). Resuelve las versiones más recientes con `npm-check-updates`, instala desde la raíz del espacio de trabajo y mantiene únicamente las actualizaciones que superen el `typecheck`/`lint` de cada paquete (los peer gates fijan `eslint` / `typescript` cuando el stack de lint no permite la última versión mayor). A continuación, ejecuta `pnpm audit` / `audit --fix` y aplica por la fuerza (e informa de) cualquier corrección de seguridad que requiera cambios en el código. Actualiza el lockfile del espacio de trabajo y el browserslist. Prefiera `source ./scripts/upgrade-dependencies.sh` para que **nvm** se aplique a su shell; en CI o automatización, use `CI=1` o `UPGRADE_ALLOW_EXEC=1` cuando ejecute el archivo directamente. Consulte también `scripts/upgrade-tools.sh` para las herramientas de Node/pnpm únicamente.
@@ -144,9 +145,9 @@ Estos scripts deben ejecutarse desde el directorio `documentation/`:
 Los servidores de desarrollo (`start:*`) proporcionan reemplazo de módulos en caliente para un desarrollo rápido. El puerto por defecto es 3000.
 
 ### Scripts de Producción {#production-scripts}
-- `pnpm build-local` - Compilar y preparar para producción local (incluye verificaciones previas, copia archivos estáticos al directorio independiente)
-- `pnpm start-local` - Iniciar servidor de producción localmente (puerto 8666, incluye verificaciones previas). **Nota:** Ejecute `pnpm build-local` primero.
-- `pnpm start` - Iniciar servidor de producción (puerto 9666)
+- `pnpm build-local` - Compilar y preparar para producción local (incluye pre-comprobaciones, copia archivos estáticos a un directorio independiente)
+- `pnpm start-local` - Iniciar servidor de producción localmente (puerto 8666, incluye pre-comprobaciones). **Nota:** Ejecute `pnpm build-local` primero. Inicia el servidor independiente con `--require ./scripts/peer-ip.cjs`.
+- `pnpm start` - Iniciar servidor de producción (puerto 9666) con la misma precarga de IP de par. Docker usa `docker-entrypoint.sh` para cargar el mismo script.
 
 ### Scripts de Docker {#docker-scripts}
 - `pnpm docker:up` - Iniciar la pila de Docker Compose

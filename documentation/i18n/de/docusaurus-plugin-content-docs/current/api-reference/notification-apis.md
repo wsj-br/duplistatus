@@ -4,9 +4,9 @@
 - **Endpunkt**: `/api/notifications/test`
 - **Methode**: POST
 - **Beschreibung**: Sendet Testbenachrichtigungen (einfach, vorlagenbasiert oder per E-Mail), um die Benachrichtigungskonfiguration zu überprüfen.
-- **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
-- **Anforderungstext**:
-  Für einfachen Test:
+- **Authentifizierung**: Erfordert eine Administrator-Sitzung und einen CSRF-Token
+- **Anfragekörper**:
+  Für einfache Tests:
 
     ```json
     {
@@ -89,11 +89,18 @@ Der Inhalt der Test-E-Mail zeigt Folgendes an:
   - Unterstützt einfache Testnachrichten, vorlagenbasierte Benachrichtigungen und E-Mail-Tests
   - Bei der Vorlagenprüfung werden Beispieldaten verwendet, um Vorlagenvariablen zu ersetzen
   - Enthält Zeitstempel in der Testnachricht
-  - Überprüft NTFY-URL und Thema vor dem Senden
-  - Verwendet das `accessToken`-Feld für die Authentifizierung
-  - Sendet bei Vorlagentests Benachrichtigungen sowohl an NTFY als auch per E-Mail (falls konfiguriert)
-  - E-Mail-Tests erfordern eine eingerichtete SMTP-Konfiguration
-  - Der Test-E-Mail-Endpunkt löscht den Anforderungscache vor dem Lesen der SMTP-Konfiguration, sodass externe Skripte die Konfiguration aktualisieren können und diese sofort in den Test-E-Mails berücksichtigt werden
+  - NTFY-Tests verwenden die gespeicherte NTFY-Konfiguration; eine vom Client bereitgestellte NTFY-URL wird nicht verwendet
+  - Verwendet das `accessToken`-Feld für die Authentifizierung, wenn gespeichert
+  - Bei Vorlagen-Tests werden Benachrichtigungen sowohl an NTFY als auch an E-Mail (falls konfiguriert) gesendet
+  - E-Mail-Tests erfordern, dass die SMTP-Konfiguration eingerichtet ist
+  - Der Test-E-Mail-Endpunkt leert den Anfrage-Cache, bevor die SMTP-Konfiguration gelesen wird, sodass externe Skripte die Konfiguration aktualisieren und die Änderungen sofort in den Test-E-Mails widerspiegeln können
+  - Vorlagen-Tests und die sofortige Senden-Funktion der Täglichen Zusammenfassung umgehen die pro-Sicherung-Unterdrückung
+
+## Vorschau der Benachrichtigungsvorlage - `/api/notifications/preview` {#preview-notification-template---apinotificationspreview}
+- **Endpunkt**: `/api/notifications/preview`
+- **Methode**: POST
+- **Beschreibung**: Rendert eine Benachrichtigungsvorlage mit dem Produktions-Markdown-Renderer ohne Senden. Der Körper enthält `kind` (`success`, `warning`, `overdueBackup`, `dailySummaryEmail` oder `dailySummaryNtfy`) und die bearbeitete Vorlage. Vorschauen der Täglichen Zusammenfassung verwenden das aktuelle reale Snapshot; andere Arten verwenden deterministische Beispielwerte. E-Mail HTML ist für ein sandboxed iframe vorgesehen.
+- **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
 
 ## Überfällige Sicherungen prüfen - `/api/notifications/check-overdue` {#check-overdue-backups---apinotificationscheck-overdue}
 - **Endpunkt**: `/api/notifications/check-overdue`

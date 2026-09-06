@@ -1,4 +1,5 @@
 import type { NotificationTemplate } from '@/lib/types';
+import { defaultDailySummaryPtBR } from './default-daily-summary-templates';
 
 /**
  * Portuguese - Brazil (pt-BR) default notification templates
@@ -7,6 +8,7 @@ export const defaultNotificationTemplatesPtBR: {
   overdueBackup: NotificationTemplate;
   success: NotificationTemplate;
   warning: NotificationTemplate;
+  dailySummary: typeof defaultDailySummaryPtBR;
 } = {
   success: {
     title: '✅ {status} - {backup_name} @ {server_alias}',
@@ -45,4 +47,5 @@ export const defaultNotificationTemplatesPtBR: {
     priority: 'default',
     tags: 'duplicati, duplistatus, overdue',
   },
+  dailySummary: defaultDailySummaryPtBR,
 };

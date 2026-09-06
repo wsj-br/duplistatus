@@ -103,7 +103,8 @@
   - `500`: Falha ao excluir a configuração SMTP
 - **Notas**:
   - Esta operação remove permanentemente a configuração SMTP
-  - Retorna 404 se nenhuma configuração existir para exclusão
+  - Retorna 404 se não houver configuração para excluir
+  - Retorna 400 enquanto o modo Resumo Diário está habilitado, pois esse modo requer SMTP
 
 ## Atualizar Senha de E-mail - `/api/configuration/email/password` {#update-email-password---apiconfigurationemailpassword}
 - **Endpoint**: `/api/configuration/email/password`
@@ -196,6 +197,18 @@
         "message": "The backup {backup_name} is overdue on {server_name}.",
         "priority": "default",
         "tags": "duplicati, duplistatus, overdue"
+      },
+      "dailySummary": {
+        "email": {
+          "title": "duplistatus — Daily backup summary — {summary_date}",
+          "message": "## Daily backup summary"
+        },
+        "ntfy": {
+          "title": "duplistatus daily summary",
+          "message": "Servers {server_count}, jobs {job_count}",
+          "priority": "default",
+          "tags": "duplicati, duplistatus, daily-summary"
+        }
       }
     },
     "email": {
@@ -438,8 +451,37 @@ Para frequência de notificação:
   - `500`: Erro do servidor ao atualizar os modelos de notificação
 - **Notas**:
   - Atualiza os modelos de notificação para diferentes status de backup
-  - Mantém as configurações existentes
-  - Os modelos suportam substituição de variáveis
+  - Preserva as configurações existentes
+  - Os modelos suportam corpos de e-mail em Markdown e substituição `{placeholder}`
+  - Um conjunto de modelos `dailySummary` (assunto/corpo do e-mail e NTFY compacto) é obrigatório
+
+## Resumo Diário - `/api/configuration/daily-summary` {#daily-summary---apiconfigurationdaily-summary}
+- **Endpoint**: `/api/configuration/daily-summary`
+- **Method**: GET, POST
+- **Descrição**: Lê ou atualiza o modo Resumo Diário. GET retorna configurações sanitizadas, saúde do despachante, próxima ocorrência e status de entrega por canal. POST salva `enabled`, `localTime` (`HH:mm`), `timeZone` (IANA) e `sendNtfy`. Habilitar requer SMTP válido e tarefa `daily-summary-dispatch` saudável. Habilitar NTFY requer configurações NTFY armazenadas. Alterar o agendamento define a próxima ocorrência **futura**.
+- **Autenticação**: GET requer uma sessão válida e token CSRF. POST requer uma sessão de administrador e token CSRF.
+- **Respostas de Erro**:
+  - `400`: Hora/fuso horário inválidos, SMTP/NTFY ausentes ou despachante não saudável
+  - `401`: Não autorizado
+  - `500`: Falha ao ler ou atualizar o Resumo Diário
+
+## Enviar Resumo Diário - `/api/configuration/daily-summary/send` {#send-daily-summary---apiconfigurationdaily-summarysend}
+- **Endpoint**: `/api/configuration/daily-summary/send`
+- **Method**: POST
+- **Descrição**: Envia uma captura instantânea do status atual imediatamente. Não consome a próxima ocorrência agendada. Usa SMTP armazenado (e NTFY armazenado quando selecionado). Não aceita endereços de destinatários ou endpoints na solicitação.
+- **Autenticação**: Requer sessão de administrador e token CSRF
+
+## Tentar Novamente Resumo Diário - `/api/configuration/daily-summary/retry` {#retry-daily-summary---apiconfigurationdaily-summaryretry}
+- **Endpoint**: `/api/configuration/daily-summary/retry`
+- **Method**: POST
+- **Descrição**: Tenta novamente os canais com falha a partir do payload persistido. Corpo `{ "occurrenceKey": "..." }` opcional; caso contrário, tenta novamente a última ocorrência com falha.
+- **Autenticação**: Requer sessão de administrador e token CSRF
+
+## Visualizar Resumo Diário - `/api/configuration/daily-summary/preview` {#preview-daily-summary---apiconfigurationdaily-summarypreview}
+- **Endpoint**: `/api/configuration/daily-summary/preview`
+- **Method**: POST
+- **Descrição**: Renderiza a captura atual sem enviar e sem escrever linhas do registro de entrega.
+- **Autenticação**: Requer sessão válida e token CSRF
 
 ## Obter Tolerância de Atraso - `/api/configuration/overdue-tolerance` {#get-overdue-tolerance---apiconfigurationoverdue-tolerance}
 - **Endpoint**: `/api/configuration/overdue-tolerance`
@@ -488,3 +530,28 @@ Para frequência de notificação:
   - Atualiza a configuração de tolerância de atraso (aceita formato de string como `"1h"`, `"2h"`, etc.; padrão para novas instalações é `2h`)
   - Afeta quando os backups são considerados atrasados
   - Usado pelo verificador de backup atrasado
+
+## APIs externas - Segurança - `/api/configuration/external-api-security` {#external-api-security---apiconfigurationexternal-api-security}
+- **Endpoint**: `/api/configuration/external-api-security`
+- **Métodos**: GET, PATCH
+- **Descrição**: Lê ou atualiza se as APIs externas exigem uma chave, além do tamanho do `/api/upload` e dos limites de taxa.
+- **Autenticação**: Requer privilégios de administrador, sessão válida e token CSRF
+- **Corpo PATCH**:
+
+  ```json
+  {
+    "requireApiKey": false,
+    "uploadLimits": {
+      "enabled": true,
+      "maxBytes": 5242880,
+      "perMinute": 20,
+      "perHour": 200
+    }
+  }
+  ```
+
+## Lista de permissões de IP - `/api/configuration/ip-allowlist` {#ip-allowlist---apiconfigurationip-allowlist}
+- **Endpoint**: `/api/configuration/ip-allowlist`
+- **Métodos**: GET, PATCH
+- **Descrição**: Lê ou atualiza proxies confiáveis e as listas de permissões CIDR para administradores / APIs externas. Habilitar a lista de administradores falha a menos que o IP do cliente atual já esteja listado (o loopback é isento).
+- **Autenticação**: Requer privilégios de administrador, sessão válida e token CSRF

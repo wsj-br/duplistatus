@@ -34,8 +34,10 @@ Todos os endpoints seguem um padrão consistente de tratamento de erros:
 - **401 Não Autorizado**: Sessão inválida ou ausente, sessão expirada ou falha na validação do token CSRF
 - **403 Proibido**: Operação não permitida (por exemplo, exclusão de backup em produção) ou falha na validação do token CSRF
 - **404 Não Encontrado**: Recurso não encontrado
-- **409 Conflito**: Dados duplicados (para endpoints de upload)
-- **500 Erro Interno do Servidor**: Erros no lado do servidor com mensagens detalhadas
+- **409 Conflito**: Dados duplicados (para endpoints de carregamento)
+- **413 Payload Muito Grande**: corpo do `/api/upload` excede o limite de tamanho configurado
+- **429 Muitas Solicitações**: Limite de taxa excedido para carregamento, API de leitura ou falha de autenticação
+- **500 Erro Interno do Servidor**: Erros do lado do servidor com mensagens de erro detalhadas
 - **503 Serviço Indisponível**: Falhas na verificação de saúde, problemas de conexão com o banco de dados ou serviço cron indisponível
 
 As respostas de erro incluem:

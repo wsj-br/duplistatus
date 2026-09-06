@@ -10,8 +10,10 @@ duplistatus es un potente panel de control diseñado específicamente para siste
 - Seguimiento en tiempo real del estado de todas las operaciones de respaldo
 - Detección automatizada de copias de seguridad atrasadas con alertas configurables
 - Métricas completas y visualización del rendimiento del respaldo
-- Sistema de notificaciones flexible mediante NTFY y correo electrónico
-- Soporte multilingüe (inglés, francés, alemán, español, portugués de Brasil, hindi (romanizado) y chino simplificado).
+- Sistema de notificaciones flexible a través de NTFY y correo electrónico
+- [Claves de API](settings/api-keys-settings.md) opcionales para las subidas de Duplicati y los widgets de Homepage, con límites de tasa y de tamaño de subida
+- [Listas de IP permitidas](settings/ip-allowlist-settings.md) opcionales para la interfaz de administración y las APIs externas
+- Soporte multi-idioma (inglés, francés, alemán, español, portugués brasileño, hindi (romano) y chino simplificado).
 
 ## Instalación {#installation}
 
@@ -91,8 +93,9 @@ Al hacer clic en el botón de usuario, se abre un menú desplegable con opciones
 2. Recopile los registros iniciales de copia de seguridad: use la función [Recopilar registros de copia de seguridad](collect-backup-logs.md) para llenar la base de datos con datos históricos de copias de seguridad de todos sus servidores Duplicati. Esto también actualiza automáticamente los intervalos de monitoreo de copias de seguridad según la configuración de cada servidor.
 3. Configure los ajustes del servidor: configure alias y notas de los servidores en [Configuración → Servidor](settings/server-settings.md) para hacer que su panel sea más informativo.
 4. Configure los ajustes de NTFY: configure notificaciones mediante NTFY en [Configuración → NTFY](settings/ntfy-settings.md).
-5. Configure la configuración de correo electrónico: configure las notificaciones por correo electrónico en [Configuración → Correo electrónico](settings/email-settings.md).
-6. Configure las notificaciones de copia de seguridad: configure notificaciones por copia de seguridad o por servidor en [Configuración → Notificaciones de copia de seguridad](settings/backup-notifications-settings.md).
+5. Configurar la configuración de correo electrónico: configura las notificaciones por correo electrónico en [Configuración → Correo electrónico](settings/email-settings.md).
+6. Configurar notificaciones de copia de seguridad: configura notificaciones por copia de seguridad o por servidor en [Configuración → Notificaciones de Copia de Seguridad](settings/backup-notifications-settings.md).
+7. Opcionalmente, restringir el acceso: crea [claves de API](settings/api-keys-settings.md) y/o [listas de permitidos de IP](settings/ip-allowlist-settings.md) si deseas proteger `/api/upload` y la interfaz de administración. Ambos están desactivados por defecto.
 
 <br/>
 

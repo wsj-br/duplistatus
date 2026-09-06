@@ -10,8 +10,10 @@ duplistatus एक शक्तिशाली निगरानी डैश�
 - सभी बैकअप ऑपरेशन की रियल-टाइम स्थिति ट्रैकिंग
 - कॉन्फ़िगर करने योग्य चेतावनियों के साथ स्वचालित विलंबित बैकअप का पता लगाने
 - बैकअप प्रदर्शन का व्यापक मेट्रिक्स और विज़ुअलाइज़ेशन
-- NTFY और ईमेल के माध्यम से फ्लेक्सिबल नोटिफिकेशन सिस्टम
-- बहुभाषा समर्थन (अंग्रेज़ी, फ्रेंच, जर्मन, स्पैनिश, ब्राज़ीलियन पुर्तगाली, हिंदी (रोमन) और सरलीकृत चीनी)।
+- NTFY और ईमेल के माध्यम से लचीला सूचना प्रणाली
+- डुप्लिकेटी अपलोड और होमपेज विजेट के लिए वैकल्पिक [एपीआई कुंजियाँ](settings/api-keys-settings.md) अपलोड आकार और दर सीमाओं के साथ
+- व्यवस्थापक इंटरफेस और बाहरी एपीआई के लिए वैकल्पिक [आईपी व्हाइटलिस्ट](settings/ip-allowlist-settings.md)
+- बहु-भाषा समर्थन (अंग्रेज़ी, फ्रेंच, जर्मन, स्पैनिश, ब्राज़ीलियन पुर्तगाली, हिंदी (रोमन) और सरलीकृत चीनी).
 
 ## स्थापना {#installation}
 
@@ -91,8 +93,9 @@ duplistatus आपके पूरे इन्फ्रास्ट्रक्
 2. प्रारंभिक backup logs संग्रहित करें – [Backup Logs Ikattha Karein](collect-backup-logs.md) सुविधा का उपयोग करें ताकि डेटाबेस को आपकी सभी Duplicati servers से ऐतिहासिक backup डेटा से भर सकें। यह backup monitoring intervals को प्रत्येक server के configuration के आधार पर स्वचालित रूप से अपडेट भी करता है।
 3. server settings configure करें – [Settings → Server](settings/server-settings.md) में server aliases और notes सेट करें ताकि आपका dashboard अधिक सूचनात्मक हो।
 4. NTFY settings configure करें – [Settings → NTFY](settings/ntfy-settings.md) में NTFY के माध्यम से notifications सेट करें।
-5. email settings configure करें – [Settings → Email](settings/email-settings.md) में email notifications सेट करें।
-6. backup notifications configure करें – [Settings → Backup Notifications](settings/backup-notifications-settings.md) में per-backup या per-server notifications सेट करें।
+5. ईमेल सेटिंग्स कॉन्फ़िगर करें – [सेटिंग्स → ईमेल](settings/email-settings.md) में ईमेल सूचनाएं सेट करें।
+6. बैकअप सूचनाएं कॉन्फ़िगर करें – [सेटिंग्स → बैकअप सूचनाएं](settings/backup-notifications-settings.md) में प्रति-बैकअप या प्रति-सेर्वर सूचनाएं सेट करें।
+7. वैकल्पिक रूप से एक्सेस प्रतिबंधित करें – यदि आप `/api/upload` और व्यवस्थापक इंटरफेस को सुरक्षित करना चाहते हैं, तो [एपीआई कुंजियाँ](settings/api-keys-settings.md) और/या [आईपी व्हाइटलिस्ट](settings/ip-allowlist-settings.md) बनाएं। दोनों डिफ़ॉल्ट रूप से बंद हैं।
 
 <br/>
 

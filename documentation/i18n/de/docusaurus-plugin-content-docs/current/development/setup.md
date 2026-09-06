@@ -6,9 +6,10 @@
 - Node.js (siehe `engines.node` in `package.json`)
 - pnpm (siehe `engines.pnpm` / `packageManager` in `package.json`)
 - SQLite3
-- Inkscape (für die Übersetzung von Dokumentations-SVGs und PNG-Export; nur erforderlich, wenn Sie `translate` oder `translate:svg` ausführen)
-- bat/batcat (um eine ansprechende Version von `translate:help` anzuzeigen)
-- direnv (zum automatischen Laden der `.env*`-Dateien)
+- Inkscape (für die Dokumentation der SVG-Übersetzung und PNG-Export; erforderlich nur, wenn Sie `translate` oder `translate:svg` ausführen)
+- bat/batcat (um eine schöne Version der `translate:help` anzuzeigen)
+- direnv (um die `.env*` Dateien automatisch zu laden)
+- Playwright Chromium (führen Sie `pnpm take-screenshots:install` nach `pnpm install` aus; dies führt `playwright install chromium` aus)
 
 ## Schritte {#steps}
 
@@ -116,10 +117,10 @@ mit diesem Befehl:
 
 Das Projekt enthält mehrere npm-Skripte für verschiedene Entwicklungsaufgaben:
 
-### Entwicklungsskripte {#development-scripts}
-- `pnpm dev` - Entwicklungs-Server auf Port 8666 starten (beinhaltet Vorabprüfungen)
-- `pnpm build` - Anwendung für die Produktion bauen (beinhaltet Vorabprüfungen)
-- `pnpm lint` - ESLint ausführen, um die Code-Qualität zu überprüfen
+### Entwicklungsskripts {#development-scripts}
+- `pnpm dev` - Startet den Entwicklungsserver auf Port 8666 (einschließlich Vorprüfungen). `NODE_OPTIONS` lädt `scripts/dev-preload.cjs`, das `scripts/peer-ip.cjs` anwendet (TCP-Peer-Adresse für IP-Whitelists) und Zeitstempel für Anfragen.
+- `pnpm build` - Erstellt die Anwendung für die Produktion (einschließlich Vorprüfungen)
+- `pnpm lint` - Führt ESLint aus, um die Codequalität zu prüfen
 - `pnpm typecheck` - TypeScript-Typüberprüfung ausführen
 - `scripts/upgrade-dependencies.sh` — Build-sicheres Upgrade jedes Workspace-Pakets (automatisch erkannt). Ermittelt die neuesten Versionen mit `npm-check-updates`, installiert diese vom Workspace-Root und behält nur Upgrades bei, die die jeweiligen `typecheck`/`lint` jedes Pakets bestehen (Peer-Gates fixieren `eslint` / `typescript`, wenn der Lint-Stack die neueste Major-Version nicht zulässt). Führt anschließend `pnpm audit` / `audit --fix` aus und erzwingt die Anwendung (und meldet) jegliche Sicherheitsfix, der Codeänderungen erfordert. Aktualisiert die Workspace-Lockfile und browserslist. Bevorzugen Sie `source ./scripts/upgrade-dependencies.sh`, damit **nvm** für Ihre Shell gilt; verwenden Sie in CI oder Automatisierung `CI=1` oder `UPGRADE_ALLOW_EXEC=1`, wenn die Datei direkt ausgeführt wird. Siehe auch `scripts/upgrade-tools.sh` nur für Node/pnpm-Tooling.
 - `scripts/clean-workspace.sh` - Den Workspace bereinigen
@@ -144,9 +145,9 @@ Diese Skripte müssen aus dem `documentation/`-Verzeichnis ausgeführt werden:
 Die Entwicklungsserver (`start:*`) bieten Hot-Module-Replacement für schnelle Entwicklung. Der Standardport ist 3000.
 
 ### Produktionsskripte {#production-scripts}
-- `pnpm build-local` - Erstellen und für lokale Produktion vorbereiten (einschließlich Vor-Checks, kopiert statische Dateien in das Standalone-Verzeichnis)
-- `pnpm start-local` - Produktions-Server lokal starten (Port 8666, einschließlich Vor-Checks). **Hinweis:** Führen Sie zuerst `pnpm build-local` aus.
-- `pnpm start` - Produktions-Server starten (Port 9666)
+- `pnpm build-local` - Erstellt und bereitet für die lokale Produktion vor (einschließlich Vorprüfungen, kopiert statische Dateien in ein eigenständiges Verzeichnis)
+- `pnpm start-local` - Startet den Produktionsserver lokal (Port 8666, einschließlich Vorprüfungen). **Hinweis:** Führen Sie `pnpm build-local` zuerst aus. Startet den eigenständigen Server mit `--require ./scripts/peer-ip.cjs`.
+- `pnpm start` - Startet den Produktionsserver (Port 9666) mit demselben Peer-IP-Vorladen. Docker verwendet `docker-entrypoint.sh`, um dasselbe Skript zu laden.
 
 ### Docker-Skripte {#docker-scripts}
 - `pnpm docker:up` - Docker Compose-Stack starten

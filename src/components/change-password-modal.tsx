@@ -211,7 +211,7 @@ export function ChangePasswordModal({ open, onOpenChange, required = false }: Ch
         onOpenChange(false);
         if (required) {
           // Force page reload to ensure all state is refreshed
-          window.location.href = '/';
+          router.push('/');
         } else {
           router.refresh();
         }

@@ -15,6 +15,8 @@
 侧边栏中 **NTFY** 旁边的 <IIcon2 icon="lucide:message-square" color="green"/> 绿色图标表示您的设置有效。如果图标是 <IIcon2 icon="lucide:message-square" color="yellow"/> 黄色，则您的设置无效。
 当配置无效时，[`Backup Notifications`](backup-notifications-settings.md) 选项卡中的 NTFY 复选框也将被灰显。
 
+如果[每日摘要](daily-summary-settings.md)**发送摘要到NTFY**已启用，则存储的NTFY URL和主题在关闭该选项之前无法被清除。
+
 ## 可用操作 {#available-actions}
 
 | 按钮                                                                | 描述                                                                                                  |

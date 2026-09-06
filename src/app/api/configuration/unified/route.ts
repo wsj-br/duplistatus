@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getConfigBackupSettings, getOverdueToleranceConfig, getNtfyConfig, getAllServerAddresses, getCronConfig, getNotificationFrequencyConfig, getSMTPConfig, clearRequestCache, getNotificationTemplates } from '@/lib/db-utils';
-import type { NtfyConfig, EmailConfig, NotificationTemplate, SupportedTemplateLanguage } from '@/lib/types';
+import type { NtfyConfig, EmailConfig, NotificationTemplate, SupportedTemplateLanguage, DailySummaryPublicStatus, DailySummaryTemplateSet } from '@/lib/types';
 import { dbUtils } from '@/lib/db-utils';
 import { withCSRF } from '@/lib/csrf-middleware';
+import { getDailySummaryPublicStatus } from '@/lib/daily-summary';
 
 export const GET = withCSRF(async () => {
   try {
@@ -10,7 +11,7 @@ export const GET = withCSRF(async () => {
     clearRequestCache();
     
     // Fetch all configuration data in parallel
-    const [backupSettings, overdueToleranceEnum, ntfyConfig, cronConfig, notificationFrequency, serversBackupNames, smtpConfig, templates] = await Promise.all([
+    const [backupSettings, overdueToleranceEnum, ntfyConfig, cronConfig, notificationFrequency, serversBackupNames, smtpConfig, templates, dailySummary] = await Promise.all([
       getConfigBackupSettings(),
       Promise.resolve(getOverdueToleranceConfig()),
       getNtfyConfig(),
@@ -18,7 +19,8 @@ export const GET = withCSRF(async () => {
       Promise.resolve(getNotificationFrequencyConfig()),
       Promise.resolve(dbUtils.getServersBackupNames()),
       Promise.resolve(getSMTPConfig()),
-      Promise.resolve(getNotificationTemplates())
+      Promise.resolve(getNotificationTemplates()),
+      getDailySummaryPublicStatus(),
     ]);
 
     // Build base response fields
@@ -29,11 +31,14 @@ export const GET = withCSRF(async () => {
         success: NotificationTemplate;
         warning: NotificationTemplate;
         overdueBackup: NotificationTemplate;
+        dailySummary: DailySummaryTemplateSet;
       };
       email?: EmailConfig;
+      dailySummary?: DailySummaryPublicStatus;
     } = {
       ntfy: ntfyConfig,
-      templates
+      templates,
+      dailySummary,
     };
 
     // Add email configuration if available (without password)

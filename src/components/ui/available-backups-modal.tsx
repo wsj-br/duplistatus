@@ -2,7 +2,7 @@
 import type { TFunction } from "i18next";
 import React, { useState, useMemo, createContext, useContext, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { useEffectiveFormatLocale } from '@/contexts/config-context';
+import { useEffectiveFormatLocale, useRelativeTimeLocale } from '@/contexts/config-context';
 import { History } from "lucide-react";
 import { formatRelativeTime } from "@/lib/utils";
 import { formatDateTime } from "@/lib/date-format";
@@ -61,6 +61,7 @@ function useAvailableBackupsT(): TFunction {
 const GlobalAvailableBackupsModal = React.memo(() => {
   const t = useAvailableBackupsT();
   const effectiveLocale = useEffectiveFormatLocale();
+  const relativeTimeLocale = useRelativeTimeLocale();
   const { modalState, closeModal } = useModalContext();
 
   const formatAvailableBackupDate = (isoTimestamp: string): string => {
@@ -156,14 +157,14 @@ const GlobalAvailableBackupsModal = React.memo(() => {
                 <TableRow className="border-b">
                   <TableCell className="w-16 py-1.5 px-3 text-green-500">0</TableCell>
                   <TableCell className="py-1.5 px-3 text-green-500">{formatAvailableBackupDate(modalState.backupDate)}</TableCell>
-                  <TableCell className="py-1.5 px-3 text-green-500">{formatRelativeTime(modalState.backupDate)}</TableCell>
+                  <TableCell className="py-1.5 px-3 text-green-500">{formatRelativeTime(modalState.backupDate, undefined, relativeTimeLocale)}</TableCell>
                 </TableRow>
                 {/* Additional available versions starting from #1 */}
                 {modalState.availableBackups.map((timestamp, index) => (
                   <TableRow key={index} className="border-b">
                     <TableCell className="w-16 py-1.5 px-3">{index + 1}</TableCell>
                     <TableCell className="py-1.5 px-3">{formatAvailableBackupDate(timestamp)}</TableCell>
-                    <TableCell className="py-1.5 px-3">{formatRelativeTime(timestamp, undefined, effectiveLocale)}</TableCell>
+                    <TableCell className="py-1.5 px-3">{formatRelativeTime(timestamp, undefined, relativeTimeLocale)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

@@ -1,6 +1,6 @@
 # Relatório de backup de exemplo (valores do banco de dados) {#database-values}
 
-Este documento contém um exemplo da carga útil JSON enviada pelo Duplicati ao usar a opção `--send-http-url`. Ele ilustra a estrutura e os campos que o duplistatus recebe e persiste. Alguns campos podem ser limpos ou omitidos neste exemplo.
+Este documento contém um exemplo do payload JSON enviado pelo Duplicati ao usar `--send-http-json-urls` (ou a opção legado `--send-http-url` com `--send-http-result-output-format=Json`). Ele ilustra a estrutura e os campos que o duplistatus recebe e persiste. Alguns campos podem ser limpos ou censurados neste exemplo.
 
 ```json
 {

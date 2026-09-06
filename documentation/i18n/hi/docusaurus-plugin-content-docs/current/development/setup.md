@@ -6,9 +6,10 @@
 - Node.js (देखें `engines.node` में `package.json`)
 - pnpm (देखें `engines.pnpm` / `packageManager` में `package.json`)
 - SQLite3
-- Inkscape (दस्तावेज़ SVG अनुवाद और PNG निर्यात के लिए; केवल तब आवश्यक जब आप `translate` या `translate:svg` चलाते हैं)
-- bat/batcat (`translate:help` का सुंदर संस्करण दिखाने के लिए)
-- direnv (`.env*` फ़ाइलें स्वचालित रूप से लोड करने के लिए)
+- Inkscape (for documentation SVG translation and PNG export; required only if you run `translate` or `translate:svg`)
+- bat/batcat (to show a pretty version of the `translate:help`)
+- direnv (to automatically load the `.env*` files)
+- Playwright Chromium (run `pnpm take-screenshots:install` after `pnpm install`; this runs `playwright install chromium`)
 
 ## कदम {#steps}
 
@@ -117,9 +118,9 @@
 प्रोजेक्ट में विभिन्न विकास कार्यों के लिए कई npm स्क्रिप्ट शामिल हैं:
 
 ### विकास स्क्रिप्ट {#development-scripts}
-- `pnpm dev` - पोर्ट 8666 पर विकास सर्वर शुरू करें (पूर्व-चेक शामिल हैं)
+- `pnpm dev` - पोर्ट 8666 पर विकास सर्वर शुरू करें (पूर्व-चेक शामिल हैं)। `NODE_OPTIONS` `scripts/dev-preload.cjs` लोड करता है, जो `scripts/peer-ip.cjs` लागू करता है (आईपी अलोवेलिस्ट के लिए TCP पीअर एड्रेस) और अनुरोध-लॉग टाइमस्टैम्प।
 - `pnpm build` - उत्पादन के लिए एप्लिकेशन बनाएं (पूर्व-चेक शामिल हैं)
-- `pnpm lint` - कोड गुणवत्ता की जाँच के लिए ESLint चलाएं
+- `pnpm lint` - कोड गुणवत्ता की जांच के लिए ESLint चलाएं
 - `pnpm typecheck` - TypeScript प्रकार की जाँच चलाएं
 - `scripts/upgrade-dependencies.sh` — हर वर्कस्पेस पैकेज का सुरक्षित अपग्रेड करें (स्वचालित-निर्धारित)। नवीनतम संस्करणों को `npm-check-updates` के साथ हल करें, वर्कस्पेस रूट से इंस्टॉल करें, और केवल उन अपग्रेड को रखें जो प्रत्येक पैकेज के `typecheck`/`lint` (पीयर गेट्स `eslint` / `typescript` को पिन करते हैं जब लिंट स्टैक नवीनतम मेजर को अनुमति नहीं देता है) को पास करते हैं। फिर `pnpm audit` / `audit --fix` चलाएं और किसी भी सुरक्षा फिक्स को जो कोड परिवर्तन की आवश्यकता है, बलपूर्वक लागू करें (और रिपोर्ट करें)। वर्कस्पेस लॉकफाइल और ब्राउज़र्सलिस्ट को ताज़ा करें। **nvm** आपके शेल के लिए लागू होने के लिए `source ./scripts/upgrade-dependencies.sh` का प्राथमिकता दें; CI या ऑटोमेशन में, फ़ाइल को सीधे चलाने के समय `CI=1` या `UPGRADE_ALLOW_EXEC=1` का उपयोग करें। Node/pnpm टूलिंग के लिए `scripts/upgrade-tools.sh` देखें।
 - `scripts/clean-workspace.sh` - वर्कस्पेस को साफ़ करें
@@ -144,9 +145,9 @@
 विकास सर्वर (`start:*`) त्वरित विकास के लिए हॉट मॉड्यूल रिप्लेसमेंट प्रदान करते हैं। डिफ़ॉल्ट पोर्ट 3000 है।
 
 ### उत्पादन स्क्रिप्ट {#production-scripts}
-- `pnpm build-local` - स्थानीय उत्पादन के लिए बनाएं और तैयार करें (पूर्व-चेक शामिल हैं, स्टैटिक फ़ाइलें स्टैंडअलोन निर्देशिका में कॉपी करें)
-- `pnpm start-local` - स्थानीय रूप से उत्पादन सर्वर शुरू करें (पोर्ट 8666, पूर्व-चेक शामिल हैं)। **Note:** पहले `pnpm build-local` चलाएं।
-- `pnpm start` - उत्पादन सर्वर शुरू करें (पोर्ट 9666)
+- `pnpm build-local` - स्थानीय उत्पादन के लिए बनाएं और तैयार करें (पूर्व-चेक शामिल हैं, स्थिर फाइलें स्टैंडअलोन निर्देशिका में कॉपी करें)
+- `pnpm start-local` - स्थानीय उत्पादन सर्वर शुरू करें (पोर्ट 8666, पूर्व-चेक शामिल हैं)। **Note:** पहले `pnpm build-local` चलाएं। `--require ./scripts/peer-ip.cjs` के साथ स्टैंडअलोन सर्वर शुरू करता है।
+- `pnpm start` - पोर्ट 9666 पर पीअर-आईपी प्रीलोड के साथ उत्पादन सर्वर शुरू करें। डॉकर `docker-entrypoint.sh` का उपयोग करता है, जो उसी स्क्रिप्ट को लोड करता है।
 
 ### डॉकर स्क्रिप्ट {#docker-scripts}
 - `pnpm docker:up` - डॉकर कॉम्पोज स्टैक शुरू करें

@@ -6,6 +6,8 @@
 
 Ye prushth par server list ko filter field ka upayog karke filter kiya ja sakta hai.
 
+Jab **दैनिक सारांश** Saksham kiya gaya hai, to Vilambit nirdesh chalta rehta hai, lekin individual Vilambit Suchnaayein roka jaate hain. [दैनिक सारांश](daily-summary-settings.md) dekhiye.
+
 **फ़िल्टर मैच:**
 - सर्वर आईडी
 - सर्वर URL

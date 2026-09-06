@@ -12,7 +12,7 @@
     href: http://your-server:9666/
     widget:
       type: customapi
-      url: http://your-server:9666/api/summary
+      url: http://your-server:9666/api/summary?api_key=YOUR_READ_KEY
       display: list
       refreshInterval: 60000
       mappings:
@@ -53,7 +53,7 @@
     icon: mdi-test-tube
     widget:
       type: customapi
-      url: http://your-server:9666/api/lastbackup/Test%20Machine%201
+      url: http://your-server:9666/api/lastbackup/Test%20Machine%201?api_key=YOUR_READ_KEY
       display: list
       refreshInterval: 60000
       mappings:
@@ -85,3 +85,5 @@
 - `refreshInterval` को आवश्यकतानुसार समायोजित करें (मिलीसेकंड में)।
 - URL में मशीन नामों में अंतराल को `%20` से बदलें (उदाहरण के लिए, `Test Machine 1` को `Test%20Machine%201` में बदलें)।
 - `scale` मान बाइट को अधिक पठनीय इकाइयों (GB, MB) में परिवर्तित करते हैं।
+- **पढ़ें**-स्कोप एपीआई कुंजियाँ का उपयोग करें जब [एपीआई कुंजियाँ](settings/api-keys-settings.md) की आवश्यकता हो। कुंजियाँ वैकल्पिक होने पर `?api_key=` छोड़ दें।
+- अगर [बाहरी एपीआई आईपी अनुमति सूची](settings/ip-allowlist-settings.md) सक्शम किया गया है, तो होमपेज होस्ट शामिल करें।

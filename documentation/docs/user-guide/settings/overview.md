@@ -22,6 +22,7 @@ Administrators see all available settings.
           <ul>
             <li><a href="backup-notifications-settings.md">Backup Notifications</a>: Configure per-backup notification settings</li>
             <li><a href="backup-monitoring-settings.md">Backup Monitoring</a>: Configure overdue backup detection and alerts</li>
+            <li><a href="daily-summary-settings.md">Daily Summary</a>: Optional daily snapshot that replaces individual backup and overdue notifications</li>
             <li><a href="notification-templates.md">Templates</a>: Customise notification message templates</li>
           </ul>
         </li><br/>
@@ -39,6 +40,8 @@ Administrators see all available settings.
             <li><a href="display-settings.md">Display Settings</a>: Configure theme, chart time range, chart style, format locale, auto-refresh interval, card sort order, and week start</li>
             <li><a href="duplicati-versions.md">Duplicati Versions</a>: View cached Duplicati release versions and configure the version check schedule</li>
             <li><a href="database-maintenance.md">Database Maintenance</a>: Perform database cleanup (admin only)</li>
+            <li><a href="api-keys-settings.md">API Keys</a>: Manage scoped keys and external API protection (admin only)</li>
+            <li><a href="ip-allowlist-settings.md">IP Allowlist</a>: Restrict the admin interface and external APIs (admin only)</li>
             <li><a href="user-management-settings.md">Users</a>: Manage user accounts (admin only)</li>
             <li><a href="audit-logs-viewer.md">Audit Log</a>: View system audit logs</li>
             <li><a href="audit-logs-retention.md">Audit Log Retention</a>: Configure audit log retention (admin only)</li>
@@ -66,6 +69,7 @@ Regular users see a limited set of settings.
           <ul>
             <li><a href="backup-notifications-settings.md">Backup Notifications</a>: View per-backup notification settings (read-only)</li>
             <li><a href="backup-monitoring-settings.md">Backup monitoring</a>: View overdue backup settings (read-only)</li>
+            <li><a href="daily-summary-settings.md">Daily Summary</a>: View daily summary settings (read-only)</li>
             <li><a href="notification-templates.md">Templates</a>: View notification templates (read-only)</li>
           </ul>
         </li><br/>

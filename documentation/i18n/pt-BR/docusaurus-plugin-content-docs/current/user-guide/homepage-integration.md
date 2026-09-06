@@ -12,7 +12,7 @@ Este widget exibe as estatísticas gerais do backup no painel da sua página ini
     href: http://your-server:9666/
     widget:
       type: customapi
-      url: http://your-server:9666/api/summary
+      url: http://your-server:9666/api/summary?api_key=YOUR_READ_KEY
       display: list
       refreshInterval: 60000
       mappings:
@@ -53,7 +53,7 @@ Este widget exibe as informações de backup mais recentes para uma máquina esp
     icon: mdi-test-tube
     widget:
       type: customapi
-      url: http://your-server:9666/api/lastbackup/Test%20Machine%201
+      url: http://your-server:9666/api/lastbackup/Test%20Machine%201?api_key=YOUR_READ_KEY
       display: list
       refreshInterval: 60000
       mappings:
@@ -85,3 +85,5 @@ Este widget exibe as informações de backup mais recentes para uma máquina esp
 - Ajuste o `refreshInterval` conforme necessário (em milissegundos).
 - Substitua espaços em nomes de máquinas por `%20` na URL (por exemplo, `Test Machine 1` torna-se `Test%20Machine%201`).
 - Os valores de `scale` convertem bytes para unidades mais legíveis (GB, MB).
+- Use uma chave de API com escopo de **leitura** quando [chaves de API](settings/api-keys-settings.md) forem necessárias. Remova `?api_key=` quando as chaves forem opcionais.
+- Se a [lista de permissões de IP da API externa](settings/ip-allowlist-settings.md) estiver habilitada, inclua o host da Página Inicial.

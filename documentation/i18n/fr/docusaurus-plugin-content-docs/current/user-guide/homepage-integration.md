@@ -12,7 +12,7 @@ Ce widget affiche les statistiques de sauvegarde globales sur votre tableau de b
     href: http://your-server:9666/
     widget:
       type: customapi
-      url: http://your-server:9666/api/summary
+      url: http://your-server:9666/api/summary?api_key=YOUR_READ_KEY
       display: list
       refreshInterval: 60000
       mappings:
@@ -53,7 +53,7 @@ Ce widget affiche les dernières informations de sauvegarde pour une machine sp�
     icon: mdi-test-tube
     widget:
       type: customapi
-      url: http://your-server:9666/api/lastbackup/Test%20Machine%201
+      url: http://your-server:9666/api/lastbackup/Test%20Machine%201?api_key=YOUR_READ_KEY
       display: list
       refreshInterval: 60000
       mappings:
@@ -85,3 +85,5 @@ Ce widget affiche les dernières informations de sauvegarde pour une machine sp�
 - Ajustez l'intervalle `refreshInterval` selon vos besoins (en millisecondes).
 - Remplacez les espaces dans les noms de machines par `%20` dans l'URL (par exemple, `Test Machine 1` devient `Test%20Machine%201`).
 - Les valeurs `scale` convertissent les octets en unités plus lisibles (Go, Mo).
+- Utilisez une clé API avec une portée **lecture** lorsque les [clés API](settings/api-keys-settings.md) sont requises. Supprimez `?api_key=` lorsque les clés sont optionnelles.
+- Si la [liste d'adresses IP autorisées de l'API externe](settings/ip-allowlist-settings.md) est activée, incluez l'hôte de la page d'accueil.

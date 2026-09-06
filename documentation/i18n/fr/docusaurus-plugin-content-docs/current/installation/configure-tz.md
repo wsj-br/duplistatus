@@ -1,6 +1,6 @@
 # Fuseau horaire {#timezone}
 
-L'interface utilisateur de l'application affichera la date et l'heure selon les paramètres du navigateur. Cependant, à des fins de journalisation et de notification, l'application utilisera la valeur définie dans la variable d'environnement `TZ` pour formater les fuseaux horaires.
+L'interface utilisateur de l'application affiche la date et l'heure selon les paramètres du navigateur. Les journaux utilisent toujours la variable d'environnement `TZ`. Les notifications de Résumé quotidien utilisent le fuseau horaire IANA enregistré dans [Paramètres → Résumé quotidien](../user-guide/settings/daily-summary-settings.md), pas `TZ`. Les autres horodatages de notification qui ne sont pas des Résumés quotidiens suivent toujours `TZ`.
 
 La valeur par défaut est `TZ=Europe/London` si cette variable d'environnement n'est pas définie.
 
@@ -10,7 +10,7 @@ Les paramètres de langue et de locale (formats des nombres et des dates) pour l
 
 ## Configuration du fuseau horaire {#configuring-the-timezone}
 
-L'interface utilisateur de l'application affichera la date et l'heure selon les paramètres du navigateur. Cependant, à des fins de journalisation et de notification, l'application utilisera la valeur définie dans la variable d'environnement `TZ` pour formater les fuseaux horaires.
+L'interface utilisateur de l'application affiche la date et l'heure selon les paramètres du navigateur. Les journaux utilisent toujours la variable d'environnement `TZ`. Les notifications de Résumé quotidien utilisent le fuseau horaire IANA enregistré dans [Paramètres → Résumé quotidien](../user-guide/settings/daily-summary-settings.md), pas `TZ`. Les autres horodatages de notification qui ne sont pas des Résumés quotidiens suivent toujours `TZ`.
 
 La valeur par défaut est `TZ=Europe/London` si cette variable d'environnement n'est pas définie.
 

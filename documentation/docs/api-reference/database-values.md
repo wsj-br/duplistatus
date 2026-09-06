@@ -1,6 +1,6 @@
 # Sample backup report (database values) {#database-values}
 
-This document contains a sample of the JSON payload sent by Duplicati when using the `--send-http-url` option. It illustrates the structure and fields that duplistatus receives and persists. Some fields may be cleared or redacted in this example.
+This document contains a sample of the JSON payload sent by Duplicati when using `--send-http-json-urls` (or the legacy `--send-http-url` option with `--send-http-result-output-format=Json`). It illustrates the structure and fields that duplistatus receives and persists. Some fields may be cleared or redacted in this example.
 
 ```json
 {

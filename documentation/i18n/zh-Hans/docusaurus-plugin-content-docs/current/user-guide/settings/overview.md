@@ -9,7 +9,7 @@
 <table>
   <tr>
     <td>
-      ![设置侧边栏 - 管理员视图](../../assets/screen-settings-left-panel-admin.png)
+      ![Settings Sidebar - Admin View](../../assets/screen-settings-left-panel-admin.png)
     </td>
     <td>
       <ul>
@@ -18,6 +18,7 @@
           <ul>
             <li><a href="backup-notifications-settings.md">备份通知</a>: 配置每个备份的通知设置</li>
             <li><a href="backup-monitoring-settings.md">备份监控</a>: 配置过期备份检测和警报</li>
+            <li><a href="daily-summary-settings.md">每日摘要</a>: 可选的每日快照，用于替代单个备份和过期通知</li>
             <li><a href="notification-templates.md">模板</a>: 自定义通知消息模板</li>
           </ul>
         </li><br/>
@@ -32,9 +33,11 @@
           <strong id="system">系统</strong>
           <ul>
             <li><a href="server-settings.md">服务器</a>: 管理 Duplicati 服务器配置</li>
-            <li><a href="display-settings.md">显示设置</a>: 配置主题、图表时间范围、图表样式、格式区域、自动刷新间隔、卡片排序顺序和周开始</li>
+            <li><a href="display-settings.md">显示设置</a>: 配置主题、图表时间范围、图表样式、格式区域、自动刷新间隔、卡片排序顺序和每周开始日期</li>
             <li><a href="duplicati-versions.md">Duplicati 版本</a>: 查看缓存的 Duplicati 发布版本并配置版本检查计划</li>
             <li><a href="database-maintenance.md">数据库维护</a>: 执行数据库清理（仅限管理员）</li>
+            <li><a href="api-keys-settings.md">API 密钥</a>: 管理作用域密钥和外部 API 保护（仅限管理员）</li>
+            <li><a href="ip-allowlist-settings.md">IP 白名单</a>: 限制管理界面和外部 API（仅限管理员）</li>
             <li><a href="user-management-settings.md">用户</a>: 管理用户账户（仅限管理员）</li>
             <li><a href="audit-logs-viewer.md">审计日志</a>: 查看系统审计日志</li>
             <li><a href="audit-logs-retention.md">审计日志保留</a>: 配置审计日志保留（仅限管理员）</li>
@@ -53,7 +56,7 @@
 <table>
   <tr>
     <td>
-      ![设置侧边栏 - 非管理员视图](../../assets/screen-settings-left-panel-non-admin.png)
+      ![Settings Sidebar - Non-Admin View](../../assets/screen-settings-left-panel-non-admin.png)
     </td>
     <td>
       <ul>
@@ -62,6 +65,7 @@
           <ul>
             <li><a href="backup-notifications-settings.md">备份通知</a>: 查看每个备份的通知设置（只读）</li>
             <li><a href="backup-monitoring-settings.md">备份监控</a>: 查看过期备份设置（只读）</li>
+            <li><a href="daily-summary-settings.md">每日摘要</a>: 查看每日摘要设置（只读）</li>
             <li><a href="notification-templates.md">模板</a>: 查看通知模板（只读）</li>
           </ul>
         </li><br/>
@@ -76,7 +80,7 @@
           <strong id="system">系统</strong>
           <ul>
             <li><a href="server-settings.md">服务器</a>: 查看服务器配置（只读）</li>
-            <li><a href="display-settings.md">显示</a>: 配置主题、图表时间范围、图表样式、格式区域、自动刷新间隔、卡片排序顺序和周开始</li>
+            <li><a href="display-settings.md">显示</a>: 配置主题、图表时间范围、图表样式、格式区域、自动刷新间隔、卡片排序顺序和每周开始时间</li>
             <li><a href="duplicati-versions.md">Duplicati 版本</a>: 查看缓存的 Duplicati 发布版本（计划更改仅限管理员）</li>
             <li><a href="audit-logs-viewer.md">审计日志</a>: 查看系统审计日志（只读）</li>
           </ul>

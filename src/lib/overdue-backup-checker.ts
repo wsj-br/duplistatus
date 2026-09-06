@@ -37,6 +37,7 @@ export async function checkOverdueBackups(checkDate?: Date, forceRecalculation: 
     let checkedBackups = 0;
     let overdueBackupsFound = 0;
     let notificationsSent = 0;
+    let notificationsSuppressed = 0;
     const updatedNotifications: OverdueNotifications = { ...lastNotifications };
 
     // Iterate through servers and their backup jobs
@@ -158,7 +159,14 @@ export async function checkOverdueBackups(checkDate?: Date, forceRecalculation: 
                 overdue_tolerance: getOverdueToleranceLabel(overdueTolerance), 
               };
 
-              await sendOverdueBackupNotification(overdueBackupContext);
+              const outcome = await sendOverdueBackupNotification(overdueBackupContext);
+              if (outcome === 'suppressed') {
+                notificationsSuppressed++;
+                continue;
+              }
+              if (outcome !== 'sent') {
+                continue;
+              }
               notificationsSent++;
               
               // Update the notification timestamp when notification is sent
@@ -191,6 +199,7 @@ export async function checkOverdueBackups(checkDate?: Date, forceRecalculation: 
         checkedBackups,
         overdueBackupsFound,
         notificationsSent,
+        notificationsSuppressed,
       },
     };
   } catch (error) {

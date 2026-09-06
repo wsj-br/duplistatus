@@ -22,6 +22,8 @@ Ensure you have the following installed:
 
 You can create additional users accounts in [Settings > Users](../user-guide/settings/user-management-settings.md) after the first login.
 
+Administrators can also optionally require [API keys](../user-guide/settings/api-keys-settings.md) for Duplicati and Homepage, and restrict access with [IP allowlists](../user-guide/settings/ip-allowlist-settings.md). Both are off by default.
+
 
 ::::info[IMPORTANT]
 The system enforces a minimum password length and complexity. These requirements can be adjusted using the `PWD_ENFORCE` and `PWD_MIN_LEN` [environment variables](environment-variables.md). Using a password without sufficient complexity or with a short length can compromise security. Please use these settings carefully.
@@ -252,7 +254,7 @@ podman pod rm -f duplistatus-pod
 
 ## Essential Configuration {#essential-configuration}
 
-1. Configure your [Duplicati servers](duplicati-server-configuration.md) to send backup log messages to duplistatus (required).
+1. Configure your [Duplicati servers](duplicati-server-configuration.md) to send backup log messages to duplistatus (required). On Duplicati 2.0.9.106 and later, use `--send-http-json-urls` as described in that guide.
 2. Log in to duplistatus – see instructions in the [User Guide](../user-guide/overview.md#accessing-the-dashboard).
 3. Collect initial backup logs – use the [Collect Backup Logs](../user-guide/collect-backup-logs.md) feature to populate the database with historical backup data from all your Duplicati servers. This also automatically updates the backup monitoring intervals based on each server’s configuration.
 4. Configure server settings – set up server aliases and notes in [Settings → Server](../user-guide/settings/server-settings.md) to make your dashboard more informative.

@@ -12,6 +12,8 @@ Le tableau des notifications de sauvegarde est organisé par serveur. Le format 
 
 Cette page dispose d'une fonction d'enregistrement automatique. Toutes les modifications que vous apportez seront enregistrées automatiquement.
 
+Quand **Résumé quotidien** est activé, les notifications de sauvegarde individuelles et supplémentaires sont supprimées. Les paramètres de cette page sont conservés et redeviendront actifs lorsque le Résumé quotidien est désactivé. Voir [Résumé quotidien](daily-summary-settings.md).
+
 <br/>
 
 ## Filtrer {#filter}

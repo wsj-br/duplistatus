@@ -2,6 +2,8 @@
 
 Recuperar acceso de administrador a **duplistatus** cuando ha perdido su contraseña o ha sido bloqueado de su cuenta. Esta guía cubre el uso del script de recuperación de admin en entornos Docker.
 
+Si el navegador muestra **Acceso denegado** (HTTP 403) antes del formulario de inicio de sesión, la [lista de IPs permitidas del administrador](settings/ip-allowlist-settings.md) está bloqueando la solicitud. Utilice [Bloqueado por la lista de IPs permitidas](troubleshooting.md#locked-out-by-ip-allowlist) en lugar de este script.
+
 ## Uso del Script en Docker {#using-the-script-in-docker}
 
 El Dockerfile incluye el directorio `scripts` y un práctico envoltorio de shell.

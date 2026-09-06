@@ -6,6 +6,8 @@
 
 A lista de servidores nesta página pode ser filtrada usando o campo de filtro.
 
+Quando **Resumo Diário** está habilitado, a detecção de atrasos continua, mas as notificações individuais de atraso são suprimidas. Consulte [Resumo Diário](daily-summary-settings.md).
+
 **Correspondências de Filtro:**
 - ID do Servidor
 - URL do Servidor

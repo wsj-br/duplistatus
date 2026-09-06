@@ -13,6 +13,8 @@ duplistatus is a powerful monitoring dashboard designed specifically for Duplica
 - Automated overdue backup detection with configurable alerts
 - Comprehensive metrics and visualisation of backup performance
 - Flexible notification system via NTFY and email
+- Optional [API keys](settings/api-keys-settings.md) for Duplicati uploads and Homepage widgets, with upload size and rate limits
+- Optional [IP allowlists](settings/ip-allowlist-settings.md) for the admin interface and the external APIs
 - Multi-language support (English, French, German, Spanish, Brazilian Portuguese, Hindi (Roman) and Simplified Chinese).
 
 ## Installation {#installation}
@@ -97,6 +99,7 @@ Clicking the user button opens a dropdown menu with user-specific options. The m
 4. Configure NTFY settings – set up notifications via NTFY in [Settings → NTFY](settings/ntfy-settings.md).
 5. Configure email settings – set up email notifications in [Settings → Email](settings/email-settings.md).
 6. Configure backup notifications – set up per-backup or per-server notifications in [Settings → Backup Notifications](settings/backup-notifications-settings.md).
+7. Optionally restrict access – create [API keys](settings/api-keys-settings.md) and/or [IP allowlists](settings/ip-allowlist-settings.md) if you want to protect `/api/upload` and the admin interface. Both are off by default.
 
 <br/>
 

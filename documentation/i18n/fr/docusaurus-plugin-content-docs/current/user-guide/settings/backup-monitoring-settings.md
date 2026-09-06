@@ -6,6 +6,8 @@
 
 La liste des serveurs sur cette page peut être filtrée à l'aide du champ de filtrage.
 
+Quand **Résumé quotidien** est activé, la détection des tâches en retard continue mais les notifications individuelles de retard sont supprimées. Voir [Résumé quotidien](daily-summary-settings.md).
+
 **Correspondances de filtre :**
 - ID du serveur
 - URL du serveur

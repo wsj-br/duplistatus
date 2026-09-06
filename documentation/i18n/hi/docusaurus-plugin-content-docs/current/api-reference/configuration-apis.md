@@ -102,8 +102,9 @@
   - `404`: हटाने के लिए कोई SMTP विन्यास नहीं मिला
   - `500`: SMTP विन्यास हटाने में असफल
 - **Notes**:
-  - यह ऑपरेशन SMTP विन्यास को स्थायी रूप से हटाता है
-  - हटाने के लिए कोई विन्यास मौजूद नहीं होने पर 404 लौटाता है
+  - यह ऑपरेशन SMTP कॉन्फ़िगरेशन को स्थायी रूप से हटा देता है
+  - अगर हटाने के लिए कोई कॉन्फ़िगरेशन मौजूद नहीं है तो 404 लौटाता है
+  - जब Daily Summary मोड सक्षम है तो 400 लौटाता है, क्योंकि उस मोड को SMTP की आवश्यकता होती है
 
 ## ईमेल पासवर्ड अपडेट करें - `/api/configuration/email/password` {#update-email-password---apiconfigurationemailpassword}
 - **Endpoint**: `/api/configuration/email/password`
@@ -196,6 +197,18 @@
         "message": "The backup {backup_name} is overdue on {server_name}.",
         "priority": "default",
         "tags": "duplicati, duplistatus, overdue"
+      },
+      "dailySummary": {
+        "email": {
+          "title": "duplistatus — Daily backup summary — {summary_date}",
+          "message": "## Daily backup summary"
+        },
+        "ntfy": {
+          "title": "duplistatus daily summary",
+          "message": "Servers {server_count}, jobs {job_count}",
+          "priority": "default",
+          "tags": "duplicati, duplistatus, daily-summary"
+        }
       }
     },
     "email": {
@@ -437,9 +450,38 @@
   - `400`: templates आवश्यक हैं
   - `500`: Notification templates को update करने में server error
 - **Notes**:
-  - विभिन्न backup statuses के लिए notification templates को update करता है
-  - मौजूदा configuration settings को बनाए रखता है
-  - Templates variable substitution का समर्थन करते हैं
+  - विभिन्न बैकअप स्थितियों के लिए अधिसूचना टेम्प्लेट्स को अपडेट करता है
+  - मौजूदा कॉन्फ़िगरेशन सेटिंग्स को संरक्षित करता है
+  - टेम्प्लेट्स Markdown ईमेल बॉडी और `{placeholder}` प्रतिस्थापन का समर्थन करते हैं
+  - एक `dailySummary` टेम्प्लेट सेट (ईमेल विषय/बॉडी और संक्षिप्त NTFY) की आवश्यकता होती है
+
+## Daily Summary - `/api/configuration/daily-summary` {#daily-summary---apiconfigurationdaily-summary}
+- **Endpoint**: `/api/configuration/daily-summary`
+- **Method**: GET, POST
+- **Description**: Daily Summary मोड को पढ़ता या अपडेट करता है। GET सैनिटाइज़्ड सेटिंग्स, डिस्पैचर स्वास्थ्य, अगली घटना, और प्रति-चैनल वितरण स्थिति लौटाता है। POST `enabled`, `localTime` (`HH:mm`), `timeZone` (IANA), और `sendNtfy` को सहेजता है। सक्षम करने के लिए वैलिड SMTP और स्वस्थ `daily-summary-dispatch` टास्क की आवश्यकता होती है। NTFY सक्षम करने के लिए स्टोर्ड NTFY सेटिंग्स की आवश्यकता होती है। शेड्यूल बदलने पर अगली **भविष्य** घटना सेट होती है।
+- **Authentication**: GET के लिए वैलिड सेशन और CSRF टोकन की आवश्यकता होती है। POST के लिए व्यवस्थापक सेशन और CSRF टोकन की आवश्यकता होती है।
+- **Error Responses**:
+  - `400`: अमान्य समय/समय क्षेत्र, SMTP/NTFY का अभाव, या डिस्पैचर स्वस्थ नहीं
+  - `401`: अनधिकृत
+  - `500`: Daily Summary को पढ़ने या अपडेट करने में असफल
+
+## Send Daily Summary - `/api/configuration/daily-summary/send` {#send-daily-summary---apiconfigurationdaily-summarysend}
+- **Endpoint**: `/api/configuration/daily-summary/send`
+- **Method**: POST
+- **Description**: वर्तमान स्थिति का एक अतिरिक्त स्नैपशॉट तुरंत भेजता है। अगली शेड्यूल की घटना को खर्च नहीं करता। स्टोर्ड SMTP (और स्टोर्ड NTFY जब चयनित हो) का उपयोग करता है। अनुरोध में प्राप्तकर्ता पते या एंडपॉइंट्स स्वीकार नहीं करता।
+- **Authentication**: व्यवस्थापक सेशन और CSRF टोकन की आवश्यकता होती है
+
+## Retry Daily Summary - `/api/configuration/daily-summary/retry` {#retry-daily-summary---apiconfigurationdaily-summaryretry}
+- **Endpoint**: `/api/configuration/daily-summary/retry`
+- **Method**: POST
+- **Description**: संग्रहीत पेलोड से असफल चैनलों को पुनः प्रयास करता है। वैकल्पिक बॉडी `{ "occurrenceKey": "..." }`; अन्यथा नवीनतम असफल घटना को पुनः प्रयास करता है।
+- **Authentication**: व्यवस्थापक सेशन और CSRF टोकन की आवश्यकता होती है
+
+## Preview Daily Summary - `/api/configuration/daily-summary/preview` {#preview-daily-summary---apiconfigurationdaily-summarypreview}
+- **Endpoint**: `/api/configuration/daily-summary/preview`
+- **Method**: POST
+- **Description**: वर्तमान स्नैपशॉट को रेंडर करता है बिना भेजे और बिना वितरण-लेजर पंक्तियों को लिखे।
+- **Authentication**: वैलिड सेशन और CSRF टोकन की आवश्यकता होती है
 
 ## Overdue Tolerance प्राप्त करें - `/api/configuration/overdue-tolerance` {#get-overdue-tolerance---apiconfigurationoverdue-tolerance}
 - **Endpoint**: `/api/configuration/overdue-tolerance`
@@ -488,3 +530,28 @@
   - Overdue tolerance setting को update करता है (`"1h"`, `"2h"` आदि जैसे string format स्वीकार करता है; नए installs के लिए default `2h` है)
   - जब backups को विलंबित माना जाता है, उस पर प्रभाव डालता है
   - Overdue backup checker द्वारा उपयोग किया जाता है
+
+## बाहरी एपीआई सुरक्षा - `/api/configuration/external-api-security` {#external-api-security---apiconfigurationexternal-api-security}
+- **एंडपॉइंट**: `/api/configuration/external-api-security`
+- **विधियाँ**: GET, PATCH
+- **विवरण**: बाहरी एपीआई के लिए कुंजी की आवश्यकता है या नहीं, साथ ही `/api/upload` आकार और दर सीमाएँ पढ़ें या अपडेट करें।
+- **प्रमाणीकरण**: व्यवस्थापक विशेषाधिकार, मान्य सत्र और CSRF टोकन की आवश्यकता होती है
+- **PATCH शरीर**:
+
+  ```json
+  {
+    "requireApiKey": false,
+    "uploadLimits": {
+      "enabled": true,
+      "maxBytes": 5242880,
+      "perMinute": 20,
+      "perHour": 200
+    }
+  }
+  ```
+
+## आईपी अनुमति सूची - `/api/configuration/ip-allowlist` {#ip-allowlist---apiconfigurationip-allowlist}
+- **एंडपॉइंट**: `/api/configuration/ip-allowlist`
+- **विधियाँ**: GET, PATCH
+- **विवरण**: विश्वसनीय प्रॉक्सी और व्यवस्थापक / बाहरी-एपीआई CIDR अनुमति सूचियों को पढ़ें या अपडेट करें। व्यवस्थापक सूची को सक्षम करने से पहले, वर्तमान क्लाइंट आईपी को पहले सूचीबद्ध होना चाहिए (लूपबैक को छोड़ दिया जाता है)।
+- **Authentication**: एडमिन प्राइविलेज, वैध सेशन और CSRF टोकन की आवश्यकता होती है

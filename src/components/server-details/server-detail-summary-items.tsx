@@ -4,7 +4,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
-import { useEffectiveFormatLocale } from "@/contexts/config-context";
+import { useEffectiveFormatLocale, useRelativeTimeLocale } from "@/contexts/config-context";
 import type { BackupStatus } from "@/lib/types";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -53,6 +53,7 @@ export function ServerDetailSummaryItems({
   const { t } = useTranslation();
   const router = useRouter();
   const effectiveLocale = useEffectiveFormatLocale();
+  const relativeTimeLocale = useRelativeTimeLocale();
   // Use a try/catch for each item to ensure nothing breaks
   const getFormattedValue = (value: number, formatter: (val: number) => string, defaultValue: string = '0') => {
     try {
@@ -88,7 +89,7 @@ export function ServerDetailSummaryItems({
   
   // Format the expected backup elapsed time client-side with locale-aware formatting
   const formattedExpectedBackupElapsed = SelectedExpectedBackupDate && SelectedExpectedBackupDate !== 'N/A'
-    ? formatTimeElapsed(SelectedExpectedBackupDate, undefined, effectiveLocale)
+    ? formatTimeElapsed(SelectedExpectedBackupDate, undefined, relativeTimeLocale)
     : 'N/A';
 
 
@@ -195,12 +196,12 @@ export function ServerDetailSummaryItems({
                   <span className="text-sm">
                     <span className="text-muted-foreground">{t("Overdue scheduled backups:")}</span> {overdueBackups.map(ob => {
                       const elapsed = ob.expectedBackupDate !== 'N/A' 
-                        ? formatTimeElapsed(ob.expectedBackupDate, undefined, effectiveLocale)
+                        ? formatTimeElapsed(ob.expectedBackupDate, undefined, relativeTimeLocale)
                         : ob.expectedBackupElapsed;
                       return `'${ob.backupName} (${elapsed} ${t("overdue")})'`;
                     }).join(', ')}.
                     {lastOverdueCheck && lastOverdueCheck !== 'N/A' && (
-                      <span className="px-3 text-muted-foreground">{t("Last checked:")} {formatRelativeTime(lastOverdueCheck, undefined, effectiveLocale)}</span>
+                      <span className="px-3 text-muted-foreground">{t("Last checked:")} {formatRelativeTime(lastOverdueCheck, undefined, relativeTimeLocale)}</span>
                     )}
                   </span>
                 </div>
@@ -229,7 +230,7 @@ export function ServerDetailSummaryItems({
                        elapsed: formattedExpectedBackupElapsed || 'N/A',
                      })}
                      {lastOverdueCheck && lastOverdueCheck !== 'N/A' && (
-                       <span className="px-3 text-muted-foreground">{t("Last checked:")} {formatRelativeTime(lastOverdueCheck, undefined, effectiveLocale)}</span>
+                       <span className="px-3 text-muted-foreground">{t("Last checked:")} {formatRelativeTime(lastOverdueCheck, undefined, relativeTimeLocale)}</span>
                      )}
                   </span>
                 </div>

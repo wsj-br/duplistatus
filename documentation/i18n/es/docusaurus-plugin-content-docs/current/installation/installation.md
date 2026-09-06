@@ -19,6 +19,8 @@ Asegúrese de tener lo siguiente instalado:
 
 Puede crear cuentas de usuario adicionales en [Configuración > Usuarios](../user-guide/settings/user-management-settings.md) después del primer inicio de sesión.
 
+Los administradores también pueden requerir opcionalmente [claves de API](../user-guide/settings/api-keys-settings.md) para Duplicati y Homepage, y restringir el acceso con [listas de permitidos de IP](../user-guide/settings/ip-allowlist-settings.md). Ambos están desactivados por defecto.
+
 ::::info[IMPORTANTE]
 El sistema aplica una longitud mínima de contraseña y requisitos de complejidad. Estos requisitos se pueden ajustar utilizando las [variables de entorno](environment-variables.md) `PWD_ENFORCE` y `PWD_MIN_LEN`. Utilizar una contraseña sin suficiente complejidad o con una longitud corta puede comprometer la seguridad. Por favor, utilice estas configuraciones con cuidado.
 ::::
@@ -251,10 +253,10 @@ podman pod rm -f duplistatus-pod
 
 ## Configuración Esencial {#essential-configuration}
 
-1. Configure sus [servidores Duplicati](duplicati-server-configuration.md) para enviar mensajes de registro de copia de seguridad a duplistatus (requerido).
-2. Inicie sesión en duplistatus – consulte las instrucciones en la [Guía del Usuario](../user-guide/overview.md#accessing-the-dashboard).
-3. Recopile registros iniciales de copia de seguridad – use la función [Recopilar Registros de Copia de Seguridad](../user-guide/collect-backup-logs.md) para llenar la base de datos con datos históricos de copias de seguridad de todos sus servidores Duplicati. Esto también actualiza automáticamente los intervalos de monitoreo de copias de seguridad según la configuración de cada servidor.
-4. Configure los ajustes del servidor – configure alias y notas de servidores en [Configuración → Servidor](../user-guide/settings/server-settings.md) para hacer su panel más informativo.
+1. Configura tus [servidores Duplicati](duplicati-server-configuration.md) para enviar mensajes de registro de copia de seguridad a duplistatus (obligatorio). En Duplicati 2.0.9.106 y versiones posteriores, usa `--send-http-json-urls` como se describe en esa guía.
+2. Inicia sesión en duplistatus – consulta las instrucciones en la [Guía del Usuario](../user-guide/overview.md#accessing-the-dashboard).
+3. Recopila los registros de copia de seguridad iniciales – usa la función [Recopilar registros de copias de seguridad](../user-guide/collect-backup-logs.md) para poblar la base de datos con datos históricos de copia de seguridad de todos tus servidores Duplicati. Esto también actualiza automáticamente los intervalos de monitoreo de copia de seguridad basados en la configuración de cada servidor.
+4. Configura los ajustes del servidor – configura alias y notas del servidor en [Configuración → Servidor](../user-guide/settings/server-settings.md) para hacer que tu panel de control sea más informativo.
 5. Configure los ajustes de NTFY – configure notificaciones mediante NTFY en [Configuración → NTFY](../user-guide/settings/ntfy-settings.md).
 6. Configure los ajustes de correo electrónico – configure notificaciones por correo en [Configuración → Correo electrónico](../user-guide/settings/email-settings.md).
 7. Configure las notificaciones de copia de seguridad – configure notificaciones por copia de seguridad o por servidor en [Configuración → Notificaciones de copia de seguridad](../user-guide/settings/backup-notifications-settings.md).

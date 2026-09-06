@@ -19,6 +19,8 @@ Assurez-vous que vous avez les éléments suivants installés :
 
 Vous pouvez créer des comptes utilisateurs supplémentaires dans [Paramètres > Utilisateurs](../user-guide/settings/user-management-settings.md) après la première connexion.
 
+Les administrateurs peuvent également éventuellement exiger des [clés API](../user-guide/settings/api-keys-settings.md) pour Duplicati et Homepage, et restreindre l'accès avec des [listes d'adresses IP autorisées](../user-guide/settings/ip-allowlist-settings.md). Les deux sont désactivés par défaut.
+
 ::::info[IMPORTANT]
 Le système applique une longueur minimale et une complexité du mot de passe. Ces exigences peuvent être ajustées à l'aide des variables d'environnement `PWD_ENFORCE` et `PWD_MIN_LEN` [environment variables](environment-variables.md). L'utilisation d'un mot de passe sans complexité suffisante ou avec une longueur courte peut compromettre la sécurité. Veuillez utiliser ces paramètres avec prudence.
 ::::
@@ -251,10 +253,10 @@ podman pod rm -f duplistatus-pod
 
 ## Configuration Essentielle {#essential-configuration}
 
-1. Configurez vos [serveurs Duplicati](duplicati-server-configuration.md) pour envoyer les messages des journaux de sauvegarde à duplistatus (requis).
+1. Configurez vos [serveurs Duplicati](duplicati-server-configuration.md) pour envoyer des messages de journal de sauvegarde à duplistatus (requis). Sur Duplicati 2.0.9.106 et versions ultérieures, utilisez `--send-http-json-urls` comme décrit dans ce guide.
 2. Connectez-vous à duplistatus – consultez les instructions dans le [Guide de l'utilisateur](../user-guide/overview.md#accessing-the-dashboard).
-3. Collectez les journaux de sauvegarde initiaux – utilisez la fonctionnalité [Collecter les journaux de sauvegarde](../user-guide/collect-backup-logs.md) pour remplir la base de données avec les données historiques des sauvegardes provenant de tous vos serveurs Duplicati. Cela met également à jour automatiquement les intervalles de surveillance des sauvegardes en fonction de la configuration de chaque serveur.
-4. Configurez les paramètres du serveur – définissez des alias et des notes pour les serveurs dans [Paramètres → Serveur](../user-guide/settings/server-settings.md) afin de rendre votre tableau de bord plus informatif.
+3. Collectez les journaux de sauvegarde initiaux – utilisez la fonctionnalité [Collecter les journaux de sauvegarde](../user-guide/collect-backup-logs.md) pour peupler la base de données avec des données historiques de sauvegarde de tous vos serveurs Duplicati. Cela met également automatiquement à jour les intervalles de surveillance des sauvegardes en fonction de la configuration de chaque serveur.
+4. Configurez les paramètres du serveur – configurez les alias et les notes des serveurs dans [Paramètres → Serveur](../user-guide/settings/server-settings.md) pour rendre votre tableau de bord plus informatif.
 5. Configurez les paramètres NTFY – configurez les notifications via NTFY dans [Paramètres → NTFY](../user-guide/settings/ntfy-settings.md).
 6. Configurez les paramètres e-mail – configurez les notifications par courriel dans [Paramètres → E-mail](../user-guide/settings/email-settings.md).
 7. Configurez les notifications de sauvegarde – configurez des notifications par sauvegarde ou par serveur dans [Paramètres → Notifications de sauvegarde](../user-guide/settings/backup-notifications-settings.md).

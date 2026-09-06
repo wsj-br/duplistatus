@@ -55,10 +55,10 @@
 - **Endpoint**: `/api/cron/*`
 - **Método**: GET, POST
 - **Descrição**: Proxies de solicitações para o serviço de cron. Este endpoint encaminha todas as solicitações para o serviço de cron em execução em uma porta separada.
-- **Autenticação**: Requer sessão válida e token CSRF
+- **Autenticação**: Requer sessão válida e token CSRF. GET é permitido para usuários autenticados; POST (iniciar/parar/acionar/recarregar) requer um administrador.
 - **Parâmetros**:
-  - `*`: Qualquer caminho que será encaminhado ao serviço cron
-- **Resposta**: Depende do endpoint do serviço cron acessado
+  - `*`: Qualquer caminho que será encaminhado para o serviço cron
+- **Resposta**: Depende do endpoint do serviço cron sendo acessado
 - **Resposta de Erro** (503):
 
   ```json
@@ -69,7 +69,9 @@
   ```
 
 - **Notas**:
-  - Encaminha requisições ao serviço cron
+  - Proxy para requisições ao serviço cron em `127.0.0.1`
+  - Encaminha `CRON_SERVICE_SECRET` como `X-Cron-Service-Secret` quando definido
   - Retorna 503 se o serviço cron não estiver disponível
-  - Suporta os métodos GET e POST
-  - Utilizado para gerenciamento do serviço cron pela interface web
+  - Suporta ambos os métodos GET e POST
+  - Usado para gerenciamento do serviço cron a partir da interface web
+  - `POST /trigger/daily-summary-dispatch` é rejeitado pelo serviço cron; use `/api/configuration/daily-summary/send` em vez disso

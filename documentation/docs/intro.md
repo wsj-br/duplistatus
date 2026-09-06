@@ -11,6 +11,8 @@
 - **Data Visualisation & Logs**: Interactive charts and automatic log collection from Duplicati servers.
 - **Notifications & Alerts**: Integrated NTFY and SMTP email support for backup alerts, including overdue backup notifications.
 - **User Access Control & Security**: Secure authentication system with role-based access control (Admin/User roles), configurable password policies, account lockout protection, and comprehensive user management.
+- **API Keys**: Optional scoped keys for Duplicati uploads and Homepage widgets, plus configurable upload size and rate limits.
+- **IP Allowlists**: Separate CIDR lists for the admin interface and the external APIs (`/api/upload`, `/api/summary`, `/api/lastbackup*`).
 - **Audit Logging**: Complete audit trail of all system changes and user actions with advanced filtering, export capabilities, and configurable retention periods.
 - **Application Logs Viewer**: Admin-only interface to view, search, and export application logs directly from the web interface with real-time monitoring capabilities.
 - **Multi-language Support**: Interface and documentation available in English, French, German, Spanish, Brazilian Portuguese, Hindi (Roman) and Simplified Chinese.

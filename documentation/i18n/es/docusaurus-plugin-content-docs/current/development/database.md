@@ -21,9 +21,11 @@ Las siguientes son versiones históricas de migración que llevaron la base de d
 - **Esquema v2.0** (Aplicación v0.7.x): Se agregaron columnas faltantes y la tabla de configuraciones
 - **Esquema v3.0** (Aplicación v0.7.x): Se cambió el nombre de la tabla de máquinas a servidores, se agregó la columna server_url
 - **Esquema v3.1** (Aplicación v0.8.x): Se mejoraron los campos de datos de copia de seguridad, se agregó la columna server_password
-- **Esquema v4.0** (Aplicación v0.9.x / v1.0.x): Se agregó el control de acceso de usuarios (tablas users, sessions, audit_log)
+- **Esquema v4.0** (Aplicación v0.9.x / v1.0.x): Añadido Control de Acceso de Usuario (tablas users, sessions, audit_log)
+- **Esquema v4.1** (Aplicación v1.5.x): Añadido `api_keys` y claves de configuración predeterminadas para autenticación opcional por clave API, listas de permitidos de IP y límites de subida
+- **Esquema v4.2** (Aplicación v1.5.x): Añadido `daily_summary_deliveries` y configuración predeterminada de `daily_summary` para notificaciones de resumen diario opcionales
 
-La versión actual de la aplicación (v1.3.x) utiliza **Schema v4.0** como la última versión del esquema de base de datos.
+Versión actual de la aplicación (v1.5.x) usa **Esquema v4.2** como la última versión del esquema de la base de datos.
 
 ### Proceso de Migración {#migration-process}
 
@@ -161,7 +163,9 @@ Almacena la configuración de la aplicación.
 - `ntfy_config`: Configuración de notificaciones NTFY
 - `overdue_tolerance`: Configuración de tolerancia para copia de seguridad retrasada
 - `notification_templates`: Plantillas de mensajes de notificación
-- `audit_retention_days`: Periodo de retención del registro de auditoría (por defecto: 90 días)
+- `daily_summary`: Modo de resumen diario, horario, zona horaria y entrega opcional de NTFY
+- `cron_service`: Horarios de tareas cron, incluyendo `daily-summary-dispatch`
+- `audit_retention_days`: Período de retención de registro de auditoría (predeterminado: 90 días)
 
 ### Tabla de Versión de Base de Datos {#database-version-table}
 
@@ -234,6 +238,58 @@ Almacena un registro de auditoría de acciones de usuario y eventos del sistema.
 | `status`        | TEXT NOT NULL                     | Estado de la acción ('success', 'failure', 'error')                  |
 | `error_message` | TEXT                              | Mensaje de error si la acción falló                                    |
 
+### Tabla de Claves de API {#api-keys-table}
+
+Almacena claves de API cifradas para las API HTTP externas. El secreto en texto plano solo se muestra una vez al crearse y nunca se almacena.
+
+#### Campos {#fields-6}
+
+| Campo          | Tipo             | Descripción                                              |
+|----------------|------------------|----------------------------------------------------------|
+| `id`           | TEXT PRIMARY KEY | Identificador único de la clave                                    |
+| `name`         | TEXT NOT NULL    | Nombre para mostrar                                             |
+| `key_hash`     | TEXT UNIQUE      | Hash SHA-256 del secreto                               |
+| `key_prefix`   | TEXT             | Primeros cuatro caracteres del secreto (para huellas dactilares)   |
+| `key_suffix`   | TEXT             | Últimos cuatro caracteres del secreto (para huellas dactilares)    |
+| `scope`        | TEXT NOT NULL    | `upload` o `read`                                       |
+| `description`  | TEXT             | Descripción opcional                                     |
+| `enabled`      | INTEGER          | `1` cuando la clave está activa                               |
+| `created_at`   | DATETIME         | Marca de tiempo de creación                                       |
+| `created_by`   | TEXT             | ID de usuario del administrador que creó la clave         |
+| `expires_at`   | DATETIME         | Caducidad opcional                                          |
+| `last_used_at` | DATETIME         | Último uso exitoso                                      |
+| `usage_count`  | INTEGER          | Recuento de usos exitosos                                     |
+
+Claves de configuración relacionadas en la tabla `configurations`: `external_api_require_api_key`, `ip_trusted_proxies`, `admin_ip_allowlist`, `external_api_ip_allowlist`, `upload_limits`.
+
+### Tabla de Entregas de Resumen Diario {#daily-summary-deliveries-table}
+
+Registro por canal para correo electrónico de resumen diario y NTFY. Cada ocurrencia programada (o envío manual único) tiene como máximo una fila por canal. Los payloads renderizados se almacenan antes de enviar para que las reintentos mantengan la misma instantánea. Las filas con más de 30 días se eliminan.
+
+Si el proceso se detiene después de que un proveedor acepte un mensaje pero antes de registrar el éxito, ese canal puede ser reintentado (al menos una vez).
+
+#### Campos {#fields-7}
+
+| Campo              | Tipo             | Descripción                                                                 |
+|--------------------|------------------|-----------------------------------------------------------------------------|
+| `id`               | TEXT PRIMARY KEY | Identificador único de entrega                                                  |
+| `occurrence_key`   | TEXT NOT NULL    | Clave de fecha local programada o `manual:{uuid}`                                 |
+| `channel`          | TEXT NOT NULL    | `email` o `ntfy`                                                           |
+| `trigger`          | TEXT NOT NULL    | `scheduled`, `manual`, o `retry`                                           |
+| `summary_date`     | TEXT NOT NULL    | Fecha del calendario local para la instantánea                                        |
+| `time_zone`        | TEXT NOT NULL    | Zona horaria IANA guardada                                                         |
+| `payload_json`     | TEXT             | Asunto renderizado, HTML, texto y campos de NTFY                               |
+| `state`            | TEXT NOT NULL    | `pending`, `sending`, `sent`, o `failed`                                   |
+| `attempt_count`    | INTEGER          | Intentos de entrega                                                           |
+| `next_retry_at`    | DATETIME         | Cuando un canal fallido puede ser reclamado nuevamente                                  |
+| `lease_expires_at` | DATETIME         | Arrendamiento de reclamación; un arrendamiento obsoleto puede ser recuperado                                 |
+| `error`            | TEXT             | Último error, si lo hay                                                          |
+| `created_at`       | DATETIME         | Marca de tiempo de creación de la fila                                                      |
+| `updated_at`            | DATETIME             | Marca de tiempo de la última actualización               |
+| `sent_at`          | DATETIME         | Marca de tiempo de éxito                                                           |
+
+Un índice único en `(occurrence_key, channel)` evita el envío duplicado de la misma ocurrencia en el mismo canal.
+
 ## Gestión de Sesiones {#session-management}
 
 ### Almacenamiento de Sesiones Respaldado por Base de Datos {#database-backed-session-storage}
@@ -261,16 +317,18 @@ La base de datos incluye varios índices para un rendimiento óptimo de las cons
 - **Claves externas**: Referencias de servidores en la tabla de copias de seguridad, referencias de usuarios en sesiones y registro_de_auditoría
 - **Optimización de consultas**: Índices en campos consultados con frecuencia
 - **Índices de fecha**: Índices en campos de fecha para consultas basadas en tiempo
-- **Índices de usuario**: Índice de nombre de usuario para búsquedas rápidas de usuarios
-- **Índices de sesión**: Índices de expiración y user_id para la gestión de sesiones
-- **Índices de auditoría**: Índices de marca de tiempo, user_id, acción, categoría y estado para consultas de auditoría
+- **Índices de Usuario**: Índice de nombre de usuario para búsquedas rápidas de usuarios
+- **Índices de Sesión**: Índices de caducidad y user_id para gestión de sesiones
+- **Índices de Auditoría**: Índices de marca de tiempo, user_id, acción, categoría y estado para consultas de auditoría
+- **Índices de Clave de API**: Hash único, además de búsquedas de habilitado/ámbito para autenticación
 
 ## Relaciones {#relationships}
 
 - **Servidores → Copias de seguridad**: Relación uno a muchos
 - **Usuarios → Sesiones**: Relación uno a muchos (las sesiones pueden existir sin usuarios)
 - **Usuarios → Registro de auditoría**: Relación uno a muchos (las entradas de auditoría pueden existir sin usuarios)
-- **Copias de seguridad → Mensajes**: Arrays JSON incrustados
+- **Usuarios → Claves de API**: Relación uno a muchos a través de `created_by` (las claves permanecen después de que se elimina el usuario)
+- **Copias de seguridad → Mensajes**: Matrices JSON incrustadas
 - **Configuraciones**: Almacenamiento clave-valor
 
 ## Tipos de Datos {#data-types}

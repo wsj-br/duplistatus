@@ -21,9 +21,14 @@
 
 Si ve advertencias del servidor Duplicati como `HTTP Response request failed for:` y `Failed to send message: System.Net.Http.HttpRequestException:`, y los nuevos backups no aparecen en el panel de control o en el historial de backups:
 
-- **Verificar Configuración de Duplicati**: Confirme que Duplicati está configurado correctamente para enviar datos a **duplistatus**. Verifique la configuración de URL HTTP en Duplicati.
-- **Verificar Conectividad de Red**: Asegúrese de que el servidor Duplicati pueda conectarse al servidor **duplistatus**. Confirme que el puerto es correcto (por defecto: `9666`).
-- **Revisar Logs de Duplicati**: Verifique si hay errores de solicitud HTTP en los logs de Duplicati.
+- **Comprobar Configuración de Duplicati**: Asegúrese de que Duplicati esté configurado correctamente para enviar JSON a **duplistatus**. En Duplicati 2.0.9.106 y posteriores, use `--send-http-json-urls` apuntando a `/api/upload`. En versiones anteriores de Duplicati, use `--send-http-url` con `--send-http-result-output-format=Json`. Consulte [Configuración del Servidor Duplicati](../installation/duplicati-server-configuration.md).
+- **Comprobar Conectividad de Red**: Asegúrese de que el servidor Duplicati pueda conectarse al servidor **duplistatus**. Confirme que el puerto es correcto (predeterminado: `9666`).
+- **HTTP 401**: Se requieren claves de API y la URL de subida no tiene una clave de ámbito de subida válida. Añada `?api_key=` como se describe en [Claves de API](settings/api-keys-settings.md).
+- **HTTP 403**: El ámbito de la clave es incorrecto (una clave de lectura no puede subir), o el host de Duplicati no está en la [lista de IPs permitidas de la API externa](settings/ip-allowlist-settings.md).
+- **HTTP 413**: El informe JSON es más grande que el límite de tamaño de subida (predeterminado 5 MB). Baje `--send-http-max-log-lines` o aumente el límite en Configuración → Claves de API.
+- **HTTP 429**: Se superó el límite de velocidad de subida por IP. Espere `Retry-After`, o aumente los límites si muchos trabajos finalizan al mismo tiempo.
+- **Revisar Registros de Duplicati**: Busque errores de solicitud HTTP en los registros de Duplicati.
+- **Informe dual**: Si también envía informes de formulario a [Duplicati Monitoring](https://www.duplicati-monitoring.com/), un error o HTTP 500 de ese servicio puede detener a Duplicati de enviar el informe JSON a **duplistatus**. Las URLs de formulario se envían primero. Consulte [Informes a duplistatus y Duplicati Monitoring](../installation/duplicati-server-configuration.md#reporting-to-duplistatus-and-duplicati-monitoring).
 
 ### Servidores duplicados en el panel de control {#duplicate-servers-on-the-dashboard}
 
@@ -54,7 +59,7 @@ Si las notificaciones no se están enviando o recibiendo:
 
 Si las versiones de backup no se muestran en el panel de control o en la página de detalles:
 
-- **Verificar Configuración de Duplicati**: Asegúrese de que `send-http-log-level=Information` y `send-http-max-log-lines=0` estén configurados en las opciones avanzadas de Duplicati.
+- **Comprobar la configuración de Duplicati**: Asegúrese de que `send-http-log-level=Information` y `send-http-max-log-lines=500` estén configurados en las opciones avanzadas de Duplicati. Duplicati mantiene las primeras N líneas de registro. Si la lista de versiones sigue faltando, aumente el límite o use `0` cuando no esté enviando informes a Duplicati Monitoring. El **conteo** de versiones aún puede aparecer de las estadísticas JSON cuando falte la lista detallada. Consulte [Líneas de registro y versiones disponibles](../installation/duplicati-server-configuration.md#log-lines-and-available-versions).
 
 ### Alertas de Backup Retrasado No Funcionan {#overdue-backup-alerts-not-working}
 
@@ -92,10 +97,50 @@ Puede crear cuentas de usuario adicionales en [Configuración > Usuarios](settin
 
 ### Contraseña de Admin Perdida o Bloqueado {#lost-admin-password-or-locked-out}
 
-Si ha perdido su contraseña de administrador o ha sido bloqueado de su cuenta:
+Si has perdido tu contraseña de administrador o has sido bloqueado de tu cuenta (aún puedes abrir `/login`):
 
 - **Usar Script de Recuperación de Admin**: Consulte la guía [Recuperación de Cuenta de Admin](admin-recovery.md) para obtener instrucciones sobre cómo recuperar el acceso de administrador en entornos Docker.
 - **Verificar Acceso al Contenedor**: Asegúrese de tener acceso Docker exec al contenedor para ejecutar el script de recuperación.
+
+Si el navegador muestra **Acceso denegado** (HTTP 403) antes de iniciar sesión, se trata de un [bloqueo por lista de IPs permitidas](#locked-out-by-ip-allowlist), no de una contraseña olvidada. El script de recuperación de administrador no puede superarlo.
+
+### Bloqueado por Lista de IPs Permitidas {#locked-out-by-ip-allowlist}
+
+Si Configuración → [Lista de IPs permitidas](settings/ip-allowlist-settings.md) está habilitada con un CIDR faltante o incorrecto, el proxy rechaza la solicitud antes de la autenticación. Síntomas típicos:
+
+- Las páginas (`/`, `/login`, `/settings`, …) devuelven **Acceso denegado** en texto plano (HTTP 403).
+- Las APIs de sesión y administrador devuelven JSON `{ "errorCode": "IP_NOT_ALLOWED" }`.
+- `/api/health` y `/api/ping` aún responden (están exentos). Las cookies de inicio de sesión no ayudan.
+
+La ruta de guardado intenta prevenir esto: no puedes habilitar la lista **admin** a menos que tu IP actual ya esté en los CIDRs (excepto al guardar desde loopback). Aún puedes bloquearte a ti mismo usando un CIDR que coincida ahora pero no más tarde (VPN, DHCP, otra red), configurando mal los proxies de confianza, o habilitando la lista desde `127.0.0.1` / `::1` sin agregar esa dirección.
+
+Las variables de entorno anulan la base de datos, por lo que puedes recuperarte sin la interfaz de usuario. No reescriben Configuración; se requiere reiniciar para que el proceso las capture.
+
+**Deshabilita la lista de administradores** (recuperación usual):
+
+```bash
+ADMIN_IP_ALLOWLIST_ENABLED=false
+```
+
+**O mantén la lista habilitada e inyecta un CIDR que incluya tu IP actual:**
+
+```bash
+ADMIN_IP_ALLOWLIST=203.0.113.10/32
+```
+
+Luego reinicia la aplicación:
+
+- **Docker Compose**: establece las mismas claves bajo `environment` en `docker-compose.yml` (el archivo incluye ejemplos comentados) y recrea el contenedor de la aplicación. `docker exec` no cambia las variables de entorno de un contenedor en ejecución.
+- **Local / systemd**: exporta la variable en el entorno del servicio y reinicia el proceso de Next.js (no solo el servicio de cron).
+
+Después de poder abrir la interfaz de usuario nuevamente:
+
+1. Inicia sesión y corrige los CIDRs y los proxies de confianza en Configuración → Lista de IPs permitidas.
+2. Elimina la anulación de entorno para que Configuración sea nuevamente la fuente de verdad.
+
+La lista de permitidos de la **API externa** (`/api/upload`, `/api/summary`, `/api/lastbackup*`) no bloquea el panel de control. Recupérala de la misma manera con `EXTERNAL_API_IP_ALLOWLIST_ENABLED=false` o `EXTERNAL_API_IP_ALLOWLIST`. Si las subidas de Duplicati fallan con HTTP 403 después de habilitar esa lista, consulta [Nuevas Copias de Seguridad No Mostradas](#new-backups-not-showing). La recuperación de proxies de confianza usa `IP_TRUSTED_PROXIES` (un valor no vacío también implica confianza en el proxy).
+
+Consulta [Lista de IPs Permitidas](settings/ip-allowlist-settings.md#environment-overrides) y [Variables de Entorno](../installation/environment-variables.md).
 
 ### Backup de base de datos y migración {#database-backup-and-migration}
 

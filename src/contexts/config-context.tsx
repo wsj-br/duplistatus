@@ -35,6 +35,8 @@ interface ConfigContextProps {
   setStartOfWeek: (start: StartOfWeek) => void;
   formatLocale: FormatLocaleOverride;
   setFormatLocale: (locale: FormatLocaleOverride) => void;
+  relativeTimeInUiLocale: boolean;
+  setRelativeTimeInUiLocale: (enabled: boolean) => void;
   showDashboardVersion: boolean;
   setShowDashboardVersion: (show: boolean) => void;
   overdueTolerance: OverdueTolerance;
@@ -55,6 +57,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
   const [dashboardCardsSortOrder, setDashboardCardsSortOrder] = useState<DashboardCardsSortOrder>(defaultUIConfig.dashboardCardsSortOrder);
   const [startOfWeek, setStartOfWeek] = useState<StartOfWeek>(defaultUIConfig.startOfWeek);
   const [formatLocale, setFormatLocale] = useState<FormatLocaleOverride>(defaultUIConfig.formatLocale);
+  const [relativeTimeInUiLocale, setRelativeTimeInUiLocale] = useState<boolean>(defaultUIConfig.relativeTimeInUiLocale);
   const [showDashboardVersion, setShowDashboardVersion] = useState<boolean>(defaultUIConfig.showDashboardVersion);
   const [overdueTolerance, setOverdueTolerance] = useState<OverdueTolerance>(defaultOverdueTolerance);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -103,6 +106,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
         if (config.dashboardCardsSortOrder) setDashboardCardsSortOrder(config.dashboardCardsSortOrder);
         if (config.startOfWeek) setStartOfWeek(config.startOfWeek);
         if (config.formatLocale) setFormatLocale(config.formatLocale);
+        if (config.relativeTimeInUiLocale !== undefined) setRelativeTimeInUiLocale(config.relativeTimeInUiLocale === true);
         if (config.showDashboardVersion !== undefined) setShowDashboardVersion(config.showDashboardVersion === true);
       } catch (error) {
         console.error('Failed to parse saved config from localStorage:', error);
@@ -147,10 +151,11 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
         dashboardCardsSortOrder,
         startOfWeek,
         formatLocale,
+        relativeTimeInUiLocale,
         showDashboardVersion,
       }));
     }
-  }, [databaseCleanupPeriod, tablePageSize, chartTimeRange, chartStyle, autoRefreshInterval, autoRefreshEnabled, dashboardCardsSortOrder, startOfWeek, formatLocale, showDashboardVersion, currentUser]);
+  }, [databaseCleanupPeriod, tablePageSize, chartTimeRange, chartStyle, autoRefreshInterval, autoRefreshEnabled, dashboardCardsSortOrder, startOfWeek, formatLocale, relativeTimeInUiLocale, showDashboardVersion, currentUser]);
 
   const cleanupDatabase = async () => {
     try {
@@ -266,6 +271,8 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
         setStartOfWeek,
         formatLocale,
         setFormatLocale,
+        relativeTimeInUiLocale,
+        setRelativeTimeInUiLocale,
         showDashboardVersion,
         setShowDashboardVersion,
         overdueTolerance,
@@ -291,9 +298,21 @@ export const useConfig = () => {
  * Returns the effective locale to use for date/time/number formatting.
  * If the user has set a format locale override, that locale is returned.
  * Otherwise, the UI language locale is used.
+ * Do not use this for relative-time phrases — see {@link useRelativeTimeLocale}.
  */
 export function useEffectiveFormatLocale(): string {
   const { formatLocale } = useConfig();
   const uiLocale = useLocale();
   return formatLocale === 'locale-default' ? uiLocale : formatLocale;
+}
+
+/**
+ * Locale for linguistic relative-time phrases ("in 2 hours", "2 hours ago").
+ * When the user opts in, follows User → Language; otherwise follows Format Locale.
+ */
+export function useRelativeTimeLocale(): string {
+  const { relativeTimeInUiLocale } = useConfig();
+  const uiLocale = useLocale();
+  const formatLocale = useEffectiveFormatLocale();
+  return relativeTimeInUiLocale ? uiLocale : formatLocale;
 }

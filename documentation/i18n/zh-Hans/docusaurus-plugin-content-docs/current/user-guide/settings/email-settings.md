@@ -30,7 +30,7 @@
 |:-----------------------------------------------------------------|:---------------------------------------------------------|
 | <IconButton label="保存设置" />                             | 保存对 NTFY 设置所做的更改。              |
 | <IconButton icon="lucide:mail" label="发送测试电子邮件"/>         | 使用 SMTP 配置发送测试电子邮件。测试电子邮件显示 SMTP 服务器主机名、端口、连接类型、身份验证状态、用户名 (如果适用)、收件人电子邮件、发件人地址、发件人名称和测试时间戳。 |
-| <IconButton icon="lucide:trash-2" label="删除 SMTP 设置"/> | 删除 / 清除 SMTP 配置。                   |
+| <IconButton icon="lucide:trash-2" label="删除 SMTP 设置"/> | 删除/清除 SMTP 配置。当[每日摘要](daily-summary-settings.md)已启用时禁用，因为该模式需要电子邮件。|
 
 <br/>
 

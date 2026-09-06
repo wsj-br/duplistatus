@@ -12,14 +12,18 @@ function formatDevLogTimestamp() {
   return `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}.${pad(now.getMilliseconds(), 3)}`;
 }
 
+function redactApiKeyFromLogLine(line) {
+  return line.replace(/([?&]api_key=)[^&\s]*/gi, '$1[REDACTED]');
+}
+
 function prefixRequestLogLine(line) {
   if (!INCOMING_REQUEST_LOG.test(line)) {
-    return line;
+    return redactApiKeyFromLogLine(line);
   }
 
   const trailingNewline = line.endsWith('\n') ? '\n' : '';
   const body = trailingNewline ? line.slice(0, -1) : line;
-  return `${formatDevLogTimestamp()} ${body.trimStart()}${trailingNewline}`;
+  return `${formatDevLogTimestamp()} ${redactApiKeyFromLogLine(body.trimStart())}${trailingNewline}`;
 }
 
 let stdoutLineBuffer = '';

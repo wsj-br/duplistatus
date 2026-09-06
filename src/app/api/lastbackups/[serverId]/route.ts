@@ -1,5 +1,7 @@
+import { NextRequest } from 'next/server';
 import { dbOps, formatDurationFromSeconds } from '@/lib/db';
 import type { Backup, BackupStatus } from '@/lib/types';
+import { requireReadApiAccess } from '@/lib/api-key-auth';
 
 interface ServerRow {
   id: string;
@@ -56,7 +58,12 @@ function mapBackupToJob(backup: BackupRecord): Backup {
   };
 }
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
+  const denied = await requireReadApiAccess(request);
+  if (denied) {
+    return denied;
+  }
+
   const { pathname } = new URL(request.url);
   const match = pathname.match(/api\/lastbackups\/([^\/]+)/);
   const serverId = match ? match[1] : undefined;

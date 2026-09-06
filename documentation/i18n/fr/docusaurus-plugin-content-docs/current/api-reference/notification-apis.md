@@ -4,7 +4,7 @@
 - **Endpoint** : `/api/notifications/test`
 - **Méthode** : POST
 - **Description** : Envoyer des notifications de test (simples, basées sur un modèle ou par courrier électronique) pour vérifier la configuration des notifications.
-- **Authentification** : Nécessite une session valide et un jeton CSRF
+- **Authentification** : Nécessite une session d'administrateur et un jeton CSRF
 - **Corps de la requête** :
   Pour un test simple :
 
@@ -89,11 +89,18 @@ Le contenu du courrier de test affiche :
   - Prend en charge les messages de test simples, les notifications basées sur un modèle et les tests par courrier électronique
   - Le test de modèle utilise des données d'exemple pour remplacer les variables du modèle
   - Inclut un horodatage dans le message de test
-  - Valide l'URL NTFY et le sujet avant l'envoi
-  - Utilise le champ `accessToken` pour l'authentification
-  - Pour les tests de modèle, envoie des notifications à la fois vers NTFY et par courrier électronique (si configuré)
-  - Les tests par courrier électronique nécessitent une configuration SMTP préalablement définie
-  - Le point de terminaison de test par courrier électronique efface le cache de requête avant de lire la configuration SMTP, garantissant ainsi que des scripts externes peuvent mettre à jour la configuration et que celle-ci soit immédiatement prise en compte dans les courriers de test
+  - Les tests NTFY utilisent la configuration NTFY stockée ; une URL NTFY fournie par le client n'est pas utilisée
+  - Utilisations le champ `accessToken` pour l'authentification quand stocké
+  - Pour les tests de modèle, envoie des notifications à la fois à NTFY et à l'e-mail (si configuré)
+  - Les tests d'e-mail nécessitent que la configuration SMTP soit configurée
+  - Le point de terminaison de l'e-mail de test efface le cache de la requête avant de lire la configuration SMTP, garantissant que les scripts externes peuvent mettre à jour la configuration et que celle-ci soit immédiatement reflétée dans les e-mails de test
+  - Les tests de modèle et l'envoi immédiat du Résumé quotidien contournent la suppression par sauvegarde
+
+## Aperçu du modèle de notification - `/api/notifications/preview` {#preview-notification-template---apinotificationspreview}
+- **Point de terminaison** : `/api/notifications/preview`
+- **Méthode** : POST
+- **Description** : Rendu d'un modèle de notification avec le rendu Markdown de production sans envoi. Le corps inclut `kind` (`success`, `warning`, `overdueBackup`, `dailySummaryEmail`, ou `dailySummaryNtfy`) et le modèle en cours d'édition. Les aperçus du Résumé quotidien utilisent l'instantané réel actuel ; les autres types utilisent des valeurs d'échantillon déterministes. L'e-mail HTML est destiné à un iframe sandboxé.
+- **Authentication**: Requiert une session valide et un jeton CSRF
 
 ## Vérifier les sauvegardes en retard - `/api/notifications/check-overdue` {#check-overdue-backups---apinotificationscheck-overdue}
 - **Endpoint** : `/api/notifications/check-overdue`

@@ -18,6 +18,7 @@ Administradores veem todas as configurações disponíveis.
           <ul>
             <li><a href="backup-notifications-settings.md">Notificações de Backup</a>: Configurar configurações de notificação por backup</li>
             <li><a href="backup-monitoring-settings.md">Monitoramento de Backup</a>: Configurar detecção de backups atrasados e alertas</li>
+            <li><a href="daily-summary-settings.md">Resumo Diário</a>: Snapshot diário opcional que substitui notificações individuais de backup e atrasados</li>
             <li><a href="notification-templates.md">Modelos</a>: Personalizar modelos de mensagens de notificação</li>
           </ul>
         </li><br/>
@@ -31,10 +32,12 @@ Administradores veem todas as configurações disponíveis.
         <li>
           <strong id="system">Sistema</strong>
           <ul>
-            <li><a href="server-settings.md">Servidores</a>: Gerenciar configurações de servidores Duplicati</li>
-            <li><a href="display-settings.md">Configurações de Exibição</a>: Configurar tema, intervalo de tempo do gráfico, estilo do gráfico, localidade de formatação, intervalo de atualização automática, ordem de classificação dos cards e início da semana</li>
+            <li><a href="server-settings.md">Servidores</a>: Gerenciar configurações do servidor Duplicati</li>
+            <li><a href="display-settings.md">Configurações de Exibição</a>: Configurar tema, intervalo de tempo do gráfico, estilo do gráfico, localidade de formatação, intervalo de atualização automática, ordem de classificação de cartões e início da semana</li>
             <li><a href="duplicati-versions.md">Versões do Duplicati</a>: Visualizar versões de lançamento do Duplicati em cache e configurar a agenda de verificação de versão</li>
             <li><a href="database-maintenance.md">Manutenção do Banco de Dados</a>: Realizar limpeza do banco de dados (apenas administrador)</li>
+            <li><a href="api-keys-settings.md">Chaves de API</a>: Gerenciar chaves com escopo e proteção de APIs externas (apenas administrador)</li>
+            <li><a href="ip-allowlist-settings.md">Lista de permissões de IP</a>: Restringir a interface de administração e APIs externas (apenas administrador)</li>
             <li><a href="user-management-settings.md">Usuários</a>: Gerenciar contas de usuário (apenas administrador)</li>
             <li><a href="audit-logs-viewer.md">Log de Auditoria</a>: Visualizar logs de auditoria do sistema</li>
             <li><a href="audit-logs-retention.md">Retenção de Log de Auditoria</a>: Configurar retenção de log de auditoria (apenas administrador)</li>
@@ -53,7 +56,7 @@ Usuários regulares veem um conjunto limitado de configurações.
 <table>
   <tr>
     <td>
-      ![Barra Lateral de Configurações - Visão Não-Administrador](../../assets/screen-settings-left-panel-non-admin.png)
+      ![Barra Lateral de Configurações - Visualização Não-Administrador](../../assets/screen-settings-left-panel-non-admin.png)
     </td>
     <td>
       <ul>
@@ -61,7 +64,8 @@ Usuários regulares veem um conjunto limitado de configurações.
           <strong>Notificações</strong>
           <ul>
             <li><a href="backup-notifications-settings.md">Notificações de Backup</a>: Visualizar configurações de notificação por backup (somente leitura)</li>
-            <li><a href="backup-monitoring-settings.md">Monitoramento de Backup</a>: Visualizar configurações de backups atrasados (somente leitura)</li>
+            <li><a href="backup-monitoring-settings.md">Monitoramento de Backup</a>: Visualizar configurações de backup atrasado (somente leitura)</li>
+            <li><a href="daily-summary-settings.md">Resumo Diário</a>: Visualizar configurações de resumo diário (somente leitura)</li>
             <li><a href="notification-templates.md">Modelos</a>: Visualizar modelos de notificação (somente leitura)</li>
           </ul>
         </li><br/>
@@ -75,9 +79,9 @@ Usuários regulares veem um conjunto limitado de configurações.
         <li>
           <strong id="system">Sistema</strong>
           <ul>
-            <li><a href="server-settings.md">Servidores</a>: Visualizar configurações de servidores (somente leitura)</li>
+            <li><a href="server-settings.md">Servidores</a>: Visualizar configurações do servidor (somente leitura)</li>
             <li><a href="display-settings.md">Exibição</a>: Configurar tema, intervalo de tempo do gráfico, estilo do gráfico, localidade de formatação, intervalo de atualização automática, ordem de classificação dos cards e início da semana</li>
-            <li><a href="duplicati-versions.md">Versões do Duplicati</a>: Visualizar versões de lançamento do Duplicati em cache (alterações de agenda são apenas para administradores)</li>
+            <li><a href="duplicati-versions.md">Versões do Duplicati</a>: Visualizar versões de lançamento do Duplicati em cache (alterações de agendamento são apenas para administradores)</li>
             <li><a href="audit-logs-viewer.md">Log de Auditoria</a>: Visualizar logs de auditoria do sistema (somente leitura)</li>
           </ul>
         </li>

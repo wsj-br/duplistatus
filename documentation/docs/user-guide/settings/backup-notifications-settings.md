@@ -13,7 +13,9 @@ The backup notifications table is organised by server. The display format depend
   -  **Server Name : Backup Name** if no server alias configured,  or
   - **Server Alias (Server Name) : Backup Name** if it is configured.
 
-This page has an auto-save feature. Any changes you make will be saved automatically. 
+This page has an auto-save feature. Any changes you make will be saved automatically.
+
+When **Daily Summary** is enabled, individual and additional backup notifications are suppressed. The settings on this page are preserved and become active again when Daily Summary is turned off. See [Daily Summary](daily-summary-settings.md). 
 
 <br/>
 

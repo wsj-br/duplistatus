@@ -21,9 +21,14 @@
 
 如果您看到 Duplicati 服务器警告，如 `HTTP Response request failed for:` 和 `Failed to send message: System.Net.Http.HttpRequestException:`，且新备份不出现在仪表盘或备份历史记录中:
 
-- **检查 Duplicati 配置**: 确认 Duplicati 配置正确以向 **duplistatus** 发送数据。验证 Duplicati 中的 HTTP URL 设置。
-- **检查网络连接**: 确保 Duplicati 服务器可以连接到 **duplistatus** 服务器。确认端口正确（默认：`9666`）。
-- **查看 Duplicati 日志**: 在 Duplicati 日志中检查 HTTP 请求错误。
+- **检查 Duplicati 配置**：确认 Duplicati 已正确配置为向 **duplistatus** 发送 JSON。在 Duplicati 2.0.9.106 及更高版本上，使用 `--send-http-json-urls` 指向 `/api/upload`。在旧版 Duplicati 上，使用 `--send-http-url` 与 `--send-http-result-output-format=Json`。请参阅 [Duplicati 服务器配置](../installation/duplicati-server-configuration.md)。
+- **检查网络连接**：确保 Duplicati 服务器能够连接到 **duplistatus** 服务器。确认端口是否正确（默认：`9666`）。
+- **HTTP 401**：需要 API 密钥，且上传 URL 缺少有效的 upload-scope 密钥。按照 [API 密钥](settings/api-keys-settings.md) 中的说明添加 `?api_key=`。
+- **HTTP 403**：密钥范围错误（读取密钥无法上传），或 Duplicati 主机不在 [外部 API IP 白名单](settings/ip-allowlist-settings.md) 上。
+- **HTTP 413**：JSON 报告大小超过上传大小限制（默认 5 MB）。降低 `--send-http-max-log-lines` 或在设置 → API 密钥中提高限制。
+- **HTTP 429**：超过每 IP 上传速率限制。等待 `Retry-After`，或如果许多作业同时完成，则提高限制。
+- **查看 Duplicati 日志**：在 Duplicati 日志中检查 HTTP 请求错误。
+- **双重报告**：如果您还向 [Duplicati 监控](https://www.duplicati-monitoring.com/) 发送表单报告，该服务的失败或 HTTP 500 可能会阻止 Duplicati 向 **duplistatus** 发送 JSON 报告。表单 URL 会首先发送。请参阅 [向 duplistatus 和 Duplicati 监控报告](../installation/duplicati-server-configuration.md#reporting-to-duplistatus-and-duplicati-monitoring)。
 
 ### 仪表盘上的重复服务器 {#duplicate-servers-on-the-dashboard}
 
@@ -54,7 +59,7 @@
 
 如果备份版本未显示在仪表盘或详细信息页面上:
 
-- **检查 Duplicati 配置**: 确保 `send-http-log-level=Information` 和 `send-http-max-log-lines=0` 在 Duplicati 的高级选项中配置。
+- **检查 Duplicati 配置**：确保 `send-http-log-level=Information` 和 `send-http-max-log-lines=500` 在 Duplicati 的高级选项中配置。Duplicati 会保留前 N 行日志。如果版本列表仍然缺失，请提高上限或在不向 Duplicati 监控发送报告时使用 `0`。版本 **计数** 仍然可以从 JSON 统计中显示，即使详细列表缺失。请参阅 [日志行和可用版本](../installation/duplicati-server-configuration.md#log-lines-and-available-versions)。
 
 ### 过期备份警报不工作 {#overdue-backup-alerts-not-working}
 
@@ -92,10 +97,50 @@
 
 ### 管理员密码丢失或被锁定 {#lost-admin-password-or-locked-out}
 
-如果您丢失了管理员密码或被锁定出您的账户：
+如果您丢失了管理员密码或被锁定在账户之外（您仍然可以打开`/login`）：
 
 - **使用管理员恢复脚本**：请参阅 [管理员账户恢复](admin-recovery.md) 指南以获取在 Docker 环境中恢复管理员访问权限的说明。
 - **验证容器访问**：确保您具有 Docker 执行访问容器以运行恢复脚本的权限。
+
+如果浏览器在登录前显示**Access denied**（HTTP 403），则这是一个[IP白名单锁定](#locked-out-by-ip-allowlist)，而不是忘记密码。管理员恢复脚本无法绕过它。
+
+### IP白名单锁定{#locked-out-by-ip-allowlist}
+
+如果设置→[IP白名单](settings/ip-allowlist-settings.md)已启用但CIDR缺失或错误，代理会在身份验证之前拒绝请求。典型症状：
+
+- 页面（`/`、`/login`、`/settings`、…）返回纯文本**Access denied**（HTTP 403）。
+- 会话和管理员API返回JSON `{ "errorCode": "IP_NOT_ALLOWED" }`。
+- `/api/health`和`/api/ping`仍然响应（它们是豁免的）。登录cookie无助。
+
+保存路径试图防止这种情况：您无法启用**admin**列表，除非您当前的IP已经在CIDR中（除非从回环中保存）。您仍然可以通过使用现在匹配但以后不匹配的CIDR（VPN、DHCP、另一个网络）、误配置受信任的代理或从`127.0.0.1` / `::1`启用列表而不添加该地址来锁定自己。
+
+环境变量会覆盖数据库，因此您可以在没有UI的情况下恢复。它们不会重写设置；需要重新启动，以便进程获取它们。
+
+**禁用管理员列表**（通常恢复）：
+
+```bash
+ADMIN_IP_ALLOWLIST_ENABLED=false
+```
+
+**或者保持启用状态并注入包含当前IP的CIDR：**
+
+```bash
+ADMIN_IP_ALLOWLIST=203.0.113.10/32
+```
+
+然后重新启动应用程序：
+
+- **Docker Compose**：在`docker-compose.yml`中的`environment`下设置相同的键（文件包含注释示例），然后重新创建应用容器。`docker exec`不会更改正在运行的容器的环境变量。
+- **本地/系统**：在服务环境中导出变量并重新启动Next.js进程（不仅仅是cron服务）。
+
+当您可以再次打开UI后：
+
+1. 登录并修复设置→IP白名单中的CIDR和受信任的代理。
+2. 删除环境覆盖，以便设置再次成为真相的来源。
+
+**外部API**白名单（`/api/upload`、`/api/summary`、`/api/lastbackup*`）不会锁定仪表板。以相同的方式使用`EXTERNAL_API_IP_ALLOWLIST_ENABLED=false`或`EXTERNAL_API_IP_ALLOWLIST`恢复它。如果在启用该列表后Duplicati上传失败并显示HTTP 403，请参阅[新备份不显示](#new-backups-not-showing)。受信任的代理恢复使用`IP_TRUSTED_PROXIES`（非空值也意味着信任代理）。
+
+请参阅[IP白名单](settings/ip-allowlist-settings.md#environment-overrides)和[环境变量](../installation/environment-variables.md)。
 
 ### 数据库备份和迁移 {#database-backup-and-migration}
 

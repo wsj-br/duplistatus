@@ -2,7 +2,7 @@
 
 # Authentication & Security {#authentication-security}
 
-The API uses a combination of session-based authentication and CSRF protection for all database write operations to prevent unauthorized access and potential denial-of-service attacks. External APIs (used by Duplicati) remain unauthenticated for compatibility.
+The API uses a combination of session-based authentication and CSRF protection for all database write operations to prevent unauthorized access and potential denial-of-service attacks. External APIs used by Duplicati and Homepage stay CSRF-exempt. They can optionally require a scoped API key and/or an IP allowlist (both off by default). `/api/upload` also has a configurable body-size cap and rate limit.
 
 ## Session-Based Authentication {#session-based-authentication}
 
@@ -22,10 +22,10 @@ All state-changing operations require a valid CSRF token that matches the curren
 All endpoints that modify database data require session authentication and CSRF token:
 
 - **Server Management**: `/api/servers/:id` (PATCH, DELETE), `/api/servers/:id/server-url` (PATCH), `/api/servers/:id/password` (PATCH, GET)
-- **Configuration Management**: `/api/configuration/email` (GET, POST, DELETE), `/api/configuration/unified` (GET), `/api/configuration/ntfy` (GET), `/api/configuration/notifications` (GET, POST), `/api/configuration/backup-settings` (POST), `/api/configuration/templates` (POST), `/api/configuration/overdue-tolerance` (GET, POST)
-- **Notification System**: `/api/notifications/test` (POST)
+- **Configuration Management**: `/api/configuration/email` (GET, POST, DELETE), `/api/configuration/unified` (GET), `/api/configuration/ntfy` (GET), `/api/configuration/notifications` (GET, POST), `/api/configuration/backup-settings` (POST), `/api/configuration/templates` (POST), `/api/configuration/overdue-tolerance` (GET, POST), `/api/configuration/daily-summary` (GET, POST), `/api/configuration/daily-summary/send` (POST), `/api/configuration/daily-summary/retry` (POST), `/api/configuration/daily-summary/preview` (POST)
+- **Notification System**: `/api/notifications/test` (POST), `/api/notifications/preview` (POST)
 - **Cron Configuration**: `/api/cron-config` (GET, POST)
-- **Cron Proxy**: `/api/cron/*` (GET, POST) - proxies requests to the cron service
+- **Cron Proxy**: `/api/cron/*` (GET, POST) - proxies requests to the cron service. POST requires an administrator. The cron process binds to `127.0.0.1` by default; mutating cron-service routes require `X-Cron-Service-Secret` when `CRON_SERVICE_SECRET` is set.
 - **Session Management**: `/api/session` (POST, GET, DELETE), `/api/csrf` (GET)
 - **Chart Data**: `/api/chart-data/*` (GET)
 - **Dashboard**: `/api/dashboard` (GET)
@@ -39,14 +39,17 @@ All endpoints that modify database data require session authentication and CSRF 
 - **Overdue Check**: `/api/notifications/check-overdue` (POST) - requires session and CSRF token
 - **Clear Overdue Timestamps**: `/api/notifications/clear-overdue-timestamps` (POST) - requires session and CSRF token
 
-### Unprotected Endpoints {#unprotected-endpoints}
-External APIs remain unauthenticated for Duplicati integration:
+### External Endpoints {#external-endpoints}
+These routes do not use session cookies or CSRF. Authentication is optional and configured in Settings:
 
-- `/api/upload` - Backup data uploads from Duplicati
-- `/api/lastbackup/:serverId` - Latest backup status
-- `/api/lastbackups/:serverId` - Latest backups status
-- `/api/summary` - Overall summary data
-- `/api/health` - Health check endpoint
+- `/api/upload` - Backup data uploads from Duplicati (upload-scope key, size and rate limits)
+- `/api/lastbackup/:serverId` - Latest backup status (read-scope key)
+- `/api/lastbackups/:serverId` - Latest backups status (read-scope key)
+- `/api/summary` - Overall summary data (read-scope key)
+- `/api/health` - Health check endpoint (never keyed)
+- `/api/ping` - Connectivity probe (never keyed)
+
+When **Require API keys** is on, the first four routes return `401` without a valid key and `403` when the key scope does not match. See [API Keys](../user-guide/settings/api-keys-settings.md) and [IP Allowlist](../user-guide/settings/ip-allowlist-settings.md).
 
 ### Usage Example (Session + CSRF) {#usage-example-session--csrf}
 ```typescript

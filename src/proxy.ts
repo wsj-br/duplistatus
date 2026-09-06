@@ -6,6 +6,12 @@ import {
   resolveLocaleFromAcceptLanguage,
   type LocaleCode,
 } from "@/lib/locales";
+import {
+  classifyAllowlistPath,
+  isIpAllowed,
+  resolveAllowlistIp,
+} from "@/lib/ip-allowlist";
+import { getPeerIp } from "@/lib/ip-utils";
 
 const LOCALE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
@@ -39,6 +45,33 @@ function stripLocalePathPrefix(pathname: string): string | null {
   return rest || "/";
 }
 
+function denyByAllowlist(pathname: string): NextResponse {
+  if (pathname.startsWith("/api/")) {
+    return NextResponse.json(
+      {
+        error: "Access denied",
+        errorCode: "IP_NOT_ALLOWED",
+      },
+      { status: 403 }
+    );
+  }
+
+  return new NextResponse("Access denied", {
+    status: 403,
+    headers: { "Content-Type": "text/plain; charset=utf-8" },
+  });
+}
+
+function enforceAllowlist(request: NextRequest, pathname: string): NextResponse | null {
+  const surface = classifyAllowlistPath(pathname);
+  const peer = getPeerIp(request);
+  const clientIp = resolveAllowlistIp(request);
+  if (!isIpAllowed(surface, clientIp, peer)) {
+    return denyByAllowlist(pathname);
+  }
+  return null;
+}
+
 export function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
   const url = request.nextUrl.clone();
@@ -49,10 +82,19 @@ export function proxy(request: NextRequest) {
     pathname.startsWith("/_static/") ||
     pathname.match(/\.(ico|png|jpg|jpeg|svg|gif|webp|woff|woff2|ttf|eot|css|js|json|xml|txt|pdf)$/i)
   ) {
+    const denied = enforceAllowlist(request, pathname);
+    if (denied) {
+      return denied;
+    }
     const response = NextResponse.next();
     response.headers.set("x-pathname", pathname);
     response.headers.set("x-search-params", search);
     return response;
+  }
+
+  const denied = enforceAllowlist(request, pathname);
+  if (denied) {
+    return denied;
   }
 
   const stripped = stripLocalePathPrefix(pathname);
@@ -107,6 +149,6 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)",
+    "/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)",
   ],
 };

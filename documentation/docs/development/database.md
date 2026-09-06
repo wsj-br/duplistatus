@@ -24,8 +24,10 @@ The following are historical migration versions that brought the database to its
 - **Schema v3.0** (Application v0.7.x): Renamed machines table to servers, added server_url column
 - **Schema v3.1** (Application v0.8.x): Enhanced backup data fields, added server_password column
 - **Schema v4.0** (Application v0.9.x / v1.0.x): Added User Access Control (users, sessions, audit_log tables)
+- **Schema v4.1** (Application v1.5.x): Added `api_keys` and default configuration keys for optional API-key authentication, IP allowlists, and upload limits
+- **Schema v4.2** (Application v1.5.x): Added `daily_summary_deliveries` ledger and default `daily_summary` configuration for optional daily summary notifications
 
-Current application version (v1.3.x) uses **Schema v4.0** as the latest database schema version.
+Current application version (v1.5.x) uses **Schema v4.2** as the latest database schema version.
 
 ### Migration Process {#migration-process}
 
@@ -163,6 +165,8 @@ Stores application configuration settings.
 - `ntfy_config`: NTFY notification settings
 - `overdue_tolerance`: Overdue backup tolerance settings
 - `notification_templates`: Notification message templates
+- `daily_summary`: Daily Summary mode, schedule, timezone, and optional NTFY delivery
+- `cron_service`: Cron task schedules, including `daily-summary-dispatch`
 - `audit_retention_days`: Audit log retention period (default: 90 days)
 
 ### Database Version Table {#database-version-table}
@@ -236,6 +240,58 @@ Stores audit trail of user actions and system events.
 | `status`        | TEXT NOT NULL                     | Status of action ('success', 'failure', 'error')                  |
 | `error_message` | TEXT                              | Error message if action failed                                    |
 
+### API Keys Table {#api-keys-table}
+
+Stores hashed API keys for the external HTTP APIs. The plaintext secret is shown once at creation and is never stored.
+
+#### Fields {#fields-6}
+
+| Field          | Type             | Description                                              |
+|----------------|------------------|----------------------------------------------------------|
+| `id`           | TEXT PRIMARY KEY | Unique key identifier                                    |
+| `name`         | TEXT NOT NULL    | Display name                                             |
+| `key_hash`     | TEXT UNIQUE      | SHA-256 hash of the secret                               |
+| `key_prefix`   | TEXT             | First four characters of the secret (for fingerprints)   |
+| `key_suffix`   | TEXT             | Last four characters of the secret (for fingerprints)    |
+| `scope`        | TEXT NOT NULL    | `upload` or `read`                                       |
+| `description`  | TEXT             | Optional description                                     |
+| `enabled`      | INTEGER          | `1` when the key is active                               |
+| `created_at`   | DATETIME         | Creation timestamp                                       |
+| `created_by`   | TEXT             | User id of the administrator who created the key         |
+| `expires_at`   | DATETIME         | Optional expiry                                          |
+| `last_used_at` | DATETIME         | Last successful use                                      |
+| `usage_count`  | INTEGER          | Successful use count                                     |
+
+Related configuration keys in the `configurations` table: `external_api_require_api_key`, `ip_trusted_proxies`, `admin_ip_allowlist`, `external_api_ip_allowlist`, `upload_limits`.
+
+### Daily Summary Deliveries Table {#daily-summary-deliveries-table}
+
+Per-channel ledger for Daily Summary email and NTFY. Each scheduled occurrence (or unique manual send) has at most one row per channel. Rendered payloads are stored before sending so retries keep the same snapshot. Rows older than 30 days are pruned.
+
+If the process dies after a provider accepts a message but before success is recorded, that channel may be retried (at-least-once).
+
+#### Fields {#fields-7}
+
+| Field              | Type             | Description                                                                 |
+|--------------------|------------------|-----------------------------------------------------------------------------|
+| `id`               | TEXT PRIMARY KEY | Unique delivery identifier                                                  |
+| `occurrence_key`   | TEXT NOT NULL    | Scheduled local date key or `manual:{uuid}`                                 |
+| `channel`          | TEXT NOT NULL    | `email` or `ntfy`                                                           |
+| `trigger`          | TEXT NOT NULL    | `scheduled`, `manual`, or `retry`                                           |
+| `summary_date`     | TEXT NOT NULL    | Local calendar date for the snapshot                                        |
+| `time_zone`        | TEXT NOT NULL    | Saved IANA timezone                                                         |
+| `payload_json`     | TEXT             | Rendered subject, HTML, text, and NTFY fields                               |
+| `state`            | TEXT NOT NULL    | `pending`, `sending`, `sent`, or `failed`                                   |
+| `attempt_count`    | INTEGER          | Delivery attempts                                                           |
+| `next_retry_at`    | DATETIME         | When a failed channel may be claimed again                                  |
+| `lease_expires_at` | DATETIME         | Claim lease; a stale lease can be recovered                                 |
+| `error`            | TEXT             | Last error, if any                                                          |
+| `created_at`       | DATETIME         | Row creation timestamp                                                      |
+| `updated_at`       | DATETIME         | Last update timestamp                                                       |
+| `sent_at`          | DATETIME         | Success timestamp                                                           |
+
+A unique index on `(occurrence_key, channel)` prevents duplicate sends of the same occurrence on the same channel.
+
 ## Session Management {#session-management}
 
 ### Database-Backed Session Storage {#database-backed-session-storage}
@@ -266,12 +322,14 @@ The database includes several indexes for optimal query performance:
 - **User Indexes**: Username index for fast user lookups
 - **Session Indexes**: Expiration and user_id indexes for session management
 - **Audit Indexes**: Timestamp, user_id, action, category, and status indexes for audit queries
+- **API Key Indexes**: Unique hash, plus enabled/scope lookups for authentication
 
 ## Relationships {#relationships}
 
 - **Servers → Backups**: One-to-many relationship
 - **Users → Sessions**: One-to-many relationship (sessions can exist without users)
 - **Users → Audit Log**: One-to-many relationship (audit entries can exist without users)
+- **Users → API Keys**: One-to-many relationship via `created_by` (keys remain after the user is deleted)
 - **Backups → Messages**: Embedded JSON arrays
 - **Configurations**: Key-value storage
 

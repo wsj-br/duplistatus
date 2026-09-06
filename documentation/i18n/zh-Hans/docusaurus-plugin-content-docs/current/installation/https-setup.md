@@ -34,7 +34,7 @@ server {
         proxy_pass http://localhost:9666;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-For $remote_addr;
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
@@ -102,15 +102,21 @@ Caddy 将自动从 Let's Encrypt 获得和管理 SSL 证书。
 - [Caddy 文档](https://caddyserver.com/docs/)
 - [Caddy 反向代理指南](https://caddyserver.com/docs/caddyfile/directives/reverse_proxy)
 
+不要在公共互联网上暴露端口 9666。将应用程序绑定到本地主机（或私有网络），并让反向代理成为唯一的公共监听器。
+
+何时 [IP 允许列表](../user-guide/settings/ip-allowlist-settings.md) 已启用时，将此代理列入 **受信任的代理**（或 `IP_TRUSTED_PROXIES`）。仅当 TCP 对等方是受信任的代理时，应用程序才会尊重 `X-Forwarded-For` / `X-Real-IP`。**覆盖** 这些头部为 `$remote_addr`。请勿使用 `$proxy_add_x_forwarded_for`，该选项会附加并允许客户端伪造第一个跳。
+
 ### 重要注意事项 {#important-notes}
 
 ```bash
---send-http-url=https://your-domain.com/api/upload
+--send-http-json-urls=https://your-domain.com/api/upload
 ```
 
-:::info[IMPORTANT]
+:::info[重要]
 设置 HTTPS 后，请记得更新 Duplicati 服务器配置以使用 HTTPS URL：
 
+
+对于早于 2.0.9.106 的 Duplicati，请使用 `--send-http-url=https://your-domain.com/api/upload` 代替 `--send-http-result-output-format=Json`。请参阅 [Duplicati 服务器配置](duplicati-server-configuration.md)。
 :::
 
 :::tip

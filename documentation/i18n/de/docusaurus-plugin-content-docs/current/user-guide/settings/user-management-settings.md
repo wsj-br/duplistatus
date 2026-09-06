@@ -61,3 +61,5 @@ Konten werden nach mehreren fehlgeschlagenen Anmeldeversuchen automatisch gesper
 ## Wiederherstellung des Admin-Zugriffs {#recovering-admin-access}
 
 Wenn Sie Ihr Admin-Passwort verloren haben oder aus Ihrem Konto gesperrt wurden, können Sie den Zugriff mithilfe des Admin-Wiederherstellungsskripts wiederherstellen. Weitere Informationen finden Sie im Leitfaden [Admin Account Recovery](../admin-recovery.md) mit detaillierten Anweisungen zur Wiederherstellung von Administrator-Zugriff in Docker-Umgebungen.
+
+Falls der Browser **Zugriff verweigert** (HTTP 403) anzeigt, bevor das Anmeldeformular erscheint, beheben Sie das Problem mit [Durch IP-Zulassungsliste gesperrt](../troubleshooting.md#locked-out-by-ip-allowlist).

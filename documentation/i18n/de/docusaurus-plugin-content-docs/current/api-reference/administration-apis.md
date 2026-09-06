@@ -779,6 +779,52 @@ Mit Fehlern:
   - Konfigurationsänderungen werden im Audit-Log protokolliert
   - Die Aufbewahrungsfrist wirkt sich auf automatische und manuelle Bereinigungsvorgänge aus
 
+## API-Schlüssel {#api-keys}
+
+### API-Schlüssel auflisten - `/api/api-keys` {#list-api-keys---apiapi-keys}
+- **Endpunkt**: `/api/api-keys`
+- **Methode**: GET
+- **Beschreibung**: Listet alle API-Schlüssel auf. Geheimnisse werden nie zurückgegeben; jeder Schlüssel enthält einen Fingerabdruck (`Qk7v…3xTa`).
+- **Authentifizierung**: Erfordert Admin-Rechte, gültige Sitzung und CSRF-Token
+- **Fehlerantworten**:
+  - `401`: Unautorisiert - Ungültige Sitzung oder CSRF-Token
+  - `403`: Verboten - Admin-Rechte erforderlich
+  - `500`: Interner Serverfehler
+
+### API-Schlüssel erstellen - `/api/api-keys` {#create-api-key---apiapi-keys}
+- **Endpunkt**: `/api/api-keys`
+- **Methode**: POST
+- **Beschreibung**: Erstellt einen bereichsspezifischen API-Schlüssel. Das Klartext-Geheimnis wird nur in dieser Antwort zurückgegeben.
+- **Authentifizierung**: Administratorrechte, gültige Sitzung und CSRF-Token erforderlich
+- **Anforderungstext**:
+
+  ```json
+  {
+    "name": "Duplicati uploads",
+    "scope": "upload",
+    "description": "Optional",
+    "expiresAt": null
+  }
+  ```
+
+- **Fehlerantworten**:
+  - `400`: Fehlender Name oder ungültiger Bereich (`upload` oder `read`)
+  - `401`: Unautorisiert - Ungültige Sitzung oder CSRF-Token
+  - `403`: Verboten - Admin-Rechte erforderlich
+  - `500`: Interner Serverfehler
+
+### API-Schlüssel aktualisieren - `/api/api-keys/:id` {#update-api-key---apiapi-keysid}
+- **Endpunkt**: `/api/api-keys/:id`
+- **Methode**: PATCH
+- **Beschreibung**: Aktiviert oder deaktiviert einen Schlüssel.
+- **Authentifizierung**: Erfordert Admin-Rechte, gültige Sitzung und CSRF-Token
+
+### API-Schlüssel löschen - `/api/api-keys/:id` {#delete-api-key---apiapi-keysid}
+- **Endpunkt**: `/api/api-keys/:id`
+- **Methode**: DELETE
+- **Beschreibung**: Löscht einen Schlüssel. Existierende Clients, die dieses Geheimnis verwenden, verlieren sofort den Zugriff.
+- **Authentifizierung**: Erfordert Admin-Rechte, gültige Sitzung und CSRF-Token
+
 ## Database Management {#database-management}
 
 ### Datenbank sichern - `/api/database/backup` {#backup-database---apidatabasebackup}

@@ -1,6 +1,6 @@
 # Beispiel-Backup-Bericht (Datenbankwerte) {#database-values}
 
-Dieses Dokument enthält ein Beispiel für die JSON-Nutzlast, die von Duplicati gesendet wird, wenn die `--send-http-url`-Option verwendet wird. Es veranschaulicht die Struktur und die Felder, die von duplistatus empfangen und gespeichert werden. Einige Felder können in diesem Beispiel gelöscht oder geschwärzt sein.
+Dieses Dokument enthält ein Beispiel für die JSON-Nutzlast, die von Duplicati gesendet wird, wenn `--send-http-json-urls` verwendet wird (oder die veraltete `--send-http-url` Option mit `--send-http-result-output-format=Json`). Es veranschaulicht die Struktur und Felder, die duplistatus empfängt und persistiert. Einige Felder können in diesem Beispiel gelöscht oder herausgenommen werden.
 
 ```json
 {

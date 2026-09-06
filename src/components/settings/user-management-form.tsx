@@ -1,7 +1,7 @@
 'use client';
 import { useTranslation } from "react-i18next";
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useEffectiveFormatLocale } from '@/contexts/config-context';
+import { useEffectiveFormatLocale, useRelativeTimeLocale } from '@/contexts/config-context';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -66,6 +66,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
   const { t } = useTranslation();
   const { toast } = useToast();
   const effectiveLocale = useEffectiveFormatLocale();
+  const relativeTimeLocale = useRelativeTimeLocale();
   const passwordPolicy = usePasswordPolicy();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
@@ -522,7 +523,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                 >
                   {t("Status")}
                 </SortableTableHead>
-                <TableHead className="text-right bg-muted">{t("Actions")}</TableHead>
+                <TableHead className="bg-muted">{t("Actions")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -545,7 +546,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                       <>
                         <div>{formatDateTime(user.lastLoginAt, effectiveLocale)}</div>
                         <div className="text-xs text-muted-foreground">
-                          {formatRelativeTime(user.lastLoginAt, undefined, effectiveLocale)}
+                          {formatRelativeTime(user.lastLoginAt, undefined, relativeTimeLocale)}
                         </div>
                       </>
                     ) : (
@@ -555,13 +556,13 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                   <TableCell>
                     <div>{formatDateTime(user.updatedAt, effectiveLocale)}</div>
                     <div className="text-xs text-muted-foreground">
-                      {formatRelativeTime(user.updatedAt)}
+                      {formatRelativeTime(user.updatedAt, undefined, relativeTimeLocale)}
                     </div>
                   </TableCell>
                   <TableCell>
                     <div>{formatDateTime(user.createdAt, effectiveLocale)}</div>
                     <div className="text-xs text-muted-foreground">
-                      {formatRelativeTime(user.createdAt)}
+                      {formatRelativeTime(user.createdAt, undefined, relativeTimeLocale)}
                     </div>
                   </TableCell>
                   <TableCell>
@@ -573,8 +574,8 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                       <span className="text-muted-foreground">—</span>
                     )}
                   </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex items-center justify-end gap-2">
+                  <TableCell>
+                    <div className="flex items-center gap-2">
                       <Button
                         variant="ghost"
                         size="icon"
@@ -704,7 +705,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                           <>
                             <div>{formatDateTime(user.lastLoginAt, effectiveLocale)}</div>
                             <div className="text-xs text-muted-foreground">
-                              {formatRelativeTime(user.lastLoginAt, undefined, effectiveLocale)}
+                              {formatRelativeTime(user.lastLoginAt, undefined, relativeTimeLocale)}
                             </div>
                           </>
                         ) : (
@@ -719,7 +720,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                       <div className="text-sm">
                         <div>{formatDateTime(user.updatedAt, effectiveLocale)}</div>
                         <div className="text-xs text-muted-foreground">
-                          {formatRelativeTime(user.updatedAt)}
+                          {formatRelativeTime(user.updatedAt, undefined, relativeTimeLocale)}
                         </div>
                       </div>
                     </div>
@@ -730,7 +731,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                       <div className="text-sm">
                         <div>{formatDateTime(user.createdAt, effectiveLocale)}</div>
                         <div className="text-xs text-muted-foreground">
-                          {formatRelativeTime(user.createdAt, undefined, effectiveLocale)}
+                          {formatRelativeTime(user.createdAt, undefined, relativeTimeLocale)}
                         </div>
                       </div>
                     </div>
@@ -872,7 +873,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
             }} disabled={formLoading}>
               {t("Cancel")}
             </Button>
-            <Button onClick={handleCreate} disabled={formLoading || !isCreateFormValid}>
+            <Button variant="gradient" onClick={handleCreate} disabled={formLoading || !isCreateFormValid}>
               {formLoading ? t("Creating...") : t("Create User")}
             </Button>
           </DialogFooter>
@@ -933,7 +934,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
             }} disabled={formLoading}>
               Cancel
             </Button>
-            <Button onClick={handleUpdate} disabled={formLoading}>
+            <Button variant="gradient" onClick={handleUpdate} disabled={formLoading}>
               {formLoading ? 'Saving...' : 'Save Changes'}
             </Button>
           </DialogFooter>

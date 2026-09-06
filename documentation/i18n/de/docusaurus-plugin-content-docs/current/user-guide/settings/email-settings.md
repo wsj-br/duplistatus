@@ -30,7 +30,7 @@ Wenn die Konfiguration nicht vollständig konfiguriert ist, wird ein gelbes Warn
 |:-----------------------------------------------------------------|:---------------------------------------------------------|
 | <IconButton label="Einstellungen speichern" />                             | Speichern Sie die Änderungen an den NTFY-Einstellungen.              |
 | <IconButton icon="lucide:mail" label="Test-E-Mail senden"/>         | Sendet eine Test-E-Mail mithilfe der SMTP-Konfiguration. Die Test-E-Mail zeigt SMTP-Server-Hostname, Port, Verbindungstyp, Authentifizierungsstatus, Benutzernamen (falls zutreffend), Empfänger-E-Mail, Absenderadresse, Absendername und Test-Zeitstempel an. |
-| <IconButton icon="lucide:trash-2" label="SMTP-Einstellungen löschen"/> | Löschen / Leeren der SMTP-Konfiguration.                   |
+| <IconButton icon="lucide:trash-2" label="SMTP-Einstellungen löschen"/> | SMTP-Konfiguration löschen / zurücksetzen. Deaktiviert, wenn [Tägliche Zusammenfassung](daily-summary-settings.md) aktiviert ist, da dieser Modus E-Mails erfordert. |
 
 <br/>
 

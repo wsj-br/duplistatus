@@ -19,6 +19,8 @@ Stellen Sie sicher, dass Sie über Folgendes verfügen:
 
 Sie können zusätzliche Benutzerkonten in [Einstellungen > Benutzer](../user-guide/settings/user-management-settings.md) nach der ersten Anmeldung erstellen.
 
+Administratoren können optional auch [API-Schlüssel](../user-guide/settings/api-keys-settings.md) für Duplicati und Homepage erfordern und den Zugriff mit [IP-Zulassungslisten](../user-guide/settings/ip-allowlist-settings.md) einschränken. Beide sind standardmäßig aus.
+
 ::::info[WICHTIG]
 Das System erzwingt eine Mindestlänge und Komplexität des Passworts. Diese Anforderungen können mithilfe der Umgebungsvariablen `PWD_ENFORCE` und `PWD_MIN_LEN` [environment variables](environment-variables.md) angepasst werden. Die Verwendung eines Passworts ohne ausreichende Komplexität oder mit kurzer Länge kann die Sicherheit gefährden. Bitte verwenden Sie diese Einstellungen mit Bedacht.
 ::::
@@ -251,9 +253,9 @@ podman pod rm -f duplistatus-pod
 
 ## Wesentliche Konfiguration {#essential-configuration}
 
-1. Konfigurieren Sie Ihre [Duplicati-Server](duplicati-server-configuration.md), um Backup-Log-Nachrichten an duplistatus zu senden (erforderlich).
+1. Konfigurieren Sie Ihre [Duplicati-Server](duplicati-server-configuration.md), um Backup-Protokollnachrichten an duplistatus zu senden (erforderlich). Verwenden Sie ab Duplicati 2.0.9.106 `--send-http-json-urls`, wie in der Anleitung beschrieben.
 2. Melden Sie sich bei duplistatus an – siehe Anweisungen im [Benutzerhandbuch](../user-guide/overview.md#accessing-the-dashboard).
-3. Sammeln Sie anfängliche Backup-Logs – verwenden Sie die Funktion [Backup-Logs sammeln](../user-guide/collect-backup-logs.md), um die Datenbank mit historischen Backup-Daten von all Ihren Duplicati-Servern zu füllen. Dadurch werden auch automatisch die Backup-Überwachungsintervalle basierend auf der Konfiguration jedes Servers aktualisiert.
+3. Sammeln Sie die ersten Backup-Protokolle – verwenden Sie die Funktion [Backup-Protokolle sammeln](../user-guide/collect-backup-logs.md), um die Datenbank mit historischen Backup-Daten aus allen Ihren Duplicati-Servern zu befüllen. Dies aktualisiert auch automatisch die Backup-Überwachungsintervalle basierend auf der Konfiguration jedes Servers.
 4. Konfigurieren Sie die Servereinstellungen – richten Sie Server-Aliase und Notizen in [Einstellungen → Server](../user-guide/settings/server-settings.md) ein, um Ihr Dashboard informativer zu gestalten.
 5. Konfigurieren Sie die NTFY-Einstellungen – richten Sie Benachrichtigungen über NTFY unter [Einstellungen → NTFY](../user-guide/settings/ntfy-settings.md) ein.
 6. Konfigurieren Sie die E-Mail-Einstellungen – richten Sie E-Mail-Benachrichtigungen unter [Einstellungen → E-Mail](../user-guide/settings/email-settings.md) ein.

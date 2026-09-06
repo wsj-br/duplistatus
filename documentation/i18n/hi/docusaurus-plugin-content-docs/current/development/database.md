@@ -21,9 +21,11 @@ duplistatus संस्करणों के बीच डेटाबेस �
 - **Schema v2.0** (Application v0.7.x): लुप्त कॉलम और कॉन्फ़िगरेशन तालिका जोड़ी गई
 - **Schema v3.0** (Application v0.7.x): मशीनें तालिका को सर्वर में पुनर्नामित किया गया, सर्वर _यूआरएल कॉलम जोड़ा गया
 - **Schema v3.1** (Application v0.8.x): बैकअप डेटा फ़ील्डों को बढ़ाया गया, सर्वर_ पासवर्ड कॉलम जोड़ा गया
-- **Schema v4.0** (Application v0.9.x / v1.0.x): उपयोगकर्ता एक्सेस कंट्रोल (उपयोगकर्ता, सत्र, ऑडिट_लॉग तालिकाएँ) जोड़ी गई
+- **Schema v4.0** (Application v0.9.x / v1.0.x): Added User Access Control (users, sessions, audit_log tables)
+- **Schema v4.1** (Application v1.5.x): Added `api_keys` and default configuration keys for optional API-key authentication, IP allowlists, and upload limits
+- **Schema v4.2** (Application v1.5.x): Added `daily_summary_deliveries` ledger and default `daily_summary` configuration for optional daily summary notifications
 
-वर्तमान एप्लिकेशन संस्करण (v1.3.x) **Schema v4.0** को नवीनतम डेटाबेस स्कीमा संस्करण के रूप में उपयोग करता है।
+Vartaman application version (v1.5.x) uses **Schema v4.2** as the latest database schema version.
 
 ### माइग्रेशन प्रक्रिया {#migration-process}
 
@@ -161,7 +163,9 @@ Application ka Sammaan Sammaan ka Sammaan rakhta hai.
 - `ntfy_config`: NTFY Notification Sammaan
 - `overdue_tolerance`: Vilambit Backup Samman Sammaan
 - `notification_templates`: Notification Message Templates
-- `audit_retention_days`: Audit Log Retention Period (Default: 90 din)
+- `daily_summary`: Daily Summary mode, schedule, timezone, and optional NTFY delivery
+- `cron_service`: Cron task schedules, including `daily-summary-dispatch`
+- `audit_retention_days`: Audit log retention period (default: 90 days)
 
 ### डेटाबेस संस्करण तालिका {#database-version-table}
 
@@ -234,6 +238,58 @@ Application ka Sammaan Sammaan ka Sammaan rakhta hai.
 | `status`        | TEXT NOT NULL                     | क्रिया की स्थिति ('सफलता', 'असफलता', 'त्रुटि')                  |
 | `error_message` | TEXT                              | त्रुटि संदेश यदि क्रिया असफल हुई                                    |
 
+### एपीआई कुंजियाँ तालिका {#api-keys-table}
+
+बाहरी एचटीटीपी एपीआई के लिए हैश्ड एपीआई कुंजियाँ संग्रहीत करता है। प्लेनटेक्स्ट सीक्रेट को बनाए जाने पर एक बार ही दिखाया जाता है और कभी भी संग्रहीत नहीं किया जाता।
+
+#### फ़ील्ड {#fields-6}
+
+| फ़ील्ड          | प्रकार             | विवरण                                              |
+|----------------|------------------|----------------------------------------------------------|
+| `id`           | TEXT PRIMARY KEY | अद्वितीय कुंजी पहचानकर्ता                                    |
+| `name`         | TEXT NOT NULL    | प्रदर्शन नाम                                             |
+| `key_hash`     | TEXT UNIQUE      | सीक्रेट का SHA-256 हैश                                   |
+| `key_prefix`   | TEXT             | सीक्रेट के पहले चार अक्षर (फिंगरप्रिंट के लिए)   |
+| `key_suffix`   | TEXT             | सीक्रेट के अंतिम चार अक्षर (फिंगरप्रिंट के लिए)    |
+| `scope`        | TEXT NOT NULL    | `upload` या `read`                                       |
+| `description`  | TEXT             | वैकल्पिक विवरण                                     |
+| `enabled`      | INTEGER          | `1` जब कुंजी सक्रिय है                               |
+| `created_at`   | DATETIME         | निर्माण समय चिन्ह                                       |
+| `created_by`   | TEXT             | कुंजी बनाने वाले व्यवस्थापक का उपयोगकर्ता आईडी         |
+| `expires_at`   | DATETIME         | वैकल्पिक समाप्ति                                          |
+| `last_used_at` | DATETIME         | अंतिम सफल उपयोग                                      |
+| `usage_count`  | INTEGER          | सफल उपयोग गणना                                     |
+
+संबंधित कॉन्फ़िगरेशन कुंजियाँ `configurations` तालिका में: `external_api_require_api_key`, `ip_trusted_proxies`, `admin_ip_allowlist`, `external_api_ip_allowlist`, `upload_limits`।
+
+### Daily Summary Deliveries Table {#daily-summary-deliveries-table}
+
+Per-channel ledger for Daily Summary email and NTFY. Each scheduled occurrence (or unique manual send) has at most one row per channel. Rendered payloads are stored before sending so retries keep the same snapshot. Rows older than 30 days are pruned.
+
+If the process dies after a provider accepts a message but before success is recorded, that channel may be retried (at-least-once).
+
+#### Fields {#fields-7}
+
+| Field              | Type             | Description                                                                 |
+|--------------------|------------------|-----------------------------------------------------------------------------|
+| `id`               | TEXT PRIMARY KEY | Unique delivery identifier                                                  |
+| `occurrence_key`   | TEXT NOT NULL    | Scheduled local date key or `manual:{uuid}`                                 |
+| `channel`          | TEXT NOT NULL    | `email` or `ntfy`                                                           |
+| `trigger`          | TEXT NOT NULL    | `scheduled`, `manual`, or `retry`                                           |
+| `summary_date`     | TEXT NOT NULL    | Local calendar date for the snapshot                                        |
+| `time_zone`        | TEXT NOT NULL    | Saved IANA timezone                                                         |
+| `payload_json`     | TEXT             | Rendered subject, HTML, text, and NTFY fields                               |
+| `state`            | TEXT NOT NULL    | `pending`, `sending`, `sent`, or `failed`                                   |
+| `attempt_count`    | INTEGER          | Delivery attempts                                                           |
+| `next_retry_at`    | DATETIME         | When a failed channel may be claimed again                                  |
+| `lease_expires_at` | DATETIME         | Claim lease; a stale lease can be recovered                                 |
+| `error`            | TEXT             | Last error, if any                                                          |
+| `created_at`       | DATETIME         | Row creation timestamp                                                      |
+| `updated_at`            | DATETIME             | अंतिम अपडेट समय चिह्न               |
+| `sent_at`          | DATETIME         | Safalta ka samay chinh                                                           |
+
+एक अद्वितीय सूचकांक `(occurrence_key, channel)` पर एक ही घटना के समान चैनल पर दोहराव से बचाता है।
+
 ## सत्र प्रबंधन {#session-management}
 
 ### डेटाबेस-सहायता सत्र संचयन {#database-backed-session-storage}
@@ -261,17 +317,19 @@ Application ka Sammaan Sammaan ka Sammaan rakhta hai.
 - **विदेशी कुंजियाँ**: बैकअप तालिका में सर्वर संदर्भ, उपयोक्ता संदर्भ सत्र और ऑडिट लॉग में
 - **क्वेरी अनुकूलन**: अक्सर क्वेरी किए जाने वाले क्षेत्रों पर सूचकांक
 - **तिथि सूचकांक**: समय-आधारित क्वेरी के लिए तिथि क्षेत्रों पर सूचकांक
-- **उपयोक्ता सूचकांक**: तेज़ उपयोक्ता खोज के लिए यूज़रनेम सूचकांक
-- **सत्र सूचकांक**: सत्र प्रबंधन के लिए समय सीमा और उपयोक्ता_आईडी सूचकांक
-- **ऑडिट सूचकांक**: ऑडिट क्वेरी के लिए समय चिह्न, उपयोक्ता_आईडी, क्रिया, श्रेणी, और स्थिति सूचकांक
+- **उपयोगकर्ता इंडेक्स**: उपयोगकर्ता लुकअप के लिए उपयोगकर्ता नाम इंडेक्स
+- **सत्र इंडेक्स**: सत्र प्रबंधन के लिए समाप्ति और उपयोगकर्ता_आईडी इंडेक्स
+- **ऑडिट इंडेक्स**: ऑडिट क्वेरी के लिए समय चिन्ह, उपयोगकर्ता_आईडी, क्रिया, श्रेणी, और स्थिति इंडेक्स
+- **एपीआई कुंजी इंडेक्स**: अद्वितीय हैश, साथ ही सक्रिय/स्कोप लुकअप के लिए प्रमाणीकरण
 
 ## संबंध {#relationships}
 
-- **सर्वर → बैकअप**: एक-से-एकाधिक संबंध
-- **उपयोक्ता → सत्र**: एक-से-एकाधिक संबंध (सत्र उपयोक्ता के बिना भी मौजूद हो सकते हैं)
-- **उपयोक्ता → ऑडिट लॉग**: एक-से-एकाधिक संबंध (ऑडिट प्रविष्टियाँ उपयोक्ता के बिना भी मौजूद हो सकती हैं)
-- **बैकअप → संदेश**: एम्बेडेड JSON एरे
-- **कॉन्फ़िगरेशन**: कुंजी-मूल्य संग्रहण
+- **Server → Backups**: एक-से-एक से अधिक संबंध
+- **Upyogkarta → Sessions**: एक-से-एक से अधिक संबंध (sessions उप्योगकर्ता के बिना भी मौजूद हो सकते हैं)
+- **Upyogkarta → Audit Log**: एक-से-एक से अधिक संबंध (audit entries उप्योगकर्ता के बिना भी मौजूद हो सकते हैं)
+- **Upyogkarta → एपीआई कुंजियाँ**: एक-से-एक से अधिक संबंध `created_by` के माध्यम से (कुंजियाँ उप्योगकर्ता को हटाने के बाद भी मौजूद रहती हैं)
+- **Backups → Sandesh**: Embedded JSON arrays
+- **Configurations**: Key-value storage
 
 ## डेटा प्रकार {#data-types}
 

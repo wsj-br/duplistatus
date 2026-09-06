@@ -1,55 +1,65 @@
 import { NextRequest } from 'next/server';
 
+export const PEER_IP_HEADER = 'x-duplistatus-peer-ip';
+
 /**
- * Extract client IP address from Next.js request
- * Handles various proxy headers and fallbacks
+ * TCP peer address written by scripts/peer-ip.cjs. Empty when the preload
+ * is not wired. Never taken from a client-controlled header.
+ */
+export function getPeerIp(request: NextRequest): string {
+  const raw = request.headers.get(PEER_IP_HEADER);
+  if (!raw) {
+    return '';
+  }
+  return normalizeIpAddress(raw);
+}
+
+export function normalizeIpAddress(address: string): string {
+  const trimmed = address.trim();
+  if (trimmed.startsWith('::ffff:')) {
+    return trimmed.slice('::ffff:'.length);
+  }
+  return trimmed;
+}
+
+export function isLoopbackIp(ip: string): boolean {
+  const normalized = normalizeIpAddress(ip);
+  return normalized === '127.0.0.1' || normalized === '::1' || normalized === 'localhost';
+}
+
+/**
+ * Extract client IP address from Next.js request.
+ * Handles various proxy headers and fallbacks.
+ * Prefer getPeerIp() / resolveClientIp() when the value is used for access control.
  */
 export function getClientIpAddress(request: NextRequest): string {
-  // Try x-forwarded-for first (most common in production)
+  const peer = getPeerIp(request);
+  if (peer) {
+    return peer;
+  }
+
   const forwardedFor = request.headers.get('x-forwarded-for');
   if (forwardedFor) {
-    // x-forwarded-for can contain multiple IPs (client, proxy1, proxy2)
-    // The first IP is usually the original client IP
     const firstIp = forwardedFor.split(',')[0].trim();
     if (firstIp) {
-      return firstIp;
+      return normalizeIpAddress(firstIp);
     }
   }
 
-  // Try x-real-ip (used by some proxies like nginx)
   const realIp = request.headers.get('x-real-ip');
   if (realIp) {
-    return realIp.trim();
+    return normalizeIpAddress(realIp);
   }
 
-  // Try cf-connecting-ip (Cloudflare)
   const cfIp = request.headers.get('cf-connecting-ip');
   if (cfIp) {
-    return cfIp.trim();
+    return normalizeIpAddress(cfIp);
   }
 
-  // Try x-client-ip (some load balancers)
   const clientIp = request.headers.get('x-client-ip');
   if (clientIp) {
-    return clientIp.trim();
+    return normalizeIpAddress(clientIp);
   }
 
-  // Try to get from request.geo (Next.js 13+)
-  // @ts-ignore - geo might not be in types
-  if (request.geo?.ip) {
-    // @ts-ignore
-    return request.geo.ip;
-  }
-
-  // Fallback: try to get from request URL (for development)
-  // In Next.js, we can't directly access the socket, but we can check
-  // if we're in development and use localhost
-  if (process.env.NODE_ENV === 'development') {
-    // In development, if no proxy headers, it's likely localhost
-    return '127.0.0.1';
-  }
-
-  // Last resort: return unknown
   return 'unknown';
 }
-

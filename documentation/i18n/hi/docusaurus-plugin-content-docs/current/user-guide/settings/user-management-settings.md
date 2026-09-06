@@ -61,3 +61,5 @@ Accounts are automatically locked after multiple failed login attempts:
 ## Prabandhak Access {#recovering-admin-access} ko Punah Prapt Karna
 
 Yadi aap apna prabandhak Password kho chuke hain ya aapke account ko Lock Kiya gaya hai, toh aap admin recovery script ka upyog karke access ko punah prapt kar sakte hain. Docker environments mein administrator access ko punah prapt karne ke vistrit nirdeshon ke liye [Admin Account Recovery](../admin-recovery.md) guide dekhein.
+
+यदि ब्राउज़र लॉगिन फॉर्म से पहले **Access denied** (HTTP 403) दिखाता है, तो [आईपी अनुमति सूची द्वारा Lock Kiya गया](../troubleshooting.md#locked-out-by-ip-allowlist) के साथ पुनर्प्राप्त करें।

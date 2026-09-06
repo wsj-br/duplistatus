@@ -6,7 +6,7 @@
 - **Endpoint**: `/api/notifications/test`
 - **Method**: POST
 - **Description**: Send test notifications (simple, template-based, or email) to verify notification configuration.
-- **Authentication**: Requires valid session and CSRF token
+- **Authentication**: Requires administrator session and CSRF token
 - **Request Body**:
   For simple test:
     ```json
@@ -79,11 +79,18 @@
   - Supports simple test messages, template-based notifications, and email tests
   - Template testing uses sample data to replace template variables
   - Includes timestamp in the test message
-  - Validates NTFY URL and topic before sending
-  - Uses `accessToken` field for authentication
+  - NTFY tests use the stored NTFY configuration; a client-supplied NTFY URL is not used
+  - Uses `accessToken` field for authentication when stored
   - For template tests, sends notifications to both NTFY and email (if configured)
   - Email tests require SMTP configuration to be set up
   - The test email endpoint clears the request cache before reading SMTP configuration, ensuring that external scripts can update the configuration and have it immediately reflected in test emails
+  - Template tests and Daily Summary send-now bypass per-backup suppression
+
+## Preview Notification Template - `/api/notifications/preview` {#preview-notification-template---apinotificationspreview}
+- **Endpoint**: `/api/notifications/preview`
+- **Method**: POST
+- **Description**: Renders a notification template with the production Markdown renderer without sending. Body includes `kind` (`success`, `warning`, `overdueBackup`, `dailySummaryEmail`, or `dailySummaryNtfy`) and the template being edited. Daily Summary previews use the current real snapshot; other kinds use deterministic sample values. Email HTML is intended for a sandboxed iframe.
+- **Authentication**: Requires valid session and CSRF token
 
 ## Check Overdue Backups - `/api/notifications/check-overdue` {#check-overdue-backups---apinotificationscheck-overdue}
 - **Endpoint**: `/api/notifications/check-overdue`

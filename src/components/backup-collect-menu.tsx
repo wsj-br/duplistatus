@@ -1050,10 +1050,10 @@ export function BackupCollectMenu({
                     </p>
                     <div className="space-y-1 text-xs text-muted-foreground">
                       <p>
-                        {t("Processed: {{count}} backups", { count: String(stats.processed) })}
+                        {t("Processed: {{count}} backups", { plurals: true, count: stats.processed })}
                       </p>
                       <p>
-                        {t("Skipped: {{count}} duplicates", { count: String(stats.skipped) })}
+                        {t("Skipped: {{count}} duplicates", { plurals: true, count: stats.skipped })}
                       </p>
                       <p>{t("Errors: {{count}}", { count: String(stats.errors) })}</p>
                     </div>
@@ -1080,7 +1080,7 @@ export function BackupCollectMenu({
                         : hasMultipleHostnames
                           ? t(
                               "Extract backup logs from {{count}} servers using the same port and password",
-                              { count: validHostnames.length },
+                              { plurals: true, count: validHostnames.length },
                             )
                           : t(
                               "Extract backup logs and schedule configuration directly from Duplicati server",
@@ -1135,7 +1135,7 @@ export function BackupCollectMenu({
                     {t("Hostname")}
                     {hasMultipleHostnames && (
                       <span className="text-xs text-blue-600 font-medium">
-                        {t("({{count}} servers)", { count: validHostnames.length })}
+                        {t("({{count}} servers)", { plurals: true, count: validHostnames.length })}
                       </span>
                     )}
                     {selectedServerId && selectedServerId !== "new-server" && !password && (
@@ -1257,10 +1257,10 @@ export function BackupCollectMenu({
                         </p>
                         <ul className="list-disc list-inside space-y-1 text-muted-foreground">
                           <li>
-                            {t("Processed: {{count}} backups", { count: String(stats.processed) })}
+                            {t("Processed: {{count}} backups", { plurals: true, count: stats.processed })}
                           </li>
                           <li>
-                            {t("Skipped: {{count}} duplicates", { count: String(stats.skipped) })}
+                            {t("Skipped: {{count}} duplicates", { plurals: true, count: stats.skipped })}
                           </li>
                           <li>{t("Errors: {{count}}", { count: String(stats.errors) })}</li>
                         </ul>
@@ -1277,6 +1277,7 @@ export function BackupCollectMenu({
                   title={
                     hasMultipleHostnames
                       ? t("Collect backup logs from {{count}} servers", {
+                          plurals: true,
                           count: validHostnames.length,
                         })
                       : t("Collect Backup Logs")
@@ -1287,6 +1288,7 @@ export function BackupCollectMenu({
                       <Loader2 className="h-4 w-4 animate-spin mr-2" />
                       {hasMultipleHostnames
                         ? t("Collecting from {{count}} servers...", {
+                            plurals: true,
                             count: validHostnames.length,
                           })
                         : t("Collecting...")}
@@ -1300,7 +1302,7 @@ export function BackupCollectMenu({
                     <>
                       <Download className="h-4 w-4 mr-2" />
                       {hasMultipleHostnames
-                        ? t("Collect from {{count}} Servers", { count: validHostnames.length })
+                        ? t("Collect from {{count}} servers", { plurals: true, count: validHostnames.length })
                         : t("Collect Backups")}
                     </>
                   )}

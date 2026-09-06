@@ -108,9 +108,10 @@ const LogSection = ({ title, items, variant = "messages", expectedLines, t }: {
         <CardDescription>
           {isTruncated ? (
             <div className="text-sm font-normal text-muted-foreground flex items-center gap-2">
-              {t("Showing only first {{count}} of {{total}} messages", {
-                count: items.length,
-                total: expectedLines,
+              {t("Showing only the first {{shown}} of {{count}} messages", {
+                plurals: true,
+                shown: items.length,
+                count: expectedLines,
               })}
               <Tooltip delayDuration={0}>
                 <TooltipTrigger>
@@ -124,7 +125,7 @@ const LogSection = ({ title, items, variant = "messages", expectedLines, t }: {
                 </p>
                 <p className="mt-2">
                   {t(
-                    "If the backup log was received directly from the Duplicati server, ensure you are using the following options: send-http-log-level=Information and send-http-max-log-lines=0 in the Duplicati server configuration.",
+                    "If the backup log was received directly from the Duplicati server, ensure you are using the following options: send-http-log-level=Information and send-http-max-log-lines=500 in the Duplicati server configuration.",
                   )}
                 </p>
                 </TooltipContent>
@@ -132,7 +133,7 @@ const LogSection = ({ title, items, variant = "messages", expectedLines, t }: {
             </div>
           ) : (
             <div className="text-sm font-normal text-muted-foreground">
-              {t("Showing all messages ({{count}})", { count: expectedLines })}
+              {t("Showing all messages ({{count}})", { plurals: true, count: expectedLines })}
             </div>
           )}
         </CardDescription>
@@ -203,14 +204,14 @@ const AvailableBackupsTable = ({ availableBackups, currentBackupDate, t, locale 
           <TableRow className="border-b">
             <TableCell className="w-8 py-1 px-2 text-xs">1</TableCell>
             <TableCell className="py-1 px-2 text-xs">{formatDateTime(currentBackupDate, locale)}</TableCell>
-            <TableCell className="py-1 px-2 text-xs">{formatRelativeTime(currentBackupDate)}</TableCell>
+            <TableCell className="py-1 px-2 text-xs">{formatRelativeTime(currentBackupDate, undefined, locale)}</TableCell>
           </TableRow>
           {/* Additional available versions starting from #2 */}
           {availableBackups.map((timestamp, index) => (
             <TableRow key={index} className="border-b">
               <TableCell className="w-8 py-1 px-2 text-xs">{index + 2}</TableCell>
               <TableCell className="py-1 px-2 text-xs">{formatDateTime(timestamp, locale)}</TableCell>
-              <TableCell className="py-1 px-2 text-xs">{formatRelativeTime(timestamp)}</TableCell>
+              <TableCell className="py-1 px-2 text-xs">{formatRelativeTime(timestamp, undefined, locale)}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -329,7 +330,7 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
                       <span className="font-medium text-muted-foreground">{t("Date:")}</span>
                       <span>{formatDateTime(safeBackup.date, locale)}</span>
                       <span className="text-sm text-muted-foreground">
-                        ({formatRelativeTime(safeBackup.date)})
+                        ({formatRelativeTime(safeBackup.date, undefined, locale)})
                       </span>
                     </div>
                     <div className="flex items-center gap-2">

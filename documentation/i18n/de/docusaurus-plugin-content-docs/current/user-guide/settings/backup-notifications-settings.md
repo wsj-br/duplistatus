@@ -12,6 +12,8 @@ Die Tabelle für Sicherungshinweise ist nach Servern organisiert. Das Anzeigefor
 
 Diese Seite verfügt über eine Automatisches-Speichern-Funktion. Alle Änderungen, die Sie vornehmen, werden automatisch gespeichert.
 
+Wenn **Tägliche Zusammenfassung** aktiviert ist, werden individuelle und zusätzliche Backup-Benachrichtigungen unterdrückt. Die Einstellungen auf dieser Seite werden beibehalten und werden wieder aktiv, wenn die Tägliche Zusammenfassung deaktiviert wird. Siehe [Tägliche Zusammenfassung](daily-summary-settings.md).
+
 <br/>
 
 ## Filter {#filter}

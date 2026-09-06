@@ -14,7 +14,7 @@ This widget displays overall backup statistics on your Homepage dashboard.
     href: http://your-server:9666/
     widget:
       type: customapi
-      url: http://your-server:9666/api/summary
+      url: http://your-server:9666/api/summary?api_key=YOUR_READ_KEY
       display: list
       refreshInterval: 60000
       mappings:
@@ -55,7 +55,7 @@ This widget displays the latest backup information for a specific machine.
     icon: mdi-test-tube
     widget:
       type: customapi
-      url: http://your-server:9666/api/lastbackup/Test%20Machine%201
+      url: http://your-server:9666/api/lastbackup/Test%20Machine%201?api_key=YOUR_READ_KEY
       display: list
       refreshInterval: 60000
       mappings:
@@ -87,4 +87,6 @@ This widget displays the latest backup information for a specific machine.
 - Adjust the `refreshInterval` as needed (in milliseconds).
 - Replace spaces in machine names with `%20` in the URL (e.g., `Test Machine 1` becomes `Test%20Machine%201`).
 - The `scale` values convert bytes to more readable units (GB, MB).
+- Use a **read**-scope API key when [API keys](settings/api-keys-settings.md) are required. Drop `?api_key=` when keys are optional.
+- If the [external API IP allowlist](settings/ip-allowlist-settings.md) is enabled, include the Homepage host.
 

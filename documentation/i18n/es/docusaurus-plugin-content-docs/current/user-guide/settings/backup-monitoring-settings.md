@@ -6,6 +6,8 @@
 
 La lista de servidores en esta página se puede filtrar utilizando el campo de filtro.
 
+Cuando **Resumen Diario** está habilitado, la detección de vencidas continúa pero las notificaciones individuales de vencidas se suprimen. Consulte [Resumen Diario](daily-summary-settings.md).
+
 **Coincidencias de filtro:**
 - ID del servidor
 - URL del servidor

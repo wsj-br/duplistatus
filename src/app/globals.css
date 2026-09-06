@@ -7,6 +7,8 @@ body {
 
 @layer base {
   :root {
+    /* Native form controls (number spinners, scrollbars) follow the app theme, not the OS. */
+    color-scheme: light;
     --background: 0 0% 100%; /* White */
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
@@ -72,6 +74,7 @@ body {
     --transform-rotate: 0deg;
   }
   .dark {
+    color-scheme: dark;
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
     --card: 222.2 84% 4.9%;
@@ -231,6 +234,19 @@ body {
   input[type="tel"],
   input[type="url"] {
     caret-color: auto;
+  }
+
+  /* Hide native number spinners. Chromium paints them with OS chrome that stays
+     light even when the app is in class-based dark mode (color-scheme is not enough). */
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
   }
 
   .no-scrollbar::-webkit-scrollbar {
@@ -746,7 +762,7 @@ body {
 }
 
 .react-datepicker-popper {
-  z-index: 50;
+  z-index: 60;
 }
 
 /* Ensure dark mode applies to portal-rendered datepicker */

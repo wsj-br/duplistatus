@@ -4,7 +4,7 @@
 - **Endpoint**: `/api/notifications/test`
 - **Método**: POST
 - **Descrição**: Envia notificações de teste (simples, baseadas em modelo ou por e-mail) para verificar a configuração de notificações.
-- **Autenticação**: Requer sessão válida e token CSRF
+- **Autenticação**: Requer sessão de administrador e token CSRF
 - **Corpo da Requisição**:
   Para teste simples:
 
@@ -89,11 +89,18 @@ O conteúdo do e-mail de teste exibe:
   - Suporta mensagens de teste simples, notificações baseadas em modelo e testes de e-mail
   - O teste de modelo usa dados de exemplo para substituir as variáveis do modelo
   - Inclui data e hora na mensagem de teste
-  - Valida URL e tópico do NTFY antes do envio
-  - Usa o campo `accessToken` para autenticação
-  - Para testes de modelo, envia notificações para NTFY e e-mail (se configurado)
+  - Testes do NTFY usam a configuração do NTFY armazenada; uma URL do NTFY fornecida pelo cliente não é usada
+  - Usa o campo `accessToken` para autenticação quando armazenado
+  - Para testes de modelo, envia notificações para o NTFY e para o e-mail (se configurado)
   - Testes de e-mail exigem que a configuração SMTP esteja configurada
-  - O endpoint de e-mail de teste limpa o cache de requisição antes de ler a configuração SMTP, garantindo que scripts externos possam atualizar a configuração e que ela seja imediatamente refletida nos e-mails de teste
+  - O endpoint de teste de e-mail limpa o cache da requisição antes de ler a configuração SMTP, garantindo que scripts externos possam atualizar a configuração e ela seja imediatamente refletida nos e-mails de teste
+  - Testes de modelo e Envio Imediato do Resumo Diário ignoram a supressão por backup
+
+## Visualização do Modelo de Notificação - `/api/notifications/preview` {#preview-notification-template---apinotificationspreview}
+- **Endpoint**: `/api/notifications/preview`
+- **Método**: POST
+- **Descrição**: Renderiza um modelo de notificação com o renderizador Markdown de produção sem enviar. O corpo inclui `kind` (`success`, `warning`, `overdueBackup`, `dailySummaryEmail`, ou `dailySummaryNtfy`) e o modelo sendo editado. Visualizações do Resumo Diário usam o snapshot real atual; outros tipos usam valores de amostra determinísticos. O E-mail HTML é destinado a um iframe sandboxed.
+- **Autenticação**: Requer sessão válida e token CSRF
 
 ## Verificar Backups Atrasados - `/api/notifications/check-overdue` {#check-overdue-backups---apinotificationscheck-overdue}
 - **Endpoint**: `/api/notifications/check-overdue`

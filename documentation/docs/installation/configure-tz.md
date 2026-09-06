@@ -2,7 +2,7 @@
 
 # Timezone {#timezone}
 
-The application user interface date and time will be displayed according to the browser's settings. However, for logging and notification purposes, the application will use the value defined in the `TZ` environment variable to format time zones.
+The application user interface date and time will be displayed according to the browser's settings. Logging still uses the `TZ` environment variable. Daily Summary notifications use the IANA timezone saved in [Settings → Daily Summary](../user-guide/settings/daily-summary-settings.md), not `TZ`. Other notification timestamps that are not Daily Summary still follow `TZ`.
 
 The default value is `TZ=Europe/London` if this environment variable is not set.
 
@@ -12,7 +12,7 @@ The language and locale settings (number and date formats) for notifications can
 
 ## Configuring the Timezone {#configuring-the-timezone}
 
-The application user interface date and time will be displayed according to the browser's settings. However, for logging and notification purposes, the application will use the value defined in the `TZ` environment variable to format time zones.
+The application user interface date and time will be displayed according to the browser's settings. Logging still uses the `TZ` environment variable. Daily Summary notifications use the IANA timezone saved in [Settings → Daily Summary](../user-guide/settings/daily-summary-settings.md), not `TZ`. Other notification timestamps that are not Daily Summary still follow `TZ`.
 
 The default value is `TZ=Europe/London` if this environment variable is not set.
 

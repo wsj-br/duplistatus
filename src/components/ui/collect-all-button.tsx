@@ -2,6 +2,7 @@
 import type { TFunction } from "i18next";
 import { useTranslation } from "react-i18next";
 import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { useGlobalRefresh } from '@/contexts/global-refresh-context';
@@ -109,6 +110,7 @@ export function CollectAllButton({
   autoTrigger = false
 }: CollectAllButtonProps) {
   const { t } = useTranslation();
+  const router = useRouter();
   const [isCollecting, setIsCollecting] = useState(false);
   const [collectionProgress, setCollectionProgress] = useState(0);
   const [hasAutoTriggered, setHasAutoTriggered] = useState(false);
@@ -201,10 +203,10 @@ export function CollectAllButton({
       if (summary.failedCollections > 0 && showInstructionToast) {
         const errorDescription = summary.successfulCollections > 0
           ? t(
-              'Check server(s) settings and password and if the server is up and running, then try again. Click "Collect All" to show which server is with error (column Status)',
+              'Check the server settings and password and if the server is up and running, then try again. Click "Collect All" to show which server is with error (column Status)',
             )
           : t(
-              'Check server(s) settings and password and if the server is up and running, then try again. Click "Collect All" to show which server is with error',
+              'Check the server settings and password and if the server is up and running, then try again. Click "Collect All" to show which server is with error',
             );
 
         const instructionToast = toast({
@@ -216,7 +218,7 @@ export function CollectAllButton({
               size="sm"
               onClick={() => {
                 removeToast(instructionToast.id);
-                window.location.href = '/settings?tab=server';
+                router.push('/settings?tab=server');
               }}
               className="underline hover:no-underline"
             >
@@ -267,6 +269,7 @@ export function CollectAllButton({
     dynamicPort, 
     dynamicPassword,
     t,
+    router,
   ]);
 
   // Auto-trigger collection when autoTrigger is true and servers are available

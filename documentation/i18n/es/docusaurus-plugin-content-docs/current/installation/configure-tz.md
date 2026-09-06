@@ -1,6 +1,6 @@
 # Zona horaria {#timezone}
 
-La interfaz de usuario de la aplicación mostrará la fecha y hora según la configuración del navegador. Sin embargo, para propósitos de registro y notificaciones, la aplicación utilizará el valor definido en la variable de entorno `TZ` para formatear zonas horarias.
+La interfaz de usuario de la aplicación mostrará la fecha y hora según la configuración del navegador. El registro sigue usando la variable de entorno `TZ`. Las notificaciones de Resumen Diario usan la zona horaria IANA guardada en [Configuración → Resumen Diario](../user-guide/settings/daily-summary-settings.md), no `TZ`. Las marcas de tiempo de otras notificaciones que no son Resumen Diario siguen `TZ`.
 
 El valor por defecto es `TZ=Europe/London` si esta variable de entorno no está establecida.
 
@@ -10,7 +10,7 @@ La configuración de idioma y configuración regional (formatos de número y fec
 
 ## Configuración de la Zona horaria {#configuring-the-timezone}
 
-La interfaz de usuario de la aplicación mostrará la fecha y hora según la configuración del navegador. Sin embargo, para propósitos de registro y notificaciones, la aplicación utilizará el valor definido en la variable de entorno `TZ` para formatear zonas horarias.
+La interfaz de usuario de la aplicación mostrará la fecha y hora según la configuración del navegador. El registro sigue usando la variable de entorno `TZ`. Las notificaciones de Resumen Diario usan la zona horaria IANA guardada en [Configuración → Resumen Diario](../user-guide/settings/daily-summary-settings.md), no `TZ`. Las marcas de tiempo de otras notificaciones que no son Resumen Diario siguen `TZ`.
 
 El valor por defecto es `TZ=Europe/London` si esta variable de entorno no está establecida.
 

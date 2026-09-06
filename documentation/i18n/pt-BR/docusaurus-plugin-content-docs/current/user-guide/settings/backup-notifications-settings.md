@@ -12,6 +12,8 @@ A tabela de notificações de backup é organizada por servidor. O formato de ex
 
 Esta página possui um recurso de salvamento automático. Todas as alterações que você fizer serão salvas automaticamente.
 
+Quando **Resumo Diário** está habilitado, as notificações de backup individuais e adicionais são suprimidas. As configurações nesta página são preservadas e tornam-se ativas novamente quando o Resumo Diário é desativado. Consulte [Resumo Diário](daily-summary-settings.md).
+
 <br/>
 
 ## Filtro {#filter}

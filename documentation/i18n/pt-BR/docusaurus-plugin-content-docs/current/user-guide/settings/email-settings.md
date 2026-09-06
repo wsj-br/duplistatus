@@ -30,7 +30,7 @@ Quando a configuração não está totalmente configurada, uma caixa de alerta a
 |:-----------------------------------------------------------------|:---------------------------------------------------------|
 | <IconButton label="Salvar Configurações" />                             | Salva as alterações feitas nas configurações do NTFY.              |
 | <IconButton icon="lucide:mail" label="Enviar E-mail de Teste"/>         | Envia uma mensagem de e-mail de teste usando a configuração SMTP. O e-mail de teste exibe o nome do host do servidor SMTP, porta, tipo de conexão, status de autenticação, nome de usuário (se aplicável), e-mail do destinatário, endereço de origem, nome do remetente e carimbo de data/hora do teste. |
-| <IconButton icon="lucide:trash-2" label="Excluir Configurações SMTP"/> | Excluir / Limpar a configuração SMTP.                   |
+| <IconButton icon="lucide:trash-2" label="Excluir Configurações SMTP"/> | Excluir / Limpar a configuração SMTP. Desativado enquanto o [Resumo Diário](daily-summary-settings.md) está habilitado, pois esse modo requer e-mail. |
 
 <br/>
 

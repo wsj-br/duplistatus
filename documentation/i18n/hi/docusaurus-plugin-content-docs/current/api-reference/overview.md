@@ -34,9 +34,11 @@ Sabhi endpoints consistent error handling pattern follow karte hain:
 - **401 Unauthorized**: Invalid ya missing session, expired session, ya CSRF token validation failed
 - **403 Forbidden**: Operation not allowed (e.g., backup deletion in production) ya CSRF token validation failed
 - **404 Not Found**: Resource not found
-- **409 Conflict**: Duplicate data (upload endpoints ke liye)
-- **500 Internal Server Error**: Server-side errors detailed error messages ke saath
-- **503 Service Unavailable**: Health check failures, database connection issues, ya cron service unavailable
+- **409 Conflict**: डुप्लिकेट डेटा (अपलोड एंडपॉइंट्स के लिए)
+- **413 Payload Too Large**: `/api/upload` बॉडी कॉन्फ़िगर्ड साइज़ लिमिट से अधिक है
+- **429 Too Many Requests**: अपलोड, रीड-एपीआई, या ऑथेंटिकेशन-फेल्योर रेट लिमिट पार किया गया है
+- **500 Internal Server Error**: सर्वर-साइड त्रुटियाँ व विस्तृत त्रुटि संदेशों के साथ
+- **503 Service Unavailable**: हेल्थ चेक फेल्योर, डेटाबेस कनेक्शन समस्याएँ, या क्रॉन सेवा अनुपलब्ध
 
 Error responses include:
 - `error`: Human-readable error message

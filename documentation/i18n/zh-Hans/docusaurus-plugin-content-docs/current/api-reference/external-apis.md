@@ -1,6 +1,10 @@
 # 外部API {#external-apis}
 
-这些端点旨在供其他应用程序和集成使用，例如 [首页](../user-guide/homepage-integration.md)。
+这些端点旨在供其他应用程序和集成使用，例如 [主页](../user-guide/homepage-integration.md)。它们不受CSRF保护，也不使用会话cookie。
+
+身份验证是可选的，默认情况下处于关闭状态。当在 [API密钥](../user-guide/settings/api-keys-settings.md) 中启用 **需要API密钥** 时，将密钥作为 `?api_key=`、`X-Api-Key` 或 `Authorization: Bearer` 发送。上传密钥仅适用于 `POST /api/upload`。读取密钥仅适用于 `/api/summary` 和 `/api/lastbackup*`。查询字符串密钥会出现在反向代理访问日志中。
+
+还可以通过 [IP白名单](../user-guide/settings/ip-allowlist-settings.md) 限制这些路由。`/api/health` 和 `/api/ping` 保持开放。
 
 ## 获取总体摘要 - `/api/summary` {#get-overall-summary---apisummary}
 - **端点**: `/api/summary`
@@ -22,14 +26,17 @@
   ```
 
 - **错误响应**:
-  - `500`: 服务器错误，获取摘要数据
-- **注释**:
-  - 在版本 0.5.x 中，字段 `totalBackupedSize` 被替换为 `totalBackupSize`
-  - 在版本 0.7.x 中，字段 `totalMachines` 被替换为 `totalServers`
-  - 字段 `overdueBackupsCount` 显示当前逾期备份的数量
-  - 字段 `secondsSinceLastBackup` 显示自上次备份以来所经过的时间（以秒为单位）
-  - 如果数据获取失败，则返回带有零的回退响应
-  - **注释**: 对于内部仪表盘使用，请考虑使用 `/api/dashboard`，它包含此数据以及其他信息
+  - `401`: 缺少或无效的 API 密钥，当密钥是必需的
+  - `403`: 密钥范围不是 `read`，或者客户端 IP 不在外部允许列表上
+  - `429`: 超出读取-API 速率限制
+  - `500`：获取摘要数据时出现服务器错误
+- **注释**：
+  - 在版本0.5.x中，字段 `totalBackupedSize` 被替换为 `totalBackupSize`
+  - 在版本0.7.x中，字段 `totalMachines` 被替换为 `totalServers`
+  - 字段 `overdueBackupsCount` 显示当前过期备份的数量
+  - 字段 `secondsSinceLastBackup` 显示自上次备份以来的秒数（所有服务器）
+  - 如果数据获取失败，则返回包含零的后备响应
+  - **注释**：对于内部仪表板使用，请考虑使用 `/api/dashboard`，它包含此数据以及其他信息
 
 ## 获取最新备份 - `/api/lastbackup/:serverId` {#get-latest-backup---apilastbackupserverid}
 - **端点**: `/api/lastbackup/:serverId`
@@ -80,13 +87,16 @@
   ```
 
 - **错误响应**:
-  - `404`: 服务器未找到
-  - `500`: 服务器内部错误
-- **注释**:
-  - 在版本 0.7.x 中，响应对象键从 `machine` 更改为 `server`
-  - 服务器标识符可以是 ID 或名称
-  - 如果没有备份，则返回 null 的 latest_backup
-  - 包括缓存控制头以防止缓存
+  - `401`: 缺少或无效的 API 密钥，当密钥是必需的
+  - `403`: 密钥范围不是 `read`，或者客户端 IP 不在外部允许列表中
+  - `404`: 找不到服务器
+  - `429`：读取API速率限制超出
+  - `500`：内部服务器错误
+- **注释**：
+  - 在版本0.7.x中，响应对象键从 `machine` 更改为 `server`
+  - 服务器标识符可以是ID或名称
+  - 如果不存在备份，则返回null作为最新备份
+  - 包含缓存控制标头以防止缓存
 
 ## 获取最新备份 - `/api/lastbackups/:serverId` {#get-latest-backups---apilastbackupsserverid}
 - **端点**: `/api/lastbackups/:serverId`
@@ -163,14 +173,17 @@
   ```
 
 - **错误响应**:
-  - `404`: 服务器未找到
-  - `500`: 服务器内部错误
-- **注释**:
-  - 在版本 0.7.x 中，响应对象键从 `machine` 更改为 `server`，并且字段 `backup_types_count` 被重命名为 `backup_jobs_count`
-  - 服务器标识符可以是 ID 或名称
-  - 返回服务器具有的每个备份作业（backup_name）的最新备份
+  - `401`: 缺少或无效的 API 密钥，当密钥是必需的
+  - `403`: 密钥范围不是 `read`，或者客户端 IP 不在外部允许列表中
+  - `404`: 找不到服务器
+  - `429`：读取API速率限制超出
+  - `500`：内部服务器错误
+- **注释**：
+  - 在版本0.7.x中，响应对象键从 `machine` 更改为 `server`，并且字段 `backup_types_count` 被重命名为 `backup_jobs_count`
+  - 服务器标识符可以是ID或名称
+  - 返回服务器拥有的每个备份作业（backup_name）的最新备份
   - 与 `/api/lastbackup/:serverId` 不同，后者仅返回服务器的单个最新备份（与备份作业无关）
-  - 包括缓存控制头以防止缓存
+  - 包含缓存控制标头以防止缓存
 
 ## 上传备份数据 - `/api/upload` {#upload-backup-data---apiupload}
 - **端点**: `/api/upload`
@@ -179,10 +192,12 @@
 - **请求体**: Duplicati 发送的 JSON，包含以下选项:
 
   ```bash
-  --send-http-url=http://my.local.server:9666/api/upload
-  --send-http-result-output-format=Json
+  --send-http-json-urls=http://my.local.server:9666/api/upload?api_key=YOUR_UPLOAD_KEY
   --send-http-log-level=Information
-  ```
+  --send-http-max-log-lines=500
+```
+
+在 Duplicati 2.0.9.106 之前的版本中，使用 `--send-http-url` 与 `--send-http-result-output-format=Json`。请参阅 [Duplicati 服务器配置](../installation/duplicati-server-configuration.md)。
 
 - **响应**:
 
@@ -193,9 +208,13 @@
   ```
 
 - **错误响应**:
-  - `400`: Extra 或 Data 部分缺少必需字段，或 MainOperation 无效
-  - `409`: 备份数据重复（忽略）
-  - `500`: 处理备份数据时服务器错误
+  - `400`: Extra 或 Data 部分缺少必填字段，或 MainOperation 无效
+  - `401`: 当需要密钥时，缺少或无效的 API 密钥
+  - `403`: 密钥范围不是 `upload`，或客户端 IP 不在外部允许列表上
+  - `409`：重复的备份数据（已忽略）
+  - `413`：请求正文超出配置的上传大小限制（默认5 MB）
+  - `429`：上传或身份验证失败速率限制超出（`Retry-After` 已设置）
+  - `500`：处理备份数据时出现服务器错误
 - **注意**:
   - 只处理备份操作（MainOperation 必须是 "备份"）
   - 验证 Extra 部分的必需字段：machine-id、machine-name、backup-name、backup-id

@@ -4,9 +4,9 @@
 - **Endpoint**: `/api/notifications/test`
 - **Method**: POST
 - **Description**: Suchna configuration ko verify karne ke liye test suchnaayein (sadha, template-based, ya email) bhejein.
-- **Authentication**: Valid session aur CSRF token chahiye
-- **Request Body**:
-  Sadha test ke liye:
+- **प्रमाणीकरण**: व्यवस्थापक सत्र और CSRF टोकन की आवश्यकता होती है
+- **अनुरोध बॉडी**:
+  सरल परीक्षण के लिए:
 
     ```json
     {
@@ -89,11 +89,18 @@ Test email content dikhata hai:
   - Sadha test messages, template-based notifications, aur email tests ko support karta hai
   - Template testing sample data ka use karta hai template variables ko replace karne ke liye
   - Test message mein timestamp shamil hai
-  - Bhejne se pehle NTFY URL aur topic ko validate karta hai
-  - Authentication ke liye `accessToken` field ka use karta hai
-  - Template tests ke liye, notifications ko NTFY aur email (agar configure kiya gaya ho) dono ko bhejein
-  - Email tests ke liye SMTP configuration set up karna zaroori hai
-  - Test email endpoint SMTP configuration padhne se pehle request cache ko clear karta hai, isse external scripts ko configuration update karne aur test emails mein immediately reflect karne ki suvidha deta hai
+  - NTFY परीक्षणों में संग्रहीत NTFY कॉन्फ़िगरेशन का उपयोग किया जाता है; एक क्लाइंट-सप्लाई NTFY URL का उपयोग नहीं किया जाता
+  - संग्रहीत होने पर `accessToken` फ़ील्ड का उपयोग प्रमाणीकरण के लिए किया जाता है
+  - टेम्पलेट परीक्षणों में, दोनों NTFY और ईमेल (यदि कॉन्फ़िगर किया गया हो) को सूचनाएं भेजी जाती हैं
+  - ईमेल परीक्षणों के लिए SMTP कॉन्फ़िगरेशन सेट अप की आवश्यकता होती है
+  - परीक्षण ईमेल एंडपॉइंट SMTP कॉन्फ़िगरेशन को पढ़ने से पहले अनुरोध कैश को साफ़ करता है, जिससे बाहरी स्क्रिप्ट कॉन्फ़िगरेशन को अपडेट कर सकते हैं और इसे परीक्षण ईमेल में तुरंत प्रतिबिंबित किया जा सके
+  - टेम्पलेट परीक्षण और दैनिक सारांश भेजें-अब प्रति-बैकअप दबाव को बायपास करते हैं
+
+## पूर्वावलोकन सूचना टेम्पलेट - `/api/notifications/preview` {#preview-notification-template---apinotificationspreview}
+- **एंडपॉइंट**: `/api/notifications/preview`
+- **विधि**: POST
+- **विवरण**: उत्पादन मार्कडाउन रेंडरर के साथ एक सूचना टेम्पलेट को रेंडर करता है बिना भेजे। बॉडी में `kind` शामिल है (`success`, `warning`, `overdueBackup`, `dailySummaryEmail`, या `dailySummaryNtfy`) और संपादित किया जा रहा टेम्पलेट। दैनिक सारांश पूर्वावलोकन वर्तमान वास्तविक स्नैपशॉट का उपयोग करते हैं; अन्य प्रकार निर्धारित नमूना मानों का उपयोग करते हैं। ईमेल HTML एक सैंडबॉक्स्ड iframe के लिए है।
+- **Authentication**: वैलिड सेशन और CSRF टोकन की आवश्यकता होती है
 
 ## Vilambit Backup Janch Karein - `/api/notifications/check-overdue` {#check-overdue-backups---apinotificationscheck-overdue}
 - **Endpoint**: `/api/notifications/check-overdue`

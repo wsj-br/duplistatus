@@ -70,4 +70,6 @@ Accounts are automatically locked after multiple failed login attempts:
 
 If you've lost your admin password or been locked out of your account, you can recover access using the admin recovery script. See the [Admin Account Recovery](../admin-recovery.md) guide for detailed instructions on recovering administrator access in Docker environments.
 
+If the browser shows **Access denied** (HTTP 403) before the login form, recover with [Locked Out by IP Allowlist](../troubleshooting.md#locked-out-by-ip-allowlist) instead.
+
 

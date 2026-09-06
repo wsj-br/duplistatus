@@ -70,10 +70,15 @@ export function formatTime(dateString: string, locale: string = SOURCE_LOCALE): 
  * @param dateString - ISO date string or SQLite timestamp
  * @param locale - Locale string (default: {@link SOURCE_LOCALE})
  */
-export function formatDateTime(dateString: string, locale: string = SOURCE_LOCALE): string {
+export function formatDateTime(
+  dateString: string,
+  locale: string = SOURCE_LOCALE,
+  timeZone?: string
+): string {
   return formatWithIntl(dateString, locale, {
     dateStyle: 'short',
     timeStyle: 'short',
+    ...(timeZone ? { timeZone } : {}),
   });
 }
 

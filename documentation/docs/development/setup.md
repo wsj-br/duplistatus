@@ -11,6 +11,7 @@
 - Inkscape (for documentation SVG translation and PNG export; required only if you run `translate` or `translate:svg`)
 - bat/batcat (to show a pretty version of the `translate:help`)
 - direnv (to automatically load the `.env*` files)
+- Playwright Chromium (run `pnpm take-screenshots:install` after `pnpm install`; this runs `playwright install chromium`)
 
 
 
@@ -123,7 +124,7 @@ Add these lines to your `~/.profile` file
 The project includes several npm scripts for different development tasks:
 
 ### Development Scripts {#development-scripts}
-- `pnpm dev` - Start development server on port 8666 (includes pre-checks)
+- `pnpm dev` - Start development server on port 8666 (includes pre-checks). `NODE_OPTIONS` loads `scripts/dev-preload.cjs`, which applies `scripts/peer-ip.cjs` (TCP peer address for IP allowlists) and request-log timestamps.
 - `pnpm build` - Build the application for production (includes pre-checks)
 - `pnpm lint` - Run ESLint to check code quality
 - `pnpm typecheck` - Run TypeScript type checking
@@ -152,8 +153,8 @@ The development servers (`start:*`) provide hot module replacement for rapid dev
 
 ### Production Scripts {#production-scripts}
 - `pnpm build-local` - Build and prepare for local production (includes pre-checks, copies static files to standalone directory)
-- `pnpm start-local` - Start production server locally (port 8666, includes pre-checks). **Note:** Run `pnpm build-local` first.
-- `pnpm start` - Start production server (port 9666)
+- `pnpm start-local` - Start production server locally (port 8666, includes pre-checks). **Note:** Run `pnpm build-local` first. Starts the standalone server with `--require ./scripts/peer-ip.cjs`.
+- `pnpm start` - Start production server (port 9666) with the same peer-ip preload. Docker uses `docker-entrypoint.sh` to load the same script.
 
 ### Docker Scripts {#docker-scripts}
 - `pnpm docker:up` - Start Docker Compose stack

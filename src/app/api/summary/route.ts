@@ -1,8 +1,14 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getOverallSummary, dbUtils } from '@/lib/db-utils';
+import { requireReadApiAccess } from '@/lib/api-key-auth';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const denied = await requireReadApiAccess(request);
+    if (denied) {
+      return denied;
+    }
+
     // Get the overall summary from the database using the consolidated function
     const summary = await getOverallSummary();
     

@@ -19,7 +19,10 @@ Utilice la opción `--upload` para enviar los datos generados a `/api/upload`
 
 ```bash
 pnpm generate-test-data --servers=N --upload
+pnpm generate-test-data --servers=N --upload --api-key=YOUR_UPLOAD_KEY
 ```
+
+`--api-key` es obligatorio cuando la Configuración → Claves de API está configurada para requerir claves. El script reintenta una vez en HTTP 429 para que una ejecución grande de `--upload` se mantenga dentro de los límites de velocidad predeterminados.
 
 **Ejemplos:**
 
@@ -33,6 +36,14 @@ pnpm generate-test-data --upload --servers=1
 # Generate data for all 30 servers
 pnpm generate-test-data --servers=30
 ```
+
+El script asigna versiones de Duplicati **por servidor** (la misma cadena de informe se escribe en cada copia de seguridad para ese servidor):
+
+- **70–80% actual**: utiliza la última versión estable en caché disponible de `configurations.duplicati_versions`, de lo contrario, una versión de respaldo fija (`2.1.0.5_stable`).
+- **Restante más antigua**: una versión estable anterior para que la insignia del panel de control se compare como obsoleta (amarilla).
+- El modo Direct-DB borra `configurations` primero, luego restaura o semilla la caché de versiones para que la comparación actual/obsoleta funcione inmediatamente.
+- Pequeñas cantidades no siempre pueden caer en el 70–80%: `--servers=1` es 100% actual; `--servers=2` o `3` mantiene al menos un servidor más antiguo; `--servers=6` es 5 actuales (83%). `--servers=12` (utilizado por `pnpm take-screenshots`) es **9 actuales / 3 más antiguas**.
+- Cuando `pnpm take-screenshots` reduce más tarde el conjunto de datos a tres servidores, mantiene el servidor vencido protegido y **al menos un servidor de versión anterior**.
 
 >[!CAUTION]
 > Este script elimina todos los datos anteriores en la base de datos y los reemplaza con datos de prueba.
@@ -255,3 +266,11 @@ pnpm test-entrypoint
 - Verificar la rotación de registros y la funcionalidad de registro
 - Probar el apagado ordenado y el manejo de señales
 - Depuración del comportamiento del script de entrada en un entorno local
+
+## Validación del Resumen Diario {#daily-summary-validation}
+
+```bash
+pnpm validate-daily-summary
+```
+
+Ejecuta comprobaciones deterministas para la programación del Resumen Diario (incluyendo DST), la agregación de instantáneas, la desinfección de Markdown, las reclamaciones del registro de entrega y la migración del esquema 4.1 → 4.2 con plantillas personalizadas. No envía correo electrónico ni NTFY.

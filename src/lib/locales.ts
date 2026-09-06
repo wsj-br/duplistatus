@@ -53,6 +53,7 @@ export function isSupportedLocale(locale: string): locale is LocaleCode {
 /** Retired locale codes that still appear in cookies or bookmarked paths. */
 const LOCALE_ALIASES: Readonly<Record<string, LocaleCode>> = {
   'hi-latn': 'hi',
+  'zh-cn': 'zh-Hans',
 };
 
 /**

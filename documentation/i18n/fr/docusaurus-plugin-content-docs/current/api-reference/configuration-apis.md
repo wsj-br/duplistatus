@@ -101,9 +101,10 @@
   - `401` : Non autorisé - Session ou jeton CSRF invalide
   - `404` : Aucune configuration SMTP trouvée à supprimer
   - `500` : Échec de la suppression de la configuration SMTP
-- **Notes** :
+- **Notes**:
   - Cette opération supprime définitivement la configuration SMTP
-  - Renvoie un code 404 si aucune configuration n'existe à supprimer
+  - Retourne 404 si aucune configuration n'existe à supprimer
+  - Retourne 400 lorsque le mode de résumé quotidien est activé, car ce mode nécessite SMTP
 
 ## Mettre à jour le mot de passe de messagerie - `/api/configuration/email/password` {#update-email-password---apiconfigurationemailpassword}
 - **Point de terminaison** : `/api/configuration/email/password`
@@ -196,6 +197,18 @@
         "message": "The backup {backup_name} is overdue on {server_name}.",
         "priority": "default",
         "tags": "duplicati, duplistatus, overdue"
+      },
+      "dailySummary": {
+        "email": {
+          "title": "duplistatus — Daily backup summary — {summary_date}",
+          "message": "## Daily backup summary"
+        },
+        "ntfy": {
+          "title": "duplistatus daily summary",
+          "message": "Servers {server_count}, jobs {job_count}",
+          "priority": "default",
+          "tags": "duplicati, duplistatus, daily-summary"
+        }
       }
     },
     "email": {
@@ -436,10 +449,39 @@ Pour la fréquence des notifications :
   - `401` : Non autorisé - Session ou jeton CSRF invalide
   - `400` : les modèles sont requis
   - `500` : Erreur du serveur lors de la mise à jour des modèles de notification
-- **Notes** :
-  - Met à jour les modèles de notification pour différents statuts de sauvegarde
+- **Notes**:
+  - Met à jour les modèles de notification pour différents états de sauvegarde
   - Conserve les paramètres de configuration existants
-  - Les modèles prennent en charge la substitution de variables
+  - Les modèles prennent en charge les corps d'e-mail Markdown et la substitution `{placeholder}`
+  - Un ensemble de modèles `dailySummary` (sujet/objet de l'e-mail et NTFY compact) est requis
+
+## Résumé quotidien - `/api/configuration/daily-summary` {#daily-summary---apiconfigurationdaily-summary}
+- **Endpoint**: `/api/configuration/daily-summary`
+- **Method**: GET, POST
+- **Description**: Lit ou met à jour le mode de résumé quotidien. GET retourne les paramètres nettoyés, l'état du distributeur, la prochaine occurrence et l'état de livraison par chaîne. POST enregistre `enabled`, `localTime` (`HH:mm`), `timeZone` (IANA), et `sendNtfy`. L'activation nécessite un SMTP valide et une tâche `daily-summary-dispatch` en bonne santé. L'activation de NTFY nécessite des paramètres NTFY stockés. Le changement de l'horaire définit la prochaine occurrence **future**.
+- **Authentication**: GET nécessite une session valide et un jeton CSRF. POST nécessite une session d'administrateur et un jeton CSRF.
+- **Réponses d'erreur**:
+  - `400`: Heure/fuseau horaire invalide, SMTP/NTFY manquant ou distributeur non en bonne santé
+  - `401`: Non autorisé
+  - `500`: Échec de la lecture ou de la mise à jour du résumé quotidien
+
+## Envoyer le résumé quotidien - `/api/configuration/daily-summary/send` {#send-daily-summary---apiconfigurationdaily-summarysend}
+- **Endpoint**: `/api/configuration/daily-summary/send`
+- **Method**: POST
+- **Description**: Envoie une capture instantanée de l'état actuel immédiatement. Ne consomme pas la prochaine occurrence planifiée. Utilise le SMTP stocké (et le NTFY stocké lorsque sélectionné). N'accepte pas les adresses de destinataires ou les points de terminaison dans la requête.
+- **Authentication**: Requiert une session d'administrateur et un jeton CSRF
+
+## Réessayer le résumé quotidien - `/api/configuration/daily-summary/retry` {#retry-daily-summary---apiconfigurationdaily-summaryretry}
+- **Endpoint**: `/api/configuration/daily-summary/retry`
+- **Method**: POST
+- **Description**: Réessaie les chaînes ayant échoué à partir de la charge utile persistée. Corps `{ "occurrenceKey": "..." }` optionnel; sinon, réessaie la dernière occurrence ayant échoué.
+- **Authentication**: Requiert une session d'administrateur et un jeton CSRF
+
+## Aperçu du résumé quotidien - `/api/configuration/daily-summary/preview` {#preview-daily-summary---apiconfigurationdaily-summarypreview}
+- **Endpoint**: `/api/configuration/daily-summary/preview`
+- **Method**: POST
+- **Description**: Rendu de la capture actuelle sans envoi et sans écrire les lignes du registre de livraison.
+- **Authentication**: Requiert une session valide et un jeton CSRF
 
 ## Obtenir la tolérance pour les retards - `/api/configuration/overdue-tolerance` {#get-overdue-tolerance---apiconfigurationoverdue-tolerance}
 - **Point de terminaison** : `/api/configuration/overdue-tolerance`
@@ -488,3 +530,28 @@ Pour la fréquence des notifications :
   - Met à jour le paramètre de tolérance de retard (accepte le format de chaîne comme `"1h"`, `"2h"`, etc. ; par défaut pour les nouvelles installations : `2h`)
   - Affecte quand les sauvegardes sont considérées comme étant en retard
   - Utilisé par le vérificateur de sauvegarde en retard
+
+## Sécurité des API externes - `/api/configuration/external-api-security` {#external-api-security---apiconfigurationexternal-api-security}
+- **Point de terminaison** : `/api/configuration/external-api-security`
+- **Méthodes** : GET, PATCH
+- **Description** : Lit ou met à jour si les API externes nécessitent une clé, ainsi que la `/api/upload` taille et les limites de taux.
+- **Authentification** : Nécessite des privilèges d'administrateur, une session valide et un jeton CSRF
+- **Corps PATCH** :
+
+  ```json
+  {
+    "requireApiKey": false,
+    "uploadLimits": {
+      "enabled": true,
+      "maxBytes": 5242880,
+      "perMinute": 20,
+      "perHour": 200
+    }
+  }
+  ```
+
+## Liste d'adresses IP autorisées - `/api/configuration/ip-allowlist` {#ip-allowlist---apiconfigurationip-allowlist}
+- **Point de terminaison** : `/api/configuration/ip-allowlist`
+- **Méthodes** : GET, PATCH
+- **Description** : Lit ou met à jour les proxies de confiance et les listes CIDR d'adresses IP autorisées pour l'administrateur et les API externes. L'activation de la liste d'adresses IP de l'administrateur échoue sauf si l'adresse IP du client actuel est déjà répertoriée (la boucle locale est exemptée).
+- **Authentification**: Nécessite des privilèges d'administrateur, une session valide et un jeton CSRF

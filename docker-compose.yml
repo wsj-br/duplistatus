@@ -16,6 +16,12 @@ services:
       - "9666:9666"
     volumes:
       - duplistatus_data:/app/data
+    # environment:
+    #   IP_TRUSTED_PROXIES: "10.0.0.0/8"
+    #   ADMIN_IP_ALLOWLIST_ENABLED: "false"
+    #   ADMIN_IP_ALLOWLIST: "192.168.1.0/24"
+    #   EXTERNAL_API_IP_ALLOWLIST_ENABLED: "false"
+    #   EXTERNAL_API_IP_ALLOWLIST: "192.168.1.0/24"
     networks:
       - duplistatus_network
 

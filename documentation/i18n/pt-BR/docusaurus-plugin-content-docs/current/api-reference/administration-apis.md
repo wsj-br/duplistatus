@@ -779,6 +779,52 @@ Com erros:
   - A alteração de configuração é registrada no Registro de Auditoria
   - O período de retenção afeta operações de limpeza automáticas e manuais
 
+## Chaves de API {#api-keys}
+
+### Listar chaves de API - `/api/api-keys` {#list-api-keys---apiapi-keys}
+- **Endpoint**: `/api/api-keys`
+- **Method**: GET
+- **Descrição**: Lista todas as chaves de API. Os segredos nunca são retornados; cada chave inclui uma impressão digital (`Qk7v…3xTa`).
+- **Autenticação**: Requer privilégios de administrador, sessão válida e token CSRF
+- **Respostas de erro**:
+  - `401`: Não autorizado - Sessão ou token CSRF inválido
+  - `403`: Proibido - Privilégios de administrador necessários
+  - `500`: Erro interno do servidor
+
+### Criar chave de API - `/api/api-keys` {#create-api-key---apiapi-keys}
+- **Endpoint**: `/api/api-keys`
+- **Method**: POST
+- **Descrição**: Cria uma chave de API com escopo. O segredo em texto simples é retornado apenas nesta resposta.
+- **Autenticação**: Requer privilégios de administrador, sessão válida e token CSRF
+- **Corpo da requisição**:
+
+  ```json
+  {
+    "name": "Duplicati uploads",
+    "scope": "upload",
+    "description": "Optional",
+    "expiresAt": null
+  }
+  ```
+
+- **Respostas de erro**:
+  - `400`: Nome ausente ou escopo inválido (`upload` ou `read`)
+  - `401`: Não autorizado - Sessão ou token CSRF inválido
+  - `403`: Proibido - Privilégios de administrador necessários
+  - `500`: Erro interno do servidor
+
+### Atualizar chave de API - `/api/api-keys/:id` {#update-api-key---apiapi-keysid}
+- **Endpoint**: `/api/api-keys/:id`
+- **Method**: PATCH
+- **Descrição**: Habilita ou desabilita uma chave.
+- **Autenticação**: Requer privilégios de administrador, sessão válida e token CSRF
+
+### Excluir chave de API - `/api/api-keys/:id` {#delete-api-key---apiapi-keysid}
+- **Endpoint**: `/api/api-keys/:id`
+- **Method**: DELETE
+- **Descrição**: Exclui uma chave. Clientes existentes que usam esse segredo perdem imediatamente o acesso.
+- **Autenticação**: Requer privilégios de administrador, sessão válida e token CSRF
+
 ## Gerenciamento de Banco de Dados {#database-management}
 
 ### Fazer Backup do Banco de Dados - `/api/database/backup` {#backup-database---apidatabasebackup}

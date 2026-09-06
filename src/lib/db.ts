@@ -1,7 +1,7 @@
 import Database from 'better-sqlite3';
 import path from 'path';
 import fs from 'fs';
-import { DatabaseMigrator } from './db-migrations';
+import { DatabaseMigrator, DAILY_SUMMARY_DELIVERIES_SCHEMA, LATEST_SCHEMA_VERSION } from './db-migrations';
 import bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
 import { BackupNotificationConfig } from '@/lib/types';
@@ -323,7 +323,7 @@ if (!isNextProductionBuild()) {
     WHERE type='table' AND name IN ('servers', 'backups')
   `).get() as { count: number };
   
-  // If no tables exist, create the complete schema with latest version (4.0)
+  // If no tables exist, create the complete schema with latest version
   // Use a lock to ensure only one process initializes the database
   if (tableCount.count === 0) {
     // Acquire lock before initializing
@@ -350,7 +350,7 @@ if (!isNextProductionBuild()) {
         // Database was initialized by another process
         // Check version to confirm it's at 4.0
         try {
-          const versionCheck = db.prepare('SELECT version FROM db_version WHERE version = ?').get('4.0') as { version: string } | undefined;
+          const versionCheck = db.prepare('SELECT version FROM db_version WHERE version = ?').get(LATEST_SCHEMA_VERSION) as { version: string } | undefined;
           if (versionCheck) {
             isFreshDatabase = true;
             // Silent - another process handled it
@@ -374,11 +374,11 @@ if (!isNextProductionBuild()) {
         
         if (tableCountRecheck.count === 0) {
           isFreshDatabase = true;
-          logWithTimestamp('Initializing new database with latest schema (v4.0)...');
+          logWithTimestamp(`Initializing new database with latest schema (v${LATEST_SCHEMA_VERSION})...`);
     
           // Note: bcrypt and randomBytes are already imported at the top of this file
           
-          // CRITICAL: Create db_version table FIRST and set version to 4.0 IMMEDIATELY
+          // CRITICAL: Create db_version table FIRST and set version to the latest schema IMMEDIATELY
           // This prevents other processes from trying to run migrations while we're initializing
           db.exec(`
             CREATE TABLE IF NOT EXISTS db_version (
@@ -387,8 +387,8 @@ if (!isNextProductionBuild()) {
             );
           `);
           
-          // Set version to 4.0 immediately - this is critical to prevent migrations from running
-          db.prepare('INSERT OR REPLACE INTO db_version (version, applied_at) VALUES (?, CURRENT_TIMESTAMP)').run('4.0');
+          // Set version immediately - this is critical to prevent migrations from running
+          db.prepare('INSERT OR REPLACE INTO db_version (version, applied_at) VALUES (?, CURRENT_TIMESTAMP)').run(LATEST_SCHEMA_VERSION);
           
           db.exec(`
             -- Core application tables (from v3.1)
@@ -540,7 +540,28 @@ if (!isNextProductionBuild()) {
       CREATE INDEX IF NOT EXISTS idx_audit_action ON audit_log(action);
       CREATE INDEX IF NOT EXISTS idx_audit_category ON audit_log(category);
       CREATE INDEX IF NOT EXISTS idx_audit_status ON audit_log(status);
+
+      CREATE TABLE IF NOT EXISTS api_keys (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        key_hash TEXT UNIQUE NOT NULL,
+        key_prefix TEXT NOT NULL,
+        key_suffix TEXT NOT NULL,
+        scope TEXT NOT NULL DEFAULT 'read',
+        description TEXT DEFAULT '',
+        enabled INTEGER NOT NULL DEFAULT 1,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        created_by TEXT,
+        expires_at DATETIME,
+        last_used_at DATETIME,
+        usage_count INTEGER DEFAULT 0,
+        FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_api_keys_key_hash ON api_keys(key_hash);
+      CREATE INDEX IF NOT EXISTS idx_api_keys_enabled ON api_keys(enabled);
     `);
+          db.exec(DAILY_SUMMARY_DELIVERIES_SCHEMA);
           
           // Create admin user with bcrypt hash (use INSERT OR IGNORE to handle race conditions)
           // Even with the lock, there might be edge cases, so use INSERT OR IGNORE
@@ -603,9 +624,9 @@ if (!isNextProductionBuild()) {
               'success',
               'system',
               JSON.stringify({ 
-                schema_version: '4.0',
+                schema_version: LATEST_SCHEMA_VERSION,
                 description: 'New database initialized with full schema',
-                tables_created: ['servers', 'backups', 'configurations', 'users', 'sessions', 'audit_log'],
+                tables_created: ['servers', 'backups', 'configurations', 'users', 'sessions', 'audit_log', 'api_keys', 'daily_summary_deliveries'],
                 admin_user_created: true,
                 default_password: `${defaultAuthConfig.defaultPassword} (must change on first login)`,
                 sessions_note: 'user_id is nullable to support unauthenticated sessions'
@@ -615,13 +636,13 @@ if (!isNextProductionBuild()) {
           
           // Version was already set at the beginning of initialization
           // Just verify it's still set correctly
-          const versionCheck = db.prepare('SELECT version FROM db_version WHERE version = ?').get('4.0') as { version: string } | undefined;
+          const versionCheck = db.prepare('SELECT version FROM db_version WHERE version = ?').get(LATEST_SCHEMA_VERSION) as { version: string } | undefined;
           if (!versionCheck) {
             // Version was somehow lost, set it again
-            db.prepare('INSERT OR REPLACE INTO db_version (version, applied_at) VALUES (?, CURRENT_TIMESTAMP)').run('4.0');
+            db.prepare('INSERT OR REPLACE INTO db_version (version, applied_at) VALUES (?, CURRENT_TIMESTAMP)').run(LATEST_SCHEMA_VERSION);
           }
           
-          logWithTimestamp('Database initialized with schema v4.0');
+          logWithTimestamp(`Database initialized with schema v${LATEST_SCHEMA_VERSION}`);
           if (adminUserCreated) {
             logWithTimestamp(`Admin user created: username="admin", password="${defaultAuthConfig.defaultPassword}" (must change on first login)`);
           }
@@ -635,7 +656,7 @@ if (!isNextProductionBuild()) {
           // Tables were created by another process while we waited for the lock
           // Verify version is set
           try {
-            const versionCheck = db.prepare('SELECT version FROM db_version WHERE version = ?').get('4.0') as { version: string } | undefined;
+            const versionCheck = db.prepare('SELECT version FROM db_version WHERE version = ?').get(LATEST_SCHEMA_VERSION) as { version: string } | undefined;
             if (versionCheck) {
               isFreshDatabase = true;
               // Silent - another process handled it
@@ -741,6 +762,38 @@ async function populateDefaultConfigurations() {
       'notification_frequency', 
       defaultNotificationFrequencyConfig
     );
+
+    db.prepare('INSERT OR IGNORE INTO configurations (key, value) VALUES (?, ?)').run(
+      'external_api_require_api_key',
+      'false'
+    );
+    db.prepare('INSERT OR IGNORE INTO configurations (key, value) VALUES (?, ?)').run(
+      'ip_trusted_proxies',
+      JSON.stringify({ trustProxy: false, trustedProxies: [] })
+    );
+    db.prepare('INSERT OR IGNORE INTO configurations (key, value) VALUES (?, ?)').run(
+      'admin_ip_allowlist',
+      JSON.stringify({ enabled: false, cidrs: ['127.0.0.1', '::1'] })
+    );
+    db.prepare('INSERT OR IGNORE INTO configurations (key, value) VALUES (?, ?)').run(
+      'external_api_ip_allowlist',
+      JSON.stringify({ enabled: false, cidrs: ['127.0.0.1', '::1'] })
+    );
+    db.prepare('INSERT OR IGNORE INTO configurations (key, value) VALUES (?, ?)').run(
+      'upload_limits',
+      JSON.stringify({ enabled: true, maxBytes: 5242880, perMinute: 20, perHour: 200 })
+    );
+
+    db.prepare('INSERT OR IGNORE INTO configurations (key, value) VALUES (?, ?)').run(
+      'daily_summary',
+      JSON.stringify({
+        enabled: false,
+        localTime: '08:00',
+        timeZone: 'UTC',
+        sendNtfy: false,
+        effectiveFromIso: new Date().toISOString(),
+      })
+    );
     
     // Silent - configurations are populated/updated using INSERT OR REPLACE
     // No need to log unless there's an actual change or error
@@ -818,7 +871,7 @@ async function ensureDatabaseInitialized() {
       // Check the actual database version before deciding whether to run migrations
       const currentVersion = migrator.getCurrentVersion();
       
-      if (currentVersion === '4.0') {
+      if (currentVersion === LATEST_SCHEMA_VERSION) {
         // Database is at latest version, no migrations needed
         // Only log if we actually created a fresh database
         if (isFreshDatabase) {
@@ -827,7 +880,7 @@ async function ensureDatabaseInitialized() {
       } else if (isFreshDatabase) {
         // Fresh database but version check failed - shouldn't happen, but skip migrations
       } else {
-        // Database exists but is not at version 4.0, run migrations
+        // Database exists but is not at the latest version, run migrations
         await migrator.runMigrations();
       }
       
@@ -1113,6 +1166,34 @@ function createDbOps() {
     )
     ORDER BY s.name, b.backup_name
   `, 'getAllLatestBackups'),
+
+  getLatestBackupResultsForSummary: safePrepare(`
+    SELECT
+      b.id AS last_backup_id,
+      b.server_id AS server_id,
+      b.backup_name AS backup_name,
+      b.date AS last_backup_date,
+      b.status AS last_backup_status,
+      b.duration_seconds AS duration_seconds,
+      COALESCE(b.uploaded_size, 0) AS uploaded_size,
+      COALESCE(b.size, 0) AS source_size,
+      COALESCE(b.known_file_size, 0) AS storage_size,
+      COALESCE(b.examined_files, 0) AS examined_files,
+      COALESCE(b.warnings, 0) AS warnings,
+      COALESCE(b.errors, 0) AS errors,
+      s.name AS server_name,
+      s.alias AS server_alias,
+      s.note AS server_note,
+      s.server_url AS server_url
+    FROM backups b
+    JOIN servers s ON s.id = b.server_id
+    WHERE (b.server_id, b.backup_name, b.date) IN (
+      SELECT server_id, backup_name, MAX(date) AS max_date
+      FROM backups
+      GROUP BY server_id, backup_name
+    )
+    ORDER BY s.name, b.backup_name
+  `, 'getLatestBackupResultsForSummary'),
 
   getServerBackups: safePrepare(`
     SELECT 
@@ -1672,6 +1753,80 @@ function createDbOps() {
     WHERE status IS NOT NULL AND status != ''
     ORDER BY status
   `, 'getUniqueAuditStatuses'),
+
+  getAllApiKeys: safePrepare(`
+    SELECT id, name, key_hash, key_prefix, key_suffix, scope, description, enabled,
+           created_at, created_by, expires_at, last_used_at, usage_count
+    FROM api_keys
+    ORDER BY created_at DESC
+  `, 'getAllApiKeys'),
+
+  getApiKeyById: safePrepare(`
+    SELECT id, name, key_hash, key_prefix, key_suffix, scope, description, enabled,
+           created_at, created_by, expires_at, last_used_at, usage_count
+    FROM api_keys
+    WHERE id = ?
+  `, 'getApiKeyById'),
+
+  getApiKeyByHash: safePrepare(`
+    SELECT id, name, key_hash, key_prefix, key_suffix, scope, description, enabled,
+           created_at, created_by, expires_at, last_used_at, usage_count
+    FROM api_keys
+    WHERE key_hash = ?
+  `, 'getApiKeyByHash'),
+
+  insertApiKey: safePrepare(`
+    INSERT INTO api_keys (
+      id, name, key_hash, key_prefix, key_suffix, scope, description, enabled, created_by, expires_at
+    ) VALUES (
+      @id, @name, @key_hash, @key_prefix, @key_suffix, @scope, @description, @enabled, @created_by, @expires_at
+    )
+  `, 'insertApiKey'),
+
+  updateApiKey: safePrepare(`
+    UPDATE api_keys
+    SET name = COALESCE(@name, name),
+        description = COALESCE(@description, description),
+        enabled = COALESCE(@enabled, enabled)
+    WHERE id = @id
+  `, 'updateApiKey'),
+
+  deleteApiKey: safePrepare(`
+    DELETE FROM api_keys WHERE id = ?
+  `, 'deleteApiKey'),
+
+  touchApiKey: safePrepare(`
+    UPDATE api_keys
+    SET last_used_at = CURRENT_TIMESTAMP,
+        usage_count = usage_count + 1
+    WHERE id = ?
+  `, 'touchApiKey'),
+
+  getRecentUploadIps: safePrepare(`
+    SELECT ip_address as ip, COUNT(*) as count, MAX(timestamp) as lastSeen
+    FROM audit_log
+    WHERE action = 'backup_upload' AND ip_address IS NOT NULL AND ip_address != ''
+    GROUP BY ip_address
+    ORDER BY lastSeen DESC
+    LIMIT 10
+  `, 'getRecentUploadIps'),
+
+  getRecentAdminLoginIps: safePrepare(`
+    SELECT ip_address as ip, COUNT(*) as count, MAX(timestamp) as lastSeen
+    FROM audit_log
+    WHERE action = 'login' AND category = 'auth' AND status = 'success'
+      AND ip_address IS NOT NULL AND ip_address != ''
+    GROUP BY ip_address
+    ORDER BY lastSeen DESC
+    LIMIT 10
+  `, 'getRecentAdminLoginIps'),
+
+  countEnabledApiKeysByScope: safePrepare(`
+    SELECT scope, COUNT(*) as count
+    FROM api_keys
+    WHERE enabled = 1 AND (expires_at IS NULL OR expires_at > CURRENT_TIMESTAMP)
+    GROUP BY scope
+  `, 'countEnabledApiKeysByScope'),
 
   };
 }

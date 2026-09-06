@@ -12,6 +12,8 @@ The backup notifications table is organised by server. The display format depend
 
 This page has an auto-save feature. Any changes you make will be saved automatically.
 
+जब **दैनिक सारांश** सक्शम किया गया है, तो व्यक्तिगत और अतिरिक्त बैकअप सूचनाएं दबाई जाती हैं। इस पृष्ठ पर रखे गए सेटिंग्स संरक्षित रहती हैं और फिर से सक्रिय हो जाती हैं जब दैनिक सारांश बंद किया जाता है। [दैनिक सारांश](daily-summary-settings.md) देखें।
+
 <br/>
 
 ## Filter {#filter}

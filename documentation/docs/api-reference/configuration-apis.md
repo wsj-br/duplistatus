@@ -96,6 +96,7 @@
 - **Notes**:
   - This operation permanently removes the SMTP configuration
   - Returns 404 if no configuration exists to delete
+  - Returns 400 while Daily Summary mode is enabled, because that mode requires SMTP
 
 ## Update Email Password - `/api/configuration/email/password` {#update-email-password---apiconfigurationemailpassword}
 - **Endpoint**: `/api/configuration/email/password`
@@ -181,6 +182,18 @@
         "message": "The backup {backup_name} is overdue on {server_name}.",
         "priority": "default",
         "tags": "duplicati, duplistatus, overdue"
+      },
+      "dailySummary": {
+        "email": {
+          "title": "duplistatus — Daily backup summary — {summary_date}",
+          "message": "## Daily backup summary"
+        },
+        "ntfy": {
+          "title": "duplistatus daily summary",
+          "message": "Servers {server_count}, jobs {job_count}",
+          "priority": "default",
+          "tags": "duplicati, duplistatus, daily-summary"
+        }
       }
     },
     "email": {
@@ -404,7 +417,36 @@
 - **Notes**:
   - Updates notification templates for different backup statuses
   - Preserves existing configuration settings
-  - Templates support variable substitution
+  - Templates support Markdown email bodies and `{placeholder}` substitution
+  - A `dailySummary` template set (email subject/body and compact NTFY) is required
+
+## Daily Summary - `/api/configuration/daily-summary` {#daily-summary---apiconfigurationdaily-summary}
+- **Endpoint**: `/api/configuration/daily-summary`
+- **Method**: GET, POST
+- **Description**: Reads or updates Daily Summary mode. GET returns sanitized settings, dispatcher health, next occurrence, and per-channel delivery status. POST saves `enabled`, `localTime` (`HH:mm`), `timeZone` (IANA), and `sendNtfy`. Enabling requires valid SMTP and a healthy `daily-summary-dispatch` task. Enabling NTFY requires stored NTFY settings. Changing the schedule sets the next **future** occurrence.
+- **Authentication**: GET requires a valid session and CSRF token. POST requires an administrator session and CSRF token.
+- **Error Responses**:
+  - `400`: Invalid time/timezone, missing SMTP/NTFY, or dispatcher not healthy
+  - `401`: Unauthorized
+  - `500`: Failed to read or update Daily Summary
+
+## Send Daily Summary - `/api/configuration/daily-summary/send` {#send-daily-summary---apiconfigurationdaily-summarysend}
+- **Endpoint**: `/api/configuration/daily-summary/send`
+- **Method**: POST
+- **Description**: Sends an extra current-status snapshot immediately. Does not consume the next scheduled occurrence. Uses stored SMTP (and stored NTFY when selected). Does not accept recipient addresses or endpoints in the request.
+- **Authentication**: Requires administrator session and CSRF token
+
+## Retry Daily Summary - `/api/configuration/daily-summary/retry` {#retry-daily-summary---apiconfigurationdaily-summaryretry}
+- **Endpoint**: `/api/configuration/daily-summary/retry`
+- **Method**: POST
+- **Description**: Retries failed channels from the persisted payload. Optional body `{ "occurrenceKey": "..." }`; otherwise retries the latest failed occurrence.
+- **Authentication**: Requires administrator session and CSRF token
+
+## Preview Daily Summary - `/api/configuration/daily-summary/preview` {#preview-daily-summary---apiconfigurationdaily-summarypreview}
+- **Endpoint**: `/api/configuration/daily-summary/preview`
+- **Method**: POST
+- **Description**: Renders the current snapshot without sending and without writing delivery-ledger rows.
+- **Authentication**: Requires valid session and CSRF token
 
 ## Get Overdue Tolerance - `/api/configuration/overdue-tolerance` {#get-overdue-tolerance---apiconfigurationoverdue-tolerance}
 - **Endpoint**: `/api/configuration/overdue-tolerance`
@@ -447,3 +489,27 @@
   - Updates the overdue tolerance setting (accepts string format like `"1h"`, `"2h"`, etc.; default for new installs is `2h`)
   - Affects when backups are considered overdue
   - Used by the overdue backup checker
+
+## External API Security - `/api/configuration/external-api-security` {#external-api-security---apiconfigurationexternal-api-security}
+- **Endpoint**: `/api/configuration/external-api-security`
+- **Methods**: GET, PATCH
+- **Description**: Reads or updates whether external APIs require a key, plus the `/api/upload` size and rate limits.
+- **Authentication**: Requires admin privileges, valid session and CSRF token
+- **PATCH body**:
+  ```json
+  {
+    "requireApiKey": false,
+    "uploadLimits": {
+      "enabled": true,
+      "maxBytes": 5242880,
+      "perMinute": 20,
+      "perHour": 200
+    }
+  }
+  ```
+
+## IP Allowlist - `/api/configuration/ip-allowlist` {#ip-allowlist---apiconfigurationip-allowlist}
+- **Endpoint**: `/api/configuration/ip-allowlist`
+- **Methods**: GET, PATCH
+- **Description**: Reads or updates trusted proxies and the admin / external-API CIDR allowlists. Enabling the admin list fails unless the current client IP is already listed (loopback is exempt).
+- **Authentication**: Requires admin privileges, valid session and CSRF token

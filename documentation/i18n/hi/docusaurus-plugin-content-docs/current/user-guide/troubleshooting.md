@@ -21,9 +21,14 @@
 
 Agar aapko Duplicati server warnings jaise `HTTP Response request failed for:` aur `Failed to send message: System.Net.Http.HttpRequestException:` dikh rahe hain, aur new backups dashboard ya backup itihas mein nahi dikh rahe hain:
 
-- **Duplicati Configuration Check Karein**: Janch karein ki Duplicati sahi se configure ki gayi hai **duplistatus** ke liye data bhejne ke liye. Duplicati mein HTTP URL settings verify karein.
-- **Network Connectivity Check Karein**: Janch karein ki Duplicati server **duplistatus** server se connect ho sakta hai. Janch karein ki port sahi hai (default: `9666`).
-- **Duplicati Logs Review Karein**: Duplicati logs mein HTTP request errors ke liye check karein.
+- **Duplicati configuration की जाँच करें**: सुनिश्चित करें कि Duplicati सही ढंग से कॉन्फ़िगर किया गया है ताकि यह **duplistatus** को JSON भेज सके। Duplicati 2.0.9.106 और बाद के संस्करणों पर, `--send-http-json-urls` का उपयोग करें जो `/api/upload` पर इंगित करता है। पुराने Duplicati पर, `--send-http-url` का उपयोग करें जिसमें `--send-http-result-output-format=Json` शामिल है। [Duplicati Server Configuration](../installation/duplicati-server-configuration.md) देखें।
+- **नेटवर्क कनेक्टिविटी की जाँच करें**: सुनिश्चित करें कि Duplicati सर्वर **duplistatus** सर्वर से कनेक्ट हो सकता है। पोर्ट सही है या नहीं (डिफ़ॉल्ट: `9666`) की पुष्टि करें।
+- **HTTP 401**: API कुंजियाँ आवश्यक हैं और अपलोड URL में एक वैध अपलोड-स्कोप कुंजी नहीं है। [API Keys](settings/api-keys-settings.md) में वर्णित अनुसार `?api_key=` जोड़ें।
+- **HTTP 403**: कुंजी स्कोप गलत है (एक रीड कुंजी अपलोड नहीं कर सकती), या Duplicati होस्ट [बाहरी API आईपी अनुमति सूची](settings/ip-allowlist-settings.md) पर नहीं है।
+- **HTTP 413**: JSON रिपोर्ट अपलोड साइज़ लिमिट से बड़ी है (डिफ़ॉल्ट 5 MB)। `--send-http-max-log-lines` कम करें या सेटिंग्स → API Keys में लिमिट बढ़ाएं।
+- **HTTP 429**: आईपी प्रति अपलोड दर सीमा पार हो गई। `Retry-After` के लिए प्रतीक्षा करें, या यदि कई जॉब एक साथ समाप्त होते हैं तो लिमिट बढ़ाएं।
+- **Duplicati लॉग्स की समीक्षा करें**: Duplicati लॉग्स में HTTP रिक्वेस्ट त्रुटियों की जाँच करें।
+- **डबल रिपोर्टिंग**: यदि आप [Duplicati Monitoring](https://www.duplicati-monitoring.com/) को फॉर्म रिपोर्ट भी भेजते हैं, तो उस सेवा से एक विफलता या HTTP 500 **duplistatus** को JSON रिपोर्ट भेजने से रोक सकता है। फॉर्म URLs पहले भेजी जाती हैं। [Reporting to duplistatus and Duplicati Monitoring](../installation/duplicati-server-configuration.md#reporting-to-duplistatus-and-duplicati-monitoring) देखें।
 
 ### Dashboard par Duplicate Servers {#duplicate-servers-on-the-dashboard}
 
@@ -54,7 +59,7 @@ Agar notifications bheje ja rahe hain ya received nahi ho rahe hain:
 
 Agar backup versions dashboard ya details page par nahi dikh rahe hain:
 
-- **Duplicati configuration जाँच करें**: सुनिश्चित करें कि `send-http-log-level=Information` और `send-http-max-log-lines=0` Duplicati के उन्नत विकल्पों में कॉन्फ़िगर किए गए हैं।
+- **Duplicati configuration जाँच करें**: सुनिश्चित करें कि `send-http-log-level=Information` और `send-http-max-log-lines=500` ड्युप्लिकेटी के उन्नत विकल्पों में कॉन्फ़िगर किए गए हैं। ड्युप्लिकेटी पहले N लॉग लाइनों को रखता है। अगर संस्करण सूची अभी भी गायब है, तो कैप बढ़ाएं या ड्युप्लिकेटी मॉनिटरिंग को रिपोर्ट नहीं भेज रहे हैं तो `0` का उपयोग करें। संस्करण **गिनती** अभी भी JSON सांख्यिकी से दिखाई दे सकती है जब विस्तृत सूची गायब है। [Log lines and available versions](../installation/duplicati-server-configuration.md#log-lines-and-available-versions) देखें।
 
 ### विलंबित बैकअप अलर्ट्स काम नहीं कर रहे {#overdue-backup-alerts-not-working}
 
@@ -92,10 +97,50 @@ Agar backup versions dashboard ya details page par nahi dikh rahe hain:
 
 ### एडमिन पासवर्ड खो गया या लॉक आ गया {#lost-admin-password-or-locked-out}
 
-यदि आपने अपना प्रशासक पासवर्ड खो दिया है या अपने खाते से लॉक आ गए हैं:
+Agar aapne apne administrator password ko gaya hai ya apne account se lock ho gaye hain (aap abhi bhi `/login` khol sakte hain):
 
 - **एडमिन रिकवरी स्क्रिप्ट का उपयोग करें**: Docker वातावरण में प्रशासक एक्सेस को पुनर्प्राप्त करने के लिए निर्देशों के लिए [एडमिन खाता पुनर्प्राप्ति](admin-recovery.md) गाइड देखें।
 - **कंटेनर एक्सेस की पुष्टि करें**: सुनिश्चित करें कि आप कंटेनर में रिकवरी स्क्रिप्ट चलाने के लिए Docker exec एक्सेस है।
+
+Agar login se pehle browser **Access denied** (HTTP 403) dikhata hai, toh yeh ek [IP allowlist lockout](#locked-out-by-ip-allowlist) hai, na ki bhula gaya password. Admin-recovery script isse bypass nahi kar sakta.
+
+### IP Allowlist se Locked Out {#locked-out-by-ip-allowlist}
+
+Agar Sammaan → [IP Allowlist](settings/ip-allowlist-settings.md) CIDR ke bina ya galat CIDR ke saath Saksham kiya gaya hai, toh proxy authentication se pehle request ko reject kar deta hai. Typicall symptoms:
+
+- Pages (`/`, `/login`, `/settings`, …) plain-text **Access denied** (HTTP 403) dikhate hain.
+- Session aur admin APIs JSON `{ "errorCode": "IP_NOT_ALLOWED" }` dikhate hain.
+- `/api/health` aur `/api/ping` abhi bhi respond karte hain (unhe exempt kiya gaya hai). Login cookies madad nahi karte.
+
+Save path isse rokne ki koshish karti hai: aap **admin** list ko enable nahi kar sakte jab tak aapka current IP CIDRs mein nahi hai (loopback se save karne ke alawa). Aap apne aap ko lock kar sakte hain CIDR ke saath jo abhi match karta hai lekin baad mein nahi (VPN, DHCP, another network), trusted proxies ko galat configuration karne se, ya `127.0.0.1` / `::1` se list ko enable karne ke baad us address ko add karne se.
+
+Environment variables database ko override karte hain, isliye aap UI ke bina recover kar sakte hain. Ye Settings ko rewrite nahi karte; restart ki zaroorat hai taaki process unhe pick up kar sake.
+
+**Admin list ko disable karein** (usual recovery):
+
+```bash
+ADMIN_IP_ALLOWLIST_ENABLED=false
+```
+
+**Ya isse enable rakhein aur apne current IP ko include karne wala CIDR inject karein:**
+
+```bash
+ADMIN_IP_ALLOWLIST=203.0.113.10/32
+```
+
+Phir application ko restart karein:
+
+- **Docker Compose**: `docker-compose.yml` mein `environment` ke same keys ko set karein (file mein commented examples shamil hain) aur app container ko recreate karein. `docker exec` running container ke environment variables ko change nahi karta.
+- **Local / systemd**: service environment mein variable ko export karein aur Next.js process ko restart karein (cron service ke alawa).
+
+Jab tak aap UI ko phir se khol sakte hain:
+
+1. Log in karein aur CIDRs aur trusted proxies ko Sammaan → IP Allowlist mein fix karein.
+2. Environment override ko remove karein taaki Settings phir se truth ka source ban sake.
+
+The **external API** allowlist (`/api/upload`, `/api/summary`, `/api/lastbackup*`) dashboard ko lock nahi karta. Isse `EXTERNAL_API_IP_ALLOWLIST_ENABLED=false` ya `EXTERNAL_API_IP_ALLOWLIST` ke saath same tareeke se recover karein. Agar aapne us list ko enable karne ke baad Duplicati uploads HTTP 403 ke saath fail ho rahi hain, toh [New Backups Not Showing](#new-backups-not-showing) dekhiye. Trusted-proxy recovery `IP_TRUSTED_PROXIES` ka use karta hai (non-empty value ka matlab bhi trust-proxy hai).
+
+See [IP Allowlist](settings/ip-allowlist-settings.md#environment-overrides) aur [Environment Variables](../installation/environment-variables.md).
 
 ### डेटाबेस बैकअप और माइग्रेशन {#database-backup-and-migration}
 

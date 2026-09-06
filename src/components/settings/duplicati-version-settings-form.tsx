@@ -11,7 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { ColoredIcon } from '@/components/ui/colored-icon';
 import { useToast } from '@/components/ui/use-toast';
 import { Checkbox } from '@/components/ui/checkbox';
-import { useConfig, useEffectiveFormatLocale } from '@/contexts/config-context';
+import { useConfig, useEffectiveFormatLocale, useRelativeTimeLocale } from '@/contexts/config-context';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { cronClient } from '@/lib/cron-client';
 import { formatDateTime } from '@/lib/date-format';
@@ -79,6 +79,7 @@ export function DuplicatiVersionSettingsForm({ isAdmin }: DuplicatiVersionSettin
   const { toast } = useToast();
   const { showDashboardVersion, setShowDashboardVersion } = useConfig();
   const effectiveLocale = useEffectiveFormatLocale();
+  const relativeTimeLocale = useRelativeTimeLocale();
   const [loading, setLoading] = useState(true);
   const [cache, setCache] = useState<DuplicatiVersionCache | null>(null);
   const [interval, setInterval] = useState<DuplicatiVersionCheckInterval>('daily');
@@ -270,7 +271,7 @@ export function DuplicatiVersionSettingsForm({ isAdmin }: DuplicatiVersionSettin
                 {cache?.updatedAt
                   ? t('Last update: {{time}} ({{relative}})', {
                       time: formatDateTime(cache.updatedAt, effectiveLocale),
-                      relative: formatRelativeTime(cache.updatedAt, undefined, effectiveLocale),
+                      relative: formatRelativeTime(cache.updatedAt, undefined, relativeTimeLocale),
                     })
                   : t('The version cache has never been updated.')}
               </p>

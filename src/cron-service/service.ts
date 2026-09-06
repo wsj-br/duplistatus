@@ -1,13 +1,31 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import * as cron from 'node-cron';
 import { checkOverdueBackups } from '@/lib/overdue-backup-checker';
 import { AuditLogger } from '@/lib/audit-logger';
-import { getConfiguration } from '@/lib/db-utils';
-import { CronServiceStatus, TaskExecutionResult, CronServiceConfig, OverdueBackupCheckResult } from '@/lib/types';
+import { getConfiguration, clearRequestCache } from '@/lib/db-utils';
+import { CronServiceStatus, TaskExecutionResult, CronServiceConfig, DAILY_SUMMARY_DISPATCH_TASK } from '@/lib/types';
 import { getCronConfig } from '@/lib/db-utils';
 import { refreshDuplicatiVersions } from '@/lib/duplicati-version-service';
+import { dispatchScheduledDailySummary } from '@/lib/daily-summary';
 
 const timestamp = () => new Date().toLocaleString(undefined, { hour12: false, timeZoneName: 'short' }).replace(',', '');
+
+const KNOWN_TASKS = [
+  'overdue-backup-check',
+  'audit-log-cleanup',
+  'duplicati-version-refresh',
+  DAILY_SUMMARY_DISPATCH_TASK,
+] as const;
+
+type KnownTaskName = (typeof KNOWN_TASKS)[number];
+
+function isKnownTaskName(taskName: string): taskName is KnownTaskName {
+  return (KNOWN_TASKS as readonly string[]).includes(taskName);
+}
+
+function isLoopbackHost(host: string): boolean {
+  return host === '127.0.0.1' || host === '::1' || host === 'localhost';
+}
 
 class CronService {
   private app = express();
@@ -15,27 +33,54 @@ class CronService {
   private lastRunTimes: Record<string, string> = {};
   private errors: Record<string, string> = {};
   private config: CronServiceConfig;
+  private bindHost: string;
+  private serviceSecret: string | undefined;
 
   constructor(config: CronServiceConfig) {
     this.config = config;
+    this.bindHost = process.env.CRON_BIND_HOST || '127.0.0.1';
+    this.serviceSecret = process.env.CRON_SERVICE_SECRET;
+    if (!isLoopbackHost(this.bindHost) && !this.serviceSecret) {
+      throw new Error('CRON_SERVICE_SECRET is required when the cron service is not bound to a loopback address');
+    }
     this.setupExpress();
     this.setupTasks();
   }
 
+  private authorize(req: Request, res: Response, next: NextFunction): void {
+    if (!this.serviceSecret) {
+      next();
+      return;
+    }
+    const provided = req.header('x-cron-service-secret');
+    if (provided !== this.serviceSecret) {
+      res.status(401).json({ error: 'Unauthorized' });
+      return;
+    }
+    next();
+  }
 
   private setupExpress() {
-
     this.app.use(express.json());
 
-    // Health check endpoint
     this.app.get('/health', (req: Request, res: Response) => {
+      if (this.serviceSecret) {
+        const provided = req.header('x-cron-service-secret');
+        if (provided && provided !== this.serviceSecret) {
+          res.status(401).json({ error: 'Unauthorized' });
+          return;
+        }
+      }
       console.log(`[CronService] ${timestamp()}: Health check requested`);
       res.json(this.getStatus());
     });
 
-    // Trigger task manually endpoint
-    this.app.post('/trigger/:taskName', async (req: Request, res: Response) => {
+    this.app.post('/trigger/:taskName', this.authorize.bind(this), async (req: Request, res: Response) => {
       const taskName = Array.isArray(req.params.taskName) ? req.params.taskName[0] : req.params.taskName;
+      if (taskName === DAILY_SUMMARY_DISPATCH_TASK) {
+        res.status(403).json({ error: 'This task cannot be triggered via the generic endpoint' });
+        return;
+      }
       console.log(`[CronService] ${timestamp()}: Manual trigger requested for task: ${taskName}`);
       try {
         const result = await this.executeTask(taskName);
@@ -47,8 +92,7 @@ class CronService {
       }
     });
 
-    // Stop task endpoint
-    this.app.post('/stop/:taskName', (req: Request, res: Response) => {
+    this.app.post('/stop/:taskName', this.authorize.bind(this), (req: Request, res: Response) => {
       const taskName = Array.isArray(req.params.taskName) ? req.params.taskName[0] : req.params.taskName;
       console.log(`[CronService] ${timestamp()}: Stop requested for task: ${taskName}`);
       const task = this.tasks.get(taskName);
@@ -63,8 +107,7 @@ class CronService {
       }
     });
 
-    // Start task endpoint
-    this.app.post('/start/:taskName', (req: Request, res: Response) => {
+    this.app.post('/start/:taskName', this.authorize.bind(this), (req: Request, res: Response) => {
       const taskName = Array.isArray(req.params.taskName) ? req.params.taskName[0] : req.params.taskName;
       console.log(`[CronService] ${timestamp()}: Start requested for task: ${taskName}`);
       if (this.config.tasks[taskName]) {
@@ -77,8 +120,7 @@ class CronService {
       }
     });
 
-    // Reload configuration endpoint
-    this.app.post('/reload-config', (req: Request, res: Response) => {
+    this.app.post('/reload-config', this.authorize.bind(this), (req: Request, res: Response) => {
       console.log('[CronService] ' + timestamp() + ': Configuration reload requested');
       try {
         this.reloadConfiguration();
@@ -92,17 +134,10 @@ class CronService {
   }
 
   private reloadConfiguration() {
-    // Stop all current tasks
     this.stop();
-    
-    // Reload configuration from database using the utility function
     console.log('[CronService] ' + timestamp() + ': Loading new configuration from database');
     const newConfig = getCronConfig();
-    
-    // Update the service configuration
     this.config = newConfig;
-
-    // Setup tasks with new configuration
     this.setupTasks();
   }
 
@@ -123,7 +158,6 @@ class CronService {
     }
 
     const task = cron.schedule(taskConfig.cronExpression, async () => {
-      //console.log(`[CronService] ${timestamp()}: Running scheduled task: ${taskName}`);
       await this.executeTask(taskName);
     }, {
       timezone: 'UTC'
@@ -133,77 +167,80 @@ class CronService {
     console.log(`[CronService] ${timestamp()}: Task ${taskName} scheduled with cron expression: ${taskConfig.cronExpression.replace(/\s+/g, ' ').trim()}`);
   }
 
-  private async executeTask(taskName: string): Promise<TaskExecutionResult> {
-    // console.log(`[CronService] ${timestamp()}: Executing task: ${taskName}`);
-    try {
-      let result: OverdueBackupCheckResult | { deletedCount: number; message: string };
-      
-      switch (taskName) {
-        case 'overdue-backup-check':
-          result = await checkOverdueBackups(undefined, false); // Don't force recalculation on automatic checks
-          break;
-        case 'audit-log-cleanup':
-          // Get retention days from configuration
-          const retentionConfig = getConfiguration('audit_retention_days');
-          const retentionDays = retentionConfig ? parseInt(retentionConfig, 10) : 90;
-          const deletedCount = await AuditLogger.cleanup(isNaN(retentionDays) ? 90 : retentionDays);
-          result = {
-            deletedCount,
-            message: `Cleaned up ${deletedCount} audit log entries older than ${retentionDays} days`
-          };
-          console.log(`[CronService] ${timestamp()}: Task ${taskName} executed successfully: ${result.message}`);
-          this.lastRunTimes[taskName] = new Date().toISOString();
-          delete this.errors[taskName];
-          return {
-            taskName,
-            success: true,
-            message: result.message,
-          };
-        case 'duplicati-version-refresh': {
-          const refreshResult = await refreshDuplicatiVersions({ force: true, trigger: 'cron' });
-          if (!refreshResult.success) {
-            throw new Error(refreshResult.message);
-          }
-          console.log(`[CronService] ${timestamp()}: Task ${taskName} executed successfully: ${refreshResult.message}`);
-          this.lastRunTimes[taskName] = new Date().toISOString();
-          delete this.errors[taskName];
-          return {
-            taskName,
-            success: true,
-            message: refreshResult.message,
-          };
-        }
-        default:
-          throw new Error(`Unknown task: ${taskName}`);
-      }
-
-      this.lastRunTimes[taskName] = new Date().toISOString();
-      delete this.errors[taskName];
-
-      // Check if statistics exist before accessing them
-      if (result.statistics) {
-        if(result.statistics.notificationsSent>0) { // only log if notifications were sent
+  private async executeKnownTask(taskName: KnownTaskName): Promise<TaskExecutionResult> {
+    switch (taskName) {
+      case 'overdue-backup-check': {
+        const result = await checkOverdueBackups(undefined, false);
+        this.lastRunTimes[taskName] = new Date().toISOString();
+        delete this.errors[taskName];
+        if (result.statistics && result.statistics.notificationsSent > 0) {
           console.log(`[CronService] ${timestamp()}: Task ${taskName} executed successfully: checked:${result.statistics.checkedBackups}, overdue:${result.statistics.overdueBackupsFound}, notifications:${result.statistics.notificationsSent}`);
         }
         return {
           taskName,
           success: true,
-          message: 'Task executed successfully',
-          statistics: result.statistics
-        };
-      } else {
-        console.log(`[CronService] ${timestamp()}: Task ${taskName} executed with message: ${result.message}`);
-        return {
-          taskName,
-          success: true,
           message: result.message,
-          statistics: { checkedBackups: 0, overdueBackupsFound: 0, notificationsSent: 0 }
+          statistics: result.statistics,
         };
       }
+      case 'audit-log-cleanup': {
+        const retentionConfig = getConfiguration('audit_retention_days');
+        const retentionDays = retentionConfig ? parseInt(retentionConfig, 10) : 90;
+        const deletedCount = await AuditLogger.cleanup(isNaN(retentionDays) ? 90 : retentionDays);
+        const message = `Cleaned up ${deletedCount} audit log entries older than ${retentionDays} days`;
+        console.log(`[CronService] ${timestamp()}: Task ${taskName} executed successfully: ${message}`);
+        this.lastRunTimes[taskName] = new Date().toISOString();
+        delete this.errors[taskName];
+        return { taskName, success: true, message };
+      }
+      case 'duplicati-version-refresh': {
+        const refreshResult = await refreshDuplicatiVersions({ force: true, trigger: 'cron' });
+        if (!refreshResult.success) {
+          throw new Error(refreshResult.message);
+        }
+        console.log(`[CronService] ${timestamp()}: Task ${taskName} executed successfully: ${refreshResult.message}`);
+        this.lastRunTimes[taskName] = new Date().toISOString();
+        delete this.errors[taskName];
+        return { taskName, success: true, message: refreshResult.message };
+      }
+      case 'daily-summary-dispatch': {
+        const result = await dispatchScheduledDailySummary();
+        this.lastRunTimes[taskName] = new Date().toISOString();
+        delete this.errors[taskName];
+        const message = result.skippedReason
+          ? `Daily summary dispatch skipped (${result.skippedReason})`
+          : `Daily summary dispatch completed (succeeded: ${result.succeeded.join(',') || 'none'})`;
+        if (result.succeeded.length > 0 || result.failed.length > 0) {
+          console.log(`[CronService] ${timestamp()}: ${message}`);
+        }
+        return {
+          taskName,
+          success: result.failed.length === 0,
+          message,
+          statistics: {
+            attempted: result.attempted,
+            succeeded: result.succeeded,
+            failed: result.failed,
+          },
+        };
+      }
+      default: {
+        const exhaustive: never = taskName;
+        throw new Error(`Unhandled task: ${String(exhaustive)}`);
+      }
+    }
+  }
+
+  private async executeTask(taskName: string): Promise<TaskExecutionResult> {
+    try {
+      clearRequestCache();
+      if (!isKnownTaskName(taskName)) {
+        throw new Error(`Unknown task: ${taskName}`);
+      }
+      return await this.executeKnownTask(taskName);
     } catch (error) {
       const errorMessage = String(error);
       this.errors[taskName] = errorMessage;
-      
       console.error(`[CronService] ${timestamp()}: Error executing task ${taskName}:`, errorMessage);
       return {
         taskName,
@@ -223,8 +260,8 @@ class CronService {
   }
 
   public start() {
-    this.app.listen(this.config.port, () => {
-      console.log(`[CronService] ${timestamp()}: Cron service listening on port ${this.config.port}`);
+    this.app.listen(this.config.port, this.bindHost, () => {
+      console.log(`[CronService] ${timestamp()}: Cron service listening on ${this.bindHost}:${this.config.port}`);
     });
   }
 
@@ -234,4 +271,4 @@ class CronService {
   }
 }
 
-export { CronService }; 
+export { CronService };

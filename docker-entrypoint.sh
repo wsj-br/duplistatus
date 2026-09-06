@@ -193,7 +193,7 @@ fi
 # Set HOSTNAME=0.0.0.0 to ensure Next.js binds to all interfaces (important for Podman pods)
 # Output will be captured by the exec redirection to APP_LOG
 echo "[Entrypoint] Starting duplistatus (Next standalone)..."
-HOSTNAME=0.0.0.0 node server.js &
+HOSTNAME=0.0.0.0 node --require ./scripts/peer-ip.cjs server.js &
 SERVER_PID=$!
 
 # Validate server process started successfully

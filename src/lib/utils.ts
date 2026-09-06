@@ -90,7 +90,8 @@ function removeLocaleArticles(text: string, locale?: string): string {
 
 /**
  * Format a relative time string (e.g., "2 hours ago", "in 3 days")
- * Uses Intl.RelativeTimeFormat for locale-aware formatting when locale is provided
+ * Uses Intl.RelativeTimeFormat when a locale is provided. Pass the locale from
+ * useRelativeTimeLocale() (UI language when the user opts in, otherwise Format Locale).
  * @param dateString - ISO date string or SQLite timestamp
  * @param currentTime - Optional reference time (defaults to now)
  * @param locale - Optional locale string (e.g., "en-GB", "de", "fr"). If not provided, uses English
@@ -238,7 +239,7 @@ export function formatRelativeTime(dateString: string, currentTime?: Date, local
  * @param dateString - ISO date string
  * @param currentTime - Optional reference time (defaults to now)
  * @param addPlural - Optional flag for plural suffix (legacy parameter, not used with locale)
- * @param locale - Optional locale string (e.g., "en-GB", "de", "fr"). If not provided, uses English abbreviations
+ * @param locale - Optional locale from useRelativeTimeLocale(). If not provided, uses English abbreviations
  */
 export function formatShortTimeAgo(dateString: string, currentTime?: Date, addPlural?: boolean, locale?: string): string {
   if (!dateString || dateString === "N/A") return "";

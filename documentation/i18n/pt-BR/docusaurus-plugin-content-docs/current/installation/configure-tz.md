@@ -1,6 +1,6 @@
 # Fuso horário {#timezone}
 
-A interface do usuário da aplicação exibirá data e hora de acordo com as configurações do navegador. No entanto, para fins de registro e notificações, a aplicação utilizará o valor definido na variável de ambiente `TZ` para formatar fusos horários.
+A interface do usuário do aplicativo exibirá data e hora de acordo com as configurações do navegador. O registro ainda usa a variável de ambiente `TZ`. As notificações de Resumo Diário usam o fuso horário IANA salvo em [Configurações → Resumo Diário](../user-guide/settings/daily-summary-settings.md), não `TZ`. Outras marcas temporais de notificação que não são Resumo Diário ainda seguem `TZ`.
 
 O valor padrão é `TZ=Europe/London` se esta variável de ambiente não estiver definida.
 
@@ -10,7 +10,7 @@ As configurações de idioma e localidade (formatos de número e data) para noti
 
 ## Configurando o Fuso horário {#configuring-the-timezone}
 
-A interface do usuário da aplicação exibirá data e hora de acordo com as configurações do navegador. No entanto, para fins de registro e notificações, a aplicação utilizará o valor definido na variável de ambiente `TZ` para formatar fusos horários.
+A interface do usuário do aplicativo exibirá data e hora de acordo com as configurações do navegador. O registro ainda usa a variável de ambiente `TZ`. As notificações de Resumo Diário usam o fuso horário IANA salvo em [Configurações → Resumo Diário](../user-guide/settings/daily-summary-settings.md), não `TZ`. Outras marcas temporais de notificação que não são Resumo Diário ainda seguem `TZ`.
 
 O valor padrão é `TZ=Europe/London` se esta variável de ambiente não estiver definida.
 

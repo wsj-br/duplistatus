@@ -12,7 +12,7 @@ Dieses Widget zeigt die Gesamtsicherungsstatistiken auf Ihrem Homepage-Dashboard
     href: http://your-server:9666/
     widget:
       type: customapi
-      url: http://your-server:9666/api/summary
+      url: http://your-server:9666/api/summary?api_key=YOUR_READ_KEY
       display: list
       refreshInterval: 60000
       mappings:
@@ -53,7 +53,7 @@ Dieses Widget zeigt die neuesten Sicherungsinformationen für einen bestimmten C
     icon: mdi-test-tube
     widget:
       type: customapi
-      url: http://your-server:9666/api/lastbackup/Test%20Machine%201
+      url: http://your-server:9666/api/lastbackup/Test%20Machine%201?api_key=YOUR_READ_KEY
       display: list
       refreshInterval: 60000
       mappings:
@@ -85,3 +85,5 @@ Dieses Widget zeigt die neuesten Sicherungsinformationen für einen bestimmten C
 - Passen Sie das `refreshInterval` nach Bedarf an (in Millisekunden).
 - Ersetzen Sie Leerzeichen in Maschinennamen durch `%20` in der URL (z. B. wird `Test Machine 1` zu `Test%20Machine%201`).
 - Die `scale`-Werte konvertieren Bytes in besser lesbare Einheiten (GB, MB).
+- Verwenden Sie einen API-Schlüssel mit **Lesen**-Bereich, wenn [API-Schlüssel](settings/api-keys-settings.md) erforderlich sind. Entfernen Sie `?api_key=`, wenn Schlüssel optional sind.
+- Wenn die [externe API-IP-Zulassungsliste](settings/ip-allowlist-settings.md) aktiviert ist, fügen Sie den Homepage-Host hinzu.

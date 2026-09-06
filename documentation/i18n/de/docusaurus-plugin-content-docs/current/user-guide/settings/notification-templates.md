@@ -1,8 +1,8 @@
 # Vorlagen {#templates}
 
-**duplistatus** verwendet drei Vorlagen für Benachrichtigungsnachrichten. Diese Vorlagen werden sowohl für NTFY- als auch für E-Mail-Benachrichtigungen verwendet.
+**duplistatus** verwendet vier Vorlagen für Benachrichtigungsnachrichten. E-Mail-Körper sind Markdown (Überschriften, Listen, Links und Tabellen). NTFY für Erfolg, Warnung/Fehler und Überfällig wird aus demselben Inhalt abgeleitet; die Tägliche Zusammenfassung hat eine separate kompakte NTFY-Vorlage.
 
-Die Seite enthält einen **Vorlagensprache**-Selektor, der das Gebietsschema für Standard-Vorlagen festlegt. Das Ändern der Sprache aktualisiert das Gebietsschema für neue Standards, ändert aber **nicht** den Text vorhandener Vorlagen. Um eine neue Sprache auf Ihre Vorlagen anzuwenden, bearbeiten Sie diese entweder manuell oder verwenden Sie **Diese Vorlage auf Standard zurücksetzen** (für die aktuelle Registerkarte) oder **Alle auf Standard zurücksetzen** (für alle drei Vorlagen).
+Die Seite enthält einen **Vorlagensprache**-Auswahldialog, der die Sprache für die Standardvorlagen festlegt. Das Ändern der Sprache aktualisiert die Sprache für neue Standardeinstellungen, aber es ändert **nicht** den Text der vorhandenen Vorlagen. Um eine neue Sprache auf Ihre Vorlagen anzuwenden, bearbeiten Sie diese manuell oder verwenden Sie **Diese Vorlage auf Standardwerte zurücksetzen** (für die aktuelle Registerkarte) oder **Alle auf Standard zurücksetzen** (für alle Vorlagen).
 
 ![Benachrichtigungsvorlagen](../../assets/screen-settings-templates.png)
 
@@ -11,6 +11,7 @@ Die Seite enthält einen **Vorlagensprache**-Selektor, der das Gebietsschema fü
 | **Erfolg**        | Wird verwendet, wenn Sicherungen erfolgreich abgeschlossen wurden.            |
 | **Warnung/Fehler**  | Wird verwendet, wenn Sicherungen mit Warnungen oder Fehlern abgeschlossen wurden. |
 | **Verspätete Sicherung** | Wird verwendet, wenn Sicherungen überfällig sind.                      |
+| **Tägliche Zusammenfassung**  | E-Mail- und kompakte NTFY-Vorlagen für den optionalen täglichen Snapshot. |
 
 <br/>
 
@@ -22,26 +23,28 @@ Ein **Vorlagensprache**-Auswahlfeld oben auf der Seite ermöglicht es Ihnen, die
 
 ## Verfügbare Aktionen {#available-actions}
 
-| Button                                                              | Beschreibung                                                                                         |
+| Schaltfläche                                                              | Beschreibung                                                                                         |
 |:--------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------|
-| <IconButton label="Vorlageneinstellungen speichern" />                      | Speichert die Einstellungen beim Ändern der Vorlage. Der Button speichert die gerade angezeigte Vorlage (Erfolg, Warnung/Fehler oder Verspätete Sicherung). |
+| <IconButton label="Vorlagen-Einstellungen speichern" />                      | Speichert die Einstellungen beim Ändern der Vorlage. Die Schaltfläche speichert die angezeigte Vorlage (Erfolg, Warnung/Fehler, Überfällige Sicherung oder Tägliche Zusammenfassung). |
 | <IconButton icon="lucide:send" label="Testbenachrichtigung senden"/>     | Überprüft die Vorlage nach der Aktualisierung. Die Variablen werden für den Test durch ihre Namen ersetzt. Bei E-Mail-Benachrichtigungen wird der Vorlagentitel zur Betreffzeile der E-Mail. |
 | <IconButton icon="lucide:rotate-ccw" label="Diese Vorlage auf Standard zurücksetzen"/> | Stellt die Standardvorlage für die **ausgewählte Vorlage** (der aktuelle Tab) wieder her. Denken Sie daran, nach dem Zurücksetzen zu speichern. |
-| <IconButton icon="lucide:rotate-ccw" label="Alle auf Standard zurücksetzen"/> | Stellt alle drei Vorlagen (Erfolg, Warnung/Fehler, Verspätete Sicherung) auf die Standardsprache der ausgewählten Vorlagensprache zurück. Denken Sie daran, nach dem Zurücksetzen zu speichern. |
+| <IconButton icon="lucide:rotate-ccw" label="Alle auf Standard zurücksetzen"/> | Stellt alle Vorlagen (Erfolg, Warnung/Fehler, Überfällige Sicherung und Tägliche Zusammenfassung) auf die Standardeinstellungen für die ausgewählte Vorlagensprache zurück. Denken Sie daran, nach dem Zurücksetzen zu speichern. |
 
 <br/>
 
 ## Variablen {#variables}
 
-Alle Vorlagen unterstützen Variablen, die durch tatsächliche Werte ersetzt werden. Die folgende Tabelle zeigt die verfügbaren Variablen:
+E-Mail-Körper sind Markdown. Überschriften, Listen, Links und Tabellen werden unterstützt. Platzhalterwerte werden als escapierter Text eingefügt und können keine Markdown- oder HTML-Syntax einführen. Bisher eingebettetes rohes HTML in angepassten Vorlagen wird jetzt escapiert.
+
+Alle Erfolg-, Warnung/Fehler- und Überfälligen-Vorlagen unterstützen Variablen, die durch tatsächliche Werte ersetzt werden. Die folgende Tabelle zeigt die verfügbaren Variablen:
 
 | Variable               | Beschreibung                                     | Verfügbar in     |
 |:-----------------------|:------------------------------------------------|:-----------------|
-| `{server_name}`        | Name des Servers.                             | Alle Vorlagen    |
-| `{server_alias}`       | Alias des Servers.                            | Alle Vorlagen    |
-| `{server_note}`        | Hinweis für den Server.                            | Alle Vorlagen    |
-| `{server_url}`         | URL der Duplicati-Server-Webkonfiguration   | Alle Vorlagen    |
-| `{backup_name}`        | Name der Sicherung.                             | Alle Vorlagen    |
+| `{server_name}`        | Name des Servers.                             | Erfolg, Warnung, Überfällig |
+| `{server_alias}`       | Alias des Servers.                            | Erfolg, Warnung, Überfällig |
+| `{server_note}`        | Notiz für den Server.                            | Erfolg, Warnung, Überfällig |
+| `{server_url}`         | URL der Duplicati-Server-Webkonfiguration   | Erfolg, Warnung, Überfällig |
+| `{backup_name}`        | Name des Backups.                             | Erfolg, Warnung, Überfällig |
 | `{status}`             | Status der Sicherung (Erfolg, Warnung, Fehler, Schwerwiegend). | Erfolg, Warnung |
 | `{backup_date}`        | Datum und Uhrzeit der Sicherung.                    | Erfolg, Warnung |
 | `{duration}`           | Dauer der Sicherung.                         | Erfolg, Warnung |
@@ -60,3 +63,18 @@ Alle Vorlagen unterstützen Variablen, die durch tatsächliche Werte ersetzt wer
 | `{expected_elapsed}`   | Seit dem erwarteten Datum verstrichene Zeit.           | Überfällig          |
 | `{backup_interval}`    | Intervallangabe (z. B. „1D“, „2W“, „1M“).       | Überfällig          |
 | `{overdue_tolerance}`  | Überfällig-Toleranz-Einstellung.                      | Überfällig          |
+
+Tägliche Zusammenfassungsvorlagen verwenden eine andere Gruppe von Variablen für den aktuellen Status-Snapshot:
+
+| Variable | Beschreibung |
+|:---------|:------------|
+| `{summary_date}` | Lokales Kalenderdatum des Snapshots |
+| `{generated_at}` | Datum und Uhrzeit, zu der der Snapshot generiert wurde |
+| `{time_zone}` | Gespeicherte IANA-Zeitzone |
+| `{server_count}` / `{job_count}` | Server und bekannte Jobs |
+| `{success_count}` / `{warning_count}` / `{error_count}` / `{fatal_count}` / `{unknown_count}` / `{no_report_count}` | gegenseitig ausschließende Status-Buckets |
+| `{overdue_count}` | Überfällige Jobs (orthogonal zum Status) |
+| `{problem_table}` / `{all_jobs_table}` | Generierte Tabellen mit aufmerksamkeitsbedürftigen und allen Jobs. Spalten: Server, Sicherung, Überfällig, Letzter Status, Letztes Ergebnis, Dauer, Warnungen, Fehler, Hochgeladen. |
+| `{latest_uploaded_size}` / `{latest_source_size}` / `{latest_storage_size}` / `{latest_file_count}` / `{total_warnings}` / `{total_errors}` | Gesamtzahl der neuesten Ergebnisse |
+
+Verwenden Sie **Vorschau**, um E-Mail HTML, Klartext und NTFY ohne Senden zu rendern. Die Vorschau öffnet sich in einem Dialog. E-Mail HTML folgt dem aktuellen hellen oder dunklen Design.

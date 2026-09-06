@@ -1,6 +1,6 @@
 # Zeitzone {#timezone}
 
-Die Benutzeroberfläche der Anwendung zeigt Datum und Uhrzeit gemäß den Browsereinstellungen an. Für Protokollierungs- und Benachrichtigungszwecke verwendet die Anwendung jedoch den in der Umgebungsvariablen `TZ` definierten Wert zur Formatierung von Zeitzonen.
+Die Benutzeroberfläche der Anwendung zeigt Datum und Uhrzeit entsprechend den Browsereinstellungen an. Logging verwendet weiterhin die `TZ` Umgebungsvariable. Tägliche Zusammenfassung Benachrichtigungen verwenden die IANA Zeitzone, die in [Einstellungen → Tägliche Zusammenfassung](../user-guide/settings/daily-summary-settings.md) gespeichert ist, nicht `TZ`. Andere Benachrichtigungszeitstempel, die keine Tägliche Zusammenfassung sind, folgen weiterhin `TZ`.
 
 Der Standardwert ist `TZ=Europe/London`, wenn diese Umgebungsvariable nicht gesetzt ist.
 
@@ -10,7 +10,7 @@ Die Sprache und Gebietsschema-Einstellungen (Zahlen- und Datumsformate) für Ben
 
 ## Konfigurieren der Zeitzone {#configuring-the-timezone}
 
-Die Benutzeroberfläche der Anwendung zeigt Datum und Uhrzeit gemäß den Browsereinstellungen an. Für Protokollierungs- und Benachrichtigungszwecke verwendet die Anwendung jedoch den in der Umgebungsvariablen `TZ` definierten Wert zur Formatierung von Zeitzonen.
+Die Benutzeroberfläche der Anwendung zeigt Datum und Uhrzeit entsprechend den Browsereinstellungen an. Logging verwendet weiterhin die `TZ` Umgebungsvariable. Tägliche Zusammenfassung Benachrichtigungen verwenden die IANA Zeitzone, die in [Einstellungen → Tägliche Zusammenfassung](../user-guide/settings/daily-summary-settings.md) gespeichert ist, nicht `TZ`. Andere Benachrichtigungszeitstempel, die keine Tägliche Zusammenfassung sind, folgen weiterhin `TZ`.
 
 Der Standardwert ist `TZ=Europe/London`, wenn diese Umgebungsvariable nicht gesetzt ist.
 

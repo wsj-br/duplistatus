@@ -779,6 +779,52 @@ Con errores:
   - El cambio de configuración se registra en el registro de auditoría
   - El período de retención afecta las operaciones de limpieza automáticas y manuales
 
+## Claves de API {#api-keys}
+
+### Listar claves de API - `/api/api-keys` {#list-api-keys---apiapi-keys}
+- **Endpoint**: `/api/api-keys`
+- **Method**: GET
+- **Descripción**: Lista todas las claves de API. Los secretos nunca se devuelven; cada clave incluye una huella digital (`Qk7v…3xTa`).
+- **Autenticación**: Requiere privilegios de administrador, sesión válida y token CSRF
+- **Respuestas de error**:
+  - `401`: No autorizado - Sesión o token CSRF inválido
+  - `403`: Prohibido - Se requieren privilegios de administrador
+  - `500`: Error interno del servidor
+
+### Crear clave de API - `/api/api-keys` {#create-api-key---apiapi-keys}
+- **Endpoint**: `/api/api-keys`
+- **Method**: POST
+- **Descripción**: Crea una clave de API con ámbito. El secreto en texto plano solo se devuelve en esta respuesta.
+- **Autenticación**: Requiere privilegios de administrador, sesión válida y token CSRF
+- **Cuerpo de la solicitud**:
+
+  ```json
+  {
+    "name": "Duplicati uploads",
+    "scope": "upload",
+    "description": "Optional",
+    "expiresAt": null
+  }
+  ```
+
+- **Respuestas de error**:
+  - `400`: Falta el nombre o ámbito inválido (`upload` o `read`)
+  - `401`: No autorizado - Sesión o token CSRF inválido
+  - `403`: Prohibido - Se requieren privilegios de administrador
+  - `500`: Error interno del servidor
+
+### Actualizar clave de API - `/api/api-keys/:id` {#update-api-key---apiapi-keysid}
+- **Endpoint**: `/api/api-keys/:id`
+- **Method**: PATCH
+- **Descripción**: Habilita o deshabilita una clave.
+- **Autenticación**: Requiere privilegios de administrador, sesión válida y token CSRF
+
+### Eliminar clave de API - `/api/api-keys/:id` {#delete-api-key---apiapi-keysid}
+- **Endpoint**: `/api/api-keys/:id`
+- **Method**: DELETE
+- **Descripción**: Elimina una clave. Los clientes existentes que usen ese secreto pierden el acceso inmediatamente.
+- **Autenticación**: Requiere privilegios de administrador, sesión válida y token CSRF
+
 ## Gestión de base de datos {#database-management}
 
 ### Copiar base de datos - `/api/database/backup` {#backup-database---apidatabasebackup}

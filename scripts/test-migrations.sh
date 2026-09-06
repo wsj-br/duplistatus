@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# Test database migrations from old versions to current version 4.0
+# Test database migrations from old versions to current version 4.2
 #
 # This script tests migrations for each version by:
 # 1. Creating a temporary copy of the test database
@@ -45,7 +45,7 @@ echo "=========================================="
 echo "Database Migration Test Suite"
 echo "=========================================="
 echo ""
-echo "Testing migrations from old versions to version 4.0"
+echo "Testing migrations from old versions to version 4.2"
 echo "Test data directory: $MIGRATION_TEST_DATA_DIR"
 echo "Temporary directory: $TEMP_DIR"
 echo ""

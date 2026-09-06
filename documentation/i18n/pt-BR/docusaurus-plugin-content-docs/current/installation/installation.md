@@ -19,6 +19,8 @@ Certifique-se de que você tem o seguinte instalado:
 
 Você pode criar contas de usuários adicionais em [Configurações > Usuários](../user-guide/settings/user-management-settings.md) após o primeiro login.
 
+Administradores também podem opcionalmente exigir [chaves de API](../user-guide/settings/api-keys-settings.md) para o Duplicati e a Página Inicial, e restringir o acesso com [listas de permissões de IP](../user-guide/settings/ip-allowlist-settings.md). Ambos estão desativados por padrão.
+
 ::::info[IMPORTANTE]
 O sistema impõe um comprimento mínimo de senha e complexidade. Esses requisitos podem ser ajustados usando as [variáveis de ambiente](environment-variables.md) `PWD_ENFORCE` e `PWD_MIN_LEN`. Usar uma senha sem complexidade suficiente ou com comprimento curto pode comprometer a segurança. Use essas configurações com cuidado.
 ::::
@@ -251,10 +253,10 @@ podman pod rm -f duplistatus-pod
 
 ## Configuração Essencial {#essential-configuration}
 
-1. Configure seus [servidores Duplicati](duplicati-server-configuration.md) para enviar mensagens de log de backup para o duplistatus (obrigatório).
-2. Faça login no duplistatus – consulte as instruções no [Guia do Usuário](../user-guide/overview.md#accessing-the-dashboard).
-3. Colete os logs iniciais de backup – use o recurso [Coletar Logs de Backup](../user-guide/collect-backup-logs.md) para preencher o banco de dados com dados históricos de backup de todos os seus servidores Duplicati. Isso também atualiza automaticamente os intervalos de monitoramento de backup com base na configuração de cada servidor.
-4. Configure as configurações do servidor – defina apelidos e anotações dos servidores em [Configurações → Servidor](../user-guide/settings/server-settings.md) para tornar seu painel mais informativo.
+1. Configure seus [servidores Duplicati](duplicati-server-configuration.md) para enviar mensagens de log de backup para o duplistatus (obrigatório). No Duplicati 2.0.9.106 e posteriores, use `--send-http-json-urls` conforme descrito nesse guia.
+2. Entre no duplistatus – veja as instruções no [Guia do Usuário](../user-guide/overview.md#accessing-the-dashboard).
+3. Coletar logs de backup iniciais – use o recurso [Coletar Logs de Backup](../user-guide/collect-backup-logs.md) para popular o banco de dados com dados históricos de backup de todos os seus servidores Duplicati. Isso também atualiza automaticamente os intervalos de monitoramento de backup com base na configuração de cada servidor.
+4. Configurar definições do servidor – configure aliases e notas do servidor em [Configurações → Servidor](../user-guide/settings/server-settings.md) para tornar seu painel mais informativo.
 5. Configure as configurações do NTFY – configure notificações via NTFY em [Configurações → NTFY](../user-guide/settings/ntfy-settings.md).
 6. Configure as configurações de e-mail – configure notificações por e-mail em [Configurações → E-mail](../user-guide/settings/email-settings.md).
 7. Configure as notificações de backup – configure notificações por backup ou por servidor em [Configurações → Notificações de Backup](../user-guide/settings/backup-notifications-settings.md).

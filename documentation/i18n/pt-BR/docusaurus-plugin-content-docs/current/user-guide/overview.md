@@ -10,8 +10,10 @@ duplistatus é um poderoso painel de monitoramento projetado especificamente par
 - Rastreamento em tempo real do status de todas as operações de backup
 - Detecção automatizada de backups atrasados com alertas configuráveis
 - Métricas abrangentes e visualização do desempenho do backup
-- Sistema de notificação flexível via NTFY e E-mail
-- Suporte multilíngue (Inglês, Francês, Alemão, Espanhol, Português do Brasil, Hindi (Romano) e Chinês Simplificado).
+- Sistema de notificação flexível via NTFY e e-mail
+- [Chaves de API](settings/api-keys-settings.md) opcionais para uploads do Duplicati e widgets da Homepage, com limites de tamanho e taxa de upload
+- [Listas de permissões de IP](settings/ip-allowlist-settings.md) opcionais para a interface de administração e as APIs externas
+- Suporte a múltiplos idiomas (Inglês, Francês, Alemão, Espanhol, Português Brasileiro, Hindi (Romanizado) e Chinês Simplificado).
 
 ## Instalação {#installation}
 
@@ -91,8 +93,9 @@ Clicar no botão de usuário abre um menu suspenso com opções específicas do 
 2. Colete os logs iniciais de backup – use o recurso [Coletar Logs de Backup](collect-backup-logs.md) para preencher o banco de dados com dados históricos de backup de todos os seus servidores Duplicati. Isso também atualiza automaticamente os intervalos de monitoramento de backup com base na configuração de cada servidor.
 3. Configure as configurações do servidor – defina apelidos e anotações dos servidores em [Configurações → Servidor](settings/server-settings.md) para tornar seu painel mais informativo.
 4. Configure as configurações do NTFY – configure notificações via NTFY em [Configurações → NTFY](settings/ntfy-settings.md).
-5. Configure as configurações de e-mail – configure notificações por e-mail em [Configurações → E-mail](settings/email-settings.md).
-6. Configure as notificações de backup – configure notificações por backup ou por servidor em [Configurações → Notificações de Backup](settings/backup-notifications-settings.md).
+5. Configurar configurações de e-mail – configure notificações por e-mail em [Configurações → E-mail](settings/email-settings.md).
+6. Configurar notificações de backup – configure notificações por backup ou por servidor em [Configurações → Notificações de Backup](settings/backup-notifications-settings.md).
+7. Opcionalmente, restrinja o acesso – crie [chaves de API](settings/api-keys-settings.md) e/ou [listas de permissões de IP](settings/ip-allowlist-settings.md) se quiser proteger `/api/upload` e a interface de administração. Ambos estão desativados por padrão.
 
 <br/>
 

@@ -218,6 +218,8 @@ const ORDERED_SCREENSHOT_FILENAMES: string[] = [
   'screen-settings-display.png',
   'screen-settings-duplicati-versions.png',
   'screen-settings-database-maintenance.png',
+  'screen-settings-api-keys.png',
+  'screen-settings-ip-allowlist.png',
   'screen-settings-application-logs.png',
   'screen-user-menu-user.png',
   'screen-settings-left-panel-non-admin.png'
@@ -3587,6 +3589,8 @@ ${colors.reset}`);
         'display',
         'duplicati-versions',
         'database-maintenance',
+        'api-keys',
+        'ip-allowlist',
         'application-logs'
       ];
 

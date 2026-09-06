@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
-import { NotificationFrequencyConfig, OverdueTolerance, NtfyConfig, EmailConfig, NotificationTemplate, BackupNotificationConfig, BackupKey, ServerAddress } from '@/lib/types';
+import { NotificationFrequencyConfig, OverdueTolerance, NtfyConfig, EmailConfig, NotificationTemplate, BackupNotificationConfig, BackupKey, ServerAddress, DailySummaryPublicStatus, DailySummaryTemplateSet, SupportedTemplateLanguage } from '@/lib/types';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 
 /**
@@ -36,11 +36,14 @@ export interface ServerWithBackup {
 interface UnifiedConfiguration {
   ntfy: NtfyConfig;
   templates: {
+    language?: SupportedTemplateLanguage;
     success: NotificationTemplate;
     warning: NotificationTemplate;
     overdueBackup: NotificationTemplate;
+    dailySummary?: DailySummaryTemplateSet;
   };
   email?: EmailConfig;
+  dailySummary?: DailySummaryPublicStatus;
   // New canonical field from API
   backup_settings: Record<BackupKey, BackupNotificationConfig>;
   // Back-compat alias for existing UI usage

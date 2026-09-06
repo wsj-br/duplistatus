@@ -439,6 +439,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
       toast({
         title: t("Connection Tests Complete"),
         description: t("Tested {{count}} connections: {{success}} successful, {{failed}} failed", {
+          plurals: true,
           count: connectionsWithUrls.length,
           success: successCount,
           failed: failureCount,

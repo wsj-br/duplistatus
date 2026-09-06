@@ -37,6 +37,8 @@ All endpoints follow a consistent error handling pattern:
 - **403 Forbidden**: Operation not allowed (e.g., backup deletion in production) or CSRF token validation failed
 - **404 Not Found**: Resource not found
 - **409 Conflict**: Duplicate data (for upload endpoints)
+- **413 Payload Too Large**: `/api/upload` body exceeds the configured size limit
+- **429 Too Many Requests**: Upload, read-API, or authentication-failure rate limit exceeded
 - **500 Internal Server Error**: Server-side errors with detailed error messages
 - **503 Service Unavailable**: Health check failures, database connection issues, or cron service unavailable
 

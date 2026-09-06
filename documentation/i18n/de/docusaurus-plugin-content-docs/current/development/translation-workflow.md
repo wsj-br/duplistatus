@@ -22,6 +22,23 @@ Die Dokumentation verwendet Docusaurus i18n mit Englisch als Standard-Locale. Di
 
 Von innerhalb `documentation/` aus sind dieselben Abläufe verknüpft wie `pnpm translate` → Wurzel `i18n:translate`, zusätzlich `pnpm translate:docs`, `translate:ui`, `translate:svg`, `translate:status`, `i18n:extract`, `i18n:sync`.
 
+## UI Mehrzahl {#ui-plurals}
+
+Kardinale Mehrzahl in der Next.js-App verwenden **ai-i18n-tools**, nicht handgeschriebene `_one` / `_other`-Schlüssel.
+
+Schreiben Sie einen englischen Quellstring (meistens die Mehrzahl) und übergeben Sie ein **einfaches Objektliteral** mit `plurals: true` und einem numerischen `count`:
+
+```tsx
+t("{{count}} backups selected", { plurals: true, count: selectedBackups.size })
+```
+
+Regeln:
+
+- Verwenden Sie keine `item(s)`-Hedges oder `count === 1 ? t('…') : t('…')`-Paare.
+- Unabhängige Zählungen benötigen separate `t()`-Aufrufe. Ein String mit zwei oder mehr Interpolationen muss `{{count}}` als Mehrzahlachse enthalten.
+- `pnpm i18n:extract` markiert die Katalogzeile `"plural": true`. `pnpm i18n:translate:ui` füllt CLDR-Formulare und schreibt `src/locales/en-GB.json` (nur Mehrzahlschlüssel).
+- `src/i18n.ts` und `src/lib/i18n-server.ts` laden diese Datei als `sourcePluralFlatBundle`, sodass englische Singular- und Mehrzahlformen zur Laufzeit aufgelöst werden.
+
 ## Glossar {#glossary}
 
 - **UI-Fachbegriffe** für die Dokumentation werden über `glossary.uiGlossary` in `ai-i18n-tools.config.json` festgelegt, verweisen auf `src/locales/strings.json` (der Katalog, erzeugt von `pnpm i18n:extract`).

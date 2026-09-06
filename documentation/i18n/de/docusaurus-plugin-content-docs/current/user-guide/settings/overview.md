@@ -16,29 +16,32 @@ Administratoren sehen alle verfügbaren Einstellungen.
         <li>
           <strong>Benachrichtigungen</strong>
           <ul>
-            <li><a href="backup-notifications-settings.md">Backup-Benachrichtigungen</a>: Backup-spezifische Benachrichtigungseinstellungen konfigurieren</li>
-            <li><a href="backup-monitoring-settings.md">Backup-Überwachung</a>: Überfällige Backups erkennen und Warnungen konfigurieren</li>
-            <li><a href="notification-templates.md">Vorlagen</a>: Benachrichtigungsnachrichtenvorlagen anpassen</li>
+            <li><a href="backup-notifications-settings.md">Backup-Benachrichtigungen</a>: Konfigurieren Sie die Benachrichtigungseinstellungen pro Sicherung</li>
+            <li><a href="backup-monitoring-settings.md">Backup-Überwachung</a>: Konfigurieren Sie die Erkennung überfälliger Sicherungen und Warnungen</li>
+            <li><a href="daily-summary-settings.md">Tägliche Zusammenfassung</a>: Optionale tägliche Snapshot-Ersetzung für einzelne Sicherungs- und Überfälligkeitsbenachrichtigungen</li>
+            <li><a href="notification-templates.md">Vorlagen</a>: Benutzerdefinierte Benachrichtigungsnachrichtenvorlagen</li>
           </ul>
         </li><br/>
         <li>
           <strong>Integrationen</strong>
           <ul>
-            <li><a href="ntfy-settings.md">NTFY</a>: NTFY Push-Benachrichtigungsdienst konfigurieren</li>
-            <li><a href="email-settings.md">E-Mail</a>: SMTP-E-Mail-Benachrichtigungen konfigurieren</li>
+            <li><a href="ntfy-settings.md">NTFY</a>: Konfigurieren Sie den NTFY-Push-Benachrichtigungsdienst</li>
+            <li><a href="email-settings.md">E-Mail</a>: Konfigurieren Sie SMTP-E-Mail-Benachrichtigungen</li>
           </ul>
         </li><br/>
         <li>
           <strong id="system">System</strong>
           <ul>
-            <li><a href="server-settings.md">Server</a>: Duplicati-Serverkonfigurationen verwalten</li>
-            <li><a href="display-settings.md">Anzeigeeinstellungen</a>: Design, Diagramm-Zeitbereich, Diagrammstil, Gebietsschema-Format, automatisches Aktualisierungsintervall, Karten-Sortierreihenfolge und Wochenstart konfigurieren</li>
-            <li><a href="duplicati-versions.md">Duplicati-Versionen</a>: Zwischengespeicherte Duplicati-Release-Versionen anzeigen und den Versionsprüfungszeitplan konfigurieren</li>
-            <li><a href="database-maintenance.md">Datenbankverwaltung</a>: Datenbankbereinigung durchführen (nur Administratoren)</li>
-            <li><a href="user-management-settings.md">Benutzer</a>: Benutzerkonten verwalten (nur Administratoren)</li>
-            <li><a href="audit-logs-viewer.md">Audit-Protokoll</a>: System-Audit-Protokolle anzeigen</li>
-            <li><a href="audit-logs-retention.md">Prüfprotokoll-Aufbewahrung</a>: Prüfprotokoll-Aufbewahrung konfigurieren (nur Administratoren)</li>
-            <li><a href="application-logs-settings.md">Anwendungsprotokolle</a>: Anwendungsprotokolle anzeigen und exportieren (nur Administratoren)</li>
+            <li><a href="server-settings.md">Server</a>: Verwalten Sie Duplicati-Server-Konfigurationen</li>
+            <li><a href="display-settings.md">Anzeigeeinstellungen</a>: Konfigurieren Sie Design, Diagramm-Zeitbereich, Diagrammstil, Gebietsschema-Format, automatisches Aktualisierungsintervall, Karten-Sortierreihenfolge und Wochenstart</li>
+            <li><a href="duplicati-versions.md">Duplicati-Versionen</a>: Anzeigen Sie zwischengespeicherte Duplicati-Release-Versionen und konfigurieren Sie den Versionsprüfplan</li>
+            <li><a href="database-maintenance.md">Datenbankverwaltung</a>: Führen Sie Datenbankreinigungen durch (nur Admin)</li>
+            <li><a href="api-keys-settings.md">API-Schlüssel</a>: Verwalten Sie bereichsspezifische Schlüssel und externen API-Schutz (nur Admin)</li>
+            <li><a href="ip-allowlist-settings.md">IP-Zulassungsliste</a>: Beschränken Sie die Administrationsinterface und externen APIs (nur Admin)</li>
+            <li><a href="user-management-settings.md">Benutzer</a>: Verwalten Sie Benutzerkonten (nur Admin)</li>
+            <li><a href="audit-logs-viewer.md">Audit-Protokoll</a>: Anzeigen von System-Audit-Protokollen</li>
+            <li><a href="audit-logs-retention.md">Prüfprotokoll-Aufbewahrung</a>: Konfigurieren Sie die Prüfprotokoll-Aufbewahrung (nur Admin)</li>
+            <li><a href="application-logs-settings.md">Anwendungsprotokolle</a>: Anzeigen und Exportieren von Anwendungsprotokollen (nur Admin)</li>
           </ul>
         </li>
       </ul>
@@ -62,6 +65,7 @@ Normale Benutzer sehen einen begrenzten Satz von Einstellungen.
           <ul>
             <li><a href="backup-notifications-settings.md">Backup-Benachrichtigungen</a>: Backup-spezifische Benachrichtigungseinstellungen anzeigen (schreibgeschützt)</li>
             <li><a href="backup-monitoring-settings.md">Backup-Überwachung</a>: Überfällige Backup-Einstellungen anzeigen (schreibgeschützt)</li>
+            <li><a href="daily-summary-settings.md">Tägliche Zusammenfassung</a>: Tägliche Zusammenfassungseinstellungen anzeigen (schreibgeschützt)</li>
             <li><a href="notification-templates.md">Vorlagen</a>: Benachrichtigungsvorlagen anzeigen (schreibgeschützt)</li>
           </ul>
         </li><br/>
@@ -75,7 +79,7 @@ Normale Benutzer sehen einen begrenzten Satz von Einstellungen.
         <li>
           <strong id="system">System</strong>
           <ul>
-            <li><a href="server-settings.md">Server</a>: Serverkonfigurationen anzeigen (schreibgeschützt)</li>
+            <li><a href="server-settings.md">Server</a>: Server-Konfigurationen anzeigen (schreibgeschützt)</li>
             <li><a href="display-settings.md">Anzeige</a>: Design, Diagramm-Zeitbereich, Diagrammstil, Gebietsschema-Format, automatisches Aktualisierungsintervall, Karten-Sortierreihenfolge und Wochenstart konfigurieren</li>
             <li><a href="duplicati-versions.md">Duplicati-Versionen</a>: Zwischengespeicherte Duplicati-Release-Versionen anzeigen (Änderungen des Zeitplans sind nur für Administratoren möglich)</li>
             <li><a href="audit-logs-viewer.md">Audit-Protokoll</a>: System-Audit-Protokolle anzeigen (schreibgeschützt)</li>

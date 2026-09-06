@@ -2,6 +2,7 @@
 import { useTranslation } from "react-i18next";
 import { Fragment, useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
@@ -362,7 +363,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     
     toast({
       title: t("Synced to Server Defaults"),
-      description: t("All {{count}} backup(s) now inherit from server defaults", { count: group.backups.length }),
+      description: t("All {{count}} backups now inherit from server defaults", { plurals: true, count: group.backups.length }),
       duration: 3000,
     });
   };
@@ -458,7 +459,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     
     toast({
       title: t("Clear Complete"),
-      description: t("Cleared all additional destinations for server and {{count}} backup(s).", { count: group.backups.length }),
+      description: t("Cleared all additional destinations for server and {{count}} backups.", { plurals: true, count: group.backups.length }),
       duration: 3000,
     });
   };
@@ -1780,7 +1781,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
         
         toast({
           title: t("Additional Destinations Cleared"),
-          description: t("Cleared all additional destinations from {{count}} backup(s). Inheritance maintained.", { count: selectedCount }),
+          description: t("Cleared all additional destinations from {{count}} backups. Inheritance maintained.", { plurals: true, count: selectedCount }),
           duration: 3000,
         });
       } catch (error) {
@@ -1850,7 +1851,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
 
       toast({
         title: t("Test Email Sent"),
-        description: t("Test email sent to {{count}} address(es)", { count: emailList.length }),
+        description: t("Test email sent to {{count}} addresses", { plurals: true, count: emailList.length }),
         duration: 3000,
       });
     } catch (error) {
@@ -2029,7 +2030,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
 
       toast({
         title: t("Test Email Sent"),
-        description: t("Test email sent to {{count}} address(es)", { count: emailList.length }),
+        description: t("Test email sent to {{count}} addresses", { plurals: true, count: emailList.length }),
         duration: 3000,
       });
     } catch (error) {
@@ -2312,16 +2313,13 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
         // Build success message
         let successMessage = '';
         if (totalServersUpdated > 0) {
-          successMessage = t("Applied to {{servers}} server default(s) ({{backups}} backup(s) will inherit)", {
-            servers: totalServersUpdated,
-            backups: totalBackupsUpdated,
-          });
+          successMessage = `${t("Applied to {{count}} server defaults", { plurals: true, count: totalServersUpdated })} ${t("({{count}} backups will inherit)", { plurals: true, count: totalBackupsUpdated })}`;
           if (totalBackupsUpdated < selectedBackups.size) {
             const individualCount = selectedBackups.size - totalBackupsUpdated;
-            successMessage += ` ${t("and {{count}} individual backup(s)", { count: individualCount })}`;
+            successMessage += ` ${t("and {{count}} individual backups", { plurals: true, count: individualCount })}`;
           }
         } else {
-          successMessage = t("Updated {{count}} backup(s)", { count: totalBackupsUpdated });
+          successMessage = t("Updated {{count}} backups", { plurals: true, count: totalBackupsUpdated });
         }
         
         toast({
@@ -2362,6 +2360,15 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
              <ExternalLink className="inline w-3 h-3 align-middle" style={{ color: 'rgb(100 116 139)' }} /> {t("for inherited destinations")}.
           </CardDescription>
         </CardHeader>
+        {config?.dailySummary?.enabled && (
+          <div className="px-6 pb-4">
+            <Alert>
+              <AlertDescription>
+                {t('Daily Summary mode is enabled, so individual and additional backup notifications are currently suppressed. These settings are preserved and become active again when Daily Summary is turned off.')}
+              </AlertDescription>
+            </Alert>
+          </div>
+        )}
         <CardContent>
           {/* Filter Input */}
           <div className="mb-4">
@@ -2398,9 +2405,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
           {selectedBackups.size > 0 && (
             <div className="mb-4 p-3 bg-muted rounded-md border flex items-center justify-between" data-screenshot-target="settings-notifications-bulk-bar">
               <div className="text-sm font-medium text-muted-foreground">
-                <span className="font-bold">{t("Additional Destinations:")}</span> {selectedBackups.size === 1 
-                  ? t("{{count}} backup selected", { count: selectedBackups.size })
-                  : t("{{count}} backups selected", { count: selectedBackups.size })}
+                <span className="font-bold">{t("Additional Destinations:")}</span> {t("{{count}} backups selected", { plurals: true, count: selectedBackups.size })}
               </div>
               <div className="flex items-center gap-2">
                 <Button
@@ -2413,10 +2418,9 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                   {t("Clear Selection")}
                 </Button>
                 <Button
-                  variant="default"
+                  variant="gradient"
                   size="sm"
                   onClick={() => setIsBulkEditModalOpen(true)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white"
                 >
                   {t("Bulk Edit")}
                 </Button>
@@ -3011,7 +3015,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                               </span>
                             )}
                             <span className="text-xs text-muted-foreground">
-                              {group.backups.length} backup{group.backups.length === 1 ? '' : 's'}
+                              {t("{{count}} backups", { plurals: true, count: group.backups.length })}
                             </span>
                           </div>
                         </div>
@@ -4144,7 +4148,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                               </div>
                             )}
                             <div className="text-xs text-muted-foreground">
-                              {group.backups.length} backup{group.backups.length === 1 ? '' : 's'}
+                              {t("{{count}} backups", { plurals: true, count: group.backups.length })}
                             </div>
                           </div>
                         </div>
@@ -4835,11 +4839,11 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                     
                     return (
                       <>
-                        Are you sure you want to clear all additional notification settings for the <strong>{selectedBackups.size}</strong> selected backup{selectedBackups.size === 1 ? '' : 's'}?
+                        {t("Are you sure you want to clear all additional notification settings for {{count}} selected backups?", { plurals: true, count: selectedBackups.size })}
                         {affectedServerCount > 0 && (
-                          <> <br/> This will also clear additional destination settings from the server default{affectedServerCount === 1 ? '' : 's'} for <strong>{affectedServerCount}</strong> affected server{affectedServerCount === 1 ? '' : 's'}.</>
+                          <> <br/> {t("This will also clear additional destination settings from the server defaults for {{count}} affected servers.", { plurals: true, count: affectedServerCount })}</>
                         )}
-                        {' '}This action cannot be undone.
+                        {' '}{t("This action cannot be undone.")}
                       </>
                     );
                   })()}
@@ -4863,7 +4867,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
               <DialogHeader>
                 <DialogTitle>{t("Set Additional Destinations")}</DialogTitle>
                 <DialogDescription>
-                  {t("Update additional destination settings for {{count}} selected backup(s).", { count: selectedBackups.size })}
+                  {t("Update additional destination settings for {{count}} selected backups.", { plurals: true, count: selectedBackups.size })}
                 </DialogDescription>
               </DialogHeader>
               

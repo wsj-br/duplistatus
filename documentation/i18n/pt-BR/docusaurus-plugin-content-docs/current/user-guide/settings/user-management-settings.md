@@ -61,3 +61,5 @@ As contas são automaticamente bloqueadas após múltiplas tentativas de login f
 ## Recuperando Acesso de Admin {#recovering-admin-access}
 
 Se você perdeu sua senha de admin ou foi bloqueado de sua conta, você pode recuperar o acesso usando o script de recuperação de admin. Consulte o guia [Admin Account Recovery](../admin-recovery.md) para instruções detalhadas sobre como recuperar o acesso de administrador em ambientes Docker.
+
+Se o navegador exibir **Acesso negado** (HTTP 403) antes do formulário de login, recupere-se com [Bloqueado pela Lista de permissões de IP](../troubleshooting.md#locked-out-by-ip-allowlist) em vez disso.

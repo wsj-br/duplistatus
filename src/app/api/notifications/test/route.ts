@@ -2,8 +2,8 @@ import { withCSRF } from '@/lib/csrf-middleware';
 import { NextRequest, NextResponse } from 'next/server';
 import { NotificationTemplate, NtfyConfig } from '@/lib/types';
 import { sendEmailNotification, convertTextToHtml } from '@/lib/notifications';
-import { getSMTPConfig, clearRequestCache } from '@/lib/db-utils';
-import { requireAuth } from '@/lib/auth-middleware';
+import { getSMTPConfig, clearRequestCache, getNtfyConfig } from '@/lib/db-utils';
+import { requireAdmin } from '@/lib/auth-middleware';
 import { getClientIpAddress } from '@/lib/ip-utils';
 import { AuditLogger } from '@/lib/audit-logger';
 import { isDevelopmentMode } from '@/lib/utils';
@@ -57,16 +57,14 @@ async function sendNtfyNotificationDirect(config: NtfyConfig, message: string, t
   }
 }
 
-export const POST = withCSRF(requireAuth(async (request: NextRequest, authContext) => {
+export const POST = withCSRF(requireAdmin(async (request: NextRequest, authContext) => {
   let testType: 'simple' | 'template' | 'email' | 'unknown' = 'unknown';
   
   try {
     
-    const { type, ntfyConfig, template, toEmail }: { 
-      type: 'simple' | 'template' | 'email'; 
-      ntfyConfig?: NtfyConfig; 
+    const { type, template }: {
+      type: 'simple' | 'template' | 'email';
       template?: NotificationTemplate;
-      toEmail?: string;
     } = await request.json();
     
     testType = type;
@@ -96,7 +94,7 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
 
       const senderName = smtpConfig.senderName || 'duplistatus';
       const fromAddress = smtpConfig.fromAddress || smtpConfig.username;
-      const recipientEmail = toEmail || smtpConfig.mailto;
+      const recipientEmail = smtpConfig.mailto;
       const requiresAuth = smtpConfig.requireAuth !== false; // Default to true for backward compatibility
       
       const testSubject = 'Test Email from duplistatus';
@@ -226,6 +224,8 @@ Email Configuration Details:
       
       return NextResponse.json({ message: 'Test email sent successfully' });
     }
+
+    const ntfyConfig = getNtfyConfig();
 
     // NTFY validation for non-email tests
     if (!ntfyConfig) {

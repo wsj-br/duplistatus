@@ -34,6 +34,10 @@ const HELP_MAP: Record<string, HelpMapping> = {
     url: 'user-guide/settings/backup-monitoring-settings',
     pageName: 'Backup Monitoring',
   },
+  'settings:daily-summary': {
+    url: 'user-guide/settings/daily-summary-settings',
+    pageName: 'Daily Summary',
+  },
   'settings:templates': {
     url: 'user-guide/settings/notification-templates',
     pageName: 'Notification Templates',
@@ -61,6 +65,14 @@ const HELP_MAP: Record<string, HelpMapping> = {
   'settings:database-maintenance': {
     url: 'user-guide/settings/database-maintenance',
     pageName: 'Database Maintenance',
+  },
+  'settings:api-keys': {
+    url: 'user-guide/settings/api-keys-settings',
+    pageName: 'API Keys',
+  },
+  'settings:ip-allowlist': {
+    url: 'user-guide/settings/ip-allowlist-settings',
+    pageName: 'IP Allowlist',
   },
   'settings:users': {
     url: 'user-guide/settings/user-management-settings',

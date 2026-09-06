@@ -2,6 +2,8 @@
 
 Récupérer l'accès administrateur à **duplistatus** quand vous avez perdu votre mot de passe ou avez été verrouillé de votre compte. Ce guide couvre l'utilisation du script de récupération admin dans les environnements Docker.
 
+Si le navigateur affiche **Accès refusé** (HTTP 403) avant le formulaire de connexion, la [liste d'adresses IP autorisées de l'admin](settings/ip-allowlist-settings.md) bloque la requête. Utilisez [Verrouillé par la liste d'adresses IP autorisées](troubleshooting.md#locked-out-by-ip-allowlist) au lieu de ce script.
+
 ## Utilisation du script dans Docker {#using-the-script-in-docker}
 
 Le Dockerfile inclut le répertoire `scripts` et un wrapper shell pratique.

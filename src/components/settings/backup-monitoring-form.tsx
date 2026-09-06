@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
@@ -11,7 +12,7 @@ import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components
 import { SortableTableHead } from '@/components/ui/sortable-table-head';
 import { useToast } from '@/components/ui/use-toast';
 import { useConfiguration, type ServerWithBackup } from '@/contexts/configuration-context';
-import { useConfig, useEffectiveFormatLocale } from '@/contexts/config-context';
+import { useConfig, useEffectiveFormatLocale, useRelativeTimeLocale } from '@/contexts/config-context';
 import { BackupNotificationConfig, BackupKey, CronInterval, NotificationFrequencyConfig, OverdueTolerance } from '@/lib/types';
 import { SortConfig, createSortedArray, sortFunctions } from '@/lib/sort-utils';
 import { cronClient } from '@/lib/cron-client';
@@ -62,6 +63,7 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
   const { toast } = useToast();
   const locale = useLocale();
   const effectiveLocale = useEffectiveFormatLocale();
+  const relativeTimeLocale = useRelativeTimeLocale();
   const { config, refreshConfigSilently, updateConfig } = useConfiguration();
   const { startOfWeek } = useConfig();
   const [settings, setSettings] = useState<Record<BackupKey, BackupNotificationConfig>>(backupSettings);
@@ -495,11 +497,7 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
       const result = await response.json();
       toast({
         title: t("Backup Check Complete"),
-        description: t("Checked {{checked}} backups, found {{overdue}} backups needing attention, sent {{notifications}} notifications.", {
-          checked: result.statistics.checkedBackups,
-          overdue: result.statistics.overdueBackupsFound,
-          notifications: result.statistics.notificationsSent,
-        }),
+        description: `${t("Checked {{count}} backups", { plurals: true, count: result.statistics.checkedBackups })}, ${t("found {{count}} backups needing attention", { plurals: true, count: result.statistics.overdueBackupsFound })}, ${t("sent {{count}} notifications.", { plurals: true, count: result.statistics.notificationsSent })}`,
         duration: 2000,
       });
     } catch (error) {
@@ -640,11 +638,7 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
       const result = await response.json();
       toast({
         title: t("Backup Check Complete"),
-        description: t("Checked {{checked}} backups, found {{overdue}} backups needing attention, sent {{notifications}} notifications.", {
-          checked: result.statistics.checkedBackups,
-          overdue: result.statistics.overdueBackupsFound,
-          notifications: result.statistics.notificationsSent,
-        }),
+        description: `${t("Checked {{count}} backups", { plurals: true, count: result.statistics.checkedBackups })}, ${t("found {{count}} backups needing attention", { plurals: true, count: result.statistics.overdueBackupsFound })}, ${t("sent {{count}} notifications.", { plurals: true, count: result.statistics.notificationsSent })}`,
         duration: 2000,
       });
     } catch (error) {
@@ -944,6 +938,15 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
             {t("Configure monitoring settings for each backup. Enable/disable backup monitoring, set the timeout period and notification frequency.")}
           </CardDescription>
         </CardHeader>
+        {config?.dailySummary?.enabled && (
+          <div className="px-6 pb-4">
+            <Alert>
+              <AlertDescription>
+                {t('Daily Summary mode is enabled. Overdue detection continues, but individual overdue notifications are suppressed until Daily Summary is turned off.')}
+              </AlertDescription>
+            </Alert>
+          </div>
+        )}
         <CardContent>
           {/* Filter Input */}
           <div className="mb-4">
@@ -1096,7 +1099,7 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                                 <>
                                   {formatDateTime(server.nextRunDate, effectiveLocale)}
                                   <br />
-                                  {formatRelativeTime(server.nextRunDate, undefined, effectiveLocale)}
+                                  {formatRelativeTime(server.nextRunDate, undefined, relativeTimeLocale)}
                                 </>
                                : 
                                 t("Not set")
@@ -1114,7 +1117,7 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                                     <>
                                       {formatDateTime(lastBackupTimestamp, effectiveLocale)}
                                       <br />
-                                      {formatRelativeTime(lastBackupTimestamp, undefined, effectiveLocale)}
+                                      {formatRelativeTime(lastBackupTimestamp, undefined, relativeTimeLocale)}
                                     </>
                                   );
                                 }
@@ -1134,7 +1137,6 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                           onCheckedChange={(checked) =>
                             updateBackupSettingById(server.id, server.backupName, 'overdueBackupCheckEnabled', checked)
                           }
-                          className="data-[state=checked]:bg-blue-500"
                         />
                         <Label htmlFor={`backup-monitoring-${inputKey}`} className="text-xs">
                           {backupSetting.overdueBackupCheckEnabled ? t("Enabled") : t("Disabled")}
@@ -1170,12 +1172,12 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="custom">{t("Custom")}</SelectItem>
-                          <SelectItem value="Minutes">{t("Minute(s)")}</SelectItem>
-                          <SelectItem value="Hours">{t("Hour(s)")}</SelectItem>
-                          <SelectItem value="Days">{t("Day(s)")}</SelectItem>
-                          <SelectItem value="Weeks">{t("Week(s)")}</SelectItem>
-                          <SelectItem value="Months">{t("Month(s)")}</SelectItem>
-                          <SelectItem value="Years">{t("Year(s)")}</SelectItem>
+                          <SelectItem value="Minutes">{t("Minutes", { plurals: true, count: server.displayInterval })}</SelectItem>
+                          <SelectItem value="Hours">{t("Hours", { plurals: true, count: server.displayInterval })}</SelectItem>
+                          <SelectItem value="Days">{t("Days", { plurals: true, count: server.displayInterval })}</SelectItem>
+                          <SelectItem value="Weeks">{t("Weeks", { plurals: true, count: server.displayInterval })}</SelectItem>
+                          <SelectItem value="Months">{t("Months", { plurals: true, count: server.displayInterval })}</SelectItem>
+                          <SelectItem value="Years">{t("Years", { plurals: true, count: server.displayInterval })}</SelectItem>
                         </SelectContent>
                       </Select>
                     </TableCell>
@@ -1274,7 +1276,7 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                               className={`text-xs p-1 rounded ${getNextRunDateStyle(server.nextRunDate, backupSetting.overdueBackupCheckEnabled)}`}
                             >
                               {server.nextRunDate !== 'N/A' ?
-                                 formatDateTime(server.nextRunDate, effectiveLocale)+` (${formatRelativeTime(server.nextRunDate, undefined, effectiveLocale)})` :
+                                 formatDateTime(server.nextRunDate, effectiveLocale)+` (${formatRelativeTime(server.nextRunDate, undefined, relativeTimeLocale)})` :
                                 'Not set'
                               }
                             </div>
@@ -1290,7 +1292,7 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                                     <>
                                       {formatDateTime(lastBackupTimestamp, effectiveLocale)}
                                       <br />
-                                      {formatRelativeTime(lastBackupTimestamp, undefined, effectiveLocale)}
+                                      {formatRelativeTime(lastBackupTimestamp, undefined, relativeTimeLocale)}
                                     </>
                                   );
                                 }
@@ -1312,7 +1314,6 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                           onCheckedChange={(checked) =>
                             updateBackupSettingById(server.id, server.backupName, 'overdueBackupCheckEnabled', checked)
                           }
-                          className="data-[state=checked]:bg-blue-500"
                         />
                         <Label htmlFor={`backup-monitoring-mobile-${inputKey}`} className="text-xs">
                           {backupSetting.overdueBackupCheckEnabled ? 'Enabled' : 'Disabled'}
@@ -1342,13 +1343,13 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                             <SelectValue placeholder={server.displayUnit} />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="custom">Custom</SelectItem>
-                            <SelectItem value="Minutes">Min(s)</SelectItem>
-                            <SelectItem value="Hours">Hour(s)</SelectItem>
-                            <SelectItem value="Days">Day(s)</SelectItem>
-                            <SelectItem value="Weeks">Week(s)</SelectItem>
-                            <SelectItem value="Months">Month(s)</SelectItem>
-                            <SelectItem value="Years">Year(s)</SelectItem>
+                            <SelectItem value="custom">{t("Custom")}</SelectItem>
+                            <SelectItem value="Minutes">{t("Minutes", { plurals: true, count: server.displayInterval })}</SelectItem>
+                            <SelectItem value="Hours">{t("Hours", { plurals: true, count: server.displayInterval })}</SelectItem>
+                            <SelectItem value="Days">{t("Days", { plurals: true, count: server.displayInterval })}</SelectItem>
+                            <SelectItem value="Weeks">{t("Weeks", { plurals: true, count: server.displayInterval })}</SelectItem>
+                            <SelectItem value="Months">{t("Months", { plurals: true, count: server.displayInterval })}</SelectItem>
+                            <SelectItem value="Years">{t("Years", { plurals: true, count: server.displayInterval })}</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>

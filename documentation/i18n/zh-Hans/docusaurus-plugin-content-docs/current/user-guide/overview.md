@@ -10,8 +10,10 @@ duplistatus 是一种为 Duplicati 备份系统设计的强大监控仪表盘。
 - 实时跟踪所有备份操作的状态
 - 自动检测过期备份并提供可配置的警报
 - 备份性能的综合指标和可视化
-- 通过 NTFY 和电子邮件提供的灵活通知系统
-- 多语言支持（英语、法语、德语、西班牙语、巴西葡萄牙语、印地语（罗马字）和简体中文）。
+- 灵活的通知系统，通过 NTFY 和电子邮件
+- 可选的 [API 密钥](settings/api-keys-settings.md) 用于 Duplicati 上传和主页小部件，具有上传大小和速率限制
+- 可选的 [IP 允许列表](settings/ip-allowlist-settings.md) 用于管理界面和外部 API
+- 多语言支持（英语、法语、德语、西班牙语、巴西葡萄牙语、印地语（罗马）和简体中文）。
 
 ## 安装 {#installation}
 
@@ -91,8 +93,9 @@ duplistatus 提供了一个直观的仪表盘，用于监控 Duplicati 备份操
 2. 收集初始备份日志 – 使用 [收集备份日志](collect-backup-logs.md) 功能来用所有 Duplicati 服务器的历史备份数据填充数据库。这也会自动更新备份监控间隔基于每个服务器的配置。
 3. 配置服务器设置 – 在 [设置 → 服务器](settings/server-settings.md) 中设置服务器别名和备注，以使你的仪表板更具信息量。
 4. 配置 NTFY 设置 – 在 [设置 → NTFY](settings/ntfy-settings.md) 中设置通知通过 NTFY。
-5. 配置电子邮件设置 – 在 [设置 → 电子邮件](settings/email-settings.md) 中设置电子邮件通知。
-6. 配置备份通知 – 在 [设置 → 备份通知](settings/backup-notifications-settings.md) 中设置每个备份或每个服务器的通知。
+5. 配置电子邮件设置 — 在 [设置 → 电子邮件](settings/email-settings.md) 中设置电子邮件通知。
+6. 配置备份通知 — 在 [设置 → 备份通知](settings/backup-notifications-settings.md) 中设置每个备份或每个服务器的通知。
+7. 可选地限制访问 — 如果要保护 `/api/upload` 和管理界面，请创建 [API 密钥](settings/api-keys-settings.md) 和/或 [IP 允许列表](settings/ip-allowlist-settings.md)。两者默认均为关闭。
 
 <br/>
 

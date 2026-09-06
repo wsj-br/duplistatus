@@ -55,10 +55,10 @@
 - **Point de terminaison** : `/api/cron/*`
 - **Méthode** : GET, POST
 - **Description** : Fait transiter les requêtes vers le service cron. Ce point de terminaison transfère toutes les requêtes au service cron en cours d'exécution sur un port distinct.
-- **Authentification** : Nécessite une session valide et un jeton CSRF
+- **Authentification** : Nécessite une session valide et un jeton CSRF. GET est autorisé pour les utilisateurs authentifiés ; POST (démarrer/arrêter/déclencher/recharger) nécessite un administrateur.
 - **Paramètres** :
-  - `*` : Tout chemin qui sera transféré au service Cron
-- **Réponse** : Dépend du point de terminaison du service Cron accédé
+  - `*` : Tout chemin qui sera transféré au service cron
+- **Réponse** : Dépend du point de terminaison du service cron qui est accédé
 - **Réponse d'erreur** (503) :
 
   ```json
@@ -68,8 +68,10 @@
   }
   ```
 
-- **Notes** :
-  - Fait transiter les requêtes vers le service Cron
-  - Renvoie un code 503 si le service Cron n'est pas disponible
+- **Remarques** :
+  - Transfère les requêtes au service cron sur `127.0.0.1`
+  - Transmet `CRON_SERVICE_SECRET` comme `X-Cron-Service-Secret` quand il est défini
+  - Retourne 503 si le service cron n'est pas disponible
   - Prend en charge les méthodes GET et POST
-  - Utilisé pour la gestion du service Cron depuis l'interface web
+  - Utilisé pour la gestion du service cron depuis l'interface web
+  - `POST /trigger/daily-summary-dispatch` est rejeté par le service cron ; utilisez `/api/configuration/daily-summary/send` à la place

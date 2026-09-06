@@ -4,7 +4,7 @@
 - **Punto de conexión**: `/api/notifications/test`
 - **Método**: POST
 - **Descripción**: Envía notificaciones de prueba (simples, basadas en plantilla o por correo electrónico) para verificar la configuración de notificaciones.
-- **Autenticación**: Requiere sesión válida y token CSRF
+- **Autenticación**: Requiere sesión de administrador y token CSRF
 - **Cuerpo de la solicitud**:
   Para prueba simple:
 
@@ -89,11 +89,18 @@ El contenido del correo de prueba muestra:
   - Admite mensajes de prueba simples, notificaciones basadas en plantilla y pruebas de correo electrónico
   - La prueba de plantilla utiliza datos de ejemplo para reemplazar las variables de la plantilla
   - Incluye marca de tiempo en el mensaje de prueba
-  - Valida la URL y el tema de NTFY antes de enviar
-  - Usa el campo `accessToken` para autenticación
-  - Para pruebas de plantilla, envía notificaciones tanto a NTFY como por correo electrónico (si está configurado)
-  - Las pruebas de correo requieren que la configuración SMTP esté establecida
-  - El punto final del correo de prueba borra la caché de solicitudes antes de leer la configuración SMTP, asegurando que los scripts externos puedan actualizar la configuración y que se refleje inmediatamente en los correos de prueba
+  - Las pruebas de NTFY usan la configuración de NTFY almacenada; no se usa una URL de NTFY proporcionada por el cliente
+  - Usa el campo `accessToken` para la autenticación cuando está almacenado
+  - Para pruebas de plantillas, envía notificaciones a NTFY y correo electrónico (si está configurado)
+  - Las pruebas de correo electrónico requieren que la configuración SMTP esté configurada
+  - El punto final de correo electrónico de prueba borra la caché de la solicitud antes de leer la configuración SMTP, asegurando que los scripts externos puedan actualizar la configuración y reflejarla inmediatamente en los correos electrónicos de prueba
+  - Las pruebas de plantillas y el envío inmediato del Resumen Diario omiten la supresión por copia de seguridad
+
+## Vista previa de la plantilla de notificación - `/api/notifications/preview` {#preview-notification-template---apinotificationspreview}
+- **Punto final**: `/api/notifications/preview`
+- **Método**: POST
+- **Descripción**: Representa una plantilla de notificación con el renderizador de Markdown de producción sin enviar. El cuerpo incluye `kind` (`success`, `warning`, `overdueBackup`, `dailySummaryEmail`, o `dailySummaryNtfy`) y la plantilla que se está editando. Las vistas previas del Resumen Diario usan el snapshot real actual; otros tipos usan valores de muestra deterministas. El HTML del correo electrónico está destinado a un iframe sandbox.
+- **Autenticación**: Requiere una sesión válida y un token CSRF
 
 ## Verificar respaldos atrasados - `/api/notifications/check-overdue` {#check-overdue-backups---apinotificationscheck-overdue}
 - **Punto de conexión**: `/api/notifications/check-overdue`

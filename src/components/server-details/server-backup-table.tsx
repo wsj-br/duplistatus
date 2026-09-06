@@ -18,7 +18,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { formatRelativeTime } from "@/lib/utils";
 import { formatDateTime } from "@/lib/date-format";
 import { formatInteger, formatBytes } from "@/lib/number-format";
-import { useConfig, useEffectiveFormatLocale } from "@/contexts/config-context";
+import { useConfig, useEffectiveFormatLocale, useRelativeTimeLocale } from "@/contexts/config-context";
 import { useBackupSelection } from "@/contexts/backup-selection-context";
 import { useRouter } from "next/navigation";
 import {
@@ -99,6 +99,7 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
   const { totalPages, paginated: paginatedBackups } = sortedFilteredPaginatedBackups;
   const router = useRouter();
   const effectiveLocale = useEffectiveFormatLocale();
+  const relativeTimeLocale = useRelativeTimeLocale();
 
   const handleSort = (column: string) => {
     setSortConfig(prevConfig => {
@@ -263,7 +264,7 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
                     <TableCell>
                       <div>{formatDateTime(backup.date, effectiveLocale)}</div>
                       <div className="text-xs text-muted-foreground">
-                        {formatRelativeTime(backup.date, undefined, effectiveLocale)}
+                        {formatRelativeTime(backup.date, undefined, relativeTimeLocale)}
                       </div>
                     </TableCell>
                     <TableCell>

@@ -1,0 +1,30 @@
+# Dependabot security updates for npm/pnpm.
+#
+# The packages under `ignore` are transitive and already patched via
+# pnpm-workspace.yaml `overrides`. Dependabot's security updater cannot
+# bump them in this pnpm workspace (dependabot/dependabot-core#15766);
+# the jobs fail with security_update_not_possible.
+#
+# GitHub security alerts can still appear. Direct-dependency bumps and
+# lockfile/override floors are handled by scripts/upgrade-dependencies.sh.
+#
+# open-pull-requests-limit: 0 keeps scheduled version-update PRs off; this
+# file exists so ignore rules apply to alert-triggered security jobs.
+
+version: 2
+updates:
+  - package-ecosystem: npm
+    directories:
+      - /
+      - /documentation
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 0
+    ignore:
+      - dependency-name: browserslist
+      - dependency-name: dompurify
+      - dependency-name: fast-uri
+      - dependency-name: js-yaml
+      - dependency-name: nanoid
+      - dependency-name: postcss
+      - dependency-name: qs

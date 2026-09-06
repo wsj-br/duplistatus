@@ -1,6 +1,10 @@
 # Externe APIs {#external-apis}
 
-Diese Endpunkte sind für die Verwendung durch andere Anwendungen und Integrationen konzipiert, zum Beispiel [Homepage](../user-guide/homepage-integration.md).
+Diese Endpunkte sind für die Verwendung durch andere Anwendungen und Integrationen vorgesehen, zum Beispiel [Homepage](../user-guide/homepage-integration.md). Sie sind CSRF-frei und verwenden keine Sitzungscookies.
+
+Die Authentifizierung ist optional und standardmäßig deaktiviert. Wenn **API-Schlüssel erforderlich** in [API-Schlüssel](../user-guide/settings/api-keys-settings.md) aktiviert ist, senden Sie den Schlüssel als `?api_key=`, `X-Api-Key` oder `Authorization: Bearer`. Upload-Schlüssel funktionieren nur auf `POST /api/upload`. Lese-Schlüssel funktionieren nur auf `/api/summary` und `/api/lastbackup*`. Abfragezeichenfolgen-Schlüssel erscheinen in den Zugriffsprotokollen des Reverse-Proxys.
+
+Eine [IP-Zulassungsliste](../user-guide/settings/ip-allowlist-settings.md) kann diese Routen auch einschränken. `/api/health` und `/api/ping` bleiben offen.
 
 ## Gesamtübersicht abrufen - `/api/summary` {#get-overall-summary---apisummary}
 - **Endpunkt**: `/api/summary`
@@ -22,14 +26,17 @@ Diese Endpunkte sind für die Verwendung durch andere Anwendungen und Integratio
   ```
 
 - **Fehlerantworten**:
-  - `500`: Serverfehler beim Abrufen der Zusammenfassungsdaten
-- **Hinweise**:
+  - `401`: Fehlender oder ungültiger API-Schlüssel, wenn Schlüssel erforderlich sind
+  - `403`: Der Schlüsselbereich ist nicht `read`, oder die Client-IP ist nicht auf der externen Zulassungsliste
+  - `429`: Lese-API-Ratenlimit überschritten
+  - `500`: Serverfehler beim Abrufen der Zusammenfassung
+- **Notizen**:
   - In Version 0.5.x wurde das Feld `totalBackupedSize` durch `totalBackupSize` ersetzt
   - In Version 0.7.x wurde das Feld `totalMachines` durch `totalServers` ersetzt
-  - Das Feld `overdueBackupsCount` zeigt die Anzahl der aktuell überfälligen Sicherungen an
-  - Das Feld `secondsSinceLastBackup` zeigt die Zeit in Sekunden seit der letzten Sicherung über alle Server hinweg an
-  - Gibt bei Fehlern eine Ersatzantwort mit Nullwerten zurück
-  - **Hinweis**: Für die Verwendung im internen Dashboard ziehen Sie `/api/dashboard` in Betracht, das diese Daten sowie zusätzliche Informationen enthält
+  - Das Feld `overdueBackupsCount` zeigt die Anzahl der derzeit überfälligen Backups an
+  - Das Feld `secondsSinceLastBackup` zeigt die Zeit in Sekunden seit der letzten Sicherung auf allen Servern an
+  - Gibt eine Rückfallantwort mit Nullen zurück, wenn das Abrufen der Daten fehlschlägt
+  - **Notiz**: Für die interne Dashboard-Nutzung sollten Sie `/api/dashboard` verwenden, das diese Daten plus zusätzliche Informationen enthält
 
 ## Letztes Backup abrufen - `/api/lastbackup/:serverId` {#get-latest-backup---apilastbackupserverid}
 - **Endpunkt**: `/api/lastbackup/:serverId`
@@ -80,13 +87,16 @@ Die Serverkennung muss URL-kodiert sein.
   ```
 
 - **Fehlerantworten**:
+  - `401`: Fehlende oder ungültige API-Schlüssel, wenn Schlüssel erforderlich sind
+  - `403`: Der Schlüsselbereich ist nicht `read`, oder die Client-IP ist nicht auf der externen Zulassungsliste
   - `404`: Server nicht gefunden
+  - `429`: Lese-API-Ratenlimit überschritten
   - `500`: Interner Serverfehler
-- **Hinweise**:
-  - In Version 0.7.x hat sich der Schlüssel des Antwortobjekts von `machine` zu `server` geändert
-  - Die Serverkennung kann entweder die ID oder der Name sein
-  - Gibt null für latest_backup zurück, wenn keine Sicherungen vorhanden sind
-  - Beinhaltet Cache-Control-Header, um das Zwischenspeichern zu verhindern
+- **Notizen**:
+  - In Version 0.7.x wurde der Schlüssel des Antwortobjekts von `machine` zu `server` geändert
+  - Die Server-ID kann entweder die ID oder der Name sein
+  - Gibt null für latest_backup zurück, wenn keine Backups existieren
+  - Enthält Cache-Steuerungsheader, um das Caching zu verhindern
 
 ## Letzte Backups abrufen - `/api/lastbackups/:serverId` {#get-latest-backups---apilastbackupsserverid}
 - **Endpunkt**: `/api/lastbackups/:serverId`
@@ -163,14 +173,17 @@ Die Serverkennung muss URL-kodiert sein.
   ```
 
 - **Fehlerantworten**:
+  - `401`: Fehlende oder ungültige API-Schlüssel, wenn Schlüssel erforderlich sind
+  - `403`: Der Schlüsselbereich ist nicht `read`, oder die Client-IP ist nicht auf der externen Zulassungsliste
   - `404`: Server nicht gefunden
+  - `429`: Lese-API-Ratenlimit überschritten
   - `500`: Interner Serverfehler
-- **Hinweise**:
-  - In Version 0.7.x hat sich der Schlüssel des Antwortobjekts von `machine` zu `server` geändert und das Feld `backup_types_count` wurde in `backup_jobs_count` umbenannt
-  - Die Serverkennung kann entweder die ID oder der Name sein
-  - Gibt die letzte Sicherung für jeden Sicherungsauftrag (backup_name) zurück, den der Server besitzt
-  - Im Gegensatz zu `/api/lastbackup/:serverId`, das nur die jeweils aktuellste Sicherung des Servers zurückgibt (unabhängig vom Sicherungsauftrag)
-  - Beinhaltet Cache-Control-Header, um das Zwischenspeichern zu verhindern
+- **Notizen**:
+  - In Version 0.7.x wurde der Schlüssel des Antwortobjekts von `machine` zu `server` geändert, und das Feld `backup_types_count` wurde in `backup_jobs_count` umbenannt
+  - Die Server-ID kann entweder die ID oder der Name sein
+  - Gibt das neueste Backup für jeden Sicherungsauftrag (backup_name) zurück, den der Server hat
+  - Im Gegensatz zu `/api/lastbackup/:serverId`, das nur das neueste Backup des Servers zurückgibt (unabhängig vom Sicherungsauftrag)
+  - Enthält Cache-Steuerungsheader, um das Caching zu verhindern
 
 ## Backup-Daten hochladen - `/api/upload` {#upload-backup-data---apiupload}
 - **Endpunkt**: `/api/upload`
@@ -179,10 +192,12 @@ Die Serverkennung muss URL-kodiert sein.
 - **Anforderungstext**: JSON, gesendet von Duplicati, mit folgenden Optionen:
 
   ```bash
-  --send-http-url=http://my.local.server:9666/api/upload
-  --send-http-result-output-format=Json
+  --send-http-json-urls=http://my.local.server:9666/api/upload?api_key=YOUR_UPLOAD_KEY
   --send-http-log-level=Information
-  ```
+  --send-http-max-log-lines=500
+```
+
+Bei Duplicati in Versionen älter als 2.0.9.106 verwenden Sie `--send-http-url` mit `--send-http-result-output-format=Json`. Siehe [Duplicati Server-Konfiguration](../installation/duplicati-server-configuration.md).
 
 - **Antwort**:
 
@@ -193,9 +208,13 @@ Die Serverkennung muss URL-kodiert sein.
   ```
 
 - **Fehlerantworten**:
-  - `400`: Erforderliche Felder in den Abschnitten Extra oder Data fehlen oder MainOperation ist ungültig
-  - `409`: Doppelte Sicherungsdaten (wird ignoriert)
-  - `500`: Serverfehler bei der Verarbeitung der Sicherungsdaten
+  - `400`: Fehlende erforderliche Felder in den Abschnitten Extra oder Data, oder ungültige MainOperation
+  - `401`: Fehlender oder ungültiger API-Schlüssel, wenn Schlüssel erforderlich sind
+  - `403`: Der Schlüsselbereich ist nicht `upload`, oder die Client-IP ist nicht auf der externen Zulassungsliste
+  - `409`: Doppelte Sicherungsdaten (ignoriert)
+  - `413`: Die Anforderungskörpergröße überschreitet das konfigurierte Upload-Größenlimit (Standard 5 MB)
+  - `429`: Upload- oder Authentifizierungsfehler-Ratenlimit überschritten (`Retry-After` ist gesetzt)
+  - `500`: Serverfehler beim Verarbeiten der Sicherungsdaten
 - **Hinweise**:
   - Verarbeitet nur Sicherungsvorgänge (MainOperation muss „Backup“ sein)
   - Überprüft erforderliche Felder im Extra-Abschnitt: machine-id, machine-name, backup-name, backup-id

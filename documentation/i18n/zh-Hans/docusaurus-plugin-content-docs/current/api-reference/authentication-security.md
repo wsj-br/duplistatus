@@ -1,6 +1,6 @@
 # 身份验证和安全 {#authentication-security}
 
-API 使用会话身份验证和 CSRF 保护的组合，用于所有数据库写入操作，以防止未经授权的访问和潜在的拒绝服务攻击。外部 API（由 Duplicati 使用）保持未经身份验证的状态，以保持兼容性。
+该API使用基于会话的身份验证和CSRF保护来防止未经授权的访问和潜在的拒绝服务攻击。Duplicati和Homepage使用的外部API保持CSRF豁免。它们可以选择性地要求一个范围的API密钥和/或IP白名单（默认均关闭）。`/api/upload`还具有可配置的正文大小上限和速率限制。
 
 ## 会话身份验证 {#session-based-authentication}
 
@@ -20,13 +20,13 @@ API 使用会话身份验证和 CSRF 保护的组合，用于所有数据库写�
 所有修改数据库数据的端点需要会话身份验证和 CSRF 令牌:
 
 - **服务器管理**: `/api/servers/:id` (PATCH, DELETE), `/api/servers/:id/server-url` (PATCH), `/api/servers/:id/password` (PATCH, GET)
-- **配置管理**: `/api/configuration/email` (GET, POST, DELETE), `/api/configuration/unified` (GET), `/api/configuration/ntfy` (GET), `/api/configuration/notifications` (GET, POST), `/api/configuration/backup-settings` (POST), `/api/configuration/templates` (POST), `/api/configuration/overdue-tolerance` (GET, POST)
-- **通知系统**: `/api/notifications/test` (POST)
+- **配置管理**: `/api/configuration/email` (GET, POST, DELETE), `/api/configuration/unified` (GET), `/api/configuration/ntfy` (GET), `/api/configuration/notifications` (GET, POST), `/api/configuration/backup-settings` (POST), `/api/configuration/templates` (POST), `/api/configuration/overdue-tolerance` (GET, POST), `/api/configuration/daily-summary` (GET, POST), `/api/configuration/daily-summary/send` (POST), `/api/configuration/daily-summary/retry` (POST), `/api/configuration/daily-summary/preview` (POST)
+- **通知系统**: `/api/notifications/test` (POST), `/api/notifications/preview` (POST)
 - **Cron 配置**: `/api/cron-config` (GET, POST)
-- **Cron 代理**: `/api/cron/*` (GET, POST) - 代理请求到 Cron 服务
+- **Cron 代理**: `/api/cron/*` (GET, POST) - 代理请求到 cron 服务。POST 需要管理员权限。Cron 进程默认绑定到 `127.0.0.1`；当 `CRON_SERVICE_SECRET` 设置时，修改 cron-service 路由需要 `X-Cron-Service-Secret`。
 - **会话管理**: `/api/session` (POST, GET, DELETE), `/api/csrf` (GET)
 - **图表数据**: `/api/chart-data/*` (GET)
-- **仪表板**: `/api/dashboard` (GET)
+- **仪表盘**: `/api/dashboard` (GET)
 - **服务器详细信息**: `/api/servers` (GET), `/api/servers/:id` (GET), `/api/detail/:serverId` (GET)
 - **审计日志**: `/api/audit-log` (GET), `/api/audit-log/download` (GET), `/api/audit-log/filters` (GET), `/api/audit-log/retention` (PATCH), `/api/audit-log/cleanup` (POST) - 管理员需要写入操作
 - **用户管理**: `/api/users` (GET, POST, PATCH, DELETE) - 管理员需要
@@ -37,14 +37,17 @@ API 使用会话身份验证和 CSRF 保护的组合，用于所有数据库写�
 - **逾期检查**: `/api/notifications/check-overdue` (POST) - 需要会话和 CSRF 令牌
 - **清除逾期时间戳**: `/api/notifications/clear-overdue-timestamps` (POST) - 需要会话和 CSRF 令牌
 
-### 未受保护的端点 {#unprotected-endpoints}
-外部 API 保持未经身份验证的状态，以便与 Duplicati 集成:
+### 外部端点 {#external-endpoints}
+这些路由不使用会话cookie或CSRF。身份验证是可选的，并在设置中配置：
 
-- `/api/upload` - 备份数据上传从 Duplicati
-- `/api/lastbackup/:serverId` - 最新备份状态
-- `/api/lastbackups/:serverId` - 最新备份状态
-- `/api/summary` - 总结数据
-- `/api/health` - 健康检查端点
+- `/api/upload` - 来自Duplicati的备份数据上传（上传范围密钥、大小和速率限制）
+- `/api/lastbackup/:serverId` - 最新备份状态（读取范围密钥）
+- `/api/lastbackups/:serverId` - 最新备份状态（读取范围密钥）
+- `/api/summary` - 整体摘要数据（读取范围密钥）
+- `/api/health` - 健康检查端点（从不需要密钥）
+- `/api/ping` - 连通性探测（从不需要密钥）
+
+当**要求API密钥**开启时，前四个路由在没有有效密钥时返回`401`，当密钥范围不匹配时返回`403`。请参阅[API密钥](../user-guide/settings/api-keys-settings.md)和[IP白名单](../user-guide/settings/ip-allowlist-settings.md)。
 
 ### 使用示例（会话 + CSRF） {#usage-example-session--csrf}
 

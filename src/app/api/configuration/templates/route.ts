@@ -22,7 +22,8 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
       language: templates.language || current.language,
       success: templates.success || current.success,
       warning: templates.warning || current.warning,
-      overdueBackup: templates.overdueBackup || current.overdueBackup
+      overdueBackup: templates.overdueBackup || current.overdueBackup,
+      dailySummary: templates.dailySummary || current.dailySummary,
     };
 
     // Build a summary of changed template fields with old and new values
@@ -66,6 +67,25 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
       // Only include this template if there are actual changes
       if (Object.keys(changedFields).length > 0) {
         changesSummary[templateType] = changedFields;
+      }
+    }
+
+    if (updated.dailySummary && current.dailySummary) {
+      const dailyChanges: Record<string, { old: unknown; new: unknown }> = {};
+      if (current.dailySummary.email.title !== updated.dailySummary.email.title) {
+        dailyChanges.emailTitle = { old: current.dailySummary.email.title, new: updated.dailySummary.email.title };
+      }
+      if (current.dailySummary.email.message !== updated.dailySummary.email.message) {
+        dailyChanges.emailMessage = { old: current.dailySummary.email.message, new: updated.dailySummary.email.message };
+      }
+      if (current.dailySummary.ntfy.title !== updated.dailySummary.ntfy.title) {
+        dailyChanges.ntfyTitle = { old: current.dailySummary.ntfy.title, new: updated.dailySummary.ntfy.title };
+      }
+      if (current.dailySummary.ntfy.message !== updated.dailySummary.ntfy.message) {
+        dailyChanges.ntfyMessage = { old: current.dailySummary.ntfy.message, new: updated.dailySummary.ntfy.message };
+      }
+      if (Object.keys(dailyChanges).length > 0) {
+        changesSummary.dailySummary = dailyChanges;
       }
     }
 

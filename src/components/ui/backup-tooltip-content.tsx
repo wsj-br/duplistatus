@@ -2,7 +2,7 @@
 import { useTranslation } from "react-i18next";
 
 import { useRouter } from "next/navigation";
-import { useEffectiveFormatLocale } from "@/contexts/config-context";
+import { useEffectiveFormatLocale, useRelativeTimeLocale } from "@/contexts/config-context";
 import type { BackupStatus, NotificationEvent } from "@/lib/types";
 import { formatRelativeTime, getStatusColor } from "@/lib/utils";
 import { formatDateTime } from "@/lib/date-format";
@@ -68,6 +68,7 @@ export function BackupTooltipContent({
   const { t } = useTranslation();
   const router = useRouter();
   const effectiveLocale = useEffectiveFormatLocale();
+  const relativeTimeLocale = useRelativeTimeLocale();
 
   // Helper function to get translated status label
   const getStatusLabel = (status: BackupStatus | 'N/A'): string => {
@@ -111,7 +112,7 @@ export function BackupTooltipContent({
             <div className="text-muted-foreground text-left mb-1">{t("Date:")}</div>
             <div className="font-semibold text-left">
               {lastBackupDate !== "N/A" 
-                ? formatDateTime(lastBackupDate, effectiveLocale) + " (" + formatRelativeTime(lastBackupDate, undefined, effectiveLocale) + ")"
+                ? formatDateTime(lastBackupDate, effectiveLocale) + " (" + formatRelativeTime(lastBackupDate, undefined, relativeTimeLocale) + ")"
                 : t("N/A")}
             </div>
           </div>
@@ -182,7 +183,7 @@ export function BackupTooltipContent({
             <div className="col-span-2">
               <div className="text-muted-foreground text-left mb-1">{t("Expected:")}</div>
               <div className="font-semibold text-left">
-                {formatDateTime(expectedBackupDate, effectiveLocale) + " (" + formatRelativeTime(expectedBackupDate, undefined, effectiveLocale) + ")"}
+                {formatDateTime(expectedBackupDate, effectiveLocale) + " (" + formatRelativeTime(expectedBackupDate, undefined, relativeTimeLocale) + ")"}
               </div>
             </div>
           )}
@@ -201,7 +202,7 @@ export function BackupTooltipContent({
             <div className="text-muted-foreground text-right">{t("Expected:")}</div>
             <div className="font-semibold text-left">
               {expectedBackupDate !== "N/A" 
-                ? formatDateTime(expectedBackupDate, effectiveLocale) + " (" + formatRelativeTime(expectedBackupDate, undefined, effectiveLocale) + ")"
+                ? formatDateTime(expectedBackupDate, effectiveLocale) + " (" + formatRelativeTime(expectedBackupDate, undefined, relativeTimeLocale) + ")"
                 : t("N/A")}
             </div>
           </div>

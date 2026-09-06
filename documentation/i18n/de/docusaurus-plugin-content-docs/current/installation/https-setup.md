@@ -34,7 +34,7 @@ server {
         proxy_pass http://localhost:9666;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-For $remote_addr;
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
@@ -102,15 +102,21 @@ Caddy wird SSL-Zertifikate von Let's Encrypt automatisch abrufen und verwalten.
 - [Caddy-Dokumentation](https://caddyserver.com/docs/)
 - [Caddy-Anleitung für Reverse Proxy](https://caddyserver.com/docs/caddyfile/directives/reverse_proxy)
 
+Stellen Sie sicher, dass Port 9666 nicht im öffentlichen Internet verfügbar ist. Binden Sie die Anwendung an localhost (oder ein privates Netzwerk) und lassen Sie den Reverse-Proxy als einzigen öffentlichen Listener fungieren.
+
+Wann [IP-Allowlisten](../user-guide/settings/ip-allowlist-settings.md) aktiviert sind, listen Sie diesen Proxy in **Vertrauenswürdige Proxies** (oder `IP_TRUSTED_PROXIES`) auf. Die Anwendung berücksichtigt `X-Forwarded-For` / `X-Real-IP` nur, wenn der TCP-Peer ein vertrauenswürdiger Proxy ist. **Überschreiben** Sie diese Header mit `$remote_addr`. Verwenden Sie nicht `$proxy_add_x_forwarded_for`, da dies den Header anhängt und es einem Client ermöglicht, den ersten Hop zu fälschen.
+
 ### Wichtige Hinweise {#important-notes}
 
 ```bash
---send-http-url=https://your-domain.com/api/upload
+--send-http-json-urls=https://your-domain.com/api/upload
 ```
 
 :::info[WICHTIG]
-Nach der Einrichtung von HTTPS müssen Sie die Konfiguration Ihres Duplicati-Servers aktualisieren, um die HTTPS-URL zu verwenden:
+Nach der Einrichtung von HTTPS müssen Sie die Duplicati-Serverkonfiguration aktualisieren, um die HTTPS-URL zu verwenden:
 
+
+Für Duplicati älter als 2.0.9.106 verwenden Sie `--send-http-url=https://your-domain.com/api/upload` mit `--send-http-result-output-format=Json`. Siehe [Duplicati Server-Konfiguration](duplicati-server-configuration.md).
 :::
 
 :::tip

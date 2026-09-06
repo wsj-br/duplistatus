@@ -21,9 +21,14 @@
 
 Si vous voyez des avertissements du serveur Duplicati tels que `HTTP Response request failed for:` et `Failed to send message: System.Net.Http.HttpRequestException:`, et que les nouvelles sauvegardes n'apparaissent pas dans le tableau de bord ou dans l'historique des sauvegardes :
 
-- **Vérifier la Configuration Duplicati** : Confirmer que Duplicati est configuré correctement pour envoyer des données à **duplistatus**. Vérifier les paramètres d'URL HTTP dans Duplicati.
-- **Vérifier la Connectivité Réseau** : S'assurer que le serveur Duplicati peut se connecter au serveur **duplistatus**. Confirmer que le port est correct (par défaut : `9666`).
-- **Examiner les Journaux Duplicati** : Vérifier les erreurs de requête HTTP dans les journaux Duplicati.
+- **Vérifier la Configuration de Duplicati**: Confirmez que Duplicati est configuré correctement pour envoyer du JSON à **duplistatus**. Sur Duplicati 2.0.9.106 et ultérieur, utilisez `--send-http-json-urls` pointant vers `/api/upload`. Sur les versions antérieures de Duplicati, utilisez `--send-http-url` avec `--send-http-result-output-format=Json`. Voir [Configuration du Serveur Duplicati](../installation/duplicati-server-configuration.md).
+- **Vérifier la Connectivité Réseau**: Assurez-vous que le serveur Duplicati peut se connecter au serveur **duplistatus**. Confirmez que le port est correct (par défaut: `9666`).
+- **HTTP 401**: Les clés API sont requises et l'URL de téléchargement manque d'une clé de portée de téléchargement valide. Ajoutez `?api_key=` comme décrit dans [Clés API](settings/api-keys-settings.md).
+- **HTTP 403**: La portée de la clé est incorrecte (une clé de lecture ne peut pas télécharger), ou l'hôte Duplicati n'est pas sur la [liste d'adresses IP autorisées de l'API externe](settings/ip-allowlist-settings.md).
+- **HTTP 413**: Le rapport JSON est plus grand que la limite de taille de téléchargement (par défaut 5 Mo). Réduisez `--send-http-max-log-lines` ou augmentez la limite dans Paramètres → Clés API.
+- **HTTP 429**: La limite de taux de téléchargement par IP a été dépassée. Attendez `Retry-After`, ou augmentez les limites si de nombreux travaux se terminent en même temps.
+- **Vérifier les Journaux de Duplicati**: Vérifiez les erreurs de requête HTTP dans les journaux de Duplicati.
+- **Double reporting**: Si vous envoyez également des rapports de formulaire à [Duplicati Monitoring](https://www.duplicati-monitoring.com/), un échec ou une erreur HTTP 500 de ce service peut empêcher Duplicati d'envoyer le rapport JSON à **duplistatus**. Les URL de formulaire sont envoyées en premier. Voir [Reporting to duplistatus and Duplicati Monitoring](../installation/duplicati-server-configuration.md#reporting-to-duplistatus-and-duplicati-monitoring).
 
 ### Serveurs en double sur le tableau de bord {#duplicate-servers-on-the-dashboard}
 
@@ -54,7 +59,7 @@ Si les notifications ne sont pas envoyées ou reçues :
 
 Si les versions de sauvegarde ne s'affichent pas sur le tableau de bord ou la page de détails :
 
-- **Vérifier la Configuration Duplicati** : Assurez-vous que `send-http-log-level=Information` et `send-http-max-log-lines=0` sont configurés dans les options avancées de Duplicati.
+- **Vérifier la configuration de Duplicati**: Assurez-vous que `send-http-log-level=Information` et `send-http-max-log-lines=500` sont configurés dans les options avancées de Duplicati. Duplicati conserve les N premières lignes de journal. Si la liste des versions est toujours manquante, augmentez la limite ou utilisez `0` lorsque vous n'envoyez pas de rapports à Duplicati Monitoring. Le **nombre** de versions peut toujours apparaître à partir des statistiques JSON lorsque la liste détaillée est manquante. Voir [Lignes de journal et versions disponibles](../installation/duplicati-server-configuration.md#log-lines-and-available-versions).
 
 ### Alertes de Sauvegarde en Retard Non Fonctionnelles {#overdue-backup-alerts-not-working}
 
@@ -92,10 +97,50 @@ Vous pouvez créer des comptes utilisateurs supplémentaires dans [Paramètres >
 
 ### Mot de passe Admin perdu ou compte verrouillé {#lost-admin-password-or-locked-out}
 
-Si vous avez perdu votre mot de passe administrateur ou êtes verrouillé de votre compte :
+Si vous avez perdu votre mot de passe administrateur ou été verrouillé hors de votre compte (vous pouvez toujours ouvrir `/login`):
 
 - **Utiliser le script de récupération Admin** : Consultez le guide [Admin Account Recovery](admin-recovery.md) pour obtenir des instructions sur la récupération de l'accès administrateur dans les environnements Docker.
 - **Vérifier l'accès au conteneur** : Assurez-vous que vous avez accès à Docker exec au conteneur pour exécuter le script de récupération.
+
+Si le navigateur affiche **Accès refusé** (HTTP 403) avant la connexion, il s'agit d'un [verrouillage de la liste d'adresses IP autorisées](#locked-out-by-ip-allowlist), et non d'un mot de passe oublié. Le script de récupération d'administration ne peut pas le contourner.
+
+### Verrouillé par la liste d'adresses IP autorisées {#locked-out-by-ip-allowlist}
+
+Si Paramètres → [Liste d'adresses IP autorisées](settings/ip-allowlist-settings.md) est activé avec un CIDR manquant ou incorrect, le proxy rejette la demande avant l'authentification. Symptômes typiques:
+
+- Les pages (`/`, `/login`, `/settings`, …) retournent un texte brut **Accès refusé** (HTTP 403).
+- Les API de session et d'administration retournent JSON `{ "errorCode": "IP_NOT_ALLOWED" }`.
+- `/api/health` et `/api/ping` répondent toujours (ils sont exemptés). Les cookies de connexion n'aident pas.
+
+Le chemin d'enregistrement essaie d'empêcher cela: vous ne pouvez pas activer la liste **admin** sauf si votre IP actuelle est déjà dans les CIDRs (sauf lors de l'enregistrement depuis la boucle locale). Vous pouvez toujours vous verrouiller en utilisant un CIDR qui correspond maintenant mais pas plus tard (VPN, DHCP, un autre réseau), en configurant mal les proxies de confiance, ou en activant la liste depuis `127.0.0.1` / `::1` sans ajouter cette adresse.
+
+Les variables d'environnement remplacent la base de données, donc vous pouvez récupérer sans l'interface utilisateur. Elles ne réécrivent pas les paramètres; un redémarrage est nécessaire pour que le processus les prenne en compte.
+
+**Désactivez la liste admin** (récupération habituelle):
+
+```bash
+ADMIN_IP_ALLOWLIST_ENABLED=false
+```
+
+**Ou conservez-la activée et injectez un CIDR qui inclut votre IP actuelle:**
+
+```bash
+ADMIN_IP_ALLOWLIST=203.0.113.10/32
+```
+
+Puis redémarrez l'application:
+
+- **Docker Compose**: définissez les mêmes clés sous `environment` dans `docker-compose.yml` (le fichier inclut des exemples commentés) et recréez le conteneur de l'application. `docker exec` ne change pas les variables d'environnement d'un conteneur en cours d'exécution.
+- **Local / systemd**: exportez la variable dans l'environnement du service et redémarrez le processus Next.js (pas seulement le service cron).
+
+Après que vous pouvez ouvrir l'interface utilisateur à nouveau:
+
+1. Connectez-vous et corrigez les CIDRs et les proxies de confiance dans Paramètres → Liste d'adresses IP autorisées.
+2. Supprimez le remplacement d'environnement pour que les paramètres soient à nouveau la source de vérité.
+
+La liste d'adresses IP **externe API** (`/api/upload`, `/api/summary`, `/api/lastbackup*`) ne verrouille pas le tableau de bord. Récupérez-la de la même manière avec `EXTERNAL_API_IP_ALLOWLIST_ENABLED=false` ou `EXTERNAL_API_IP_ALLOWLIST`. Si les téléchargements de Duplicati échouent avec HTTP 403 après avoir activé cette liste, voir [New Backups Not Showing](#new-backups-not-showing). La récupération des proxies de confiance utilise `IP_TRUSTED_PROXIES` (une valeur non vide implique également la confiance-proxy).
+
+Voir [Liste d'adresses IP autorisées](settings/ip-allowlist-settings.md#environment-overrides) et [Variables d'environnement](../installation/environment-variables.md).
 
 ### Sauvegarde de la base de données et Migration {#database-backup-and-migration}
 

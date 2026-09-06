@@ -8,11 +8,13 @@
 - **Einheitliches Dashboard**: Anzeige des Backup-Status, der Historie, der Duplicati-Version und der Details für alle Server an einem Ort.
 - **Backup-Überwachung**: Automatische Überprüfung und Benachrichtigung für überfällige geplante Backups.
 - **Datenvisualisierung & Protokolle**: Interaktive Diagramme und automatische Protokollierung von Duplicati-Servern.
-- **Benachrichtigungen & Warnungen**: Integrierte NTFY- und SMTP-E-Mail-Unterstützung für Sicherungswarnungen, einschließlich Hinweisen zu überfälligen Sicherungen.
-- **Benutzerzugriffskontrolle & Sicherheit**: Sicheres Authentifizierungssystem mit rollenbasierter Zugriffskontrolle (Administrator/Benutzer-Rollen), konfigurierbaren Passwortrichtlinien, Schutz vor Kontosperrung und umfassender Benutzerverwaltung.
-- **Audit-Protokollierung**: Vollständige Nachverfolgung aller Systemänderungen und Benutzeraktionen mit erweiterter Filterung, Exportfunktionen und konfigurierbaren Aufbewahrungszeiträumen.
-- **Anwendung-Protokollbetrachter**: Nur für Administratoren zugängliche Schnittstelle zum Anzeigen, Suchen und Exportieren von Anwendungsprotokollen direkt über die Weboberfläche mit Echtzeitüberwachung.
-- **Mehrsprachige Unterstützung**: Oberfläche und Dokumentation in Englisch, Französisch, Deutsch, Spanisch, Brasilianischem Portugiesisch, Hindi (Latein) und Vereinfachtem Chinesisch verfügbar.
+- **Benachrichtigungen & Warnungen**: Integrierte NTFY- und SMTP-E-Mail-Unterstützung für Backup-Warnungen, einschließlich überfälliger Backup-Benachrichtigungen.
+- **Benutzerzugriffskontrolle & Sicherheit**: Sicheres Authentifizierungssystem mit rollenbasierter Zugriffskontrolle (Admin/Benutzer-Rollen), konfigurierbaren Passwortrichtlinien, Kontosperrschutz und umfassender Benutzerverwaltung.
+- **API-Schlüssel**: Optionale, bereichsspezifische Schlüssel für Duplicati-Uploads und Homepage-Widgets, sowie konfigurierbare Upload-Größen- und Rate-Limits.
+- **IP-Zulassungslisten**: Separate CIDR-Listen für den Administrationsinterface und die externen APIs (`/api/upload`, `/api/summary`, `/api/lastbackup*`).
+- **Audit-Protokollierung**: Vollständige Audit-Spur aller Systemänderungen und Benutzeraktionen mit fortschrittlicher Filterung, Exportfunktionen und konfigurierbaren Aufbewahrungszeiten.
+- **Anwendungsprotokolle-Viewer**: Admin-only-Interface zum Anzeigen, Suchen und Exportieren von Anwendungsprotokollen direkt über das Webinterface mit Echtzeit-Überwachungsfunktionen.
+- **Mehrsprachige Unterstützung**: Interface und Dokumentation in Englisch, Französisch, Deutsch, Spanisch, Brasilianisch-Portugiesisch, Hindi (Roman) und Chinesisch (vereinfacht) verfügbar.
 
 ## Installation {#installation}
 

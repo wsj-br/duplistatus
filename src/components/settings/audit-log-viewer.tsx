@@ -1,7 +1,7 @@
 'use client';
 import { useTranslation } from "react-i18next";
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
-import { useEffectiveFormatLocale } from '@/contexts/config-context';
+import { useEffectiveFormatLocale, useRelativeTimeLocale } from '@/contexts/config-context';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -64,6 +64,7 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
   const { t } = useTranslation();
   const { toast } = useToast();
   const effectiveLocale = useEffectiveFormatLocale();
+  const relativeTimeLocale = useRelativeTimeLocale();
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -416,7 +417,7 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="start-date">{t("Start Date")}</Label>
+            <Label htmlFor="start-date">{t("Start Date (YYYY-MM-DD)")}</Label>
             <DatePicker
               id="start-date"
               value={startDate}
@@ -426,7 +427,7 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="end-date">{t("End Date")}</Label>
+            <Label htmlFor="end-date">{t("End Date (YYYY-MM-DD)")}</Label>
             <DatePicker
               id="end-date"
               value={endDate}
@@ -520,7 +521,7 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
                       <TableHead className="bg-muted">{t("Category")}</TableHead>
                       <TableHead className="bg-muted">{t("Status")}</TableHead>
                       <TableHead className="bg-muted">{t("Target")}</TableHead>
-                      <TableHead className="text-right bg-muted">{t("Actions")}</TableHead>
+                      <TableHead className="bg-muted">{t("Actions")}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -532,7 +533,7 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
                         <TableCell>
                           <div>{formatSQLiteTimestamp(log.timestamp, effectiveLocale)}</div>
                           <div className="text-xs text-muted-foreground">
-                            {formatRelativeTime(log.timestamp, undefined, effectiveLocale)}
+                            {formatRelativeTime(log.timestamp, undefined, relativeTimeLocale)}
                           </div>
                         </TableCell>
                         <TableCell>{log.username || t("System")}</TableCell>
@@ -548,7 +549,7 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
                             <span className="text-muted-foreground">—</span>
                           )}
                         </TableCell>
-                        <TableCell className="text-right">
+                        <TableCell>
                           <Button
                             variant="ghost"
                             size="icon"

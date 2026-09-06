@@ -4,6 +4,8 @@
 
 Recover administrator access to **duplistatus** when you've lost your password or been locked out of your account. This guide covers using the admin recovery script in Docker environments.
 
+If the browser shows **Access denied** (HTTP 403) before the login form, the [admin IP allowlist](settings/ip-allowlist-settings.md) is blocking the request. Use [Locked Out by IP Allowlist](troubleshooting.md#locked-out-by-ip-allowlist) instead of this script.
+
 
 
 ## Using the Script in Docker {#using-the-script-in-docker}
