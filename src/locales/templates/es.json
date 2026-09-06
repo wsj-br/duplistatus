@@ -1,0 +1,26 @@
+{
+  "success": {
+    "title": "✅ {status} - {backup_name} @ {server_alias}",
+    "message": "La copia de seguridad {backup_name} en {server_alias} se completó con el estado '{status}' el {backup_date} en {duration}.\n\n🔍 Nota: {server_note}\n☁️ Subido: {uploaded_size}\n💾 Uso de almacenamiento: {storage_size}\n🔃 Versiones disponibles: {available_versions}\n",
+    "priority": "default",
+    "tags": "duplicati, duplistatus, success"
+  },
+  "warning": {
+    "title": "⚠️ {status} - {backup_name} @ {server_alias}",
+    "message": "La copia de seguridad {backup_name} en {server_alias} se completó con el estado '{status}' el {backup_date}.\n\n🔍 Nota: {server_note}\n⏰ Duración: {duration}\n☁️ Subido: {uploaded_size}\n\n🚨 {warnings_count} advertencias\n🛑 {errors_count} errores.\n\n📄 Mensajes del registro:\n{log_text}\n\n⚠️ Comprobar el servidor duplicati inmediatamente {server_url}\n",
+    "priority": "high",
+    "tags": "duplicati, duplistatus, warning, error"
+  },
+  "overdueBackup": {
+    "title": "🕑 Vencida - {backup_name} @ {server_alias}",
+    "message": "La copia de seguridad {backup_name} está vencida en {server_alias}.\n\n🔍 Nota: {server_note}\n🚨 Última copia de seguridad recibida: {last_backup_date} ({last_elapsed})\n⏰ Hora de copia de seguridad esperada: {expected_date} ({expected_elapsed})\n\nIntervalo esperado: {backup_interval} / Tolerancia: {overdue_tolerance}\n\n⚠️ Comprobar el servidor duplicati inmediatamente {server_url}\n",
+    "priority": "default",
+    "tags": "duplicati, duplistatus, overdue"
+  },
+  "dailySummary": {
+    "email": {
+      "title": "📬 duplistatus — Resumen diario de copias de seguridad — {summary_date}",
+      "message": "## 📊 Resumen diario de copias de seguridad\n\n🕐 Generado: **{generated_at}** ({time_zone})\n\n### 📈 Vista general\n\n| Métrica | Conteo |\n| --- | ---: |\n| 🖥️ Servidores | {server_count} |\n| 💼 Trabajos de copia de seguridad | {job_count} |\n| ✅ Éxito | {success_count} |\n| ⚠️ Advertencias | {warning_count} |\n| 🛑 Errores | {error_count} |\n| 💀 Fatal | {fatal_count} |\n| ❓ Desconocido | {unknown_count} |\n| ❓ No se recibió informe | {no_report_count} |\n| 🕑 Vencida | {overdue_count} |\n\n### 🚨 Atención requerida\n\n{problem_table}\n\n### 📋 Todos los últimos resultados de copias de seguridad\n\n{all_jobs_table}\n\n{duplistatus_link}\n"
+    }
+  }
+}

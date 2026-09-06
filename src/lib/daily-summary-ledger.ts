@@ -266,15 +266,20 @@ export function parseStoredPayload(payloadJson: string | null): DailySummaryRend
     return null;
   }
   try {
-    const parsed = JSON.parse(payloadJson) as DailySummaryRenderedPayload;
+    const parsed = JSON.parse(payloadJson) as DailySummaryRenderedPayload & {
+      ntfyTitle?: string;
+      ntfyMessage?: string;
+    };
     if (
       typeof parsed.subject === 'string'
       && typeof parsed.emailHtml === 'string'
       && typeof parsed.emailText === 'string'
-      && typeof parsed.ntfyTitle === 'string'
-      && typeof parsed.ntfyMessage === 'string'
     ) {
-      return parsed;
+      return {
+        subject: parsed.subject,
+        emailHtml: parsed.emailHtml,
+        emailText: parsed.emailText,
+      };
     }
     return null;
   } catch {

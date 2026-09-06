@@ -11,7 +11,7 @@ import {
 const TOKEN_START = '\uE000';
 const TOKEN_END = '\uE001';
 
-export const BLOCK_PLACEHOLDERS = new Set(['problem_table', 'all_jobs_table', 'log_list']);
+export const BLOCK_PLACEHOLDERS = new Set(['problem_table', 'all_jobs_table', 'log_list', 'duplistatus_link']);
 
 export type PlaceholderValues = Record<string, string>;
 

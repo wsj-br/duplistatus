@@ -202,12 +202,6 @@
         "email": {
           "title": "duplistatus — Daily backup summary — {summary_date}",
           "message": "## Daily backup summary"
-        },
-        "ntfy": {
-          "title": "duplistatus daily summary",
-          "message": "Servers {server_count}, jobs {job_count}",
-          "priority": "default",
-          "tags": "duplicati, duplistatus, daily-summary"
         }
       }
     },
@@ -453,28 +447,28 @@ Für die Benachrichtigungshäufigkeit:
   - Aktualisiert Benachrichtigungsvorlagen für verschiedene Sicherungsstatus
   - Behält bestehende Konfigurationseinstellungen bei
   - Vorlagen unterstützen Markdown-E-Mail-Inhalte und `{placeholder}`-Ersetzung
-  - Ein `dailySummary`-Vorlagensatz (E-Mail-Betreff/Inhalt und kompakte NTFY) ist erforderlich
+  - Eine `dailySummary` E-Mail-Vorlage (Betreff und Markdown-Körper) ist erforderlich
 
 ## Tägliche Zusammenfassung - `/api/configuration/daily-summary` {#daily-summary---apiconfigurationdaily-summary}
 - **Endpunkt**: `/api/configuration/daily-summary`
 - **Methode**: GET, POST
-- **Beschreibung**: Liest oder aktualisiert den Täglichen Zusammenfassungsmodus. GET gibt bereinigte Einstellungen, Dispatcher-Status, nächste Ausführung und Zustellstatus pro Kanal zurück. POST speichert `enabled`, `localTime` (`HH:mm`), `timeZone` (IANA) und `sendNtfy`. Die Aktivierung erfordert gültige SMTP und einen gesunden `daily-summary-dispatch`-Task. Die Aktivierung von NTFY erfordert gespeicherte NTFY-Einstellungen. Das Ändern des Zeitplans setzt die nächste **zukünftige** Ausführung.
-- **Authentifizierung**: GET erfordert eine gültige Sitzung und CSRF-Token. POST erfordert eine Administrator-Sitzung und CSRF-Token.
+- **Beschreibung**: Liest oder aktualisiert den Zusammenfassungsmodus. GET gibt bereinigte Einstellungen, den Zustand des Dispatchers, das nächste Vorkommen und den Zustellstatus der E-Mail zurück. POST speichert `enabled`, `utcTime` (`HH:mm` UTC), `timeZone` (Browser-IANA-Zeitzone vom letzten Speichern) und optional `publicUrl`. Die Aktivierung erfordert ein gültiges SMTP. Die Änderung des Zeitplans legt das nächste **zukünftige** Vorkommen fest.
+- **Authentifizierung**: GET erfordert eine gültige Sitzung und ein CSRF-Token. POST erfordert eine Administrator-Sitzung und ein CSRF-Token.
 - **Fehlerantworten**:
-  - `400`: Ungültige Zeit/Zeitzone, fehlende SMTP/NTFY oder Dispatcher nicht gesund
+  - `400`: Ungültige Zeit/Zeitzone, ungültige öffentliche URL oder fehlendes SMTP
   - `401`: Unbefugt
   - `500`: Tägliche Zusammenfassung konnte nicht gelesen oder aktualisiert werden
 
-## Tägliche Zusammenfassung senden - `/api/configuration/daily-summary/send` {#send-daily-summary---apiconfigurationdaily-summarysend}
+## Sende Tägliche Zusammenfassung - `/api/configuration/daily-summary/send` {#send-daily-summary---apiconfigurationdaily-summarysend}
 - **Endpunkt**: `/api/configuration/daily-summary/send`
 - **Methode**: POST
-- **Beschreibung**: Sendet eine zusätzliche Momentaufnahme des aktuellen Status sofort. Verbraucht nicht die nächste geplante Ausführung. Verwendet gespeicherte SMTP (und gespeicherte NTFY, wenn ausgewählt). Akzeptiert keine Empfängeradressen oder Endpunkte in der Anfrage.
+- **Beschreibung**: Sendet einen zusätzlichen aktuellen Status-Snapshot sofort. Verbraucht nicht das nächste geplante Vorkommen. Verwendet die gespeicherte SMTP-Konfiguration. Akzeptiert keine Empfängeradressen in der Anfrage.
 - **Authentifizierung**: Erfordert Administrator-Sitzung und CSRF-Token
 
-## Tägliche Zusammenfassung wiederholen - `/api/configuration/daily-summary/retry` {#retry-daily-summary---apiconfigurationdaily-summaryretry}
+## Wiederhole Tägliche Zusammenfassung - `/api/configuration/daily-summary/retry` {#retry-daily-summary---apiconfigurationdaily-summaryretry}
 - **Endpunkt**: `/api/configuration/daily-summary/retry`
 - **Methode**: POST
-- **Beschreibung**: Wiederholt fehlgeschlagene Kanäle aus dem persistierten Payload. Optionaler Körper `{ "occurrenceKey": "..." }`; andernfalls wird die neueste fehlgeschlagene Ausführung wiederholt.
+- **Beschreibung**: Wiederholt fehlgeschlagene Kanäle aus dem persistierten Payload. Optionaler Körper `{ "occurrenceKey": "..." }`; andernfalls wird die letzte fehlgeschlagene E-Mail-Zustellung wiederholt.
 - **Authentifizierung**: Erfordert Administrator-Sitzung und CSRF-Token
 
 ## Tägliche Zusammenfassung Vorschau - `/api/configuration/daily-summary/preview` {#preview-daily-summary---apiconfigurationdaily-summarypreview}

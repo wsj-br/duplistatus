@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto';
 import type {
+  BackupStatus,
   DailySummaryChannel,
   DailySummaryChannelPublicStatus,
   DailySummaryConfig,
@@ -9,7 +10,6 @@ import type {
   DailySummarySnapshot,
   DailySummaryTemplateSet,
   DailySummaryTrigger,
-  NtfyConfig,
   SMTPConfig,
 } from '@/lib/types';
 import { DAILY_SUMMARY_DISPATCH_TASK } from '@/lib/types';
@@ -19,7 +19,6 @@ import {
   getCronConfig,
   getDailySummaryConfig,
   getNotificationTemplates,
-  getNtfyConfig,
   getRawBackupSettingsMap,
   getSMTPConfig,
 } from '@/lib/db-utils';
@@ -49,20 +48,22 @@ import {
 import {
   htmlTable,
   renderMarkdownEmail,
-  substitutePlainTemplate,
+  escapeHtmlText,
   textTable,
 } from '@/lib/notification-template-renderer';
 import {
   EMAIL_HTML_MAX_BYTES,
-  NTFY_MESSAGE_MAX_BYTES,
-  truncateNtfyAtLineBoundary,
   utf8ByteLength,
   validateDailySummaryTemplateSet,
 } from '@/lib/notification-template-validation';
+import {
+  getDuplistatusPublicUrl,
+  isDuplistatusPublicUrlEnvOverrideActive,
+} from '@/lib/duplistatus-public-url';
 import { formatDateTime } from '@/lib/date-format';
 import { formatBytes, formatInteger } from '@/lib/number-format';
 import { getServerI18nForLanguage } from '@/lib/i18n-server';
-import { sendEmailNotification, sendNtfyNotification } from '@/lib/notifications';
+import { sendEmailNotification } from '@/lib/notifications';
 import { SOURCE_LOCALE } from '@/lib/locales';
 
 export const DAILY_SUMMARY_TRANSPORT_TIMEOUT_MS = 45 * 1000;
@@ -77,18 +78,6 @@ export function isSmtpConfiguredForSummary(config: SMTPConfig | null): boolean {
     && typeof config.mailto === 'string'
     && config.mailto.includes('@')
   );
-}
-
-export function isNtfyConfiguredForSummary(config: NtfyConfig | null | undefined): boolean {
-  if (!config?.url?.trim() || !config.topic?.trim()) {
-    return false;
-  }
-  try {
-    const parsed = new URL(config.url);
-    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
-  } catch {
-    return false;
-  }
 }
 
 export function getCronServiceBaseUrl(): string {
@@ -129,6 +118,18 @@ function jobDisplayName(job: DailySummaryJobRow): string {
   return alias.length > 0 ? alias : job.serverName;
 }
 
+const BACKUP_STATUS_EMOJI: Record<BackupStatus, string> = {
+  Success: '✅',
+  Warning: '⚠️',
+  Error: '🛑',
+  Fatal: '💀',
+  Unknown: '❓',
+};
+
+function emojiPrefixed(emoji: string, text: string): string {
+  return `${emoji} ${text}`;
+}
+
 function statusLabel(job: DailySummaryJobRow, t: (key: string) => string): string {
   if (!job.hasReport || job.lastBackupStatus === null) {
     return t('No report received');
@@ -136,10 +137,30 @@ function statusLabel(job: DailySummaryJobRow, t: (key: string) => string): strin
   return t(job.lastBackupStatus);
 }
 
+function statusLabelWithEmoji(job: DailySummaryJobRow, t: (key: string) => string): string {
+  const label = statusLabel(job, t);
+  if (!job.hasReport || job.lastBackupStatus === null) {
+    return emojiPrefixed('❓', label);
+  }
+  const emoji = BACKUP_STATUS_EMOJI[job.lastBackupStatus] ?? '❓';
+  return emojiPrefixed(emoji, label);
+}
+
+function overdueCell(isOverdue: boolean, t: (key: string) => string): string {
+  return isOverdue ? emojiPrefixed('🕑', t('Yes')) : '—';
+}
+
+function duplistatusLinkBlock(url: string | null, linkLabel: string): string {
+  if (!url) {
+    return '';
+  }
+  return `<p>🔗 <a href="${escapeHtmlText(url)}" target="_blank" rel="noopener noreferrer">${escapeHtmlText(linkLabel)}</a></p>`;
+}
+
 async function snapshotPlaceholderValues(
   snapshot: DailySummarySnapshot,
   locale: string,
-  options: { omitHealthyAllJobs?: boolean } = {}
+  options: { omitHealthyAllJobs?: boolean } = {},
 ): Promise<Record<string, string>> {
   const i18n = await getServerI18nForLanguage(locale);
   const t = (key: string) => i18n.t(key);
@@ -158,8 +179,8 @@ async function snapshotPlaceholderValues(
   const toRow = (job: DailySummaryJobRow): string[] => [
     jobDisplayName(job),
     job.backupName,
-    job.isOverdue ? t('Yes') : t('No'),
-    statusLabel(job, t),
+    overdueCell(job.isOverdue, t),
+    statusLabelWithEmoji(job, t),
     job.lastBackupDate ? formatDateTime(job.lastBackupDate, locale, snapshot.timeZone) : t('No report received'),
     job.durationSeconds === null ? '—' : formatDurationFromSeconds(job.durationSeconds),
     formatInteger(job.warnings, locale),
@@ -214,6 +235,8 @@ async function snapshotPlaceholderValues(
     all_jobs_table_text: snapshot.jobCount === 0
       ? i18n.t('No backup jobs are known')
       : textTable(headers, allRows),
+    duplistatus_url: getDuplistatusPublicUrl() ?? '',
+    duplistatus_link: duplistatusLinkBlock(getDuplistatusPublicUrl(), i18n.t('Open duplistatus dashboard')),
   };
 }
 
@@ -236,48 +259,32 @@ export async function collectDailySummarySnapshot(generatedAt: Date = new Date()
 export async function renderDailySummaryPayload(
   snapshot: DailySummarySnapshot,
   locale: string = SOURCE_LOCALE,
-  templatesOverride?: DailySummaryTemplateSet
+  templatesOverride?: DailySummaryTemplateSet,
 ): Promise<DailySummaryRenderedPayload> {
   const templates = getNotificationTemplates();
   const dailySummary = templatesOverride ?? templates.dailySummary;
   validateDailySummaryTemplateSet(dailySummary);
 
   let working: DailySummarySnapshot = { ...snapshot };
-  let omitHealthy = false;
   let values = await snapshotPlaceholderValues(working, locale);
   let email = renderMarkdownEmail(dailySummary.email.title, dailySummary.email.message, {
     ...values,
     problem_table: values.problem_table,
     all_jobs_table: values.all_jobs_table,
+    duplistatus_link: values.duplistatus_link,
   });
 
   if (utf8ByteLength(email.html) > EMAIL_HTML_MAX_BYTES) {
-    omitHealthy = true;
     const omitted = snapshot.jobs.length - snapshot.jobs.filter(isProblemJob).length;
     working = { ...snapshot, omittedJobCount: omitted };
     values = await snapshotPlaceholderValues(working, locale, { omitHealthyAllJobs: true });
     email = renderMarkdownEmail(dailySummary.email.title, dailySummary.email.message, values);
   }
 
-  const ntfyValues = {
-    ...values,
-    problem_table: values.problem_table_text,
-    all_jobs_table: values.all_jobs_table_text,
-  };
-  const ntfyTitle = substitutePlainTemplate(dailySummary.ntfy.title, ntfyValues).replace(/[\r\n\u0000]+/g, ' ').trim();
-  const ntfyRaw = substitutePlainTemplate(dailySummary.ntfy.message, ntfyValues);
-  const i18n = await getServerI18nForLanguage(locale);
-  const omittedSuffix = i18n.t('Open duplistatus for full details. Some jobs were omitted.');
-  const ntfyMessage = truncateNtfyAtLineBoundary(ntfyRaw, NTFY_MESSAGE_MAX_BYTES, omittedSuffix);
-
   return {
     subject: email.subject,
     emailHtml: email.html,
     emailText: email.text,
-    ntfyTitle,
-    ntfyMessage,
-    ntfyPriority: dailySummary.ntfy.priority,
-    ntfyTags: dailySummary.ntfy.tags,
   };
 }
 
@@ -289,20 +296,8 @@ async function sendChannel(
     case 'email':
       await sendEmailNotification(payload.subject, payload.emailHtml, payload.emailText);
       return;
-    case 'ntfy': {
-      const ntfy = getNtfyConfig();
-      await sendNtfyNotification(
-        ntfy.url,
-        ntfy.topic,
-        payload.ntfyTitle,
-        payload.ntfyMessage,
-        payload.ntfyPriority,
-        payload.ntfyTags,
-        ntfy.accessToken,
-        { timeoutMs: DAILY_SUMMARY_TRANSPORT_TIMEOUT_MS, maxRetries: 1 }
-      );
+    case 'ntfy':
       return;
-    }
     default: {
       const exhaustive: never = channel;
       throw new Error(`Unhandled channel: ${String(exhaustive)}`);
@@ -310,12 +305,8 @@ async function sendChannel(
   }
 }
 
-function channelsForConfig(config: DailySummaryConfig): DailySummaryChannel[] {
-  const channels: DailySummaryChannel[] = ['email'];
-  if (config.sendNtfy) {
-    channels.push('ntfy');
-  }
-  return channels;
+function channelsForConfig(_config: DailySummaryConfig): DailySummaryChannel[] {
+  return ['email'];
 }
 
 async function deliverClaimed(
@@ -350,9 +341,6 @@ async function dispatchOccurrence(input: {
   const smtp = getSMTPConfig();
   if (!isSmtpConfiguredForSummary(smtp)) {
     return { occurrenceKey: input.occurrenceKey, attempted: [], succeeded: [], failed: [], skippedReason: 'smtp_not_configured' };
-  }
-  if (input.config.sendNtfy && !isNtfyConfiguredForSummary(getNtfyConfig())) {
-    return { occurrenceKey: input.occurrenceKey, attempted: [], succeeded: [], failed: [], skippedReason: 'ntfy_not_configured' };
   }
 
   const locale = getNotificationTemplates().language || SOURCE_LOCALE;
@@ -442,7 +430,7 @@ export async function retryFailedDailySummary(occurrenceKey?: string): Promise<D
   if (failed.length === 0) {
     return { occurrenceKey: occurrenceKey ?? null, attempted: [], succeeded: [], failed: [], skippedReason: 'nothing_to_retry' };
   }
-  const target = failed[0];
+  const target = failed.find((record) => record.channel === 'email') ?? failed[0];
   return dispatchOccurrence({
     config,
     occurrenceKey: target.occurrenceKey,
@@ -505,17 +493,15 @@ export async function getDailySummaryPublicStatus(): Promise<DailySummaryPublicS
   const latest = getLatestDeliveriesByChannel(db);
   return {
     enabled: config.enabled,
-    localTime: config.localTime,
+    utcTime: config.utcTime,
     timeZone: config.timeZone,
-    sendNtfy: config.sendNtfy,
+    publicUrl: config.publicUrl,
+    publicUrlEffective: getDuplistatusPublicUrl(),
+    publicUrlEnvOverride: isDuplistatusPublicUrlEnvOverrideActive(),
     nextOccurrenceIso: next ? next.toISOString() : null,
     dispatcherHealthy: await isDailySummaryDispatcherHealthy(),
     emailConfigured: isSmtpConfiguredForSummary(getSMTPConfig()),
-    ntfyConfigured: isNtfyConfiguredForSummary(getNtfyConfig()),
-    channels: {
-      email: publicChannelStatus(true, latest.email),
-      ntfy: publicChannelStatus(config.sendNtfy, latest.ntfy),
-    },
+    channel: publicChannelStatus(true, latest.email),
   };
 }
 

@@ -16,9 +16,9 @@
   "providers": {
     "openrouter": {
       "translationModels": [
+        "openai/gpt-4o-mini",
         "mistralai/codestral-2508",
         "google/gemma-4-26b-a4b-it",
-        "openai/gpt-4o-mini",
         "z-ai/glm-4.7",
         "qwen/qwen-2.5-72b-instruct",
         "google/gemma-4-26b-a4b-it",
@@ -51,7 +51,8 @@
   "features": {
     "translateUIStrings": true,
     "translateSVG": true,
-    "translateDocs": true
+    "translateDocs": true,
+    "translateJson": true
   },
   "cacheDir": ".translation-cache",
   "glossary": {
@@ -87,6 +88,21 @@
       "docsOutput": {
         "style": "docusaurus",
         "docsRoot": "documentation/docs"
+      }
+    }
+  ],
+  "json": [
+    {
+      "description": "Default notification templates",
+      "contentPaths": "src/locales/templates/en-GB.json",
+      "outputPathTemplate": "src/locales/templates/{locale}.json",
+      "keyPolicy": {
+        "mode": "denylist",
+        "skipKeys": [
+          "priority",
+          "tags"
+        ],
+        "translateKeys": []
       }
     }
   ],

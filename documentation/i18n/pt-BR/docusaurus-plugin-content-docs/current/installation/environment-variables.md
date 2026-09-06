@@ -18,5 +18,6 @@ A aplicação suporta as seguintes variáveis de ambiente para configuração:
 | `ADMIN_IP_ALLOWLIST`      | CIDRs separados por vírgulas para a interface de administração                                               | unset                      |
 | `EXTERNAL_API_IP_ALLOWLIST_ENABLED` | Substituir a bandeira de ativação da lista de permissões de IP da API externa (`true` / `false`)                | unset (use Configurações)       |
 | `EXTERNAL_API_IP_ALLOWLIST` | CIDRs separados por vírgulas para `/api/upload`, `/api/summary`, e `/api/lastbackup*`           | unset                      |
+| `DUPLISTATUS_PUBLIC_URL`    | URL base público da interface web do duplistatus (sem barra no final). {{When}} definido, substitui Configurações → Resumo Diário **URL do painel público** e os e-mails do Resumo Diário incluem `{duplistatus_link}`. {{When}} não definido, a configuração salva é utilizada; se essa também estiver vazia, nenhum link do painel é adicionado. | unset                      |
 
 `NEXT_TELEMETRY_DISABLED=1` é definido pela imagem Docker e por `pnpm build`, `pnpm build-local`, `pnpm start`, `pnpm start-local`, e `pnpm dev`, então o Next.js não coleta telemetria anônima da CLI. Para persistir a opção de saída na configuração do usuário, execute `npx next telemetry disable`.

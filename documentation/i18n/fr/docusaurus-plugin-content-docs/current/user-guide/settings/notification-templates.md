@@ -1,6 +1,6 @@
 # Modèles {#templates}
 
-**duplistatus** utilise quatre modèles pour les messages de notification. Les corps des e-mails sont en Markdown (titres, listes, liens et tableaux). NTFY pour Succès, Avertissement/Erreur et En retard est dérivé du même contenu ; le Résumé quotidien a un modèle NTFY séparé et compact.
+**duplistatus** utilise quatre modèles pour les messages de notification. Les corps des emails sont en Markdown (titres, listes, liens et tableaux). NTFY pour Succès, Avertissement/Erreur et En retard est dérivé du même contenu. Le Résumé quotidien est uniquement pour les emails.
 
 La page comprend un sélecteur de **Langue du modèle** qui définit la locale pour les modèles par défaut. Changer la langue met à jour la locale pour les nouveaux paramètres par défaut, mais cela ne modifie **pas** le texte des modèles existants. Pour appliquer une nouvelle langue à vos modèles, modifiez-les manuellement ou utilisez **Réinitialiser ce modèle à la valeur par défaut** (pour l'onglet actuel) ou **Réinitialiser tout par défaut** (pour tous les modèles).
 
@@ -11,7 +11,7 @@ La page comprend un sélecteur de **Langue du modèle** qui définit la locale p
 | **Succès**        | Utilisé lorsque les sauvegardes se terminent avec succès.            |
 | **Avertissement/Erreur**  | Utilisé lorsque les sauvegardes se terminent avec des avertissements ou des erreurs. |
 | **Sauvegarde en retard** | Utilisé lorsque les sauvegardes sont en retard.                      |
-| **Résumé quotidien**  | Modèles d'e-mail et NTFY compacts pour la capture instantanée quotidienne optionnelle. |
+| **Résumé quotidien**  | Modèle d'email en Markdown pour le snapshot quotidien optionnel. |
 
 <br/>
 
@@ -26,7 +26,7 @@ Un sélecteur de **Langue du modèle** situé en haut de la page vous permet de 
 | Bouton                                                              | Description                                                                                         |
 |:--------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------|
 | <IconButton label="Enregistrer les paramètres du modèle" />                      | Enregistre les paramètres lors du changement de modèle. Le bouton enregistre le modèle affiché (Succès, Avertissement/Erreur, Sauvegarde en retard ou Résumé quotidien). |
-| <IconButton icon="lucide:send" label="Envoyer la notification de test"/>     | Vérifie le modèle après sa mise à jour. Les variables seront remplacées par leurs noms pour le test. Pour les notifications par courriel, le titre du modèle devient l'objet du courriel. |
+| <IconButton icon="lucide:send" label="Envoyer une notification de test"/>     | Vérifie le modèle après l'avoir mis à jour. Les variables seront remplacées par leurs noms pour le test. Pour les notifications par courriel, le titre du modèle devient l'objet de l'email. Non disponible dans l'onglet Résumé quotidien. |
 | <IconButton icon="lucide:rotate-ccw" label="Réinitialiser ce modèle à la valeur par défaut"/> | Restaure le modèle par défaut pour le **modèle sélectionné** (l'onglet actuel). N'oubliez pas d'enregistrer après la réinitialisation. |
 | <IconButton icon="lucide:rotate-ccw" label="Réinitialiser tout par défaut"/> | Restaure tous les modèles (Succès, Avertissement/Erreur, Sauvegarde en retard et Résumé quotidien) aux valeurs par défaut pour la Langue du modèle sélectionnée. N'oubliez pas d'enregistrer après la réinitialisation. |
 
@@ -75,6 +75,8 @@ Les modèles de Résumé quotidien utilisent un ensemble différent de variables
 | `{success_count}` / `{warning_count}` / `{error_count}` / `{fatal_count}` / `{unknown_count}` / `{no_report_count}` | Paniers d'état mutuellement exclusifs |
 | `{overdue_count}` | Tâches en retard (orthogonales à l'état) |
 | `{problem_table}` / `{all_jobs_table}` | Tables générées des tâches nécessitant une attention et de toutes les tâches. Colonnes : Serveur, Sauvegarde, En retard, Dernier statut, Dernier résultat, Durée, Avertissements, Erreurs, Téléchargé. |
+| `{duplistatus_link}` | Lien vers le tableau de bord du duplistatus (omise lorsqu'aucune URL publique n'est configurée). Préférez ceci aux liens Markdown construits à la main. |
+| `{duplistatus_url}` | Même URL que le texte brut (vide lorsqu'aucune URL publique n'est configurée). |
 | `{latest_uploaded_size}` / `{latest_source_size}` / `{latest_storage_size}` / `{latest_file_count}` / `{total_warnings}` / `{total_errors}` | Totaux des derniers résultats |
 
-Utilisez **Aperçu** pour afficher Email HTML, texte brut et NTFY sans envoi. L'aperçu s'ouvre dans une boîte de dialogue. Email HTML suit le thème clair ou sombre actuel.
+Utilisez **Aperçu** pour rendre l'email HTML et le texte brut sans envoi. Les aperçus de Succès, Avertissement/Erreur et En retard incluent également NTFY. L'aperçu s'ouvre dans une boîte de dialogue. L'email HTML suit le thème clair ou sombre actuel.

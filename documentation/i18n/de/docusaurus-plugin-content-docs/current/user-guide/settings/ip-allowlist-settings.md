@@ -12,7 +12,7 @@ Aktivieren Sie **Reverse-Proxy-Header vertrauen** nur, wenn duplistatus nicht oh
 
 ## Administrationsinterface {#admin-interface}
 
-Wenn aktiviert, akzeptieren Seiten, Anmeldung, CSRF und Sitzungs-APIs nur die aufgelisteten CIDRs. Fügen Sie Einträge mit **Hinzufügen** hinzu; Ihre aktuelle **IP zur Whitelist** wird als **aktuelle IP** markiert, wenn sie in der Liste ist. **Aktuelle IP hinzufügen** und **Letzte Admin-Login-IPs** (aus dem Audit-Protokoll) bieten schnelle Vorschläge. Sie können diese Liste nicht aktivieren, es sei denn, Ihre aktuelle IP ist bereits enthalten (oder Sie verbinden sich von Loopback). Ein Sperren kann mit folgendem wiederhergestellt werden:
+Wenn diese Option aktiviert ist, akzeptieren Seiten-, Login-, CSRF- und Sitzungs-APIs nur die aufgelisteten CIDRs. Fügen Sie Einträge mit **Hinzufügen** hinzu; Ihre aktuelle **IP zur Whitelist hinzufügen** wird als **aktuelle IP** markiert, wenn sie in der Liste enthalten ist. **127.0.0.1** und **::1** sind standardmäßig enthalten und können nicht entfernt werden. **Aktuelle IP hinzufügen** und **Letzte Admin-Login-IPs** (aus dem Audit-Protokoll) bieten schnelle Vorschläge. Sie können diese Liste nicht aktivieren, wenn Ihre aktuelle IP noch nicht enthalten ist (oder Sie sich von Loopback aus verbinden). Ein Sperren kann mit folgendem Befehl wiederhergestellt werden:
 
 ```bash
 ADMIN_IP_ALLOWLIST_ENABLED=false
@@ -24,7 +24,7 @@ oder durch Hinzufügen Ihrer CIDR zu `ADMIN_IP_ALLOWLIST`. Die vollständigen Wi
 
 Wenn aktiviert, akzeptieren `/api/upload`, `/api/summary` und `/api/lastbackup*` nur die aufgelisteten CIDRs. `/api/health` und `/api/ping` bleiben geöffnet, damit Docker-Health-Checks und der Connectivity-Probe weiter funktionieren.
 
-Diese Liste ist der Schutz, den Sie verwenden, wenn API-Schlüssel nicht erforderlich sind. Fügen Sie CIDRs wie die Admin-Liste als Chips hinzu. **Kürzlich hochgeladene Quell-IPs** aus dem Audit-Protokoll werden als Vorschläge zum schnellen Hinzufügen angeboten.
+Diese Liste ist der Schutz, den Sie verwenden, wenn API-Schlüssel nicht erforderlich sind. Fügen Sie CIDRs wie die Admin-Liste als Chips hinzu. **127.0.0.1** und **::1** sind standardmäßig enthalten und können nicht entfernt werden. **Kürzlich hochgeladene Quell-IPs** aus dem Audit-Protokoll werden als Vorschläge für schnelles Hinzufügen angeboten.
 
 Wenn sowohl diese Zulassungsliste als auch API-Schlüssel erforderlich sind, muss eine Anfrage **beide** erfüllen.
 

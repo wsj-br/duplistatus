@@ -9,11 +9,17 @@ import {
   type DuplicatiVersionStatus,
 } from './types';
 
+import {
+  formatTimeLabel,
+  isValidLocalTime,
+  parseLocalTime,
+} from './daily-summary-schedule';
+
 export const DUPLICATI_VERSION_CACHE_KEY = 'duplicati_versions';
 export const DUPLICATI_VERSION_CHECK_CONFIG_KEY = 'duplicati_version_check';
 export const DUPLICATI_VERSION_STALE_MS = 24 * 60 * 60 * 1000;
 export const DEFAULT_DUPLICATI_VERSION_CHECK_INTERVAL: DuplicatiVersionCheckInterval = 'daily';
-export const DEFAULT_DUPLICATI_VERSION_START_HOUR_UTC = 3;
+export const DEFAULT_DUPLICATI_VERSION_START_TIME_UTC = '03:00';
 
 const CHANNEL_SET = new Set<string>(DUPLICATI_CHANNELS);
 
@@ -143,20 +149,47 @@ export function isValidUtcHour(value: unknown): value is number {
   return typeof value === 'number' && Number.isInteger(value) && value >= 0 && value <= 23;
 }
 
-export function formatHourLabel(hour: number): string {
-  return `${String(hour).padStart(2, '0')}:00`;
+export function isValidUtcTime(value: unknown): value is string {
+  return typeof value === 'string' && isValidLocalTime(value);
 }
 
-export function localHourToUtcHour(localHour: number, reference: Date = new Date()): number {
-  const local = new Date(reference);
-  local.setHours(localHour, 0, 0, 0);
-  return local.getUTCHours();
+export function legacyUtcHourToStartTimeUtc(hour: number): string {
+  return formatTimeLabel(hour, 0);
 }
 
-export function utcHourToLocalHour(utcHour: number, reference: Date = new Date()): number {
-  const utc = new Date(reference);
-  utc.setUTCHours(utcHour, 0, 0, 0);
-  return utc.getHours();
+const DAY_MINUTES = 24 * 60;
+
+function utcTimeToTotalMinutes(utcTime: string): number {
+  const { hour, minute } = parseLocalTime(utcTime);
+  return hour * 60 + minute;
+}
+
+function totalMinutesToUtcTime(totalMinutes: number): string {
+  const normalized = ((totalMinutes % DAY_MINUTES) + DAY_MINUTES) % DAY_MINUTES;
+  return formatTimeLabel(Math.floor(normalized / 60), normalized % 60);
+}
+
+export function getDuplicatiVersionRunTimesUtc(
+  interval: DuplicatiVersionCheckInterval,
+  startTimeUtc: string
+): string[] {
+  const startTotalMinutes = utcTimeToTotalMinutes(startTimeUtc);
+  const stepMinutes = interval === 'daily' ? DAY_MINUTES : interval === '12h' ? 12 * 60 : 6 * 60;
+  const times: string[] = [];
+  for (let offset = 0; offset < DAY_MINUTES; offset += stepMinutes) {
+    times.push(totalMinutesToUtcTime(startTotalMinutes + offset));
+  }
+  return times.sort((left, right) => utcTimeToTotalMinutes(left) - utcTimeToTotalMinutes(right));
+}
+
+export function buildDuplicatiVersionCronExpression(
+  interval: DuplicatiVersionCheckInterval,
+  startTimeUtc: string
+): string {
+  const runTimes = getDuplicatiVersionRunTimesUtc(interval, startTimeUtc);
+  const first = parseLocalTime(runTimes[0] ?? startTimeUtc);
+  const hours = runTimes.map((time) => parseLocalTime(time).hour).sort((left, right) => left - right);
+  return `${first.minute} ${hours.join(',')} * * *`;
 }
 
 export function getDuplicatiVersionStaleMs(interval: DuplicatiVersionCheckInterval): number {
@@ -172,26 +205,6 @@ export function getDuplicatiVersionStaleMs(interval: DuplicatiVersionCheckInterv
       return exhaustive;
     }
   }
-}
-
-export function getDuplicatiVersionRunHoursUtc(
-  interval: DuplicatiVersionCheckInterval,
-  startHourUtc: number
-): number[] {
-  const step = interval === 'daily' ? 24 : interval === '12h' ? 12 : 6;
-  const hours: number[] = [];
-  for (let offset = 0; offset < 24; offset += step) {
-    hours.push((startHourUtc + offset) % 24);
-  }
-  return hours.sort((left, right) => left - right);
-}
-
-export function buildDuplicatiVersionCronExpression(
-  interval: DuplicatiVersionCheckInterval,
-  startHourUtc: number
-): string {
-  const hours = getDuplicatiVersionRunHoursUtc(interval, startHourUtc);
-  return `0 ${hours.join(',')} * * *`;
 }
 
 export function isDuplicatiVersionCacheStale(

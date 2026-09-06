@@ -6,6 +6,8 @@
 pnpm dev
 ```
 
+Cela démarre à la fois l'application Next.js (port 8666) et le service cron (port 8667). CTRL-C arrête les deux. Utilisez `pnpm dev:next` ou `pnpm cron:dev` pour exécuter l'un ou l'autre processus seul.
+
 - **Stockage de fichiers JSON** : Toutes les données de sauvegarde reçues sont stockées sous forme de fichiers JSON dans le répertoire `data`. Ces fichiers sont nommés à l'aide de l'horodatage du moment où ils ont été reçus, au format `YYYY-MM-DDTHH-mm-ss-sssZ.json` (heure UTC). Cette fonctionnalité n'est active qu'en mode développement et aide au débogage en préservant les données brutes reçues de Duplicati.
 
 - **Journalisation détaillée** : L'application enregistre des informations plus détaillées sur les opérations de base de données et les requêtes API lors de l'exécution en mode développement.

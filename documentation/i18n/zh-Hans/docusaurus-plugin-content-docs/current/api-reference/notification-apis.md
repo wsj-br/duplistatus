@@ -97,9 +97,9 @@
   - 模板测试和每日摘要立即发送功能绕过每次备份的抑制
 
 ## 预览通知模板 - `/api/notifications/preview` {#preview-notification-template---apinotificationspreview}
-- **端点**：`/api/notifications/preview`
-- **方法**：POST
-- **描述**：使用生产 Markdown 渲染器渲染通知模板而不发送。正文包括 `kind`（`success`、`warning`、`overdueBackup`、`dailySummaryEmail` 或 `dailySummaryNtfy`）和正在编辑的模板。每日摘要预览使用当前实际快照；其他类型使用确定性示例值。电子邮件 HTML 旨在用于沙盒 iframe。
+- **端点**: `/api/notifications/preview`
+- **方法**: POST
+- **描述**: 使用生产Markdown渲染器渲染通知模板，而不发送。正文包括`kind`（`success`、`warning`、`overdueBackup`或`dailySummaryEmail`）和正在编辑的模板。每日摘要预览使用当前的真实快照；其他类型使用确定性的示例值。电子邮件HTML用于沙盒化的iframe。
 - **认证**: 需要有效的会话和CSRF令牌
 
 ## 检查逾期备份 - `/api/notifications/check-overdue` {#check-overdue-backups---apinotificationscheck-overdue}

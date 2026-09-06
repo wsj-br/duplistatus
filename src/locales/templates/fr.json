@@ -1,0 +1,26 @@
+{
+  "success": {
+    "title": "✅ {status} - {backup_name} @ {server_alias}",
+    "message": "La sauvegarde {backup_name} sur {server_alias} a été complétée avec l'état '{status}' à {backup_date} en {duration}.\n\n🔍 Remarque : {server_note}\n☁️ Téléchargé : {uploaded_size}\n💾 Utilisation du stockage : {storage_size}\n🔃 Versions disponibles : {available_versions}\n",
+    "priority": "default",
+    "tags": "duplicati, duplistatus, success"
+  },
+  "warning": {
+    "title": "⚠️ {status} - {backup_name} @ {server_alias}",
+    "message": "La sauvegarde {backup_name} sur {server_alias} a été complétée avec l'état '{status}' à {backup_date}.\n\n🔍 Remarque : {server_note}\n⏰ Durée : {duration}\n☁️ Téléchargé : {uploaded_size}\n\n🚨 {warnings_count} avertissements\n🛑 {errors_count} erreurs.\n\n📄 Messages du journal :\n{log_text}\n\n⚠️ Vérifiez immédiatement le serveur duplicati {server_url}\n",
+    "priority": "high",
+    "tags": "duplicati, duplistatus, warning, error"
+  },
+  "overdueBackup": {
+    "title": "🕑 En retard - {backup_name} @ {server_alias}",
+    "message": "La sauvegarde {backup_name} est en retard sur {server_alias}.\n\n🔍 Remarque : {server_note}\n🚨 Dernière sauvegarde reçue : {last_backup_date} ({last_elapsed})\n⏰ Heure de sauvegarde attendue : {expected_date} ({expected_elapsed})\n\nIntervalle attendu : {backup_interval} / Tolérance : {overdue_tolerance}\n\n⚠️ Vérifiez immédiatement le serveur duplicati {server_url}\n",
+    "priority": "default",
+    "tags": "duplicati, duplistatus, overdue"
+  },
+  "dailySummary": {
+    "email": {
+      "title": "📬 duplistatus — Résumé quotidien de la sauvegarde — {summary_date}",
+      "message": "## 📊 Résumé quotidien de la sauvegarde\n\n🕐 Généré : **{generated_at}** ({time_zone})\n\n### 📈 Aperçu\n\n| Métrique | Compte |\n| --- | ---: |\n| 🖥️ Serveurs | {server_count} |\n| 💼 Tâches de sauvegarde | {job_count} |\n| ✅ Succès | {success_count} |\n| ⚠️ Avertissements | {warning_count} |\n| 🛑 Erreurs | {error_count} |\n| 💀 Fatal | {fatal_count} |\n| ❓ Inconnu | {unknown_count} |\n| ❓ Aucun rapport reçu | {no_report_count} |\n| 🕑 En retard | {overdue_count} |\n\n### 🚨 Attention requise\n\n{problem_table}\n\n### 📋 Tous les derniers résultats de sauvegarde\n\n{all_jobs_table}\n\n{duplistatus_link}\n"
+    }
+  }
+}

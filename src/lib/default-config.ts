@@ -1,73 +1,16 @@
-import { NotificationTemplate, CronServiceConfig, CronInterval, BackupNotificationConfig, SupportedTemplateLanguage, StartOfWeek, FormatLocaleOverride, UploadLimitsConfig, CidrAllowlistConfig, TrustedProxiesConfig, DailySummaryTemplateSet, DAILY_SUMMARY_DISPATCH_TASK } from './types';
-import { defaultNotificationTemplatesEn } from './default-notifications-en';
-import { defaultNotificationTemplatesDe } from './default-notifications-de';
-import { defaultNotificationTemplatesFr } from './default-notifications-fr';
-import { defaultNotificationTemplatesEs } from './default-notifications-es';
-import { defaultNotificationTemplatesPtBR } from './default-notifications-pt-BR';
-import { defaultNotificationTemplatesHi } from './default-notifications-hi';
-import { defaultNotificationTemplatesZhHans } from './default-notifications-zh-Hans';
-import { SOURCE_LOCALE, parseLocaleTag } from './locales';
+import { CronServiceConfig, CronInterval, BackupNotificationConfig, StartOfWeek, FormatLocaleOverride, UploadLimitsConfig, CidrAllowlistConfig, TrustedProxiesConfig, DAILY_SUMMARY_DISPATCH_TASK } from './types';
 import { defaultDailySummaryConfig as defaultDailySummaryScheduleConfig } from './daily-summary-schedule';
 
-type NotificationTemplatesData = {
-  overdueBackup: NotificationTemplate;
-  success: NotificationTemplate;
-  warning: NotificationTemplate;
-  dailySummary: DailySummaryTemplateSet;
-};
-
-export const defaultNotificationTemplatesByLanguage: Record<
-  SupportedTemplateLanguage,
-  NotificationTemplatesData
-> = {
-  [SOURCE_LOCALE]: defaultNotificationTemplatesEn,
-  de: defaultNotificationTemplatesDe,
-  fr: defaultNotificationTemplatesFr,
-  es: defaultNotificationTemplatesEs,
-  "pt-BR": defaultNotificationTemplatesPtBR,
-  hi: defaultNotificationTemplatesHi,
-  "zh-Hans": defaultNotificationTemplatesZhHans,
-};
-
-/**
- * Default notification templates (source locale) - for backward compatibility
- * @deprecated Use getDefaultNotificationTemplates(language) instead
- */
-export const defaultNotificationTemplates = defaultNotificationTemplatesEn;
-
-/**
- * Get default notification templates for a specific language.
- * Falls back to the source locale templates if the language is not supported.
- */
-export function getDefaultNotificationTemplates(
-  language: SupportedTemplateLanguage = SOURCE_LOCALE
-): NotificationTemplatesData {
-  return defaultNotificationTemplatesByLanguage[language] || defaultNotificationTemplatesByLanguage[SOURCE_LOCALE];
-}
-
-export function getDefaultDailySummaryTemplates(
-  language: SupportedTemplateLanguage = SOURCE_LOCALE
-): DailySummaryTemplateSet {
-  return getDefaultNotificationTemplates(language).dailySummary;
-}
-
-/**
- * Get a specific default template by language and type
- */
-export function getDefaultNotificationTemplate(
-  language: SupportedTemplateLanguage,
-  templateType: 'success' | 'warning' | 'overdueBackup'
-): NotificationTemplate {
-  const templates = getDefaultNotificationTemplates(language);
-  return templates[templateType];
-}
-
-/**
- * Check if a language is supported for templates
- */
-export function isValidTemplateLanguage(language: string): language is SupportedTemplateLanguage {
-  return parseLocaleTag(language) !== null;
-}
+export {
+  defaultNotificationTemplates,
+  defaultNotificationTemplatesByLanguage,
+  defaultNotificationTemplatesEn,
+  getDefaultDailySummaryTemplates,
+  getDefaultNotificationTemplate,
+  getDefaultNotificationTemplates,
+  isValidTemplateLanguage,
+} from './default-notification-templates';
+export type { DefaultNotificationTemplatesData } from './default-notification-templates';
 
 // Default cron service configuration
 export const defaultCronConfig: CronServiceConfig = {

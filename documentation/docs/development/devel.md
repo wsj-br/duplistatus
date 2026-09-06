@@ -8,6 +8,8 @@
 pnpm dev
 ```
 
+This starts both the Next.js app (port 8666) and the cron service (port 8667). CTRL-C stops both. Use `pnpm dev:next` or `pnpm cron:dev` to run either process alone.
+
 - **JSON File Storage**: All received backup data is stored as JSON files in the `data` directory. These files are named using the timestamp of when they were received, in the format `YYYY-MM-DDTHH-mm-ss-sssZ.json` (UTC time). This feature is only active in development mode and helps with debugging by preserving the raw data received from Duplicati.
 
 - **Verbose Logging**: The application logs more detailed information about database operations and API requests when running in development mode.

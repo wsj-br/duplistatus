@@ -118,11 +118,12 @@ con este comando:
 El proyecto incluye varios scripts npm para diferentes tareas de desarrollo:
 
 ### Scripts de Desarrollo {#development-scripts}
-- `pnpm dev` - Iniciar servidor de desarrollo en el puerto 8666 (incluye pre-comprobaciones). `NODE_OPTIONS` carga `scripts/dev-preload.cjs`, que aplica `scripts/peer-ip.cjs` (dirección del par TCP para listas de permitidos de IP) y marcas de tiempo de registro de solicitudes.
-- `pnpm build` - Compilar la aplicación para producción (incluye pre-comprobaciones)
-- `pnpm lint` - Ejecutar ESLint para verificar la calidad del código
-- `pnpm typecheck` - Ejecutar la comprobación de tipos de TypeScript
-- `scripts/upgrade-dependencies.sh` — Actualización segura de cada paquete del espacio de trabajo (detectado automáticamente). Resuelve las versiones más recientes con `npm-check-updates`, instala desde la raíz del espacio de trabajo y mantiene únicamente las actualizaciones que superen el `typecheck`/`lint` de cada paquete (los peer gates fijan `eslint` / `typescript` cuando el stack de lint no permite la última versión mayor). A continuación, ejecuta `pnpm audit` / `audit --fix` y aplica por la fuerza (e informa de) cualquier corrección de seguridad que requiera cambios en el código. Actualiza el lockfile del espacio de trabajo y el browserslist. Prefiera `source ./scripts/upgrade-dependencies.sh` para que **nvm** se aplique a su shell; en CI o automatización, use `CI=1` o `UPGRADE_ALLOW_EXEC=1` cuando ejecute el archivo directamente. Consulte también `scripts/upgrade-tools.sh` para las herramientas de Node/pnpm únicamente.
+- `pnpm dev` - Iniciar el servidor de desarrollo de Next.js (puerto 8666) y el servicio cron (puerto 8667) juntos a través de `concurrently` (incluye pre-verificaciones). CTRL-C detiene ambos. `NODE_OPTIONS` para Next.js carga `scripts/dev-preload.cjs`, que aplica `scripts/peer-ip.cjs` (dirección de par TCP para listas de permitidos de IP) y marcas de tiempo del registro de solicitudes.
+- `pnpm dev:next` - Iniciar solo el servidor de desarrollo de Next.js en el puerto 8666 (sin cron).
+- `pnpm build` - Construir la aplicación para producción (incluye pre-verificaciones)
+- `pnpm lint` - Ejecutar ESLint para comprobar la calidad del código
+- `pnpm typecheck` - Ejecutar la verificación de tipos de TypeScript
+- `scripts/upgrade-dependencies.sh` — Actualización segura de construcción de cada paquete de espacio de trabajo (detectado automáticamente). Resuelve las últimas versiones con `npm-check-updates`, instala desde la raíz del espacio de trabajo y mantiene solo las actualizaciones que pasan `typecheck`/`lint` de cada paquete (las puertas de pares fijan `eslint` / `typescript` cuando la pila de lint no permite la última versión mayor). Luego ejecuta `pnpm audit` / `audit --fix` y aplica forzosamente (y reporta) cualquier arreglo de seguridad que necesite cambios en el código. Refresca el archivo de bloqueo del espacio de trabajo y browserslist. Preferir `source ./scripts/upgrade-dependencies.sh` para que **nvm** se aplique a tu shell; en CI o automatización usa `CI=1` o `UPGRADE_ALLOW_EXEC=1` al ejecutar el archivo directamente. Ver también `scripts/upgrade-tools.sh` solo para herramientas de Node/pnpm.
 - `scripts/clean-workspace.sh` - Limpiar el espacio de trabajo
 
 **Nota:** El script `preinstall` aplica automáticamente pnpm como gestor de paquetes.
@@ -156,9 +157,9 @@ Los servidores de desarrollo (`start:*`) proporcionan reemplazo de módulos en c
 - `pnpm docker:devel` - Crear una imagen de desarrollo de Docker etiquetada como `wsj-br/duplistatus:devel`
 
 ### Scripts del Servicio Cron {#cron-service-scripts}
-- `pnpm cron:start` - Iniciar servicio cron en modo producción
-- `pnpm cron:dev` - Iniciar servicio cron en modo desarrollo con observación de archivos (puerto 8667)
-- `pnpm cron:start-local` - Iniciar servicio cron localmente para pruebas (puerto 8667)
+- `pnpm cron:start` - Iniciar el servicio cron en modo producción
+- `pnpm cron:dev` - Iniciar solo el servicio cron en modo desarrollo con vigilancia de archivos (puerto 8667). Generalmente innecesario al usar `pnpm dev`, que ya inicia cron.
+- `pnpm cron:start-local` - Iniciar el servicio cron localmente para pruebas (puerto 8667)
 
 ### Scripts de prueba {#test-scripts}
 - `pnpm generate-test-data` - Generar datos de respaldo para pruebas (requiere el parámetro --servers=N)

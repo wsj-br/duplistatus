@@ -63,16 +63,17 @@ Die Dokumentation verwendet ein KI-gestütztes Übersetzungssystem, um sowohl In
 
 ### Funktionsweise der Übersetzung {#how-translation-works}
 
-1. **Docusaurus UI-Texte**: `pnpm write-translations` extrahiert Theme- und benutzerdefinierte Texte in `i18n/en/*.json`.
-2. **KI-Übersetzung** (OpenRouter; Konfiguration in `ai-i18n-tools.config.json` im Repository-Stamm): ausgehend von `documentation/` führt `pnpm translate` das Skript `i18n:translate` im Stammverzeichnis aus (Übersetzung von UI-Texten, SVGs sowie Docusaurus-Markdown/JSON) in `documentation/i18n/` und `src/locales/` gemäß Konfiguration.
-3. **Erstellung**: `pnpm build` generiert statische HTML-Dateien für alle Sprachen unter `documentation/build/`.
+1. **Docusaurus-Benutzeroberflächen-Strings**: `pnpm write-translations` extrahiert Design/Benutzerdefinierte Strings in `i18n/en/*.json`.
+2. **KI-Übersetzung** (OpenRouter; Konfiguration in `ai-i18n-tools.config.json` im Repo-Stammverzeichnis): aus `documentation/` führt `pnpm translate` das Stammverzeichnis-`i18n:translate`-Skript (Benutzeroberflächen-Strings, SVGs, Docusaurus-Markdown/JSON und Standardbenachrichtigungsvorlagen) in `documentation/i18n/`, `src/locales/` und `src/locales/templates/` um, wie konfiguriert.
+3. **Build**: `pnpm build` generiert statisches HTML für alle Gebietsschemas unter `documentation/build/`.
 
 ### Übersetzung ausführen {#running-translation}
 
 ```bash
 cd documentation
-pnpm translate          # Same as repo root: i18n:translate (ui + svg + docs)
+pnpm translate          # Same as repo root: i18n:translate (ui + svg + docs + json)
 pnpm translate:docs
+pnpm translate:json
 pnpm translate:svg
 pnpm translate:ui
 pnpm translate:status

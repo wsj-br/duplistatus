@@ -33,13 +33,14 @@ Administradores podem escolher com que frequência **duplistatus** verifica o Gi
 | **A cada 12 horas** | No horário de início e 12 horas depois                         |
 | **A cada 6 horas**  | No horário de início e a cada 6 horas depois disso               |
 
-O horário de início é selecionado e exibido no fuso horário do navegador. **duplistatus** armazena essa hora em UTC e o serviço cron executa a verificação em UTC.
+A hora de início é escolhida no fuso horário do seu navegador usando o mesmo controle de tempo compacto que o Resumo Diário. Escolha qualquer `HH:mm` hora. **duplistatus** armazena esse valor em UTC e o serviço cron executa a verificação em UTC.
 
 Exemplos:
 
-- Diariamente com horário de início às 06:00 executa às 06:00.
-- A cada 12 horas com horário de início às 08:00 executa às 08:00 e 20:00.
-- A cada 6 horas com horário de início às 02:00 executa às 02:00, 08:00, 14:00 e 20:00.
+- Diário com uma hora de início de 06:00 executa às 06:00.
+- Diário com uma hora de início de 06:30 executa às 06:30.
+- A cada 12 horas com uma hora de início de 08:15 executa às 08:15 e 20:15.
+- A cada 6 horas com uma hora de início de 02:45 executa às 02:45, 08:45, 14:45 e 20:45.
 
 Na inicialização, **duplistatus** também atualiza o cache se ele tiver mais de 24 horas, 12 horas ou 6 horas. Atualizações falhas mantêm as últimas versões em cache.
 

@@ -15,7 +15,6 @@ import { NtfyConfig } from '@/lib/types';
 import { NtfyQrModal } from '@/components/ui/ntfy-qr-modal';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { useConfiguration } from '@/contexts/configuration-context';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 interface NtfyFormProps {
   config: NtfyConfig;
   onSave: (config: NtfyConfig) => Promise<{ ntfy?: NtfyConfig } | void>;
@@ -182,13 +181,6 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          {unifiedConfig?.dailySummary?.sendNtfy && (
-            <Alert>
-              <AlertDescription>
-                {t('Daily Summary NTFY is enabled. Keep a valid NTFY URL and topic so the summary can be delivered.')}
-              </AlertDescription>
-            </Alert>
-          )}
           <div className="space-y-2">
             <Label htmlFor="ntfy-url" className="flex items-center gap-2">
               <ColoredIcon icon={Globe} color="blue" size="sm" />

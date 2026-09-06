@@ -1,0 +1,26 @@
+{
+  "success": {
+    "title": "✅ {status} - {backup_name} @ {server_alias}",
+    "message": "Backup {backup_name} no {server_alias} concluído com status '{status}' em {backup_date} na {duration}.\n\n🔍 Nota: {server_note}\n☁️ Carregado: {uploaded_size}\n💾 Uso de armazenamento: {storage_size}\n🔃 Versões disponíveis: {available_versions}\n",
+    "priority": "default",
+    "tags": "duplicati, duplistatus, success"
+  },
+  "warning": {
+    "title": "⚠️ {status} - {backup_name} @ {server_alias}",
+    "message": "Backup {backup_name} no {server_alias} concluído com status '{status}' em {backup_date}.\n\n🔍 Nota: {server_note}\n⏰ Duração: {duration}\n☁️ Carregado: {uploaded_size}\n\n🚨 {warnings_count} avisos\n🛑 {errors_count} erros.\n\n📄 Mensagens do log:\n{log_text}\n\n⚠️ Verifique o servidor duplicati imediatamente {server_url}\n",
+    "priority": "high",
+    "tags": "duplicati, duplistatus, warning, error"
+  },
+  "overdueBackup": {
+    "title": "🕑 Atrasado - {backup_name} @ {server_alias}",
+    "message": "O backup {backup_name} está atrasado no {server_alias}.\n\n🔍 Nota: {server_note}\n🚨 Último backup recebido: {last_backup_date} ({last_elapsed})\n⏰ Tempo esperado para o backup: {expected_date} ({expected_elapsed})\n\nIntervalo esperado: {backup_interval} / Tolerância: {overdue_tolerance}\n\n⚠️ Verifique o servidor duplicati imediatamente {server_url}\n",
+    "priority": "default",
+    "tags": "duplicati, duplistatus, overdue"
+  },
+  "dailySummary": {
+    "email": {
+      "title": "📬 duplistatus — Resumo diário do backup — {summary_date}",
+      "message": "## 📊 Resumo diário do backup\n\n🕐 Gerado: **{generated_at}** ({time_zone})\n\n### 📈 Visão geral\n\n| Métrica | Contagem |\n| --- | ---: |\n| 🖥️ Servidores | {server_count} |\n| 💼 Trabalhos de backup | {job_count} |\n| ✅ Sucesso | {success_count} |\n| ⚠️ Avisos | {warning_count} |\n| 🛑 Erros | {error_count} |\n| 💀 Fatal | {fatal_count} |\n| ❓ Desconhecido | {unknown_count} |\n| ❓ Nenhum relatório recebido | {no_report_count} |\n| 🕑 Atrasado | {overdue_count} |\n\n### 🚨 Atenção necessária\n\n{problem_table}\n\n### 📋 Todos os últimos resultados de backup\n\n{all_jobs_table}\n\n{duplistatus_link}\n"
+    }
+  }
+}

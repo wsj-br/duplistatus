@@ -1,6 +1,6 @@
 # Vorlagen {#templates}
 
-**duplistatus** verwendet vier Vorlagen für Benachrichtigungsnachrichten. E-Mail-Körper sind Markdown (Überschriften, Listen, Links und Tabellen). NTFY für Erfolg, Warnung/Fehler und Überfällig wird aus demselben Inhalt abgeleitet; die Tägliche Zusammenfassung hat eine separate kompakte NTFY-Vorlage.
+**duplistatus** verwendet vier Vorlagen für Benachrichtigungsnachrichten. E-Mail-Körper sind Markdown (Überschriften, Listen, Links und Tabellen). NTFY für Erfolg, Warnung/Fehler und Überfällig wird aus demselben Inhalt abgeleitet. Die Tägliche Zusammenfassung ist nur für E-Mails verfügbar.
 
 Die Seite enthält einen **Vorlagensprache**-Auswahldialog, der die Sprache für die Standardvorlagen festlegt. Das Ändern der Sprache aktualisiert die Sprache für neue Standardeinstellungen, aber es ändert **nicht** den Text der vorhandenen Vorlagen. Um eine neue Sprache auf Ihre Vorlagen anzuwenden, bearbeiten Sie diese manuell oder verwenden Sie **Diese Vorlage auf Standardwerte zurücksetzen** (für die aktuelle Registerkarte) oder **Alle auf Standard zurücksetzen** (für alle Vorlagen).
 
@@ -11,7 +11,7 @@ Die Seite enthält einen **Vorlagensprache**-Auswahldialog, der die Sprache für
 | **Erfolg**        | Wird verwendet, wenn Sicherungen erfolgreich abgeschlossen wurden.            |
 | **Warnung/Fehler**  | Wird verwendet, wenn Sicherungen mit Warnungen oder Fehlern abgeschlossen wurden. |
 | **Verspätete Sicherung** | Wird verwendet, wenn Sicherungen überfällig sind.                      |
-| **Tägliche Zusammenfassung**  | E-Mail- und kompakte NTFY-Vorlagen für den optionalen täglichen Snapshot. |
+| **Tägliche Zusammenfassung**  | Markdown-E-Mail-Vorlage für die optionale tägliche Zusammenfassung. |
 
 <br/>
 
@@ -26,7 +26,7 @@ Ein **Vorlagensprache**-Auswahlfeld oben auf der Seite ermöglicht es Ihnen, die
 | Schaltfläche                                                              | Beschreibung                                                                                         |
 |:--------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------|
 | <IconButton label="Vorlagen-Einstellungen speichern" />                      | Speichert die Einstellungen beim Ändern der Vorlage. Die Schaltfläche speichert die angezeigte Vorlage (Erfolg, Warnung/Fehler, Überfällige Sicherung oder Tägliche Zusammenfassung). |
-| <IconButton icon="lucide:send" label="Testbenachrichtigung senden"/>     | Überprüft die Vorlage nach der Aktualisierung. Die Variablen werden für den Test durch ihre Namen ersetzt. Bei E-Mail-Benachrichtigungen wird der Vorlagentitel zur Betreffzeile der E-Mail. |
+| <IconButton icon="lucide:send" label="Testbenachrichtigung senden"/>     | Prüft die Vorlage nach dem Aktualisieren. Die Variablen werden für den Test durch ihre Namen ersetzt. Für E-Mail-Benachrichtigungen wird der Titel der Vorlage zum Betreff der E-Mail. Nicht verfügbar auf der Registerkarte Tägliche Zusammenfassung. |
 | <IconButton icon="lucide:rotate-ccw" label="Diese Vorlage auf Standard zurücksetzen"/> | Stellt die Standardvorlage für die **ausgewählte Vorlage** (der aktuelle Tab) wieder her. Denken Sie daran, nach dem Zurücksetzen zu speichern. |
 | <IconButton icon="lucide:rotate-ccw" label="Alle auf Standard zurücksetzen"/> | Stellt alle Vorlagen (Erfolg, Warnung/Fehler, Überfällige Sicherung und Tägliche Zusammenfassung) auf die Standardeinstellungen für die ausgewählte Vorlagensprache zurück. Denken Sie daran, nach dem Zurücksetzen zu speichern. |
 
@@ -75,6 +75,8 @@ Tägliche Zusammenfassungsvorlagen verwenden eine andere Gruppe von Variablen f�
 | `{success_count}` / `{warning_count}` / `{error_count}` / `{fatal_count}` / `{unknown_count}` / `{no_report_count}` | gegenseitig ausschließende Status-Buckets |
 | `{overdue_count}` | Überfällige Jobs (orthogonal zum Status) |
 | `{problem_table}` / `{all_jobs_table}` | Generierte Tabellen mit aufmerksamkeitsbedürftigen und allen Jobs. Spalten: Server, Sicherung, Überfällig, Letzter Status, Letztes Ergebnis, Dauer, Warnungen, Fehler, Hochgeladen. |
+| `{duplistatus_link}` | Link zum duplistatus-Dashboard (weggelassen, wenn keine öffentliche URL konfiguriert ist). Bevorzugen Sie dies gegenüber manuell erstellten Markdown-Links. |
+| `{duplistatus_url}` | Dieselbe URL im Klartext (leer, wenn keine öffentliche URL konfiguriert ist). |
 | `{latest_uploaded_size}` / `{latest_source_size}` / `{latest_storage_size}` / `{latest_file_count}` / `{total_warnings}` / `{total_errors}` | Gesamtzahl der neuesten Ergebnisse |
 
-Verwenden Sie **Vorschau**, um E-Mail HTML, Klartext und NTFY ohne Senden zu rendern. Die Vorschau öffnet sich in einem Dialog. E-Mail HTML folgt dem aktuellen hellen oder dunklen Design.
+Verwenden Sie **Vorschau**, um die E-Mail HTML- und Klartext-Versionen ohne Senden zu rendern. Die Vorschau für Erfolg, Warnung/Fehler und Überfällig enthält auch NTFY. Die Vorschau öffnet sich in einem Dialogfeld. Die E-Mail HTML folgt dem aktuellen hellen oder dunklen Design.

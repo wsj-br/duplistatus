@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { GitCompare, Loader2, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -16,11 +17,9 @@ import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { cronClient } from '@/lib/cron-client';
 import { formatDateTime } from '@/lib/date-format';
 import {
-  formatHourLabel,
-  getDuplicatiVersionRunHoursUtc,
-  localHourToUtcHour,
-  utcHourToLocalHour,
+  getDuplicatiVersionRunTimesUtc,
 } from '@/lib/duplicati-version';
+import { isValidLocalTime, localWallTimeToUtcTime, utcTimeToLocalWallTime } from '@/lib/daily-summary-schedule';
 import { DUPLICATI_CHANNELS } from '@/lib/types';
 import type {
   DuplicatiChannel,
@@ -37,7 +36,7 @@ interface DuplicatiVersionSettingsFormProps {
 interface VersionSettingsResponse {
   cache: DuplicatiVersionCache | null;
   interval: DuplicatiVersionCheckInterval;
-  startHourUtc: number;
+  startTimeUtc: string;
   cronExpression: string;
   enabled: boolean;
 }
@@ -83,11 +82,11 @@ export function DuplicatiVersionSettingsForm({ isAdmin }: DuplicatiVersionSettin
   const [loading, setLoading] = useState(true);
   const [cache, setCache] = useState<DuplicatiVersionCache | null>(null);
   const [interval, setInterval] = useState<DuplicatiVersionCheckInterval>('daily');
-  const [startHourUtc, setStartHourUtc] = useState(3);
+  const [startTimeUtc, setStartTimeUtc] = useState('03:00');
   const [isSaving, setIsSaving] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const localStartHour = utcHourToLocalHour(startHourUtc);
+  const localStartTime = useMemo(() => utcTimeToLocalWallTime(startTimeUtc), [startTimeUtc]);
   const browserTimeZone = useMemo(() => {
     try {
       return Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -99,7 +98,7 @@ export function DuplicatiVersionSettingsForm({ isAdmin }: DuplicatiVersionSettin
   const applySettings = (data: VersionSettingsResponse) => {
     setCache(data.cache);
     setInterval(data.interval);
-    setStartHourUtc(data.startHourUtc);
+    setStartTimeUtc(data.startTimeUtc);
   };
 
   useEffect(() => {
@@ -139,14 +138,14 @@ export function DuplicatiVersionSettingsForm({ isAdmin }: DuplicatiVersionSettin
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const localRunHours = useMemo(
-    () => getDuplicatiVersionRunHoursUtc(interval, startHourUtc).map((hour) => utcHourToLocalHour(hour)),
-    [interval, startHourUtc]
+  const localRunTimes = useMemo(
+    () => getDuplicatiVersionRunTimesUtc(interval, startTimeUtc).map((time) => utcTimeToLocalWallTime(time)),
+    [interval, startTimeUtc]
   );
 
   const saveSchedule = async (
     nextInterval: DuplicatiVersionCheckInterval,
-    nextStartHourUtc: number
+    nextStartTimeUtc: string
   ) => {
     setIsSaving(true);
     try {
@@ -154,7 +153,7 @@ export function DuplicatiVersionSettingsForm({ isAdmin }: DuplicatiVersionSettin
         method: 'POST',
         body: JSON.stringify({
           interval: nextInterval,
-          startHourUtc: nextStartHourUtc,
+          startTimeUtc: nextStartTimeUtc,
         }),
       });
 
@@ -198,13 +197,16 @@ export function DuplicatiVersionSettingsForm({ isAdmin }: DuplicatiVersionSettin
 
   const handleIntervalChange = (value: DuplicatiVersionCheckInterval) => {
     setInterval(value);
-    void saveSchedule(value, startHourUtc);
+    void saveSchedule(value, startTimeUtc);
   };
 
-  const handleLocalHourChange = (value: string) => {
-    const nextUtcHour = localHourToUtcHour(Number.parseInt(value, 10));
-    setStartHourUtc(nextUtcHour);
-    void saveSchedule(interval, nextUtcHour);
+  const handleLocalStartTimeChange = (value: string) => {
+    if (!isValidLocalTime(value)) {
+      return;
+    }
+    const nextStartTimeUtc = localWallTimeToUtcTime(value);
+    setStartTimeUtc(nextStartTimeUtc);
+    void saveSchedule(interval, nextStartTimeUtc);
   };
 
   const handleForceUpdate = async () => {
@@ -364,26 +366,18 @@ export function DuplicatiVersionSettingsForm({ isAdmin }: DuplicatiVersionSettin
               <Label htmlFor="duplicati-version-start-hour" className="mb-2 text-sm">
                 {t('Start time ({{timeZone}})', { timeZone: browserTimeZone })}
               </Label>
-              <Select
-                value={String(localStartHour)}
-                onValueChange={handleLocalHourChange}
+              <Input
+                id="duplicati-version-start-hour"
+                type="time"
+                value={localStartTime}
                 disabled={!isAdmin || isSaving}
-              >
-                <SelectTrigger id="duplicati-version-start-hour" className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {Array.from({ length: 24 }, (_, hour) => (
-                    <SelectItem key={hour} value={String(hour)}>
-                      {formatHourLabel(hour)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                onChange={(event) => handleLocalStartTimeChange(event.target.value)}
+                className="relative w-[9.25rem] max-w-full pl-3 pr-8 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-y-0 [&::-webkit-calendar-picker-indicator]:right-2 [&::-webkit-calendar-picker-indicator]:my-auto [&::-webkit-calendar-picker-indicator]:cursor-pointer"
+              />
               <p className="text-xs text-muted-foreground mt-2">
                 {t('Stored as {{time}} UTC. Runs at {{times}}.', {
-                  time: formatHourLabel(startHourUtc),
-                  times: localRunHours.map((hour) => formatHourLabel(hour)).join(', '),
+                  time: startTimeUtc,
+                  times: localRunTimes.join(', '),
                 })}
               </p>
             </div>

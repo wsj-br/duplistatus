@@ -38,7 +38,7 @@ export type DuplicatiVersionCheckInterval = (typeof DUPLICATI_VERSION_CHECK_INTE
 
 export interface DuplicatiVersionCheckConfig {
   interval: DuplicatiVersionCheckInterval;
-  startHourUtc: number;
+  startTimeUtc: string;
 }
 
 export interface DuplicatiVersionRefreshResult {
@@ -210,7 +210,6 @@ export interface DailySummaryEmailTemplate {
 
 export interface DailySummaryTemplateSet {
   email: DailySummaryEmailTemplate;
-  ntfy: NotificationTemplate;
 }
 
 export interface StoredNotificationTemplates {
@@ -226,10 +225,13 @@ export const DAILY_SUMMARY_DISPATCH_TASK = 'daily-summary-dispatch';
 
 export interface DailySummaryConfig {
   enabled: boolean;
-  localTime: string;
+  /** Daily send time stored as HH:mm UTC. */
+  utcTime: string;
+  /** Browser IANA timezone from the last save (email display only). */
   timeZone: string;
-  sendNtfy: boolean;
   effectiveFromIso: string;
+  /** Public dashboard URL for `{duplistatus_link}` (no trailing slash). Empty omits the link unless env overrides. */
+  publicUrl: string;
 }
 
 export type DailySummaryChannel = 'email' | 'ntfy';
@@ -241,10 +243,6 @@ export interface DailySummaryRenderedPayload {
   subject: string;
   emailHtml: string;
   emailText: string;
-  ntfyTitle: string;
-  ntfyMessage: string;
-  ntfyPriority: string;
-  ntfyTags: string;
 }
 
 export interface DailySummaryChannelPublicStatus {
@@ -259,17 +257,15 @@ export interface DailySummaryChannelPublicStatus {
 
 export interface DailySummaryPublicStatus {
   enabled: boolean;
-  localTime: string;
+  utcTime: string;
   timeZone: string;
-  sendNtfy: boolean;
+  publicUrl: string;
+  publicUrlEffective: string | null;
+  publicUrlEnvOverride: boolean;
   nextOccurrenceIso: string | null;
   dispatcherHealthy: boolean;
   emailConfigured: boolean;
-  ntfyConfigured: boolean;
-  channels: {
-    email: DailySummaryChannelPublicStatus;
-    ntfy: DailySummaryChannelPublicStatus;
-  };
+  channel: DailySummaryChannelPublicStatus;
 }
 
 export interface DailySummaryJobRow {

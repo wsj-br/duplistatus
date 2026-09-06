@@ -18,5 +18,6 @@ Die Anwendung unterstützt die folgenden Umgebungsvariablen für die Konfigurati
 | `ADMIN_IP_ALLOWLIST`      | Komma-getrennte CIDRs für die Administrationsinterface                                               | unset                      |
 | `EXTERNAL_API_IP_ALLOWLIST_ENABLED` | Überschreiben Sie die externe-API-Zulassungslisten-Flag (`true` / `false`)                | unset (verwende Einstellungen)       |
 | `EXTERNAL_API_IP_ALLOWLIST` | Komma-getrennte CIDRs für `/api/upload`, `/api/summary`, und `/api/lastbackup*`           | unset                      |
+| `DUPLISTATUS_PUBLIC_URL`    | Öffentliche Basis-URL der duplistatus-Web-UI (ohne abschließenden Schrägstrich). Wann gesetzt, überschreibt es Einstellungen → Tägliche Zusammenfassung **Öffentliche Dashboard-URL** und E-Mails zur Täglichen Zusammenfassung enthalten `{duplistatus_link}`. Wann nicht gesetzt, wird die gespeicherte Einstellung verwendet; wenn diese auch leer ist, wird kein Dashboard-Link hinzugefügt. | unset                      |
 
 `NEXT_TELEMETRY_DISABLED=1` wird durch das Docker-Image und durch `pnpm build`, `pnpm build-local`, `pnpm start`, `pnpm start-local` und `pnpm dev` gesetzt, sodass Next.js keine anonymen CLI-Telemetrie sammelt. Um die Opt-Out-Option in Ihrer Benutzerkonfiguration zu persistieren, führen Sie `npx next telemetry disable` aus.

@@ -99,7 +99,7 @@ O conteúdo do e-mail de teste exibe:
 ## Visualização do Modelo de Notificação - `/api/notifications/preview` {#preview-notification-template---apinotificationspreview}
 - **Endpoint**: `/api/notifications/preview`
 - **Método**: POST
-- **Descrição**: Renderiza um modelo de notificação com o renderizador Markdown de produção sem enviar. O corpo inclui `kind` (`success`, `warning`, `overdueBackup`, `dailySummaryEmail`, ou `dailySummaryNtfy`) e o modelo sendo editado. Visualizações do Resumo Diário usam o snapshot real atual; outros tipos usam valores de amostra determinísticos. O E-mail HTML é destinado a um iframe sandboxed.
+- **Descrição**: Renderiza um modelo de notificação com o renderizador de Markdown de produção sem enviar. O corpo inclui `kind` (`success`, `warning`, `overdueBackup`, ou `dailySummaryEmail`) e o modelo sendo editado. Visualizações de Resumo Diário usam o snapshot real atual; outros tipos usam valores de amostra determinísticos. E-mail HTML é destinado a um iframe sandboxed.
 - **Autenticação**: Requer sessão válida e token CSRF
 
 ## Verificar Backups Atrasados - `/api/notifications/check-overdue` {#check-overdue-backups---apinotificationscheck-overdue}

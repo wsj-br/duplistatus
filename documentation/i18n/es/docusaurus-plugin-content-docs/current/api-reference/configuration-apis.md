@@ -202,12 +202,6 @@
         "email": {
           "title": "duplistatus — Daily backup summary — {summary_date}",
           "message": "## Daily backup summary"
-        },
-        "ntfy": {
-          "title": "duplistatus daily summary",
-          "message": "Servers {server_count}, jobs {job_count}",
-          "priority": "default",
-          "tags": "duplicati, duplistatus, daily-summary"
         }
       }
     },
@@ -453,28 +447,28 @@ Para la frecuencia de notificación:
   - Actualiza las plantillas de notificación para diferentes estados de copia de seguridad
   - Preserva la configuración existente
   - Las plantillas admiten cuerpos de correo electrónico en Markdown y sustitución de `{placeholder}`
-  - Se requiere un conjunto de plantillas `dailySummary` (asunto/cuerpo del correo electrónico y NTFY compacto)
+- Se requiere una plantilla de correo electrónico `dailySummary` (asunto y cuerpo en Markdown)
 
 ## Resumen Diario - `/api/configuration/daily-summary` {#daily-summary---apiconfigurationdaily-summary}
-- **Punto final**: `/api/configuration/daily-summary`
+- **Endpoint**: `/api/configuration/daily-summary`
 - **Método**: GET, POST
-- **Descripción**: Lee o actualiza el modo Resumen Diario. GET devuelve la configuración sanitizada, la salud del despachador, la próxima ocurrencia y el estado de entrega por canal. POST guarda `enabled`, `localTime` (`HH:mm`), `timeZone` (IANA) y `sendNtfy`. Habilitar requiere SMTP válido y una tarea `daily-summary-dispatch` saludable. Habilitar NTFY requiere configuración de NTFY almacenada. Cambiar el horario establece la próxima ocurrencia **futura**.
+- **Descripción**: Lee o actualiza el modo Resumen Diario. GET devuelve configuraciones sanitizadas, estado del despachador, próxima ocurrencia y estado de entrega de correo electrónico. POST guarda `enabled`, `utcTime` (`HH:mm` UTC), `timeZone` (zona horaria IANA del navegador desde el último guardado) y opcional `publicUrl`. Habilitar requiere SMTP válido. Cambiar el horario establece la próxima **futura** ocurrencia.
 - **Autenticación**: GET requiere una sesión válida y un token CSRF. POST requiere una sesión de administrador y un token CSRF.
-- **Respuestas de error**:
-  - `400`: Tiempo/zona horaria no válidos, falta SMTP/NTFY o el despachador no está saludable
+- **Respuestas de Error**:
+  - `400`: Hora/zona horaria inválida, URL pública inválida o falta SMTP
   - `401`: No autorizado
   - `500`: Error al leer o actualizar el Resumen Diario
 
 ## Enviar Resumen Diario - `/api/configuration/daily-summary/send` {#send-daily-summary---apiconfigurationdaily-summarysend}
-- **Endpoint**: `/api/configuration/daily-summary/send`
+- **Punto final**: `/api/configuration/daily-summary/send`
 - **Método**: POST
-- **Descripción**: Envía una instantánea adicional del estado actual inmediatamente. No consume la próxima ocurrencia programada. Utiliza el SMTP almacenado (y el NTFY almacenado cuando se selecciona). No acepta direcciones de destinatarios o puntos finales en la solicitud.
+- **Descripción**: Envía una instantánea adicional del estado actual inmediatamente. No consume la próxima ocurrencia programada. Usa el SMTP almacenado. No acepta direcciones de destinatarios en la solicitud.
 - **Autenticación**: Requiere una sesión de administrador y un token CSRF
 
 ## Reintentar Resumen Diario - `/api/configuration/daily-summary/retry` {#retry-daily-summary---apiconfigurationdaily-summaryretry}
-- **Endpoint**: `/api/configuration/daily-summary/retry`
+- **Punto final**: `/api/configuration/daily-summary/retry`
 - **Método**: POST
-- **Descripción**: Reintenta los canales fallidos desde la carga útil persistente. Cuerpo opcional `{ "occurrenceKey": "..." }`; de lo contrario, reintenta la última ocurrencia fallida.
+- **Descripción**: Reintenta los canales fallidos de la carga útil persistente. Cuerpo `{ "occurrenceKey": "..." }` opcional; de lo contrario, reintenta el último envío de correo electrónico fallido.
 - **Autenticación**: Requiere una sesión de administrador y un token CSRF
 
 ## Vista previa del Resumen Diario - `/api/configuration/daily-summary/preview` {#preview-daily-summary---apiconfigurationdaily-summarypreview}

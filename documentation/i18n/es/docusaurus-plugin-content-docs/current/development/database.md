@@ -163,9 +163,9 @@ Almacena la configuración de la aplicación.
 - `ntfy_config`: Configuración de notificaciones NTFY
 - `overdue_tolerance`: Configuración de tolerancia para copia de seguridad retrasada
 - `notification_templates`: Plantillas de mensajes de notificación
-- `daily_summary`: Modo de resumen diario, horario, zona horaria y entrega opcional de NTFY
-- `cron_service`: Horarios de tareas cron, incluyendo `daily-summary-dispatch`
-- `audit_retention_days`: Período de retención de registro de auditoría (predeterminado: 90 días)
+- `daily_summary`: Modo, programación y zona horaria del Resumen Diario
+- `cron_service`: Programación de tareas Cron, incluyendo `daily-summary-dispatch`
+- `audit_retention_days`: Período de retención del Registro de Auditoría (predeterminado: 90 días)
 
 ### Tabla de Versión de Base de Datos {#database-version-table}
 
@@ -264,7 +264,7 @@ Claves de configuración relacionadas en la tabla `configurations`: `external_ap
 
 ### Tabla de Entregas de Resumen Diario {#daily-summary-deliveries-table}
 
-Registro por canal para correo electrónico de resumen diario y NTFY. Cada ocurrencia programada (o envío manual único) tiene como máximo una fila por canal. Los payloads renderizados se almacenan antes de enviar para que las reintentos mantengan la misma instantánea. Las filas con más de 30 días se eliminan.
+Registro por canal para el envío de correos electrónicos del Resumen Diario. Las filas heredadas pueden incluir un canal `ntfy` de versiones anteriores. Cada ocurrencia programada (o envío manual único) tiene como máximo una fila por canal. Los payloads renderizados se almacenan antes del envío para que los reintentos mantengan la misma instantánea. Las filas con más de 30 días de antigüedad se eliminan.
 
 Si el proceso se detiene después de que un proveedor acepte un mensaje pero antes de registrar el éxito, ese canal puede ser reintentado (al menos una vez).
 

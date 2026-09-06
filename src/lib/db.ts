@@ -788,9 +788,8 @@ async function populateDefaultConfigurations() {
       'daily_summary',
       JSON.stringify({
         enabled: false,
-        localTime: '08:00',
+        utcTime: '08:00',
         timeZone: 'UTC',
-        sendNtfy: false,
         effectiveFromIso: new Date().toISOString(),
       })
     );

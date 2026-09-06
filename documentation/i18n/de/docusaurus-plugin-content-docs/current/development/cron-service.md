@@ -4,6 +4,8 @@ Die Anwendung enthält einen separaten Cron-Service zur Verarbeitung geplanter A
 
 ## Cron-Service im Entwicklungsmodus starten {#start-cron-service-in-development-mode}
 
+`pnpm dev` startet bereits den Cron-Dienst zusammen mit Next.js. Um Cron allein auszuführen (zum Beispiel in einem zweiten Terminal):
+
 ```bash
 pnpm cron:dev
 ```

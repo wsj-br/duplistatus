@@ -134,6 +134,17 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
   // Configuration status checks
   const isNtfyConfigured = config?.ntfy && config.ntfy.url && config.ntfy.topic;
   const isEmailConfigured = config?.email && config.email.enabled;
+  const isDailySummaryEnabled = config?.dailySummary?.enabled === true;
+  const emailCheckboxTitle = isDailySummaryEnabled
+    ? t('Daily Summary mode suppresses individual email notifications')
+    : isEmailConfigured
+      ? t('Enable Email notifications')
+      : t('SMTP not configured - notifications will not be sent');
+  const selectAllEmailTitle = isDailySummaryEnabled
+    ? t('Daily Summary mode suppresses individual email notifications')
+    : isEmailConfigured
+      ? t('Select all Email notifications')
+      : t('SMTP not configured - notifications will not be sent');
   
   // Auto-save debouncing state
   const [isAutoSaving, setIsAutoSaving] = useState(false);
@@ -1070,6 +1081,9 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
   }, [autoSaveTextInput]);
 
   const updateBackupSettingById: (serverId: string, backupName: string, field: keyof BackupNotificationConfig, value: string | number | boolean) => void = useCallback((serverId: string, backupName: string, field: keyof BackupNotificationConfig, value: string | number | boolean) => {
+    if (field === 'emailEnabled' && config?.dailySummary?.enabled) {
+      return;
+    }
     const backupKey = `${serverId}:${backupName}`;
     
     // Use functional update to avoid creating new object unnecessarily
@@ -1125,7 +1139,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
       
       return newSettings;
     });
-  }, [setSettings, removeEmptyFields, autoSaveTextInput, autoSave]);
+  }, [setSettings, removeEmptyFields, autoSaveTextInput, autoSave, config?.dailySummary?.enabled]);
 
   // Store value in ref (no re-renders, no expensive computations)
   // Input is uncontrolled, so we just store the value for later use
@@ -1379,6 +1393,9 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
   };
 
   const handleSelectAllEmail = (checked: boolean) => {
+    if (isDailySummaryEnabled) {
+      return;
+    }
     const newSettings = { ...settings };
     
     // If backups are selected, only update those; otherwise update all backups
@@ -2364,7 +2381,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
           <div className="px-6 pb-4">
             <Alert>
               <AlertDescription>
-                {t('Daily Summary mode is enabled, so individual and additional backup notifications are currently suppressed. These settings are preserved and become active again when Daily Summary is turned off.')}
+                {t('Daily Summary mode is enabled, so individual and additional backup email notifications are currently suppressed. NTFY notifications continue. These settings are preserved and become active again when Daily Summary is turned off.')}
               </AlertDescription>
             </Alert>
           </div>
@@ -2486,11 +2503,12 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                     <Checkbox
                       checked={allEmailSelected}
                       onCheckedChange={handleSelectAllEmail}
-                      title={isEmailConfigured ? t("Select all Email notifications") : t("SMTP not configured - notifications will not be sent")}
-                      className={!isEmailConfigured ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
+                      disabled={isDailySummaryEnabled}
+                      title={selectAllEmailTitle}
+                      className={!isEmailConfigured || isDailySummaryEnabled ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
                     />
-                    <span className={isEmailConfigured ? "" : "text-gray-500"} title={isEmailConfigured ? undefined : t("not configured")}>
-                      {!isEmailConfigured ? t("Email Notifications (disabled)") : t("Email Notifications")}
+                    <span className={isEmailConfigured && !isDailySummaryEnabled ? "" : "text-gray-500"} title={isEmailConfigured && !isDailySummaryEnabled ? undefined : isDailySummaryEnabled ? emailCheckboxTitle : t("not configured")}>
+                      {!isEmailConfigured ? t("Email Notifications (disabled)") : isDailySummaryEnabled ? t("Email Notifications (suppressed)") : t("Email Notifications")}
                     </span>
                   </div>
                 </th>
@@ -2650,8 +2668,9 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                             onCheckedChange={(checked: boolean) => 
                               updateBackupSettingById(backup.id, backup.backupName, 'emailEnabled', checked)
                             }
-                            title={isEmailConfigured ? t("Enable Email notifications") : t("SMTP not configured - notifications will not be sent")}
-                            className={!isEmailConfigured ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
+                            disabled={isDailySummaryEnabled}
+                            title={emailCheckboxTitle}
+                            className={!isEmailConfigured || isDailySummaryEnabled ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
                           />
                         </TableCell>
                       </TableRow>
@@ -3376,8 +3395,9 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                 onCheckedChange={(checked: boolean) => 
                                   updateBackupSettingById(backup.id, backup.backupName, 'emailEnabled', checked)
                                 }
-                                title={isEmailConfigured ? t("Enable Email notifications") : t("SMTP not configured - notifications will not be sent")}
-                                className={!isEmailConfigured ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
+                                disabled={isDailySummaryEnabled}
+                                title={emailCheckboxTitle}
+                                className={!isEmailConfigured || isDailySummaryEnabled ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
                               />
                             </TableCell>
                           </TableRow>
@@ -3801,10 +3821,13 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                               onCheckedChange={(checked: boolean) => 
                                 updateBackupSettingById(backup.id, backup.backupName, 'emailEnabled', checked)
                               }
-                              title={isEmailConfigured ? t("Enable Email notifications") : t("SMTP not configured - notifications will not be sent")}
-                              className={!isEmailConfigured ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
+                              disabled={isDailySummaryEnabled}
+                              title={emailCheckboxTitle}
+                              className={!isEmailConfigured || isDailySummaryEnabled ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
                             />
-                            <Label className={`text-xs ${!isEmailConfigured ? "text-gray-400" : ""}`}>{isEmailConfigured ? t("Email Notifications") : t("Email (disabled)")}</Label>
+                            <Label className={`text-xs ${!isEmailConfigured || isDailySummaryEnabled ? "text-gray-400" : ""}`}>
+                              {isDailySummaryEnabled ? t('Email (suppressed)') : isEmailConfigured ? t('Email Notifications') : t('Email (disabled)')}
+                            </Label>
                           </div>
                         </div>
                       </div>
@@ -4421,10 +4444,13 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                             <Checkbox
                               checked={allEmailSelected}
                               onCheckedChange={handleSelectAllEmail}
-                              title={isEmailConfigured ? t("Select all Email notifications") : t("SMTP not configured - notifications will not be sent")}
-                              className={!isEmailConfigured ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
+                              disabled={isDailySummaryEnabled}
+                              title={selectAllEmailTitle}
+                              className={!isEmailConfigured || isDailySummaryEnabled ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
                             />
-                            <Label className={`text-xs ${!isEmailConfigured ? "text-gray-400" : "text-muted-foreground"}`}>{isEmailConfigured ? t("All Email") : t("Email (disabled)")}</Label>
+                            <Label className={`text-xs ${!isEmailConfigured || isDailySummaryEnabled ? "text-gray-400" : "text-muted-foreground"}`}>
+                              {isDailySummaryEnabled ? t('Email (suppressed)') : isEmailConfigured ? t('All Email') : t('Email (disabled)')}
+                            </Label>
                           </div>
                         </div>
                       </div>
@@ -4446,10 +4472,13 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                             onCheckedChange={(checked: boolean) => 
                               updateBackupSettingById(backup.id, backup.backupName, 'emailEnabled', checked)
                             }
-                            title={isEmailConfigured ? t("Enable Email notifications") : t("SMTP not configured - notifications will not be sent")}
-                            className={!isEmailConfigured ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
+                            disabled={isDailySummaryEnabled}
+                            title={emailCheckboxTitle}
+                            className={!isEmailConfigured || isDailySummaryEnabled ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
                           />
-                          <Label className={`text-xs ${!isEmailConfigured ? "text-gray-400" : ""}`}>{isEmailConfigured ? t("Email Notifications") : t("Email (disabled)")}</Label>
+                          <Label className={`text-xs ${!isEmailConfigured || isDailySummaryEnabled ? "text-gray-400" : ""}`}>
+                            {isDailySummaryEnabled ? t('Email (suppressed)') : isEmailConfigured ? t('Email Notifications') : t('Email (disabled)')}
+                          </Label>
                         </div>
                       </div>
                     </div>
@@ -4498,10 +4527,13 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                   onCheckedChange={(checked: boolean) => 
                                     updateBackupSettingById(backup.id, backup.backupName, 'emailEnabled', checked)
                                   }
-                                  title={isEmailConfigured ? t("Enable Email notifications") : t("SMTP not configured - notifications will not be sent")}
-                                  className={!isEmailConfigured ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
+                                  disabled={isDailySummaryEnabled}
+                                  title={emailCheckboxTitle}
+                                  className={!isEmailConfigured || isDailySummaryEnabled ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
                                 />
-                                <Label className={`text-xs ${!isEmailConfigured ? "text-gray-400" : ""}`}>{isEmailConfigured ? t("Email Notifications") : t("Email (disabled)")}</Label>
+                                <Label className={`text-xs ${!isEmailConfigured || isDailySummaryEnabled ? "text-gray-400" : ""}`}>
+                                  {isDailySummaryEnabled ? t('Email (suppressed)') : isEmailConfigured ? t('Email Notifications') : t('Email (disabled)')}
+                                </Label>
                               </div>
                             </div>
                           </div>

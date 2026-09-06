@@ -480,11 +480,7 @@ export function BackupCollectMenu({
       // Show success toast
       toast({
         title: t("Backups collected successfully from {{serverName}}", { serverName }),
-        description: t("Processed: {{processed}}, Skipped: {{skipped}}, Errors: {{errors}}", {
-          processed: String(result.stats.processed),
-          skipped: String(result.stats.skipped),
-          errors: String(result.stats.errors),
-        }),
+        description: `${t("Processed: {{count}} backups", { plurals: true, count: result.stats.processed })}, ${t("Skipped: {{count}} duplicates", { plurals: true, count: result.stats.skipped })}, ${t("Errors: {{count}}", { count: result.stats.errors })}`,
         variant: "default",
         duration: 3000,
       });
@@ -779,11 +775,7 @@ export function BackupCollectMenu({
       // Show success toast
       toast({
         title: t("Backups collected successfully from {{serverName}}", { serverName }),
-        description: t("Processed: {{processed}}, Skipped: {{skipped}}, Errors: {{errors}}", {
-          processed: String(result.stats?.processed ?? 0),
-          skipped: String(result.stats?.skipped ?? 0),
-          errors: String(result.stats?.errors ?? 0),
-        }),
+        description: `${t("Processed: {{count}} backups", { plurals: true, count: result.stats?.processed ?? 0 })}, ${t("Skipped: {{count}} duplicates", { plurals: true, count: result.stats?.skipped ?? 0 })}, ${t("Errors: {{count}}", { count: result.stats?.errors ?? 0 })}`,
         variant: "default",
         duration: 3000,
       });
@@ -867,11 +859,7 @@ export function BackupCollectMenu({
     switch (status) {
       case 'collected':
         if (stats) {
-          return t("Success (Processed: {{processed}}, Skipped: {{skipped}}, Errors: {{errors}})", {
-            processed: String(stats.processed),
-            skipped: String(stats.skipped),
-            errors: String(stats.errors),
-          });
+          return `${t("Success")} (${t("Processed: {{count}} backups", { plurals: true, count: stats.processed })}, ${t("Skipped: {{count}} duplicates", { plurals: true, count: stats.skipped })}, ${t("Errors: {{count}}", { count: stats.errors })})`;
         }
         return t("Success");
       case 'failed':

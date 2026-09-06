@@ -8,6 +8,8 @@ Administrators can restrict who reaches the admin interface and the external dat
 
 The application reads the TCP peer address from an internal header set by `scripts/peer-ip.cjs`. A client cannot spoof that header. **Detected IP** shows the TCP **Peer IP** and the **Allowlist IP** used for access decisions (they match unless trusted-proxy headers apply).
 
+Denied requests return HTTP 403 (`IP_NOT_ALLOWED` on API paths). They are not written to the audit log. A rate-limited `console.warn` line is emitted to application stdout (for example `docker logs`) — at most one log per client IP and surface (admin or external) per minute, and ten per hour — so scanners cannot flood the logs.
+
 ## Trusted proxies {#trusted-proxies}
 
 Enable **Trust reverse proxy headers** only when duplistatus is not reachable except through a reverse proxy that **overwrites** `X-Forwarded-For` / `X-Real-IP` (do not append). Add each proxy CIDR with **Add** (or paste a comma- or newline-separated list). Entries appear as removable chips. When the TCP peer is not in that list, forwarded headers are ignored.

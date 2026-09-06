@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Check, Copy, KeyRound, Plus, Shield, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -76,6 +76,18 @@ function getApiKeyStatus(key: ApiKeyPublic): ApiKeyStatus {
 }
 
 const BYTES_PER_MB = 1024 * 1024;
+const AUTO_SAVE_DEBOUNCE_MS = 500;
+
+function isValidUploadLimits(limits: UploadLimitsConfig): boolean {
+  return (
+    Number.isFinite(limits.maxBytes) &&
+    limits.maxBytes >= 1024 &&
+    Number.isFinite(limits.perMinute) &&
+    limits.perMinute > 0 &&
+    Number.isFinite(limits.perHour) &&
+    limits.perHour > 0
+  );
+}
 
 export function ApiKeysForm() {
   const { t } = useTranslation();
@@ -100,7 +112,33 @@ export function ApiKeysForm() {
     perMinute: 20,
     perHour: 200,
   });
-  const [savingSecurity, setSavingSecurity] = useState(false);
+  const keysRef = useRef(keys);
+  const requireApiKeyRef = useRef(requireApiKey);
+  const uploadLimitsRef = useRef(uploadLimits);
+  const autoSaveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isSaveInProgressRef = useRef(false);
+  const pendingSaveRef = useRef<{
+    requireApiKey: boolean;
+    uploadLimits: UploadLimitsConfig;
+  } | null>(null);
+
+  useEffect(() => {
+    keysRef.current = keys;
+  }, [keys]);
+
+  useEffect(() => {
+    requireApiKeyRef.current = requireApiKey;
+  }, [requireApiKey]);
+
+  useEffect(() => {
+    uploadLimitsRef.current = uploadLimits;
+  }, [uploadLimits]);
+
+  useEffect(() => () => {
+    if (autoSaveTimeoutRef.current) {
+      clearTimeout(autoSaveTimeoutRef.current);
+    }
+  }, []);
 
   const resetCreateForm = useCallback(() => {
     setName('');
@@ -292,27 +330,59 @@ export function ApiKeysForm() {
     }
   };
 
-  const saveSecurity = async () => {
-    const enabledUpload = keys.some((key) => key.enabled && !isApiKeyExpired(key.expiresAt) && key.scope === 'upload');
-    const enabledRead = keys.some((key) => key.enabled && !isApiKeyExpired(key.expiresAt) && key.scope === 'read');
-    if (requireApiKey && (!enabledUpload || !enabledRead)) {
+  const warnIfRequireWithoutKeys = useCallback((nextRequireApiKey: boolean) => {
+    if (!nextRequireApiKey) {
+      return;
+    }
+    const enabledUpload = keysRef.current.some(
+      (key) => key.enabled && !isApiKeyExpired(key.expiresAt) && key.scope === 'upload',
+    );
+    const enabledRead = keysRef.current.some(
+      (key) => key.enabled && !isApiKeyExpired(key.expiresAt) && key.scope === 'read',
+    );
+    if (!enabledUpload || !enabledRead) {
       toast({
         title: t('Warning'),
         description: t('Requiring API keys without an enabled key for each scope will lock Duplicati uploads or Homepage widgets.'),
       });
     }
+  }, [t, toast]);
+
+  const persistSecurity = useCallback(async (
+    nextRequireApiKey: boolean,
+    nextUploadLimits: UploadLimitsConfig,
+  ) => {
+    if (!isValidUploadLimits(nextUploadLimits)) {
+      return;
+    }
+
+    if (isSaveInProgressRef.current) {
+      pendingSaveRef.current = {
+        requireApiKey: nextRequireApiKey,
+        uploadLimits: nextUploadLimits,
+      };
+      return;
+    }
+
+    isSaveInProgressRef.current = true;
     try {
-      setSavingSecurity(true);
       const response = await authenticatedRequestWithRecovery('/api/configuration/external-api-security', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ requireApiKey, uploadLimits }),
+        body: JSON.stringify({
+          requireApiKey: nextRequireApiKey,
+          uploadLimits: nextUploadLimits,
+        }),
       });
       if (!response.ok) {
         const error = await response.json() as { error?: string };
         throw new Error(error.error || t('Failed to save external API protection settings'));
       }
-      toast({ title: t('Saved'), description: t('External API protection settings were updated.') });
+      toast({
+        title: t('Saved'),
+        description: t('External API protection settings were updated.'),
+        duration: 2000,
+      });
     } catch (error) {
       toast({
         title: t('Error'),
@@ -320,8 +390,90 @@ export function ApiKeysForm() {
         variant: 'destructive',
       });
     } finally {
-      setSavingSecurity(false);
+      isSaveInProgressRef.current = false;
+      const pending = pendingSaveRef.current;
+      if (pending) {
+        pendingSaveRef.current = null;
+        void persistSecurity(pending.requireApiKey, pending.uploadLimits);
+      }
     }
+  }, [t, toast]);
+
+  const flushAutoSave = useCallback(() => {
+    if (!autoSaveTimeoutRef.current) {
+      return;
+    }
+    clearTimeout(autoSaveTimeoutRef.current);
+    autoSaveTimeoutRef.current = null;
+    void persistSecurity(requireApiKeyRef.current, uploadLimitsRef.current);
+  }, [persistSecurity]);
+
+  const scheduleAutoSave = useCallback(() => {
+    if (autoSaveTimeoutRef.current) {
+      clearTimeout(autoSaveTimeoutRef.current);
+    }
+    autoSaveTimeoutRef.current = setTimeout(() => {
+      autoSaveTimeoutRef.current = null;
+      void persistSecurity(requireApiKeyRef.current, uploadLimitsRef.current);
+    }, AUTO_SAVE_DEBOUNCE_MS);
+  }, [persistSecurity]);
+
+  const handleRequireApiKeyChange = (checked: boolean) => {
+    setRequireApiKey(checked);
+    requireApiKeyRef.current = checked;
+    warnIfRequireWithoutKeys(checked);
+    if (autoSaveTimeoutRef.current) {
+      clearTimeout(autoSaveTimeoutRef.current);
+      autoSaveTimeoutRef.current = null;
+    }
+    void persistSecurity(checked, uploadLimitsRef.current);
+  };
+
+  const handleUploadLimitsEnabledChange = (checked: boolean) => {
+    const next = { ...uploadLimitsRef.current, enabled: checked };
+    setUploadLimits(next);
+    uploadLimitsRef.current = next;
+    if (autoSaveTimeoutRef.current) {
+      clearTimeout(autoSaveTimeoutRef.current);
+      autoSaveTimeoutRef.current = null;
+    }
+    void persistSecurity(requireApiKeyRef.current, next);
+  };
+
+  const handleMaxUploadMbChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const megabytes = Number(event.target.value);
+    if (!Number.isFinite(megabytes) || megabytes < 0) {
+      return;
+    }
+    const next = {
+      ...uploadLimitsRef.current,
+      maxBytes: Math.round(megabytes * BYTES_PER_MB),
+    };
+    setUploadLimits(next);
+    uploadLimitsRef.current = next;
+    scheduleAutoSave();
+  };
+
+  const handlePerMinuteChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const perMinute = Number(event.target.value);
+    if (!Number.isFinite(perMinute) || perMinute < 0) {
+      return;
+    }
+    const next = { ...uploadLimitsRef.current, perMinute };
+    setUploadLimits(next);
+    uploadLimitsRef.current = next;
+    scheduleAutoSave();
+  };
+
+  const handlePerHourChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const perHour = Number(event.target.value);
+    if (!Number.isFinite(perHour) || perHour < 0) {
+      return;
+    }
+    const next = { ...uploadLimitsRef.current, perHour };
+    setUploadLimits(next);
+    uploadLimitsRef.current = next;
+    scheduleAutoSave();
   };
 
   const usageSnippet = created
@@ -434,7 +586,7 @@ export function ApiKeysForm() {
               id="require-api-key"
               className="mt-0.5"
               checked={requireApiKey}
-              onCheckedChange={setRequireApiKey}
+              onCheckedChange={handleRequireApiKeyChange}
             />
             <div className="space-y-1">
               <Label htmlFor="require-api-key">{t('Require API keys for external APIs')}</Label>
@@ -446,7 +598,7 @@ export function ApiKeysForm() {
               <Switch
                 id="enable-upload-limits"
                 checked={uploadLimits.enabled}
-                onCheckedChange={(checked) => setUploadLimits((current) => ({ ...current, enabled: checked }))}
+                onCheckedChange={handleUploadLimitsEnabledChange}
               />
               <Label htmlFor="enable-upload-limits">{t('Enable upload rate limits')}</Label>
             </div>
@@ -460,16 +612,8 @@ export function ApiKeysForm() {
                   step={1}
                   value={uploadLimits.maxBytes / BYTES_PER_MB}
                   disabled={!uploadLimits.enabled}
-                  onChange={(event) => {
-                    const megabytes = Number(event.target.value);
-                    if (!Number.isFinite(megabytes) || megabytes < 0) {
-                      return;
-                    }
-                    setUploadLimits((current) => ({
-                      ...current,
-                      maxBytes: Math.round(megabytes * BYTES_PER_MB),
-                    }));
-                  }}
+                  onChange={handleMaxUploadMbChange}
+                  onBlur={flushAutoSave}
                 />
               </div>
               <div className="space-y-2">
@@ -480,7 +624,8 @@ export function ApiKeysForm() {
                   min={1}
                   value={uploadLimits.perMinute}
                   disabled={!uploadLimits.enabled}
-                  onChange={(event) => setUploadLimits((current) => ({ ...current, perMinute: Number(event.target.value) }))}
+                  onChange={handlePerMinuteChange}
+                  onBlur={flushAutoSave}
                 />
               </div>
               <div className="space-y-2">
@@ -491,14 +636,12 @@ export function ApiKeysForm() {
                   min={1}
                   value={uploadLimits.perHour}
                   disabled={!uploadLimits.enabled}
-                  onChange={(event) => setUploadLimits((current) => ({ ...current, perHour: Number(event.target.value) }))}
+                  onChange={handlePerHourChange}
+                  onBlur={flushAutoSave}
                 />
               </div>
             </div>
           </div>
-          <Button variant="gradient" onClick={saveSecurity} disabled={savingSecurity}>
-            {savingSecurity ? t('Saving...') : t('Save protection settings')}
-          </Button>
         </CardContent>
       </Card>
 

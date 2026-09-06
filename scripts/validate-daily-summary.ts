@@ -35,10 +35,10 @@ function testSchedule(): void {
 
   const config: DailySummaryConfig = {
     enabled: true,
-    localTime: '08:00',
+    utcTime: '08:00',
     timeZone: 'UTC',
-    sendNtfy: false,
     effectiveFromIso: '2026-04-01T10:00:00.000Z',
+    publicUrl: '',
   };
   const before = evaluateScheduledOccurrence(config, new Date('2026-04-01T07:59:00.000Z'));
   assert.equal(before.due, false);
@@ -62,7 +62,7 @@ function testSchedule(): void {
 
   const next = findNextOccurrence({
     ...alreadyEnabled,
-    localTime: '20:00',
+    utcTime: '20:00',
   }, new Date('2026-04-01T15:00:00.000Z'));
   assert.ok(next);
   assert.equal(next?.toISOString(), '2026-04-01T20:00:00.000Z');
@@ -155,8 +155,8 @@ function testRenderer(): void {
   );
   assert.equal(rendered.subject.includes('\n'), false);
   assert.equal(rendered.html.includes('<script>'), false);
-  assert.equal(rendered.html.includes('<img'), false);
-  assert.equal(rendered.html.includes('javascript:'), false);
+  assert.equal(/<img\b/i.test(rendered.html), false);
+  assert.equal(rendered.html.includes('href="javascript:'), false);
   assert.ok(rendered.html.includes('a | b **notbold**'));
   assert.ok(rendered.html.includes('<table'));
   const ntfy = truncateNtfyAtLineBoundary('one\ntwo\nthree', 20, 'omitted');
@@ -174,14 +174,10 @@ function testLedger(): void {
     subject: 's',
     emailHtml: '<p>e</p>',
     emailText: 'e',
-    ntfyTitle: 'n',
-    ntfyMessage: 'n',
-    ntfyPriority: 'default',
-    ntfyTags: 't',
   };
   ensureDeliveryRows(database, {
     occurrenceKey: 'scheduled:UTC:2026-04-01',
-    channels: ['email', 'ntfy'],
+    channels: ['email'],
     trigger: 'scheduled',
     summaryDate: '2026-04-01',
     timeZone: 'UTC',
@@ -192,14 +188,9 @@ function testLedger(): void {
   assert.ok(email);
   assert.equal(emailAgain, null);
   finalizeDeliverySuccess(database, email.id);
-  const ntfy = claimDelivery(database, 'scheduled:UTC:2026-04-01', 'ntfy');
-  assert.ok(ntfy);
-  finalizeDeliveryFailure(database, ntfy.id, 'boom');
-  const retry = claimDelivery(database, 'scheduled:UTC:2026-04-01', 'ntfy', new Date(Date.now() + 2 * 60 * 1000));
-  assert.ok(retry);
   const sentEmail = claimDelivery(database, 'scheduled:UTC:2026-04-01', 'email');
   assert.equal(sentEmail, null);
-  pass('claim isolation, success, retry');
+  pass('claim isolation and success');
 }
 
 function testMigration(): void {

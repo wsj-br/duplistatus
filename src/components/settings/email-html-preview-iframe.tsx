@@ -13,11 +13,13 @@ interface EmailHtmlPreviewIframeProps {
 export function EmailHtmlPreviewIframe({ html, title, className }: EmailHtmlPreviewIframeProps) {
   const { resolvedTheme } = useTheme();
   return (
-    <iframe
-      title={title}
-      sandbox=""
-      className={cn('w-full min-h-[280px] rounded-md border bg-background', className)}
-      srcDoc={themedEmailPreviewHtml(html, resolvedTheme)}
-    />
+    <div className="px-5 pr-10">
+      <iframe
+        title={title}
+        sandbox="allow-popups allow-popups-to-escape-sandbox"
+        className={cn('w-full min-h-[320px] rounded-md border bg-background', className)}
+        srcDoc={themedEmailPreviewHtml(html, resolvedTheme)}
+      />
+    </div>
   );
 }

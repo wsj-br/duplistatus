@@ -63,16 +63,17 @@ documentation/
 
 ### कैसे अनुवाद कार्य करता है {#how-translation-works}
 
-1. **Docusaurus UI स्ट्रिंग्स**: `pnpm write-translations` थीम/कस्टम स्ट्रिंग्स को `i18n/en/*.json` में निकालता है।
-2. **AI अनुवाद** (OpenRouter; रिपो रूट पर `ai-i18n-tools.config.json` में कॉन्फ़िग): `documentation/` से, `pnpm translate` रूट `i18n:translate` स्क्रिप्ट (UI स्ट्रिंग्स, SVGs, और Docusaurus markdown/JSON) को `documentation/i18n/` और `src/locales/` में अनुवादित करता है, जैसा कॉन्फ़िग किया गया है।
-3. **बिल्ड**: `pnpm build` सभी लोकेल्स के लिए `documentation/build/` के तहत स्टैटिक HTML उत्पन्न करता है।
+1. **Docusaurus UI strings**: `pnpm write-translations` vastu shaili/anukoolit strings ko `i18n/en/*.json` में निकालता है।
+2. **AI translation** (OpenRouter; config `ai-i18n-tools.config.json` में repo root पर): `documentation/` से, `pnpm translate` root `i18n:translate` script (UI strings, SVGs, Docusaurus markdown/JSON, aur default notification Templates) ko configured `documentation/i18n/`, `src/locales/`, aur `src/locales/templates/` में चलाता है।
+3. **Build**: `pnpm build` `documentation/build/` के तहत sabhi locales ke liye static HTML जनरेट करता है।
 
 ### अनुवाद चलाना {#running-translation}
 
 ```bash
 cd documentation
-pnpm translate          # Same as repo root: i18n:translate (ui + svg + docs)
+pnpm translate          # Same as repo root: i18n:translate (ui + svg + docs + json)
 pnpm translate:docs
+pnpm translate:json
 pnpm translate:svg
 pnpm translate:ui
 pnpm translate:status

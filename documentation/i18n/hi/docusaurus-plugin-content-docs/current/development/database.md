@@ -163,9 +163,9 @@ Application ka Sammaan Sammaan ka Sammaan rakhta hai.
 - `ntfy_config`: NTFY Notification Sammaan
 - `overdue_tolerance`: Vilambit Backup Samman Sammaan
 - `notification_templates`: Notification Message Templates
-- `daily_summary`: Daily Summary mode, schedule, timezone, and optional NTFY delivery
-- `cron_service`: Cron task schedules, including `daily-summary-dispatch`
-- `audit_retention_days`: Audit log retention period (default: 90 days)
+- `daily_summary`: दैनिक सारांश मोड, अनुसूची, और समय क्षेत्र
+- `cron_service`: क्रॉन कार्य अनुसूचियां, जिसमें `daily-summary-dispatch` शामिल है
+- `audit_retention_days`: ऑडिट लॉग रिटेंशन अवधि (डिफ़ॉल्ट: 90 दिन)
 
 ### डेटाबेस संस्करण तालिका {#database-version-table}
 
@@ -264,7 +264,7 @@ Application ka Sammaan Sammaan ka Sammaan rakhta hai.
 
 ### Daily Summary Deliveries Table {#daily-summary-deliveries-table}
 
-Per-channel ledger for Daily Summary email and NTFY. Each scheduled occurrence (or unique manual send) has at most one row per channel. Rendered payloads are stored before sending so retries keep the same snapshot. Rows older than 30 days are pruned.
+दैनिक सारांश ईमेल डिलीवरी के लिए चैनल-विशिष्ट लेजर। पुराने पंक्तियाँ में एक `ntfy` चैनल शामिल हो सकता है जो पिछले रिलीज़ से है। प्रत्येक अनुसूचित घटना (या अद्वितीय मैनुअल भेजा) प्रति चैनल अधिकतम एक पंक्ति होती है। रेंडर किए गए पेलोड भेजने से पहले संग्रहीत किए जाते हैं ताकि पुन: प्रयासों में वही स्नैपशॉट हो। 30 दिन से पुराने पंक्तियाँ हटा दी जाती हैं।
 
 If the process dies after a provider accepts a message but before success is recorded, that channel may be retried (at-least-once).
 

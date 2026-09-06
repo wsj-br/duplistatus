@@ -23,6 +23,7 @@
     "translate:ui": "pnpm -C .. run i18n:translate:ui",
     "translate:svg": "pnpm -C .. run i18n:translate:svg",
     "translate:docs": "pnpm -C .. run i18n:translate:docs",
+    "translate:json": "pnpm -C .. run i18n:translate:json",
     "translate:status": "pnpm -C .. run i18n:status",
     "i18n:extract": "pnpm -C .. run i18n:extract",
     "i18n:sync": "pnpm -C .. run i18n:sync",

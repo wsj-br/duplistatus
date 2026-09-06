@@ -55,4 +55,4 @@ Le commutateur **Exiger des clés API pour les API externes** est désactivé pa
 
 La même page peut exiger des clés API pour les API publiques de téléchargement et de lecture, et configure une taille maximale du corps (5 Mo par défaut) et des limites de débit par IP pour `/api/upload`. La taille et les limites de débit s'appliquent même lorsque les clés sont optionnelles et sont la principale défense contre les inondations.
 
-Voir aussi [Liste d'adresses IP autorisées](ip-allowlist-settings.md) si vous souhaitez restreindre qui peut atteindre les API externes sans utiliser de clés.
+Voir aussi [Liste d'adresses IP autorisées](ip-allowlist-settings.md). La Liste d'adresses IP autorisées et les Clés API sont des fonctionnalités indépendantes ; vous pouvez utiliser l'une ou l'autre, ou les deux ensemble. L'activation des deux augmente la sécurité en restreignant l'accès en fonction de l'adresse IP et en nécessitant une clé API.

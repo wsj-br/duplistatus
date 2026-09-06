@@ -438,12 +438,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
       
       toast({
         title: t("Connection Tests Complete"),
-        description: t("Tested {{count}} connections: {{success}} successful, {{failed}} failed", {
-          plurals: true,
-          count: connectionsWithUrls.length,
-          success: successCount,
-          failed: failureCount,
-        }),
+        description: `${t("Tested {{count}} connections:", { plurals: true, count: connectionsWithUrls.length })} ${t("{{count}} successful,", { plurals: true, count: successCount })} ${t("{{count}} failed", { plurals: true, count: failureCount })}`,
         duration: 5000,
       });
     } catch {

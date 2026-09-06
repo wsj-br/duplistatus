@@ -15,8 +15,6 @@
 Um ícone <IIcon2 icon="lucide:message-square" color="green"/> verde ao lado de **NTFY** na barra lateral significa que suas configurações são válidas. Se o ícone for <IIcon2 icon="lucide:message-square" color="yellow"/> amarelo, suas configurações não são válidas.
 Quando a configuração não é válida, as caixas de seleção NTFY na aba [`Notificações de Backup`](backup-notifications-settings.md) também ficarão desativadas.
 
-Se o [Resumo Diário](daily-summary-settings.md) estiver habilitado com **Enviar resumo para NTFY**, a URL do NTFY e o tópico armazenados não poderão ser limpos até que essa opção seja desativada.
-
 ## Ações Disponíveis {#available-actions}
 
 | Botão                                                                | Descrição                                                                                                  |

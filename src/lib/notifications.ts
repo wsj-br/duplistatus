@@ -674,10 +674,7 @@ export async function sendBackupNotification(
   serverName: string,
   context: NotificationContext
 ): Promise<NotificationDeliveryOutcome> {
-  if (isDailySummaryEnabled()) {
-    console.log(`Daily summary mode is enabled; suppressing individual notification for backup ${backup.name} on server ${serverName}`);
-    return 'suppressed';
-  }
+  const suppressEmail = isDailySummaryEnabled();
 
   const config = await getNotificationConfig();
   if (!config) {
@@ -761,9 +758,9 @@ export async function sendBackupNotification(
   }
 
   // Send standard notifications if needed
+  const standardNotificationTypes: string[] = [];
   if (shouldSendStandard) {
     const notifications: Promise<void>[] = [];
-    const notificationTypes: string[] = [];
 
     // Send NTFY notification if enabled
     if (backupConfig.ntfyEnabled !== false) { // Default to true if not specified
@@ -777,7 +774,7 @@ export async function sendBackupNotification(
           processedTemplate.tags,
           config.ntfy.accessToken
         ).then(async () => {
-          notificationTypes.push('NTFY');
+          standardNotificationTypes.push('NTFY');
           // Log audit event for successful NTFY notification
           const { AuditLogger } = await import('@/lib/audit-logger');
           await AuditLogger.logSystem(
@@ -824,7 +821,7 @@ export async function sendBackupNotification(
     }
 
     // Send email notification if enabled and configured
-    if (backupConfig.emailEnabled === true && getSMTPConfig()) {
+    if (!suppressEmail && backupConfig.emailEnabled === true && getSMTPConfig()) {
       const htmlContent = processedTemplate.emailHtml;
       const smtpConfig = getSMTPConfig();
       notifications.push(
@@ -833,7 +830,7 @@ export async function sendBackupNotification(
           htmlContent,
           processedTemplate.message
         ).then(async () => {
-          notificationTypes.push('Email');
+          standardNotificationTypes.push('Email');
           // Log audit event for successful email notification
           if (smtpConfig) {
             const { AuditLogger } = await import('@/lib/audit-logger');
@@ -918,7 +915,7 @@ export async function sendBackupNotification(
     if (notifications.length > 0) {
       try {
         await Promise.all(notifications);
-        console.log(`Standard notifications sent (${notificationTypes.join(', ')}) for backup ${backup.name} on server ${serverName}, status: ${status}, notification config: ${notificationConf}`);
+        console.log(`Standard notifications sent (${standardNotificationTypes.join(', ')}) for backup ${backup.name} on server ${serverName}, status: ${status}, notification config: ${notificationConf}`);
       } catch (error) {
         console.error(`Failed to send standard notifications for backup ${backup.name} on server ${serverName}:`, error instanceof Error ? error.message : String(error));
         throw error;
@@ -937,7 +934,7 @@ export async function sendBackupNotification(
   const additionalNotificationTypes: string[] = [];
 
   // Send to additional email addresses if configured
-  if (backupConfig.additionalEmails && backupConfig.additionalEmails.trim() && getSMTPConfig()) {
+  if (!suppressEmail && backupConfig.additionalEmails && backupConfig.additionalEmails.trim() && getSMTPConfig()) {
     const emailAddresses = backupConfig.additionalEmails
       .split(',')
       .map(email => email.trim())
@@ -1113,16 +1110,24 @@ export async function sendBackupNotification(
     }
   }
 
-  return 'sent';
+  const anyChannelSent =
+    standardNotificationTypes.length > 0
+    || additionalNotificationTypes.length > 0;
+  if (anyChannelSent) {
+    return 'sent';
+  }
+  if (suppressEmail) {
+    console.log(`Daily summary mode is enabled; suppressing individual email for backup ${backup.name} on server ${serverName}`);
+    return 'suppressed';
+  }
+
+  return 'skipped';
 }
 
 export async function sendOverdueBackupNotification(
   context: OverdueBackupContext
 ): Promise<NotificationDeliveryOutcome> {
-  if (isDailySummaryEnabled()) {
-    console.log(`Daily summary mode is enabled; suppressing overdue notification for backup ${context.backup_name} on server ${context.server_name}`);
-    return 'suppressed';
-  }
+  const suppressEmail = isDailySummaryEnabled();
 
   const notificationConfig = await getNotificationConfig();
   
@@ -1137,13 +1142,15 @@ export async function sendOverdueBackupNotification(
     return 'skipped';
   }
 
+  const notificationTypes: string[] = [];
+  const additionalNotificationTypes: string[] = [];
+
   try {
     const locale = notificationConfig.templates?.language || SOURCE_LOCALE;
     const processedTemplate = await processTemplate(notificationConfig.templates?.overdueBackup || defaultNotificationTemplates.overdueBackup, context, locale);
     
     // Send notifications based on backup configuration
     const notifications: Promise<void>[] = [];
-    const notificationTypes: string[] = [];
 
     // Send NTFY notification if enabled
     if (backupConfig.ntfyEnabled !== false) { // Default to true if not specified
@@ -1202,7 +1209,7 @@ export async function sendOverdueBackupNotification(
     }
 
     // Send email notification if enabled and configured
-    if (backupConfig.emailEnabled === true && getSMTPConfig()) {
+    if (!suppressEmail && backupConfig.emailEnabled === true && getSMTPConfig()) {
       const htmlContent = processedTemplate.emailHtml;
       const smtpConfig = getSMTPConfig();
       notifications.push(
@@ -1310,10 +1317,9 @@ export async function sendOverdueBackupNotification(
 
     if (shouldSendToAdditional) {
       const additionalNotifications: Promise<void>[] = [];
-      const additionalNotificationTypes: string[] = [];
 
       // Send to additional email addresses if configured
-      if (backupConfig.additionalEmails && backupConfig.additionalEmails.trim() && getSMTPConfig()) {
+      if (!suppressEmail && backupConfig.additionalEmails && backupConfig.additionalEmails.trim() && getSMTPConfig()) {
         const emailAddresses = backupConfig.additionalEmails
           .split(',')
           .map(email => email.trim())
@@ -1491,5 +1497,16 @@ export async function sendOverdueBackupNotification(
     throw error;
   }
 
-  return 'sent';
+  const anyChannelSent =
+    notificationTypes.length > 0
+    || additionalNotificationTypes.length > 0;
+  if (anyChannelSent) {
+    return 'sent';
+  }
+  if (suppressEmail) {
+    console.log(`Daily summary mode is enabled; suppressing overdue email for backup ${context.backup_name} on server ${context.server_name}`);
+    return 'suppressed';
+  }
+
+  return 'skipped';
 }

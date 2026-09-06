@@ -1,0 +1,26 @@
+{
+  "success": {
+    "title": "✅ {status} - {backup_name} @ {server_alias}",
+    "message": "Die Sicherung {backup_name} auf {server_alias} wurde mit dem Status '{status}' am {backup_date} in {duration} abgeschlossen.\n\n🔍 Hinweis: {server_note}\n☁️ Hochgeladen: {uploaded_size}\n💾 Speicherverbrauch: {storage_size}\n🔃 Verfügbare Versionen: {available_versions}\n",
+    "priority": "default",
+    "tags": "duplicati, duplistatus, success"
+  },
+  "warning": {
+    "title": "⚠️ {status} - {backup_name} @ {server_alias}",
+    "message": "Die Sicherung {backup_name} auf {server_alias} wurde mit dem Status '{status}' am {backup_date} abgeschlossen.\n\n🔍 Hinweis: {server_note}\n⏰ Dauer: {duration}\n☁️ Hochgeladen: {uploaded_size}\n\n🚨 {warnings_count} Warnungen\n🛑 {errors_count} Fehler.\n\n📄 Protokollnachrichten:\n{log_text}\n\n⚠️ Prüfen Sie den duplicati-Server sofort {server_url}\n",
+    "priority": "high",
+    "tags": "duplicati, duplistatus, warning, error"
+  },
+  "overdueBackup": {
+    "title": "🕑 Überfällig - {backup_name} @ {server_alias}",
+    "message": "Die Sicherung {backup_name} ist überfällig auf {server_alias}.\n\n🔍 Hinweis: {server_note}\n🚨 Letzte Sicherung empfangen: {last_backup_date} ({last_elapsed})\n⏰ Erwartete Sicherungszeit: {expected_date} ({expected_elapsed})\n\nErwartetes Intervall: {backup_interval} / Toleranz: {overdue_tolerance}\n\n⚠️ Prüfen Sie den duplicati-Server sofort {server_url}\n",
+    "priority": "default",
+    "tags": "duplicati, duplistatus, overdue"
+  },
+  "dailySummary": {
+    "email": {
+      "title": "📬 duplistatus — Tägliche Sicherungszusammenfassung — {summary_date}",
+      "message": "## 📊 Tägliche Sicherungszusammenfassung\n\n🕐 Generiert: **{generated_at}** ({time_zone})\n\n### 📈 Übersicht\n\n| Metrik | Anzahl |\n| --- | ---: |\n| 🖥️ Server | {server_count} |\n| 💼 Sicherungsjobs | {job_count} |\n| ✅ Erfolgreich | {success_count} |\n| ⚠️ Warnungen | {warning_count} |\n| 🛑 Fehler | {error_count} |\n| 💀 Fatal | {fatal_count} |\n| ❓ Unbekannt | {unknown_count} |\n| ❓ Kein Bericht empfangen | {no_report_count} |\n| 🕑 Überfällig | {overdue_count} |\n\n### 🚨 Aufmerksamkeit erforderlich\n\n{problem_table}\n\n### 📋 Alle neuesten Sicherungsergebnisse\n\n{all_jobs_table}\n\n{duplistatus_link}\n"
+    }
+  }
+}

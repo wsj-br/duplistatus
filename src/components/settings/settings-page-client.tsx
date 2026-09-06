@@ -356,14 +356,14 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
             )}
           </div>
           
-          <div className={`p-4 space-y-4 ${isSidebarCollapsed ? 'px-2' : 'px-4'}`}>
+          <div className={`p-4 space-y-3 ${isSidebarCollapsed ? 'px-2' : 'px-4'}`}>
               {/* Notifications Group */}
               <div>
-                <div className={`px-2 py-1.5 text-xs font-semibold text-muted-foreground whitespace-nowrap overflow-hidden transition-all duration-300 ${isSidebarCollapsed ? 'text-center max-w-full' : ''}`}>{t("Notifications")}</div>
+                <div className={`px-2 py-1 text-xs font-semibold text-muted-foreground whitespace-nowrap overflow-hidden transition-all duration-300 ${isSidebarCollapsed ? 'text-center max-w-full' : ''}`}>{t("Notifications")}</div>
                 <div className="space-y-1">
                   <button
                     onClick={() => handleSectionChange('notifications')}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
+                    className={`w-full flex items-center gap-3 px-3 py-1.5 rounded-md text-sm transition-colors min-h-[32px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
                       activeSection === 'notifications'
                         ? 'bg-accent text-accent-foreground'
                         : 'hover:bg-accent/50'
@@ -375,7 +375,7 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                   </button>
                   <button
                     onClick={() => handleSectionChange('monitoring')}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
+                    className={`w-full flex items-center gap-3 px-3 py-1.5 rounded-md text-sm transition-colors min-h-[32px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
                       activeSection === 'monitoring'
                         ? 'bg-accent text-accent-foreground'
                         : 'hover:bg-accent/50'
@@ -387,7 +387,7 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                   </button>
                   <button
                     onClick={() => handleSectionChange('daily-summary')}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
+                    className={`w-full flex items-center gap-3 px-3 py-1.5 rounded-md text-sm transition-colors min-h-[32px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
                       activeSection === 'daily-summary'
                         ? 'bg-accent text-accent-foreground'
                         : 'hover:bg-accent/50'
@@ -399,7 +399,7 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                   </button>
                   <button
                     onClick={() => handleSectionChange('templates')}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
+                    className={`w-full flex items-center gap-3 px-3 py-1.5 rounded-md text-sm transition-colors min-h-[32px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
                       activeSection === 'templates'
                         ? 'bg-accent text-accent-foreground'
                         : 'hover:bg-accent/50'
@@ -414,11 +414,11 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
 
               {/* Integrations Group */}
               <div>
-                <div className={`px-2 py-1.5 text-xs font-semibold text-muted-foreground whitespace-nowrap overflow-hidden transition-all duration-300 ${isSidebarCollapsed ? 'text-center max-w-full' : ''}`}>{t("Integrations")}</div>
+                <div className={`px-2 py-1 text-xs font-semibold text-muted-foreground whitespace-nowrap overflow-hidden transition-all duration-300 ${isSidebarCollapsed ? 'text-center max-w-full' : ''}`}>{t("Integrations")}</div>
                 <div className="space-y-1">
                   <button
                     onClick={() => handleSectionChange('ntfy')}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
+                    className={`w-full flex items-center gap-3 px-3 py-1.5 rounded-md text-sm transition-colors min-h-[32px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
                       activeSection === 'ntfy'
                         ? 'bg-accent text-accent-foreground'
                         : 'hover:bg-accent/50'
@@ -430,7 +430,7 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                   </button>
                   <button
                     onClick={() => handleSectionChange('email')}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
+                    className={`w-full flex items-center gap-3 px-3 py-1.5 rounded-md text-sm transition-colors min-h-[32px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
                       activeSection === 'email'
                         ? 'bg-accent text-accent-foreground'
                         : 'hover:bg-accent/50'
@@ -445,11 +445,11 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
 
               {/* System Group */}
               <div>
-                <div className={`px-2 py-1.5 text-xs font-semibold text-muted-foreground whitespace-nowrap overflow-hidden transition-all duration-300 ${isSidebarCollapsed ? 'text-center max-w-full' : ''}`}>{t("System")}</div>
+                <div className={`px-2 py-1 text-xs font-semibold text-muted-foreground whitespace-nowrap overflow-hidden transition-all duration-300 ${isSidebarCollapsed ? 'text-center max-w-full' : ''}`}>{t("System")}</div>
                 <div className="space-y-1">
                   <button
                     onClick={() => handleSectionChange('server')}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
+                    className={`w-full flex items-center gap-3 px-3 py-1.5 rounded-md text-sm transition-colors min-h-[32px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
                       activeSection === 'server'
                         ? 'bg-accent text-accent-foreground'
                         : 'hover:bg-accent/50'
@@ -461,7 +461,7 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                   </button>
                   <button
                     onClick={() => handleSectionChange('display')}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
+                    className={`w-full flex items-center gap-3 px-3 py-1.5 rounded-md text-sm transition-colors min-h-[32px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
                       activeSection === 'display'
                         ? 'bg-accent text-accent-foreground'
                         : 'hover:bg-accent/50'
@@ -473,7 +473,7 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                   </button>
                   <button
                     onClick={() => handleSectionChange('duplicati-versions')}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
+                    className={`w-full flex items-center gap-3 px-3 py-1.5 rounded-md text-sm transition-colors min-h-[32px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
                       activeSection === 'duplicati-versions'
                         ? 'bg-accent text-accent-foreground'
                         : 'hover:bg-accent/50'
@@ -486,7 +486,7 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                   {currentUser?.isAdmin && (
                     <button
                       onClick={() => handleSectionChange('database-maintenance')}
-                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
+                      className={`w-full flex items-center gap-3 px-3 py-1.5 rounded-md text-sm transition-colors min-h-[32px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
                         activeSection === 'database-maintenance'
                           ? 'bg-accent text-accent-foreground'
                           : 'hover:bg-accent/50'
@@ -500,7 +500,7 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                   {currentUser?.isAdmin && (
                     <button
                       onClick={() => handleSectionChange('api-keys')}
-                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
+                      className={`w-full flex items-center gap-3 px-3 py-1.5 rounded-md text-sm transition-colors min-h-[32px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
                         activeSection === 'api-keys'
                           ? 'bg-accent text-accent-foreground'
                           : 'hover:bg-accent/50'
@@ -514,7 +514,7 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                   {currentUser?.isAdmin && (
                     <button
                       onClick={() => handleSectionChange('ip-allowlist')}
-                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
+                      className={`w-full flex items-center gap-3 px-3 py-1.5 rounded-md text-sm transition-colors min-h-[32px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
                         activeSection === 'ip-allowlist'
                           ? 'bg-accent text-accent-foreground'
                           : 'hover:bg-accent/50'
@@ -528,7 +528,7 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                   {currentUser?.isAdmin && (
                     <button
                       onClick={() => handleSectionChange('users')}
-                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
+                      className={`w-full flex items-center gap-3 px-3 py-1.5 rounded-md text-sm transition-colors min-h-[32px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
                         activeSection === 'users'
                           ? 'bg-accent text-accent-foreground'
                           : 'hover:bg-accent/50'
@@ -541,7 +541,7 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                   )}
                   <button
                     onClick={() => handleSectionChange('audit')}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
+                    className={`w-full flex items-center gap-3 px-3 py-1.5 rounded-md text-sm transition-colors min-h-[32px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
                       activeSection === 'audit'
                         ? 'bg-accent text-accent-foreground'
                         : 'hover:bg-accent/50'
@@ -554,7 +554,7 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                   {currentUser?.isAdmin && (
                     <button
                       onClick={() => handleSectionChange('audit-retention')}
-                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
+                      className={`w-full flex items-center gap-3 px-3 py-1.5 rounded-md text-sm transition-colors min-h-[32px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
                         activeSection === 'audit-retention'
                           ? 'bg-accent text-accent-foreground'
                           : 'hover:bg-accent/50'
@@ -568,7 +568,7 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                   {currentUser?.isAdmin && (
                     <button
                       onClick={() => handleSectionChange('application-logs')}
-                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
+                      className={`w-full flex items-center gap-3 px-3 py-1.5 rounded-md text-sm transition-colors min-h-[32px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
                         activeSection === 'application-logs'
                           ? 'bg-accent text-accent-foreground'
                           : 'hover:bg-accent/50'

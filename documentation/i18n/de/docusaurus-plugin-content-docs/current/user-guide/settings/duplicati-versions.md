@@ -33,13 +33,14 @@ Administratoren können auswählen, wie oft **duplistatus** GitHub auf neue Dupl
 | **Alle 12 Stunden** | Zur Startzeit und 12 Stunden später                         |
 | **Alle 6 Stunden**  | Zur Startzeit und alle 6 Stunden danach               |
 
-Die Startzeit wird in der Zeitzone des Browsers ausgewählt und angezeigt. **duplistatus** speichert die Stunde in UTC und der Cron-Dienst führt die Prüfung in UTC aus.
+Die Startzeit wird in Ihrer Browser-Zeitzone mit der gleichen kompakten Zeitsteuerung wie die Tägliche Zusammenfassung ausgewählt. Wählen Sie eine beliebige `HH:mm` Zeit. **duplistatus** speichert diesen Wert in UTC und der Cron-Dienst führt die Prüfung in UTC aus.
 
 Beispiele:
 
-- Täglich mit einer Startzeit von 06:00 wird um 06:00 ausgeführt.
-- Alle 12 Stunden mit einer Startzeit von 08:00 wird um 08:00 und 20:00 ausgeführt.
-- Alle 6 Stunden mit einer Startzeit von 02:00 wird um 02:00, 08:00, 14:00 und 20:00 ausgeführt.
+- Täglich mit einer Startzeit von 06:00 läuft um 06:00.
+- Täglich mit einer Startzeit von 06:30 läuft um 06:30.
+- Alle 12 Stunden mit einer Startzeit von 08:15 läuft um 08:15 und 20:15.
+- Alle 6 Stunden mit einer Startzeit von 02:45 läuft um 02:45, 08:45, 14:45 und 20:45.
 
 Beim Start aktualisiert **duplistatus** auch den Cache, wenn er älter ist als das ausgewählte Intervall (24 Stunden, 12 Stunden oder 6 Stunden). Fehlgeschlagene Aktualisierungen behalten die letzten zwischengespeicherten Versionen.
 

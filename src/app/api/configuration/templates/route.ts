@@ -78,12 +78,6 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
       if (current.dailySummary.email.message !== updated.dailySummary.email.message) {
         dailyChanges.emailMessage = { old: current.dailySummary.email.message, new: updated.dailySummary.email.message };
       }
-      if (current.dailySummary.ntfy.title !== updated.dailySummary.ntfy.title) {
-        dailyChanges.ntfyTitle = { old: current.dailySummary.ntfy.title, new: updated.dailySummary.ntfy.title };
-      }
-      if (current.dailySummary.ntfy.message !== updated.dailySummary.ntfy.message) {
-        dailyChanges.ntfyMessage = { old: current.dailySummary.ntfy.message, new: updated.dailySummary.ntfy.message };
-      }
       if (Object.keys(dailyChanges).length > 0) {
         changesSummary.dailySummary = dailyChanges;
       }

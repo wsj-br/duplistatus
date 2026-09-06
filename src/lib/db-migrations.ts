@@ -966,7 +966,6 @@ const migrations: Migration[] = [
           enabled: false,
           localTime: '08:00',
           timeZone: 'UTC',
-          sendNtfy: false,
           effectiveFromIso: new Date().toISOString(),
         })
       );

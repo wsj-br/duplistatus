@@ -15,8 +15,6 @@
 A <IIcon2 icon="lucide:message-square" color="green"/> green icon next to **NTFY** in the sidebar means your settings are valid. If the icon is <IIcon2 icon="lucide:message-square" color="yellow"/> yellow, your settings are not valid.
 When the configuration is not valid, the NTFY checkboxes in the [`Backup Notifications`](backup-notifications-settings.md) tab will also be greyed out.
 
-यदि [दैनिक सारांश](daily-summary-settings.md) को **सारांश NTFY को भेजें** के साथ सक्रिय किया गया है, तो उस विकल्प को बंद करने तक संग्रहीत NTFY URL और विषय को साफ नहीं किया जा सकता।
-
 ## Available Actions {#available-actions}
 
 | Button                                                                | Vivaaran                                                                                                  |

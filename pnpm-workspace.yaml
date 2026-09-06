@@ -115,7 +115,7 @@ minimumReleaseAgeExclude:
   - node-cron@4.4.1
   - js-yaml@4.1.2
   - http-proxy-middleware@3.0.6
-  - ai-i18n-tools@1.7.1 || 1.8.4
+  - ai-i18n-tools
   - i18next@26.4.2
   - postcss@8.5.28
   - '@ai-sdk/gateway@4.0.74'

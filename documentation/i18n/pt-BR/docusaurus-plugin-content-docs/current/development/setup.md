@@ -118,12 +118,13 @@ com este comando:
 O projeto inclui vários scripts npm para diferentes tarefas de desenvolvimento:
 
 ### Scripts de Desenvolvimento {#development-scripts}
-- `pnpm dev` - Iniciar servidor de desenvolvimento na porta 8666 (inclui pré-verificações). `NODE_OPTIONS` carrega `scripts/dev-preload.cjs`, que aplica `scripts/peer-ip.cjs` (endereço do peer TCP para listas de permissões de IP) e carimbos de data/hora de registro de solicitações.
+- `pnpm dev` - Iniciar o servidor de desenvolvimento Next.js (porta 8666) e o serviço cron (porta 8667) juntos via `concurrently` (inclui pré-verificações). CTRL-C para parar ambos. `NODE_OPTIONS` para Next.js carrega `scripts/dev-preload.cjs`, que aplica `scripts/peer-ip.cjs` (endereço de par TCP para listas de permissão de IP) e timestamps do log de requisições.
+- `pnpm dev:next` - Iniciar apenas o servidor de desenvolvimento Next.js na porta 8666 (sem cron).
 - `pnpm build` - Construir a aplicação para produção (inclui pré-verificações)
 - `pnpm lint` - Executar ESLint para verificar a qualidade do código
-- `pnpm typecheck` - Executa a verificação de tipos do TypeScript
-- `scripts/upgrade-dependencies.sh` — Atualização segura de todos os pacotes do workspace (detectados automaticamente). Resolve as versões mais recentes com `npm-check-updates`, instala a partir da raiz do workspace e mantém apenas as atualizações que passam em cada `typecheck`/`lint` do pacote (peer gates fixam `eslint` / `typescript` quando a stack de lint não permite a última versão major). Em seguida, executa `pnpm audit` / `audit --fix` e aplica à força (e reporta) qualquer correção de segurança que exija alterações de código. Atualiza o lockfile do workspace e o browserslist. Prefira `source ./scripts/upgrade-dependencies.sh` para que o **nvm** seja aplicado ao seu shell; em CI ou automação, use `CI=1` ou `UPGRADE_ALLOW_EXEC=1` ao executar o arquivo diretamente. Veja também `scripts/upgrade-tools.sh` apenas para ferramentas Node/pnpm.
-- `scripts/clean-workspace.sh` - Limpa o workspace
+- `pnpm typecheck` - Executar verificação de tipos do TypeScript
+- `scripts/upgrade-dependencies.sh` — Atualização segura de construção de cada pacote de workspace (detectado automaticamente). Resolve as versões mais recentes com `npm-check-updates`, instala a partir da raiz do workspace e mantém apenas atualizações que passam `typecheck`/`lint` de cada pacote (portões de par fixam `eslint` / `typescript` quando a pilha de lint não permite a versão mais recente). Em seguida, executa `pnpm audit` / `audit --fix` e aplica forçadamente (e relata) qualquer correção de segurança que necessite de alterações no código. Atualiza o arquivo de bloqueio do workspace e browserslist. Prefira `source ./scripts/upgrade-dependencies.sh` para que **nvm** se aplique ao seu shell; em CI ou automação use `CI=1` ou `UPGRADE_ALLOW_EXEC=1` ao executar o arquivo diretamente. Veja também `scripts/upgrade-tools.sh` apenas para ferramentas Node/pnpm.
+- `scripts/clean-workspace.sh` - Limpar o workspace
 
 **Nota:** O script `preinstall` aplica automaticamente o pnpm como gerenciador de pacotes.
 
@@ -156,9 +157,9 @@ Os servidores de desenvolvimento (`start:*`) fornecem substituição de módulo 
 - `pnpm docker:devel` - Criar uma imagem Docker de desenvolvimento marcada como `wsj-br/duplistatus:devel`
 
 ### Scripts do Serviço Cron {#cron-service-scripts}
-- `pnpm cron:start` - Iniciar serviço cron em modo de produção
-- `pnpm cron:dev` - Iniciar serviço cron em modo de desenvolvimento com observação de arquivos (porta 8667)
-- `pnpm cron:start-local` - Iniciar serviço cron localmente para testes (porta 8667)
+- `pnpm cron:start` - Iniciar o serviço cron em modo de produção
+- `pnpm cron:dev` - Iniciar apenas o serviço cron em modo de desenvolvimento com monitoramento de arquivos (porta 8667). Geralmente desnecessário ao usar `pnpm dev`, que já inicia o cron.
+- `pnpm cron:start-local` - Iniciar o serviço cron localmente para testes (porta 8667)
 
 ### Scripts de Teste {#test-scripts}
 - `pnpm generate-test-data` - Gerar dados de backup de teste (requer parâmetro --servers=N)

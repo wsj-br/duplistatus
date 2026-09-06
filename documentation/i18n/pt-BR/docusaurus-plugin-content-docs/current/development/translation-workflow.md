@@ -6,7 +6,7 @@ Para comandos de documentação geral (build, deploy, screenshots, geração de 
 
 A documentação utiliza o i18n do Docusaurus com o inglês como o idioma padrão. A documentação de origem reside em `docs/`; as traduções são escritas em `i18n/{locale}/`. Idiomas suportados: en-GB (padrão), fr, de, es, pt-BR, hi, zh-Hans.
 
-**Tradução por IA** para a interface do aplicativo, markdown/JSON do Docusaurus e ativos SVG é gerenciada por [**ai-i18n-tools**](https://www.npmjs.com/package/ai-i18n-tools) a partir da **raiz do repositório**, configurada em `ai-i18n-tools.config.json` (não dentro de `documentation/`). Defina `OPENROUTER_API_KEY` ao executar comandos de tradução.
+**Tradução de IA** para a interface do aplicativo, documentos Docusaurus em markdown/JSON, ativos SVG e **modelos de notificação padrão** é tratada pelo [**ai-i18n-tools**](https://www.npmjs.com/package/ai-i18n-tools) a partir da raiz do **repositório**, configurado em `ai-i18n-tools.config.json` (não dentro de `documentation/`). Defina `OPENROUTER_API_KEY` ao executar comandos de tradução.
 
 ## Quando a documentação em inglês mudar {#when-english-documentation-changes}
 
@@ -14,11 +14,12 @@ A documentação utiliza o i18n do Docusaurus com o inglês como o idioma padrã
 2. **Strings da interface do Docusaurus** (rótulos de tema, barra de navegação, etc.): se necessário, execute `pnpm write-translations` em `documentation/` para que o `i18n/en/*.json` detecte as novas chaves.
 3. **IDs de títulos**: `pnpm write-heading-ids` (de `documentation/`).
 4. **Traduza** a partir da **raiz do repositório** (ou use os atalhos abaixo a partir de `documentation/`):
-   - `pnpm i18n:extract` — atualiza `src/locales/strings.json` a partir de `t('…')` no aplicativo Next.js.
-   - `pnpm i18n:translate:docs` — traduz markdown/JSON para `documentation/i18n/` conforme a configuração.
-   - `pnpm i18n:translate:svg` — traduz SVGs em `documentation/static/img` conforme configurado.
+   - `pnpm i18n:extract` — atualize `src/locales/strings.json` de `t('…')` no aplicativo Next.js.
+   - `pnpm i18n:translate:docs` — traduza markdown/JSON para `documentation/i18n/` conforme a configuração.
+   - `pnpm i18n:translate:svg` — traduza SVGs em `documentation/static/img` conforme configurado.
+   - `pnpm i18n:translate:json` — traduza modelos de notificação padrão em `src/locales/templates/` de `en-GB.json`.
    - Ou execute tudo: `pnpm i18n:translate`.
-5. **Compilação**: `cd documentation && pnpm build` (todas as localidades).
+5. **Construir**: `cd documentation && pnpm build` (todos os idiomas).
 
 A partir de dentro de `documentation/`, os mesmos fluxos são conectados como `pnpm translate` → raiz `i18n:translate`, além de `pnpm translate:docs`, `translate:ui`, `translate:svg`, `translate:status`, `i18n:extract`, `i18n:sync`.
 
@@ -34,10 +35,29 @@ t("{{count}} backups selected", { plurals: true, count: selectedBackups.size })
 
 Regras:
 
-- Não use `item(s)` ou pares `count === 1 ? t('…') : t('…')`.
-- Contagens independentes precisam de chamadas `t()` separadas. Uma string com duas ou mais interpolações deve incluir `{{count}}` como o eixo de plural.
-- `pnpm i18n:extract` marca a linha do catálogo `"plural": true`. `pnpm i18n:translate:ui` preenche formulários CLDR e escreve `src/locales/en-GB.json` (apenas chaves de plural).
-- `src/i18n.ts` e `src/lib/i18n-server.ts` carregam esse arquivo como `sourcePluralFlatBundle` para que o singular e o plural em inglês resolvam em tempo de execução.
+- Não use `item(s)` hedges ou `count === 1 ? t('…') : t('…')` pares.
+- Contagens **numéricas** independentes precisam de chamadas `t()` separadas — um eixo plural não pode flexionar dois números (por exemplo, 1 bem-sucedido e 2 Falha). Concatene os fragmentos:
+
+```tsx
+`${t("Tested {{count}} connections:", { plurals: true, count: total })} ` +
+  `${t("{{count}} successful,", { plurals: true, count: successCount })} ` +
+  `${t("{{count}} failed", { plurals: true, count: failureCount })}`
+```
+
+- Interpolação não numérica (nomes, rótulos, etc.) é aceitável na mesma string plural que `{{count}}`.
+- `pnpm i18n:extract` marca a linha do catálogo `"plural": true`. `pnpm i18n:translate:ui` preenche formulários CLDR e escreve `src/locales/en-GB.json` (apenas chaves plurais).
+- `src/i18n.ts` e `src/lib/i18n-server.ts` carregam esse arquivo como `sourcePluralFlatBundle` para que o singular/plural em inglês seja resolvido em tempo de execução.
+
+## Modelos de notificação padrão {#default-notification-templates}
+
+Configurações → Modelos → **Redefinir** carrega os padrões de `src/locales/templates/{locale}.json` (conectado em `src/lib/default-notification-templates.ts`).
+
+1. Edite apenas **`src/locales/templates/en-GB.json`** (fonte em inglês).
+2. Execute **`pnpm i18n:translate:json`** (ou **`pnpm i18n:translate`**) a partir da raiz do repositório.
+3. Revise as diferenças — placeholders como `{backup_name}` e `{problem_table}` devem permanecer inalterados; `priority` e `tags` são ignorados por `keyPolicy` em `ai-i18n-tools.config.json`.
+4. Execute **`pnpm i18n:status`** para ver a cobertura do bloco JSON.
+
+Consulte o [guia JSON do ai-i18n-tools](https://wsj-br.github.io/ai-i18n-tools/guide/json.html) para bandeiras (`--locale`, `--force`, etc.).
 
 ## Glossário {#glossary}
 

@@ -18,5 +18,6 @@
 | `ADMIN_IP_ALLOWLIST`      | व्यवस्थापक इंटरफेस के लिए CIDR, अल्पविराम से अलग किए गए                                               | अनसेट                      |
 | `EXTERNAL_API_IP_ALLOWLIST_ENABLED` | बाहरी-API अनुमति सूची सक्षम फ़्लैग को ओवरराइड करें (`true` / `false`)                | अनसेट (सेटिंग्स का उपयोग करें)       |
 | `EXTERNAL_API_IP_ALLOWLIST` | `/api/upload`, `/api/summary`, और `/api/lastbackup*` के लिए CIDR, अल्पविराम से अलग किए गए           | अनसेट                      |
+| `DUPLISTATUS_PUBLIC_URL`    | duplistatus वेब UI का सार्वजनिक आधार यूआरएल (कोई ट्रेलिंग स्लैश नहीं)। Kab सेट किया गया, यह Sammaan → दैनिक सारांश **सार्वजनिक डैशबोर्ड यूआरएल** को ओवरराइड करता है और दैनिक सारांश ईमेल में `{duplistatus_link}` शामिल होता है। Kab unset किया गया, तो सहेजा गया सेटिंग का उपयोग किया जाता है; यदि वह भी खाली है, तो कोई डैशबोर्ड लिंक जोड़ा नहीं जाता। | unset                      |
 
 `NEXT_TELEMETRY_DISABLED=1` Docker इमेज द्वारा और `pnpm build`, `pnpm build-local`, `pnpm start`, `pnpm start-local`, और `pnpm dev` द्वारा सेट किया जाता है, इसलिए Next.js अनाम CLI टेलीमेट्री संग्रहित नहीं करता है। आपकी उपयोगकर्ता कॉन्फ़िग में ऑप्ट-आउट को स्थायी बनाने के लिए, `npx next telemetry disable` चलाएँ।

@@ -1,0 +1,26 @@
+{
+  "success": {
+    "title": "✅ {status} - {backup_name} @ {server_alias}",
+    "message": "Backup {backup_name} on {server_alias} completed with status '{status}' at {backup_date} in {duration}.\n\n🔍 Note: {server_note}\n☁️ Uploaded: {uploaded_size}\n💾 Store usage: {storage_size}\n🔃 Upalabdh versions: {available_versions}\n",
+    "priority": "default",
+    "tags": "duplicati, duplistatus, success"
+  },
+  "warning": {
+    "title": "⚠️ {status} - {backup_name} @ {server_alias}",
+    "message": "Backup {backup_name} on {server_alias} completed with status '{status}' at {backup_date}.\n\n🔍 Note: {server_note}\n⏰ Avadhi: {duration}\n☁️ Uploaded: {uploaded_size}\n\n🚨 {warnings_count} Chetaavaniyaan\n🛑 {errors_count} Trutiyon.\n\n📄 Log Sandesh:\n{log_text}\n\n⚠️ Janch karein the duplicati server immediately {server_url}\n",
+    "priority": "high",
+    "tags": "duplicati, duplistatus, warning, error"
+  },
+  "overdueBackup": {
+    "title": "🕑 Vilambit - {backup_name} @ {server_alias}",
+    "message": "The backup {backup_name} is vilambit on {server_alias}.\n\n🔍 Note: {server_note}\n🚨 Antim backup received: {last_backup_date} ({last_elapsed})\n⏰ Apekshit backup time: {expected_date} ({expected_elapsed})\n\nApekshit antaraal: {backup_interval} / Sahansheelta: {overdue_tolerance}\n\n⚠️ Janch karein the duplicati server immediately {server_url}\n",
+    "priority": "default",
+    "tags": "duplicati, duplistatus, overdue"
+  },
+  "dailySummary": {
+    "email": {
+      "title": "📬 duplistatus — Daily backup summary — {summary_date}",
+      "message": "## 📊 दैनिक बैकअप सारांश\n\n🕐 उत्पन्न: **{generated_at}** ({time_zone})\n\n### 📈 अवलोकन\n\n| मैट्रिक | गिनती |\n| --- | ---: |\n| 🖥️ सर्वर | {server_count} |\n| 💼 बैकअप कार्य | {job_count} |\n| ✅ सफलता | {success_count} |\n| ⚠️ चेतावनियाँ | {warning_count} |\n| 🛑 त्रुटियाँ | {error_count} |\n| 💀 गंभीर | {fatal_count} |\n| ❓ अज्ञात | {unknown_count} |\n| ❓ कोई रिपोर्ट प्राप्त नहीं हुई | {no_report_count} |\n| 🕑 विलंबित | {overdue_count} |\n\n### 🚨 ध्यान की आवश्यकता\n\n{problem_table}\n\n### 📋 सभी नवीनतम बैकअप परिणाम\n\n{all_jobs_table}\n\n{duplistatus_link}\n"
+    }
+  }
+}

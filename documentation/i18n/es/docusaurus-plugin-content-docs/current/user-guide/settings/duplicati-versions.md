@@ -33,13 +33,14 @@ Los administradores pueden elegir con qué frecuencia **duplistatus** comprueba 
 | **Cada 12 horas** | A la hora de inicio y 12 horas después                         |
 | **Cada 6 horas**  | A la hora de inicio y cada 6 horas después de eso               |
 
-La hora de inicio se selecciona y se muestra en la zona horaria de su navegador. **duplistatus** almacena esa hora en UTC y el servicio cron ejecuta la comprobación en UTC.
+La hora de inicio se elige en la zona horaria de su navegador utilizando el mismo control de tiempo compacto que el Resumen Diario. Elija cualquier `HH:mm` hora. **duplistatus** almacena ese valor en UTC y el servicio cron ejecuta la comprobación en UTC.
 
 Ejemplos:
 
-- Diariamente con una hora de inicio de 06:00 se ejecuta a las 06:00.
-- Cada 12 horas con una hora de inicio de 08:00 se ejecuta a las 08:00 y 20:00.
-- Cada 6 horas con una hora de inicio de 02:00 se ejecuta a las 02:00, 08:00, 14:00 y 20:00.
+- Diario con una hora de inicio de 06:00 se ejecuta a las 06:00.
+- Diario con una hora de inicio de 06:30 se ejecuta a las 06:30.
+- Cada 12 horas con una hora de inicio de 08:15 se ejecuta a las 08:15 y 20:15.
+- Cada 6 horas con una hora de inicio de 02:45 se ejecuta a las 02:45, 08:45, 14:45 y 20:45.
 
 Al iniciar, **duplistatus** también actualiza la caché si es más antigua que el intervalo seleccionado (24 horas, 12 horas o 6 horas). Las actualizaciones fallidas mantienen las últimas versiones en caché.
 

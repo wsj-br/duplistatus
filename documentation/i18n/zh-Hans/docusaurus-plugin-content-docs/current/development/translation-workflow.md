@@ -6,7 +6,7 @@
 
 本文档使用 Docusaurus i18n，并以英语作为默认语言区域。源文档位于 `docs/`；翻译内容编写在 `i18n/{locale}/` 下。支持的语言区域包括：en-GB (默认)、fr、de、es、pt-BR、hi、zh-Hans。
 
-**AI 翻译**用于应用程序 UI、Docusaurus markdown/JSON 和 SVG 资产，处理由 [**ai-i18n-tools**](https://www.npmjs.com/package/ai-i18n-tools) 从 **仓库根** 处理，配置在 `ai-i18n-tools.config.json`（不在 `documentation/` 内）。运行翻译命令时设置 `OPENROUTER_API_KEY`。
+**AI translation** for the app UI, Docusaurus markdown/JSON, SVG assets, and **default notification templates** is handled by [**ai-i18n-tools**](https://www.npmjs.com/package/ai-i18n-tools) from the **repository root**, configured in `ai-i18n-tools.config.json` (not inside `documentation/`). Set `OPENROUTER_API_KEY` when running translate commands.
 
 ## 何时英语文档更改 {#when-english-documentation-changes}
 
@@ -14,11 +14,12 @@
 2. **Docusaurus UI 字符串**（主题标签、导航栏等）：如果需要，在 `documentation/` 中运行 `pnpm write-translations`，以便 `i18n/en/*.json` 获取新键。
 3. **标题 ID**：`pnpm write-heading-ids`（来自 `documentation/`）。
 4. **翻译** 从 **仓库根**（或使用以下 `documentation/` 的快捷方式）：
-   - `pnpm i18n:extract` — 刷新 `src/locales/strings.json` 从 `t('…')` 在 Next.js 应用程序中。
-   - `pnpm i18n:translate:docs` — 将 markdown/JSON 翻译成 `documentation/i18n/`，如配置所示。
-   - `pnpm i18n:translate:svg` — 将 SVG 翻译成 `documentation/static/img`，如配置所示。
-   - 或运行所有内容：`pnpm i18n:translate`。
-5. **构建**：`cd documentation && pnpm build`（所有语言）。
+   - `pnpm i18n:extract` — refresh `src/locales/strings.json` from `t('…')` in the Next.js app.
+   - `pnpm i18n:translate:docs` — translate markdown/JSON into `documentation/i18n/` per config.
+   - `pnpm i18n:translate:svg` — translate SVGs under `documentation/static/img` as configured.
+   - `pnpm i18n:translate:json` — translate default notification templates in `src/locales/templates/` from `en-GB.json`.
+   - Or run everything: `pnpm i18n:translate`.
+5. **Build**: `cd documentation && pnpm build` (all locales).
 
 从 `documentation/` 内部，相同的流程被连接为 `pnpm translate` → 根 `i18n:translate`，加上 `pnpm translate:docs`、`translate:ui`、`translate:svg`、`translate:status`、`i18n:extract`、`i18n:sync`。
 
@@ -34,10 +35,29 @@ t("{{count}} backups selected", { plurals: true, count: selectedBackups.size })
 
 规则：
 
-- 不要使用 `item(s)` 修饰语或 `count === 1 ? t('…') : t('…')` 对。
-- 独立计数需要单独的 `t()` 调用。包含两个或更多插值的字符串必须包含 `{{count}}` 作为复数轴。
-- `pnpm i18n:extract` 标记目录行 `"plural": true`。 `pnpm i18n:translate:ui` 填充 CLDR 表格并写入 `src/locales/en-GB.json`（仅限复数键）。
+- 不要使用 `item(s)` 边际或 `count === 1 ? t('…') : t('…')` 对。
+- 独立 **数字** 计数需要单独的 `t()` 调用——一个复数轴不能灵活处理两个数字（例如 1 个成功和 2 个失败）。连接这些片段：
+
+```tsx
+`${t("Tested {{count}} connections:", { plurals: true, count: total })} ` +
+  `${t("{{count}} successful,", { plurals: true, count: successCount })} ` +
+  `${t("{{count}} failed", { plurals: true, count: failureCount })}`
+```
+
+- 非数字插值（名称、标签等）可以与 `{{count}}` 在同一个复数字符串中使用。
+- `pnpm i18n:extract` 标记目录行 `"plural": true`。`pnpm i18n:translate:ui` 填充 CLDR 表单并写入 `src/locales/en-GB.json`（仅复数键）。
 - `src/i18n.ts` 和 `src/lib/i18n-server.ts` 将该文件加载为 `sourcePluralFlatBundle`，以便英语单数/复数在运行时解析。
+
+## Default notification templates {#default-notification-templates}
+
+设置 → 模板 → **重置** loads defaults from `src/locales/templates/{locale}.json` (wired in `src/lib/default-notification-templates.ts`).
+
+1. Edit **`src/locales/templates/en-GB.json`** only (English source).
+2. Run **`pnpm i18n:translate:json`** (or **`pnpm i18n:translate`**) from the repo root.
+3. Review diffs — placeholders such as `{backup_name}` and `{problem_table}` must stay unchanged; `priority` and `tags` are skipped by `keyPolicy` in `ai-i18n-tools.config.json`.
+4. Run **`pnpm i18n:status`** to see JSON block coverage.
+
+See the [ai-i18n-tools JSON guide](https://wsj-br.github.io/ai-i18n-tools/guide/json.html) for flags (`--locale`, `--force`, etc.).
 
 ## 词汇表 {#glossary}
 

@@ -14,7 +14,8 @@ import { GetNextBackupRunDate } from './server_intervals';
 import { defaultBackupNotificationConfig } from './default-config';
 import { encryptData, decryptData } from './secrets';
 import { SOURCE_LOCALE, parseLocaleTag } from './locales';
-import { isValidIanaTimeZone, isValidLocalTime } from './daily-summary-schedule';
+import { isValidIanaTimeZone, isValidLocalTime, legacyLocalScheduleToUtcTime } from './daily-summary-schedule';
+import { isValidHttpPublicUrl, normalizePublicUrl } from '@/lib/public-url-utils';
 import { isNextProductionBuild } from './next-build-phase';
 import {
   buildDuplicatiVersionCronExpression,
@@ -22,11 +23,13 @@ import {
   createEmptyDuplicatiVersionCache,
   createUnavailableDuplicatiVersionStatus,
   DEFAULT_DUPLICATI_VERSION_CHECK_INTERVAL,
-  DEFAULT_DUPLICATI_VERSION_START_HOUR_UTC,
+  DEFAULT_DUPLICATI_VERSION_START_TIME_UTC,
   DUPLICATI_VERSION_CACHE_KEY,
   DUPLICATI_VERSION_CHECK_CONFIG_KEY,
   isDuplicatiVersionCheckInterval,
   isValidUtcHour,
+  isValidUtcTime,
+  legacyUtcHourToStartTimeUtc,
 } from './duplicati-version';
 
 // Request-level cache to avoid redundant function calls within a single request
@@ -255,7 +258,7 @@ function applyDuplicatiVersionRefreshSchedule(config: CronServiceConfig): CronSe
       'duplicati-version-refresh': {
         cronExpression: buildDuplicatiVersionCronExpression(
           versionCheck.interval,
-          versionCheck.startHourUtc
+          versionCheck.startTimeUtc
         ),
         enabled: true,
       },
@@ -280,16 +283,20 @@ export function getDuplicatiVersionCheckConfig(): DuplicatiVersionCheckConfig {
   try {
     const raw = getConfiguration(DUPLICATI_VERSION_CHECK_CONFIG_KEY);
     if (raw && raw.trim() !== '') {
-      const parsed = JSON.parse(raw) as DuplicatiVersionCheckConfig;
-      if (
-        isRecord(parsed)
-        && isDuplicatiVersionCheckInterval(parsed.interval)
-        && isValidUtcHour(parsed.startHourUtc)
-      ) {
-        return {
-          interval: parsed.interval,
-          startHourUtc: parsed.startHourUtc,
-        };
+      const parsed = JSON.parse(raw) as Record<string, unknown>;
+      if (isRecord(parsed) && isDuplicatiVersionCheckInterval(parsed.interval)) {
+        if (typeof parsed.startTimeUtc === 'string' && isValidUtcTime(parsed.startTimeUtc)) {
+          return {
+            interval: parsed.interval,
+            startTimeUtc: parsed.startTimeUtc,
+          };
+        }
+        if (isValidUtcHour(parsed.startHourUtc)) {
+          return {
+            interval: parsed.interval,
+            startTimeUtc: legacyUtcHourToStartTimeUtc(parsed.startHourUtc),
+          };
+        }
       }
     }
   } catch (error) {
@@ -301,18 +308,18 @@ export function getDuplicatiVersionCheckConfig(): DuplicatiVersionCheckConfig {
 
   return {
     interval: DEFAULT_DUPLICATI_VERSION_CHECK_INTERVAL,
-    startHourUtc: DEFAULT_DUPLICATI_VERSION_START_HOUR_UTC,
+    startTimeUtc: DEFAULT_DUPLICATI_VERSION_START_TIME_UTC,
   };
 }
 
 export function setDuplicatiVersionCheckConfig(config: DuplicatiVersionCheckConfig): void {
-  if (!isDuplicatiVersionCheckInterval(config.interval) || !isValidUtcHour(config.startHourUtc)) {
+  if (!isDuplicatiVersionCheckInterval(config.interval) || !isValidUtcTime(config.startTimeUtc)) {
     throw new Error('Invalid Duplicati version check configuration');
   }
 
   setConfiguration(DUPLICATI_VERSION_CHECK_CONFIG_KEY, JSON.stringify({
     interval: config.interval,
-    startHourUtc: config.startHourUtc,
+    startTimeUtc: config.startTimeUtc,
   }));
 }
 
@@ -378,20 +385,45 @@ export function parseDailySummaryConfig(value: unknown): DailySummaryConfig {
     throw new Error('Invalid daily summary configuration');
   }
   const enabled = value.enabled === true;
-  const localTime = typeof value.localTime === 'string' ? value.localTime : '';
-  const timeZone = typeof value.timeZone === 'string' ? value.timeZone : '';
-  const sendNtfy = value.sendNtfy === true;
   const effectiveFromIso = typeof value.effectiveFromIso === 'string' ? value.effectiveFromIso : '';
-  if (!isValidLocalTime(localTime)) {
-    throw new Error('Invalid daily summary time');
+  let utcTime: string;
+  let timeZone: string;
+
+  if (typeof value.utcTime === 'string' && isValidLocalTime(value.utcTime)) {
+    utcTime = value.utcTime;
+    timeZone = typeof value.timeZone === 'string' && isValidIanaTimeZone(value.timeZone) ? value.timeZone : 'UTC';
+  } else {
+    const legacyLocalTime = typeof value.localTime === 'string' ? value.localTime : '';
+    const legacyTimeZone = typeof value.timeZone === 'string' ? value.timeZone : '';
+    if (!isValidLocalTime(legacyLocalTime) || !isValidIanaTimeZone(legacyTimeZone)) {
+      throw new Error('Invalid daily summary time');
+    }
+    utcTime = legacyLocalScheduleToUtcTime(legacyLocalTime, legacyTimeZone);
+    timeZone = legacyTimeZone;
   }
-  if (!isValidIanaTimeZone(timeZone)) {
-    throw new Error('Invalid daily summary timezone');
-  }
+
   if (!effectiveFromIso || Number.isNaN(new Date(effectiveFromIso).getTime())) {
     throw new Error('Invalid daily summary effective-from timestamp');
   }
-  return { enabled, localTime, timeZone, sendNtfy, effectiveFromIso };
+  const publicUrlRaw = typeof value.publicUrl === 'string' ? value.publicUrl.trim() : '';
+  const publicUrl = publicUrlRaw.length === 0 ? '' : normalizePublicUrl(publicUrlRaw);
+  if (publicUrl.length > 0 && !isValidHttpPublicUrl(publicUrl)) {
+    throw new Error('Invalid daily summary public URL');
+  }
+  return { enabled, utcTime, timeZone, effectiveFromIso, publicUrl };
+}
+
+export function normalizeDailySummaryTemplateSet(
+  value: unknown,
+  language: SupportedTemplateLanguage = SOURCE_LOCALE
+): DailySummaryTemplateSet {
+  if (isRecord(value) && isRecord(value.email)) {
+    const email = value.email;
+    if (typeof email.title === 'string' && typeof email.message === 'string') {
+      return { email: { title: email.title, message: email.message } };
+    }
+  }
+  return getDefaultDailySummaryTemplates(language);
 }
 
 export function getDailySummaryConfig(): DailySummaryConfig {
@@ -400,7 +432,14 @@ export function getDailySummaryConfig(): DailySummaryConfig {
     return defaultDailySummaryConfig();
   }
   try {
-    return parseDailySummaryConfig(JSON.parse(raw));
+    const rawObject = JSON.parse(raw) as { localTime?: string; utcTime?: string; sendNtfy?: boolean };
+    const parsed = parseDailySummaryConfig(rawObject);
+    if (typeof rawObject.utcTime !== 'string' && typeof rawObject.localTime === 'string') {
+      setDailySummaryConfig(parsed);
+    } else if (rawObject.sendNtfy === true) {
+      setDailySummaryConfig(parsed);
+    }
+    return parsed;
   } catch (error) {
     console.error('Failed to parse daily summary configuration:', error instanceof Error ? error.message : String(error));
     return defaultDailySummaryConfig();
@@ -1980,8 +2019,13 @@ export function getNotificationTemplates(): StoredNotificationTemplates {
         success?: NotificationTemplate;
         warning?: NotificationTemplate;
         overdueBackup?: NotificationTemplate;
-        dailySummary?: DailySummaryTemplateSet;
+        dailySummary?: unknown;
       };
+
+      const language = parseLocaleTag(parsed.language ?? '') ?? SOURCE_LOCALE;
+      const normalizedDailySummary = normalizeDailySummaryTemplateSet(parsed.dailySummary, language);
+      const legacyDailySummary = parsed.dailySummary as { ntfy?: unknown } | undefined;
+      const hadLegacyNtfy = legacyDailySummary?.ntfy !== undefined;
 
       const updatedTemplates: {
         language?: SupportedTemplateLanguage;
@@ -1993,7 +2037,7 @@ export function getNotificationTemplates(): StoredNotificationTemplates {
         success: parsed.success,
         warning: parsed.warning,
         overdueBackup: parsed.overdueBackup,
-        dailySummary: parsed.dailySummary,
+        dailySummary: normalizedDailySummary,
       };
       let needsUpdate = false;
 
@@ -2003,11 +2047,12 @@ export function getNotificationTemplates(): StoredNotificationTemplates {
         needsUpdate = true;
       }
 
-      const language = parseLocaleTag(parsed.language ?? '') ?? SOURCE_LOCALE;
       updatedTemplates.language = language;
 
       if (!parsed.dailySummary) {
         updatedTemplates.dailySummary = getDefaultDailySummaryTemplates(language);
+        needsUpdate = true;
+      } else if (hadLegacyNtfy) {
         needsUpdate = true;
       }
 
@@ -2028,7 +2073,7 @@ export function getNotificationTemplates(): StoredNotificationTemplates {
         success: parsed.success || defaultNotificationTemplates.success,
         warning: parsed.warning || defaultNotificationTemplates.warning,
         overdueBackup: parsed.overdueBackup || defaultNotificationTemplates.overdueBackup,
-        dailySummary: parsed.dailySummary || getDefaultDailySummaryTemplates(language),
+        dailySummary: normalizedDailySummary,
       };
     } catch (error) {
       console.error('Failed to get notification templates:', error instanceof Error ? error.message : String(error));

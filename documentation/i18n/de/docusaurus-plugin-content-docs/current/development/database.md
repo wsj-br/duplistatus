@@ -163,9 +163,9 @@ Speichert Anwendungskonfigurationseinstellungen.
 - `ntfy_config`: NTFY-Benachrichtigungseinstellungen
 - `overdue_tolerance`: Toleranzeinstellungen für verspätete Sicherungen
 - `notification_templates`: Vorlagen für Benachrichtigungsnachrichten
-- `daily_summary`: Zusammenfassungsmodus, Zeitplan, Zeitzone und optionale NTFY-Lieferung
+- `daily_summary`: Tägliche Zusammenfassung Modus, Zeitplan und Zeitzone
 - `cron_service`: Cron-Aufgabenpläne, einschließlich `daily-summary-dispatch`
-- `audit_retention_days`: Prüfprotokoll-Aufbewahrungsdauer (Standard: 90 Tage)
+- `audit_retention_days`: Aufbewahrungsdauer des Prüfprotokolls (Standard: 90 Tage)
 
 ### Datenbankversionstabelle {#database-version-table}
 
@@ -264,7 +264,7 @@ Verwandte Konfigurationsschlüssel in der `configurations`-Tabelle: `external_ap
 
 ### Tägliche Zusammenfassungslieferungen Tabelle {#daily-summary-deliveries-table}
 
-Pro-Kanal-Buchhaltung für tägliche Zusammenfassungs-E-Mails und NTFY. Jeder geplante Auftritt (oder eindeutige manuelle Sendung) hat maximal eine Zeile pro Kanal. Die gerenderten Nutzlasten werden vor dem Senden gespeichert, damit Wiederholungen die gleiche Momentaufnahme verwenden. Zeilen älter als 30 Tage werden gelöscht.
+Kanalbasiertes Konto für die Zustellung der Täglichen Zusammenfassung per E-Mail. Veraltete Zeilen können einen `ntfy` Kanal aus früheren Versionen enthalten. Jeder geplante Vorgang (oder eindeutige manuelle Sendung) hat pro Kanal maximal eine Zeile. Gerenderte Nutzlasten werden vor dem Senden gespeichert, sodass Wiederholungen die gleiche Momentaufnahme verwenden. Zeilen älter als 30 Tage werden gelöscht.
 
 Wenn der Prozess nach dem Akzeptieren einer Nachricht durch einen Anbieter stirbt, bevor der Erfolg aufgezeichnet wird, kann dieser Kanal erneut versucht werden (mindestens einmal).
 

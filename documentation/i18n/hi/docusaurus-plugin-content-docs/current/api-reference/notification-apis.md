@@ -96,10 +96,10 @@ Test email content dikhata hai:
   - परीक्षण ईमेल एंडपॉइंट SMTP कॉन्फ़िगरेशन को पढ़ने से पहले अनुरोध कैश को साफ़ करता है, जिससे बाहरी स्क्रिप्ट कॉन्फ़िगरेशन को अपडेट कर सकते हैं और इसे परीक्षण ईमेल में तुरंत प्रतिबिंबित किया जा सके
   - टेम्पलेट परीक्षण और दैनिक सारांश भेजें-अब प्रति-बैकअप दबाव को बायपास करते हैं
 
-## पूर्वावलोकन सूचना टेम्पलेट - `/api/notifications/preview` {#preview-notification-template---apinotificationspreview}
+## पूर्वावलोकन अधिसूचना टेम्पलेट - `/api/notifications/preview` {#preview-notification-template---apinotificationspreview}
 - **एंडपॉइंट**: `/api/notifications/preview`
 - **विधि**: POST
-- **विवरण**: उत्पादन मार्कडाउन रेंडरर के साथ एक सूचना टेम्पलेट को रेंडर करता है बिना भेजे। बॉडी में `kind` शामिल है (`success`, `warning`, `overdueBackup`, `dailySummaryEmail`, या `dailySummaryNtfy`) और संपादित किया जा रहा टेम्पलेट। दैनिक सारांश पूर्वावलोकन वर्तमान वास्तविक स्नैपशॉट का उपयोग करते हैं; अन्य प्रकार निर्धारित नमूना मानों का उपयोग करते हैं। ईमेल HTML एक सैंडबॉक्स्ड iframe के लिए है।
+- **विवरण**: उत्पादन मार्कडाउन रेंडरर के साथ एक अधिसूचना टेम्पलेट को रेंडर करता है बिना भेजे। बॉडी में `kind` शामिल है (`success`, `warning`, `overdueBackup`, या `dailySummaryEmail`) और संपादित किए जा रहे टेम्पलेट। दैनिक सारांश पूर्वावलोकन वर्तमान वास्तविक स्नैपशॉट का उपयोग करते हैं; अन्य प्रकार निर्धारित नमूना मानों का उपयोग करते हैं। ईमेल HTML एक सैंडबॉक्स्ड iframe के लिए है।
 - **Authentication**: वैलिड सेशन और CSRF टोकन की आवश्यकता होती है
 
 ## Vilambit Backup Janch Karein - `/api/notifications/check-overdue` {#check-overdue-backups---apinotificationscheck-overdue}

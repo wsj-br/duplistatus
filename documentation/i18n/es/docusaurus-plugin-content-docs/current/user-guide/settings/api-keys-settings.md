@@ -55,4 +55,4 @@ El interruptor **Exigir claves de API para APIs externas** está desactivado de 
 
 La misma página puede exigir claves de API para las APIs públicas de subida y lectura, y configura un tamaño máximo del cuerpo (predeterminado 5 MB) y límites de velocidad por IP para `/api/upload`. El tamaño y los límites de velocidad se aplican incluso cuando las claves son opcionales y son la principal defensa contra inundaciones.
 
-Consulte también [Lista de IPs permitidas](ip-allowlist-settings.md) si desea restringir quién puede acceder a las APIs externas sin usar claves.
+Consulte también [Lista de IPs permitidas](ip-allowlist-settings.md). Lista de IPs permitidas y Claves de API son características independientes; puede usar una o ambas. Habilitar ambas aumenta la seguridad al restringir el acceso por dirección IP y requerir una clave de API.

@@ -124,7 +124,8 @@ Add these lines to your `~/.profile` file
 The project includes several npm scripts for different development tasks:
 
 ### Development Scripts {#development-scripts}
-- `pnpm dev` - Start development server on port 8666 (includes pre-checks). `NODE_OPTIONS` loads `scripts/dev-preload.cjs`, which applies `scripts/peer-ip.cjs` (TCP peer address for IP allowlists) and request-log timestamps.
+- `pnpm dev` - Start the Next.js development server (port 8666) and the cron service (port 8667) together via `concurrently` (includes pre-checks). CTRL-C stops both. `NODE_OPTIONS` for Next.js loads `scripts/dev-preload.cjs`, which applies `scripts/peer-ip.cjs` (TCP peer address for IP allowlists) and request-log timestamps.
+- `pnpm dev:next` - Start only the Next.js development server on port 8666 (no cron).
 - `pnpm build` - Build the application for production (includes pre-checks)
 - `pnpm lint` - Run ESLint to check code quality
 - `pnpm typecheck` - Run TypeScript type checking
@@ -164,7 +165,7 @@ The development servers (`start:*`) provide hot module replacement for rapid dev
 
 ### Cron Service Scripts {#cron-service-scripts}
 - `pnpm cron:start` - Start cron service in production mode
-- `pnpm cron:dev` - Start cron service in development mode with file watching (port 8667)
+- `pnpm cron:dev` - Start only the cron service in development mode with file watching (port 8667). Usually unnecessary when using `pnpm dev`, which already starts cron.
 - `pnpm cron:start-local` - Start cron service locally for testing (port 8667)
 
 ### Test Scripts {#test-scripts}

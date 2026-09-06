@@ -4,6 +4,8 @@ L'application inclut un service cron distinct pour gérer les tâches planifiée
 
 ## Démarrer le service cron en mode développement {#start-cron-service-in-development-mode}
 
+`pnpm dev` démarre déjà le service cron aux côtés de Next.js. Pour exécuter cron seul (par exemple dans un deuxième terminal) :
+
 ```bash
 pnpm cron:dev
 ```

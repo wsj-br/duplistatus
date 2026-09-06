@@ -163,9 +163,9 @@ Armazena as configurações de aplicação.
 - `ntfy_config`: Configurações de notificação NTFY
 - `overdue_tolerance`: Configurações de tolerância para backup atrasado
 - `notification_templates`: Modelos de mensagens de notificação
-- `daily_summary`: Modo de Resumo Diário, agendamento, fuso horário e entrega opcional NTFY
+- `daily_summary`: Modo, agendamento e fuso horário do Resumo Diário
 - `cron_service`: Agendamentos de tarefas Cron, incluindo `daily-summary-dispatch`
-- `audit_retention_days`: Período de retenção de log de auditoria (padrão: 90 dias)
+- `audit_retention_days`: Período de retenção do log de auditoria (padrão: 90 dias)
 
 ### Tabela de Versão do Banco de Dados {#database-version-table}
 
@@ -264,7 +264,7 @@ Chaves de configuração relacionadas na tabela `configurations`: `external_api_
 
 ### Tabela de Entregas de Resumo Diário {#daily-summary-deliveries-table}
 
-Ledger por canal para e-mail de Resumo Diário e NTFY. Cada ocorrência agendada (ou envio manual único) tem no máximo uma linha por canal. Os payloads renderizados são armazenados antes do envio para que as tentativas repetidas mantenham o mesmo instantâneo. Linhas mais antigas que 30 dias são removidas.
+Livro-razão por canal para entrega de e-mail de Resumo Diário. Linhas legadas podem incluir um canal `ntfy` de versões anteriores. Cada ocorrência agendada (ou envio manual único) tem no máximo uma linha por canal. Os payloads renderizados são armazenados antes do envio para que as tentativas mantenham a mesma captura. Linhas com mais de 30 dias são removidas.
 
 Se o processo morre após um provedor aceitar uma mensagem, mas antes de registrar o sucesso, esse canal pode ser reenviado (pelo menos uma vez).
 

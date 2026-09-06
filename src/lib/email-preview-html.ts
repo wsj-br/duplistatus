@@ -12,8 +12,8 @@ function withColorSchemeAndBody(html: string, theme: EmailPreviewTheme): string 
   const dark = theme === 'dark';
   const colorScheme = dark ? 'dark' : 'light';
   const bodyStyle = dark
-    ? 'background:#111827;margin:0;color:#e5e7eb'
-    : 'background:#ffffff;margin:0;color:#1f2937';
+    ? 'background:#111827;margin:0;color:#e5e7eb;zoom:0.8;box-sizing:border-box;padding:12px 2.75rem 16px 1.25rem'
+    : 'background:#ffffff;margin:0;color:#1f2937;zoom:0.8;box-sizing:border-box;padding:12px 2.75rem 16px 1.25rem';
 
   let result = html;
   if (/<meta\s+name=["']color-scheme["']/i.test(result)) {
@@ -22,7 +22,11 @@ function withColorSchemeAndBody(html: string, theme: EmailPreviewTheme): string 
       `<meta name="color-scheme" content="${colorScheme}">`
     );
   } else {
-    result = result.replace(/<head([^>]*)>/i, `<head$1><meta name="color-scheme" content="${colorScheme}">`);
+    result = result.replace(/<head([^>]*)>/i, `<head$1><meta name="color-scheme" content="${colorScheme}"><base target="_blank">`);
+  }
+
+  if (!/<base[\s>]/i.test(result)) {
+    result = result.replace(/<head([^>]*)>/i, `<head$1><base target="_blank">`);
   }
 
   if (/<body[\s>]/i.test(result)) {

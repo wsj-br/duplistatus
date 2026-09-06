@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from 'next/server';
-import { getNotificationFrequencyConfig, setNotificationFrequencyConfig, getNtfyConfig, setNtfyConfig, getDailySummaryConfig } from '@/lib/db-utils';
+import { getNotificationFrequencyConfig, setNotificationFrequencyConfig, getNtfyConfig, setNtfyConfig } from '@/lib/db-utils';
 import { NotificationFrequencyConfig } from '@/lib/types';
 import { generateDefaultNtfyTopic } from '@/lib/default-config';
 import { withCSRF } from '@/lib/csrf-middleware';
@@ -68,25 +68,6 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
       ...ntfy,
       topic: (!ntfy.topic || ntfy.topic.trim() === '') ? generateDefaultNtfyTopic() : ntfy.topic
     };
-
-    const dailySummary = getDailySummaryConfig();
-    if (dailySummary.sendNtfy) {
-      try {
-        const parsed = new URL(updatedNtfy.url);
-        const urlOk = parsed.protocol === 'http:' || parsed.protocol === 'https:';
-        if (!urlOk || !updatedNtfy.topic.trim()) {
-          return NextResponse.json(
-            { error: 'NTFY settings cannot be cleared while Daily Summary NTFY is enabled' },
-            { status: 400 }
-          );
-        }
-      } catch {
-        return NextResponse.json(
-          { error: 'NTFY settings cannot be cleared while Daily Summary NTFY is enabled' },
-          { status: 400 }
-        );
-      }
-    }
     
     // Track changed fields with old and new values
     const changedFields: Record<string, { old: any; new: any }> = {};

@@ -5,17 +5,15 @@ import { getClientIpAddress } from '@/lib/ip-utils';
 import { AuditLogger } from '@/lib/audit-logger';
 import {
   getDailySummaryConfig,
-  getNtfyConfig,
   getSMTPConfig,
   setDailySummaryConfig,
 } from '@/lib/db-utils';
 import { parseDailySummaryConfig } from '@/lib/db-utils';
 import {
   getDailySummaryPublicStatus,
-  isDailySummaryDispatcherHealthy,
-  isNtfyConfiguredForSummary,
   isSmtpConfiguredForSummary,
 } from '@/lib/daily-summary';
+import { isValidHttpPublicUrl } from '@/lib/public-url-utils';
 import { isValidIanaTimeZone, isValidLocalTime } from '@/lib/daily-summary-schedule';
 import type { DailySummaryConfig } from '@/lib/types';
 
@@ -35,46 +33,44 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
   try {
     const body = await request.json() as {
       enabled?: boolean;
-      localTime?: string;
+      utcTime?: string;
       timeZone?: string;
-      sendNtfy?: boolean;
+      publicUrl?: string;
     };
     const current = getDailySummaryConfig();
     const nextEnabled = body.enabled ?? current.enabled;
-    const nextLocalTime = body.localTime ?? current.localTime;
+    const nextUtcTime = body.utcTime ?? current.utcTime;
     const nextTimeZone = body.timeZone ?? current.timeZone;
-    const nextSendNtfy = body.sendNtfy ?? current.sendNtfy;
+    const nextPublicUrl = body.publicUrl ?? current.publicUrl;
 
-    if (!isValidLocalTime(nextLocalTime)) {
-      return NextResponse.json({ error: 'Invalid local time' }, { status: 400 });
+    if (!isValidLocalTime(nextUtcTime)) {
+      return NextResponse.json({ error: 'Invalid send time' }, { status: 400 });
     }
     if (!isValidIanaTimeZone(nextTimeZone)) {
       return NextResponse.json({ error: 'Invalid timezone' }, { status: 400 });
+    }
+    const trimmedPublicUrl = nextPublicUrl.trim();
+    if (trimmedPublicUrl.length > 0 && !isValidHttpPublicUrl(trimmedPublicUrl)) {
+      return NextResponse.json({ error: 'Invalid public dashboard URL' }, { status: 400 });
     }
 
     if (nextEnabled) {
       if (!isSmtpConfiguredForSummary(getSMTPConfig())) {
         return NextResponse.json({ error: 'SMTP must be configured before enabling daily summary' }, { status: 400 });
       }
-      if (!await isDailySummaryDispatcherHealthy()) {
-        return NextResponse.json({ error: 'The scheduler must be running before enabling daily summary' }, { status: 400 });
-      }
-    }
-    if (nextSendNtfy && !isNtfyConfiguredForSummary(getNtfyConfig())) {
-      return NextResponse.json({ error: 'NTFY must be configured before sending the summary to NTFY' }, { status: 400 });
     }
 
     const scheduleChanged =
       nextEnabled !== current.enabled
-      || nextLocalTime !== current.localTime
+      || nextUtcTime !== current.utcTime
       || nextTimeZone !== current.timeZone;
 
     const nextConfig: DailySummaryConfig = parseDailySummaryConfig({
       enabled: nextEnabled,
-      localTime: nextLocalTime,
+      utcTime: nextUtcTime,
       timeZone: nextTimeZone,
-      sendNtfy: nextSendNtfy,
       effectiveFromIso: scheduleChanged ? new Date().toISOString() : current.effectiveFromIso,
+      publicUrl: nextPublicUrl,
     });
 
     setDailySummaryConfig(nextConfig);
@@ -87,9 +83,9 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
         'daily_summary',
         {
           enabled: nextConfig.enabled,
-          localTime: nextConfig.localTime,
+          utcTime: nextConfig.utcTime,
           timeZone: nextConfig.timeZone,
-          sendNtfy: nextConfig.sendNtfy,
+          publicUrl: nextConfig.publicUrl,
         },
         getClientIpAddress(request),
         request.headers.get('user-agent') || 'unknown'

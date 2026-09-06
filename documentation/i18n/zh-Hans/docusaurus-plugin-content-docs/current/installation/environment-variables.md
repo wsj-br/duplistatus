@@ -18,5 +18,6 @@
 | `ADMIN_IP_ALLOWLIST`      | 管理界面的以逗号分隔的CIDR                                               | 未设置                      |
 | `EXTERNAL_API_IP_ALLOWLIST_ENABLED` | 覆盖外部API白名单启用标志（`true` / `false`)                | 未设置（使用设置）       |
 | `EXTERNAL_API_IP_ALLOWLIST` | 以逗号分隔的CIDR用于`/api/upload`、`/api/summary`和`/api/lastbackup*`           | 未设置                      |
+| `DUPLISTATUS_PUBLIC_URL`    | duplistatus 网络用户界面的公共基础 URL（无尾部斜杠）。 何时设置时，将覆盖 设置 → 每日摘要 **公共仪表板 URL**，并且每日摘要电子邮件包括 `{duplistatus_link}`。 何时未设置时，将使用已保存的设置；如果该设置也为空，则不添加仪表板链接。 | unset                      |
 
 `NEXT_TELEMETRY_DISABLED=1` 由 Docker 镜像和 `pnpm build`、`pnpm build-local`、`pnpm start`、`pnpm start-local` 和 `pnpm dev` 设置，因此 Next.js 不会收集匿名 CLI 遥测。要在用户配置中持久化选择退出，请运行 `npx next telemetry disable`。

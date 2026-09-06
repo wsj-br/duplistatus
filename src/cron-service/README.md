@@ -39,6 +39,8 @@ This is an external service that handles periodic tasks for the DupliStatus appl
 
 ### Development
 
+`pnpm dev` starts this service together with the Next.js app. To run cron alone:
+
 ```bash
 # Start in development mode with auto-reload
 pnpm cron:dev

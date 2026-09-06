@@ -118,12 +118,13 @@ avec cette commande :
 Le projet inclut plusieurs scripts npm pour différentes tâches de développement :
 
 ### Scripts de développement {#development-scripts}
-- `pnpm dev` - Démarrer le serveur de développement sur le port 8666 (inclut des vérifications préalables). `NODE_OPTIONS` charge `scripts/dev-preload.cjs`, qui applique `scripts/peer-ip.cjs` (adresse de pair TCP pour les listes d'adresses IP autorisées) et les horodatages des journaux de requêtes.
-- `pnpm build` - Construire l'application pour la production (inclut des vérifications préalables)
+- `pnpm dev` - Démarrer le serveur de développement Next.js (port 8666) et le service cron (port 8667) ensemble via `concurrently` (inclut des pré-vérifications). CTRL-C arrête les deux. `NODE_OPTIONS` pour Next.js charge `scripts/dev-preload.cjs`, qui applique `scripts/peer-ip.cjs` (adresse de pair TCP pour les listes d'autorisation IP) et les horodatages des journaux de requêtes.
+- `pnpm dev:next` - Démarrer uniquement le serveur de développement Next.js sur le port 8666 (sans cron).
+- `pnpm build` - Construire l'application pour la production (inclut des pré-vérifications)
 - `pnpm lint` - Exécuter ESLint pour vérifier la qualité du code
 - `pnpm typecheck` - Exécuter la vérification des types TypeScript
-- `scripts/upgrade-dependencies.sh` — Mise à jour sécurisée de chaque package du workspace (détecté automatiquement). Résout les dernières versions avec `npm-check-updates`, installe depuis la racine du workspace, et ne conserve que les mises à jour qui passent les `typecheck`/`lint` de chaque package (les peer gates bloquent `eslint` / `typescript` quand la pile de linting ne permet pas la dernière version majeure). Exécute ensuite `pnpm audit` / `audit --fix` et applique de force (et signale) toute correction de sécurité nécessitant des modifications de code. Actualise le lockfile du workspace et le browserslist. Privilégiez `source ./scripts/upgrade-dependencies.sh` pour que **nvm** s'applique à votre shell ; en CI ou en automatisation, utilisez `CI=1` ou `UPGRADE_ALLOW_EXEC=1` lors de l'exécution directe du fichier. Voir aussi `scripts/upgrade-tools.sh` pour les outils Node/pnpm uniquement.
-- `scripts/clean-workspace.sh` - Nettoyer le workspace
+- `scripts/upgrade-dependencies.sh` — Mise à niveau sécurisée de chaque package de l'espace de travail (détecté automatiquement). Résout les dernières versions avec `npm-check-updates`, installe depuis la racine de l'espace de travail, et conserve uniquement les mises à niveau qui passent les `typecheck`/`lint` de chaque package (les portes de pair pin `eslint` / `typescript` lorsque la pile de lint n'autorise pas la dernière version majeure). Puis exécute `pnpm audit` / `audit --fix` et applique de force (et rapporte) toute correction de sécurité nécessitant des modifications de code. Actualise le fichier de verrouillage de l'espace de travail et browserslist. Préférez `source ./scripts/upgrade-dependencies.sh` afin que **nvm** s'applique à votre shell ; dans CI ou automatisation, utilisez `CI=1` ou `UPGRADE_ALLOW_EXEC=1` lors de l'exécution du fichier directement. Voir aussi `scripts/upgrade-tools.sh` uniquement pour les outils Node/pnpm.
+- `scripts/clean-workspace.sh` - Nettoyer l'espace de travail
 
 **Note :** Le script `preinstall` applique automatiquement pnpm comme gestionnaire de paquets.
 
@@ -155,9 +156,9 @@ Les serveurs de développement (`start:*`) offrent un remplacement de module à 
 - `pnpm docker:clean` - Nettoyer l'environnement Docker et le cache
 - `pnpm docker:devel` - Créer une image Docker de développement marquée comme `wsj-br/duplistatus:devel`
 
-### Scripts du Service Cron {#cron-service-scripts}
+### Scripts de service cron {#cron-service-scripts}
 - `pnpm cron:start` - Démarrer le service cron en mode production
-- `pnpm cron:dev` - Démarrer le service cron en mode développement avec surveillance des fichiers (port 8667)
+- `pnpm cron:dev` - Démarrer uniquement le service cron en mode développement avec surveillance de fichiers (port 8667). Généralement inutile lors de l'utilisation de `pnpm dev`, qui démarre déjà cron.
 - `pnpm cron:start-local` - Démarrer le service cron localement pour les tests (port 8667)
 
 ### Scripts de test {#test-scripts}

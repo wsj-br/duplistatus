@@ -96,10 +96,10 @@ Der Inhalt der Test-E-Mail zeigt Folgendes an:
   - Der Test-E-Mail-Endpunkt leert den Anfrage-Cache, bevor die SMTP-Konfiguration gelesen wird, sodass externe Skripte die Konfiguration aktualisieren und die Änderungen sofort in den Test-E-Mails widerspiegeln können
   - Vorlagen-Tests und die sofortige Senden-Funktion der Täglichen Zusammenfassung umgehen die pro-Sicherung-Unterdrückung
 
-## Vorschau der Benachrichtigungsvorlage - `/api/notifications/preview` {#preview-notification-template---apinotificationspreview}
+## Vorschau der Benachrichtigung Vorlage - `/api/notifications/preview` {#preview-notification-template---apinotificationspreview}
 - **Endpunkt**: `/api/notifications/preview`
 - **Methode**: POST
-- **Beschreibung**: Rendert eine Benachrichtigungsvorlage mit dem Produktions-Markdown-Renderer ohne Senden. Der Körper enthält `kind` (`success`, `warning`, `overdueBackup`, `dailySummaryEmail` oder `dailySummaryNtfy`) und die bearbeitete Vorlage. Vorschauen der Täglichen Zusammenfassung verwenden das aktuelle reale Snapshot; andere Arten verwenden deterministische Beispielwerte. E-Mail HTML ist für ein sandboxed iframe vorgesehen.
+- **Beschreibung**: Rendert eine Benachrichtigungsvorlage mit dem Produktions-Markdown-Renderer ohne Senden. Der Body enthält `kind` (`success`, `warning`, `overdueBackup`, oder `dailySummaryEmail`) und die bearbeitete Vorlage. Tägliche Zusammenfassungen verwenden die aktuelle reale Momentaufnahme; andere Arten verwenden deterministische Beispielwerte. E-Mail HTML ist für ein sandboxed iframe vorgesehen.
 - **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
 
 ## Überfällige Sicherungen prüfen - `/api/notifications/check-overdue` {#check-overdue-backups---apinotificationscheck-overdue}

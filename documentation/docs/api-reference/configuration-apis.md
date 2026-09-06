@@ -187,12 +187,6 @@
         "email": {
           "title": "duplistatus — Daily backup summary — {summary_date}",
           "message": "## Daily backup summary"
-        },
-        "ntfy": {
-          "title": "duplistatus daily summary",
-          "message": "Servers {server_count}, jobs {job_count}",
-          "priority": "default",
-          "tags": "duplicati, duplistatus, daily-summary"
         }
       }
     },
@@ -418,28 +412,28 @@
   - Updates notification templates for different backup statuses
   - Preserves existing configuration settings
   - Templates support Markdown email bodies and `{placeholder}` substitution
-  - A `dailySummary` template set (email subject/body and compact NTFY) is required
+  - A `dailySummary` email template (subject and Markdown body) is required
 
 ## Daily Summary - `/api/configuration/daily-summary` {#daily-summary---apiconfigurationdaily-summary}
 - **Endpoint**: `/api/configuration/daily-summary`
 - **Method**: GET, POST
-- **Description**: Reads or updates Daily Summary mode. GET returns sanitized settings, dispatcher health, next occurrence, and per-channel delivery status. POST saves `enabled`, `localTime` (`HH:mm`), `timeZone` (IANA), and `sendNtfy`. Enabling requires valid SMTP and a healthy `daily-summary-dispatch` task. Enabling NTFY requires stored NTFY settings. Changing the schedule sets the next **future** occurrence.
+- **Description**: Reads or updates Daily Summary mode. GET returns sanitized settings, dispatcher health, next occurrence, and email delivery status. POST saves `enabled`, `utcTime` (`HH:mm` UTC), `timeZone` (browser IANA timezone from the last save), and optional `publicUrl`. Enabling requires valid SMTP. Changing the schedule sets the next **future** occurrence.
 - **Authentication**: GET requires a valid session and CSRF token. POST requires an administrator session and CSRF token.
 - **Error Responses**:
-  - `400`: Invalid time/timezone, missing SMTP/NTFY, or dispatcher not healthy
+  - `400`: Invalid time/timezone, invalid public URL, or missing SMTP
   - `401`: Unauthorized
   - `500`: Failed to read or update Daily Summary
 
 ## Send Daily Summary - `/api/configuration/daily-summary/send` {#send-daily-summary---apiconfigurationdaily-summarysend}
 - **Endpoint**: `/api/configuration/daily-summary/send`
 - **Method**: POST
-- **Description**: Sends an extra current-status snapshot immediately. Does not consume the next scheduled occurrence. Uses stored SMTP (and stored NTFY when selected). Does not accept recipient addresses or endpoints in the request.
+- **Description**: Sends an extra current-status snapshot immediately. Does not consume the next scheduled occurrence. Uses stored SMTP. Does not accept recipient addresses in the request.
 - **Authentication**: Requires administrator session and CSRF token
 
 ## Retry Daily Summary - `/api/configuration/daily-summary/retry` {#retry-daily-summary---apiconfigurationdaily-summaryretry}
 - **Endpoint**: `/api/configuration/daily-summary/retry`
 - **Method**: POST
-- **Description**: Retries failed channels from the persisted payload. Optional body `{ "occurrenceKey": "..." }`; otherwise retries the latest failed occurrence.
+- **Description**: Retries failed channels from the persisted payload. Optional body `{ "occurrenceKey": "..." }`; otherwise retries the latest failed email delivery.
 - **Authentication**: Requires administrator session and CSRF token
 
 ## Preview Daily Summary - `/api/configuration/daily-summary/preview` {#preview-daily-summary---apiconfigurationdaily-summarypreview}

@@ -55,4 +55,4 @@ Der Schalter **API-Schlüssel für externe APIs erfordern** ist standardmäßig 
 
 Die gleiche Seite kann API-Schlüssel für die öffentlichen Hochladen- und Lesen-APIs erfordern und eine maximale Körpergröße (Standard 5 MB) sowie IP-basierte Rate Limits für `/api/upload` konfigurieren. Größe und Rate Limits gelten auch dann, wenn Schlüssel optional sind, und sind der Hauptschutz vor Überschwemmungen.
 
-Siehe auch [IP-Zulassungsliste](ip-allowlist-settings.md), wenn Sie einschränken möchten, wer die externen APIs ohne Schlüssel erreichen kann.
+Siehe auch [IP-Zulassungsliste](ip-allowlist-settings.md). IP-Zulassungsliste und API-Schlüssel sind unabhängige Funktionen; Sie können entweder eine oder beide zusammen verwenden. Das Aktivieren beider Funktionen erhöht die Sicherheit, indem der Zugriff auf die IP-Adresse beschränkt wird und ein API-Schlüssel erforderlich ist.

@@ -108,11 +108,7 @@ const LogSection = ({ title, items, variant = "messages", expectedLines, t }: {
         <CardDescription>
           {isTruncated ? (
             <div className="text-sm font-normal text-muted-foreground flex items-center gap-2">
-              {t("Showing only the first {{shown}} of {{count}} messages", {
-                plurals: true,
-                shown: items.length,
-                count: expectedLines,
-              })}
+              {`${t("Showing only the first {{count}}", { count: items.length })} ${t("of {{count}} messages", { plurals: true, count: expectedLines })}`}
               <Tooltip delayDuration={0}>
                 <TooltipTrigger>
                   <Info className="h-3 w-3 text-muted-foreground cursor-help ml-1" />

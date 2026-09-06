@@ -11,7 +11,7 @@ duplistatus es un potente panel de control diseñado específicamente para siste
 - Detección automatizada de copias de seguridad atrasadas con alertas configurables
 - Métricas completas y visualización del rendimiento del respaldo
 - Sistema de notificaciones flexible a través de NTFY y correo electrónico
-- [Claves de API](settings/api-keys-settings.md) opcionales para las subidas de Duplicati y los widgets de Homepage, con límites de tasa y de tamaño de subida
+- [Claves de API](settings/api-keys-settings.md) opcionales para las subidas de Duplicati y los widgets de Homepage, con límites de tasa y de {{TAM}} de subida
 - [Listas de IP permitidas](settings/ip-allowlist-settings.md) opcionales para la interfaz de administración y las APIs externas
 - Soporte multi-idioma (inglés, francés, alemán, español, portugués brasileño, hindi (romano) y chino simplificado).
 

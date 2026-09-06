@@ -65,15 +65,16 @@ The documentation uses an AI-powered translation system to translate both conten
 ### How Translation Works {#how-translation-works}
 
 1. **Docusaurus UI strings**: `pnpm write-translations` extracts theme/custom strings into `i18n/en/*.json`.
-2. **AI translation** (OpenRouter; config in `ai-i18n-tools.config.json` at the repo root): from `documentation/`, `pnpm translate` runs the root `i18n:translate` script (UI strings, SVGs, and Docusaurus markdown/JSON) into `documentation/i18n/` and `src/locales/` as configured.
+2. **AI translation** (OpenRouter; config in `ai-i18n-tools.config.json` at the repo root): from `documentation/`, `pnpm translate` runs the root `i18n:translate` script (UI strings, SVGs, Docusaurus markdown/JSON, and default notification templates) into `documentation/i18n/`, `src/locales/`, and `src/locales/templates/` as configured.
 3. **Build**: `pnpm build` generates static HTML for all locales under `documentation/build/`.
 
 ### Running Translation {#running-translation}
 
 ```bash
 cd documentation
-pnpm translate          # Same as repo root: i18n:translate (ui + svg + docs)
+pnpm translate          # Same as repo root: i18n:translate (ui + svg + docs + json)
 pnpm translate:docs
+pnpm translate:json
 pnpm translate:svg
 pnpm translate:ui
 pnpm translate:status

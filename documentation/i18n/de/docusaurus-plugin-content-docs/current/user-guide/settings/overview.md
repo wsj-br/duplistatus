@@ -33,7 +33,7 @@ Administratoren sehen alle verfügbaren Einstellungen.
           <strong id="system">System</strong>
           <ul>
             <li><a href="server-settings.md">Server</a>: Verwalten Sie Duplicati-Server-Konfigurationen</li>
-            <li><a href="display-settings.md">Anzeigeeinstellungen</a>: Konfigurieren Sie Design, Diagramm-Zeitbereich, Diagrammstil, Gebietsschema-Format, automatisches Aktualisierungsintervall, Karten-Sortierreihenfolge und Wochenstart</li>
+            <li><a href="display-settings.md">Anzeigeeinstellungen</li>: Konfigurieren Sie Design, Diagramm-Zeitbereich, Diagrammstil, Gebietsschema-Format, automatisches Aktualisierungsintervall, Karten-Sortierreihenfolge und Wochenstart</li>
             <li><a href="duplicati-versions.md">Duplicati-Versionen</a>: Anzeigen Sie zwischengespeicherte Duplicati-Release-Versionen und konfigurieren Sie den Versionsprüfplan</li>
             <li><a href="database-maintenance.md">Datenbankverwaltung</a>: Führen Sie Datenbankreinigungen durch (nur Admin)</li>
             <li><a href="api-keys-settings.md">API-Schlüssel</a>: Verwalten Sie bereichsspezifische Schlüssel und externen API-Schutz (nur Admin)</li>

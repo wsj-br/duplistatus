@@ -2,6 +2,7 @@
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
 import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -31,12 +32,21 @@ import { ClipboardPaste, Send, RotateCcw, CheckCircle, AlertTriangle, Clock, Typ
 import { ColoredIcon } from '@/components/ui/colored-icon';
 import { EmailHtmlPreviewIframe } from '@/components/settings/email-html-preview-iframe';
 import { useToast } from '@/components/ui/use-toast';
-import { NotificationTemplate, SUPPORTED_TEMPLATE_LANGUAGES, type SupportedTemplateLanguage, type DailySummaryTemplateSet } from '@/lib/types';
+import { NotificationTemplate, SUPPORTED_TEMPLATE_LANGUAGES, type SupportedTemplateLanguage, type DailySummaryEmailTemplate, type DailySummaryTemplateSet } from '@/lib/types';
 import { getLocaleEnglishName, SOURCE_LOCALE } from '@/lib/locales';
 import { defaultNotificationTemplates, getDefaultNotificationTemplate, getDefaultDailySummaryTemplates } from '@/lib/default-config';
 import { getUserLocalStorageItem, setUserLocalStorageItem } from '@/lib/user-local-storage';
 import { useCurrentUser } from '@/hooks/use-current-user';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
+
+type NotificationTemplatesTab = 'success' | 'warning' | 'overdue' | 'daily-summary';
+
+function parseNotificationTemplatesTab(value: string | null): NotificationTemplatesTab | null {
+  if (value === 'success' || value === 'warning' || value === 'overdue' || value === 'daily-summary') {
+    return value;
+  }
+  return null;
+}
 
 const createTemplateVariables = (t: TFunction) => [
   { name: 'server_name', description: t("Name of the server") },
@@ -79,6 +89,8 @@ const createTemplateVariablesDailySummary = (t: TFunction) => [
   { name: 'total_errors', description: t("Sum of latest error counts") },
   { name: 'problem_table', description: t("Table of jobs that need attention") },
   { name: 'all_jobs_table', description: t("Table of all latest backup results") },
+  { name: 'duplistatus_link', description: t('Link to the duplistatus dashboard (empty when no public URL is configured)') },
+  { name: 'duplistatus_url', description: t('Public URL of this duplistatus dashboard (empty when no public URL is configured)') },
 ];
 const createTemplateVariablesOverdueBackup = (t: TFunction) => [
   { name: 'server_name', description: t("Name of the server") },
@@ -251,15 +263,118 @@ const TemplateEditor = ({
           <p className="text-sm text-muted-foreground">
             {t('Email body is Markdown. Headings, lists, links, and tables are supported. Titles, priority, and tags stay plain text.')}
           </p>
-          <pre className="rounded-md border bg-muted/40 p-2 text-xs overflow-x-auto">{`| Metric | Value |
-| --- | ---: |
-| Uploaded | {uploaded_size} |`}</pre>
           <Textarea
             ref={createRefCallback(`${templateType}-message`)}
             id={`${templateType}-message`}
             value={template.message || ''}
             onChange={(e) => updateTemplate(templateType, 'message', e.target.value)}
             placeholder={t("Enter your message template using variables like {{server_name}}, {{backup_name}}, {{status}}, etc.")}
+            className="min-h-[262px]"
+            onFocus={() => onFieldFocus('message')}
+          />
+          <p className="text-sm text-muted-foreground">
+            {t("Tip: to insert a variable, place your cursor where you want it, choose the variable, and click 'Insert'.")}
+          </p>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+type DailySummaryField = keyof DailySummaryEmailTemplate;
+
+const DailySummaryEmailEditor = ({
+  template,
+  title,
+  description,
+  selectedVariable,
+  setSelectedVariable,
+  insertVariable,
+  updateTemplate,
+  createRefCallback,
+  onFieldFocus,
+  t,
+}: {
+  template: DailySummaryEmailTemplate;
+  title: string;
+  description: string;
+  selectedVariable: string;
+  setSelectedVariable: (value: string) => void;
+  insertVariable: () => void;
+  updateTemplate: (field: DailySummaryField, value: string) => void;
+  createRefCallback: (key: string) => (el: HTMLInputElement | HTMLTextAreaElement | null) => void;
+  onFieldFocus: (field: DailySummaryField) => void;
+  t: TFunction;
+}) => {
+  const variablesList = useMemo(() => createTemplateVariablesDailySummary(t), [t]);
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex flex-col gap-4">
+          <div>
+            <CardTitle className="text-lg">{title}</CardTitle>
+            <CardDescription>{description}</CardDescription>
+          </div>
+          <div className="flex flex-col sm:flex-row justify-end-safe items-start sm:items-center gap-2">
+            <Select value={selectedVariable} onValueChange={setSelectedVariable}>
+              <SelectTrigger className="w-full sm:w-80">
+                <SelectValue placeholder={t("Select variable...")} />
+              </SelectTrigger>
+              <SelectContent>
+                {variablesList.map((variable) => (
+                  <SelectItem key={variable.name} value={variable.name}>
+                    <div className="flex flex-col items-start w-full text-left">
+                      <span className="font-mono">{'{' + variable.name + '}'}</span>
+                      <span className="text-xs text-muted-foreground">{variable.description}</span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={insertVariable}
+              disabled={!selectedVariable}
+              className="flex items-center gap-1 w-full sm:w-auto"
+            >
+              <ClipboardPaste className="h-4 w-4" />
+              {t("Insert")}
+            </Button>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="daily-summary-title" className="flex items-center gap-2">
+            <ColoredIcon icon={Type} color="blue" size="sm" />
+            {t('Subject')}
+          </Label>
+          <Input
+            id="daily-summary-title"
+            value={template.title}
+            onChange={(event) => updateTemplate('title', event.target.value)}
+            placeholder={t('Enter email subject')}
+            ref={createRefCallback('daily-summary-title')}
+            onFocus={() => onFieldFocus('title')}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="daily-summary-message" className="flex items-center gap-2">
+            <ColoredIcon icon={MessageSquare} color="purple" size="sm" />
+            {t('Email body (Markdown)')}
+          </Label>
+          <p className="text-sm text-muted-foreground">
+            {t('Email body is Markdown. Headings, lists, links, and tables are supported. Titles, priority, and tags stay plain text.')}
+          </p>
+          <Textarea
+            ref={createRefCallback('daily-summary-message')}
+            id="daily-summary-message"
+            value={template.message}
+            onChange={(event) => updateTemplate('message', event.target.value)}
+            placeholder={t('Enter your daily summary email body using variables like {{summary_date}}, {{job_count}}, {{problem_table}}, etc.')}
             className="min-h-[262px]"
             onFocus={() => onFieldFocus('message')}
           />
@@ -297,6 +412,7 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
   };
   const { toast } = useToast();
   const currentUser = useCurrentUser();
+  const searchParams = useSearchParams();
   const [formData, setFormData] = useState(() => {
     // Ensure we have default templates if the provided templates are incomplete
     return {
@@ -315,6 +431,7 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
   const [previewNtfy, setPreviewNtfy] = useState('');
   const [previewView, setPreviewView] = useState<'html' | 'text' | 'ntfy'>('html');
   const [selectedVariable, setSelectedVariable] = useState<string>('');
+  const [dailySummaryFocusedField, setDailySummaryFocusedField] = useState<DailySummaryField>('message');
   const [templateLanguage, setTemplateLanguage] = useState<SupportedTemplateLanguage>(SOURCE_LOCALE);
   const [isLoadingLanguage, setIsLoadingLanguage] = useState(true);
   const [isResetSingleDialogOpen, setIsResetSingleDialogOpen] = useState(false);
@@ -322,20 +439,28 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
   const hasLoadedUserTabRef = useRef(false);
   
   // Initialize activeTab from localStorage or default to 'success'
-  const [activeTab, setActiveTab] = useState<'success' | 'warning' | 'overdue' | 'daily-summary'>(() => {
-    return 'success';
-  });
+  const [activeTab, setActiveTab] = useState<NotificationTemplatesTab>(() => 'success');
 
-  // Load user-specific active tab when user is available
+  // Load user-specific active tab; URL ?templateTab= overrides saved preference
   useEffect(() => {
-    if (typeof window !== 'undefined' && currentUser && !hasLoadedUserTabRef.current) {
-      hasLoadedUserTabRef.current = true;
-      const savedTab = getUserLocalStorageItem('notification-templates-active-tab', currentUser.id);
-      if (savedTab === 'success' || savedTab === 'warning' || savedTab === 'overdue' || savedTab === 'daily-summary') {
-        setActiveTab(savedTab);
-      }
+    if (typeof window === 'undefined' || !currentUser || hasLoadedUserTabRef.current) {
+      return;
     }
-  }, [currentUser]);
+    hasLoadedUserTabRef.current = true;
+
+    const tabFromUrl = parseNotificationTemplatesTab(searchParams.get('templateTab'));
+    if (tabFromUrl) {
+      setActiveTab(tabFromUrl);
+      setUserLocalStorageItem('notification-templates-active-tab', currentUser.id, tabFromUrl);
+      return;
+    }
+
+    const savedTab = getUserLocalStorageItem('notification-templates-active-tab', currentUser.id);
+    const parsedSavedTab = parseNotificationTemplatesTab(savedTab);
+    if (parsedSavedTab) {
+      setActiveTab(parsedSavedTab);
+    }
+  }, [currentUser, searchParams]);
 
   // Load template language setting on mount
   useEffect(() => {
@@ -373,9 +498,24 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
     };
   }, []);
 
+  // Apply ?templateTab= when navigating from another settings page (e.g. Daily Summary)
+  useEffect(() => {
+    const tabFromUrl = parseNotificationTemplatesTab(searchParams.get('templateTab'));
+    if (!tabFromUrl) {
+      return;
+    }
+    setActiveTab(tabFromUrl);
+    if (typeof window !== 'undefined' && currentUser) {
+      setUserLocalStorageItem('notification-templates-active-tab', currentUser.id, tabFromUrl);
+    }
+  }, [searchParams, currentUser]);
+
   // Update localStorage when activeTab changes
   const handleTabChange = (value: string) => {
-    const newTab = value as 'success' | 'warning' | 'overdue' | 'daily-summary';
+    const newTab = parseNotificationTemplatesTab(value);
+    if (!newTab) {
+      return;
+    }
     setActiveTab(newTab);
     setSelectedVariable(''); // Reset selection when changing tabs
     
@@ -403,6 +543,48 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
   const handleFieldFocus = useCallback((field: keyof NotificationTemplate) => {
     setFocusedField(prev => ({ ...prev, [activeTab === 'overdue' ? 'overdueBackup' : activeTab]: field }));
   }, [activeTab]);
+
+  const updateDailySummaryTemplate = (field: DailySummaryField, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      dailySummary: {
+        ...prev.dailySummary,
+        email: {
+          ...prev.dailySummary.email,
+          [field]: value,
+        },
+      },
+    }));
+  };
+
+  const insertDailySummaryVariable = () => {
+    if (!selectedVariable) return;
+    const currentFocusedField = dailySummaryFocusedField;
+    const refKey = `daily-summary-${currentFocusedField}`;
+    const field = fieldRefs.current[refKey];
+    if (!field) return;
+    const currentValue = formData.dailySummary.email[currentFocusedField] || '';
+    let cursorPosition: number | null = null;
+    if (
+      typeof field.selectionStart !== 'number'
+      || (field.selectionStart === 0 && field.selectionEnd === 0 && document.activeElement !== field)
+    ) {
+      cursorPosition = currentValue.length;
+    } else {
+      cursorPosition = field.selectionStart;
+    }
+    const variableText = ` {${selectedVariable}} `;
+    const newValue =
+      currentValue.slice(0, cursorPosition)
+      + variableText
+      + currentValue.slice(cursorPosition);
+    updateDailySummaryTemplate(currentFocusedField, newValue);
+    setTimeout(() => {
+      field.focus();
+      const newCursorPos = (cursorPosition ?? currentValue.length) + variableText.length;
+      field.setSelectionRange(newCursorPos, newCursorPos);
+    }, 0);
+  };
 
   // Handle language change
   async function handleLanguageChange(newLanguage: SupportedTemplateLanguage) {
@@ -487,6 +669,7 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
       setPreviewHtml(data.emailHtml || '');
       setPreviewText(data.emailText || '');
       setPreviewNtfy(data.ntfyMessage || '');
+      setPreviewView('html');
       setIsPreviewOpen(true);
     } catch (error) {
       toast({
@@ -523,21 +706,10 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
   };
 
   const handleSendTest = async () => {
-    if (!onSendTest) return;
+    if (!onSendTest || activeTab === 'daily-summary') return;
 
     setIsSendingTest(true);
     try {
-      if (activeTab === 'daily-summary') {
-        await onSendTest(formData.dailySummary.ntfy);
-        toast({
-          duration: 2000,
-          title: t("Success"),
-          description: t("Test notification sent using {{template}} template", {
-            template: t("Daily Summary"),
-          }),
-        });
-        return;
-      }
       const templateType = activeTab === 'overdue' ? 'overdueBackup' : activeTab;
       const template = formData[templateType];
 
@@ -764,131 +936,19 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
           />
         </TabsContent>
 
-        <TabsContent value="daily-summary" className="mt-6 space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>{t('Daily Summary email')}</CardTitle>
-              <CardDescription>{t('Markdown email subject and body for the daily snapshot.')}</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label>{t('Subject')}</Label>
-                <Input
-                  value={formData.dailySummary.email.title}
-                  onChange={(event) => setFormData((prev) => ({
-                    ...prev,
-                    dailySummary: {
-                      ...prev.dailySummary,
-                      email: { ...prev.dailySummary.email, title: event.target.value },
-                    },
-                  }))}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>{t('Email body (Markdown)')}</Label>
-                <Textarea
-                  className="min-h-[280px]"
-                  value={formData.dailySummary.email.message}
-                  onChange={(event) => setFormData((prev) => ({
-                    ...prev,
-                    dailySummary: {
-                      ...prev.dailySummary,
-                      email: { ...prev.dailySummary.email, message: event.target.value },
-                    },
-                  }))}
-                />
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>{t('Daily Summary NTFY')}</CardTitle>
-              <CardDescription>{t('Compact NTFY title, body, priority, and tags.')}</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label>{t('Title')}</Label>
-                  <Input
-                    value={formData.dailySummary.ntfy.title}
-                    onChange={(event) => setFormData((prev) => ({
-                      ...prev,
-                      dailySummary: {
-                        ...prev.dailySummary,
-                        ntfy: { ...prev.dailySummary.ntfy, title: event.target.value },
-                      },
-                    }))}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>{t('Priority')}</Label>
-                  <Select
-                    value={formData.dailySummary.ntfy.priority || 'default'}
-                    onValueChange={(value) => setFormData((prev) => ({
-                      ...prev,
-                      dailySummary: {
-                        ...prev.dailySummary,
-                        ntfy: { ...prev.dailySummary.ntfy, priority: value },
-                      },
-                    }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="max">{t("Max/Urgent")}</SelectItem>
-                      <SelectItem value="high">{t("High")}</SelectItem>
-                      <SelectItem value="default">{t("Default")}</SelectItem>
-                      <SelectItem value="low">{t("Low")}</SelectItem>
-                      <SelectItem value="min">{t("Min")}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label>{t('Tags')}</Label>
-                  <Input
-                    value={formData.dailySummary.ntfy.tags}
-                    onChange={(event) => setFormData((prev) => ({
-                      ...prev,
-                      dailySummary: {
-                        ...prev.dailySummary,
-                        ntfy: { ...prev.dailySummary.ntfy, tags: event.target.value },
-                      },
-                    }))}
-                  />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label>{t('NTFY body')}</Label>
-                <Textarea
-                  className="min-h-[160px]"
-                  value={formData.dailySummary.ntfy.message}
-                  onChange={(event) => setFormData((prev) => ({
-                    ...prev,
-                    dailySummary: {
-                      ...prev.dailySummary,
-                      ntfy: { ...prev.dailySummary.ntfy, message: event.target.value },
-                    },
-                  }))}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>{t('Insert variable')}</Label>
-                <Select value={selectedVariable} onValueChange={setSelectedVariable}>
-                  <SelectTrigger>
-                    <SelectValue placeholder={t("Select variable...")} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {createTemplateVariablesDailySummary(t).map((variable) => (
-                      <SelectItem key={variable.name} value={variable.name}>
-                        <span className="font-mono">{'{' + variable.name + '}'}</span>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </CardContent>
-          </Card>
+        <TabsContent value="daily-summary" className="mt-6">
+          <DailySummaryEmailEditor
+            template={formData.dailySummary.email}
+            title={t('Daily Summary email template')}
+            description={t('Markdown email subject and body for the daily snapshot.')}
+            selectedVariable={selectedVariable}
+            setSelectedVariable={setSelectedVariable}
+            insertVariable={insertDailySummaryVariable}
+            updateTemplate={updateDailySummaryTemplate}
+            createRefCallback={createRefCallback}
+            onFieldFocus={setDailySummaryFocusedField}
+            t={t}
+          />
         </TabsContent>
       </Tabs>
 
@@ -907,7 +967,7 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
             <Eye className="h-4 w-4" />
             {isPreviewing ? t("Generating...") : t("Preview")}
           </Button>
-          {onSendTest && (
+          {onSendTest && activeTab !== 'daily-summary' && (
             <Button
               onClick={handleSendTest}
               disabled={isSendingTest}
@@ -974,25 +1034,29 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
 
       {(previewHtml || previewText || previewNtfy) && (
         <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
-          <DialogContent className="flex max-h-[90vh] max-w-4xl flex-col overflow-hidden sm:max-w-4xl">
+          <DialogContent className="flex max-h-[92vh] w-[min(100vw-2rem,72rem)] max-w-none flex-col overflow-hidden sm:max-w-none">
             <DialogHeader>
               <DialogTitle>{t('Preview')}</DialogTitle>
               <DialogDescription>
-                {t('Email HTML, plain text, and NTFY rendered from the current template without sending.')}
+                {activeTab === 'daily-summary'
+                  ? t('Email HTML and plain text rendered from the current template without sending.')
+                  : t('Email HTML, plain text, and NTFY rendered from the current template without sending.')}
               </DialogDescription>
             </DialogHeader>
             <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden">
               <div className="flex flex-wrap gap-2">
                 <Button type="button" size="sm" variant={previewView === 'html' ? 'default' : 'outline'} onClick={() => setPreviewView('html')}>{t('Email HTML')}</Button>
                 <Button type="button" size="sm" variant={previewView === 'text' ? 'default' : 'outline'} onClick={() => setPreviewView('text')}>{t('Plain text')}</Button>
-                <Button type="button" size="sm" variant={previewView === 'ntfy' ? 'default' : 'outline'} onClick={() => setPreviewView('ntfy')}>{t('NTFY')}</Button>
+                {activeTab !== 'daily-summary' && previewNtfy && (
+                  <Button type="button" size="sm" variant={previewView === 'ntfy' ? 'default' : 'outline'} onClick={() => setPreviewView('ntfy')}>{t('NTFY')}</Button>
+                )}
               </div>
-              <div className="min-h-0 flex-1 overflow-auto">
+              <div className="min-h-0 flex-1 overflow-auto scrollbar-gutter-stable px-1">
                 {previewView === 'html' && (
                   <EmailHtmlPreviewIframe
                     title={t('Email HTML preview')}
                     html={previewHtml}
-                    className="min-h-[50vh]"
+                    className="min-h-[62vh]"
                   />
                 )}
                 {previewView === 'text' && (

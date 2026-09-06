@@ -34,13 +34,14 @@ Administrators can choose how often **duplistatus** checks GitHub for new Duplic
 | **Every 12 hours** | At the start time and 12 hours later                         |
 | **Every 6 hours**  | At the start time and every 6 hours after that               |
 
-The start time is selected and displayed in your browser timezone. **duplistatus** stores that hour in UTC and the cron service runs the check in UTC.
+The start time is chosen in your browser timezone using the same compact time control as Daily Summary. Pick any `HH:mm` time. **duplistatus** stores that value in UTC and the cron service runs the check in UTC.
 
 Examples:
 
 - Daily with a start time of 06:00 runs at 06:00.
-- Every 12 hours with a start time of 08:00 runs at 08:00 and 20:00.
-- Every 6 hours with a start time of 02:00 runs at 02:00, 08:00, 14:00, and 20:00.
+- Daily with a start time of 06:30 runs at 06:30.
+- Every 12 hours with a start time of 08:15 runs at 08:15 and 20:15.
+- Every 6 hours with a start time of 02:45 runs at 02:45, 08:45, 14:45, and 20:45.
 
 On startup, **duplistatus** also refreshes the cache if it is older than the selected interval (24 hours, 12 hours, or 6 hours). Failed refreshes keep the last cached versions.
 

@@ -40,30 +40,24 @@ const SAMPLE_BACKUP_VALUES: Record<string, string> = {
 export const POST = withCSRF(requireAuth(async (request: NextRequest) => {
   try {
     const body = await request.json() as {
-      kind?: 'success' | 'warning' | 'overdueBackup' | 'dailySummaryEmail' | 'dailySummaryNtfy';
+      kind?: 'success' | 'warning' | 'overdueBackup' | 'dailySummaryEmail';
       template?: NotificationTemplate | DailySummaryEmailTemplate;
       dailySummary?: DailySummaryTemplateSet;
     };
     const kind = body.kind;
     const stored = getNotificationTemplates();
 
-    if (kind === 'dailySummaryEmail' || kind === 'dailySummaryNtfy') {
+    if (kind === 'dailySummaryEmail') {
       const snapshot = await collectDailySummarySnapshot();
       const override: DailySummaryTemplateSet = body.dailySummary ?? {
         email: (body.template as DailySummaryEmailTemplate | undefined) ?? stored.dailySummary.email,
-        ntfy: stored.dailySummary.ntfy,
       };
       validateDailySummaryEmailTemplate(override.email);
-      validateNotificationTemplate(override.ntfy, 'dailySummaryNtfy');
       const payload = await renderDailySummaryPayload(snapshot, stored.language, override);
       return NextResponse.json({
         subject: payload.subject,
         emailHtml: payload.emailHtml,
         emailText: payload.emailText,
-        ntfyTitle: payload.ntfyTitle,
-        ntfyMessage: payload.ntfyMessage,
-        ntfyPriority: payload.ntfyPriority,
-        ntfyTags: payload.ntfyTags,
       });
     }
 

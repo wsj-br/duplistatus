@@ -6,6 +6,8 @@
 pnpm dev
 ```
 
+这同时启动 Next.js 应用（端口 8666）和 cron 服务（端口 8667）。CTRL-C 停止两者。使用 `pnpm dev:next` 或 `pnpm cron:dev` 单独运行任一进程。
+
 - **JSON 文件存储**: 所有接收到的备份数据都存储为 `data` 目录中的 JSON 文件。这些文件的名称使用接收时的时间戳，格式为 `YYYY-MM-DDTHH-mm-ss-sssZ.json`（UTC 时间）。此功能仅在开发模式下激活，有助于通过保留从 Duplicati 接收的原始数据来进行调试。
 
 - **详细日志**: 应用程序在开发模式下运行时，会记录有关数据库操作和 API 请求的更详细信息。

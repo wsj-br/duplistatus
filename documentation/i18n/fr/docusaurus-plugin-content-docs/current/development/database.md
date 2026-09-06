@@ -163,9 +163,9 @@ Stocke les paramètres de configuration de l'application.
 - `ntfy_config` : Paramètres de notification NTFY
 - `overdue_tolerance` : Paramètres de tolérance pour les sauvegardes en retard
 - `notification_templates` : Modèles de messages de notification
-- `daily_summary` : Mode de résumé quotidien, planning, fuseau horaire et option de livraison NTFY
-- `cron_service` : Planifications des tâches Cron, y compris `daily-summary-dispatch`
-- `audit_retention_days` : Période de conservation des journaux d'audit (par défaut : 90 jours)
+- `daily_summary`: Mode, horaire et fuseau horaire du résumé quotidien
+- `cron_service`: Planifications de tâches Cron, y compris `daily-summary-dispatch`
+- `audit_retention_days`: Période de conservation des journaux d'audit (par défaut : 90 jours)
 
 ### Tableau des versions de base de données {#database-version-table}
 
@@ -264,7 +264,7 @@ Clés de configuration associées dans la table `configurations` : `external_api
 
 ### Table des livraisons de résumé quotidien {#daily-summary-deliveries-table}
 
-Journal par chaîne pour les e-mails de résumé quotidien et NTFY. Chaque occurrence planifiée (ou envoi manuel unique) a au plus une ligne par chaîne. Les charges utiles rendues sont stockées avant l'envoi afin que les tentatives de réessai gardent la même capture instantanée. Les lignes plus anciennes de 30 jours sont supprimées.
+Registre par chaîne pour la livraison des e-mails de résumé quotidien. Les lignes héritées peuvent inclure une chaîne `ntfy` d'anciennes versions. Chaque occurrence planifiée (ou envoi manuel unique) a au plus une ligne par chaîne. Les charges utiles rendues sont stockées avant l'envoi afin que les tentatives de réessai conservent la même capture instantanée. Les lignes plus anciennes de 30 jours sont supprimées.
 
 Si le processus se termine après qu'un fournisseur ait accepté un message mais avant que le succès ne soit enregistré, cette chaîne peut être réessayée (au moins une fois).
 

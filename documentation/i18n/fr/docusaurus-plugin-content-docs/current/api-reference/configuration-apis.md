@@ -202,12 +202,6 @@
         "email": {
           "title": "duplistatus — Daily backup summary — {summary_date}",
           "message": "## Daily backup summary"
-        },
-        "ntfy": {
-          "title": "duplistatus daily summary",
-          "message": "Servers {server_count}, jobs {job_count}",
-          "priority": "default",
-          "tags": "duplicati, duplistatus, daily-summary"
         }
       }
     },
@@ -453,28 +447,28 @@ Pour la fréquence des notifications :
   - Met à jour les modèles de notification pour différents états de sauvegarde
   - Conserve les paramètres de configuration existants
   - Les modèles prennent en charge les corps d'e-mail Markdown et la substitution `{placeholder}`
-  - Un ensemble de modèles `dailySummary` (sujet/objet de l'e-mail et NTFY compact) est requis
+- Un modèle d'`dailySummary` E-mail (sujet et corps en Markdown) est requis
 
 ## Résumé quotidien - `/api/configuration/daily-summary` {#daily-summary---apiconfigurationdaily-summary}
-- **Endpoint**: `/api/configuration/daily-summary`
-- **Method**: GET, POST
-- **Description**: Lit ou met à jour le mode de résumé quotidien. GET retourne les paramètres nettoyés, l'état du distributeur, la prochaine occurrence et l'état de livraison par chaîne. POST enregistre `enabled`, `localTime` (`HH:mm`), `timeZone` (IANA), et `sendNtfy`. L'activation nécessite un SMTP valide et une tâche `daily-summary-dispatch` en bonne santé. L'activation de NTFY nécessite des paramètres NTFY stockés. Le changement de l'horaire définit la prochaine occurrence **future**.
-- **Authentication**: GET nécessite une session valide et un jeton CSRF. POST nécessite une session d'administrateur et un jeton CSRF.
+- **Point de terminaison**: `/api/configuration/daily-summary`
+- **Méthode**: GET, POST
+- **Description**: Lit ou met à jour le mode de résumé quotidien. GET renvoie les paramètres assainis, l'état du répartiteur, la prochaine occurrence et l'état de livraison de l'e-mail. POST enregistre `enabled`, `utcTime` (`HH:mm` UTC), `timeZone` (fuseau horaire IANA du navigateur depuis le dernier enregistrement), et `publicUrl` optionnel. L'activation nécessite un SMTP valide. Changer le calendrier définit la prochaine occurrence **future**.
+- **Authentification**: GET nécessite une session valide et un jeton CSRF. POST nécessite une session administrateur et un jeton CSRF.
 - **Réponses d'erreur**:
-  - `400`: Heure/fuseau horaire invalide, SMTP/NTFY manquant ou distributeur non en bonne santé
+  - `400`: Heure/fuseau horaire invalide, URL publique invalide, ou SMTP manquant
   - `401`: Non autorisé
   - `500`: Échec de la lecture ou de la mise à jour du résumé quotidien
 
 ## Envoyer le résumé quotidien - `/api/configuration/daily-summary/send` {#send-daily-summary---apiconfigurationdaily-summarysend}
-- **Endpoint**: `/api/configuration/daily-summary/send`
-- **Method**: POST
-- **Description**: Envoie une capture instantanée de l'état actuel immédiatement. Ne consomme pas la prochaine occurrence planifiée. Utilise le SMTP stocké (et le NTFY stocké lorsque sélectionné). N'accepte pas les adresses de destinataires ou les points de terminaison dans la requête.
+- **Point de terminaison**: `/api/configuration/daily-summary/send`
+- **Méthode**: POST
+- **Description**: Envoie une capture instantanée de l'état actuel immédiatement. Ne consomme pas la prochaine occurrence planifiée. Utilise le SMTP stocké. N'accepte pas les adresses de destinataires dans la requête.
 - **Authentication**: Requiert une session d'administrateur et un jeton CSRF
 
 ## Réessayer le résumé quotidien - `/api/configuration/daily-summary/retry` {#retry-daily-summary---apiconfigurationdaily-summaryretry}
-- **Endpoint**: `/api/configuration/daily-summary/retry`
-- **Method**: POST
-- **Description**: Réessaie les chaînes ayant échoué à partir de la charge utile persistée. Corps `{ "occurrenceKey": "..." }` optionnel; sinon, réessaie la dernière occurrence ayant échoué.
+- **Point de terminaison**: `/api/configuration/daily-summary/retry`
+- **Méthode**: POST
+- **Description**: Réessaie les canaux ayant échoué à partir du payload persistant. Corps `{ "occurrenceKey": "..." }` optionnel ; sinon, réessaie la dernière livraison d'e-mail ayant échoué.
 - **Authentication**: Requiert une session d'administrateur et un jeton CSRF
 
 ## Aperçu du résumé quotidien - `/api/configuration/daily-summary/preview` {#preview-daily-summary---apiconfigurationdaily-summarypreview}

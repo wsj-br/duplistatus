@@ -6,6 +6,8 @@
 pnpm dev
 ```
 
+Esto inicia tanto la aplicación de Next.js (puerto 8666) como el servicio cron (puerto 8667). CTRL-C detiene ambos. Usa `pnpm dev:next` o `pnpm cron:dev` para ejecutar cualquiera de los procesos por separado.
+
 - **Almacenamiento de Archivos JSON**: Todos los datos de backup recibidos se almacenan como archivos JSON en el directorio `data`. Estos archivos se nombran utilizando la marca de tiempo de cuándo fueron recibidos, en el formato `YYYY-MM-DDTHH-mm-ss-sssZ.json` (hora UTC). Esta función solo está activa en modo de desarrollo y ayuda con la depuración al preservar los datos sin procesar recibidos de Duplicati.
 
 - **Verbose Logging**: La aplicación registra información más detallada sobre operaciones de base de datos y solicitudes de API cuando se ejecuta en modo de desarrollo.

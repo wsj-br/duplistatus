@@ -55,4 +55,4 @@ url: http://your-host/api/summary?api_key=YOUR_READ_KEY
 
 同一页面可以要求 API 密钥用于公共上传和读取 API，并配置最大主体大小（默认 5 MB）和每 IP 速率限制 `/api/upload`。大小和速率限制即使密钥是可选的也适用，并且是防止洪水攻击的主要防御措施。
 
-如果您想在不使用密钥的情况下限制谁可以访问外部API，请参阅[IP白名单](ip-allowlist-settings.md)。
+另请参阅 [IP白名单](ip-allowlist-settings.md)。IP白名单和API密钥是独立的功能；您可以单独使用其中一个，也可以同时使用两者。启用两者可通过IP地址限制访问并要求API密钥来提高安全性。

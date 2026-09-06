@@ -12,7 +12,7 @@ Habilite **Trust reverse proxy headers** solo cuando duplistatus no es accesible
 
 ## Interfaz de administración {#admin-interface}
 
-Cuando está habilitado, las páginas, el inicio de sesión, las API de CSRF y las sesiones aceptan solo los CIDR de la lista. Añada entradas con **Add**; su **Allowlist IP** actual se etiqueta como **current IP** cuando está en la lista. **Add current IP** y **Recent admin login IPs** (del registro de auditoría) ofrecen sugerencias rápidas. No puede habilitar esta lista a menos que su IP actual ya esté incluida (o se esté conectando desde loopback). Un bloqueo se puede recuperar con:
+Cuando está habilitado, las páginas, las API de inicio de sesión, CSRF y sesión aceptan solo las CIDRs enumeradas. Añade entradas con **Añadir**; tu **IP permitida** se etiqueta como **IP actual** cuando está en la lista. **127.0.0.1** y **::1** se incluyen de forma predeterminada y no pueden ser eliminados. **Añadir IP actual** y las **IPs de inicio de sesión recientes de administrador** (del registro de auditoría) ofrecen sugerencias rápidas. No puedes habilitar esta lista a menos que tu IP actual ya esté incluida (o te estés conectando desde loopback). Un bloqueo puede ser recuperado con:
 
 ```bash
 ADMIN_IP_ALLOWLIST_ENABLED=false
@@ -24,7 +24,7 @@ o añadiendo tu CIDR a `ADMIN_IP_ALLOWLIST`. Los pasos completos para la recuper
 
 Cuando está habilitada, `/api/upload`, `/api/summary`, y `/api/lastbackup*` aceptan solo los CIDRs listados. `/api/health` y `/api/ping` permanecen abiertos para que las comprobaciones de salud de Docker y la sonda de conectividad sigan funcionando.
 
-Esta lista es la protección a utilizar cuando las claves de API no son necesarias. Añada CIDRs como chips como la lista de administradores. **Recent upload source IPs** del registro de auditoría se ofrecen como sugerencias de añadir rápidamente.
+Esta lista es la protección a utilizar cuando las claves de API no son necesarias. Añade CIDRs como chips como la lista de administradores. **127.0.0.1** y **::1** se incluyen de forma predeterminada y no pueden ser eliminados. Las **IPs recientes de origen de carga** del registro de auditoría se ofrecen como sugerencias de añadir rápidamente.
 
 Si esta lista de permitidos y las claves de API son requeridas, una solicitud debe pasar **ambas**.
 

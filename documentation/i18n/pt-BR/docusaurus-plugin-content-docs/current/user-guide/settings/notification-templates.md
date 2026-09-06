@@ -1,6 +1,6 @@
 # Modelos {#templates}
 
-**duplistatus** utiliza quatro modelos para mensagens de notificação. Os corpos de e-mail são Markdown (títulos, listas, links e tabelas). NTFY para Sucesso, Aviso/Erro e Atrasado é derivado do mesmo conteúdo; o Resumo Diário tem um modelo NTFY separado e compacto.
+**duplistatus** usa quatro modelos para mensagens de notificação. Os corpos de e-mail são Markdown (títulos, listas, links e tabelas). NTFY para Sucesso, Aviso/Erro e Atrasado é derivado do mesmo conteúdo. Resumo Diário é apenas para e-mail.
 
 A página inclui um seletor de **Idioma do Modelo** que define a localidade para os modelos padrão. Alterar o idioma atualiza a localidade para novos padrões, mas **não** altera o texto dos modelos existentes. Para aplicar um novo idioma aos seus modelos, edite-os manualmente ou use **Redefinir este modelo para o padrão** (para a guia atual) ou **Redefinir tudo para padrão** (para todos os modelos).
 
@@ -11,7 +11,7 @@ A página inclui um seletor de **Idioma do Modelo** que define a localidade para
 | **Sucesso**        | Usado quando os backups são concluídos com sucesso.            |
 | **Aviso/Erro**  | Usado quando os backups são concluídos com avisos ou erros. |
 | **Backup Atrasado** | Usado quando os backups estão atrasados.                      |
-| **Resumo Diário**  | Modelos de e-mail e NTFY compactos para o instantâneo diário opcional. |
+| **Resumo Diário**  | Modelo de e-mail em Markdown para o resumo diário opcional. |
 
 <br/>
 
@@ -26,7 +26,7 @@ Um seletor de **Idioma do Modelo** no topo da página permite que você escolha 
 | Botão                                                              | Descrição                                                                                         |
 |:--------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------|
 | <IconButton label="Salvar Configurações do Modelo" />                      | Salva as configurações ao alterar o modelo. O botão salva o modelo sendo exibido (Sucesso, Aviso/Erro, Backup Atrasado ou Resumo Diário). |
-| <IconButton icon="lucide:send" label="Enviar Notificação de Teste"/>     | Verifica o modelo após atualizá-lo. As variáveis serão substituídas por seus nomes no teste. Para notificações por e-mail, o título do modelo torna-se a linha de assunto do e-mail. |
+| <IconButton icon="lucide:send" label="Enviar Notificação de Teste"/>     | Verifica o modelo após atualizá-lo. As variáveis serão substituídas por seus nomes para o teste. Para notificações por e-mail, o título do modelo se torna a linha de assunto do e-mail. Não disponível na aba Resumo Diário. |
 | <IconButton icon="lucide:rotate-ccw" label="Redefinir este modelo para o padrão"/> | Restaura o modelo padrão para o **modelo selecionado** (a aba atual). Lembre-se de salvar após redefinir. |
 | <IconButton icon="lucide:rotate-ccw" label="Redefinir tudo para padrão"/> | Restaura todos os modelos (Sucesso, Aviso/Erro, Backup Atrasado e Resumo Diário) para os padrões do Idioma do Modelo selecionado. Lembre-se de salvar após redefinir. |
 
@@ -75,6 +75,8 @@ Os modelos de Resumo Diário usam um conjunto diferente de variáveis para o ins
 | `{success_count}` / `{warning_count}` / `{error_count}` / `{fatal_count}` / `{unknown_count}` / `{no_report_count}` | Baldes de status mutuamente exclusivos |
 | `{overdue_count}` | Trabalhos atrasados (ortogonais ao status) |
 | `{problem_table}` / `{all_jobs_table}` | Tabelas geradas de trabalhos que requerem atenção e todos os trabalhos. Colunas: Servidor, Backup, Atrasado, Últ. status, Últ. resultado, Duração, Avisos, Erros, Enviado. |
+| `{duplistatus_link}` | Link para o painel duplistatus (omitido quando nenhuma URL pública está configurada). Prefira isso em vez de links Markdown construídos manualmente. |
+| `{duplistatus_url}` | Mesma URL como texto simples (vazia quando nenhuma URL pública está configurada). |
 | `{latest_uploaded_size}` / `{latest_source_size}` / `{latest_storage_size}` / `{latest_file_count}` / `{total_warnings}` / `{total_errors}` | Totais do último resultado |
 
-Use **Visualização** para renderizar E-mail HTML, texto simples e NTFY sem enviar. A visualização abre em uma caixa de diálogo. O E-mail HTML segue o tema claro ou escuro atual.
+Use **Visualização** para renderizar E-mail HTML e texto simples sem enviar. As visualizações de Sucesso, Aviso/Erro e Atrasado também incluem NTFY. A visualização abre em uma caixa de diálogo. O E-mail HTML segue o tema claro ou escuro atual.

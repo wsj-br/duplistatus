@@ -202,12 +202,6 @@
         "email": {
           "title": "duplistatus — Daily backup summary — {summary_date}",
           "message": "## Daily backup summary"
-        },
-        "ntfy": {
-          "title": "duplistatus daily summary",
-          "message": "Servers {server_count}, jobs {job_count}",
-          "priority": "default",
-          "tags": "duplicati, duplistatus, daily-summary"
         }
       }
     },
@@ -453,28 +447,28 @@ Para frequência de notificação:
   - Atualiza os modelos de notificação para diferentes status de backup
   - Preserva as configurações existentes
   - Os modelos suportam corpos de e-mail em Markdown e substituição `{placeholder}`
-  - Um conjunto de modelos `dailySummary` (assunto/corpo do e-mail e NTFY compacto) é obrigatório
+  - Um modelo de `dailySummary` (assunto e corpo em Markdown) é obrigatório
 
 ## Resumo Diário - `/api/configuration/daily-summary` {#daily-summary---apiconfigurationdaily-summary}
 - **Endpoint**: `/api/configuration/daily-summary`
-- **Method**: GET, POST
-- **Descrição**: Lê ou atualiza o modo Resumo Diário. GET retorna configurações sanitizadas, saúde do despachante, próxima ocorrência e status de entrega por canal. POST salva `enabled`, `localTime` (`HH:mm`), `timeZone` (IANA) e `sendNtfy`. Habilitar requer SMTP válido e tarefa `daily-summary-dispatch` saudável. Habilitar NTFY requer configurações NTFY armazenadas. Alterar o agendamento define a próxima ocorrência **futura**.
+- **Método**: GET, POST
+- **Descrição**: Lê ou atualiza o modo de Resumo Diário. GET retorna configurações sanitizadas, saúde do despachante, próxima ocorrência e status da entrega de e-mail. POST salva `enabled`, `utcTime` (`HH:mm` UTC), `timeZone` (fuso horário IANA do navegador da última salvamento) e opcional `publicUrl`. Habilitar requer SMTP válido. Alterar a programação define a próxima ocorrência **futura**.
 - **Autenticação**: GET requer uma sessão válida e token CSRF. POST requer uma sessão de administrador e token CSRF.
 - **Respostas de Erro**:
-  - `400`: Hora/fuso horário inválidos, SMTP/NTFY ausentes ou despachante não saudável
+  - `400`: Hora/fuso horário inválido, URL pública inválida ou SMTP ausente
   - `401`: Não autorizado
   - `500`: Falha ao ler ou atualizar o Resumo Diário
 
 ## Enviar Resumo Diário - `/api/configuration/daily-summary/send` {#send-daily-summary---apiconfigurationdaily-summarysend}
 - **Endpoint**: `/api/configuration/daily-summary/send`
-- **Method**: POST
-- **Descrição**: Envia uma captura instantânea do status atual imediatamente. Não consome a próxima ocorrência agendada. Usa SMTP armazenado (e NTFY armazenado quando selecionado). Não aceita endereços de destinatários ou endpoints na solicitação.
+- **Método**: POST
+- **Descrição**: Envia uma captura instantânea do status atual. Não consome a próxima ocorrência agendada. Usa SMTP armazenado. Não aceita endereços de destinatários na solicitação.
 - **Autenticação**: Requer sessão de administrador e token CSRF
 
-## Tentar Novamente Resumo Diário - `/api/configuration/daily-summary/retry` {#retry-daily-summary---apiconfigurationdaily-summaryretry}
+## Tentar Novamente o Resumo Diário - `/api/configuration/daily-summary/retry` {#retry-daily-summary---apiconfigurationdaily-summaryretry}
 - **Endpoint**: `/api/configuration/daily-summary/retry`
-- **Method**: POST
-- **Descrição**: Tenta novamente os canais com falha a partir do payload persistido. Corpo `{ "occurrenceKey": "..." }` opcional; caso contrário, tenta novamente a última ocorrência com falha.
+- **Método**: POST
+- **Descrição**: Tenta novamente os canais com falha do payload persistido. Corpo opcional `{ "occurrenceKey": "..." }`; caso contrário, tenta novamente a última entrega de e-mail com falha.
 - **Autenticação**: Requer sessão de administrador e token CSRF
 
 ## Visualizar Resumo Diário - `/api/configuration/daily-summary/preview` {#preview-daily-summary---apiconfigurationdaily-summarypreview}

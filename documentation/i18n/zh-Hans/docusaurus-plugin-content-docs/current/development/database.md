@@ -163,9 +163,9 @@ duplistatus 使用自动化迁移系统来处理不同版本之间的数据库�
 - `ntfy_config`: NTFY 通知设置
 - `overdue_tolerance`: 逾期备份容忍度设置
 - `notification_templates`: 通知消息模板
-- `daily_summary`: 每日摘要模式、计划、时区和可选的NTFY传递
-- `cron_service`: 定时任务计划，包括`daily-summary-dispatch`
-- `audit_retention_days`: 审计日志保留期（默认：90天）
+- `daily_summary`：每日摘要模式、计划和时区
+- `cron_service`：Cron 任务计划，包括 `daily-summary-dispatch`
+- `audit_retention_days`：审计日志保留期（默认：90 天）
 
 ### 数据库版本表 {#database-version-table}
 
@@ -264,7 +264,7 @@ duplistatus 使用自动化迁移系统来处理不同版本之间的数据库�
 
 ### 每日摘要传递表 {#daily-summary-deliveries-table}
 
-每个频道的每日摘要电子邮件和NTFY的分类账。每个计划发生（或唯一的手动发送）最多有一个频道行。渲染的有效载荷在发送前存储，因此重试会保持相同的快照。超过30天的行将被修剪。
+每个频道的每日摘要电子邮件发送分类账。遗留行可能包含来自早期版本的 `ntfy` 频道。每个计划发生（或唯一手动发送）每个频道最多有一行。渲染的有效载荷在发送前存储，以便重试保持相同的快照。超过 30 天的行将被修剪。
 
 如果进程在提供者接受消息后但在记录成功之前死亡，该频道可能会被重试（至少一次）。
 

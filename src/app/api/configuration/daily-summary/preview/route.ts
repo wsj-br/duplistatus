@@ -12,10 +12,6 @@ export const POST = withCSRF(requireAuth(async () => {
         subject: preview.payload.subject,
         emailHtml: preview.payload.emailHtml,
         emailText: preview.payload.emailText,
-        ntfyTitle: preview.payload.ntfyTitle,
-        ntfyMessage: preview.payload.ntfyMessage,
-        ntfyPriority: preview.payload.ntfyPriority,
-        ntfyTags: preview.payload.ntfyTags,
       },
     });
   } catch (error) {

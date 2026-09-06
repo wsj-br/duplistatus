@@ -89,7 +89,7 @@
 ## Preview Notification Template - `/api/notifications/preview` {#preview-notification-template---apinotificationspreview}
 - **Endpoint**: `/api/notifications/preview`
 - **Method**: POST
-- **Description**: Renders a notification template with the production Markdown renderer without sending. Body includes `kind` (`success`, `warning`, `overdueBackup`, `dailySummaryEmail`, or `dailySummaryNtfy`) and the template being edited. Daily Summary previews use the current real snapshot; other kinds use deterministic sample values. Email HTML is intended for a sandboxed iframe.
+- **Description**: Renders a notification template with the production Markdown renderer without sending. Body includes `kind` (`success`, `warning`, `overdueBackup`, or `dailySummaryEmail`) and the template being edited. Daily Summary previews use the current real snapshot; other kinds use deterministic sample values. Email HTML is intended for a sandboxed iframe.
 - **Authentication**: Requires valid session and CSRF token
 
 ## Check Overdue Backups - `/api/notifications/check-overdue` {#check-overdue-backups---apinotificationscheck-overdue}

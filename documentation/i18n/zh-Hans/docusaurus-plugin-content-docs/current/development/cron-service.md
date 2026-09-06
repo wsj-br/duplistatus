@@ -4,6 +4,8 @@
 
 ## 在开发模式下启动 cron 服务 {#start-cron-service-in-development-mode}
 
+`pnpm dev` 已经与 Next.js 一起启动了 cron 服务。要单独运行 cron（例如在第二个终端中）：
+
 ```bash
 pnpm cron:dev
 ```

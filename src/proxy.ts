@@ -10,10 +10,42 @@ import {
   classifyAllowlistPath,
   isIpAllowed,
   resolveAllowlistIp,
+  type AllowlistSurface,
 } from "@/lib/ip-allowlist";
 import { getPeerIp } from "@/lib/ip-utils";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const LOCALE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
+
+/** Cap stdout noise from scanners probing blocked IPs. */
+const ALLOWLIST_DENY_LOG_PER_MINUTE = 1;
+const ALLOWLIST_DENY_LOG_PER_HOUR = 10;
+
+function logAllowlistDenial(
+  surface: AllowlistSurface,
+  clientIp: string,
+  peer: string,
+  pathname: string,
+): void {
+  if (surface === "exempt") {
+    return;
+  }
+
+  const ipLabel = clientIp || peer || "unknown";
+  const key = `ip-allowlist-deny-log:${surface}:${ipLabel}`;
+  const { allowed } = checkRateLimit(
+    key,
+    ALLOWLIST_DENY_LOG_PER_MINUTE,
+    ALLOWLIST_DENY_LOG_PER_HOUR,
+  );
+  if (!allowed) {
+    return;
+  }
+
+  console.warn(
+    `[IP allowlist] Denied ${surface} request from ${ipLabel} path=${pathname}`,
+  );
+}
 
 /**
  * Preferred locale without using URL segments (cookie → Accept-Language → default).
@@ -67,6 +99,7 @@ function enforceAllowlist(request: NextRequest, pathname: string): NextResponse 
   const peer = getPeerIp(request);
   const clientIp = resolveAllowlistIp(request);
   if (!isIpAllowed(surface, clientIp, peer)) {
+    logAllowlistDenial(surface, clientIp, peer, pathname);
     return denyByAllowlist(pathname);
   }
   return null;

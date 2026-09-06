@@ -62,9 +62,14 @@ export const DAILY_SUMMARY_PLACEHOLDERS = [
   'omitted_job_count',
   'problem_table',
   'all_jobs_table',
+  'duplistatus_link',
+  'duplistatus_url',
 ] as const;
 
-export type TemplateKind = 'success' | 'warning' | 'overdueBackup' | 'dailySummaryEmail' | 'dailySummaryNtfy';
+/** Placeholders allowed as the sole contents of a Markdown link destination, e.g. `[label]({duplistatus_url})`. */
+export const MARKDOWN_LINK_DESTINATION_PLACEHOLDERS = new Set(['duplistatus_url']);
+
+export type TemplateKind = 'success' | 'warning' | 'overdueBackup' | 'dailySummaryEmail';
 
 export const TEMPLATE_SOURCE_MAX_CHARS = 50_000;
 export const EMAIL_HTML_MAX_BYTES = 90 * 1024;
@@ -89,7 +94,6 @@ function allowedPlaceholdersFor(kind: TemplateKind): ReadonlySet<string> {
     case 'overdueBackup':
       return new Set(OVERDUE_TEMPLATE_PLACEHOLDERS);
     case 'dailySummaryEmail':
-    case 'dailySummaryNtfy':
       return new Set(DAILY_SUMMARY_PLACEHOLDERS);
     default: {
       const exhaustive: never = kind;
@@ -125,7 +129,15 @@ function assertPlaceholders(kind: TemplateKind, source: string, label: string): 
   LINK_DESTINATION_RE.lastIndex = 0;
   let match: RegExpExecArray | null;
   while ((match = LINK_DESTINATION_RE.exec(source)) !== null) {
-    if (PLACEHOLDER_RE.test(match[1])) {
+    const destination = match[1].trim();
+    const placeholderMatch = /^\{([a-zA-Z][a-zA-Z0-9_]*)\}$/.exec(destination);
+    if (placeholderMatch) {
+      if (!MARKDOWN_LINK_DESTINATION_PLACEHOLDERS.has(placeholderMatch[1])) {
+        throw new TemplateValidationError(`${label} must not use placeholders in Markdown link destinations`);
+      }
+      continue;
+    }
+    if (PLACEHOLDER_RE.test(destination)) {
       throw new TemplateValidationError(`${label} must not use placeholders in Markdown link destinations`);
     }
   }
@@ -133,7 +145,7 @@ function assertPlaceholders(kind: TemplateKind, source: string, label: string): 
 
 export function validateNotificationTemplate(
   template: NotificationTemplate,
-  kind: 'success' | 'warning' | 'overdueBackup' | 'dailySummaryNtfy'
+  kind: 'success' | 'warning' | 'overdueBackup'
 ): void {
   if (!template || typeof template !== 'object') {
     throw new TemplateValidationError('Template is required');
@@ -185,7 +197,6 @@ export function validateDailySummaryEmailTemplate(template: DailySummaryEmailTem
 
 export function validateDailySummaryTemplateSet(templates: DailySummaryTemplateSet): void {
   validateDailySummaryEmailTemplate(templates.email);
-  validateNotificationTemplate(templates.ntfy, 'dailySummaryNtfy');
 }
 
 export function sanitizePlainSubject(subject: string): string {

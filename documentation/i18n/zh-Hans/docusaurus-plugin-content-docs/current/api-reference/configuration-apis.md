@@ -202,12 +202,6 @@
         "email": {
           "title": "duplistatus — Daily backup summary — {summary_date}",
           "message": "## Daily backup summary"
-        },
-        "ntfy": {
-          "title": "duplistatus daily summary",
-          "message": "Servers {server_count}, jobs {job_count}",
-          "priority": "default",
-          "tags": "duplicati, duplistatus, daily-summary"
         }
       }
     },
@@ -453,28 +447,28 @@
   - 更新不同备份状态的通知模板
   - 保留现有配置设置
   - 模板支持Markdown电子邮件正文和`{placeholder}`替换
-  - 需要一个`dailySummary`模板集（电子邮件主题/正文和紧凑型NTFY）
+  - 需要一个 `dailySummary` 电子邮件模板（主题和 Markdown 正文）
 
 ## 每日摘要 - `/api/configuration/daily-summary` {#daily-summary---apiconfigurationdaily-summary}
 - **端点**: `/api/configuration/daily-summary`
 - **方法**: GET, POST
-- **描述**: 读取或更新每日摘要模式。GET返回净化的设置、调度程序健康状况、下一次发生时间和每个频道的发送状态。POST保存`enabled`、`localTime`（`HH:mm`）、`timeZone`（IANA）和`sendNtfy`。启用需要有效的SMTP和健康的`daily-summary-dispatch`任务。启用NTFY需要存储的NTFY设置。更改计划会设置下一次**未来**发生时间。
-- **认证**: GET需要有效的会话和CSRF令牌。POST需要管理员会话和CSRF令牌。
+- **描述**: 读取或更新每日摘要模式。GET 返回已清理的设置、调度程序健康、下一个发生时间和电子邮件发送状态。POST 保存 `enabled`, `utcTime` (`HH:mm` UTC), `timeZone` (上次保存的浏览器 IANA 时区) 和可选的 `publicUrl`。启用需要有效的 SMTP。更改调度将设置下一个 **未来** 发生时间。
+- **身份验证**: GET 需要有效的会话和 CSRF 令牌。POST 需要管理员会话和 CSRF 令牌。
 - **错误响应**:
-  - `400`: 无效的时间/时区、缺少SMTP/NTFY或调度程序不健康
+  - `400`: 无效的时间/时区、无效的公共 URL 或缺少 SMTP
   - `401`: 未授权
   - `500`: 无法读取或更新每日摘要
 
 ## 发送每日摘要 - `/api/configuration/daily-summary/send` {#send-daily-summary---apiconfigurationdaily-summarysend}
 - **端点**: `/api/configuration/daily-summary/send`
 - **方法**: POST
-- **描述**: 立即发送当前状态的额外快照。不消耗下一次计划的发生时间。使用存储的SMTP（在选择时使用存储的NTFY）。不接受请求中的收件人地址或端点。
+- **描述**: 立即发送额外的当前状态快照。不会消耗下一次计划的发生时间。使用存储的 SMTP。不接受请求中的收件人地址。
 - **认证**: 需要管理员会话和CSRF令牌
 
 ## 重试每日摘要 - `/api/configuration/daily-summary/retry` {#retry-daily-summary---apiconfigurationdaily-summaryretry}
 - **端点**: `/api/configuration/daily-summary/retry`
 - **方法**: POST
-- **描述**: 从持久化有效负载中重试失败的频道。可选的正文`{ "occurrenceKey": "..." }`；否则重试最新的失败发生时间。
+- **描述**: 从持久化的有效负载中重试失败的通道。可选的正文 `{ "occurrenceKey": "..." }`；否则重试最新的失败的电子邮件发送。
 - **认证**: 需要管理员会话和CSRF令牌
 
 ## 预览每日摘要 - `/api/configuration/daily-summary/preview` {#preview-daily-summary---apiconfigurationdaily-summarypreview}

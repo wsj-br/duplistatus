@@ -165,7 +165,7 @@ Stores application configuration settings.
 - `ntfy_config`: NTFY notification settings
 - `overdue_tolerance`: Overdue backup tolerance settings
 - `notification_templates`: Notification message templates
-- `daily_summary`: Daily Summary mode, schedule, timezone, and optional NTFY delivery
+- `daily_summary`: Daily Summary mode, schedule, and timezone
 - `cron_service`: Cron task schedules, including `daily-summary-dispatch`
 - `audit_retention_days`: Audit log retention period (default: 90 days)
 
@@ -266,7 +266,7 @@ Related configuration keys in the `configurations` table: `external_api_require_
 
 ### Daily Summary Deliveries Table {#daily-summary-deliveries-table}
 
-Per-channel ledger for Daily Summary email and NTFY. Each scheduled occurrence (or unique manual send) has at most one row per channel. Rendered payloads are stored before sending so retries keep the same snapshot. Rows older than 30 days are pruned.
+Per-channel ledger for Daily Summary email delivery. Legacy rows may include an `ntfy` channel from earlier releases. Each scheduled occurrence (or unique manual send) has at most one row per channel. Rendered payloads are stored before sending so retries keep the same snapshot. Rows older than 30 days are pruned.
 
 If the process dies after a provider accepts a message but before success is recorded, that channel may be retried (at-least-once).
 

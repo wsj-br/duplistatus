@@ -35,7 +35,7 @@ This file documents essential information for AI agents working in the duplistat
 ### Cron Service
 - **Location**: `src/cron-service/`
 - **Purpose**: Background service for periodic tasks (overdue backup checks, audit-log cleanup, and cached Duplicati version refresh)
-- **Development**: Runs on port 8667 via `pnpm cron:dev`
+- **Development**: Started with the Next.js app by `pnpm dev` (port 8667); use `pnpm cron:dev` alone when you only need the cron process
 - **Production**: Runs on port 9667
 - **API**: REST endpoints for task management (`/health`, `/trigger/:task`, `/stop/:task`, `/start/:task`, `/reload-config`)
 - **Version refresh**: The `duplicati-version-refresh` task runs in UTC; its schedule is overlaid from the `duplicati_version_check` configuration rather than persisted only in `cron_service`.
@@ -51,6 +51,7 @@ This file documents essential information for AI agents working in the duplistat
 ### Internationalization (i18n)
 - **Runtime**: i18next (`src/i18n.ts`, `I18nProvider` in root layout). Client components use **`useTranslation()` + `t('Exact English phrase')`** at the point of use (English source string = key). Server Components and other non-React code use **`getServerI18n()`** from `src/lib/i18n-server.ts` and **`i18n.t('…')`** with the same literal keys. **Do not** add feature-level wrapper hooks or shared “content” objects for UI strings — **`ai-i18n-tools extract`** scans literal `t('…')` in `src/`.
 - **Catalog / flat bundles**: `src/locales/strings.json`, `de.json`, `fr.json`, `es.json`, `pt-BR.json`, `hi.json`, `zh-Hans.json` (updated via `pnpm i18n:extract` and translate commands).
+- **Default notification templates**: `src/locales/templates/en-GB.json` (source) and per-locale `{locale}.json` outputs (updated via `pnpm i18n:translate:json`); loaded by `src/lib/default-notification-templates.ts`.
 - **Config**: `ai-i18n-tools.config.json` at repo root (`sourceLocale`: `en-GB`, `targetLocales`, UI roots, Docusaurus paths, glossary, `cacheDir`).
 - **URLs**: No locale prefix in app routes; language is stored (e.g. `NEXT_LOCALE` cookie) and applied with `loadLocale` + `i18n.changeLanguage`. Legacy `/{locale}/…` URLs are redirected at the edge (see `src/proxy.ts`).
 
@@ -63,8 +64,9 @@ This file documents essential information for AI agents working in the duplistat
 pnpm install              # Install dependencies (enforced via preinstall)
 
 # Development
-pnpm dev                  # Start Next.js dev server on port 8666
-pnpm cron:dev             # Start cron service in watch mode on port 8667
+pnpm dev                  # Start Next.js (8666) and cron (8667) together; CTRL-C stops both
+pnpm dev:next             # Next.js dev server only (port 8666)
+pnpm cron:dev             # Cron service only, watch mode (port 8667)
 
 # Build & Production
 pnpm build                # Production build (next build --webpack; pre-checks in scripts/pre-checks.sh)
@@ -90,10 +92,11 @@ pnpm docker:clean         # Clean Docker resources
 # i18n (repo root — OpenRouter: set OPENROUTER_API_KEY)
 pnpm i18n:extract         # Scan t('…') and update strings catalog
 pnpm i18n:sync            # Sync per ai-i18n-tools
-pnpm i18n:translate       # translate-ui + translate-svg + translate-docs
+pnpm i18n:translate       # translate-ui + translate-svg + translate-docs + translate-json
 pnpm i18n:translate:ui
 pnpm i18n:translate:svg
 pnpm i18n:translate:docs
+pnpm i18n:translate:json
 pnpm i18n:status
 pnpm i18n:editor          # ai-i18n-tools editor (if used)
 pnpm i18n:glossary-generate
@@ -117,7 +120,7 @@ src/
 │   ├── server-details/     # Server detail page components
 │   └── *.tsx               # Top-level component files
 ├── i18n.ts                 # i18next runtime init (key-as-default t())
-├── locales/                # strings.json + per-locale flat JSON (de, es, fr, pt-BR, hi, zh-Hans); en-GB.json is source-locale plural forms only
+├── locales/                # strings.json + per-locale flat JSON (de, es, fr, pt-BR, hi, zh-Hans); en-GB.json is source-locale plural forms only; templates/ holds default notification template JSON
 ├── contexts/               # React contexts
 │   ├── locale-context.tsx
 │   ├── theme-context.tsx
@@ -166,7 +169,7 @@ ai-i18n-tools.config.json   # i18n tooling (UI + docs + SVG)
 - **Default**: **`const { t } = useTranslation()`** and inline **`t('…')`** next to labels, toasts, and `aria-*` text (the exact English phrase is the key).
 - **Do not** add feature-level wrapper hooks or shared “content” objects for UI strings — `ai-i18n-tools extract` scans literal `t('…')` calls in `src/`.
 - **Interpolation**: i18next format `{{name}}` with `t('…', { name: value })`.
-- **Plurals**: write one English source string (typically the plural form) and pass **`{ plurals: true, count }`** as a **plain object literal**. `count` must be a number. Independent counts need separate `t()` calls; if a string has two or more interpolations, one must be `{{count}}`. Do not write `_one`/`_other` keys or `item(s)` hedges. `pnpm i18n:translate:ui` emits `src/locales/en-GB.json`; both `src/i18n.ts` and `src/lib/i18n-server.ts` pass it as `sourcePluralFlatBundle`.
+- **Plurals**: write one English source string (typically the plural form) and pass **`{ plurals: true, count }`** as a **plain object literal**. `count` must be a number. Independent **numeric** counts need separate `t()` calls (one plural axis cannot flex two numbers). Non-numeric interpolations (names, labels, etc.) are fine alongside `{{count}}`. Do not write `_one`/`_other` keys or `item(s)` hedges. `pnpm i18n:translate:ui` emits `src/locales/en-GB.json`; both `src/i18n.ts` and `src/lib/i18n-server.ts` pass it as `sourcePluralFlatBundle`.
 - **Server / notifications**: use `getServerI18n()` or `getServerI18nForLanguage()` from `src/lib/i18n-server.ts`, then `i18n.t('…')` with the same English keys as the UI (`setupKeyAsDefaultT` + locale bundles).
 
 ### Database Access
@@ -237,7 +240,7 @@ ai-i18n-tools.config.json   # i18n tooling (UI + docs + SVG)
 
 ### 10. Duplicati version tracking
 - Upload and collection store the report `Version` in `backups.version` and `BackendStatistics.Version` in `backups.backend_version`; dashboard/settings badges compare `backend_version` with the cached release for the same channel.
-- Latest channel releases (`stable`, `beta`, `experimental`, `canary`) are fetched from GitHub and cached under `duplicati_versions`. Schedule settings (`daily`, `12h`, or `6h` plus UTC start hour) are stored under `duplicati_version_check`; the cache is not a separate table.
+- Latest channel releases (`stable`, `beta`, `experimental`, `canary`) are fetched from GitHub and cached under `duplicati_versions`. Schedule settings (`daily`, `12h`, or `6h` plus UTC start time `HH:mm`) are stored under `duplicati_version_check`; the cache is not a separate table.
 - Startup refreshes stale caches, the cron task refreshes on schedule, and the admin refresh route supports a forced manual refresh. Failed GitHub refreshes retain the previous cache. The refresh service uses `data/.duplicati-version-refresh.lock` to prevent concurrent updates.
 - GET settings access is authenticated; schedule changes and forced refreshes require admin access plus CSRF. After saving the schedule, reload the cron service configuration. Do not live-query Duplicati servers for release comparisons.
 - `showDashboardVersion` is a per-user browser setting in `localStorage`; it does not control the always-visible dashboard table Version column.
@@ -304,6 +307,8 @@ export async function POST(request: NextRequest) {
 
 | File                        | Purpose                                             |
 |-----------------------------|-----------------------------------------------------|
+| `src/lib/default-notification-templates.ts` | Default notification template JSON loader |
+| `src/locales/templates/en-GB.json` | English source for default notification templates |
 | `src/lib/db.ts`             | Database connection and operations                  |
 | `src/lib/db-utils.ts`       | Configuration helpers, version cache, and derived data |
 | `src/lib/types.ts`          | All TypeScript interfaces                           |

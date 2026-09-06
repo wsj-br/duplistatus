@@ -33,13 +33,14 @@ Les administrateurs peuvent choisir la fréquence à laquelle **duplistatus** v�
 | **Toutes les 12 heures** | À l'heure de début et 12 heures plus tard                         |
 | **Toutes les 6 heures**  | À l'heure de début et toutes les 6 heures après cela               |
 
-L'heure de début est sélectionnée et affichée dans le fuseau horaire de votre navigateur. **duplistatus** stocke cette heure en UTC et le service cron exécute la vérification en UTC.
+L'heure de début est choisie dans le fuseau horaire de votre navigateur en utilisant le même contrôle d'heure compact que le Résumé quotidien. Choisissez n'importe quelle `HH:mm` heure. **duplistatus** stocke cette valeur en UTC et le service cron exécute la vérification en UTC.
 
 Exemples :
 
-- Tous les jours avec une heure de début à 06:00 s'exécute à 06:00.
-- Toutes les 12 heures avec une heure de début à 08:00 s'exécute à 08:00 et 20:00.
-- Toutes les 6 heures avec une heure de début à 02:00 s'exécute à 02:00, 08:00, 14:00, et 20:00.
+- Quotidien avec une heure de début de 06:00 s'exécute à 06:00.
+- Quotidien avec une heure de début de 06:30 s'exécute à 06:30.
+- Toutes les 12 heures avec une heure de début de 08:15 s'exécute à 08:15 et 20:15.
+- Toutes les 6 heures avec une heure de début de 02:45 s'exécute à 02:45, 08:45, 14:45, et 20:45.
 
 Au démarrage, **duplistatus** actualise également le cache s'il est plus ancien que l'intervalle sélectionné (24 heures, 12 heures ou 6 heures). Les actualisations échouées conservent les dernières versions en cache.
 

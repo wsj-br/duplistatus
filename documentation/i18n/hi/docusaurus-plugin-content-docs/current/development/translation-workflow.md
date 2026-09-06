@@ -6,7 +6,7 @@
 
 दस्तावेज़ Docusaurus i18n का उपयोग करता है जिसमें अंग्रेज़ी डिफ़ॉल्ट लोकेल है। स्रोत दस्तावेज़ `docs/` में रहता है; अनुवाद `i18n/{locale}/` के अंतर्गत लिखे जाते हैं। समर्थित लोकेल: en-GB (डिफ़ॉल्ट), fr, de, es, pt-BR, hi, zh-Hans.
 
-**AI अनुवाद** ऐप UI, Docusaurus markdown/JSON, और SVG एसेट्स के लिए [**ai-i18n-tools**](https://www.npmjs.com/package/ai-i18n-tools) से **रिपॉजिटरी रूट** से हैंडल किया जाता है, जो `ai-i18n-tools.config.json` में कॉन्फ़िगर किया गया है (`documentation/` के अंदर नहीं)। अनुवाद कमांड चलाने के समय `OPENROUTER_API_KEY` सेट करें।
+**AI translation** for the app UI, Docusaurus markdown/JSON, SVG assets, and **default notification templates** is handled by [**ai-i18n-tools**](https://www.npmjs.com/package/ai-i18n-tools) from the **repository root**, configured in `ai-i18n-tools.config.json` (not inside `documentation/`). Set `OPENROUTER_API_KEY` when running translate commands.
 
 ## जब अंग्रेज़ी दस्तावेज़ बदलता है {#when-english-documentation-changes}
 
@@ -14,11 +14,12 @@
 2. **Docusaurus UI स्ट्रिंग्स** (थीम लेबल, नेवबार, आदि): अगर ज़रूरत हो, तो `pnpm write-translations` को `documentation/` में चलाएं ताकि `i18n/en/*.json` नए कीज़ पा सके।
 3. **हेडिंग आईडी**: `pnpm write-heading-ids` (`documentation/` से).
 4. **अनुवाद** **रिपॉजिटरी रूट** से (या नीचे दिए गए शॉर्टकट्स का उपयोग करें `documentation/` से):
-   - `pnpm i18n:extract` — `src/locales/strings.json` को `t('…')` से रिफ्रेश करें Next.js ऐप में।
-   - `pnpm i18n:translate:docs` — markdown/JSON को `documentation/i18n/` में अनुवाद करें कॉन्फ़िग के अनुसार।
-   - `pnpm i18n:translate:svg` — `documentation/static/img` के अंतर्गत SVG अनुवाद करें कॉन्फ़िग के अनुसार।
-   - या सब कुछ चलाएं: `pnpm i18n:translate`.
-5. **बिल्ड**: `cd documentation && pnpm build` (सभी लोकेल).
+   - `pnpm i18n:extract` — refresh `src/locales/strings.json` from `t('…')` in the Next.js app.
+   - `pnpm i18n:translate:docs` — translate markdown/JSON into `documentation/i18n/` per config.
+   - `pnpm i18n:translate:svg` — translate SVGs under `documentation/static/img` as configured.
+   - `pnpm i18n:translate:json` — translate default notification templates in `src/locales/templates/` from `en-GB.json`.
+   - Or run everything: `pnpm i18n:translate`.
+5. **Build**: `cd documentation && pnpm build` (all locales).
 
 `documentation/` के अंदर, वही फ़्लो `pnpm translate` → रूट `i18n:translate` के रूप में जुड़े हुए हैं, साथ ही `pnpm translate:docs`, `translate:ui`, `translate:svg`, `translate:status`, `i18n:extract`, `i18n:sync`.
 
@@ -34,10 +35,29 @@ t("{{count}} backups selected", { plurals: true, count: selectedBackups.size })
 
 नियम:
 
-- `item(s)` हेज़ या `count === 1 ? t('…') : t('…')` जोड़ी का उपयोग न करें।
-- स्वतंत्र गिनती के लिए अलग `t()` कॉल की आवश्यकता होती है। दो या अधिक इंटरपोलेशन वाली एक स्ट्रिंग में `{{count}}` को बहुवचन के अक्ष के रूप में शामिल करना होगा।
-- `pnpm i18n:extract` कैटलॉग पंक्ति को चिह्नित करता है `"plural": true`। `pnpm i18n:translate:ui` CLDR फॉर्म भरता है और `src/locales/en-GB.json` लिखता है (बहुवचन कुंजी केवल)।
-- `src/i18n.ts` और `src/lib/i18n-server.ts` उस फ़ाइल को `sourcePluralFlatBundle` के रूप में लोड करते हैं ताकि अंग्रेजी एकवचन/बहुवचन रनटाइम पर हल हो।
+- `item(s)` हेज़ या `count === 1 ? t('…') : t('…')` जोड़े का उपयोग न करें।
+- स्वतंत्र **संख्यात्मक** गिनतियों के लिए अलग `t()` कॉल की आवश्यकता होती है — एक बहुवचन धुरी दो संख्याओं को नहीं बदल सकती (उदाहरण के लिए 1 सफल और 2 असफल)। अंशों को जोड़ें:
+
+```tsx
+`${t("Tested {{count}} connections:", { plurals: true, count: total })} ` +
+  `${t("{{count}} successful,", { plurals: true, count: successCount })} ` +
+  `${t("{{count}} failed", { plurals: true, count: failureCount })}`
+```
+
+- गैर-संख्यात्मक इंटरपोलेशन (नाम, लेबल, आदि) `{{count}}` के समान बहुवचन स्ट्रिंग में ठीक हैं।
+- `pnpm i18n:extract` कैटलॉग पंक्ति `"plural": true` को चिह्नित करता है। `pnpm i18n:translate:ui` CLDR फ़ॉर्म भरता है और `src/locales/en-GB.json` (केवल बहुवचन कुंजी) लिखता है।
+- `src/i18n.ts` और `src/lib/i18n-server.ts` उस फ़ाइल को `sourcePluralFlatBundle` के रूप में लोड करते हैं ताकि अंग्रेजी एकवचन/बहुवचन रनटाइम पर हल हो सके।
+
+## Default notification templates {#default-notification-templates}
+
+Settings → Templates → **Reset** loads defaults from `src/locales/templates/{locale}.json` (wired in `src/lib/default-notification-templates.ts`).
+
+1. Edit **`src/locales/templates/en-GB.json`** only (English source).
+2. Run **`pnpm i18n:translate:json`** (or **`pnpm i18n:translate`**) from the repo root.
+3. Review diffs — placeholders such as `{backup_name}` and `{problem_table}` must stay unchanged; `priority` and `tags` are skipped by `keyPolicy` in `ai-i18n-tools.config.json`.
+4. Run **`pnpm i18n:status`** to see JSON block coverage.
+
+See the [ai-i18n-tools JSON guide](https://wsj-br.github.io/ai-i18n-tools/guide/json.html) for flags (`--locale`, `--force`, etc.).
 
 ## शब्दावली {#glossary}
 

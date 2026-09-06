@@ -202,12 +202,6 @@
         "email": {
           "title": "duplistatus — Daily backup summary — {summary_date}",
           "message": "## Daily backup summary"
-        },
-        "ntfy": {
-          "title": "duplistatus daily summary",
-          "message": "Servers {server_count}, jobs {job_count}",
-          "priority": "default",
-          "tags": "duplicati, duplistatus, daily-summary"
         }
       }
     },
@@ -453,28 +447,28 @@
   - विभिन्न बैकअप स्थितियों के लिए अधिसूचना टेम्प्लेट्स को अपडेट करता है
   - मौजूदा कॉन्फ़िगरेशन सेटिंग्स को संरक्षित करता है
   - टेम्प्लेट्स Markdown ईमेल बॉडी और `{placeholder}` प्रतिस्थापन का समर्थन करते हैं
-  - एक `dailySummary` टेम्प्लेट सेट (ईमेल विषय/बॉडी और संक्षिप्त NTFY) की आवश्यकता होती है
+  - एक `dailySummary` ईमेल टेम्पलेट (विषय और मार्कडाउन बॉडी) आवश्यक है
 
-## Daily Summary - `/api/configuration/daily-summary` {#daily-summary---apiconfigurationdaily-summary}
+## दैनिक सारांश - `/api/configuration/daily-summary` {#daily-summary---apiconfigurationdaily-summary}
 - **Endpoint**: `/api/configuration/daily-summary`
 - **Method**: GET, POST
-- **Description**: Daily Summary मोड को पढ़ता या अपडेट करता है। GET सैनिटाइज़्ड सेटिंग्स, डिस्पैचर स्वास्थ्य, अगली घटना, और प्रति-चैनल वितरण स्थिति लौटाता है। POST `enabled`, `localTime` (`HH:mm`), `timeZone` (IANA), और `sendNtfy` को सहेजता है। सक्षम करने के लिए वैलिड SMTP और स्वस्थ `daily-summary-dispatch` टास्क की आवश्यकता होती है। NTFY सक्षम करने के लिए स्टोर्ड NTFY सेटिंग्स की आवश्यकता होती है। शेड्यूल बदलने पर अगली **भविष्य** घटना सेट होती है।
-- **Authentication**: GET के लिए वैलिड सेशन और CSRF टोकन की आवश्यकता होती है। POST के लिए व्यवस्थापक सेशन और CSRF टोकन की आवश्यकता होती है।
-- **Error Responses**:
-  - `400`: अमान्य समय/समय क्षेत्र, SMTP/NTFY का अभाव, या डिस्पैचर स्वस्थ नहीं
-  - `401`: अनधिकृत
+- **विवरण**: दैनिक सारांश मोड को पढ़ता या अपडेट करता है। GET स्वच्छ सेटिंग्स, डिस्पैचर स्वास्थ्य, अगली घटना, और Email वितरण स्थिति लौटाता है। POST `enabled`, `utcTime` (`HH:mm` UTC), `timeZone` (पिछली बचत से ब्राउज़र IANA समय क्षेत्र), और वैकल्पिक `publicUrl` को सहेजता है। सक्षम करने के लिए मान्य SMTP की आवश्यकता होती है। शेड्यूल बदलने से अगली **भविष्य** घटना सेट होती है।
+- **प्रमाणीकरण**: GET एक मान्य सत्र और CSRF टोकन की आवश्यकता होती है। POST एक प्रशासक सत्र और CSRF टोकन की आवश्यकता होती है।
+- **त्रुटि प्रतिक्रियाएँ**:
+  - `400`: अमान्य समय/समय क्षेत्र, अमान्य सार्वजनिक URL, या SMTP गायब
+  - `401`: अधिकृत नहीं
   - `500`: Daily Summary को पढ़ने या अपडेट करने में असफल
 
-## Send Daily Summary - `/api/configuration/daily-summary/send` {#send-daily-summary---apiconfigurationdaily-summarysend}
-- **Endpoint**: `/api/configuration/daily-summary/send`
-- **Method**: POST
-- **Description**: वर्तमान स्थिति का एक अतिरिक्त स्नैपशॉट तुरंत भेजता है। अगली शेड्यूल की घटना को खर्च नहीं करता। स्टोर्ड SMTP (और स्टोर्ड NTFY जब चयनित हो) का उपयोग करता है। अनुरोध में प्राप्तकर्ता पते या एंडपॉइंट्स स्वीकार नहीं करता।
+## दैनिक सारांश भेजें - `/api/configuration/daily-summary/send` {#send-daily-summary---apiconfigurationdaily-summarysend}
+- **एंडपॉइंट**: `/api/configuration/daily-summary/send`
+- **विधि**: POST
+- **विवरण**: वर्तमान स्थिति का एक अतिरिक्त स्नैपशॉट तुरंत भेजता है। अगले अनुसूचित घटना का उपयोग नहीं करता। स्टोर किए गए SMTP का उपयोग करता है। अनुरोध में प्राप्तकर्ता पते स्वीकार नहीं करता।
 - **Authentication**: व्यवस्थापक सेशन और CSRF टोकन की आवश्यकता होती है
 
-## Retry Daily Summary - `/api/configuration/daily-summary/retry` {#retry-daily-summary---apiconfigurationdaily-summaryretry}
-- **Endpoint**: `/api/configuration/daily-summary/retry`
-- **Method**: POST
-- **Description**: संग्रहीत पेलोड से असफल चैनलों को पुनः प्रयास करता है। वैकल्पिक बॉडी `{ "occurrenceKey": "..." }`; अन्यथा नवीनतम असफल घटना को पुनः प्रयास करता है।
+## दैनिक सारांश पुन: प्रयास करें - `/api/configuration/daily-summary/retry` {#retry-daily-summary---apiconfigurationdaily-summaryretry}
+- **एंडपॉइंट**: `/api/configuration/daily-summary/retry`
+- **विधि**: POST
+- **विवरण**: संरक्षित पेलोड से असफल चैनलों को पुन: प्रयास करता है। वैकल्पिक बॉडी `{ "occurrenceKey": "..." }`; अन्यथा नवीनतम असफल ईमेल वितरण को पुन: प्रयास करता है।
 - **Authentication**: व्यवस्थापक सेशन और CSRF टोकन की आवश्यकता होती है
 
 ## Preview Daily Summary - `/api/configuration/daily-summary/preview` {#preview-daily-summary---apiconfigurationdaily-summarypreview}

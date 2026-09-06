@@ -1,12 +1,13 @@
 /**
- * Timezone-aware due evaluation for daily summary notifications.
- * All calendar arithmetic uses the administrator-saved IANA timezone.
+ * Daily summary schedule evaluation.
+ * Send time is stored as HH:mm UTC; the Settings UI edits browser-local wall time.
  */
 
 import type { DailySummaryConfig } from '@/lib/types';
 
 const LOCAL_TIME_RE = /^([01]\d|2[0-3]):([0-5]\d)$/;
 const MINUTE_MS = 60 * 1000;
+export const DAILY_SUMMARY_SCHEDULE_TIME_ZONE = 'UTC';
 
 export function isValidLocalTime(value: string): boolean {
   return typeof value === 'string' && LOCAL_TIME_RE.test(value);
@@ -30,6 +31,26 @@ export function parseLocalTime(value: string): { hour: number; minute: number } 
     throw new Error(`Invalid local time: ${value}`);
   }
   return { hour: Number.parseInt(match[1], 10), minute: Number.parseInt(match[2], 10) };
+}
+
+export function formatTimeLabel(hour: number, minute: number): string {
+  return `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+}
+
+/** Convert browser-local HH:mm to stored HH:mm UTC (same approach as Duplicati version start hour). */
+export function localWallTimeToUtcTime(localTime: string, reference: Date = new Date()): string {
+  const { hour, minute } = parseLocalTime(localTime);
+  const local = new Date(reference);
+  local.setHours(hour, minute, 0, 0);
+  return formatTimeLabel(local.getUTCHours(), local.getUTCMinutes());
+}
+
+/** Convert stored HH:mm UTC to browser-local HH:mm for editing. */
+export function utcTimeToLocalWallTime(utcTime: string, reference: Date = new Date()): string {
+  const { hour, minute } = parseLocalTime(utcTime);
+  const utc = new Date(reference);
+  utc.setUTCHours(hour, minute, 0, 0);
+  return formatTimeLabel(utc.getHours(), utc.getMinutes());
 }
 
 export interface ZonedDateTimeParts {
@@ -74,6 +95,10 @@ export function getZonedParts(date: Date, timeZone: string): ZonedDateTimeParts 
 export function formatLocalCalendarDate(date: Date, timeZone: string): string {
   const parts = getZonedParts(date, timeZone);
   return `${parts.year}-${String(parts.month).padStart(2, '0')}-${String(parts.day).padStart(2, '0')}`;
+}
+
+export function formatUtcCalendarDate(date: Date): string {
+  return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}-${String(date.getUTCDate()).padStart(2, '0')}`;
 }
 
 function addCalendarDays(year: number, month: number, day: number, days: number): { year: number; month: number; day: number } {
@@ -138,8 +163,19 @@ export function resolveZonedLocalDateTime(
   return resolveZonedLocalDateTime(next.year, next.month, next.day, 0, 0, timeZone);
 }
 
-export function scheduledOccurrenceKey(timeZone: string, summaryDate: string): string {
-  return `scheduled:${timeZone}:${summaryDate}`;
+export function legacyLocalScheduleToUtcTime(
+  localTime: string,
+  timeZone: string,
+  reference: Date = new Date()
+): string {
+  const parts = getZonedParts(reference, timeZone);
+  const { hour, minute } = parseLocalTime(localTime);
+  const instant = resolveZonedLocalDateTime(parts.year, parts.month, parts.day, hour, minute, timeZone);
+  return formatTimeLabel(instant.getUTCHours(), instant.getUTCMinutes());
+}
+
+export function scheduledOccurrenceKey(summaryDate: string): string {
+  return `scheduled:${DAILY_SUMMARY_SCHEDULE_TIME_ZONE}:${summaryDate}`;
 }
 
 export function manualOccurrenceKey(runId: string): string {
@@ -159,33 +195,33 @@ function parseCalendarDate(summaryDate: string): { year: number; month: number; 
   return { year, month, day };
 }
 
-export function getScheduledInstantForLocalDate(
-  config: Pick<DailySummaryConfig, 'localTime' | 'timeZone'>,
+export function getScheduledInstantForUtcDate(
+  config: Pick<DailySummaryConfig, 'utcTime'>,
   summaryDate: string
 ): Date {
-  const { hour, minute } = parseLocalTime(config.localTime);
+  const { hour, minute } = parseLocalTime(config.utcTime);
   const { year, month, day } = parseCalendarDate(summaryDate);
-  return resolveZonedLocalDateTime(year, month, day, hour, minute, config.timeZone);
+  return new Date(Date.UTC(year, month - 1, day, hour, minute, 0, 0));
 }
 
 export function evaluateScheduledOccurrence(
   config: DailySummaryConfig,
   now: Date = new Date()
 ): DueEvaluation {
+  const summaryDate = formatUtcCalendarDate(now);
+  const scheduledAt = getScheduledInstantForUtcDate(config, summaryDate);
+  const occurrenceKey = scheduledOccurrenceKey(summaryDate);
+
   if (!config.enabled) {
-    const summaryDate = formatLocalCalendarDate(now, config.timeZone);
     return {
       due: false,
       summaryDate,
-      occurrenceKey: scheduledOccurrenceKey(config.timeZone, summaryDate),
-      scheduledAt: getScheduledInstantForLocalDate(config, summaryDate),
+      occurrenceKey,
+      scheduledAt,
       reason: 'disabled',
     };
   }
 
-  const summaryDate = formatLocalCalendarDate(now, config.timeZone);
-  const scheduledAt = getScheduledInstantForLocalDate(config, summaryDate);
-  const occurrenceKey = scheduledOccurrenceKey(config.timeZone, summaryDate);
   const effectiveFrom = new Date(config.effectiveFromIso);
   const effectiveFromMs = Number.isNaN(effectiveFrom.getTime()) ? 0 : effectiveFrom.getTime();
 
@@ -202,7 +238,7 @@ export function findNextOccurrence(
   config: DailySummaryConfig,
   now: Date = new Date()
 ): Date | null {
-  if (!isValidLocalTime(config.localTime) || !isValidIanaTimeZone(config.timeZone)) {
+  if (!isValidLocalTime(config.utcTime)) {
     return null;
   }
   const effectiveFrom = new Date(config.effectiveFromIso);
@@ -210,8 +246,8 @@ export function findNextOccurrence(
 
   for (let offset = 0; offset < 4; offset += 1) {
     const probe = new Date(floor.getTime() + offset * 24 * 60 * MINUTE_MS);
-    const summaryDate = formatLocalCalendarDate(probe, config.timeZone);
-    const scheduledAt = getScheduledInstantForLocalDate(config, summaryDate);
+    const summaryDate = formatUtcCalendarDate(probe);
+    const scheduledAt = getScheduledInstantForUtcDate(config, summaryDate);
     if (scheduledAt.getTime() >= floor.getTime()) {
       return scheduledAt;
     }
@@ -222,9 +258,9 @@ export function findNextOccurrence(
 export function defaultDailySummaryConfig(now: Date = new Date()): DailySummaryConfig {
   return {
     enabled: false,
-    localTime: '08:00',
+    utcTime: '08:00',
     timeZone: 'UTC',
-    sendNtfy: false,
     effectiveFromIso: now.toISOString(),
+    publicUrl: '',
   };
 }

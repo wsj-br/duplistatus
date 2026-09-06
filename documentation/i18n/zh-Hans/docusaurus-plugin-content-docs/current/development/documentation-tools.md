@@ -63,16 +63,17 @@ documentation/
 
 ### 翻译工作原理 {#how-translation-works}
 
-1. **Docusaurus UI 字符串**: `pnpm write-translations` 提取主题/自定义字符串到 `i18n/en/*.json`。
-2. **AI 翻译** (OpenRouter；配置在 `ai-i18n-tools.config.json` 中的仓库根目录): 从 `documentation/`，`pnpm translate` 运行根 `i18n:translate` 脚本（UI 字符串、SVG 和 Docusaurus markdown/JSON）到 `documentation/i18n/` 和 `src/locales/`，如配置所示。
-3. **构建**: `pnpm build` 为所有语言生成静态 HTML 文件，位于 `documentation/build/` 下。
+1. **Docusaurus UI 字符串**: `pnpm write-translations` 将主题/自定义字符串提取到 `i18n/en/*.json`。
+2. **AI 翻译** (OpenRouter; 在仓库根目录的 `ai-i18n-tools.config.json` 中配置): 从 `documentation/`，`pnpm translate` 运行根目录的 `i18n:translate` 脚本 (UI 字符串、SVG、Docusaurus markdown/JSON 和默认通知模板) 到 `documentation/i18n/`、`src/locales/` 和 `src/locales/templates/`，如配置。
+3. **构建**: `pnpm build` 为所有语言环境在 `documentation/build/` 下生成静态 HTML。
 
 ### 运行翻译 {#running-translation}
 
 ```bash
 cd documentation
-pnpm translate          # Same as repo root: i18n:translate (ui + svg + docs)
+pnpm translate          # Same as repo root: i18n:translate (ui + svg + docs + json)
 pnpm translate:docs
+pnpm translate:json
 pnpm translate:svg
 pnpm translate:ui
 pnpm translate:status

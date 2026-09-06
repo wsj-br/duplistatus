@@ -32,44 +32,20 @@ function formatCollectionSummaryFromContent(
   if (successfulCollections === totalServers) {
     return {
       title: t("All Collections Successful"),
-      description: t(
-        "Collected from {{successfulCollections}} servers. Processed: {{totalProcessed}}, Skipped: {{totalSkipped}}, Errors: {{totalErrors}}",
-        {
-          successfulCollections,
-          totalProcessed,
-          totalSkipped,
-          totalErrors,
-        },
-      ),
+      description: `${t("Collected from {{count}} servers.", { plurals: true, count: successfulCollections })} ${t("Processed: {{count}} backups", { plurals: true, count: totalProcessed })}, ${t("Skipped: {{count}} duplicates", { plurals: true, count: totalSkipped })}, ${t("Errors: {{count}}", { count: totalErrors })}`,
       variant: 'default',
     };
   }
   if (successfulCollections > 0) {
     return {
       title: t("Partial Collection Success"),
-      description: t(
-        "Successfully collected from {{successfulCollections}}/{{totalServers}} servers. Processed: {{totalProcessed}}, Skipped: {{totalSkipped}}, Errors: {{totalErrors}}. Failed servers: {{failedServerNames}}",
-        {
-          successfulCollections,
-          totalServers,
-          totalProcessed,
-          totalSkipped,
-          totalErrors,
-          failedServerNames: failedServerNames.join(', '),
-        },
-      ),
+      description: `${t("Successfully collected from {{count}} servers", { plurals: true, count: successfulCollections })} ${t("out of {{count}}.", { count: totalServers })} ${t("Processed: {{count}} backups", { plurals: true, count: totalProcessed })}, ${t("Skipped: {{count}} duplicates", { plurals: true, count: totalSkipped })}, ${t("Errors: {{count}}", { count: totalErrors })}. ${t("Failed servers: {{failedServerNames}}", { failedServerNames: failedServerNames.join(', ') })}`,
       variant: 'default',
     };
   }
   return {
     title: t("Collection Failed"),
-    description: t(
-      'Failed to collect from all {{totalServers}} servers: {{failedServerNames}}. Check individual server configurations.',
-      {
-        totalServers,
-        failedServerNames: failedServerNames.join(', '),
-      },
-    ),
+    description: `${t("Failed to collect from all {{count}} servers:", { plurals: true, count: totalServers })} ${failedServerNames.join(', ')}. ${t("Check individual server configurations.")}`,
     variant: 'destructive',
   };
 }

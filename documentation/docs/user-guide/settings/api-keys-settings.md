@@ -51,10 +51,10 @@ Clients that can send headers may use `X-Api-Key` or `Authorization: Bearer` ins
 
 ## Require keys {#require-keys}
 
-The **Require API keys for external APIs** switch is off by default. When you turn it on, the four external data APIs return `401` without a valid key. Enable at least one upload key and one read key first, or Duplicati uploads and Homepage widgets will stop.
+The **Require API keys for external APIs** switch is off by default. When you turn it on, the four external data APIs return `401` without a valid key. Enable at least one upload key and one read key first, or Duplicati uploads and Homepage widgets will stop. Changes save automatically.
 
 ## External API protection {#external-api-protection}
 
-The same page can require API keys for the public upload and read APIs, and configures a maximum body size (default 5 MB) and per-IP rate limits for `/api/upload`. Size and rate limits apply even when keys are optional and are the main defence against flooding.
+The same page can require API keys for the public upload and read APIs, and configures a maximum body size (default 5 MB) and per-IP rate limits for `/api/upload`. Size and rate limits apply even when keys are optional and are the main defence against flooding. Switches and limit fields save automatically; there is no separate Save button.
 
-See also [IP Allowlist](ip-allowlist-settings.md) if you want to restrict who can reach the external APIs without using keys.
+See also [IP Allowlist](ip-allowlist-settings.md). IP Allowlist and API Keys are independent features; you can use either one or both together. Enabling both increases security by restricting access based on IP address and requiring an API key.

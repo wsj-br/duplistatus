@@ -6,6 +6,8 @@
 pnpm dev
 ```
 
+Isso inicia tanto o aplicativo Next.js (porta 8666) quanto o serviço cron (porta 8667). CTRL-C para ambos. Use `pnpm dev:next` ou `pnpm cron:dev` para executar qualquer um dos processos isoladamente.
+
 - **Armazenamento de Arquivos JSON**: Todos os dados de backup recebidos são armazenados como arquivos JSON no diretório `data`. Esses arquivos são nomeados usando a data e hora de quando foram recebidos, no formato `YYYY-MM-DDTHH-mm-ss-sssZ.json` (horário UTC). Este recurso está ativo apenas em modo de desenvolvimento e ajuda na depuração ao preservar os dados brutos recebidos do Duplicati.
 
 - **Verbose Logging**: A aplicação registra informações mais detalhadas sobre operações de banco de dados e requisições de API quando executada em modo de desenvolvimento.

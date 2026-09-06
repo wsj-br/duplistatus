@@ -6,7 +6,7 @@ For general documentation commands (build, deploy, screenshots, README generatio
 
 The documentation uses Docusaurus i18n with English as the default locale. Source documentation lives in `docs/`; translations are written under `i18n/{locale}/`. Supported locales: en-GB (default), fr, de, es, pt-BR, hi, zh-Hans.
 
-**AI translation** for the app UI, Docusaurus markdown/JSON, and SVG assets is handled by [**ai-i18n-tools**](https://www.npmjs.com/package/ai-i18n-tools) from the **repository root**, configured in `ai-i18n-tools.config.json` (not inside `documentation/`). Set `OPENROUTER_API_KEY` when running translate commands.
+**AI translation** for the app UI, Docusaurus markdown/JSON, SVG assets, and **default notification templates** is handled by [**ai-i18n-tools**](https://www.npmjs.com/package/ai-i18n-tools) from the **repository root**, configured in `ai-i18n-tools.config.json` (not inside `documentation/`). Set `OPENROUTER_API_KEY` when running translate commands.
 
 ## When English documentation changes {#when-english-documentation-changes}
 
@@ -17,6 +17,7 @@ The documentation uses Docusaurus i18n with English as the default locale. Sourc
    - `pnpm i18n:extract` — refresh `src/locales/strings.json` from `t('…')` in the Next.js app.
    - `pnpm i18n:translate:docs` — translate markdown/JSON into `documentation/i18n/` per config.
    - `pnpm i18n:translate:svg` — translate SVGs under `documentation/static/img` as configured.
+   - `pnpm i18n:translate:json` — translate default notification templates in `src/locales/templates/` from `en-GB.json`.
    - Or run everything: `pnpm i18n:translate`.
 5. **Build**: `cd documentation && pnpm build` (all locales).
 
@@ -35,9 +36,28 @@ t("{{count}} backups selected", { plurals: true, count: selectedBackups.size })
 Rules:
 
 - Do not use `item(s)` hedges or `count === 1 ? t('…') : t('…')` pairs.
-- Independent counts need separate `t()` calls. A string with two or more interpolations must include `{{count}}` as the plural axis.
+- Independent **numeric** counts need separate `t()` calls — one plural axis cannot flex two numbers (for example 1 successful and 2 failed). Concatenate the fragments:
+
+```tsx
+`${t("Tested {{count}} connections:", { plurals: true, count: total })} ` +
+  `${t("{{count}} successful,", { plurals: true, count: successCount })} ` +
+  `${t("{{count}} failed", { plurals: true, count: failureCount })}`
+```
+
+- Non-numeric interpolations (names, labels, etc.) are fine in the same plural string as `{{count}}`.
 - `pnpm i18n:extract` marks the catalog row `"plural": true`. `pnpm i18n:translate:ui` fills CLDR forms and writes `src/locales/en-GB.json` (plural keys only).
 - `src/i18n.ts` and `src/lib/i18n-server.ts` load that file as `sourcePluralFlatBundle` so English singular/plural resolve at runtime.
+
+## Default notification templates {#default-notification-templates}
+
+Settings → Templates → **Reset** loads defaults from `src/locales/templates/{locale}.json` (wired in `src/lib/default-notification-templates.ts`).
+
+1. Edit **`src/locales/templates/en-GB.json`** only (English source).
+2. Run **`pnpm i18n:translate:json`** (or **`pnpm i18n:translate`**) from the repo root.
+3. Review diffs — placeholders such as `{backup_name}` and `{problem_table}` must stay unchanged; `priority` and `tags` are skipped by `keyPolicy` in `ai-i18n-tools.config.json`.
+4. Run **`pnpm i18n:status`** to see JSON block coverage.
+
+See the [ai-i18n-tools JSON guide](https://wsj-br.github.io/ai-i18n-tools/guide/json.html) for flags (`--locale`, `--force`, etc.).
 
 ## Glossary {#glossary}
 

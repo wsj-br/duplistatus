@@ -12,7 +12,7 @@ Activez **Faire confiance aux en-têtes de proxy inverse** uniquement lorsque du
 
 ## Interface d'administration {#admin-interface}
 
-Lorsque cette option est activée, les pages, les connexions, les API CSRF et de session n'acceptent que les CIDR listés. Ajoutez des entrées avec **Ajouter** ; votre **IP autorisée** actuelle est étiquetée **IP actuelle** lorsqu'elle est dans la liste. **Ajouter l'IP actuelle** et **IP de connexion récente de l'administrateur** (à partir du journal d'audit) offrent des suggestions rapides. Vous ne pouvez pas activer cette liste sauf si votre IP actuelle est déjà incluse (ou si vous vous connectez depuis la boucle locale). Une exclusion peut être récupérée avec :
+Quand activé, les pages, les connexions, les API CSRF et de session n'acceptent que les CIDR listés. Ajoutez des entrées avec **Ajouter** ; votre **IP autorisée** est marquée **IP actuelle** lorsqu'elle est dans la liste. **127.0.0.1** et **::1** sont inclus par défaut et ne peuvent pas être supprimés. **Ajouter l'IP actuelle** et les **IP de connexion récente de l'administrateur** (à partir du journal d'audit) offrent des suggestions rapides. Vous ne pouvez pas activer cette liste sauf si votre IP actuelle est déjà incluse (ou si vous vous connectez depuis la boucle locale). Un verrouillage peut être récupéré avec :
 
 ```bash
 ADMIN_IP_ALLOWLIST_ENABLED=false
@@ -24,7 +24,7 @@ ou en ajoutant votre CIDR à `ADMIN_IP_ALLOWLIST`. Les étapes complètes de ré
 
 Quand activé, `/api/upload`, `/api/summary`, et `/api/lastbackup*` acceptent uniquement les CIDR listés. `/api/health` et `/api/ping` restent ouverts afin que les vérifications de santé Docker et la sonde de connectivité continuent de fonctionner.
 
-Cette liste est la protection à utiliser lorsque les clés API ne sont pas requises. Ajoutez des CIDR comme des puces comme la liste d'administration. **IP sources récentes de téléchargement** du journal d'audit sont proposées comme suggestions d'ajout rapide.
+Cette liste est la protection à utiliser lorsque les clés API ne sont pas requises. Ajoutez des CIDR comme des puces comme la liste d'administration. **127.0.0.1** et **::1** sont inclus par défaut et ne peuvent pas être supprimés. Les **IP sources récentes de téléchargement** du journal d'audit sont proposées comme suggestions d'ajout rapide.
 
 Si cette liste d'adresses IP autorisées et les clés API sont requises, une requête doit passer **les deux**.
 

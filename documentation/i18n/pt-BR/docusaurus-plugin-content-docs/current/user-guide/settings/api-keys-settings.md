@@ -55,4 +55,4 @@ O interruptor **Exigir chaves de API para APIs externas** está desativado por p
 
 A mesma página pode exigir chaves de API para as APIs públicas de carregamento e leitura, e configura um tamanho máximo do corpo (padrão 5 MB) e limites de taxa por IP para `/api/upload`. O tamanho e os limites de taxa se aplicam mesmo quando as chaves são opcionais e são a principal defesa contra inundação.
 
-Consulte também [Lista de permissões de IP](ip-allowlist-settings.md) se você quiser restringir quem pode acessar as APIs externas sem usar chaves.
+Veja também [Lista de permissões de IP](ip-allowlist-settings.md). Lista de permissões de IP e Chaves de API são recursos independentes; você pode usar um ou ambos juntos. Habilitar ambos aumenta a segurança, restringindo o acesso com base no endereço IP e exigindo uma chave de API.

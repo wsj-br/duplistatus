@@ -118,11 +118,12 @@
 该项目包括几个 npm 脚本，用于不同的开发任务：
 
 ### 开发脚本 {#development-scripts}
-- `pnpm dev` - 在端口 8666 上启动开发服务器（包括预检查）。 `NODE_OPTIONS` 加载 `scripts/dev-preload.cjs`，该脚本应用 `scripts/peer-ip.cjs`（TCP 对等地址用于 IP 允许列表）和请求日志时间戳。
-- `pnpm build` - 为生产环境构建应用程序（包括预检查）
+- `pnpm dev` - 启动 Next.js 开发服务器（端口 8666）和 cron 服务（端口 8667），通过 `concurrently` 一起启动（包括预检查）。CTRL-C 停止两者。`NODE_OPTIONS` 对于 Next.js 加载 `scripts/dev-preload.cjs`，应用 `scripts/peer-ip.cjs`（IP 允许列表的 TCP 对等地址）和请求日志时间戳。
+- `pnpm dev:next` - 仅在端口 8666 启动 Next.js 开发服务器（不使用 cron）。
+- `pnpm build` - 为生产构建应用程序（包括预检查）
 - `pnpm lint` - 运行 ESLint 检查代码质量
 - `pnpm typecheck` - 运行 TypeScript 类型检查
-- `scripts/upgrade-dependencies.sh` — 对每个工作区包进行构建安全的升级（自动检测）。使用 `npm-check-updates` 解析最新版本，从工作区根目录进行安装，并且仅保留通过每个包的 `typecheck`/`lint` 的升级（当 lint 栈不允许最新的主版本时，peer gates 会固定 `eslint` / `typescript`）。然后运行 `pnpm audit` / `audit --fix`，并强制应用（并报告）任何需要更改代码的安全修复。刷新工作区 lockfile 和 browserslist。优先使用 `source ./scripts/upgrade-dependencies.sh` 以便 **nvm** 应用于您的 shell；在 CI 或自动化中，直接执行文件时请使用 `CI=1` 或 `UPGRADE_ALLOW_EXEC=1`。另请参阅仅针对 Node/pnpm 工具的 `scripts/upgrade-tools.sh`。
+- `scripts/upgrade-dependencies.sh` — 安全构建升级每个工作区包（自动检测）。解析最新版本并使用 `npm-check-updates`，从工作区根目录安装，并仅保留通过每个包的 `typecheck`/`lint` 的升级（对等门控在 lint 堆栈不允许最新主要版本时固定 `eslint` / `typescript`）。然后运行 `pnpm audit` / `audit --fix` 并强制应用（并报告）任何需要代码更改的安全修复。刷新工作区锁定文件和浏览器列表。优先使用 `source ./scripts/upgrade-dependencies.sh` 以便 **nvm** 应用于你的 shell；在 CI 或自动化中直接执行文件时使用 `CI=1` 或 `UPGRADE_ALLOW_EXEC=1`。另见 `scripts/upgrade-tools.sh` 仅适用于 Node/pnpm 工具。
 - `scripts/clean-workspace.sh` - 清理工作区
 
 **注意：** `preinstall` 脚本自动强制使用 pnpm 作为包管理器。
@@ -156,9 +157,9 @@
 - `pnpm docker:devel` - 构建一个开发 Docker 镜像，标记为 `wsj-br/duplistatus:devel`
 
 ### Cron 服务脚本 {#cron-service-scripts}
-- `pnpm cron:start` - 以生产模式启动 Cron 服务
-- `pnpm cron:dev` - 以开发模式启动 Cron 服务，启用文件监视（端口 8667）
-- `pnpm cron:start-local` - 以测试模式在本地启动 Cron 服务（端口 8667）
+- `pnpm cron:start` - 在生产模式下启动 cron 服务
+- `pnpm cron:dev` - 在开发模式下仅启动 cron 服务并进行文件监视（端口 8667）。在使用 `pnpm dev` 时通常不必要，因为它已经启动了 cron。
+- `pnpm cron:start-local` - 在本地启动 cron 服务以进行测试（端口 8667）
 
 ### 测试脚本 {#test-scripts}
 - `pnpm generate-test-data` - 生成测试备份数据（需要 --servers=N 参数）
