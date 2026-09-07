@@ -1,6 +1,6 @@
 ![duplistatus](documentation/static/img/duplistatus_banner.png)
 
-# duplistatus -  Supervisar múltiples servidores [Duplicati](https://github.com/duplicati/duplicati)
+# duplistatus - Monitorear Múltiples Servidores [Duplicati](https://github.com/duplicati/duplicati) {/* #duplistatus----monitor-multiple-duplicatishttpsgithubcomduplicatiduplicati-servers */}
 
 ![versión](https://img.shields.io/badge/version-{VERSION}-blue) 
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?logo=github)](https://github.com/wsj-br/duplistatus)
@@ -10,7 +10,7 @@
 Esta aplicación web supervisa y visualiza operaciones de respaldo desde [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** proporciona un panel completo para rastrear estados de respaldo, notificar respaldos atrasados, historial de trabajos,
 métricas y rendimiento en múltiples servidores.
 
-Fácil de implementar con Docker, Podman o Portainer y disponible en 7 idiomas (inglés, alemán, francés, español, portugués, hindi (romano) y chino simplificado), con documentación completa en cada idioma.
+Fácil de desplegar con Docker, Podman o Portainer y disponible en 7 idiomas (inglés, alemán, francés, español, portugués, hindi y chino simplificado), con documentación completa en cada idioma.
 
 [Más información](https://wsj-br.github.io/duplistatus)        |
 [Mehr informationen](https://wsj-br.github.io/duplistatus/de/)  | 

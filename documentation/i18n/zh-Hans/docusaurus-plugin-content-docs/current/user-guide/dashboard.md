@@ -1,6 +1,6 @@
-# 仪表盘 {#dashboard}
+# 仪表板 {/* #dashboard */}
 
-## 仪表盘概览 {#dashboard-summary}
+## 仪表板摘要 {/* #dashboard-summary */}
 
 本节显示所有备份的聚合统计信息。
 
@@ -20,7 +20,7 @@
 如果同一服务器在仪表盘上出现多次，请使用[设置 → 数据库维护 → 合并重复服务器](settings/database-maintenance.md#merge-duplicate-servers)来合并它们。重复项可能发生在您重新安装或升级Duplicati时，因为服务器的`machine_id`可能会改变，**duplistatus**然后将其视为新服务器。
 :::
 
-## 服务器过滤 {#server-filtering}
+## 服务器筛选 {/* #server-filtering */}
 
 您可以使用应用程序工具栏中的搜索字段来过滤仪表盘上显示的服务器和备份。单击过滤图标<IconButton icon="lucide:search" />显示搜索字段。
 
@@ -36,7 +36,7 @@
 
 这使得您可以轻松地在许多被监控的系统中快速找到特定的服务器或备份。
 
-## 卡片布局 {#cards-layout}
+## 卡片布局 {/* #cards-layout */}
 
 卡片布局显示每个备份收到的最新备份日志的状态。
 
@@ -65,7 +65,7 @@
 
 ![图表面板](../assets/screen-overview-side-charts.png)
 
-### 备份详细信息 {#backup-details}
+### 备份详情 {/* #backup-details */}
 
 将鼠标悬停在列表中的备份上，显示最后一个备份日志的详细信息和任何逾期信息。
 
@@ -85,7 +85,7 @@
 
 您也可以单击底部的按钮打开 [设置 → 备份通知](settings/backup-notifications-settings.md) 来配置监控设置或打开 Duplicati 服务器的 Web 界面。
 
-## 表格布局 {#table-layout}
+## 表格布局 {/* #table-layout */}
 
 表格布局列出所有服务器和备份的最新备份日志。
 
@@ -107,7 +107,7 @@
 
 您可以使用 [显示设置](settings/display-settings.md) 来配置表格大小和其他配置。
 
-### 通知图标 {#notifications-icons}
+### 通知图标 {/* #notifications-icons */}
 
 | 图标                                                                                                                               | 通知选项 | 描述                                                                                         |
 |------------------------------------------------------------------------------------------------------------------------------------|---------------------|-----------------------------------------------------------------------------------------------------|
@@ -120,7 +120,7 @@
 此通知设置仅在 **duplistatus** 从 Duplicati 服务器接收到新备份日志时应用。逾期通知配置单独设置，并且无论此设置如何，都会发送。
 :::
 
-### 逾期详情 {#overdue-details}
+### 过期详情 {/* #overdue-details */}
 
 悬停在逾期警告图标上会显示关于逾期备份的详细信息。
 
@@ -131,7 +131,7 @@
 - **预期备份**: 预期备份时间，包括配置的宽限期（在标记为逾期之前允许的额外时间）。
 - **上次通知**: 上次逾期通知何时发送。
 
-## Duplicati 服务器版本 {#duplicati-server-version}
+## Duplicati 服务器版本 {/* #duplicati-server-version */}
 
 仪表板显示每个服务器（卡片视图）或每个备份作业（表格视图）在最新备份日志中报告的 Duplicati 版本。
 
@@ -145,7 +145,7 @@
 **duplistatus** 不会向 Duplicati 服务器查询当前正在运行的版本。它使用最后一次接收或 [已收集](collect-backup-logs.md) 的备份日志中存储的版本。在您升级 Duplicati 后，仪表板会一直显示之前的版本，直到新的备份日志到达。
 :::
 
-### 可用备份版本 {#available-backup-versions}
+### 可用备份版本 {/* #available-backup-versions */}
 
 点击蓝色时钟图标会打开备份版本列表，显示备份时的可用备份版本，如 Duplicati 服务器报告的那样。
 

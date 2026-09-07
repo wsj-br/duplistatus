@@ -1,4 +1,4 @@
-# 数据库维护 {#database-maintenance}
+# 数据库维护 {/* #database-maintenance */}
 
 通过数据库维护操作管理您的备份数据并优化性能。
 
@@ -6,7 +6,7 @@
 
 <br/>
 
-## 数据库备份 {#database-backup}
+## 数据库备份 {/* #database-backup */}
 
 创建整个数据库的备份，以便安全保管或迁移。
 
@@ -30,7 +30,7 @@
 
 <br/>
 
-## 数据库还原 {#database-restore}
+## 数据库恢复 {/* #database-restore */}
 
 从以前创建的备份文件还原您的数据库。
 
@@ -79,9 +79,11 @@
 如果您不小心删除了数据，可以使用 [收集备份日志](../collect-backup-logs.md) 功能来恢复它。
 :::
 
+cron 服务也会在每周日 UTC 04:00 **压缩** 数据库。该操作会删除不再存在的服务器的备份行，没有剩余备份报告的服务器行，剩余的备份监控和过期通知设置，旧的每日摘要传递行，并运行 SQLite `VACUUM` 以回收文件空间。删除服务器或备份作业仍会立即清理匹配的设置。
+
 <br/>
 
-## 数据清理周期 {#data-cleanup-period}
+## 数据清理周期 {/* #data-cleanup-period */}
 
 删除过时的备份记录以释放存储空间并提高系统性能。
 
@@ -109,7 +111,7 @@
 
 <br/>
 
-## 删除备份作业数据 {#delete-backup-job-data}
+## 删除备份任务数据 {/* #delete-backup-job-data */}
 
 删除特定的备份作业（类型）数据。
 
@@ -127,7 +129,7 @@
 
 <br/>
 
-## 删除服务器数据 {#delete-server-data}
+## 删除服务器数据 {/* #delete-server-data */}
 
 删除特定的服务器及其所有关联的备份数据。
 
@@ -144,7 +146,7 @@
 
 <br/>
 
-## 合并重复服务器 {#merge-duplicate-servers}
+## 合并重复服务器 {/* #merge-duplicate-servers */}
 
 检测并合并具有相同名称但不同 ID 的重复服务器。使用此功能将它们合并为一个服务器条目。
 

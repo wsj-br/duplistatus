@@ -1,5 +1,5 @@
 
-# Display {#display}
+# Display {/* #display */}
 
 Configure user interface and display preferences.
 

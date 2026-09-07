@@ -1,11 +1,11 @@
-# Scripts de Teste {#test-scripts}
+# Scripts de Teste {/* #test-scripts */}
 
 O projeto inclui vários scripts de teste para ajudar no desenvolvimento e testes:
 
 > [!NOTE]
 > Legados auxiliares de raiz do repositório `pnpm` para depuração de backups atrasados, testes de matriz SMTP e verificações de porta do cron foram removidos. Use a interface do aplicativo (**Configurações → Monitoramento de Backup**), APIs HTTP autenticadas e `curl` contra o serviço cron conforme documentado abaixo.
 
-## Gerar Dados de Testar {#generate-test-data}
+## Gerar Dados de Teste {/* #generate-test-data */}
 
 ```bash
 pnpm generate-test-data --servers=N
@@ -49,26 +49,26 @@ O script atribui versões do Duplicati **por servidor** (a mesma string de relat
 > Este script deleta todos os dados anteriores no banco de dados e os substitui por dados de teste.
 > Faça backup do seu banco de dados antes de executar este script.
 
-## Verificações de atraso e conectividade do cron (desenvolvimento) {#overdue-checks-and-cron-connectivity-development}
+## Verificações Atrasadas e Conectividade do Cron (desenvolvimento) {/* #overdue-checks-and-cron-connectivity-development */}
 
-### Executar uma verificação de backup atrasado {#run-an-overdue-backup-check}
+### Executar uma verificação de backup atrasado {/* #run-an-overdue-backup-check */}
 
 Enquanto o aplicativo estiver em execução:
 
 - **Interface do usuário (recomendado):** abra **Configurações → Monitoramento de Backup** e use **Testar backups atrasados**. Isso executa a mesma lógica do trabalho agendado por meio de `POST /api/notifications/check-overdue` autenticado.
 
-### Saúde do serviço Cron {#cron-service-health}
+### Saúde do serviço Cron {/* #cron-service-health */}
 
 ```bash
 curl http://localhost:8667/health
 curl http://localhost:8666/api/cron/health
 ```
 
-### Simulando uma data ou hora específica {#simulating-a-specific-date-or-time}
+### Simulando uma data ou hora específica {/* #simulating-a-specific-date-or-time */}
 
 Não há uma CLI integrada para injetar um tempo simulado "atual". Para o algoritmo e ideias de teste manual, consulte o arquivo do repositório `dev/OVERDUE_DETECTION_ALGORITHM.md` e a implementação em `src/lib/overdue-backup-checker.ts`.
 
-## Validar exportação CSV {#validate-csv-export}
+## Validar exportação CSV {/* #validate-csv-export */}
 
 ```bash
 pnpm validate-csv-export
@@ -81,7 +81,7 @@ Este script valida a funcionalidade de exportação CSV. Ele:
 
 Útil para garantir que as exportações de CSV funcionem corretamente antes dos lançamentos.
 
-## Bloquear temporariamente o servidor NTFY (para testes) {#temporarily-block-ntfy-server-for-testing}
+## Bloquear temporariamente o servidor NTFY (para testes) {/* #temporarily-block-ntfy-server-for-testing */}
 
 ```bash
 sudo ./scripts/temporary_ntfy.sh_block.sh
@@ -97,11 +97,11 @@ Este script bloqueia temporariamente o acesso de rede de saída para o servidor 
 >[!CAUTION]
 > Este script modifica regras de iptables e requer privilégios de root. Use apenas para testar mecanismos de tentar novamente de notificações.
 
-## Testes de Migração de Banco de Dados {#database-migration-testing}
+## Teste de Migração de Banco de Dados {/* #database-migration-testing */}
 
 O projeto inclui scripts para testar migrações de banco de dados de versões antigas para a versão atual. Esses scripts garantem que as migrações de banco de dados funcionem corretamente e preservem a integridade dos dados.
 
-### Gerar Dados de Teste de Migração {#generate-migration-test-data}
+### Gerar Dados de Teste de Migração {/* #generate-migration-test-data */}
 
 ```bash
 ./scripts/generate-migration-test-data.sh
@@ -143,7 +143,7 @@ Este script gera bancos de dados de teste para múltiplas versões históricas d
 >[!IMPORTANT]
 > Este script deveria ser executado apenas uma vez. Nas novas versões, o desenvolvedor pode copiar o arquivo de banco de dados e as capturas de tela diretamente para o diretório `scripts/migration_test_data/`. Durante o desenvolvimento, basta executar o script `./scripts/test-migrations.sh` para testar as migrações.
 
-### Migrações de Banco de Dados de Teste {#test-database-migrations}
+### Testar Migrações de Banco de Dados {/* #test-database-migrations */}
 
 ```bash
 ./scripts/test-migrations.sh
@@ -220,11 +220,11 @@ echo $?  # 0 = all passed, 1 = some failed
 >[!NOTE]
 > Este script usa internamente o script de teste de migração TypeScript (`test-migration.ts`). O script de teste valida a estrutura do banco de dados após a migração e garante a integridade dos dados.
 
-## SMTP e e-mail (desenvolvimento) {#smtp-and-email-development}
+## SMTP e E-mail (desenvolvimento) {/* #smtp-and-email-development */}
 
 Configure o SMTP em **Configurações → E-mail** e use os fluxos internos de teste de e-mail e notificações. Os antigos scripts auxiliares `pnpm set-smtp-test-config` e `pnpm test-smtp-connections` foram removidos do repositório.
 
-## Testar Script de Entrypoint Docker {#test-docker-entrypoint-script}
+## Testar Script de Entrypoint do Docker {/* #test-docker-entrypoint-script */}
 
 ```bash
 pnpm test-entrypoint
@@ -267,10 +267,10 @@ pnpm test-entrypoint
 - Testar desligamento gracioso e tratamento de sinais
 - Depurar o comportamento do script de entrada em um ambiente local
 
-## Validação do Resumo Diário {#daily-summary-validation}
+## Validação do Resumo Diário {/* #daily-summary-validation */}
 
 ```bash
 pnpm validate-daily-summary
 ```
 
-Executa verificações determinísticas para agendamento do Resumo Diário (incluindo horário de verão), agregação de instantâneos, sanitização de Markdown, reivindicações de registro de entrega e migração de esquema 4.1 → 4.2 com modelos personalizados. Não envia e-mail ou NTFY.
+Executa verificações determinísticas para agendamento do Resumo Diário (incluindo HED), agregação de snapshots (apenas os últimos trabalhos de Backup), remoção de configurações de notificação obsoletas, exclusão de linhas de Backup/Servidor órfãs, sanitização de Markdown, reivindicações de registro de entrega e migração de esquema 4.1 → 4.2 com modelos personalizados. Não envia E-mail ou NTFY.

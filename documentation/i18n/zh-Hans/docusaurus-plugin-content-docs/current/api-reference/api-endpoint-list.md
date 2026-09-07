@@ -1,4 +1,4 @@
-# API 端点列表 {#api-endpoint-list}
+# API 端点列表 {/* #api-endpoint-list */}
 
 本文档提供了所有可用 API 端点的快速参考表（按端点字母顺序排列）。
 
@@ -62,6 +62,7 @@
 | [`/api/dashboard`](core-operations#get-dashboard-data-consolidated---apidashboard)                                                                  | GET    | 获取仪表板数据（整合） | 核心操作           |
 | [`/api/detail/:serverId`](core-operations#get-server-data-with-overdue-info---apidetailserverid)                                                    | GET    | 获取服务器数据，包括逾期信息 | 核心操作           |
 | [`/api/health`](monitoring-apis#health-check---apihealth)                                                                                           | GET    | 健康检查                      | 监控和健康       |
+| [`/api/ping`](monitoring-apis#connectivity-probe---apiping)                                                                                         | GET    | 连接性探测                | 监控与健康       |
 | [`/api/lastbackup/:serverId`](external-apis#get-latest-backup---apilastbackupserverid)                                                              | GET    | 获取最新备份                 | 外部API             |
 | [`/api/lastbackups/:serverId`](external-apis#get-latest-backups---apilastbackupsserverid)                                                           | GET    | 获取最新备份列表                | 外部API             |
 | [`/api/notifications/check-overdue`](notification-apis#check-overdue-backups---apinotificationscheck-overdue)                                       | POST   | 检查逾期备份             | 通知系统       |

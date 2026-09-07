@@ -20,7 +20,7 @@
   "dailySummary": {
     "email": {
       "title": "📬 duplistatus — 每日备份摘要 — {summary_date}",
-      "message": "## 📊 每日备份摘要\n\n🕐 生成时间: **{generated_at}** ({time_zone})\n\n### 📈 概览\n\n| 指标 | 数量 |\n| --- | ---: |\n| 🖥️ 服务器 | {server_count} |\n| 💼 备份作业 | {job_count} |\n| ✅ 成功 | {success_count} |\n| ⚠️ 警告 | {warning_count} |\n| 🛑 错误 | {error_count} |\n| 💀 致命 | {fatal_count} |\n| ❓ 未知 | {unknown_count} |\n| ❓ 未收到报告 | {no_report_count} |\n| 🕑 过期 | {overdue_count} |\n\n### 🚨 需要注意\n\n{problem_table}\n\n### 📋 所有最新备份结果\n\n{all_jobs_table}\n\n{duplistatus_link}\n"
+      "message": "## 📊 每日备份摘要\n\n🕐 生成时间: **{generated_at}** ({time_zone})\n\n### 📈 概览\n\n| 指标 | 数量 |\n| --- | ---: |\n| 🖥️ 服务器 | {server_count} |\n| 💼 备份任务 / ✅ 成功 | {job_count} / {success_count} |\n| ⚠️ 警告 / 🛑 错误 / 💀 致命 / ❓ 未知 | {warning_count} / {error_count} / {fatal_count} / {unknown_count} |\n| ❓ 未收到报告 | {no_report_count} |\n| 🕑 超时 | {overdue_count} |\n\n### 🚨 需要注意\n\n{problem_table}\n\n### 📋 所有最新备份结果\n\n{all_jobs_table}\n\n{duplistatus_link}\n"
     }
   }
 }

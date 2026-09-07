@@ -1,12 +1,12 @@
 import { ZoomMermaid } from '@site/src/components/ZoomMermaid';
 
-# 备份监控 {#backup-monitoring}
+# 备份监控 {/* #backup-monitoring */}
 
 备份监控功能允许您跟踪和提醒过期的备份。通知可以通过 NTFY 或 电子邮件 发送。
 
 在用户界面中，过期的备份将以警告图标显示。悬停在图标上将显示过期备份的详细信息，包括上次备份时间、预期备份时间、容忍期和预期下一次备份时间。
 
-## 过期检查过程 {#overdue-check-process}
+## 逾期检查流程 {/* #overdue-check-process */}
 
 **它的工作原理：**
 
@@ -50,11 +50,11 @@ gantt
 - 在 `2024-01-02 08:30` （🔹检查 2）时，备份是 **按时**的，因为它仍然在宽限期内。
 - 在 `2024-01-02 10:00` （🔹检查 3）时，备份是 **过期**的，因为这是在 `Expected Next Backup` 时间之后。
 
-## 定期检查 {#periodic-checks}
+## 定期检查 {/* #periodic-checks */}
 
 **duplistatus** 在可配置的间隔内执行定期检查，以检测过期的备份。默认间隔为 20 分钟，但您可以在 [设置 → 备份监控](settings/backup-monitoring-settings.md) 中配置它。
 
-## 自动配置 {#automatic-configuration}
+## 自动配置 {/* #automatic-configuration */}
 
 当您从 Duplicati 服务器收集备份日志时，**duplistatus** 自动：
 

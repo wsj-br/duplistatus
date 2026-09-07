@@ -36,7 +36,7 @@ import { useCurrentUser } from '@/hooks/use-current-user';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { formatDateTime } from '@/lib/date-format';
 import { useLocale } from '@/contexts/locale-context';
-import { localWallTimeToUtcTime, utcTimeToLocalWallTime } from '@/lib/daily-summary-schedule';
+import { localWallTimeToUtcTime, utcTimeToLocalWallTime, DEFAULT_DAILY_SUMMARY_UTC_TIME } from '@/lib/daily-summary-schedule';
 import type { DailySummaryChannelPublicStatus, DailySummaryPublicStatus, DailySummaryRenderedPayload, DailySummarySnapshot } from '@/lib/types';
 
 interface DailySummaryFormState {
@@ -44,6 +44,7 @@ interface DailySummaryFormState {
   utcTime: string;
   timeZone: string;
   publicUrl: string;
+  smtpRecipient: string;
 }
 
 function browserTimeZone(): string {
@@ -55,6 +56,7 @@ function browserTimeZone(): string {
 }
 
 const AUTO_SAVE_DEBOUNCE_MS = 800;
+const DELIVERY_STATUS_POLL_MS = 5000;
 
 export function DailySummaryForm() {
   const { t } = useTranslation();
@@ -62,11 +64,12 @@ export function DailySummaryForm() {
   const locale = useLocale();
   const currentUser = useCurrentUser();
   const isAdmin = currentUser?.isAdmin === true;
-  const { config, refreshConfigSilently } = useConfiguration();
+  const { config, refreshConfigSilently, updateConfig } = useConfiguration();
   const status = config?.dailySummary;
   const [enabled, setEnabled] = useState(status?.enabled ?? false);
-  const [sendAtLocal, setSendAtLocal] = useState(() => utcTimeToLocalWallTime(status?.utcTime ?? '08:00'));
+  const [sendAtLocal, setSendAtLocal] = useState(() => utcTimeToLocalWallTime(status?.utcTime ?? DEFAULT_DAILY_SUMMARY_UTC_TIME));
   const [publicUrl, setPublicUrl] = useState(status?.publicUrl ?? '');
+  const [smtpRecipient, setSmtpRecipient] = useState(status?.smtpRecipient ?? '');
   const [isSending, setIsSending] = useState(false);
   const [isRetrying, setIsRetrying] = useState(false);
   const [isPreviewing, setIsPreviewing] = useState(false);
@@ -81,9 +84,10 @@ export function DailySummaryForm() {
   const autoSaveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const formStateRef = useRef<DailySummaryFormState>({
     enabled: status?.enabled ?? false,
-    utcTime: status?.utcTime ?? '08:00',
+    utcTime: status?.utcTime ?? DEFAULT_DAILY_SUMMARY_UTC_TIME,
     timeZone: viewerZone,
     publicUrl: status?.publicUrl ?? '',
+    smtpRecipient: status?.smtpRecipient ?? '',
   });
 
   formStateRef.current = {
@@ -91,21 +95,33 @@ export function DailySummaryForm() {
     utcTime: localWallTimeToUtcTime(sendAtLocal),
     timeZone: viewerZone,
     publicUrl,
+    smtpRecipient,
   };
 
+  const statusEnabled = status?.enabled;
+  const statusUtcTime = status?.utcTime;
+  const statusPublicUrl = status?.publicUrl;
+  const statusSmtpRecipient = status?.smtpRecipient ?? '';
+  const hasStatus = status != null;
+
   useEffect(() => {
-    if (!status) {
+    if (statusEnabled === undefined || statusUtcTime === undefined || statusPublicUrl === undefined) {
       return;
     }
     skipNextAutoSaveRef.current = true;
-    setEnabled(status.enabled);
-    setSendAtLocal(utcTimeToLocalWallTime(status.utcTime));
-    setPublicUrl(status.publicUrl ?? '');
+    setEnabled(statusEnabled);
+    setSendAtLocal(utcTimeToLocalWallTime(statusUtcTime));
+    setPublicUrl(statusPublicUrl);
+    setSmtpRecipient(statusSmtpRecipient);
     hasHydratedRef.current = true;
-  }, [status]);
+  }, [statusEnabled, statusUtcTime, statusPublicUrl, statusSmtpRecipient]);
 
   const persistSettings = useCallback(async (next: DailySummaryFormState) => {
     if (isSaveInProgressRef.current) {
+      return;
+    }
+    const trimmedRecipient = next.smtpRecipient.trim();
+    if (trimmedRecipient.length > 0 && !trimmedRecipient.includes('@')) {
       return;
     }
     isSaveInProgressRef.current = true;
@@ -142,14 +158,14 @@ export function DailySummaryForm() {
   }, [persistSettings]);
 
   useEffect(() => {
-    if (!hasHydratedRef.current || !isAdmin || !status) {
+    if (!hasHydratedRef.current || !isAdmin || !hasStatus) {
       return;
     }
     if (skipNextAutoSaveRef.current) {
       skipNextAutoSaveRef.current = false;
       return;
     }
-    if (enabled && !status.enabled) {
+    if (enabled && statusEnabled !== true) {
       return;
     }
     scheduleAutoSave();
@@ -159,13 +175,52 @@ export function DailySummaryForm() {
         autoSaveTimeoutRef.current = null;
       }
     };
-  }, [enabled, sendAtLocal, publicUrl, isAdmin, status, scheduleAutoSave, viewerZone]);
+  }, [enabled, sendAtLocal, publicUrl, smtpRecipient, isAdmin, hasStatus, statusEnabled, scheduleAutoSave, viewerZone]);
 
   useEffect(() => () => {
     if (autoSaveTimeoutRef.current) {
       clearTimeout(autoSaveTimeoutRef.current);
     }
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const refreshDeliveryStatus = async () => {
+      try {
+        const response = await authenticatedRequestWithRecovery('/api/configuration/daily-summary');
+        if (!response.ok || cancelled) {
+          return;
+        }
+        const next = await response.json() as DailySummaryPublicStatus;
+        if (cancelled) {
+          return;
+        }
+        updateConfig({ dailySummary: next });
+      } catch {
+        // The next poll retries; keep the last known status on screen.
+      }
+    };
+
+    const intervalId = window.setInterval(() => {
+      if (document.visibilityState === 'visible') {
+        void refreshDeliveryStatus();
+      }
+    }, DELIVERY_STATUS_POLL_MS);
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        void refreshDeliveryStatus();
+      }
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(intervalId);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+    };
+  }, [updateConfig]);
 
   const handleEnabledChange = (checked: boolean) => {
     setEnabled(checked);
@@ -274,7 +329,7 @@ export function DailySummaryForm() {
             {t('Daily Summary')}
           </CardTitle>
           <CardDescription>
-            {t('When enabled, duplistatus sends one daily status snapshot by email and suppresses individual backup and overdue email notifications, including additional email destinations. Per-job NTFY settings are kept and continue to work. All settings become active again as soon as this mode is turned off.')}
+            {t('When enabled, duplistatus sends one daily status snapshot by email and suppresses backup and overdue emails to the default Email recipient. Additional email destinations in Backup Notifications continue to receive matching events. Per-job NTFY settings are kept and continue to work. All settings become active again as soon as this mode is turned off.')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -296,24 +351,47 @@ export function DailySummaryForm() {
                   />
                   <Label htmlFor="daily-summary-enabled">{t('Enable daily summary')}</Label>
                 </div>
-                <div className="grid gap-2 text-sm">
-                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                    <Mail className="h-4 w-4 shrink-0" />
-                    {status?.emailConfigured && config?.email?.mailto ? (
-                      <span>
-                        {t('SMTP recipient')}:
-                        {' '}
-                        <Link
-                          href="/settings?tab=email"
-                          className="font-semibold text-primary no-underline hover:underline"
-                        >
-                          {config.email.mailto}
-                        </Link>
-                      </span>
-                    ) : (
-                      <span>{status?.emailConfigured ? t('SMTP is configured') : t('SMTP is not configured')}</span>
-                    )}
+                {smtpRecipient.trim() === '' && (
+                  <div className="grid gap-2 text-sm">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                      <Mail className="h-4 w-4 shrink-0" />
+                      {status?.emailConfigured && config?.email?.mailto ? (
+                        <span>
+                          {t('SMTP recipient')}:
+                          {' '}
+                          <Link
+                            href="/settings?tab=email"
+                            className="font-semibold text-primary no-underline hover:underline"
+                          >
+                            {config.email.mailto}
+                          </Link>
+                        </span>
+                      ) : (
+                        <span>{status?.emailConfigured ? t('SMTP is configured') : t('SMTP is not configured')}</span>
+                      )}
+                    </div>
                   </div>
+                )}
+                <div className="space-y-2">
+                  <Label htmlFor="daily-summary-smtp-recipient">{t('Override SMTP recipient')}</Label>
+                  <Input
+                    id="daily-summary-smtp-recipient"
+                    type="email"
+                    inputMode="email"
+                    autoComplete="email"
+                    placeholder={config?.email?.mailto || t('recipient@example.com')}
+                    value={smtpRecipient}
+                    disabled={!isAdmin}
+                    onChange={(event) => setSmtpRecipient(event.target.value)}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    {t('Leave empty to send the Daily Summary to the SMTP recipient configured in Email settings.')}
+                  </p>
+                  {smtpRecipient.trim() !== '' && !smtpRecipient.includes('@') && (
+                    <p className="text-xs text-destructive">
+                      {t('Enter a valid email address, or leave empty to use the SMTP recipient.')}
+                    </p>
+                  )}
                 </div>
                 <div className="mt-auto flex flex-wrap items-center gap-3">
                   <Button
@@ -486,7 +564,7 @@ export function DailySummaryForm() {
           <AlertDialogHeader>
             <AlertDialogTitle>{t('Enable daily summary?')}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t('Individual backup and overdue email notifications will be paused, including additional email destinations. NTFY notifications continue. Detection of overdue backups continues.')}
+              {t('Backup and overdue emails to the default Email recipient will be paused. Additional email destinations in Backup Notifications continue. NTFY notifications continue. Detection of overdue backups continues.')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

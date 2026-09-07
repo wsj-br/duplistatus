@@ -1,11 +1,11 @@
-# Scripts de Prueba {#test-scripts}
+# Scripts de prueba {/* #test-scripts */}
 
 El proyecto incluye varios scripts de prueba para ayudar con el desarrollo y las pruebas:
 
 > [!NOTE]
 > Se eliminaron los ayudantes heredados en la raíz del repositorio `pnpm` para depuración de respaldos atrasados, pruebas de matriz SMTP y verificaciones de puerto cron. Utilice la interfaz de usuario de la aplicación (**Configuración → Monitoreo de Copias de Seguridad**), las API HTTP autenticadas y `curl` contra el servicio cron como se documenta a continuación.
 
-## Generar Datos de Prueba {#generate-test-data}
+## Generar datos de prueba {/* #generate-test-data */}
 
 ```bash
 pnpm generate-test-data --servers=N
@@ -49,26 +49,26 @@ El script asigna versiones de Duplicati **por servidor** (la misma cadena de inf
 > Este script elimina todos los datos anteriores en la base de datos y los reemplaza con datos de prueba.
 > Realice una copia de seguridad de su base de datos antes de ejecutar este script.
 
-## Verificaciones de retrasos y conectividad cron (desarrollo) {#overdue-checks-and-cron-connectivity-development}
+## Comprobaciones vencidas y conectividad de cron (desarrollo) {/* #overdue-checks-and-cron-connectivity-development */}
 
-### Ejecutar una verificación de copia de seguridad retrasada {#run-an-overdue-backup-check}
+### Ejecutar una comprobación de copia de seguridad vencida {/* #run-an-overdue-backup-check */}
 
 Mientras la aplicación está en ejecución:
 
 - **IU (recomendado):** abra **Configuración → Monitoreo de Copias de Seguridad** y use **Probar copias de seguridad retrasadas**. Esto ejecuta la misma lógica que el trabajo programado mediante `POST /api/notifications/check-overdue` autenticado.
 
-### Estado del servicio cron {#cron-service-health}
+### Estado del servicio cron {/* #cron-service-health */}
 
 ```bash
 curl http://localhost:8667/health
 curl http://localhost:8666/api/cron/health
 ```
 
-### Simular una fecha u hora específica {#simulating-a-specific-date-or-time}
+### Simulando una fecha u hora específica {/* #simulating-a-specific-date-or-time */}
 
 No hay una CLI incluida para inyectar una hora "actual" simulada. Para el algoritmo y sugerencias de pruebas manuales, consulte el archivo del repositorio `dev/OVERDUE_DETECTION_ALGORITHM.md` y la implementación en `src/lib/overdue-backup-checker.ts`.
 
-## Validar exportación CSV {#validate-csv-export}
+## Validar exportación CSV {/* #validate-csv-export */}
 
 ```bash
 pnpm validate-csv-export
@@ -81,7 +81,7 @@ Este script valida la funcionalidad de exportación CSV. Realiza lo siguiente:
 
 Útil para garantizar que las exportaciones de CSV funcionen correctamente antes de los lanzamientos.
 
-## Bloquear temporalmente el servidor NTFY (para pruebas) {#temporarily-block-ntfy-server-for-testing}
+## Bloquear temporalmente el servidor NTFY (para pruebas) {/* #temporarily-block-ntfy-server-for-testing */}
 
 ```bash
 sudo ./scripts/temporary_ntfy.sh_block.sh
@@ -97,11 +97,11 @@ Este script bloquea temporalmente el acceso de red saliente al servidor NTFY (`n
 >[!CAUTION]
 > Este script modifica las reglas de iptables y requiere privilegios de root. Úselo solo para probar mecanismos de reintento de notificaciones.
 
-## Pruebas de Migración de Base de Datos {#database-migration-testing}
+## Pruebas de migración de base de datos {/* #database-migration-testing */}
 
 El proyecto incluye scripts para probar migraciones de base de datos desde versiones anteriores a la versión actual. Estos scripts garantizan que las migraciones de base de datos funcionen correctamente y preserven la integridad de los datos.
 
-### Generar Datos de Prueba de Migración {#generate-migration-test-data}
+### Generar datos de prueba de migración {/* #generate-migration-test-data */}
 
 ```bash
 ./scripts/generate-migration-test-data.sh
@@ -143,7 +143,7 @@ Este script genera bases de datos de prueba para múltiples versiones histórica
 >[!IMPORTANT]
 > Este script estaba destinado a ejecutarse una sola vez; en nuevas versiones, el desarrollador puede copiar el archivo de base de datos y las capturas de pantalla directamente al directorio `scripts/migration_test_data/`. Durante el desarrollo, simplemente ejecute el script `./scripts/test-migrations.sh` para probar las migraciones.
 
-### Migraciones de Base de Datos de Prueba {#test-database-migrations}
+### Probar migraciones de base de datos {/* #test-database-migrations */}
 
 ```bash
 ./scripts/test-migrations.sh
@@ -220,11 +220,11 @@ echo $?  # 0 = all passed, 1 = some failed
 >[!NOTE]
 > Este script utiliza internamente el script de prueba de migración de TypeScript (`test-migration.ts`). El script de prueba valida la estructura de la base de datos después de la migración y garantiza la integridad de los datos.
 
-## SMTP y correo electrónico (desarrollo) {#smtp-and-email-development}
+## SMTP y correo electrónico (desarrollo) {/* #smtp-and-email-development */}
 
 Configure SMTP en **Configuración → Correo electrónico** y use las funciones integradas de prueba de correo y notificaciones. Los scripts auxiliares anteriores `pnpm set-smtp-test-config` y `pnpm test-smtp-connections` fueron eliminados del repositorio.
 
-## Probar Script de Punto de Entrada de Docker {#test-docker-entrypoint-script}
+## Probar el script de entrada de Docker {/* #test-docker-entrypoint-script */}
 
 ```bash
 pnpm test-entrypoint
@@ -267,10 +267,10 @@ pnpm test-entrypoint
 - Probar el apagado ordenado y el manejo de señales
 - Depuración del comportamiento del script de entrada en un entorno local
 
-## Validación del Resumen Diario {#daily-summary-validation}
+## Validación del Resumen Diario {/* #daily-summary-validation */}
 
 ```bash
 pnpm validate-daily-summary
 ```
 
-Ejecuta comprobaciones deterministas para la programación del Resumen Diario (incluyendo DST), la agregación de instantáneas, la desinfección de Markdown, las reclamaciones del registro de entrega y la migración del esquema 4.1 → 4.2 con plantillas personalizadas. No envía correo electrónico ni NTFY.
+Ejecuta comprobaciones deterministas para la programación del Resumen Diario (incluyendo DST), la agregación de instantáneas (solo los últimos trabajos de copia de seguridad), la poda de la configuración de notificaciones residuales, las filas de copia de seguridad/servidor huérfanas, la saneación de Markdown, las reclamaciones del registro de entrega y la migración del esquema 4.1 → 4.2 con plantillas personalizadas. No envía correo electrónico ni NTFY.

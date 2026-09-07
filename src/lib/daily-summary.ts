@@ -29,10 +29,11 @@ import {
   type SummaryServerRow,
 } from '@/lib/daily-summary-aggregate';
 import {
-  evaluateScheduledOccurrence,
   findNextOccurrence,
   formatLocalCalendarDate,
+  formatUtcCalendarDate,
   manualOccurrenceKey,
+  scheduledOccurrenceKey,
 } from '@/lib/daily-summary-schedule';
 import {
   claimDelivery,
@@ -41,6 +42,7 @@ import {
   finalizeDeliverySuccess,
   getFailedRetryableDeliveries,
   getLatestDeliveriesByChannel,
+  getLatestSuccessAt,
   parseStoredPayload,
   pruneOldDeliveries,
   type DailySummaryDeliveryRecord,
@@ -65,6 +67,7 @@ import { formatBytes, formatInteger } from '@/lib/number-format';
 import { getServerI18nForLanguage } from '@/lib/i18n-server';
 import { sendEmailNotification } from '@/lib/notifications';
 import { SOURCE_LOCALE } from '@/lib/locales';
+import { AuditLogger } from '@/lib/audit-logger';
 
 export const DAILY_SUMMARY_TRANSPORT_TIMEOUT_MS = 45 * 1000;
 
@@ -95,6 +98,17 @@ export function cronServiceHeaders(): Record<string, string> {
     headers['X-Cron-Service-Secret'] = secret;
   }
   return headers;
+}
+
+export async function reloadCronServiceConfiguration(): Promise<void> {
+  const response = await fetch(`${getCronServiceBaseUrl()}/reload-config`, {
+    method: 'POST',
+    headers: cronServiceHeaders(),
+    signal: AbortSignal.timeout(5000),
+  });
+  if (!response.ok) {
+    throw new Error(`Cron configuration reload failed (${response.status})`);
+  }
 }
 
 export async function isDailySummaryDispatcherHealthy(): Promise<boolean> {
@@ -290,11 +304,12 @@ export async function renderDailySummaryPayload(
 
 async function sendChannel(
   channel: DailySummaryChannel,
-  payload: DailySummaryRenderedPayload
+  payload: DailySummaryRenderedPayload,
+  toEmail?: string
 ): Promise<void> {
   switch (channel) {
     case 'email':
-      await sendEmailNotification(payload.subject, payload.emailHtml, payload.emailText);
+      await sendEmailNotification(payload.subject, payload.emailHtml, payload.emailText, toEmail);
       return;
     case 'ntfy':
       return;
@@ -305,16 +320,29 @@ async function sendChannel(
   }
 }
 
+export function resolveDailySummaryEmailRecipient(
+  summaryConfig: DailySummaryConfig,
+  smtp: SMTPConfig | null
+): string | undefined {
+  const override = (summaryConfig.smtpRecipient ?? '').trim();
+  if (override.length > 0) {
+    return override;
+  }
+  const mailto = smtp?.mailto?.trim();
+  return mailto && mailto.length > 0 ? mailto : undefined;
+}
+
 function channelsForConfig(_config: DailySummaryConfig): DailySummaryChannel[] {
   return ['email'];
 }
 
 async function deliverClaimed(
   record: DailySummaryDeliveryRecord,
-  payload: DailySummaryRenderedPayload
+  payload: DailySummaryRenderedPayload,
+  toEmail?: string
 ): Promise<void> {
   try {
-    await sendChannel(record.channel, payload);
+    await sendChannel(record.channel, payload, toEmail);
     finalizeDeliverySuccess(db, record.id);
   } catch (error) {
     finalizeDeliveryFailure(db, record.id, error instanceof Error ? error.message : String(error));
@@ -342,6 +370,7 @@ async function dispatchOccurrence(input: {
   if (!isSmtpConfiguredForSummary(smtp)) {
     return { occurrenceKey: input.occurrenceKey, attempted: [], succeeded: [], failed: [], skippedReason: 'smtp_not_configured' };
   }
+  const toEmail = resolveDailySummaryEmailRecipient(input.config, smtp);
 
   const locale = getNotificationTemplates().language || SOURCE_LOCALE;
   const snapshot = input.snapshot ?? await collectDailySummarySnapshot();
@@ -368,14 +397,40 @@ async function dispatchOccurrence(input: {
     attempted.push(channel);
     const stored = parseStoredPayload(claimed.payloadJson) ?? payload;
     try {
-      await deliverClaimed(claimed, stored);
+      await deliverClaimed(claimed, stored, toEmail);
       succeeded.push(channel);
     } catch (error) {
       failed.push({ channel, error: error instanceof Error ? error.message : String(error) });
     }
   }
 
-  return { occurrenceKey: input.occurrenceKey, attempted, succeeded, failed };
+  const result: DispatchResult = { occurrenceKey: input.occurrenceKey, attempted, succeeded, failed };
+  await logDailySummaryDispatch(result, input.trigger);
+  return result;
+}
+
+async function logDailySummaryDispatch(result: DispatchResult, trigger: DailySummaryTrigger): Promise<void> {
+  if (result.attempted.length === 0) {
+    return;
+  }
+  try {
+    await AuditLogger.logSystem(
+      'daily_summary_sent',
+      {
+        trigger,
+        occurrenceKey: result.occurrenceKey,
+        succeeded: result.succeeded,
+        failed: result.failed,
+      },
+      result.failed.length === 0 ? 'success' : 'error',
+      result.failed[0]?.error
+    );
+  } catch (error) {
+    console.error(
+      'Failed to log daily summary send to audit log:',
+      error instanceof Error ? error.message : String(error)
+    );
+  }
 }
 
 export async function dispatchScheduledDailySummary(now: Date = new Date()): Promise<DispatchResult> {
@@ -386,23 +441,14 @@ export async function dispatchScheduledDailySummary(now: Date = new Date()): Pro
   try {
     pruneOldDeliveries(db);
     const config = getDailySummaryConfig();
-    const evaluation = evaluateScheduledOccurrence(config, now);
-    if (!evaluation.due) {
-      const retries = getFailedRetryableDeliveries(db, evaluation.occurrenceKey);
-      if (retries.length === 0) {
-        return { occurrenceKey: evaluation.occurrenceKey, attempted: [], succeeded: [], failed: [], skippedReason: evaluation.reason };
-      }
-      return dispatchOccurrence({
-        config,
-        occurrenceKey: evaluation.occurrenceKey,
-        summaryDate: evaluation.summaryDate,
-        trigger: 'retry',
-      });
+    if (!config.enabled) {
+      return { occurrenceKey: null, attempted: [], succeeded: [], failed: [], skippedReason: 'disabled' };
     }
+    const summaryDate = formatUtcCalendarDate(now);
     return dispatchOccurrence({
       config,
-      occurrenceKey: evaluation.occurrenceKey,
-      summaryDate: evaluation.summaryDate,
+      occurrenceKey: scheduledOccurrenceKey(summaryDate, config.utcTime),
+      summaryDate,
       trigger: 'scheduled',
     });
   } finally {
@@ -452,7 +498,8 @@ export async function previewDailySummary(): Promise<{
 
 function publicChannelStatus(
   enabled: boolean,
-  record: DailySummaryDeliveryRecord | null
+  record: DailySummaryDeliveryRecord | null,
+  lastSuccessAt: string | null
 ): DailySummaryChannelPublicStatus {
   if (!enabled) {
     return {
@@ -470,7 +517,7 @@ function publicChannelStatus(
       enabled: true,
       state: 'idle',
       lastAttemptAt: null,
-      lastSuccessAt: null,
+      lastSuccessAt,
       lastError: null,
       nextRetryAt: null,
       occurrenceKey: null,
@@ -480,7 +527,7 @@ function publicChannelStatus(
     enabled: true,
     state: record.state,
     lastAttemptAt: record.updatedAt,
-    lastSuccessAt: record.sentAt,
+    lastSuccessAt,
     lastError: record.error,
     nextRetryAt: record.nextRetryAt,
     occurrenceKey: record.occurrenceKey,
@@ -491,6 +538,7 @@ export async function getDailySummaryPublicStatus(): Promise<DailySummaryPublicS
   const config = getDailySummaryConfig();
   const next = findNextOccurrence(config);
   const latest = getLatestDeliveriesByChannel(db);
+  const lastEmailSuccessAt = getLatestSuccessAt(db, 'email');
   return {
     enabled: config.enabled,
     utcTime: config.utcTime,
@@ -498,10 +546,11 @@ export async function getDailySummaryPublicStatus(): Promise<DailySummaryPublicS
     publicUrl: config.publicUrl,
     publicUrlEffective: getDuplistatusPublicUrl(),
     publicUrlEnvOverride: isDuplistatusPublicUrlEnvOverrideActive(),
+    smtpRecipient: config.smtpRecipient ?? '',
     nextOccurrenceIso: next ? next.toISOString() : null,
     dispatcherHealthy: await isDailySummaryDispatcherHealthy(),
     emailConfigured: isSmtpConfiguredForSummary(getSMTPConfig()),
-    channel: publicChannelStatus(true, latest.email),
+    channel: publicChannelStatus(true, latest.email, lastEmailSuccessAt),
   };
 }
 

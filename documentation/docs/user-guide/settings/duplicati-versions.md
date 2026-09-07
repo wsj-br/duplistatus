@@ -1,5 +1,5 @@
 
-# Duplicati Versions {#duplicati-versions}
+# Duplicati Versions {/* #duplicati-versions */}
 
 This page shows the latest Duplicati release versions stored in the **duplistatus** cache and lets administrators configure how often those versions are refreshed from GitHub.
 
@@ -7,7 +7,7 @@ This page shows the latest Duplicati release versions stored in the **duplistatu
 
 The cache is used by the [dashboard](../dashboard.md#duplicati-server-version) and the [Servers](server-settings.md) page to colour each server version and show whether it is current or outdated.
 
-## Latest channel versions {#latest-channel-versions}
+## Latest channel versions {/* #latest-channel-versions */}
 
 The table lists the latest cached version for each Duplicati channel:
 
@@ -22,7 +22,7 @@ The last successful GitHub update time is shown above the table. If a channel ha
 
 Administrators can click **Update now** to fetch the latest releases immediately. This does not require the cron service to be running. If GitHub cannot be reached, **duplistatus** keeps the previous cache.
 
-## Version check schedule {#version-check-schedule}
+## Version check schedule {/* #version-check-schedule */}
 
 **Show version on dashboard** turns the version badge on or off in the [dashboard](../dashboard.md#duplicati-server-version) card view. The dashboard table always shows the **Version** column. It is on by default and is also available in [Display Settings](display-settings.md). This is a per-user display preference.
 
@@ -43,7 +43,7 @@ Examples:
 - Every 12 hours with a start time of 08:15 runs at 08:15 and 20:15.
 - Every 6 hours with a start time of 02:45 runs at 02:45, 08:45, 14:45, and 20:45.
 
-On startup, **duplistatus** also refreshes the cache if it is older than the selected interval (24 hours, 12 hours, or 6 hours). Failed refreshes keep the last cached versions.
+On startup, **duplistatus** also refreshes the cache if it is older than the selected interval (24 hours, 12 hours, or 6 hours), including on a new empty database. Transient GitHub failures such as HTTP 504 are retried. Failed refreshes keep the last cached versions.
 
 Regular users can view the cached versions and schedule, and can turn **Show version on dashboard** on or off. Only administrators can change the interval, start time, or force an update.
 

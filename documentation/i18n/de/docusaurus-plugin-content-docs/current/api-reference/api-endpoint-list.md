@@ -1,4 +1,4 @@
-# API-Endpunktliste {#api-endpoint-list}
+# API-Endpunktliste {/* #api-endpoint-list */}
 
 Dieses Dokument bietet eine Übersichtstabelle aller verfügbaren API-Endpunkte (in alphabetischer Reihenfolge der Endpunkte).
 
@@ -62,6 +62,7 @@ Dieses Dokument bietet eine Übersichtstabelle aller verfügbaren API-Endpunkte 
 | [`/api/dashboard`](core-operations#get-dashboard-data-consolidated---apidashboard)                                                                  | GET    | Dashboard-Daten abrufen (konsolidiert) | Kernvorgänge           |
 | [`/api/detail/:serverId`](core-operations#get-server-data-with-overdue-info---apidetailserverid)                                                    | GET    | Serverdaten mit Überfälligkeitsinfo abrufen | Kernvorgänge           |
 | [`/api/health`](monitoring-apis#health-check---apihealth)                                                                                           | GET    | Systemstatusprüfung                      | Überwachung & Zustand       |
+| [`/api/ping`](monitoring-apis#connectivity-probe---apiping)                                                                                         | GET    | Verbindungsprüfung                | Überwachung & Gesundheit       |
 | [`/api/lastbackup/:serverId`](external-apis#get-latest-backup---apilastbackupserverid)                                                              | GET    | Letzte Sicherung abrufen                 | Externe APIs             |
 | [`/api/lastbackups/:serverId`](external-apis#get-latest-backups---apilastbackupsserverid)                                                           | GET    | Letzte Sicherungen abrufen                | Externe APIs             |
 | [`/api/notifications/check-overdue`](notification-apis#check-overdue-backups---apinotificationscheck-overdue)                                       | POST   | Überfällige Sicherungen prüfen             | Benachrichtigungssystem       |

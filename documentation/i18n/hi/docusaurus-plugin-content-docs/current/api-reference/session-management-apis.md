@@ -1,9 +1,9 @@
-# Session Management {#session-management}
+# सत्र प्रबंधन {/* #session-management */}
 
-## Create Session - `/api/session` {#create-session---apisession}
-- **Endpoint**: `/api/session`
-- **Method**: POST
-- **Description**: Upyogkarta ke liye ek naya session banata hai.
+## सत्र बनाएँ - `/api/session` {/* #create-session---apisession */}
+- **एंडपॉइंट**: `/api/session`
+- **विधि**: POST
+- **विवरण**: उपयोगकर्ता के लिए एक नया सत्र बनाता है।
 - **Response**:
 
   ```json
@@ -20,10 +20,10 @@
   - HTTP-only session cookie set karta hai
   - Protected endpoints ko access karne ke liye aavashyak hai
 
-## Validate Session - `/api/session` {#validate-session---apisession}
-- **Endpoint**: `/api/session`
-- **Method**: GET
-- **Description**: Ek maujooda session ko validate karta hai.
+## सत्र सत्यापित करें - `/api/session` {/* #validate-session---apisession */}
+- **एंडपॉइंट**: `/api/session`
+- **विधि**: GET
+- **विवरण**: मौजूदा सत्र को सत्यापित करता है।
 - **Response** (valid):
 
   ```json
@@ -49,10 +49,10 @@
   - Check karta hai ki kya session cookie maujood hai aur valid hai
   - Agar valid hai to session ID return karta hai
 
-## Delete Session - `/api/session` {#delete-session---apisession}
-- **Endpoint**: `/api/session`
-- **Method**: DELETE
-- **Description**: Vartaman session ko delete karta hai (pravesh se baahar niklein).
+## सत्र डिलीट करें - `/api/session` {/* #delete-session---apisession */}
+- **एंडपॉइंट**: `/api/session`
+- **विधि**: DELETE
+- **विवरण**: वर्तमान सत्र को डिलीट करें (प्रवेश से बाहर निकलें)।
 - **Response**:
 
   ```json
@@ -67,10 +67,10 @@
   - Server aur client se session ko clear karta hai
   - Session cookie ko hata deta hai
 
-## Get CSRF Token - `/api/csrf` {#get-csrf-token---apicsrf}
-- **Endpoint**: `/api/csrf`
-- **Method**: GET
-- **Description**: Vartaman session ke liye CSRF token generate karta hai.
+## CSRF टोकन प्राप्त करें - `/api/csrf` {/* #get-csrf-token---apicsrf */}
+- **एंडपॉइंट**: `/api/csrf`
+- **विधि**: GET
+- **विवरण**: वर्तमान सत्र के लिए एक CSRF टोकन उत्पन्न करता है।
 - **Response**:
 
   ```json

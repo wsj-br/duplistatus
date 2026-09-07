@@ -1,9 +1,9 @@
-# 核心操作 {#core-operations}
+# 核心操作 {/* #core-operations */}
 
-## 获取仪表板数据（综合） - `/api/dashboard` {#get-dashboard-data-consolidated---apidashboard}
-- **端点**: `/api/dashboard`
-- **方法**: GET
-- **描述**: 检索所有仪表板数据，包括服务器摘要、总结、图表数据等，返回一个综合响应。
+## 获取仪表盘数据（合并） - `/api/dashboard` {/* #get-dashboard-data-consolidated---apidashboard */}
+- **端点**：`/api/dashboard`
+- **方法**：GET
+- **描述**：在单个合并响应中检索所有仪表盘数据，包括服务器摘要、总体摘要和图表数据。
 - **响应**:
 
   ```json
@@ -64,10 +64,10 @@
   - 所有数据都并行获取以实现最佳性能
   - `secondsSinceLastBackup` 字段显示自上次备份以来所经过的时间（以秒为单位），适用于所有服务器
 
-## 获取所有服务器 - `/api/servers` {#get-all-servers---apiservers}
-- **端点**: `/api/servers`
-- **方法**: GET
-- **描述**: 检索所有服务器的基本信息列表，选项包括备份信息。
+## 获取所有服务器 - `/api/servers` {/* #get-all-servers---apiservers */}
+- **端点**：`/api/servers`
+- **方法**：GET
+- **描述**：检索所有服务器及其基本信息的列表。可选择包含备份信息。
 - **身份验证**: 需要有效的会话和 CSRF 令牌
 - **查询参数**:
   - `includeBackups` （可选）：设置为 `true` 以包含每个服务器的备份信息
@@ -110,10 +110,10 @@
   - 用于服务器选择、显示和配置目的
   - 包括 `hasPassword` 字段以指示服务器是否存储了密码
 
-## 获取服务器详细信息 - `/api/servers/:id` {#get-server-details---apiserversid}
-- **端点**: `/api/servers/:id`
-- **方法**: GET
-- **描述**: 检索有关特定服务器的信息。可以返回基本服务器信息或包含备份和图表数据的详细信息。
+## 获取服务器详情 - `/api/servers/:id` {/* #get-server-details---apiserversid */}
+- **端点**：`/api/servers/:id`
+- **方法**：GET
+- **描述**：检索有关特定服务器的信息。可返回基本服务器信息或包括备份和图表数据的详细信息。
 - **身份验证**: 需要有效的会话和 CSRF 令牌
 - **参数**:
   - `id`: 服务器标识符
@@ -159,10 +159,10 @@
   - 将 `includeBackups` 或 `includeChartData` 设置为 `true` 时，返回包含备份和图表数据的完整服务器数据
   - 用于服务器设置和详细视图
 
-## 更新服务器 - `/api/servers/:id` {#update-server---apiserversid}
-- **端点**: `/api/servers/:id`
-- **方法**: PATCH
-- **描述**: 更新服务器详细信息，包括别名、注释和服务器 URL。
+## 更新服务器 - `/api/servers/:id` {/* #update-server---apiserversid */}
+- **端点**：`/api/servers/:id`
+- **方法**：PATCH
+- **描述**：更新服务器详情，包括别名、备注和服务器 URL。
 - **身份验证**: 需要有效的会话和 CSRF 令牌
 - **参数**:
   - `id`: 服务器标识符
@@ -197,10 +197,10 @@
   - 所有字段都是可选的
   - 所有字段都允许为空字符串
 
-## 删除服务器 - `/api/servers/:id` {#delete-server---apiserversid}
-- **端点**: `/api/servers/:id`
-- **方法**: DELETE
-- **描述**: 删除一个服务器及其所有关联的备份。
+## 删除服务器 - `/api/servers/:id` {/* #delete-server---apiserversid */}
+- **端点**：`/api/servers/:id`
+- **方法**：DELETE
+- **描述**：删除服务器及其所有关联备份。
 - **身份验证**: 需要有效的会话和CSRF令牌
 - **参数**:
   - `id`: 服务器标识符
@@ -228,10 +228,10 @@
   - 服务器记录本身也将被删除
   - 返回已删除的备份和服务器的数量
 
-## 获取服务器数据，包括逾期信息 - `/api/detail/:serverId` {#get-server-data-with-overdue-info---apidetailserverid}
-- **端点**: `/api/detail/:serverId`
-- **方法**: GET
-- **描述**: 检索详细的服务器信息，包括逾期备份状态。
+## 获取包含过期信息的服务器数据 - `/api/detail/:serverId` {/* #get-server-data-with-overdue-info---apidetailserverid */}
+- **端点**：`/api/detail/:serverId`
+- **方法**：GET
+- **描述**：检索详细的服务器信息，包括过期备份状态。
 - **参数**:
   - `serverId`: 服务器标识符
 
@@ -267,10 +267,10 @@
   - 包括逾期备份详细信息和时间戳
   - 用于逾期备份管理和监控
 
-## 获取重复服务器 - `/api/servers/duplicates` {#get-duplicate-servers---apiserversduplicates}
-- **端点**: `/api/servers/duplicates`
-- **方法**: GET
-- **描述**: 根据机器ID检索重复服务器列表。重复服务器是指共享同一个机器ID但作为单独记录存储在数据库中的服务器。
+## 获取重复服务器 - `/api/servers/duplicates` {/* #get-duplicate-servers---apiserversduplicates */}
+- **端点**：`/api/servers/duplicates`
+- **方法**：GET
+- **描述**：根据机器 ID 检索重复服务器列表。重复服务器是指共享相同机器 ID 但在数据库中作为独立记录存储的服务器。
 - **身份验证**: 需要有效的会话、CSRF令牌和管理员访问
 - **响应**:
 
@@ -309,10 +309,10 @@
   - 用于识别和合并重复服务器记录
   - 包括每个重复服务器的服务器详细信息和备份计数
 
-## 合并服务器 - `/api/servers/merge` {#merge-servers---apiserversmerge}
-- **端点**: `/api/servers/merge`
-- **方法**: POST
-- **描述**: 将多个服务器合并到目标服务器。所有源服务器的备份都将转移到目标服务器，源服务器将被删除。
+## 合并服务器 - `/api/servers/merge` {/* #merge-servers---apiserversmerge */}
+- **端点**：`/api/servers/merge`
+- **方法**：POST
+- **描述**：将多个服务器合并到目标服务器。所有备份从源服务器转移到目标服务器，源服务器将被删除。
 - **身份验证**：需要有效的会话、CSRF 令牌和管理员访问权限
 - **请求体**：
 

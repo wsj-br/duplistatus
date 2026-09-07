@@ -130,12 +130,14 @@ export async function refreshDuplicatiVersionsOnStartup() {
       return;
     }
     if (!result.success) {
-      console.warn('[Instrumentation] Duplicati version refresh failed; using cached versions:', result.message);
+      if (result.cache) {
+        console.warn('[Instrumentation] Duplicati version refresh failed; using cached versions:', result.message);
+      } else {
+        console.warn('[Instrumentation] Duplicati version refresh failed; no cached versions available:', result.message);
+      }
     }
   } catch (error) {
-    console.warn(
-      '[Instrumentation] Duplicati version refresh failed; using cached versions:',
-      error instanceof Error ? error.message : String(error)
-    );
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.warn('[Instrumentation] Duplicati version refresh failed:', errorMessage);
   }
 }

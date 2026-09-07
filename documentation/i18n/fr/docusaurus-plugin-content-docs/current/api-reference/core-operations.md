@@ -1,9 +1,9 @@
-# Opérations principales {#core-operations}
+# Opérations principales {/* #core-operations */}
 
-## Obtenir les données du tableau de bord (consolidées) - `/api/dashboard` {#get-dashboard-data-consolidated---apidashboard}
-- **Endpoint** : `/api/dashboard`
+## Obtenir les données du tableau de bord (consolidées) - `/api/dashboard` {/* #get-dashboard-data-consolidated---apidashboard */}
+- **Point de terminaison** : `/api/dashboard`
 - **Méthode** : GET
-- **Description** : Récupère toutes les données du tableau de bord dans une seule réponse consolidée, incluant les résumés des serveurs, le résumé général et les données des graphiques.
+- **Description** : Récupère toutes les données du tableau de bord dans une seule réponse consolidée, y compris les résumés des serveurs, le résumé global et les données graphiques.
 - **Réponse** :
 
   ```json
@@ -64,10 +64,10 @@
   - Toutes les données sont récupérées en parallèle pour des performances optimales
   - Le champ `secondsSinceLastBackup` indique le temps en secondes depuis la dernière sauvegarde sur l'ensemble des serveurs
 
-## Obtenir tous les serveurs - `/api/servers` {#get-all-servers---apiservers}
-- **Endpoint** : `/api/servers`
+## Obtenir tous les serveurs - `/api/servers` {/* #get-all-servers---apiservers */}
+- **Point de terminaison** : `/api/servers`
 - **Méthode** : GET
-- **Description** : Récupère une liste de tous les serveurs avec leurs informations de base. Inclut éventuellement les informations de sauvegarde.
+- **Description** : Récupère une liste de tous les serveurs avec leurs informations de base. Inclut éventuellement des informations de sauvegarde.
 - **Authentification** : Nécessite une session valide et un jeton CSRF
 - **Paramètres de requête** :
   - `includeBackups` (facultatif) : Définir sur `true` pour inclure les informations de sauvegarde pour chaque serveur
@@ -110,10 +110,10 @@
   - Utilisé pour la sélection, l'affichage et la configuration des serveurs
   - Inclut le champ `hasPassword` pour indiquer si le serveur possède un mot de passe enregistré
 
-## Obtenir les détails du serveur - `/api/servers/:id` {#get-server-details---apiserversid}
-- **Endpoint** : `/api/servers/:id`
+## Obtenir les détails du serveur - `/api/servers/:id` {/* #get-server-details---apiserversid */}
+- **Point de terminaison** : `/api/servers/:id`
 - **Méthode** : GET
-- **Description** : Récupère des informations sur un serveur spécifique. Peut renvoyer les informations de base du serveur ou des informations détaillées incluant les sauvegardes et les données des graphiques.
+- **Description** : Récupère des informations sur un serveur spécifique. Peut renvoyer des informations de base sur le serveur ou des informations détaillées, y compris les sauvegardes et les données graphiques.
 - **Authentification** : Nécessite une session valide et un jeton CSRF
 - **Paramètres** :
   - `id` : l'identifiant du serveur
@@ -159,10 +159,10 @@
   - Définir `includeBackups` ou `includeChartData` sur `true` renvoie toutes les données du serveur, y compris les sauvegardes et chartData
   - Utilisé pour les paramètres et les vues détaillées du serveur
 
-## Mettre à jour le serveur - `/api/servers/:id` {#update-server---apiserversid}
-- **Endpoint** : `/api/servers/:id`
+## Mettre à jour le serveur - `/api/servers/:id` {/* #update-server---apiserversid */}
+- **Point de terminaison** : `/api/servers/:id`
 - **Méthode** : PATCH
-- **Description** : Met à jour les détails du serveur, notamment l'alias, la note et l'URL du serveur.
+- **Description** : Met à jour les détails du serveur, y compris l'alias, la note et l'URL du serveur.
 - **Authentification** : Nécessite une session valide et un jeton CSRF
 - **Paramètres** :
   - `id` : l'identifiant du serveur
@@ -197,8 +197,8 @@
   - Tous les champs sont facultatifs
   - Les chaînes vides sont autorisées pour tous les champs
 
-## Supprimer le serveur - `/api/servers/:id` {#delete-server---apiserversid}
-- **Endpoint** : `/api/servers/:id`
+## Supprimer le serveur - `/api/servers/:id` {/* #delete-server---apiserversid */}
+- **Point de terminaison** : `/api/servers/:id`
 - **Méthode** : DELETE
 - **Description** : Supprime un serveur et toutes ses sauvegardes associées.
 - **Authentification** : Nécessite une session valide et un jeton CSRF
@@ -228,10 +228,10 @@
   - L'enregistrement du serveur lui-même sera également supprimé
   - Renvoie le nombre de sauvegardes et de serveurs supprimés
 
-## Obtenir les données du serveur avec informations en retard - `/api/detail/:serverId` {#get-server-data-with-overdue-info---apidetailserverid}
-- **Endpoint** : `/api/detail/:serverId`
+## Obtenir les données du serveur avec des informations en retard - `/api/detail/:serverId` {/* #get-server-data-with-overdue-info---apidetailserverid */}
+- **Point de terminaison** : `/api/detail/:serverId`
 - **Méthode** : GET
-- **Description** : Récupère des informations détaillées sur le serveur, y compris le statut des sauvegardes en retard.
+- **Description** : Récupère des informations détaillées sur le serveur, y compris l'état de la sauvegarde en retard.
 - **Paramètres** :
   - `serverId` : l'identifiant du serveur
 
@@ -267,10 +267,10 @@
   - Inclut les détails et horodatages des sauvegardes en retard
   - Utilisé pour la gestion et la surveillance des sauvegardes en retard
 
-## Obtenir les serveurs en double - `/api/servers/duplicates` {#get-duplicate-servers---apiserversduplicates}
-- **Endpoint** : `/api/servers/duplicates`
+## Obtenir les serveurs en double - `/api/servers/duplicates` {/* #get-duplicate-servers---apiserversduplicates */}
+- **Point de terminaison** : `/api/servers/duplicates`
 - **Méthode** : GET
-- **Description** : Récupère une liste des serveurs en double basée sur l'ID machine. Les serveurs en double sont des serveurs qui partagent le même ID machine mais sont stockés comme des enregistrements distincts dans la base de données.
+- **Description** : Récupère une liste de serveurs en double basée sur l'ID de la machine. Les serveurs en double sont des serveurs qui partagent le même ID de machine mais sont stockés comme des enregistrements séparés dans la base de données.
 - **Authentification** : Nécessite une session valide, un jeton CSRF et un accès administrateur
 - **Réponse** :
 
@@ -309,10 +309,10 @@
   - Utilisé pour identifier et fusionner les enregistrements de serveurs en double
   - Inclut les détails des serveurs et les nombres de sauvegardes pour chaque doublon
 
-## Fusionner les serveurs - `/api/servers/merge` {#merge-servers---apiserversmerge}
-- **Endpoint** : `/api/servers/merge`
+## Fusionner les serveurs - `/api/servers/merge` {/* #merge-servers---apiserversmerge */}
+- **Point de terminaison** : `/api/servers/merge`
 - **Méthode** : POST
-- **Description** : Fusionne plusieurs serveurs dans un serveur cible. Toutes les sauvegardes des serveurs sources sont transférées vers le serveur cible, et les serveurs sources sont supprimés.
+- **Description** : Fusionne plusieurs serveurs en un serveur cible. Toutes les sauvegardes des serveurs sources sont transférées au serveur cible, et les serveurs sources sont supprimés.
 - **Authentification** : Nécessite une session valide, un jeton CSRF et un accès administrateur
 - **Corps de la requête** :
 

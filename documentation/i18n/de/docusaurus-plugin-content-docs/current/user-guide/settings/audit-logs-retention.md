@@ -1,4 +1,4 @@
-# Audit-Log-Aufbewahrung {#audit-log-retention}
+# Prüfprotokoll-Aufbewahrung {/* #audit-log-retention */}
 
 Konfigurieren Sie, wie lange Audit-Protokolle vor der automatischen Bereinigung beibehalten werden.
 
@@ -8,7 +8,7 @@ Konfigurieren Sie, wie lange Audit-Protokolle vor der automatischen Bereinigung 
 |:-------|:-----------|:-------------|
 | **Aufbewahrung (Tage)** | Anzahl der Tage zur Aufbewahrung von Audit-Protokollen vor automatischer Löschung | **90 Tage** |
 
-## Aufbewahrungseinstellungen {#retention-settings}
+## Aufbewahrungseinstellungen {/* #retention-settings */}
 
 - **Zeitraum**: 30 bis 365 Tage
 - **Automatische Bereinigung**: Läuft täglich um 02:00 UTC (nicht konfigurierbar)

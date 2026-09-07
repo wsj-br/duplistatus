@@ -1,15 +1,15 @@
-# APIs externas {#external-apis}
+# APIs externas {/* #external-apis */}
 
 Estos endpoints están diseñados para ser utilizados por otras aplicaciones e integraciones, por ejemplo [Página principal](../user-guide/homepage-integration.md). Son exentos de CSRF y no utilizan cookies de sesión.
 
-La autenticación es opcional y está desactivada por defecto. Cuando **Requiere claves de API** está habilitado en [Claves de API](../user-guide/settings/api-keys-settings.md), envía la clave como `?api_key=`, `X-Api-Key`, o `Authorization: Bearer`. Las claves de subida solo funcionan en `POST /api/upload`. Las claves de lectura solo funcionan en `/api/summary` y `/api/lastbackup*`. Las claves de consulta en la cadena de consulta aparecen en los registros de acceso del proxy inverso.
+La autenticación es opcional y está desactivada por defecto. Aunque las claves son opcionales, los clientes pueden omitir la clave o enviar una: se acepta y registra una clave válida de ámbito coincidente; una clave incorrecta se ignora y la solicitud sigue adelante. Cuándo **Requerir claves de API** está habilitado en [Claves de API](../user-guide/settings/api-keys-settings.md), envía la clave como `?api_key=`, `X-Api-Key` o `Authorization: Bearer`. Las claves de subir solo funcionan en `POST /api/upload`. Las claves de leer solo funcionan en `/api/summary` y `/api/lastbackup*`. Las claves de cadena de consulta aparecen en los registros de acceso del proxy inverso.
 
-Una [lista de IPs permitidas](../user-guide/settings/ip-allowlist-settings.md) también puede restringir estas rutas. `/api/health` y `/api/ping` permanecen abiertas.
+Una [lista de IPs permitidas](../user-guide/settings/ip-allowlist-settings.md) también puede restringir estas rutas. `/api/health` y `/api/ping` permanecen públicas mientras ambas listas estén desactivadas; cuando alguna de las listas esté habilitada, aceptan bucles de retorno y CIDRs de la lista del administrador o externa, y los clientes que no sean de bucles de retorno están limitados por la tasa.
 
-## Obtener resumen general - `/api/summary` {#get-overall-summary---apisummary}
+## Obtener Resumen General - `/api/summary` {/* #get-overall-summary---apisummary */}
 - **Endpoint**: `/api/summary`
-- **Method**: GET
-- **Description**: Recupera un resumen de todas las operaciones de copia de seguridad en todos los servidores.
+- **Método**: GET
+- **Descripción**: Recupera un resumen de todas las operaciones de copia de seguridad en todos los servidores.
 - **Respuesta**:
 
   ```json
@@ -38,10 +38,10 @@ Una [lista de IPs permitidas](../user-guide/settings/ip-allowlist-settings.md) t
   - Devuelve una respuesta de respaldo con ceros si falla la obtención de datos
   - **Nota**: Para uso en el panel interno, considera usar `/api/dashboard` que incluye estos datos más información adicional
 
-## Obtener última copia de seguridad - `/api/lastbackup/:serverId` {#get-latest-backup---apilastbackupserverid}
+## Obtener Última Copia de Seguridad - `/api/lastbackup/:serverId` {/* #get-latest-backup---apilastbackupserverid */}
 - **Endpoint**: `/api/lastbackup/:serverId`
-- **Method**: GET
-- **Description**: Recupera la información de la última copia de seguridad para un servidor específico.
+- **Método**: GET
+- **Descripción**: Recupera la información de la última copia de seguridad para un servidor específico.
 - **Parámetros**:
   - `serverId`: el identificador del servidor (ID o nombre)
 
@@ -98,10 +98,10 @@ El identificador del servidor debe estar codificado en URL.
   - Devuelve null para latest_backup si no existen copias de seguridad
   - Incluye encabezados de control de caché para evitar el almacenamiento en caché
 
-## Obtener últimas copias de seguridad - `/api/lastbackups/:serverId` {#get-latest-backups---apilastbackupsserverid}
+## Obtener Últimas Copias de Seguridad - `/api/lastbackups/:serverId` {/* #get-latest-backups---apilastbackupsserverid */}
 - **Endpoint**: `/api/lastbackups/:serverId`
-- **Method**: GET
-- **Description**: Recupera la información de la última copia de seguridad para todas las copias de seguridad configuradas (por ejemplo, 'Archivos', 'Bases de datos') en un servidor específico.
+- **Método**: GET
+- **Descripción**: Recupera la información de las últimas copias de seguridad para todas las copias de seguridad configuradas (por ejemplo, 'Archivos', 'Bases de datos') en un servidor específico.
 - **Parámetros**:
   - `serverId`: el identificador del servidor (ID o nombre)
 
@@ -185,10 +185,10 @@ El identificador del servidor debe estar codificado en URL.
   - A diferencia de `/api/lastbackup/:serverId` que devuelve solo la última copia de seguridad más reciente del servidor (independientemente del trabajo de copia de seguridad)
   - Incluye encabezados de control de caché para evitar el almacenamiento en caché
 
-## Subir datos de copia de seguridad - `/api/upload` {#upload-backup-data---apiupload}
+## Subir Datos de Copia de Seguridad - `/api/upload` {/* #upload-backup-data---apiupload */}
 - **Endpoint**: `/api/upload`
-- **Method**: POST
-- **Description**: Sube los datos de la operación de copia de seguridad para un servidor. Admite la detección de ejecuciones duplicadas de copias de seguridad y envía notificaciones.
+- **Método**: POST
+- **Descripción**: Sube datos de operación de copia de seguridad para un servidor. Soporta la detección de ejecuciones de copia de seguridad duplicadas y envía notificaciones.
 - **Cuerpo de la solicitud**: JSON enviado por Duplicati con las siguientes opciones:
 
   ```bash

@@ -1,12 +1,12 @@
 import { ZoomMermaid } from '@site/src/components/ZoomMermaid';
 
-# Surveillance des sauvegardes {#backup-monitoring}
+# Surveillance des sauvegardes {/* #backup-monitoring */}
 
 La fonction de surveillance des sauvegardes vous permet de suivre et d'alerter sur les sauvegardes en retard. Les notifications peuvent être envoyées via NTFY ou E-mail.
 
 Dans l'interface utilisateur, les sauvegardes en retard sont affichées avec une icône d'avertissement . Le survol de l'icône affiche les détails de la sauvegarde en retard, notamment la dernière heure de sauvegarde, l'heure de sauvegarde attendue, la période de tolérance et l'heure de la prochaine sauvegarde attendue.
 
-## Processus de Vérification en Retard {#overdue-check-process}
+## Vérifier les retards du processus {/* #overdue-check-process */}
 
 **Fonctionnement :**
 
@@ -50,11 +50,11 @@ gantt
 - À `2024-01-02 08:30` (🔹Vérification 2), la sauvegarde est **à l'heure**, car elle se situe toujours dans la période de tolérance.
 - À `2024-01-02 10:00` (🔹Vérification 3), la sauvegarde est **en retard**, car cela dépasse l'heure de la `Sauvegarde Suivante Attendue`.
 
-## Vérifications Périodiques {#periodic-checks}
+## Vérifications périodiques {/* #periodic-checks */}
 
 **duplistatus** effectue des vérifications périodiques des sauvegardes en retard à des intervalles configurables. L'intervalle par défaut est de 20 minutes, mais vous pouvez le configurer dans [Paramètres → Surveillance des sauvegardes](settings/backup-monitoring-settings.md).
 
-## Configuration Automatique {#automatic-configuration}
+## Configuration automatique {/* #automatic-configuration */}
 
 Quand vous collectez les journaux de sauvegarde à partir d'un serveur Duplicati, **duplistatus** effectue automatiquement :
 

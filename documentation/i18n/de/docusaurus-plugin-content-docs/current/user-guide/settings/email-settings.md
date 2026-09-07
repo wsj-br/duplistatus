@@ -1,4 +1,4 @@
-# E-Mail {#email}
+# E-Mail {/* #email */}
 
 **duplistatus** unterstützt den Versand von E-Mail-Benachrichtigungen via SMTP als Alternative oder Ergänzung zu NTFY-Benachrichtigungen. Die E-Mail-Konfiguration wird jetzt über die Weboberfläche verwaltet, wobei die verschlüsselte Speicherung in der Datenbank für erhöhte Sicherheit sorgt.
 
@@ -24,7 +24,7 @@ Wenn die Konfiguration nicht vollständig konfiguriert ist, wird ein gelbes Warn
 
 <br/>
 
-## Verfügbare Aktionen {#available-actions}
+## Verfügbare Aktionen {/* #available-actions */}
 
 | Button                                                           | Beschreibung                                              |
 |:-----------------------------------------------------------------|:---------------------------------------------------------|
@@ -44,7 +44,7 @@ Wenn die Konfiguration nicht vollständig konfiguriert ist, wird ein gelbes Warn
 
 <br/>
 
-## Häufige SMTP-Anbieter {#common-smtp-providers}
+## Häufige SMTP-Anbieter {/* #common-smtp-providers */}
 
 **Gmail:**
 
@@ -73,7 +73,7 @@ Wenn die Konfiguration nicht vollständig konfiguriert ist, wird ein gelbes Warn
 - Passwort: Verwenden Sie ein App-Passwort
 - Authentifizierung: Erforderlich
 
-### Sicherheit – Best Practices {#security-best-practices}
+### Sicherheitsbest Practices {/* #security-best-practices */}
 
 - Verwenden Sie ein dediziertes E-Mail-Konto für Benachrichtigungen
  - Testen Sie Ihre Konfiguration mithilfe der Schaltfläche "Test-E-Mail senden"

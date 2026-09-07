@@ -1,8 +1,8 @@
-# API-Übersicht {#api-overview}
+# API-Übersicht {/* #api-overview */}
 
 Dieses Dokument beschreibt alle verfügbaren API-Endpunkte für die duplistatus-Anwendung. Die API folgt REST-Prinzipien und bietet umfassende Funktionen zur Backup-Überwachung, Benachrichtigungsverwaltung und Systemadministration.
 
-## API-Struktur {#api-structure}
+## API-Struktur {/* #api-structure */}
 
 Für eine schnelle Übersicht über alle Endpunkte siehe die [API-Endpunktliste](api-endpoint-list).
 
@@ -20,13 +20,13 @@ Die API ist in logische Gruppen unterteilt:
 
 Für eine schnelle Übersicht über alle Endpunkte siehe die [API-Endpunktliste](api-endpoint-list).
 
-## Antwortformat {#response-format}
+## Antwortformat {/* #response-format */}
 
 Alle API-Antworten werden im JSON-Format mit konsistenten Fehlernbehandlungsmustern zurückgegeben. Erfolgreiche Antworten enthalten typischerweise ein `status`-Feld, während Fehlerantworten die Felder `error` und `message` enthalten.
 
 ---
 
-## Fehlerbehandlung {#error-handling}
+## Fehlerbehandlung {/* #error-handling */}
 
 Alle Endpunkte folgen einem konsistenten Muster zur Fehlerbehandlung:
 
@@ -46,21 +46,21 @@ Fehlerantworten enthalten:
 - `stack`: Fehler-Stack-Trace (im Entwicklungsmodus)
 - `timestamp`: Wann der Fehler aufgetreten ist
 
-## Hinweise zu Datentypen {#data-type-notes}
+## Hinweise zu Datentypen {/* #data-type-notes */}
 
-### Nachrichten-Arrays {#message-arrays}
-Die Felder `messages_array`, `warnings_array` und `errors_array` werden als JSON-Zeichenketten in der Datenbank gespeichert und als Arrays in den API-Antworten zurückgegeben. Diese enthalten die tatsächlichen Protokollmeldungen, Warnungen und Fehler aus Duplicati-Backup-Operationen.
+### Nachrichtenarrays {/* #message-arrays */}
+Die `messages_array`, `warnings_array` und `errors_array` Felder werden als JSON-Strings in der Datenbank gespeichert und als Arrays in den API-Antworten zurückgegeben. Diese enthalten die tatsächlichen Protokollnachrichten, Warnungen und Fehler von Duplicati-Sicherungsoperationen.
 
-### Verfügbare Backups {#available-backups}
-Das Feld `available_backups` enthält ein Array von Zeitstempeln der Backup-Versionen (im ISO-Format), die für die Wiederherstellung verfügbar sind. Dies wird aus den Backup-Protokollmeldungen extrahiert.
+### Verfügbare Sicherungen {/* #available-backups */}
+Das `available_backups` Feld enthält ein Array von Zeitstempeln der Sicherungsversionen (im ISO-Format), die für die Wiederherstellung verfügbar sind. Dies wird aus den Protokollnachrichten der Sicherungen extrahiert.
 
-### Dauer-Felder {#duration-fields}
-- `duration`: Menschlich lesbare Formatierung (z. B. "00:38:31")
+### Dauerfelder {/* #duration-fields */}
+- `duration`: Menschlich lesbares Format (z.B. "00:38:31")
 - `duration_seconds`: Rohdauer in Sekunden
-- `durationInMinutes`: Dauer in Minuten umgerechnet für Diagrammdarstellungen
+- `durationInMinutes`: Dauer in Minuten umgerechnet für Diagrammzwecke
 
-### Dateigrößen-Felder {#file-size-fields}
-Alle Dateigrößen-Felder werden als Zahlen in Byte zurückgegeben, nicht als formatierte Zeichenketten. Die Frontend-Anwendung ist dafür verantwortlich, diese in menschlich lesbare Formate (KB, MB, GB usw.) umzuwandeln.
+### Dateigrößenfelder {/* #file-size-fields */}
+Alle Dateigrößenfelder werden in Bytes als Zahlen zurückgegeben, nicht als formatierte Strings. Das Frontend ist dafür verantwortlich, diese in menschenlesbare Formate (KB, MB, GB usw.) umzuwandeln.
 
 <br/>
 

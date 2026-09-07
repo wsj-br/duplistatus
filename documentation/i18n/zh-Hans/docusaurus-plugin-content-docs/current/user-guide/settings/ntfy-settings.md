@@ -1,4 +1,4 @@
-# NTFY {#ntfy}
+# NTFY {/* #ntfy */}
 
 [NTFY](https://github.com/binwiederhier/ntfy) 是一个简单的通知服务，可以将推送通知发送到您的手机或桌面。该部分允许您设置通知服务器连接和身份验证。
 
@@ -15,7 +15,7 @@
 侧边栏中 **NTFY** 旁边的 <IIcon2 icon="lucide:message-square" color="green"/> 绿色图标表示您的设置有效。如果图标是 <IIcon2 icon="lucide:message-square" color="yellow"/> 黄色，则您的设置无效。
 当配置无效时，[`Backup Notifications`](backup-notifications-settings.md) 选项卡中的 NTFY 复选框也将被灰显。
 
-## 可用操作 {#available-actions}
+## 可用操作 {/* #available-actions */}
 
 | 按钮                                                                | 描述                                                                                                  |
 |:----------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------|
@@ -23,7 +23,7 @@
 | <IconButton icon="lucide:send-horizontal" label="发送测试消息"/> | 向您的 NTFY 服务器发送测试消息以检查您的配置。                                         |
 | <IconButton icon="lucide:qr-code" label="配置设备"/>          | 显示一个 QR 码，允许您快速为 NTFY 通知配置您的移动设备或桌面。 |
 
-## 设备配置 {#device-configuration}
+## 设备配置 {/* #device-configuration */}
 
 在配置设备之前，您应该在设备上安装 NTFY 应用程序（[查看此处](https://ntfy.sh/））。单击 <IconButton icon="lucide:qr-code" label="配置设备"/> 按钮或在应用程序工具栏中右键单击 <SvgButton svgFilename="ntfy.svg" /> 图标，将显示一个 QR 码。扫描此 QR 码将自动使用正确的 NTFY 主题配置您的设备以接收通知。
 

@@ -1,6 +1,6 @@
-# Configuración de Desarrollo {#development-setup}
+# Configuración de desarrollo {/* #development-setup */}
 
-## Requisitos previos {#prerequisites}
+## Requisitos previos {/* #prerequisites */}
 
 - Docker / Docker Compose
 - Node.js (consulta `engines.node` en `package.json`)
@@ -11,23 +11,23 @@
 - direnv (para cargar automáticamente los archivos `.env*`)
 - Playwright Chromium (ejecutar `pnpm take-screenshots:install` después de `pnpm install`; esto ejecuta `playwright install chromium`)
 
-## Pasos {#steps}
+## Pasos {/* #steps */}
 
-### 1. Clonar el repositorio: {#1-clone-the-repository}
+### 1. Clona el repositorio: {/* #1-clone-the-repository */}
 
     ```bash
     git clone https://github.com/wsj-br/duplistatus.git
     cd duplistatus
     ```
 
-### 2. Instalar dependencias (Debian/Ubuntu): {#2-install-dependencies-debianubuntu}
+### 2. Instala las dependencias (Debian/Ubuntu): {/* #2-install-dependencies-debianubuntu */}
 
     ```bash
     sudo apt update
     sudo apt install sqlite3 git inkscape bat -y
     ```
 
-### 3. Eliminar instalaciones antiguas de Node.js (si ya lo tiene instalado) {#3-remove-old-nodejs-installations-if-you-already-have-it-installed}
+### 3. Elimina las instalaciones antiguas de Node.js (si ya lo tienes instalado) {/* #3-remove-old-nodejs-installations-if-you-already-have-it-installed */}
 
     ```bash
     sudo apt-get purge nodejs npm -y
@@ -45,7 +45,7 @@
     sudo rm -rf /usr/local/bin/node*
     ```
 
-### 4. Instalar Node.js y pnpm: {#4-install-nodejs-and-pnpm}
+### 4. Instala Node.js y pnpm: {/* #4-install-nodejs-and-pnpm */}
 
     ```bash
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
@@ -55,7 +55,7 @@
     npm install -g pnpm npm-check-updates doctoc
     ```
 
-### 5. Configurar soporte de direnv {#5-set-up-direnv-support}
+### 5. Configura el soporte de direnv {/* #5-set-up-direnv-support */}
 
 Añadir estas líneas a su archivo `~/.bashrc`
 
@@ -95,7 +95,7 @@ con este comando:
   Cursor, Lingma, Antigravity, Zed, ...) para que estos cambios surtan efecto.
 :::
 
-### 6. Crear el archivo `.env` en el directorio base del repositorio con estas variables. {#6-create-the-env-file-at-the-repository-basedir-with-these-variables}
+### 6. Crea el archivo `.env` en el directorio base del repositorio con estas variables. {/* #6-create-the-env-file-at-the-repository-basedir-with-these-variables */}
 
 - Puede usar cualquier valor para `VERSION`; se actualizará automáticamente al usar los scripts de desarrollo.
 - Use contraseñas aleatorias para `ADMIN_PASSWORD` y `USER_PASSWORD`; estas contraseñas se utilizarán en el script `pnpm take-screenshots`.
@@ -113,14 +113,14 @@ con este comando:
     OPENROUTER_API_KEY=sk-or-v1-your-key-for-translate-files
     ```
 
-## Scripts Disponibles {#available-scripts}
+## Scripts disponibles {/* #available-scripts */}
 
 El proyecto incluye varios scripts npm para diferentes tareas de desarrollo:
 
-### Scripts de Desarrollo {#development-scripts}
-- `pnpm dev` - Iniciar el servidor de desarrollo de Next.js (puerto 8666) y el servicio cron (puerto 8667) juntos a través de `concurrently` (incluye pre-verificaciones). CTRL-C detiene ambos. `NODE_OPTIONS` para Next.js carga `scripts/dev-preload.cjs`, que aplica `scripts/peer-ip.cjs` (dirección de par TCP para listas de permitidos de IP) y marcas de tiempo del registro de solicitudes.
-- `pnpm dev:next` - Iniciar solo el servidor de desarrollo de Next.js en el puerto 8666 (sin cron).
-- `pnpm build` - Construir la aplicación para producción (incluye pre-verificaciones)
+### Scripts de desarrollo {/* #development-scripts */}
+- `pnpm dev` - Inicia el servidor de desarrollo de Next.js (puerto 8666) y el servicio cron (puerto 8667) juntos a través de `concurrently` (incluye pre-verificaciones). CTRL-C detiene ambos. `NODE_OPTIONS` para Next.js carga `scripts/dev-preload.cjs`, que aplica `scripts/peer-ip.cjs` (dirección de par TCP para listas de permitidos de IP) y marcas de tiempo del registro de solicitudes.
+- `pnpm dev:next` - Inicia solo el servidor de desarrollo de Next.js en el puerto 8666 (sin cron).
+- `pnpm build` - Compila la aplicación para producción (incluye pre-verificaciones)
 - `pnpm lint` - Ejecutar ESLint para comprobar la calidad del código
 - `pnpm typecheck` - Ejecutar la verificación de tipos de TypeScript
 - `scripts/upgrade-dependencies.sh` — Actualización segura de construcción de cada paquete de espacio de trabajo (detectado automáticamente). Resuelve las últimas versiones con `npm-check-updates`, instala desde la raíz del espacio de trabajo y mantiene solo las actualizaciones que pasan `typecheck`/`lint` de cada paquete (las puertas de pares fijan `eslint` / `typescript` cuando la pila de lint no permite la última versión mayor). Luego ejecuta `pnpm audit` / `audit --fix` y aplica forzosamente (y reporta) cualquier arreglo de seguridad que necesite cambios en el código. Refresca el archivo de bloqueo del espacio de trabajo y browserslist. Preferir `source ./scripts/upgrade-dependencies.sh` para que **nvm** se aplique a tu shell; en CI o automatización usa `CI=1` o `UPGRADE_ALLOW_EXEC=1` al ejecutar el archivo directamente. Ver también `scripts/upgrade-tools.sh` solo para herramientas de Node/pnpm.
@@ -128,7 +128,7 @@ El proyecto incluye varios scripts npm para diferentes tareas de desarrollo:
 
 **Nota:** El script `preinstall` aplica automáticamente pnpm como gestor de paquetes.
 
-### Scripts de Documentación {#documentation-scripts}
+### Scripts de documentación {/* #documentation-scripts */}
 
 Estos scripts deben ejecutarse desde el directorio `documentation/`:
 
@@ -145,26 +145,26 @@ Estos scripts deben ejecutarse desde el directorio `documentation/`:
 
 Los servidores de desarrollo (`start:*`) proporcionan reemplazo de módulos en caliente para un desarrollo rápido. El puerto por defecto es 3000.
 
-### Scripts de Producción {#production-scripts}
-- `pnpm build-local` - Compilar y preparar para producción local (incluye pre-comprobaciones, copia archivos estáticos a un directorio independiente)
-- `pnpm start-local` - Iniciar servidor de producción localmente (puerto 8666, incluye pre-comprobaciones). **Nota:** Ejecute `pnpm build-local` primero. Inicia el servidor independiente con `--require ./scripts/peer-ip.cjs`.
-- `pnpm start` - Iniciar servidor de producción (puerto 9666) con la misma precarga de IP de par. Docker usa `docker-entrypoint.sh` para cargar el mismo script.
+### Scripts de producción {/* #production-scripts */}
+- `pnpm build-local` - Compila y prepara para producción local (incluye pre-verificaciones, copia archivos estáticos al directorio independiente)
+- `pnpm start-local` - Inicia el servidor de producción localmente (puerto 8666, incluye pre-verificaciones). **Nota:** Ejecuta `pnpm build-local` primero. Inicia el servidor independiente con `--require ./scripts/peer-ip.cjs`.
+- `pnpm start` - Inicia el servidor de producción (puerto 9666) con la misma precarga de peer-ip. Docker utiliza `docker-entrypoint.sh` para cargar el mismo script.
 
-### Scripts de Docker {#docker-scripts}
-- `pnpm docker:up` - Iniciar la pila de Docker Compose
-- `pnpm docker:down` - Detener la pila de Docker Compose
-- `pnpm docker:clean` - Limpiar el entorno y caché de Docker
+### Scripts de Docker {/* #docker-scripts */}
+- `pnpm docker:up` - Inicia la pila de Docker Compose
+- `pnpm docker:down` - Detiene la pila de Docker Compose
+- `pnpm docker:clean` - Limpia el entorno y caché de Docker
 - `pnpm docker:devel` - Crear una imagen de desarrollo de Docker etiquetada como `wsj-br/duplistatus:devel`
 
-### Scripts del Servicio Cron {#cron-service-scripts}
-- `pnpm cron:start` - Iniciar el servicio cron en modo producción
-- `pnpm cron:dev` - Iniciar solo el servicio cron en modo desarrollo con vigilancia de archivos (puerto 8667). Generalmente innecesario al usar `pnpm dev`, que ya inicia cron.
-- `pnpm cron:start-local` - Iniciar el servicio cron localmente para pruebas (puerto 8667)
+### Scripts de servicio cron {/* #cron-service-scripts */}
+- `pnpm cron:start` - Inicia el servicio cron en modo producción
+- `pnpm cron:dev` - Inicia solo el servicio cron en modo desarrollo con vigilancia de archivos (puerto 8667). Generalmente innecesario al usar `pnpm dev`, que ya inicia cron.
+- `pnpm cron:start-local` - Inicia el servicio cron localmente para pruebas (puerto 8667)
 
-### Scripts de prueba {#test-scripts}
-- `pnpm generate-test-data` - Generar datos de respaldo para pruebas (requiere el parámetro --servers=N)
-- `pnpm validate-csv-export` - Validar la funcionalidad de exportación CSV
-- `pnpm test-entrypoint` - Probar el script de entrada de Docker en desarrollo local (ver [Scripts de prueba](test-scripts))
+### Scripts de prueba {/* #test-scripts */}
+- `pnpm generate-test-data` - Genera datos de copia de seguridad de prueba (requiere el parámetro --servers=N)
+- `pnpm validate-csv-export` - Valida la funcionalidad de exportación a CSV
+- `pnpm test-entrypoint` - Prueba el script de entrada de Docker en desarrollo local (ver [Scripts de prueba](test-scripts))
 - `pnpm take-screenshots` - Tomar capturas de pantalla para la documentación (ver [Herramientas de documentación](documentation-tools))
 
 Las comprobaciones retrasadas, las comprobaciones de salud de cron y las pruebas de SMTP se realizan a través de la aplicación en ejecución y `curl` (ver [Test Scripts](test-scripts)); se eliminaron los antiguos ayudantes independientes `pnpm` para esos.

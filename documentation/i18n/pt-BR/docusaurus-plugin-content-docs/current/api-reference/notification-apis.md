@@ -1,9 +1,9 @@
-# Sistema de Notificação {#notification-system}
+# Sistema de Notificações {/* #notification-system */}
 
-## Testar Notificação - `/api/notifications/test` {#test-notification---apinotificationstest}
+## Notificação de Teste - `/api/notifications/test` {/* #test-notification---apinotificationstest */}
 - **Endpoint**: `/api/notifications/test`
 - **Método**: POST
-- **Descrição**: Envia notificações de teste (simples, baseadas em modelo ou por e-mail) para verificar a configuração de notificações.
+- **Descrição**: Enviar notificações de teste (simples, baseadas em template ou E-mail) para verificar a configuração de notificações.
 - **Autenticação**: Requer sessão de administrador e token CSRF
 - **Corpo da Requisição**:
   Para teste simples:
@@ -96,13 +96,13 @@ O conteúdo do e-mail de teste exibe:
   - O endpoint de teste de e-mail limpa o cache da requisição antes de ler a configuração SMTP, garantindo que scripts externos possam atualizar a configuração e ela seja imediatamente refletida nos e-mails de teste
   - Testes de modelo e Envio Imediato do Resumo Diário ignoram a supressão por backup
 
-## Visualização do Modelo de Notificação - `/api/notifications/preview` {#preview-notification-template---apinotificationspreview}
+## Visualização do Template de Notificação - `/api/notifications/preview` {/* #preview-notification-template---apinotificationspreview */}
 - **Endpoint**: `/api/notifications/preview`
 - **Método**: POST
-- **Descrição**: Renderiza um modelo de notificação com o renderizador de Markdown de produção sem enviar. O corpo inclui `kind` (`success`, `warning`, `overdueBackup`, ou `dailySummaryEmail`) e o modelo sendo editado. Visualizações de Resumo Diário usam o snapshot real atual; outros tipos usam valores de amostra determinísticos. E-mail HTML é destinado a um iframe sandboxed.
+- **Descrição**: Renderiza um template de notificação com o renderizador Markdown de produção sem enviar. O corpo inclui `kind` (`success`, `warning`, `overdueBackup` ou `dailySummaryEmail`) e o template que está sendo editado. As visualizações do Resumo Diário usam a captura de snapshot real atual; outros tipos usam valores de amostra determinísticos. O E-mail HTML é destinado a um iframe isolado.
 - **Autenticação**: Requer sessão válida e token CSRF
 
-## Verificar Backups Atrasados - `/api/notifications/check-overdue` {#check-overdue-backups---apinotificationscheck-overdue}
+## Verificar Backups Atrasados - `/api/notifications/check-overdue` {/* #check-overdue-backups---apinotificationscheck-overdue */}
 - **Endpoint**: `/api/notifications/check-overdue`
 - **Método**: POST
 - **Descrição**: Aciona manualmente a verificação de backups atrasados e envia notificações.
@@ -128,10 +128,10 @@ O conteúdo do e-mail de teste exibe:
   - Retorna estatísticas sobre o processo de verificação
   - Envia notificações para os backups atrasados encontrados
 
-## Limpar Carimbos de Tempo Atrasados - `/api/notifications/clear-overdue-timestamps` {#clear-overdue-timestamps---apinotificationsclear-overdue-timestamps}
+## Limpar Carimbos de Data e Hora Atrasados - `/api/notifications/clear-overdue-timestamps` {/* #clear-overdue-timestamps---apinotificationsclear-overdue-timestamps */}
 - **Endpoint**: `/api/notifications/clear-overdue-timestamps`
 - **Método**: POST
-- **Descrição**: Limpa todos os carimbos de tempo de notificação de backup atrasado, permitindo que as notificações sejam enviadas novamente.
+- **Descrição**: Limpa todos os carimbos de data e hora de notificações de backup atrasadas, permitindo que as notificações sejam enviadas novamente.
 - **Autenticação**: Requer sessão válida e token CSRF
 - **Resposta**:
 

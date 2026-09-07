@@ -1,19 +1,19 @@
-# Esquema de Banco de Dados {#database-schema}
+# Esquema do Banco de Dados {/* #database-schema */}
 
 Este documento descreve o esquema de banco de dados SQLite utilizado pelo duplistatus para armazenar dados de operações de backup.
 
-## Localização do Banco de Dados {#database-location}
+## Localização do Banco de Dados {/* #database-location */}
 
 O banco de dados é armazenado no diretório de dados da aplicação:
 - **Localização Padrão**: `/app/data/backups.db`
 - **Volume Docker**: `duplistatus_data:/app/data`
 - **Nome do Arquivo**: `backups.db`
 
-## Sistema de Migração de Banco de Dados {#database-migration-system}
+## Sistema de Migração de Banco de Dados {/* #database-migration-system */}
 
 duplistatus usa um sistema de migração automatizado para lidar com alterações de esquema de banco de dados entre versões.
 
-### Histórico de Versões de Migração {#migration-version-history}
+### Histórico de Versão da Migração {/* #migration-version-history */}
 
 As seguintes são versões históricas de migração que trouxeram o banco de dados ao seu estado atual:
 
@@ -27,20 +27,20 @@ As seguintes são versões históricas de migração que trouxeram o banco de da
 
 Versão atual da aplicação (v1.5.x) usa **Schema v4.2** como a versão mais recente do esquema de banco de dados.
 
-### Processo de Migração {#migration-process}
+### Processo de Migração {/* #migration-process */}
 
 1. **Backup Automático**: Cria backup antes da migração
 2. **Atualização de Schema**: Atualiza a estrutura do banco de dados
 3. **Migração de Dados**: Preserva dados existentes
 4. **Verificação**: Confirma migração bem-sucedida
 
-## Tabelas {#tables}
+## Tabelas {/* #tables */}
 
-### Tabela de Servidores {#servers-table}
+### Tabela de Servidores {/* #servers-table */}
 
 Armazena informações sobre servidores Duplicati sendo monitorados.
 
-#### Campos {#fields}
+#### Campos {/* #fields */}
 
 | Campo             | Tipo             | Descrição                        |
 |-------------------|------------------|------------------------------------|
@@ -52,11 +52,11 @@ Armazena informações sobre servidores Duplicati sendo monitorados.
 | `server_password` | TEXT             | Senha do servidor para autenticação |
 | `created_at`      | DATETIME         | Data e hora de criação do servidor          |
 
-### Tabela de Backups {#backups-table}
+### Tabela de Backups {/* #backups-table */}
 
 Armazena dados de operação de backup recebidos de servidores Duplicati.
 
-#### Campos-Chave {#key-fields}
+#### Campos Chave {/* #key-fields */}
 
 | Campo              | Tipo              | Descrição                                    |
 |--------------------|-------------------|------------------------------------------------|
@@ -74,7 +74,7 @@ Armazena dados de operação de backup recebidos de servidores Duplicati.
 | `errors`           | INTEGER           | Número de erros                               |
 | `created_at`       | DATETIME          | Data e hora de criação do registro                      |
 
-#### Matrizes de Mensagens (Armazenamento JSON) {#message-arrays-json-storage}
+#### Arrays de Mensagem (Armazenamento JSON) {/* #message-arrays-json-storage */}
 
 | Campo               | Tipo | Descrição                             |
 |---------------------|------|-----------------------------------------|
@@ -83,7 +83,7 @@ Armazena dados de operação de backup recebidos de servidores Duplicati.
 | `errors_array`      | TEXT | Array JSON de mensagens de erro            |
 | `available_backups` | TEXT | Array JSON de versões de backup disponíveis |
 
-#### Campos de Operação de Arquivo {#file-operation-fields}
+#### Campos de Operação de Arquivo {/* #file-operation-fields */}
 
 | Campo                 | Tipo    | Descrição                  |
 |-----------------------|---------|------------------------------|
@@ -102,7 +102,7 @@ Armazena dados de operação de backup recebidos de servidores Duplicati.
 | `modified_symlinks`   | INTEGER | Links simbólicos modificados      |
 | `deleted_symlinks`    | INTEGER | Links simbólicos excluídos       |
 
-#### Campos de Tamanho dos arquivos {#file-size-fields}
+#### Campos de Tamanho do Arquivo {/* #file-size-fields */}
 
 | Campo                    | Tipo    | Descrição                          |
 |--------------------------|---------|--------------------------------------|
@@ -111,7 +111,7 @@ Armazena dados de operação de backup recebidos de servidores Duplicati.
 | `size_of_added_files`    | INTEGER | Tamanho dos novos arquivos adicionados ao backup    |
 | `size_of_modified_files` | INTEGER | Tamanho dos arquivos modificados no backup     |
 
-#### Campos de Status da Operação {#operation-status-fields}
+#### Campos de Status da Operação {/* #operation-status-fields */}
 
 | Campo                    | Tipo              | Descrição                    |
 |--------------------------|-------------------|--------------------------------|
@@ -127,7 +127,7 @@ Armazena dados de operação de backup recebidos de servidores Duplicati.
 | `errors_actual_length`   | INTEGER           | Contagem real de erros            |
 | `messages_actual_length` | INTEGER           | Contagem real de mensagens          |
 
-#### Campos de Estatísticas do Backend {#backend-statistics-fields}
+#### Campos de Estatísticas do Backend {/* #backend-statistics-fields */}
 
 | Campo                            | Tipo     | Descrição                       |
 |----------------------------------|----------|-----------------------------------|
@@ -146,43 +146,43 @@ Armazena dados de operação de backup recebidos de servidores Duplicati.
 | `backend_warnings_actual_length` | INTEGER  | Contagem de avisos no backend            |
 | `backend_errors_actual_length`   | INTEGER  | Contagem de erros no backend              |
 
-### Tabela de Configurações {#configurations-table}
+### Tabela de Configurações {/* #configurations-table */}
 
 Armazena as configurações de aplicação.
 
-#### Campos {#fields-1}
+#### Campos {/* #fields-1 */}
 
 | Campo   | Tipo                      | Descrição                |
 |---------|---------------------------|----------------------------|
 | `key`   | TEXT PRIMARY KEY NOT NULL | Chave da configuração          |
 | `value` | TEXT                      | Valor da configuração (JSON) |
 
-#### Chaves de Configuração Comuns {#common-configuration-keys}
+#### Chaves de Configuração Comuns {/* #common-configuration-keys */}
 
 - `email_config`: Configurações de notificação por e-mail
 - `ntfy_config`: Configurações de notificação NTFY
 - `overdue_tolerance`: Configurações de tolerância para backup atrasado
 - `notification_templates`: Modelos de mensagens de notificação
-- `daily_summary`: Modo, agendamento e fuso horário do Resumo Diário
-- `cron_service`: Agendamentos de tarefas Cron, incluindo `daily-summary-dispatch`
-- `audit_retention_days`: Período de retenção do log de auditoria (padrão: 90 dias)
+- `daily_summary`: Modo de Resumo Diário, agendamento, fuso horário, URL opcional do painel público e substituição opcional do destinatário SMTP (`smtpRecipient`; vazio usa Configurações de E-mail)
+- `cron_service`: Agendamentos de tarefas Cron, incluindo `daily-summary-dispatch` (`minute hour * * *` de `daily_summary.utcTime`)
+- `audit_retention_days`: Período de retenção de log de auditoria (padrão: 90 dias)
 
-### Tabela de Versão do Banco de Dados {#database-version-table}
+### Tabela de Versão do Banco de Dados {/* #database-version-table */}
 
 Rastreia a versão do esquema do banco de dados para fins de migração.
 
-#### Campos {#fields-2}
+#### Campos {/* #fields-2 */}
 
 | Campo        | Tipo             | Descrição                |
 |--------------|------------------|----------------------------|
 | `version`    | TEXT PRIMARY KEY | Versão do banco de dados           |
 | `applied_at` | DATETIME         | Quando a migração foi aplicada |
 
-### Tabela de Usuários {#users-table}
+### Tabela de Usuários {/* #users-table */}
 
 Armazena informações de conta de usuário para autenticação e controle de acesso.
 
-#### Campos {#fields-3}
+#### Campos {/* #fields-3 */}
 
 | Campo                   | Tipo                 | Descrição                         |
 |-------------------------|----------------------|-------------------------------------|
@@ -198,11 +198,11 @@ Armazena informações de conta de usuário para autenticação e controle de ac
 | `failed_login_attempts` | INTEGER              | Contagem de tentativas de login com falha      |
 | `locked_until`          | DATETIME             | Expiração do bloqueio da conta (se bloqueada) |
 
-### Tabela de Sessões {#sessions-table}
+### Tabela de Sessões {/* #sessions-table */}
 
 Armazena dados de sessão do usuário para autenticação e segurança.
 
-#### Campos {#fields-4}
+#### Campos {/* #fields-4 */}
 
 | Campo             | Tipo              | Descrição                                                      |
 |-------------------|-------------------|------------------------------------------------------------------|
@@ -216,11 +216,11 @@ Armazena dados de sessão do usuário para autenticação e segurança.
 | `csrf_token`      | TEXT              | Token CSRF para a sessão                                       |
 | `csrf_expires_at` | DATETIME          | Expiração do token CSRF |
 
-### Log de Auditoria {#audit-log-table}
+### Tabela de Log de Auditoria {/* #audit-log-table */}
 
 Armazena a trilha de auditoria de ações do usuário e eventos do sistema.
 
-#### Campos {#fields-5}
+#### Campos {/* #fields-5 */}
 
 | Campo           | Tipo                              | Descrição                                                       |
 |-----------------|-----------------------------------|-------------------------------------------------------------------|
@@ -238,11 +238,11 @@ Armazena a trilha de auditoria de ações do usuário e eventos do sistema.
 | `status`        | TEXT NOT NULL                     | Status da ação ('success', 'failure', 'error')                  |
 | `error_message` | TEXT                              | Mensagem de erro se a ação falhou                                    |
 
-### Tabela de Chaves de API {#api-keys-table}
+### Tabela de Chaves de API {/* #api-keys-table */}
 
 Armazena chaves de API com hash para as APIs HTTP externas. O segredo em texto simples é mostrado apenas na criação e nunca é armazenado.
 
-#### Campos {#fields-6}
+#### Campos {/* #fields-6 */}
 
 | Campo          | Tipo             | Descrição                                              |
 |----------------|------------------|----------------------------------------------------------|
@@ -262,18 +262,18 @@ Armazena chaves de API com hash para as APIs HTTP externas. O segredo em texto s
 
 Chaves de configuração relacionadas na tabela `configurations`: `external_api_require_api_key`, `ip_trusted_proxies`, `admin_ip_allowlist`, `external_api_ip_allowlist`, `upload_limits`.
 
-### Tabela de Entregas de Resumo Diário {#daily-summary-deliveries-table}
+### Tabela de Entregas do Resumo Diário {/* #daily-summary-deliveries-table */}
 
 Livro-razão por canal para entrega de e-mail de Resumo Diário. Linhas legadas podem incluir um canal `ntfy` de versões anteriores. Cada ocorrência agendada (ou envio manual único) tem no máximo uma linha por canal. Os payloads renderizados são armazenados antes do envio para que as tentativas mantenham a mesma captura. Linhas com mais de 30 dias são removidas.
 
 Se o processo morre após um provedor aceitar uma mensagem, mas antes de registrar o sucesso, esse canal pode ser reenviado (pelo menos uma vez).
 
-#### Campos {#fields-7}
+#### Campos {/* #fields-7 */}
 
 | Campo              | Tipo             | Descrição                                                                 |
 |--------------------|------------------|-----------------------------------------------------------------------------|
 | `id`               | TEXT PRIMARY KEY | Identificador único de entrega                                                  |
-| `occurrence_key`   | TEXT NOT NULL    | Chave de data local agendada ou `manual:{uuid}`                                 |
+| `occurrence_key`   | TEXT NOT NULL    | Chave agendada `scheduled:UTC:{date}:{HH:mm}` ou `manual:{uuid}`             |
 | `channel`          | TEXT NOT NULL    | `email` ou `ntfy`                                                           |
 | `trigger`          | TEXT NOT NULL    | `scheduled`, `manual`, ou `retry`                                           |
 | `summary_date`     | TEXT NOT NULL    | Data do calendário local para o instantâneo                                        |
@@ -290,9 +290,9 @@ Se o processo morre após um provedor aceitar uma mensagem, mas antes de registr
 
 Um índice único em `(occurrence_key, channel)` impede o envio duplicado da mesma ocorrência no mesmo canal.
 
-## Gerenciamento de Sessão {#session-management}
+## Gerenciamento de Sessões {/* #session-management */}
 
-### Armazenamento de Sessão com Suporte a Banco de Dados {#database-backed-session-storage}
+### Armazenamento de Sessões com Banco de Dados {/* #database-backed-session-storage */}
 
 As sessões são armazenadas no banco de dados com fallback em memória:
 - **Armazenamento Primário**: Tabela de sessões com suporte de banco de dados
@@ -302,14 +302,14 @@ As sessões são armazenadas no banco de dados com fallback em memória:
 - **Proteção CSRF**: Proteção contra falsificação de solicitação entre sites
 - **Limpeza Automática**: Sessões expiradas são removidas automaticamente
 
-### Endpoints da API de Sessão {#session-api-endpoints}
+### Endpoints da API de Sessão {/* #session-api-endpoints */}
 
 - `POST /api/session`: Criar nova sessão
 - `GET /api/session`: Validar sessão existente
 - `DELETE /api/session`: Destruir sessão
 - `GET /api/csrf`: Obter token CSRF
 
-## Índices {#indexes}
+## Índices {/* #indexes */}
 
 O banco de dados inclui vários índices para desempenho ideal de consultas:
 
@@ -322,7 +322,7 @@ O banco de dados inclui vários índices para desempenho ideal de consultas:
 - **Índices de Auditoria**: Índices de timestamp, user_id, ação, categoria e status para consultas de auditoria
 - **Índices de Chave de API**: Hash único, além de buscas por habilitado/escopo para autenticação
 
-## Relacionamentos {#relationships}
+## Relacionamentos {/* #relationships */}
 
 - **Servidores → Backups**: Relacionamento um-para-muitos
 - **Usuários → Sessões**: Relacionamento um-para-muitos (sessões podem existir sem usuários)
@@ -331,7 +331,7 @@ O banco de dados inclui vários índices para desempenho ideal de consultas:
 - **Backups → Mensagens**: Arrays JSON incorporados
 - **Configurações**: Armazenamento de chave-valor
 
-## Tipos de Dados {#data-types}
+## Tipos de Dados {/* #data-types */}
 
 - **TEXT**: Dados de texto, arrays JSON
 - **INTEGER**: Dados numéricos, contagens de arquivos, tamanhos
@@ -339,16 +339,16 @@ O banco de dados inclui vários índices para desempenho ideal de consultas:
 - **DATETIME**: Dados de data e hora
 - **BOOLEAN**: Valores verdadeiro/falso
 
-## Valores de Status de Backup {#backup-status-values}
+## Valores de Status de Backup {/* #backup-status-values */}
 
 - **Sucesso**: Backup concluído com sucesso
 - **Aviso**: Backup concluído com avisos
 - **Erro**: Backup concluído com erros
 - **Fatal**: Backup falhou fatalmente
 
-## Consultas Comuns {#common-queries}
+## Consultas Comuns {/* #common-queries */}
 
-### Obter Último Backup para um Servidor {#get-latest-backup-for-a-server}
+### Obter Último Backup para um Servidor {/* #get-latest-backup-for-a-server */}
 
 ```sql
 SELECT * FROM backups 
@@ -357,7 +357,7 @@ ORDER BY date DESC
 LIMIT 1;
 ```
 
-### Obter Todos os Backups de um Servidor {#get-all-backups-for-a-server}
+### Obter Todos os Backups para um Servidor {/* #get-all-backups-for-a-server */}
 
 ```sql
 SELECT * FROM backups 
@@ -365,7 +365,7 @@ WHERE server_id = ?
 ORDER BY date DESC;
 ```
 
-### Obter Resumo do Servidor {#get-server-summary}
+### Obter Resumo do Servidor {/* #get-server-summary */}
 
 ```sql
 SELECT 
@@ -379,7 +379,7 @@ LEFT JOIN backups b ON s.id = b.server_id
 GROUP BY s.id;
 ```
 
-### Obter Resumo Geral {#get-overall-summary}
+### Obter Resumo Geral {/* #get-overall-summary */}
 
 ```sql
 SELECT 
@@ -409,7 +409,7 @@ FROM servers s
 LEFT JOIN backups b ON b.server_id = s.id;
 ```
 
-### Limpeza de Banco de Dados {#database-cleanup}
+### Limpeza do Banco de Dados {/* #database-cleanup */}
 
 ```sql
 -- Delete old backups (older than 30 days)
@@ -421,9 +421,9 @@ DELETE FROM servers
 WHERE id NOT IN (SELECT DISTINCT server_id FROM backups);
 ```
 
-## Mapeamento de JSON para Banco de Dados {#json-to-database-mapping}
+## Mapeamento de JSON para Banco de Dados {/* #json-to-database-mapping */}
 
-### Mapeamento do Corpo da Requisição da API para Colunas do Banco de Dados {#api-request-body-to-database-columns-mapping}
+### Mapeamento do Corpo da Solicitação da API para Colunas do Banco de Dados {/* #api-request-body-to-database-columns-mapping */}
 
 Quando o Duplicati envia dados de backup via HTTP POST, a estrutura JSON é mapeada para colunas do banco de dados:
 

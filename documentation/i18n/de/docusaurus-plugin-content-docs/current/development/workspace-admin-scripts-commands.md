@@ -1,6 +1,6 @@
-# Workspace-Admin-Skripte und -Befehle {#workspace-admin-scripts-commands}
+# Arbeitsbereichs-Administrationsskripte und -befehle {/* #workspace-admin-scripts--commands */}
 
-## Datenbank bereinigen {#clean-database}
+## Datenbank bereinigen {/* #clean-database */}
 
 ```bash
 ./scripts/clean-db.sh
@@ -11,7 +11,7 @@ Bereinigt die Datenbank, indem alle Daten entfernt werden, während das Datenban
 >[!CAUTION]
 > Mit Vorsicht verwenden, da dies alle vorhandenen Daten löscht.
 
-## Build-Artefakte und Abhängigkeiten bereinigen {#clean-build-artefacts-and-dependencies}
+## Build-Artefakte und Abhängigkeiten bereinigen {/* #clean-build-artefacts-and-dependencies */}
 
 ```bash
 scripts/clean-workspace.sh
@@ -32,7 +32,7 @@ Entfernt alle Build-Artefakte, das Verzeichnis node_modules und andere generiert
 - pnpm-Store-Cache (über `pnpm store prune`)
 - Docker-Build-Cache und Systempruning (Images, Netzwerke, Volumes)
 
-## Docker Compose und Docker-Umgebung bereinigen {#clean-docker-compose-and-docker-environment}
+## Docker Compose und Docker-Umgebung bereinigen {/* #clean-docker-compose-and-docker-environment */}
 
 ```bash
 scripts/clean-docker.sh
@@ -44,7 +44,7 @@ Führt eine vollständige Docker-Bereinigung durch, was nützlich ist für:
 - Bereinigung nach Entwicklungs- oder Testphasen
 - Beibehaltung einer sauberen Docker-Umgebung
 
-## Aktualisieren Sie die Pakete auf die neueste Version {#update-the-packages-to-the-latest-version}
+## Pakete auf die aktuelle Version aktualisieren {/* #update-the-packages-to-the-latest-version */}
 
 Sie können Pakete manuell aktualisieren mit:
 
@@ -70,13 +70,13 @@ Das `upgrade-dependencies.sh`-Skript automatisiert den gesamten Prozess der Abh�
 
 Dieses Skript bietet einen vollständigen Workflow zum Aktualisieren und Sichern von Abhängigkeiten.
 
-## Prüfen auf ungenutzte Pakete {#check-for-unused-packages}
+## Nach ungenutzten Paketen prüfen {/* #check-for-unused-packages */}
 
 ```bash
 pnpm depcheck
 ```
 
-## Versionsinformationen aktualisieren {#update-version-information}
+## Versionsinformationen aktualisieren {/* #update-version-information */}
 
 ```bash
 ./scripts/update-version.sh
@@ -90,7 +90,7 @@ Dieses Skript aktualisiert automatisch Versionsinformationen in mehreren Dateien
 - Aktualisiert nur, wenn sich die Version geändert hat
 - Gibt Rückmeldung zu jeder Aktion
 
-## Pre-checks-Skript {#pre-checks-script}
+## Pre-Checks-Skript {/* #pre-checks-script */}
 
 ```bash
 ./scripts/pre-checks.sh
@@ -102,7 +102,7 @@ Dieses Skript führt Vorprüfungen durch, bevor der Entwicklungsserver gestartet
 
 Dieses Skript wird automatisch durch `pnpm dev`, `pnpm build` und `pnpm start-local` aufgerufen.
 
-## Sicherstellen, dass die Schlüsseldatei vorhanden ist {#ensure-key-file-exists}
+## Sicherstellen, dass die Schlüsseldatei existiert {/* #ensure-key-file-exists */}
 
 ```bash
 ./scripts/ensure-key-file.sh
@@ -116,7 +116,7 @@ Dieses Skript stellt sicher, dass die `.duplistatus.key`-Datei im `data`-Verzeic
 
 Die Schlüsseldatei wird für kryptografische Operationen in der Anwendung verwendet.
 
-## Admin-Kontowiederherstellung {#admin-account-recovery}
+## Wiederherstellung des Admin-Kontos {/* #admin-account-recovery */}
 
 ```bash
 ./admin-recovery <username> <new-password>
@@ -139,7 +139,7 @@ Dieses Skript ermöglicht die Wiederherstellung von Administrator-Konten, falls 
 >[!CAUTION]
 > Dieses Skript modifiziert die Datenbank direkt. Verwenden Sie es nur bei Bedarf zur Kontowiederherstellung.
 
-## Bilder kopieren {#copy-images}
+## Bilder kopieren {/* #copy-images */}
 
 ```bash
 ./scripts/copy-images.sh
@@ -152,7 +152,7 @@ Kopiert Bilddateien von `documentation/static/img` an ihre entsprechenden Speich
 
 Nützlich zum Synchronisieren von Anwendungsbildern mit Dokumentationsbildern.
 
-## Versionen zwischen Entwicklung und Docker vergleichen {#compare-versions-between-development-and-docker}
+## Versionen zwischen Entwicklung und Docker vergleichen {/* #compare-versions-between-development-and-docker */}
 
 ```bash
 ./scripts/compare-versions.sh
@@ -184,7 +184,7 @@ Dieses Skript vergleicht die Versionen zwischen Ihrer Entwicklungsumgebung und e
 
 **Hinweis:** SQLite-Versionen werden nur nach der Hauptversion verglichen, da verschiedene Patch-Versionen innerhalb derselben Hauptversion in der Regel kompatibel sind. Das Skript zeigt an, wenn SQLite-Versionen auf der Hauptebene übereinstimmen, aber in den Patch-Versionen unterschiedlich sind.
 
-## Anzeigen der Konfigurationen in der Datenbank {#viewing-the-configurations-in-the-database}
+## Die Konfigurationen in der Datenbank anzeigen {/* #viewing-the-configurations-in-the-database */}
 
 ```bash
 sqlite3 data/backups.db "SELECT key, value FROM configurations;" | awk -F'|' '
@@ -200,7 +200,7 @@ sqlite3 /var/lib/docker/volumes/duplistatus_data/_data/backups.db "SELECT key, v
    else {print $2;}}' | less -R
 ```
 
-## Sicherungseinstellungen einblenden {#show-backup-settings}
+## Sicherungseinstellungen anzeigen {/* #show-backup-settings */}
 
 ```bash
 ./scripts/show-backup-settings.sh [database_path]

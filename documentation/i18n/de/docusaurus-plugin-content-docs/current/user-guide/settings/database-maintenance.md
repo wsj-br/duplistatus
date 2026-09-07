@@ -1,4 +1,4 @@
-# Datenbankwartung {#database-maintenance}
+# Datenbankverwaltung {/* #database-maintenance */}
 
 Verwalten Sie Ihre Sicherungsdaten und optimieren Sie die Leistung durch Datenbankwartungsvorgänge.
 
@@ -6,7 +6,7 @@ Verwalten Sie Ihre Sicherungsdaten und optimieren Sie die Leistung durch Datenba
 
 <br/>
 
-## Datenbanksicherung {#database-backup}
+## Datenbank-Backup {/* #database-backup */}
 
 Erstellen Sie eine Sicherung Ihrer gesamten Datenbank zum Schutz oder für Migrationszwecke.
 
@@ -30,7 +30,7 @@ Erstellen Sie eine Sicherung Ihrer gesamten Datenbank zum Schutz oder für Migra
 
 <br/>
 
-## Datenbankwiederherstellung {#database-restore}
+## Datenbankwiederherstellung {/* #database-restore */}
 
 Stellen Sie Ihre Datenbank aus einer zuvor erstellten Sicherungsdatei wieder her.
 
@@ -79,9 +79,11 @@ Dies gilt für alle nachfolgenden Wartungsfunktionen: Alle Statistiken auf dem D
 Falls Sie versehentlich Daten löschen, können Sie diese mithilfe der Funktion [Backup-Protokolle sammeln](../collect-backup-logs.md) wiederherstellen.
 :::
 
+Der cron-Dienst **konsolidiert** auch die Datenbank jeden Sonntag um 04:00 UTC. Dieser Vorgang löscht Sicherungszeilen, deren Server nicht mehr existiert, Serverzeilen ohne verbleibende Sicherungsberichte, übrig gebliebene Backup-Überwachung und überfällige Benachrichtigungseinstellungen, alte Zeilen für die Tägliche Zusammenfassung und führt SQLite `VACUUM` aus, um Speicherplatz freizugeben. Das Löschen eines Servers oder einer Sicherungsaufgabe bereinigt die entsprechenden Einstellungen sofort.
+
 <br/>
 
-## Datenbereinigungszeitraum {#data-cleanup-period}
+## Datenbereinigung Zeitraum {/* #data-cleanup-period */}
 
 Entfernen Sie veraltete Sicherungsdatensätze, um Speicherplatz freizugeben und die Systemleistung zu verbessern.
 
@@ -109,7 +111,7 @@ Es wird dringend empfohlen, eine Datenbanksicherung zu erstellen, bevor Sie mit 
 
 <br/>
 
-## Sicherungsauftrag löschen {#delete-backup-job-data}
+## Sicherungsauftrag löschen Daten {/* #delete-backup-job-data */}
 
 Entfernen Sie spezifische Sicherungsauftrag (Typ)-Daten.
 
@@ -127,7 +129,7 @@ Entfernen Sie spezifische Sicherungsauftrag (Typ)-Daten.
 
 <br/>
 
-## Serverdaten löschen {#delete-server-data}
+## Serverdaten löschen {/* #delete-server-data */}
 
 Entfernen Sie einen bestimmten Server und alle zugehörigen Sicherungsdaten.
 
@@ -144,7 +146,7 @@ Entfernen Sie einen bestimmten Server und alle zugehörigen Sicherungsdaten.
 
 <br/>
 
-## Doppelte Server zusammenführen {#merge-duplicate-servers}
+## Doppelte Server zusammenführen {/* #merge-duplicate-servers */}
 
 Erkennen und führen Sie doppelte Server zusammen, die denselben Namen, aber unterschiedliche IDs haben. Verwenden Sie diese Funktion, um sie in einem einzelnen Servereintrag zu konsolidieren.
 

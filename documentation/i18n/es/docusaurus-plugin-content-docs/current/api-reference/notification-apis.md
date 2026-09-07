@@ -1,9 +1,9 @@
-# Sistema de notificaciones {#notification-system}
+# Sistema de notificaciones {/* #notification-system */}
 
-## Probar notificación - `/api/notifications/test` {#test-notification---apinotificationstest}
-- **Punto de conexión**: `/api/notifications/test`
-- **Método**: POST
-- **Descripción**: Envía notificaciones de prueba (simples, basadas en plantilla o por correo electrónico) para verificar la configuración de notificaciones.
+## Notificación de Prueba - `/api/notifications/test` {/* #test-notification---apinotificationstest */}
+- **Endpoint**: `/api/notifications/test`
+- **Method**: POST
+- **Descripción**: Enviar notificaciones de prueba (simples, basadas en plantillas o por correo electrónico) para verificar la configuración de notificaciones.
 - **Autenticación**: Requiere sesión de administrador y token CSRF
 - **Cuerpo de la solicitud**:
   Para prueba simple:
@@ -96,16 +96,16 @@ El contenido del correo de prueba muestra:
   - El punto final de correo electrónico de prueba borra la caché de la solicitud antes de leer la configuración SMTP, asegurando que los scripts externos puedan actualizar la configuración y reflejarla inmediatamente en los correos electrónicos de prueba
   - Las pruebas de plantillas y el envío inmediato del Resumen Diario omiten la supresión por copia de seguridad
 
-## Vista previa de la plantilla de notificación - `/api/notifications/preview` {#preview-notification-template---apinotificationspreview}
-- **Punto final**: `/api/notifications/preview`
-- **Método**: POST
-- **Descripción**: Representa una plantilla de notificación con el renderizador de Markdown de producción sin enviar. El cuerpo incluye `kind` (`success`, `warning`, `overdueBackup`, o `dailySummaryEmail`) y la plantilla que se está editando. Las vistas previas del Resumen Diario usan la Actual instantánea real; otros tipos usan valores de muestra deterministas. El HTML del correo electrónico está destinado a un iframe sandboxed.
+## Vista previa de la Plantilla de Notificación - `/api/notifications/preview` {/* #preview-notification-template---apinotificationspreview */}
+- **Endpoint**: `/api/notifications/preview`
+- **Method**: POST
+- **Descripción**: Renderiza una plantilla de notificación con el renderizador Markdown de producción sin enviar. El cuerpo incluye `kind` (`success`, `warning`, `overdueBackup` o `dailySummaryEmail`) y la plantilla que se está editando. Las vistas previas del Resumen Diario utilizan la instantánea real actual; otros tipos utilizan valores de muestra deterministas. El HTML del correo electrónico está destinado a un iframe aislado.
 - **Autenticación**: Requiere una sesión válida y un token CSRF
 
-## Verificar respaldos atrasados - `/api/notifications/check-overdue` {#check-overdue-backups---apinotificationscheck-overdue}
-- **Punto de conexión**: `/api/notifications/check-overdue`
-- **Método**: POST
-- **Descripción**: Dispara manualmente la verificación de respaldos atrasados y envía notificaciones.
+## Comprobar Copias de Seguridad Vencidas - `/api/notifications/check-overdue` {/* #check-overdue-backups---apinotificationscheck-overdue */}
+- **Endpoint**: `/api/notifications/check-overdue`
+- **Method**: POST
+- **Descripción**: Activa manualmente la verificación de copias de seguridad vencidas y envía notificaciones.
 - **Autenticación**: Requiere sesión válida y token CSRF
 - **Respuesta**:
 
@@ -128,10 +128,10 @@ El contenido del correo de prueba muestra:
   - Devuelve estadísticas sobre el proceso de verificación
   - Envía notificaciones para los respaldos atrasados encontrados
 
-## Borrar marcas de tiempo de respaldo retrasado - `/api/notifications/clear-overdue-timestamps` {#clear-overdue-timestamps---apinotificationsclear-overdue-timestamps}
-- **Punto de conexión**: `/api/notifications/clear-overdue-timestamps`
-- **Método**: POST
-- **Descripción**: Borra todas las marcas de tiempo de notificación de respaldo atrasado, permitiendo que las notificaciones se envíen nuevamente.
+## Borrar Tiempos de Marca Vencidos - `/api/notifications/clear-overdue-timestamps` {/* #clear-overdue-timestamps---apinotificationsclear-overdue-timestamps */}
+- **Endpoint**: `/api/notifications/clear-overdue-timestamps`
+- **Method**: POST
+- **Descripción**: Borra todas las marcas de tiempo de notificación de copias de seguridad vencidas, permitiendo que las notificaciones se envíen nuevamente.
 - **Autenticación**: Requiere sesión válida y token CSRF
 - **Respuesta**:
 

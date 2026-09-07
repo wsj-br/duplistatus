@@ -1,11 +1,11 @@
-# Testskripte {#test-scripts}
+# Testskripte {/* #test-scripts */}
 
 Das Projekt enthält mehrere Test-Skripte, um bei der Entwicklung und dem Testen zu helfen:
 
 > [!NOTE]
 > Veraltete Repository-Stamm-`pnpm`-Hilfsprogramme zur Fehlersuche bei überfälligen Aufgaben, SMTP-Matrix-Tests und Cron-Port-Überprüfungen wurden entfernt. Verwenden Sie die Anwendungsoberfläche (**Einstellungen → Backup-Überwachung**), authentifizierte HTTP-APIs und `curl` gegenüber dem Cron-Dienst, wie unten dokumentiert.
 
-## Testdaten generieren {#generate-test-data}
+## Testdaten generieren {/* #generate-test-data */}
 
 ```bash
 pnpm generate-test-data --servers=N
@@ -49,26 +49,26 @@ Das Skript weist Duplicati-Versionen **pro Server** zu (der gleiche Bericht-Stri
 > Dieses Skript löscht alle vorherigen Daten in der Datenbank und ersetzt sie durch Testdaten.
 > Sichern Sie Ihre Datenbank, bevor Sie dieses Skript ausführen.
 
-## Überprüfung überfälliger Aufgaben und Cron-Verbindungen (Entwicklung) {#overdue-checks-and-cron-connectivity-development}
+## Überfällige Prüfungen und Cron-Konnektivität (Entwicklung) {/* #overdue-checks-and-cron-connectivity-development */}
 
-### Überprüfung überfälliger Sicherungen ausführen {#run-an-overdue-backup-check}
+### Überprüfung der überfälligen Sicherung ausführen {/* #run-an-overdue-backup-check */}
 
 Während die Anwendung läuft:
 
 - **UI (empfohlen):** öffnen Sie **Einstellungen → Backup-Überwachung** und verwenden Sie **Überprüfen überfälliger Sicherungen**. Dadurch wird dieselbe Logik ausgeführt wie beim geplanten Job über authentifiziertes `POST /api/notifications/check-overdue`.
 
-### Cron-Dienst-Status {#cron-service-health}
+### Gesundheitszustand des Cron-Dienstes {/* #cron-service-health */}
 
 ```bash
 curl http://localhost:8667/health
 curl http://localhost:8666/api/cron/health
 ```
 
-### Simulieren eines bestimmten Datums oder einer bestimmten Uhrzeit {#simulating-a-specific-date-or-time}
+### Simulieren eines bestimmten Datums oder einer bestimmten Zeit {/* #simulating-a-specific-date-or-time */}
 
 Es gibt kein integriertes CLI-Tool, um eine simulierte „aktuelle“ Uhrzeit einzuspeisen. Für den Algorithmus und Ideen zur manuellen Prüfung siehe die Repository-Datei `dev/OVERDUE_DETECTION_ALGORITHM.md` und die Implementierung in `src/lib/overdue-backup-checker.ts`.
 
-## CSV-Exportieren validieren {#validate-csv-export}
+## CSV-Export validieren {/* #validate-csv-export */}
 
 ```bash
 pnpm validate-csv-export
@@ -81,7 +81,7 @@ Dieses Skript validiert die CSV-Exportfunktionalität. Es:
 
 Nützlich, um sicherzustellen, dass CSV-Exporte vor Releases ordnungsgemäß funktionieren.
 
-## NTFY-Server vorübergehend blockieren (zum Testen) {#temporarily-block-ntfy-server-for-testing}
+## NTFY-Server vorübergehend blockieren (zum Testen) {/* #temporarily-block-ntfy-server-for-testing */}
 
 ```bash
 sudo ./scripts/temporary_ntfy.sh_block.sh
@@ -97,11 +97,11 @@ Dieses Skript blockiert vorübergehend den ausgehenden Netzwerkzugriff auf den N
 >[!CAUTION]
 > Dieses Skript ändert iptables-Regeln und erfordert Root-Privilegien. Verwenden Sie es nur zum Testen von Benachrichtigungs-Wiederholungsmechanismen.
 
-## Datenbankmigrationstests {#database-migration-testing}
+## Datenbank-Migrationstests {/* #database-migration-testing */}
 
 Das Projekt enthält Skripte zum Testen von Datenbankmigrationen von älteren Versionen zur aktuellen Version. Diese Skripte stellen sicher, dass Datenbankmigrationen korrekt funktionieren und die Datenintegrität bewahrt bleibt.
 
-### Migrationstestdaten generieren {#generate-migration-test-data}
+### Migrations-Testdaten generieren {/* #generate-migration-test-data */}
 
 ```bash
 ./scripts/generate-migration-test-data.sh
@@ -143,7 +143,7 @@ Dieses Skript generiert Testdatenbanken für mehrere historische Versionen der A
 >[!IMPORTANT]
 > Dieses Skript sollte nur einmal ausgeführt werden. Bei neuen Versionen kann der Entwickler die Datenbankdatei und Screenshots direkt in das Verzeichnis `scripts/migration_test_data/` kopieren. Führen Sie während der Entwicklung einfach das Skript `./scripts/test-migrations.sh` aus, um die Migrationen zu testen.
 
-### Testen von Datenbankmigrationen {#test-database-migrations}
+### Datenbankmigrationen testen {/* #test-database-migrations */}
 
 ```bash
 ./scripts/test-migrations.sh
@@ -220,11 +220,11 @@ echo $?  # 0 = all passed, 1 = some failed
 >[!NOTE]
 > Dieses Skript verwendet intern das TypeScript-Migrationstestskript (`test-migration.ts`). Das Testskript validiert die Datenbankstruktur nach der Migration und stellt die Datenintegrität sicher.
 
-## SMTP und E-Mail (Entwicklung) {#smtp-and-email-development}
+## SMTP und E-Mail (Entwicklung) {/* #smtp-and-email-development */}
 
 Konfigurieren Sie SMTP unter **Einstellungen → E-Mail** und verwenden Sie die integrierten E-Mail-Test- und Benachrichtigungsabläufe. Die früheren `pnpm set-smtp-test-config`- und `pnpm test-smtp-connections`-Hilfsskripte wurden aus dem Repository entfernt.
 
-## Testen des Docker-Entrypoint-Skripts {#test-docker-entrypoint-script}
+## Docker-Einstiegsskript testen {/* #test-docker-entrypoint-script */}
 
 ```bash
 pnpm test-entrypoint
@@ -267,10 +267,10 @@ pnpm test-entrypoint
 - Testen des geordneten Herunterfahrens und der Signalverarbeitung
 - Debuggen des Verhaltens des Entrypoint-Skripts in einer lokalen Umgebung
 
-## Tägliche Zusammenfassung Validierung {#daily-summary-validation}
+## Validierung der täglichen Zusammenfassung {/* #daily-summary-validation */}
 
 ```bash
 pnpm validate-daily-summary
 ```
 
-Führt deterministische Prüfungen für die Planung der Täglichen Zusammenfassung (einschließlich DST), Snapshot-Aggregation, Markdown-Sanitisierung, Lieferungsbuchungsansprüche und Schema 4.1 → 4.2-Migration mit benutzerdefinierten Vorlagen durch. Sendet keine E-Mail oder NTFY.
+Führt deterministische Prüfungen für die Planung der Täglichen Zusammenfassung (einschließlich DST), die Aggregation von Snapshots (nur die neuesten Sicherungsjobs), das Bereinigen von verwaisten Benachrichtigungseinstellungen, verwaisten Sicherungs-/Serverzeilen, die Sanitisierung von Markdown, die Überprüfung von Lieferungsprotokollen und die Migration von Schema 4.1 → 4.2 mit benutzerdefinierten Vorlagen durch. Sendet keine E-Mail oder NTFY.

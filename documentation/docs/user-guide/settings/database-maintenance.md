@@ -1,5 +1,5 @@
 
-# Database Maintenance {#database-maintenance}
+# Database Maintenance {/* #database-maintenance */}
 
 Manage your backup data and optimise performance through database maintenance operations.
 
@@ -10,7 +10,7 @@ Manage your backup data and optimise performance through database maintenance op
 
 
 
-## Database Backup {#database-backup}
+## Database Backup {/* #database-backup */}
 
 Create a backup of your entire database for safekeeping or migration purposes.
 
@@ -34,7 +34,7 @@ Create a backup of your entire database for safekeeping or migration purposes.
 
 <br/>
 
-## Database Restore {#database-restore}
+## Database Restore {/* #database-restore */}
 
 Restore your database from a previously created backup file.
 
@@ -83,9 +83,11 @@ This applies to all the maintenance functions below: all statistics on the dashb
 If you accidentally delete data, you can restore it using the [Collect Backup Logs](../collect-backup-logs.md) feature.
 :::
 
+The cron service also **compacts** the database every Sunday at 04:00 UTC. That pass deletes backup rows whose server no longer exists, server rows with no remaining backup reports, leftover Backup Monitoring and overdue-notification settings, old Daily Summary delivery rows, and runs SQLite `VACUUM` to reclaim file space. Deleting a server or backup job still cleans matching settings immediately.
+
 <br/>
 
-## Data Cleanup Period {#data-cleanup-period}
+## Data Cleanup Period {/* #data-cleanup-period */}
 
 Remove outdated backup records to free up storage space and improve system performance.
 
@@ -114,7 +116,7 @@ It is strongly recommended to create a database backup before proceeding with th
 
 <br/>
 
-## Delete Backup Job Data {#delete-backup-job-data}
+## Delete Backup Job Data {/* #delete-backup-job-data */}
 
 Remove a specific Backup Job (type) data.
 
@@ -132,7 +134,7 @@ Remove a specific Backup Job (type) data.
 
 <br/>
 
-## Delete Server Data {#delete-server-data}
+## Delete Server Data {/* #delete-server-data */}
 
 Remove a specific server and all its associated backup data.
 
@@ -149,7 +151,7 @@ Remove a specific server and all its associated backup data.
 
 <br/>
 
-## Merge Duplicate Servers {#merge-duplicate-servers}
+## Merge Duplicate Servers {/* #merge-duplicate-servers */}
 
 Detect and merge duplicate servers that have the same name but different IDs. se this feature to consolidate them into a single server entry.  
 

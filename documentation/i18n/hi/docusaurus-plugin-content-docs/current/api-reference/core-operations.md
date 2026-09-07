@@ -1,9 +1,9 @@
-# Core Operations {#core-operations}
+# मूल कार्यवाही {/* #core-operations */}
 
-## Get Dashboard Data (Consolidated) - `/api/dashboard` {#get-dashboard-data-consolidated---apidashboard}
+## Dashboard Data (Consolidated) Prapt Karein - `/api/dashboard` {/* #get-dashboard-data-consolidated---apidashboard */}
 - **Endpoint**: `/api/dashboard`
 - **Method**: GET
-- **Description**: एकल संयुक्त प्रतिक्रिया में सभी डैशबोर्ड डेटा प्राप्त करता है, जिसमें सर्वर सारांश, सारांश, और चार्ट डेटा शामिल हैं।
+- **विवरण**: Server summaries, overall summary, aur chart data ko include karke, sabhi dashboard data ko ek consolidated response mein retrieve karta hai.
 - **Response**:
 
   ```json
@@ -64,10 +64,10 @@
   - सर्वोत्तम प्रदर्शन के लिए सभी डेटा को समानांतर में प्राप्त किया जाता है
   - `secondsSinceLastBackup` फ़ील्ड में सभी सर्वरों के अंतिम बैकअप से सेकंड में समय दिखाता है
 
-## Get All Servers - `/api/servers` {#get-all-servers---apiservers}
+## Sabhi Server Prapt Karein - `/api/servers` {/* #get-all-servers---apiservers */}
 - **Endpoint**: `/api/servers`
 - **Method**: GET
-- **Description**: सभी सर्वरों की सूची प्राप्त करता है उनके बुनियादी जानकारी के साथ। वैकल्पिक रूप से बैकअप जानकारी शामिल होती है।
+- **विवरण**: Unke basic information ke saath sabhi servers ki soochi retrieve karta hai. Optionally backup information include karta hai.
 - **Authentication**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
 - **Query Parameters**:
   - `includeBackups` (optional): प्रत्येक सर्वर के लिए बैकअप जानकारी शामिल करने के लिए `true` पर सेट करें
@@ -110,10 +110,10 @@
   - सर्वर चयन, प्रदर्शन, और कॉन्फ़िगरेशन उद्देश्यों के लिए उपयोग किया जाता है
   - सर्वर में संग्रहीत पासवर्ड होने का संकेत देने के लिए `hasPassword` फ़ील्ड शामिल है
 
-## Get Server Details - `/api/servers/:id` {#get-server-details---apiserversid}
+## Server Vivaran Prapt Karein - `/api/servers/:id` {/* #get-server-details---apiserversid */}
 - **Endpoint**: `/api/servers/:id`
 - **Method**: GET
-- **Description**: एक विशिष्ट सर्वर के बारे में जानकारी प्राप्त करता है। बुनियादी सर्वर जानकारी या बैकअप और चार्ट डेटा सहित विस्तृत जानकारी लौटाता है।
+- **विवरण**: Ek specific server ke baare mein jaankaaree retrieve karta hai. Basic server info ya detailed information return kar sakta hai jismein backups aur chart data shaamil hain.
 - **Authentication**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
 - **Parameters**:
   - `id`: the server identifier
@@ -159,10 +159,10 @@
   - या तो `includeBackups` या `includeChartData` को `true` पर सेट करने से बैकअप और चार्टडेटा सहित पूर्ण सर्वर डेटा लौटाता है
   - सर्वर सेटिंग्स और विवरण दृश्यों के लिए उपयोग किया जाता है
 
-## Update Server - `/api/servers/:id` {#update-server---apiserversid}
+## Server Update Karein - `/api/servers/:id` {/* #update-server---apiserversid */}
 - **Endpoint**: `/api/servers/:id`
 - **Method**: PATCH
-- **Description**: उपनाम, नोट, और सर्वर यूआरएल सहित सर्वर विवरण अपडेट करता है।
+- **विवरण**: Server details update karta hai jismein alias, note, aur server URL shaamil hain.
 - **Authentication**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
 - **Parameters**:
   - `id`: the server identifier
@@ -197,10 +197,10 @@
   - Sabhi fields optional hain
   - Sabhi fields ke liye khali strings allowed hain
 
-## Delete Server - `/api/servers/:id` {#delete-server---apiserversid}
+## Server Delete Karein - `/api/servers/:id` {/* #delete-server---apiserversid */}
 - **Endpoint**: `/api/servers/:id`
 - **Method**: DELETE
-- **Description**: Server aur uske saare associated backups ko delete karta hai.
+- **विवरण**: Ek server aur uske saare associated backups ko delete karta hai.
 - **Authentication**: Valid session aur CSRF token chahiye
 - **Parameters**:
   - `id`: the server identifier
@@ -228,10 +228,10 @@
   - Server record bhi remove ho jayega
   - Deleted backups aur servers ka count return karta hai
 
-## Get Server Data with Overdue Info - `/api/detail/:serverId` {#get-server-data-with-overdue-info---apidetailserverid}
+## Vilambit Info ke Saath Server Data Prapt Karein - `/api/detail/:serverId` {/* #get-server-data-with-overdue-info---apidetailserverid */}
 - **Endpoint**: `/api/detail/:serverId`
 - **Method**: GET
-- **Description**: Overdue backup status ke saath server ka detailed information retrieve karta hai.
+- **विवरण**: Vilambit backup status ko include karke detailed server information retrieve karta hai.
 - **Parameters**:
   - `serverId`: सर्वर पहचानकर्ता
 
@@ -267,10 +267,10 @@
   - Overdue backup details aur timestamps include karta hai
   - Overdue backup management aur monitoring ke liye use hota hai
 
-## Get Duplicate Servers - `/api/servers/duplicates` {#get-duplicate-servers---apiserversduplicates}
+## Duplicate Servers Prapt Karein - `/api/servers/duplicates` {/* #get-duplicate-servers---apiserversduplicates */}
 - **Endpoint**: `/api/servers/duplicates`
 - **Method**: GET
-- **Description**: Machine ID ke basis par duplicate servers ka list retrieve karta hai. Duplicate servers unhi servers hain jo same machine ID share karte hain lekin database mein alag-alag records ke roop mein store hain.
+- **विवरण**: Machine ID ke aadhaar par duplicate servers ki soochi retrieve karta hai. Duplicate servers woh servers hain jo same machine ID share karte hain lekin database mein alag records ke roop mein store hain.
 - **Authentication**: Valid session, CSRF token, aur administrator access chahiye
 - **Response**:
 
@@ -309,10 +309,10 @@
   - Duplicate server records ko identify aur merge karne ke liye use hota hai
   - Har duplicate ke liye server details aur backup counts include karta hai
 
-## Merge Servers - `/api/servers/merge` {#merge-servers---apiserversmerge}
+## Servers Merge Karein - `/api/servers/merge` {/* #merge-servers---apiserversmerge */}
 - **Endpoint**: `/api/servers/merge`
 - **Method**: POST
-- **Description**: Multiple servers ko target server mein merge karta hai. Source servers ke saare backups target server mein transfer ho jate hain aur source servers delete ho jate hain.
+- **विवरण**: Multiple servers ko ek target server mein merge karta hai. Source servers se sabhi backups target server mein transfer ho jaate hain, aur source servers delete ho jaate hain.
 - **Authentication**: Valid session, CSRF token, aur administrator access chahiye
 - **Request Body**:
 

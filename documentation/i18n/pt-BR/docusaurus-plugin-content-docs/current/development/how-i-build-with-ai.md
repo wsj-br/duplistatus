@@ -1,6 +1,6 @@
-# Como construí esta aplicação usando ferramentas de IA {#how-i-build-this-application-using-ai-tools}
+# Como eu construí esta aplicação usando ferramentas de IA {/* #how-i-build-this-application-using-ai-tools */}
 
-# Motivação {#motivation}
+# Motivação {/* #motivation */}
 
 Comecei a usar Duplicati como ferramenta de backup para meus servidores domésticos. Testei o [painel oficial do Duplicati](https://app.duplicati.com/) e [Duplicati Monitoring](https://www.duplicati-monitoring.com/), mas tinha dois requisitos principais: (1) auto-hospedado; e (2) uma API exposta para integração com [Homepage](https://gethomepage.dev/), pois a utilizo para a página inicial do meu home lab.
 
@@ -8,7 +8,7 @@ Também tentei conectar diretamente a cada servidor Duplicati na rede, mas o mé
 
 Como também estava experimentando com ferramentas de IA para codificação, decidi tentar usar IA para construir esta ferramenta. Aqui está o processo que utilizei...
 
-# Ferramentas utilizadas {#tools-used}
+# Ferramentas usadas {/* #tools-used */}
 
 1. Para a UI: [Google's Firebase Studio](https://firebase.studio/)
 2. Para a implementação: Cursor (https://www.cursor.com/)
@@ -17,7 +17,7 @@ Como também estava experimentando com ferramentas de IA para codificação, dec
 Usei Firebase para a interface, mas você também pode usar [v0.app](https://v0.app/) ou qualquer outra ferramenta para gerar o protótipo. Usei Cursor para gerar a implementação, mas você pode usar outras ferramentas, como VS Code/Copilot, Windsurf, ...
 :::
 
-# IU {#ui}
+# Interface do usuário {/* #ui */}
 
 Criei um novo projeto no [Firebase Studio](https://studio.firebase.google.com/) e usei este prompt no recurso "Prototype an app with AI":
 
@@ -77,9 +77,9 @@ Um ponto interessante foi que, desde a primeira interação, o Firebase Studio g
 
 Após concluir o protótipo inicial, acessei o código-fonte clicando no botão `</>` na interface. Em seguida, usei a extensão Git para exportar o código e enviá-lo para um repositório privado no [GitHub](https://www.github.com).
 
-# Backend {#backend}
+# Backend {/* #backend */}
 
-## Configuração {#setup}
+## Configuração {/* #setup */}
 
 Baixei o código do GitHub (usando o comando `git clone`) para uma pasta local (no meu caso, um Raspberry Pi 5 executando Linux) e instalei as dependências Node.js, npm e pnpm. Veja mais detalhes em [DEVELOPMENT.md](../development/setup.md).
 
@@ -87,11 +87,11 @@ Configurei o Cursor para acessar a pasta de código da minha máquina Windows us
 
 Copiei uma amostra do JSON enviado pelo Duplicati para um arquivo (consulte o documento [relatório de backup de exemplo](../api-reference/database-values)), limpando alguns campos indesejados.
 
-## Implementação {#implementation}
+## Implementação {/* #implementation */}
 
 Usei um prompt inicial para começar a implementação, focando em persistência, correções e novos recursos. Foi um processo longo, mas muito interessante.
 
-### Usando IA para gerar o prompt {#using-ai-to-generate-the-prompt}
+### Usando IA para gerar o prompt {/* #using-ai-to-generate-the-prompt */}
 
 Criei um prompt detalhado usando Cursor Chat (modo `Manual`, modelo `Auto`):
 
@@ -141,7 +141,7 @@ A IA gerou o seguinte prompt:
 
 Copiei o prompt gerado para a área de transferência.
 
-### Inicie a jornada de implementação {#start-the-implementation-journey}
+### Comece a jornada de implementação {/* #start-the-implementation-journey */}
 
 Criei um novo chat clicando no botão `+`, alternei para o modo `Agent` e colei o prompt usando Ctrl+Shift+V (como texto).
 
@@ -151,7 +151,7 @@ Após o plano ser gerado, digitei `please, implement this plan` no chat para com
 Incluí apenas o ponto de partida, pois não registrei todos os prompts utilizados. Havia muitos deles.
 :::
 
-# Notas {#notes}
+# Notas {/* #notes */}
 
 - Alguns modelos podem travar ao corrigir bugs. "claude-3.5" e "claude-4" geralmente são melhores, mas às vezes é necessário tentar outro modelo (GPT, Gemini, etc.).
 Para bugs ou erros complexos, use um prompt para analisar as possíveis causas do erro em vez de simplesmente pedir para corrigi-lo.

@@ -1,6 +1,6 @@
 
 
-# Backup Notifications {#backup-notifications}
+# Backup Notifications {/* #backup-notifications */}
 
 
 Use this settings to send notifications when a [new backup log is received](../../installation/duplicati-server-configuration.md).
@@ -15,18 +15,18 @@ The backup notifications table is organised by server. The display format depend
 
 This page has an auto-save feature. Any changes you make will be saved automatically.
 
-When **Daily Summary** is enabled, individual and additional backup notifications are suppressed. The settings on this page are preserved and become active again when Daily Summary is turned off. See [Daily Summary](daily-summary-settings.md). 
+When **Daily Summary** is enabled, emails to the default Email recipient are suppressed. Additional email destinations on this page continue to receive matching events. The settings on this page are preserved and become active again when Daily Summary is turned off. See [Daily Summary](daily-summary-settings.md). 
 
 <br/>
 
 
-## Filter {#filter}
+## Filter {/* #filter */}
 
 Use the **Filter by Server Name** field at the top of the page to quickly find specific backups by server name or alias. The table will automatically filter to show only matching entries.
 
 <br/>
 
-## Configure Per-Backup Notification Settings {#configure-per-backup-notification-settings}
+## Configure Per-Backup Notification Settings {/* #configure-per-backup-notification-settings */}
 
 | Setting                       | Description                                               | Default Value |
 | :---------------------------- | :-------------------------------------------------------- | :------------ |
@@ -43,7 +43,7 @@ Use the **Filter by Server Name** field at the top of the page to quickly find s
 
 <br/>
 
-## Additional Destinations {#additional-destinations}
+## Additional Destinations {/* #additional-destinations */}
 
 Additional notification destinations allow you to send notifications to specific email addresses or NTFY topics beyond the global settings. The system uses a hierarchical inheritance model where backups can inherit default settings from their server, or override them with backup-specific values.
 
@@ -62,7 +62,7 @@ If no icon is displayed, the server or backup does not have additional destinati
 ![Server-level additional destinations](../../assets/screen-settings-notifications-server.png)
 
 
-### Server-Level Defaults {#server-level-defaults}
+### Server-Level Defaults {/* #server-level-defaults */}
 
 You can configure default additional destinations at the server level that all backups on that server will automatically inherit.
 
@@ -83,7 +83,7 @@ You can configure default additional destinations at the server level that all b
 
 
 
-### Per-Backup Configuration {#per-backup-configuration}
+### Per-Backup Configuration {/* #per-backup-configuration */}
 
 Individual backups automatically inherit the server defaults, but you can override them for specific backup jobs.
 
@@ -104,11 +104,13 @@ Individual backups automatically inherit the server defaults, but you can overri
 - Notifications are sent to both the global settings and the additional destinations when configured.
 - The notification event setting for additional destinations is independent of the main notification event setting.
 - If additional destinations are set to **off**, no notifications will be sent to those destinations, but the main notifications will still work according to the primary settings.
+- **Overdue** alerts count as a **Warning** for the additional Notification event filter: they are sent when the event is **all** or **warnings**, and not when it is **errors** or **off**. The same filter applies to additional NTFY topics.
 - When a backup inherits from server defaults, any changes to the server defaults will automatically apply to that backup (unless it has been overridden).
+- While [Daily Summary](daily-summary-settings.md) is enabled, additional email destinations still receive matching events; only the default Email recipient is suppressed.
 
 <br/>
 
-## Bulk Edit {#bulk-edit}
+## Bulk Edit {/* #bulk-edit */}
 
 You can edit additional destination settings for multiple backups at once using the bulk edit feature. This is particularly useful when you need to apply the same additional destinations to many backup jobs.
 

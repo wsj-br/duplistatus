@@ -208,6 +208,7 @@ const ORDERED_SCREENSHOT_FILENAMES: string[] = [
   'screen-settings-notifications-bulk.png',
   'screen-settings-notifications-server.png',
   'screen-settings-monitoring.png',
+  'screen-settings-daily-summary.png',
   'screen-settings-server.png',
   'screen-settings-ntfy.png',
   'screen-settings-email.png',
@@ -426,6 +427,7 @@ Environment (required unless --help):
 
 Requirements:
   Development server running at ${BASE_URL}
+  Playwright browsers (installed automatically after checks via pnpm exec playwright install)
 
 Examples:
   pnpm ${script}                          # All locales, all screenshots
@@ -643,6 +645,25 @@ async function checkHealth(): Promise<boolean> {
   } catch (error) {
     logError('Health check failed: ' + (error instanceof Error ? error.message : String(error)));
     return false;
+  }
+}
+
+function installPlaywrightBrowsers(): void {
+  const command = 'pnpm exec playwright install';
+  log('Installing Playwright browsers...');
+  log(`Executing: ${command}`);
+  try {
+    execSync(command, {
+      stdio: 'inherit',
+      cwd: process.cwd(),
+      env: { ...process.env },
+    });
+    log('Playwright browsers installed successfully');
+    log('-------------------------------------------------------');
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    logError(`Failed to install Playwright browsers: ${errorMessage}`);
+    throw error;
   }
 }
 
@@ -2921,6 +2942,8 @@ ${colors.reset}`);
     logError('Application is not running or health check failed. Please start the application on port 8666.');
     process.exit(1);
   }
+
+  installPlaywrightBrowsers();
   
   // Generate test data
   await generateTestData();
@@ -3579,6 +3602,7 @@ ${colors.reset}`);
       const adminSettingsTabs = [
         'notifications',
         'monitoring',
+        'daily-summary',
         'server',
         'ntfy',
         'email',

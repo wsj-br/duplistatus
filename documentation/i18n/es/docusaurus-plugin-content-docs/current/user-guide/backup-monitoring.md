@@ -1,12 +1,12 @@
 import { ZoomMermaid } from '@site/src/components/ZoomMermaid';
 
-# Monitoreo de Backups {#backup-monitoring}
+# Monitoreo de copias de seguridad {/* #backup-monitoring */}
 
 La función de monitoreo de backups le permite rastrear y alertar sobre backups que están retrasados. Las notificaciones pueden ser a través de NTFY o Correo electrónico.
 
 En la interfaz de usuario, los backups retrasados se muestran con un icono de advertencia. Al pasar el cursor sobre el icono se muestran los detalles del backup retrasado, incluida la última hora del backup, la hora del backup esperado, el período de tolerancia y la hora del próximo backup esperado.
 
-## Proceso de Verificación Retrasada {#overdue-check-process}
+## Comprobar Vencida Proceso {/* #overdue-check-process */}
 
 **Cómo funciona:**
 
@@ -50,11 +50,11 @@ gantt
 - A las `2024-01-02 08:30` (🔹Verificación 2), el backup está **a tiempo**, ya que aún se encuentra dentro del período de tolerancia.
 - A las `2024-01-02 10:00` (🔹Verificación 3), el backup está **retrasado**, ya que esto es después de la hora de `Expected Next Backup`.
 
-## Comprobaciones Periódicas {#periodic-checks}
+## Comprobaciones Periódicas {/* #periodic-checks */}
 
 **duplistatus** realiza comprobaciones periódicas de backups retrasados en intervalos configurables. El intervalo por defecto es 20 minutos, pero puede configurarlo en [Configuración → Monitoreo de Backups](settings/backup-monitoring-settings.md).
 
-## Configuración Automática {#automatic-configuration}
+## Configuración Automática {/* #automatic-configuration */}
 
 Cuando recopila logs de backup de un servidor Duplicati, **duplistatus** automáticamente:
 

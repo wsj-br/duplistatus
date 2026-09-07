@@ -1,12 +1,12 @@
-# Monitoreo de Backups {#backup-monitoring}
+# Monitoreo de copias de seguridad {/* #backup-monitoring */}
 
 ![Alertas de copia de seguridad](../../assets/screen-settings-monitoring.png)
 
-## Filtrado de servidores {#server-filtering}
+## Filtrado de Servidor {/* #server-filtering */}
 
 La lista de servidores en esta página se puede filtrar utilizando el campo de filtro.
 
-Cuando **Resumen Diario** está habilitado, la detección de vencidas continúa pero las notificaciones individuales de vencidas se suprimen. Consulte [Resumen Diario](daily-summary-settings.md).
+Cuando **Resumen Diario** está habilitado, la detección de vencimiento continúa pero el correo electrónico de vencimiento al destinatario de correo electrónico predeterminado se suprime. Los destinos de correo electrónico adicionales continúan para eventos coincidentes (los vencimientos se consideran una Advertencia). Consulte [Resumen Diario](daily-summary-settings.md).
 
 **Coincidencias de filtro:**
 - ID del servidor
@@ -15,7 +15,7 @@ Cuando **Resumen Diario** está habilitado, la detección de vencidas continúa 
 
 Esto facilita la localización rápida de servidores o copias de seguridad específicos en la configuración de monitoreo cuando se administran muchos sistemas.
 
-## Configurar la configuración de monitoreo por backup {#configure-per-backup-monitoring-settings}
+## Configurar Monitoreo de copias de seguridad {/* #configure-per-backup-monitoring-settings */}
 
 -  **Nombre del servidor**: El nombre del servidor que se monitoreará en busca de copias de seguridad atrasadas. 
    - Haga clic en <SvgIcon svgFilename="duplicati_logo.svg" height="18"/> para abrir la interfaz web del servidor Duplicati
@@ -37,7 +37,7 @@ Cuando recopila logs de backup de un servidor Duplicati, **duplistatus** actuali
 Para obtener los mejores resultados, recopile logs de backup después de cambiar la configuración de intervalos de trabajos de backup en su servidor Duplicati. Esto garantiza que **duplistatus** se mantenga sincronizado con su configuración actual.
 :::
 
-## Configuraciones Globales {#global-configurations}
+## Configuraciones globales {/* #global-configurations */}
 
 Estas configuraciones se aplican a todas las copias de seguridad:
 
@@ -47,7 +47,7 @@ Estas configuraciones se aplican a todas las copias de seguridad:
 | **Intervalo de Monitoreo de Copias de Seguridad** | Con qué frecuencia el sistema verifica la existencia de copias de seguridad atrasadas. El valor predeterminado es **5 minutos**.                                                                                                                                                                                                                                                            |
 | **Frecuencia de Notificaciones**      | Con qué frecuencia enviar notificaciones de retraso: <br/> **Una vez`: Send **just one** notification when the backup becomes overdue. <br/> `Cada día`: Send **daily** notifications while overdue (default). <br/> `Cada semana`: Send **weekly** notifications while overdue. <br/> `Cada mes**: Envía notificaciones **mensuales** mientras esté atrasado. |
 
-## Acciones disponibles {#available-actions}
+## Acciones disponibles {/* #available-actions */}
 
 | Botón                                                              | Descripción                                                                                                                           |
 |:--------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------|

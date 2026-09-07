@@ -1,4 +1,4 @@
-# Logs da aplicação {#application-logs}
+# Logs do Aplicativo {/* #application-logs */}
 
 O Visualizador de logs do aplicativo permite que administradores monitorem todos os logs da aplicação em um único lugar, com filtragem, exportação e atualizações em tempo real diretamente da interface web.
 
@@ -6,7 +6,7 @@ O Visualizador de logs do aplicativo permite que administradores monitorem todos
 
 <br/>
 
-## Ações Disponíveis {#available-actions}
+## Ações Disponíveis {/* #available-actions */}
 
 | Botão                                                              | Descrição                                                                                         |
 |:--------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------|
@@ -18,7 +18,7 @@ O Visualizador de logs do aplicativo permite que administradores monitorem todos
 
 <br/>
 
-## Controles e Filtros {#controls-and-filters}
+## Controles e Filtros {/* #controls-and-filters */}
 
 | Controle | Descrição |
 |:--------|:-----------|

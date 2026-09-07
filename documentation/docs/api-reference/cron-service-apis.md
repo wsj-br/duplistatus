@@ -1,8 +1,8 @@
 
 
-# Cron Service Management {#cron-service-management}
+# Cron Service Management {/* #cron-service-management */}
 
-## Get Cron Configuration - `/api/cron-config` {#get-cron-configuration---apicron-config}
+## Get Cron Configuration - `/api/cron-config` {/* #get-cron-configuration---apicron-config */}
 - **Endpoint**: `/api/cron-config`
 - **Method**: GET
 - **Description**: Retrieves the current cron service configuration.
@@ -21,7 +21,7 @@
   - Includes cron expression and enabled status
   - Used for cron service management
 
-## Update Cron Configuration - `/api/cron-config` {#update-cron-configuration---apicron-config}
+## Update Cron Configuration - `/api/cron-config` {/* #update-cron-configuration---apicron-config */}
 - **Endpoint**: `/api/cron-config`
 - **Method**: POST
 - **Description**: Updates the cron service configuration.
@@ -47,7 +47,7 @@
   - Validates interval against allowed options
   - Affects overdue backup check frequency
 
-## Cron Service Proxy - `/api/cron/*` {#cron-service-proxy---apicron}
+## Cron Service Proxy - `/api/cron/*` {/* #cron-service-proxy---apicron */}
 - **Endpoint**: `/api/cron/*`
 - **Method**: GET, POST
 - **Description**: Proxies requests to the cron service. This endpoint forwards all requests to the cron service running on a separate port.
@@ -69,3 +69,4 @@
   - Supports both GET and POST methods
   - Used for cron service management from the web interface
   - `POST /trigger/daily-summary-dispatch` is rejected by the cron service; use `/api/configuration/daily-summary/send` instead
+  - `POST /trigger/database-compact` runs the weekly compact immediately (orphan backups/servers and notification settings, plus SQLite `VACUUM`)

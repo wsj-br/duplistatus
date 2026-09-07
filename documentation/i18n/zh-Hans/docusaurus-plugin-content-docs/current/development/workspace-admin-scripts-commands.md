@@ -1,6 +1,6 @@
-# 工作空间管理员脚本和命令 {#workspace-admin-scripts-commands}
+# 工作区管理脚本和命令 {/* #workspace-admin-scripts--commands */}
 
-## 清理数据库 {#clean-database}
+## 清理数据库 {/* #clean-database */}
 
 ```bash
 ./scripts/clean-db.sh
@@ -11,7 +11,7 @@
 >[!CAUTION]
 > 使用时请谨慎，因为这将删除所有现有数据。
 
-## 清理构建工件和依赖项 {#clean-build-artefacts-and-dependencies}
+## 清理构建产物和依赖项 {/* #clean-build-artefacts-and-dependencies */}
 
 ```bash
 scripts/clean-workspace.sh
@@ -32,7 +32,7 @@ scripts/clean-workspace.sh
 - pnpm 存储缓存（通过 `pnpm store prune`）
 - Docker 构建缓存和系统剪裁（镜像、网络、卷）
 
-## 清理 Docker Compose 和 Docker 环境 {#clean-docker-compose-and-docker-environment}
+## 清理 Docker Compose 和 Docker 环境 {/* #clean-docker-compose-and-docker-environment */}
 
 ```bash
 scripts/clean-docker.sh
@@ -44,7 +44,7 @@ scripts/clean-docker.sh
 - 清理开发或测试会话后
 - 维护清洁的 Docker 环境
 
-## 更新包到最新版本 {#update-the-packages-to-the-latest-version}
+## 将软件包更新到最新版本 {/* #update-the-packages-to-the-latest-version */}
 
 您可以手动使用：
 
@@ -70,13 +70,13 @@ source ./scripts/upgrade-dependencies.sh
 
 此脚本提供了保持依赖项最新和安全的完整工作流程。
 
-## 检查未使用的包 {#check-for-unused-packages}
+## 检查未使用的软件包 {/* #check-for-unused-packages */}
 
 ```bash
 pnpm depcheck
 ```
 
-## 更新版本信息 {#update-version-information}
+## 更新版本信息 {/* #update-version-information */}
 
 ```bash
 ./scripts/update-version.sh
@@ -90,7 +90,7 @@ pnpm depcheck
 - 仅在版本更改时更新
 - 对每个操作提供反馈
 
-## 预检查脚本 {#pre-checks-script}
+## 预检查脚本 {/* #pre-checks-script */}
 
 ```bash
 ./scripts/pre-checks.sh
@@ -102,7 +102,7 @@ pnpm depcheck
 
 此脚本由 `pnpm dev`、`pnpm build` 和 `pnpm start-local` 自动调用。
 
-## 确保关键文件存在 {#ensure-key-file-exists}
+## 确保密钥文件存在 {/* #ensure-key-file-exists */}
 
 ```bash
 ./scripts/ensure-key-file.sh
@@ -116,7 +116,7 @@ pnpm depcheck
 
 密钥文件用于应用程序中的加密操作。
 
-## 管理员账户恢复 {#admin-account-recovery}
+## 管理员账户恢复 {/* #admin-account-recovery */}
 
 ```bash
 ./admin-recovery <username> <new-password>
@@ -139,7 +139,7 @@ pnpm depcheck
 >[!CAUTION]
 > 此脚本直接修改数据库。仅在必要时用于账户恢复时使用。
 
-## 复制图像 {#copy-images}
+## 复制镜像 {/* #copy-images */}
 
 ```bash
 ./scripts/copy-images.sh
@@ -152,7 +152,7 @@ pnpm depcheck
 
 用于保持应用程序图像与文档图像同步。
 
-## 比较开发环境和 Docker 之间的版本 {#compare-versions-between-development-and-docker}
+## 比较开发环境和 Docker 之间的版本 {/* #compare-versions-between-development-and-docker */}
 
 ```bash
 ./scripts/compare-versions.sh
@@ -184,7 +184,7 @@ pnpm depcheck
 
 **注意：** SQLite 版本仅按主要版本比较，因为同一主要版本内的不同补丁版本通常是兼容的。脚本将指示如果 SQLite 版本在主要级别上匹配但补丁版本不同。
 
-## 查看数据库中的配置 {#viewing-the-configurations-in-the-database}
+## 查看数据库中的配置 {/* #viewing-the-configurations-in-the-database */}
 
 ```bash
 sqlite3 data/backups.db "SELECT key, value FROM configurations;" | awk -F'|' '
@@ -200,7 +200,7 @@ sqlite3 /var/lib/docker/volumes/duplistatus_data/_data/backups.db "SELECT key, v
    else {print $2;}}' | less -R
 ```
 
-## 显示备份设置 {#show-backup-settings}
+## 显示备份设置 {/* #show-backup-settings */}
 
 ```bash
 ./scripts/show-backup-settings.sh [database_path]

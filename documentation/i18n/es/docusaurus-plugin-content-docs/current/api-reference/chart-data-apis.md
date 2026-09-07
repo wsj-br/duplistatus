@@ -1,9 +1,9 @@
-# Datos del gráfico {#chart-data}
+# Datos del gráfico {/* #chart-data */}
 
-## Obtener datos agregados del gráfico - `/api/chart-data/aggregated` {#get-aggregated-chart-data---apichart-dataaggregated}
+## Obtener datos de gráfico agregados - `/api/chart-data/aggregated` {/* #get-aggregated-chart-data---apichart-dataaggregated */}
 - **Endpoint**: `/api/chart-data/aggregated`
-- **Method**: GET
-- **Description**: Recupera datos agregados del gráfico con filtrado opcional por rango de tiempo.
+- **Método**: GET
+- **Descripción**: Recupera datos de gráfico agregados con filtrado opcional por rango de tiempo.
 - **Parámetros de consulta**:
   - `startDate` (opcional): Fecha de inicio para filtrado (formato ISO)
   - `endDate` (opcional): Fecha de finalización para filtrado (formato ISO)
@@ -32,10 +32,10 @@
   - Valida el formato de fecha antes del procesamiento
   - Devuelve datos agregados de todos los servidores
 
-## Obtener datos del gráfico del servidor - `/api/chart-data/server/:serverId` {#get-server-chart-data---apichart-dataserverserverid}
+## Obtener datos de gráfico del servidor - `/api/chart-data/server/:serverId` {/* #get-server-chart-data---apichart-dataserverserverid */}
 - **Endpoint**: `/api/chart-data/server/:serverId`
-- **Method**: GET
-- **Description**: Recupera datos del gráfico para un servidor específico con filtrado opcional por rango de tiempo.
+- **Método**: GET
+- **Descripción**: Recupera datos de gráfico para un servidor específico con filtrado opcional por rango de tiempo.
 - **Parámetros**:
   - `serverId`: el identificador del servidor
 - **Parámetros de consulta**:
@@ -66,10 +66,10 @@
   - Valida el formato de fecha antes del procesamiento
   - Devuelve los datos del gráfico para un servidor específico
 
-## Obtener datos del gráfico de copia de seguridad del servidor - `/api/chart-data/server/:serverId/backup/:backupName` {#get-server-backup-chart-data---apichart-dataserverserveridbackupbackupname}
+## Obtener datos de gráfico de copia de seguridad del servidor - `/api/chart-data/server/:serverId/backup/:backupName` {/* #get-server-backup-chart-data---apichart-dataserverserveridbackupbackupname */}
 - **Endpoint**: `/api/chart-data/server/:serverId/backup/:backupName`
-- **Method**: GET
-- **Description**: Recupera datos del gráfico para un servidor y una copia de seguridad específicos con filtrado opcional por rango de tiempo.
+- **Método**: GET
+- **Descripción**: Recupera datos de gráfico para un servidor específico y una copia de seguridad con filtrado opcional por rango de tiempo.
 - **Parámetros**:
   - `serverId`: el identificador del servidor
   - `backupName`: el nombre del respaldo (codificado en URL)

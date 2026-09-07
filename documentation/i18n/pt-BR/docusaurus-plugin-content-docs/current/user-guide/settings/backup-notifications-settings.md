@@ -1,4 +1,4 @@
-# Notificações de backup {#backup-notifications}
+# Notificações de Backup {/* #backup-notifications */}
 
 Use estas configurações para enviar notificações quando um [novo log de backup é recebido](../../installation/duplicati-server-configuration.md).
 
@@ -12,17 +12,17 @@ A tabela de notificações de backup é organizada por servidor. O formato de ex
 
 Esta página possui um recurso de salvamento automático. Todas as alterações que você fizer serão salvas automaticamente.
 
-Quando **Resumo Diário** está habilitado, as notificações de backup individuais e adicionais são suprimidas. As configurações nesta página são preservadas e tornam-se ativas novamente quando o Resumo Diário é desativado. Consulte [Resumo Diário](daily-summary-settings.md).
+Quando o **Resumo Diário** está habilitado, os e-mails para o destinatário de E-mail padrão são suprimidos. Destinos de e-mail adicionais nesta página continuam a receber eventos correspondentes. As configurações nesta página são preservadas e tornam-se ativas novamente quando o Resumo Diário é desativado. Veja [Resumo Diário](daily-summary-settings.md).
 
 <br/>
 
-## Filtro {#filter}
+## Filtrar {/* #filter */}
 
 Use o campo **Filtrar por nome do servidor** no topo da página para encontrar rapidamente backups específicos por nome do servidor ou alias. A tabela será filtrada automaticamente para mostrar apenas as entradas correspondentes.
 
 <br/>
 
-## Configurar Configurações de Notificação por Backup {#configure-per-backup-notification-settings}
+## Configurar Configurações de Notificação por Backup {/* #configure-per-backup-notification-settings */}
 
 | Configuração                  | Descrição                                                 | Valor Padrão  |
 | :---------------------------- | :-------------------------------------------------------- | :------------ |
@@ -39,7 +39,7 @@ Use o campo **Filtrar por nome do servidor** no topo da página para encontrar r
 
 <br/>
 
-## Destinos adicionais {#additional-destinations}
+## Destinos Adicionais {/* #additional-destinations */}
 
 Destinos de notificação adicionais permitem que você envie notificações para endereços de e-mail específicos ou tópicos NTFY além das configurações globais. O sistema usa um modelo de herança hierárquica onde os backups podem herdar configurações padrão do seu servidor ou substituí-las por valores específicos do backup.
 
@@ -55,7 +55,7 @@ Se nenhum ícone for exibido, o servidor ou backup não possui destinos adiciona
 
 ![Destinos adicionais no nível do servidor](../../assets/screen-settings-notifications-server.png)
 
-### Padrões em Nível de Servidor {#server-level-defaults}
+### Padrões de Nível de Servidor {/* #server-level-defaults */}
 
 Você pode configurar Destinos adicionais padrão no nível do Servidor que todos os backups nesse servidor herdarão automaticamente.
 
@@ -73,7 +73,7 @@ Você pode configurar Destinos adicionais padrão no nível do Servidor que todo
 - **Sincronizar com Todos**: Limpa todas as substituições de backup, fazendo com que todos os backups herdem os padrões do servidor.
 - **Limpar Todos**: Limpa todos os destinos adicionais tanto dos padrões do servidor quanto de todos os backups, mantendo a estrutura de herança.
 
-### Configuração Por Backup {#per-backup-configuration}
+### Configuração por Backup {/* #per-backup-configuration */}
 
 Os backups individuais herdam automaticamente os padrões do servidor, mas você pode substituí-los para trabalhos de backup específicos.
 
@@ -90,14 +90,16 @@ Os backups individuais herdam automaticamente os padrões do servidor, mas você
 
 **Comportamento de Destinos Adicionais:**
 
-- As notificações são enviadas tanto para as configurações globais quanto para os destinos adicionais quando configurados.
-- A configuração de evento de notificação para destinos adicionais é independente da configuração de evento de notificação principal.
-- Se os destinos adicionais estiverem definidos como **desativado**, nenhuma notificação será enviada para esses destinos, mas as notificações principais continuarão funcionando de acordo com as configurações primárias.
-- Quando um backup herda dos padrões do servidor, quaisquer alterações nos padrões do servidor serão aplicadas automaticamente a esse backup (a menos que tenha sido substituído).
+- As notificações são enviadas para as configurações globais e os destinos adicionais quando configuradas.
+- A configuração do evento de notificação para destinos adicionais é independente da configuração principal do evento de notificação.
+- Se os destinos adicionais estiverem definidos como **Desativado**, nenhuma notificação será enviada para esses destinos, mas as notificações principais ainda funcionarão de acordo com as configurações primárias.
+- Os alertas **Atrasados** contam como um **Aviso** para o filtro de eventos de notificação adicional: eles são enviados quando o evento é **Todos** ou **Avisos**, e não quando é **Erros** ou **Desativado**. O mesmo filtro se aplica a tópicos NTFY adicionais.
+- Quando um backup herda das configurações padrão do servidor, quaisquer alterações nas configurações padrão do servidor serão aplicadas automaticamente a esse backup (a menos que tenha sido substituído).
+- Enquanto o [Resumo Diário](daily-summary-settings.md) está habilitado, os destinos de e-mail adicionais ainda recebem eventos correspondentes; apenas o destinatário de E-mail padrão é suprimido.
 
 <br/>
 
-## Edição em massa {#bulk-edit}
+## Edição em Lote {/* #bulk-edit */}
 
 Você pode editar configurações de destinos adicionais para múltiplos backups de uma vez usando o recurso de edição em massa. Isto é particularmente útil quando você precisa aplicar os mesmos destinos adicionais a muitos trabalhos de backup.
 

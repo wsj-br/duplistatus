@@ -1,8 +1,8 @@
-# 安装指南 {#installation-guide}
+# 安装指南 {/* #installation-guide */}
 
 应用程序可以使用 Docker、[Portainer Stacks](https://docs.portainer.io/user/docker/stacks) 或 Podman 进行部署。安装完成后，您可能需要配置 TIMEZONE，如 [配置时间区](./configure-tz.md) 中所述，并需要配置 Duplicati 服务器以将备份日志发送到 **duplistatus**，如 [Duplicati 配置](./duplicati-server-configuration.md) 部分中所述。
 
-## 先决条件 {#prerequisites}
+## 前提条件 {/* #prerequisites */}
 
 确保您已安装以下内容:
 
@@ -11,7 +11,7 @@
 - Portainer（可选）- [Docker 安装指南](https://docs.portainer.io/start/install-ce/server/docker/linux)
 - Podman（可选）- [安装指南](http://podman.io/docs/installation#debian)
 
-## 身份验证 {#authentication}
+## 身份验证 {/* #authentication */}
 
 **duplistatus** 从版本 0.9.x 开始需要用户身份验证。默认 `admin` 账户在安装应用程序或从早期版本升级时自动创建：
     - 用户名：`admin`
@@ -25,14 +25,14 @@
 系统强制执行最小密码长度和复杂性。这些要求可以使用 `PWD_ENFORCE` 和 `PWD_MIN_LEN` [环境变量](environment-variables.md) 进行调整。使用不够复杂或长度较短的密码可能会损害安全性。请谨慎使用这些设置。
 ::::
 
-### 容器镜像 {#container-images}
+### 容器镜像 {/* #container-images */}
 
 您可以使用来自以下位置的镜像:
 
 - **Docker Hub**：`docker.io/wsjbr/duplistatus:latest`
 - **GitHub 容器注册表**：`ghcr.io/wsj-br/duplistatus:latest`
 
-### 选项 1：使用 Docker Compose {#option-1-using-docker-compose}
+### 选项 1：使用 Docker Compose {/* #option-1-using-docker-compose */}
 
 这是本地部署或自定义配置的推荐方法。它使用 `docker compose` 文件来定义和运行容器及其所有设置。
 
@@ -45,7 +45,7 @@ docker compose -f duplistatus.yml up -d
 
 检查 [时区](./configure-tz.md) 部分以获取有关如何调整时区和数字/日期/时间格式的更多详细信息。
 
-### 选项 2：使用 Portainer Stacks（Docker Compose）{#option-2-using-portainer-stacks-docker-compose}
+### 选项 2：使用 Portainer Stacks (Docker Compose) {/* #option-2-using-portainer-stacks-docker-compose */}
 
 1. 前往您的 [Portainer](https://docs.portainer.io/user/docker/stacks) 服务器中的“栈”并点击“添加栈”。
 2. 为您的栈命名（例如，“duplistatus”）。
@@ -82,7 +82,7 @@ volumes:
 5. 检查 [时区](./configure-tz.md) 部分以获取有关如何调整时区和数字/日期/时间格式的更多详细信息。
 6. 单击“部署栈”。
 
-### 选项 3：使用 Portainer Stacks（GitHub 存储库）{#option-3-using-portainer-stacks-github-repository}
+### 选项 3：使用 Portainer Stacks (GitHub Repository) {/* #option-3-using-portainer-stacks-github-repository */}
 
 1. 在 [Portainer](https://docs.portainer.io/user/docker/stacks) 中，转到“栈”并单击“添加栈”。
 2. 为栈命名（例如“duplistatus”）。
@@ -92,7 +92,7 @@ volumes:
 6. （可选）设置 "Environment variables" 部分中的 `TZ`、`LANG`、`PWD_ENFORCE` 和 `PWD_MIN_LEN` 环境变量。检查 [Timezone](./configure-tz.md) 部分以获取有关如何调整时区和数字/日期/时间格式的更多详细信息。 
 6. 点击 "Deploy the stack"。
 
-### 选项 4：使用 Docker CLI {#option-4-using-docker-cli}
+### 选项 4：使用 Docker CLI {/* #option-4-using-docker-cli */}
 
 ```bash
 # Create the volume
@@ -110,7 +110,7 @@ docker run -d \
 
 - `duplistatus_data` 卷用于持久存储。容器镜像使用 `Europe/London` 作为默认时区和 `en_GB` 作为默认语言（语言）。
 
-### 选项 5：使用 Podman（CLI）`rootless` {#option-5-using-podman-cli-rootless}
+### 选项 5：使用 Podman (CLI) `rootless` {/* #option-5-using-podman-cli-rootless */}
 
 对于基本设置，您可以在不配置 DNS的情况下启动容器：
 
@@ -127,7 +127,7 @@ podman run -d \
   ghcr.io/wsj-br/duplistatus:latest
 ```
 
-#### 为 Podman 容器配置 DNS {#configuring-dns-for-podman-containers}
+#### 为 Podman 容器配置 DNS {/* #configuring-dns-for-podman-containers */}
 
 如果您需要自定义 DNS 配置（例如，用于 Tailscale MagicDNS、企业网络或自定义 DNS 设置），您可以手动配置 DNS 服务器和搜索域。
 
@@ -184,7 +184,7 @@ podman run -d \
 
 检查 [Timezone](./configure-tz.md) 部分以获取有关如何调整时区和数字/日期/时间格式的更多详细信息。
 
-### 选项 6：使用 Podman Pods {#option-6-using-podman-pods}
+### 选项 6：使用 Podman Pods {/* #option-6-using-podman-pods */}
 
 Podman Pods 允许您在共享网络命名空间中运行多个容器。这对于测试或在您需要在其他容器旁边运行 duplistatus 时很有用。
 
@@ -209,7 +209,7 @@ podman create --name duplistatus \
 podman pod start duplistatus-pod
 ```
 
-#### 为 Podman Pods 配置 DNS {#configuring-dns-for-podman-pods}
+#### 为 Podman Pods 配置 DNS {/* #configuring-dns-for-podman-pods */}
 
 使用容器组时，DNS 配置必须设置在容器组级别，而不是容器级别。
 使用与选项 5 中描述的相同方法来找到您的 DNS 服务器和搜索域。
@@ -251,7 +251,7 @@ podman pod start duplistatus-pod
 podman pod rm -f duplistatus-pod
 ```
 
-## 基本配置 {#essential-configuration}
+## 基本配置 {/* #essential-configuration */}
 
 1. 配置您的 [Duplicati 服务器](duplicati-server-configuration.md) 将备份日志消息发送到 duplistatus (必填)。在 Duplicati 2.0.9.106 及更高版本中，使用 `--send-http-json-urls`，如该指南所述。
 2. 登录 duplistatus – 请参阅 [用户指南](../user-guide/overview.md#accessing-the-dashboard)。
@@ -261,4 +261,4 @@ podman pod rm -f duplistatus-pod
 6. 配置电子邮件设置 - 在 [设置 → 电子邮件](../user-guide/settings/email-settings.md) 中设置电子邮件通知。 
 7. 配置备份通知 - 在 [设置 → 备份通知](../user-guide/settings/backup-notifications-settings.md) 中设置每个备份或每个服务器的通知。
 
-请参阅以下部分以配置诸如时区、数字格式和 HTTPS 之类的可选设置。
+请参阅以下部分以配置可选设置，例如时区、数字格式和[安全加固](security-hardening.md)。

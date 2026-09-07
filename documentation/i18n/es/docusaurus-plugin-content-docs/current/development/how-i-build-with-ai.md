@@ -1,6 +1,6 @@
-# Cómo construí esta aplicación utilizando herramientas de IA {#how-i-build-this-application-using-ai-tools}
+# Cómo construí esta aplicación usando herramientas de IA {/* #how-i-build-this-application-using-ai-tools */}
 
-# Motivación {#motivation}
+# Motivación {/* #motivation */}
 
 Comencé a usar Duplicati como herramienta de backup para mis servidores domésticos. Probé el [panel de control oficial de Duplicati](https://app.duplicati.com/) y [Duplicati Monitoring](https://www.duplicati-monitoring.com/), pero tenía dos requisitos principales: (1) auto-alojado; y (2) una API expuesta para integración con [Homepage](https://gethomepage.dev/), ya que la utilizo para la página de inicio de mi laboratorio doméstico.
 
@@ -8,7 +8,7 @@ También intenté conectarme directamente a cada servidor Duplicati en la red, p
 
 Como también estaba experimentando con herramientas de código de IA, decidí intentar usar IA para construir esta herramienta. Aquí está el proceso que utilicé...
 
-# Herramientas utilizadas {#tools-used}
+# Herramientas utilizadas {/* #tools-used */}
 
 1. Para la interfaz de usuario: [Google's Firebase Studio](https://firebase.studio/)
 2. Para la implementación: Cursor (https://www.cursor.com/)
@@ -17,7 +17,7 @@ Como también estaba experimentando con herramientas de código de IA, decidí i
 Utilicé Firebase para la interfaz de usuario, pero también puedes usar [v0.app](https://v0.app/) o cualquier otra herramienta para generar el prototipo. Utilicé Cursor para generar la implementación, pero puede usar otras herramientas, como VS Code/Copilot, Windsurf, ...
 :::
 
-# IU {#ui}
+# Interfaz de usuario {/* #ui */}
 
 Creé un nuevo proyecto en [Firebase Studio](https://studio.firebase.google.com/) y utilicé este prompt en la función "Prototype an app with AI":
 
@@ -77,9 +77,9 @@ Un punto interesante fue que, desde la primera interacción, Firebase Studio gen
 
 Después de completar el prototipo inicial, accedí al código fuente haciendo clic en el botón `</>` en la interfaz. Luego utilicé la extensión de Git para exportar el código e insertarlo en un repositorio privado en [GitHub](https://www.github.com).
 
-# Backend {#backend}
+# Backend {/* #backend */}
 
-## Configuración {#setup}
+## Configuración {/* #setup */}
 
 Descargué el código de GitHub (usando el comando `git clone`) a una carpeta local (en mi caso, una Raspberry Pi 5 ejecutando Linux) e instalé las dependencias Node.js, npm y pnpm. Consulte más detalles en [DEVELOPMENT.md](../development/setup.md).
 
@@ -87,11 +87,11 @@ Configuré Cursor para acceder a la carpeta de código desde mi máquina Windows
 
 Copié una muestra del JSON enviado por Duplicati en un archivo (consulte el documento [informe de backup de ejemplo](../api-reference/database-values)), eliminando algunos campos no deseados.
 
-## Implementación {#implementation}
+## Implementación {/* #implementation */}
 
 Utilicé un mensaje inicial para comenzar la implementación, enfocándome en la persistencia, correcciones y nuevas funcionalidades. Fue un proceso largo pero muy interesante.
 
-### Usar IA para generar el prompt {#using-ai-to-generate-the-prompt}
+### Usando IA para generar el aviso {/* #using-ai-to-generate-the-prompt */}
 
 Creé un aviso detallado usando Cursor Chat (modo `Manual`, modelo `Auto`):
 
@@ -141,7 +141,7 @@ La IA generó el siguiente prompt:
 
 He copiado el mensaje generado al portapapeles.
 
-### Inicia el viaje de implementación {#start-the-implementation-journey}
+### Comienza el viaje de implementación {/* #start-the-implementation-journey */}
 
 Creé un nuevo chat haciendo clic en el botón `+`, cambié al modo `Agent` y pegué el prompt usando Ctrl+Shift+V (como texto).
 
@@ -151,7 +151,7 @@ Después de que se generó el plan, escribí `please, implement this plan` en el
 Solo incluí el punto de partida ya que no registré todos los indicadores utilizados. Había muchos de ellos.
 :::
 
-# Notas {#notes}
+# Notas {/* #notes */}
 
 - Algunos modelos pueden quedarse atascados al corregir errores. "claude-3.5" y "claude-4" suelen funcionar mejor, pero a veces hay que probar con otro modelo (GPT, Gemini, etc.).
 Para errores o fallos complejos, utiliza un prompt para analizar las posibles causas del error en lugar de simplemente pedir que lo corrija.

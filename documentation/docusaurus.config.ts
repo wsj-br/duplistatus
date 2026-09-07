@@ -9,6 +9,57 @@ import remarkGithubAlerts from 'remark-github-alerts';
 // defaulting to '/duplistatus/' for GitHub Pages deployment.
 const baseUrl = process.env.BASE_URL || '/duplistatus/';
 
+// Docusaurus infers sidebar/page titles from the first H1 in
+// parseMarkdownContentTitle. That helper only strips classic {#id} suffixes,
+// so MDX-comment heading IDs (and HTML comment IDs) leak into sidebar labels.
+// The MDX loader strips comments from rendered headings/TOC; metadata
+// extraction does not. See https://docusaurus.io/docs/markdown-features/toc#heading-ids
+const MDX_COMMENT_HEADING_ID = /\s*\{\/\*\s*#.*?\*\/\}\s*$/;
+const HTML_COMMENT_HEADING_ID = /\s*<!--\s*#.*?-->\s*$/;
+const CLASSIC_HEADING_ID = /\s*\{#[^}]+\}\s*$/;
+
+function stripExplicitHeadingId(headingText: string): string {
+  return headingText
+    .replace(MDX_COMMENT_HEADING_ID, '')
+    .replace(HTML_COMMENT_HEADING_ID, '')
+    .replace(CLASSIC_HEADING_ID, '')
+    .trim();
+}
+
+function firstH1Match(content: string): RegExpExecArray | null {
+  const withoutImports = content
+    .replace(/^(?:import\s(?:.|\r?\n(?!\r?\n))*(?:\r?\n){2,})*/, '')
+    .trim();
+  return /^#[ \t]+(?<title>[^ \t].*)$/m.exec(withoutImports);
+}
+
+function titleFromMarkdownH1(content: string): string | undefined {
+  const match = firstH1Match(content);
+  const rawTitle = match?.groups?.title?.trim();
+  if (!rawTitle) {
+    return undefined;
+  }
+  const title = stripExplicitHeadingId(rawTitle);
+  return title.length > 0 ? title : undefined;
+}
+
+function stripHeadingIdsFromAtxHeadings(content: string): string {
+  let inCode = false;
+  return content
+    .split('\n')
+    .map((line) => {
+      if (line.trimStart().startsWith('```')) {
+        inCode = !inCode;
+        return line;
+      }
+      if (inCode || !/^#{1,6}[ \t]/.test(line)) {
+        return line;
+      }
+      return stripExplicitHeadingId(line);
+    })
+    .join('\n');
+}
+
 const config: Config = {
   title: 'duplistatus',
   tagline: 'A dashboard to monitor your Duplicati backups',
@@ -49,6 +100,20 @@ const config: Config = {
       comments: true,
       admonitions: true,
       headingIds: true,
+    },
+    parseFrontMatter: async (params) => {
+      const result = await params.defaultParseFrontMatter(params);
+      result.content = stripHeadingIdsFromAtxHeadings(result.content);
+      if (
+        typeof result.frontMatter.title !== 'string' &&
+        typeof result.frontMatter.sidebar_label !== 'string'
+      ) {
+        const title = titleFromMarkdownH1(result.content);
+        if (title) {
+          result.frontMatter.title = title;
+        }
+      }
+      return result;
     },
   },
 
@@ -105,6 +170,17 @@ const config: Config = {
   plugins: [
     '@docusaurus/theme-mermaid',
     'docusaurus-plugin-image-zoom',
+    [
+      '@docusaurus/plugin-client-redirects',
+      {
+        redirects: [
+          {
+            from: ['/installation/https-setup', '/installation/harden-duplistatus-security'],
+            to: '/installation/security-hardening',
+          },
+        ],
+      },
+    ],
     // Suppress webpack "Critical dependency" warning from vscode-languageserver-types (transitive from intlayer-editor)
     function suppressVscodeLspWarning() {
       return {

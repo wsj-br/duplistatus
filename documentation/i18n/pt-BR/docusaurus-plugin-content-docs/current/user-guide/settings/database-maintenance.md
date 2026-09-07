@@ -1,4 +1,4 @@
-# Manutenção do banco de dados {#database-maintenance}
+# Manutenção do Banco de Dados {/* #database-maintenance */}
 
 Gerencie seus dados de backup e otimize o desempenho através de operações de manutenção do banco de dados.
 
@@ -6,7 +6,7 @@ Gerencie seus dados de backup e otimize o desempenho através de operações de 
 
 <br/>
 
-## Backup do banco de dados {#database-backup}
+## Backup do Banco de Dados {/* #database-backup */}
 
 Crie um backup de todo o seu banco de dados para salvaguarda ou fins de migração.
 
@@ -30,7 +30,7 @@ Crie um backup de todo o seu banco de dados para salvaguarda ou fins de migraç�
 
 <br/>
 
-## Restauração do banco de dados {#database-restore}
+## Restauração do Banco de Dados {/* #database-restore */}
 
 Restaure seu banco de dados a partir de um arquivo de backup criado anteriormente.
 
@@ -79,9 +79,11 @@ Isto se aplica a todas as funções de manutenção abaixo: todas as estatístic
 Se você excluir dados acidentalmente, poderá restaurá-los usando o recurso [Coletar logs de backup](../collect-backup-logs.md).
 :::
 
+O serviço cron também **compacta** o banco de dados todo Domingo às 04:00 UTC. Essa execução exclui linhas de backup cujos servidores não existem mais, linhas de servidor sem relatórios de backup restantes, configurações de Monitoramento de Backup e notificações de atraso, linhas antigas de entrega de Resumo Diário e executa SQLite `VACUUM` para recuperar espaço em disco. Excluir um servidor ou trabalho de backup ainda limpa as configurações correspondentes imediatamente.
+
 <br/>
 
-## Período de Limpeza de Dados {#data-cleanup-period}
+## Período de Limpeza de Dados {/* #data-cleanup-period */}
 
 Remova registros de backup desatualizados para liberar espaço de armazenamento e melhorar o desempenho do sistema.
 
@@ -109,7 +111,7 @@ Selecionar a opção "Excluir todos os dados" irá **remover permanentemente tod
 
 <br/>
 
-## Excluir trabalho de backup {#delete-backup-job-data}
+## Excluir Tarefa de Backup {/* #delete-backup-job-data */}
 
 Remover dados de um Backup Job (tipo) específico.
 
@@ -127,7 +129,7 @@ Remover dados de um Backup Job (tipo) específico.
 
 <br/>
 
-## Excluir dados do servidor {#delete-server-data}
+## Excluir Dados do Servidor {/* #delete-server-data */}
 
 Remover um servidor específico e todos os seus dados de backup associados.
 
@@ -144,7 +146,7 @@ Remover um servidor específico e todos os seus dados de backup associados.
 
 <br/>
 
-## Mesclar servidores duplicados {#merge-duplicate-servers}
+## Mesclar Servidores Duplicados {/* #merge-duplicate-servers */}
 
 Detectar e mesclar servidores duplicados que têm o mesmo nome, mas IDs diferentes. Use este recurso para consolidá-los em uma única entrada de servidor.
 

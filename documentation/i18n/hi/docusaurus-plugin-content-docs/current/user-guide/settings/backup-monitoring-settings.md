@@ -1,12 +1,12 @@
-# Backup Monitoring {#backup-monitoring}
+# Backup Monitoring {/* #backup-monitoring */}
 
 ![Backup alerts](../../assets/screen-settings-monitoring.png)
 
-## सर्वर फ़िल्टरिंग {#server-filtering}
+## सर्वर फ़िल्टरिंग {/* #server-filtering */}
 
 Ye prushth par server list ko filter field ka upayog karke filter kiya ja sakta hai.
 
-Jab **दैनिक सारांश** Saksham kiya gaya hai, to Vilambit nirdesh chalta rehta hai, lekin individual Vilambit Suchnaayein roka jaate hain. [दैनिक सारांश](daily-summary-settings.md) dekhiye.
+जब **दैनिक सारांश** सक्शम किया गया है, विलंबित पता लगाने जारी रहता है लेकिन डिफ़ॉल्ट Email प्राप्तकर्ता को विलंबित Email रोक दिया जाता है। अतिरिक्त Email गंतव्यों के लिए जारी रहता है (विलंबित गिनती को एक Warning के रूप में माना जाता है)। [दैनिक सारांश](daily-summary-settings.md) देखें।
 
 **फ़िल्टर मैच:**
 - सर्वर आईडी
@@ -15,7 +15,7 @@ Jab **दैनिक सारांश** Saksham kiya gaya hai, to Vilambit ni
 
 Isse aapko bahut saare systems ko manage karte hue specific servers ya backups ko quickly locate karna asaan ho jata hai.
 
-## Configure Per-Backup Monitoring Settings {#configure-per-backup-monitoring-settings}
+## Configure karein Per-Backup Monitoring Sammaan {/* #configure-per-backup-monitoring-settings */}
 
 -  **Server Name**: Server ka naam jo overdue backups ke liye monitor kiya ja raha hai. 
    - Duplicati server ke web interface kholne ke liye <SvgIcon svgFilename="duplicati_logo.svg" height="18"/> par click karein
@@ -37,7 +37,7 @@ Jab aap Duplicati server se backup logs collect karte hain, **duplistatus** auto
 Best results ke liye, aap apne Duplicati server me backup job intervals configuration badalne ke baad backup logs collect karein. Isse **duplistatus** apne current configuration ke saath synchronised rehta hai.
 :::
 
-## Global Configurations {#global-configurations}
+## वैश्विक कॉन्फ़िगरेशन {/* #global-configurations */}
 
 Ye sammaan sabhi backups ke liye lagte hain:
 
@@ -47,7 +47,7 @@ Ye sammaan sabhi backups ke liye lagte hain:
 | **Backup Monitoring Interval** | System overdue backups ke liye kitni baar check karta hai. Default **5 minute** hai.                                                                                                                                                                                                                                                            |
 | **Notification Frequency**      | Overdue notifications bhejne ka samay: <br/> **Ek baar`: Send **just one** notification when the backup becomes overdue. <br/> `Har din`: Send **daily** notifications while overdue (default). <br/> `Har saptaah`: Send **weekly** notifications while overdue. <br/> `Har mahine**: Overdue rahe hue **monthly** notifications bhejein. |
 
-## Available Actions {#available-actions}
+## उपलब्ध क्रियाएं {/* #available-actions */}
 
 | Button                                                              | Vivaaran                                                                                                                           |
 |:--------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------|

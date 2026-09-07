@@ -1,10 +1,10 @@
-# Détails du Serveur {#server-details}
+# Détails du serveur {/* #server-details */}
 
 Cliquer sur un serveur du tableau de bord ouvre une page avec une liste de sauvegardes pour ce serveur. Vous pouvez afficher toutes les sauvegardes ou sélectionner une sauvegarde spécifique si le serveur a plusieurs sauvegardes configurées.
 
 ![Détails du serveur](../assets/screen-server-backup-list.png)
 
-## Statistiques de serveur/sauvegarde {#serverbackup-statistics}
+## Serveur/Statistiques de sauvegarde {/* #serverbackup-statistics */}
 
 Cette section affiche les statistiques pour toutes les sauvegardes sur le serveur ou une sauvegarde unique sélectionnée.
 
@@ -24,7 +24,7 @@ Cliquez sur le <IconButton icon="lucide:settings" href="settings/backup-monitori
 
 <br/>
 
-## Historique des sauvegardes {#backup-history}
+## Historique des sauvegardes {/* #backup-history */}
 
 Ce tableau répertorie les journaux de sauvegarde pour le serveur sélectionné.
 
@@ -52,7 +52,7 @@ Quand **Toutes les sauvegardes** est sélectionné, la liste affiche toutes les 
 
 <br/>
 
-## Détails de la sauvegarde {#backup-details}
+## Détails de la sauvegarde {/* #backup-details */}
 
 Cliquer sur un badge de statut dans le tableau de bord (vue tableau) ou sur n'importe quelle ligne du tableau de l'historique des sauvegardes affiche les informations de sauvegarde détaillées.
 

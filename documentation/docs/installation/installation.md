@@ -1,10 +1,10 @@
 
 
-# Installation Guide {#installation-guide}
+# Installation Guide {/* #installation-guide */}
 
 The application can be deployed using Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks), or Podman. After the installation, you may want to configure the TIMEZONE, as described in the [Configure Timezone](./configure-tz.md) and need to configure the Duplicati servers to send backup logs to **duplistatus**, as outlined in the [Duplicati Configuration](./duplicati-server-configuration.md) section.
 
-## Prerequisites {#prerequisites}
+## Prerequisites {/* #prerequisites */}
 
 Ensure you have the following installed:
 
@@ -14,7 +14,7 @@ Ensure you have the following installed:
 - Podman (optional) - [Installation guide](http://podman.io/docs/installation#debian)
 
 
-## Authentication {#authentication}
+## Authentication {/* #authentication */}
 
 **duplistatus** since version 0.9.x requires user authentication. A default `admin` account is created automatically when installing the application for the first time or upgrading from an earlier version: 
     - username: `admin`
@@ -30,14 +30,14 @@ The system enforces a minimum password length and complexity. These requirements
 ::::
 
 
-### Container Images {#container-images}
+### Container Images {/* #container-images */}
 
 You can use the images from:
 
 - **Docker Hub**: `docker.io/wsjbr/duplistatus:latest`
 - **GitHub Container Registry**: `ghcr.io/wsj-br/duplistatus:latest`
 
-### Option 1: Using Docker Compose {#option-1-using-docker-compose}
+### Option 1: Using Docker Compose {/* #option-1-using-docker-compose */}
 
 This is the recommended method for local deployments or when you want to customise the configuration. It uses a `docker compose` file to define and run the container with all its settings.
 
@@ -50,7 +50,7 @@ docker compose -f duplistatus.yml up -d
 
 Check [Timezone](./configure-tz.md) section to more details on how to adjust timezone and number/date/time format.
 
-### Option 2: Using Portainer Stacks (Docker Compose) {#option-2-using-portainer-stacks-docker-compose}
+### Option 2: Using Portainer Stacks (Docker Compose) {/* #option-2-using-portainer-stacks-docker-compose */}
 
 1. Go to "Stacks" in your [Portainer](https://docs.portainer.io/user/docker/stacks) server and click "Add stack".
 2. Name your stack (e.g., "duplistatus").
@@ -86,7 +86,7 @@ volumes:
 5. Check the [Timezone](./configure-tz.md) section to more details on how to adjust the timezone and number/date/time format.
 6. Click "Deploy the stack".
 
-### Option 3: Using Portainer Stacks (GitHub Repository) {#option-3-using-portainer-stacks-github-repository}
+### Option 3: Using Portainer Stacks (GitHub Repository) {/* #option-3-using-portainer-stacks-github-repository */}
 
 1. In [Portainer](https://docs.portainer.io/user/docker/stacks), go to "Stacks" and click "Add stack".
 2. Name your stack (e.g., "duplistatus").
@@ -96,7 +96,7 @@ volumes:
 6. (optional) Set the `TZ`, `LANG`, `PWD_ENFORCE` and `PWD_MIN_LEN` environment variables in the "Environment variables" section. Check the [Timezone](./configure-tz.md) section to more details on how to adjust the timezone and number/date/time format. 
 6. Click "Deploy the stack".
 
-### Option 4: Using Docker CLI {#option-4-using-docker-cli}
+### Option 4: Using Docker CLI {/* #option-4-using-docker-cli */}
 
 ```bash
 # Create the volume
@@ -114,7 +114,7 @@ docker run -d \
 
 - The `duplistatus_data` volume is used for persistent storage. The container image uses `Europe/London` as the default timezone and `en_GB` as the default locale (language).
 
-### Option 5: Using Podman (CLI) `rootless` {#option-5-using-podman-cli-rootless}
+### Option 5: Using Podman (CLI) `rootless` {/* #option-5-using-podman-cli-rootless */}
 
 For basic setups, you can start the container without DNS configuration:
 
@@ -131,7 +131,7 @@ podman run -d \
   ghcr.io/wsj-br/duplistatus:latest
 ```
 
-#### Configuring DNS for Podman Containers {#configuring-dns-for-podman-containers}
+#### Configuring DNS for Podman Containers {/* #configuring-dns-for-podman-containers */}
 
 If you need custom DNS configuration (e.g., for Tailscale MagicDNS, corporate networks, or custom DNS setups), you can manually configure DNS servers and search domains.
 
@@ -184,7 +184,7 @@ You can specify multiple search domains by adding multiple `--dns-search` flags:
 
 Check the [Timezone](./configure-tz.md) section for more details on how to adjust the timezone and number/date/time format.
 
-### Option 6: Using Podman Pods {#option-6-using-podman-pods}
+### Option 6: Using Podman Pods {/* #option-6-using-podman-pods */}
 
 Podman pods allow you to run multiple containers in a shared network namespace. This is useful for testing or when you need to run duplistatus alongside other containers.
 
@@ -209,7 +209,7 @@ podman create --name duplistatus \
 podman pod start duplistatus-pod
 ```
 
-#### Configuring DNS for Podman Pods {#configuring-dns-for-podman-pods}
+#### Configuring DNS for Podman Pods {/* #configuring-dns-for-podman-pods */}
 
 When using pods, DNS configuration must be set at the pod level, not the container level.
 Use the same methods described in Option 5 to find your DNS servers and search domains.
@@ -252,7 +252,7 @@ podman pod rm -f duplistatus-pod
 ```
 
 
-## Essential Configuration {#essential-configuration}
+## Essential Configuration {/* #essential-configuration */}
 
 1. Configure your [Duplicati servers](duplicati-server-configuration.md) to send backup log messages to duplistatus (required). On Duplicati 2.0.9.106 and later, use `--send-http-json-urls` as described in that guide.
 2. Log in to duplistatus – see instructions in the [User Guide](../user-guide/overview.md#accessing-the-dashboard).
@@ -262,4 +262,4 @@ podman pod rm -f duplistatus-pod
 6. Configure email settings – set up email notifications in [Settings → Email](../user-guide/settings/email-settings.md).
 7. Configure backup notifications – set up per-backup or per-server notifications in [Settings → Backup Notifications](../user-guide/settings/backup-notifications-settings.md).
 
-See the following sections to configure optional settings such as timezone, number format, and HTTPS.
+See the following sections to configure optional settings such as timezone, number format, and [security hardening](security-hardening.md).

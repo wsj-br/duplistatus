@@ -1,4 +1,4 @@
-# Sicherungs-Metriken {#backup-metrics}
+# Sicherung Metriken {/* #backup-metrics */}
 
 Ein Diagramm von Sicherungsmetriken im Zeitverlauf wird sowohl auf dem Dashboard (Tabellenansicht) als auch auf der Serverdetailseite angezeigt.
 
@@ -7,11 +7,11 @@ Ein Diagramm von Sicherungsmetriken im Zeitverlauf wird sowohl auf dem Dashboard
 
 ![Backup-Metriken](../assets/screen-metrics.png)
 
-## Inline-Diagrammsteuerungen {#inline-chart-controls}
+## Inline-Diagrammsteuerungen {/* #inline-chart-controls */}
 
 Schnellzugriffs-Steuerelemente sind direkt in den Diagramm-Panelüberschriften verfügbar, um eine einfache Konfiguration ohne Navigation zu den Anzeigeeinstellungen zu ermöglichen:
 
-### Zeitbereichsauswahl {#time-range-selector}
+### Zeitbereichsauswahl {/* #time-range-selector */}
 
 Pill-Buttons erscheinen in der Diagrammkopfzeile für schnelle Zeitbereichsauswahl: **1W | 2W | 1M | 3M**
 
@@ -22,7 +22,7 @@ Pill-Buttons erscheinen in der Diagrammkopfzeile für schnelle Zeitbereichsauswa
 
 Hier vorgenommene Änderungen synchronisieren sich mit Ihren Anzeigeeinstellungen, sodass Ihre Einstellung seitenübergreifend gespeichert wird.
 
-### Diagrammstil-Umschalter {#chart-style-toggle}
+### Diagrammstil-Umschalter {/* #chart-style-toggle */}
 
 Ein Umschalter in der Diagrammkopfzeile ermöglicht das Wechseln zwischen:
 
@@ -31,7 +31,7 @@ Ein Umschalter in der Diagrammkopfzeile ermöglicht das Wechseln zwischen:
 
 Beide Modi verwenden Zeitintervall-Aggregation für optimale Darstellung. Leere Perioden im Balkenmodus zeigen keine Balken. Ihre Einstellung bleibt über Seitenaktualisierungen hinweg erhalten und wird mit den Anzeigeeinstellungen synchronisiert.
 
-## Diagrammdatenkonsolidierung {#chart-data-consolidation}
+## Diagrammdatenkonsolidierung {/* #chart-data-consolidation */}
 
 Wenn mehrere Backups am selben Tag auftreten, konsolidiert **duplistatus** die Daten vor der Anzeige im Diagramm:
 
@@ -41,7 +41,7 @@ Wenn mehrere Backups am selben Tag auftreten, konsolidiert **duplistatus** die D
 
 Diese Konsolidierung erfolgt vor der Zeitintervall-Aggregation und gewährleistet präzise aggregierte Metriken. Beispielsweise werden zwei Backups am 5.12.26 einen konsolidierten Datenpunkt im Diagramm erzeugen.
 
-## Metrikdefinitionen {#metric-definitions}
+## Metrikdefinitionen {/* #metric-definitions */}
 
 - **Hochgeladene Größe**: Gesamte Menge an Daten, die täglich vom Duplicati-Server zur Sicherungsziel (lokaler Speicher, FTP, Cloud-Anbieter, ...) hochgeladen/übertragen wurden.
 - **Dauer**: Die Gesamtdauer aller täglich empfangenen Sicherungen in HH:MM.

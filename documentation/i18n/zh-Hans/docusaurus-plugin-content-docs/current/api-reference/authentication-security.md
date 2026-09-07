@@ -1,23 +1,23 @@
-# 身份验证和安全 {#authentication-security}
+# 认证与安全 {/* #authentication--security */}
 
 该API使用基于会话的身份验证和CSRF保护来防止未经授权的访问和潜在的拒绝服务攻击。Duplicati和Homepage使用的外部API保持CSRF豁免。它们可以选择性地要求一个范围的API密钥和/或IP白名单（默认均关闭）。`/api/upload`还具有可配置的正文大小上限和速率限制。
 
-## 会话身份验证 {#session-based-authentication}
+## 基于会话的身份验证 {/* #session-based-authentication */}
 
 受保护的端点需要有效的会话 cookie 和 CSRF 令牌。会话系统为所有受保护的操作提供安全的身份验证。
 
-### 会话管理 {#session-management}
-1. **创建会话**: POST 到 `/api/session` 创建新的会话
-2. **获取 CSRF 令牌**: GET `/api/csrf` 获取会话的 CSRF 令牌
-3. **包含在请求中**: 将会话 cookie 和 CSRF 令牌发送到受保护的请求中
+### 会话管理 {/* #session-management */}
+1. **创建会话**：向 `/api/session` 发送 POST 请求以创建新会话
+2. **获取 CSRF 令牌**：向 `/api/csrf` 发送 GET 请求以获取该会话的 CSRF 令牌
+3. **包含在请求中**：在受保护的请求中发送会话 cookie 和 CSRF 令牌
 4. **验证会话**: GET `/api/session` 检查会话是否仍然有效
 5. **删除会话**: DELETE `/api/session` 登出并清除会话
 
-### CSRF 保护 {#csrf-protection}
-所有状态更改操作需要有效的 CSRF 令牌，该令牌必须与当前会话匹配。CSRF 令牌必须包含在 `X-CSRF-Token` 头中以保护端点。
+### CSRF 防护 {/* #csrf-protection */}
+所有更改状态的操作都需要一个与当前会话匹配的有效 CSRF 令牌。CSRF 令牌必须包含在受保护端点的 `X-CSRF-Token` 头中。
 
-### 受保护端点 {#protected-endpoints}
-所有修改数据库数据的端点需要会话身份验证和 CSRF 令牌:
+### 受保护端点 {/* #protected-endpoints */}
+所有修改数据库数据的端点都需要会话身份验证和 CSRF 令牌：
 
 - **服务器管理**: `/api/servers/:id` (PATCH, DELETE), `/api/servers/:id/server-url` (PATCH), `/api/servers/:id/password` (PATCH, GET)
 - **配置管理**: `/api/configuration/email` (GET, POST, DELETE), `/api/configuration/unified` (GET), `/api/configuration/ntfy` (GET), `/api/configuration/notifications` (GET, POST), `/api/configuration/backup-settings` (POST), `/api/configuration/templates` (POST), `/api/configuration/overdue-tolerance` (GET, POST), `/api/configuration/daily-summary` (GET, POST), `/api/configuration/daily-summary/send` (POST), `/api/configuration/daily-summary/retry` (POST), `/api/configuration/daily-summary/preview` (POST)
@@ -37,19 +37,19 @@
 - **逾期检查**: `/api/notifications/check-overdue` (POST) - 需要会话和 CSRF 令牌
 - **清除逾期时间戳**: `/api/notifications/clear-overdue-timestamps` (POST) - 需要会话和 CSRF 令牌
 
-### 外部端点 {#external-endpoints}
-这些路由不使用会话cookie或CSRF。身份验证是可选的，并在设置中配置：
+### 外部端点 {/* #external-endpoints */}
+这些路由不使用会话 cookie 或 CSRF。身份验证是可选的，并在设置中配置：
 
 - `/api/upload` - 来自Duplicati的备份数据上传（上传范围密钥、大小和速率限制）
 - `/api/lastbackup/:serverId` - 最新备份状态（读取范围密钥）
 - `/api/lastbackups/:serverId` - 最新备份状态（读取范围密钥）
 - `/api/summary` - 整体摘要数据（读取范围密钥）
-- `/api/health` - 健康检查端点（从不需要密钥）
-- `/api/ping` - 连通性探测（从不需要密钥）
+- `/api/health` - 健康检查端点（无需密钥；廉价的SQLite探测；每IP速率限制）
+- `/api/ping` - 连接探测（无需密钥；每IP速率限制）
 
-当**要求API密钥**开启时，前四个路由在没有有效密钥时返回`401`，当密钥范围不匹配时返回`403`。请参阅[API密钥](../user-guide/settings/api-keys-settings.md)和[IP白名单](../user-guide/settings/ip-allowlist-settings.md)。
+当**需要API密钥**关闭时，前四个路由接受带有或不带密钥的请求：有效匹配范围的密钥被记录；错误的密钥被忽略。当开关打开时，它们在没有有效密钥时返回`401`，当密钥范围不匹配时返回`403`。`/api/health`和`/api/ping`永远不会使用密钥。请参阅[API密钥](../user-guide/settings/api-keys-settings.md)和[IP白名单](../user-guide/settings/ip-allowlist-settings.md)。
 
-### 使用示例（会话 + CSRF） {#usage-example-session--csrf}
+### 使用示例（会话 + CSRF）{/* #usage-example-session--csrf */}
 
 ```typescript
 // 1. Create session
@@ -77,12 +77,12 @@ const response = await fetch('/api/servers/server-id', {
 });
 ```
 
-## 身份验证端点 {#authentication-endpoints}
+## 身份验证端点 {/* #authentication-endpoints */}
 
-### 登录 - `/api/auth/login` {#login---apiauthlogin}
-- **端点**: `/api/auth/login`
-- **方法**: POST
-- **描述**: 身份验证用户并创建会话。支持账户锁定和密码更改要求。
+### 登录 - `/api/auth/login` {/* #login---apiauthlogin */}
+- **端点**：`/api/auth/login`
+- **方法**：POST
+- **描述**：对用户进行身份验证并创建会话。支持在多次失败尝试后锁定帐户以及密码更改要求。
 - **身份验证**: 需要有效的会话和 CSRF 令牌（但无需登录用户）
 - **请求正文**:
 
@@ -121,10 +121,10 @@ const response = await fetch('/api/servers/server-id', {
   - 如果用户有 `mustChangePassword` 标志设置，他们应该被重定向到更改密码页面
   - 所有的登录尝试（成功和失败）都被记录到审计日志
 
-### 登出 - `/api/auth/logout` {#logout---apiauthlogout}
-- **端点**: `/api/auth/logout`
-- **方法**: POST
-- **描述**: 登出当前用户并销毁他们的会话.
+### 登出 - `/api/auth/logout` {/* #logout---apiauthlogout */}
+- **端点**：`/api/auth/logout`
+- **方法**：POST
+- **描述**：登出当前用户并销毁其会话。
 - **身份验证**: 需要有效的会话和 CSRF 令牌
 - **响应** (成功):
 
@@ -144,10 +144,10 @@ const response = await fetch('/api/servers/server-id', {
   - 登出被记录到审计日志
   - 会话被立即失效
 
-### 获取当前用户 - `/api/auth/me` {#get-current-user---apiauthme}
-- **端点**: `/api/auth/me`
-- **方法**: GET
-- **描述**: 返回当前已验证的用户信息，或指示没有用户登录.
+### 获取当前用户 - `/api/auth/me` {/* #get-current-user---apiauthme */}
+- **端点**：`/api/auth/me`
+- **方法**：GET
+- **描述**：返回当前已验证用户的信息，或指示是否没有用户登录。
 - **身份验证**: 需要有效的会话（但不需要登录用户）
 - **响应** (已验证):
 
@@ -178,10 +178,10 @@ const response = await fetch('/api/servers/server-id', {
   - 可以在没有登录用户的情况下调用（返回 `authenticated: false`)
   - 有用地检查页面加载时的身份验证状态
 
-### 更改密码 - `/api/auth/change-password` {#change-password---apiauthchange-password}
-- **端点**: `/api/auth/change-password`
-- **方法**: POST
-- **描述**: 更改当前已验证用户的密码。如果 `mustChangePassword` 被设置，当前密码验证将被跳过。
+### 更改密码 - `/api/auth/change-password` {/* #change-password---apiauthchange-password */}
+- **端点**：`/api/auth/change-password`
+- **方法**：POST
+- **描述**：更改当前已验证用户的密码。如果设置了 `mustChangePassword`，则跳过当前密码验证。
 - **身份验证**: 需要有效的会话和 CSRF 令牌（需要登录用户）
 - **请求正文**:
 
@@ -218,10 +218,10 @@ const response = await fetch('/api/servers/server-id', {
   - 密码更改被记录到审计日志
   - 新密码必须与当前密码不同
 
-### 检查管理员必须更改密码 - `/api/auth/admin-must-change-password` {#check-admin-must-change-password---apiauthadmin-must-change-password}
-- **端点**: `/api/auth/admin-must-change-password`
-- **方法**: GET
-- **描述**: 检查管理员用户是否必须更改密码。该端点是公共的（无需身份验证），因为它只返回一个布尔标志。
+### 检查管理员用户必须更改密码 - `/api/auth/admin-must-change-password` {/* #check-admin-must-change-password---apiauthadmin-must-change-password */}
+- **端点**：`/api/auth/admin-must-change-password`
+- **方法**：GET
+- **描述**：检查管理员用户是否必须更改密码。此端点是公开的（无需身份验证），因为它仅返回一个布尔标志。
 - **响应**:
 
   ```json
@@ -238,10 +238,10 @@ const response = await fetch('/api/servers/server-id', {
   - 用于确定是否应显示密码更改提示
   - 错误时，返回 `false` 以避免显示提示，如果存在数据库问题
 
-### 获取密码策略 - `/api/auth/password-policy` {#get-password-policy---apiauthpassword-policy}
-- **端点**: `/api/auth/password-policy`
-- **方法**: GET
-- **描述**: 返回当前密码策略配置。该端点是公共的（无需身份验证），因为它需要用于前端验证。
+### 获取密码策略 - `/api/auth/password-policy` {/* #get-password-policy---apiauthpassword-policy */}
+- **端点**：`/api/auth/password-policy`
+- **方法**：GET
+- **描述**：返回当前密码策略配置。此端点是公开的（无需身份验证），因为前端验证需要使用它。
 - **响应**:
 
   ```json
@@ -262,7 +262,7 @@ const response = await fetch('/api/servers/server-id', {
   - 策略通过环境变量（`PWD_ENFORCE`，`PWD_MIN_LEN`）配置
   - 默认密码检查（防止使用默认管理员密码）始终强制执行，无论策略设置如何
 
-### 身份验证 API 错误和成功代码（i18n） {#auth-api-error-and-success-codes-i18n}
+### 身份验证 API 错误和成功代码 (i18n) {/* #auth-api-error-and-success-codes-i18n */}
 
 身份验证端点返回一个稳定的 `errorCode`（和，在成功时，`successCode`），以及人类可读的 `error` 或 `message` 字段。`error` 和 `message` 值为英文。客户端应使用代码查找本地化字符串，以便 UI 以用户选择的语言显示消息。
 
@@ -274,9 +274,9 @@ const response = await fetch('/api/servers/server-id', {
 | `/api/auth/change-password` | `PASSWORD_CHANGED` | `NEW_PASSWORD_REQUIRED`，`POLICY_NOT_MET`，`USER_NOT_FOUND`，`CURRENT_PASSWORD_INCORRECT`，`NEW_PASSWORD_SAME_AS_CURRENT`，`INTERNAL_ERROR` |
 | `/api/auth/password-policy` | — | `POLICY_RETRIEVE_FAILED` |
 
-### 错误响应 {#error-responses}
-- `401 Unauthorized`: 无效或缺少会话，会话过期，或 CSRF 令牌验证失败
-- `403 Forbidden`: CSRF 令牌验证失败或操作不允许
+### 错误响应 {/* #error-responses */}
+- `401 Unauthorized`：会话无效或缺失、会话已过期，或 CSRF 令牌验证失败
+- `403 Forbidden`：CSRF 令牌验证失败或操作不被允许
 
 :::caution
  不要将 **duplistatus** 服务器暴露在公共互联网上。请在安全网络中使用它 

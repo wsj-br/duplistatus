@@ -1,4 +1,4 @@
-# Backup Manak {#backup-metrics}
+# बैकअप Manak {/* #backup-metrics */}
 
 Dashboard (table view) aur server details page par samay ke sath backup manak ka ek chart dikhaya jata hai.
 
@@ -7,11 +7,11 @@ Dashboard (table view) aur server details page par samay ke sath backup manak ka
 
 ![Backup Manak](../assets/screen-metrics.png)
 
-## Inline Chart Controls {#inline-chart-controls}
+## इनलाइन चार्ट नियंत्रण {/* #inline-chart-controls */}
 
 Quick access controls are available directly on chart panel headers for easy configuration without navigating to Display Settings:
 
-### Time Range Selector {#time-range-selector}
+### समय सीमा चयनकर्ता {/* #time-range-selector */}
 
 Chart header mein pill buttons dikhaye jate hain quick time range selection ke liye: **1W | 2W | 1M | 3M**
 
@@ -22,7 +22,7 @@ Chart header mein pill buttons dikhaye jate hain quick time range selection ke l
 
 Yahan par kiya gaye changes Display Settings ke sath sync hote hain, isliye aapka preference page refreshes ke beech bhi yad rakha jata hai.
 
-### Chart Style Toggle {#chart-style-toggle}
+### Chart shaili टॉगल {/* #chart-style-toggle */}
 
 Chart header mein ek toggle button hai jisse aap smooth lines aur bar chart ke beech switch kar sakte hain:
 
@@ -31,7 +31,7 @@ Chart header mein ek toggle button hai jisse aap smooth lines aur bar chart ke b
 
 Dono modes time-bucket aggregation ka istemal karte hain optimal display ke liye. Bar mode mein empty periods par koi bar nahi dikhata. Aapka preference page refreshes ke beech bhi yad rakha jata hai aur Display Settings ke sath sync hota hai.
 
-## Chart Data Consolidation {#chart-data-consolidation}
+## चार्ट डेटा समेकन {/* #chart-data-consolidation */}
 
 Jab ek hi din par multiple backups hote hain, to **duplistatus** chart par dikhane se pehle data ko consolidate karta hai:
 
@@ -41,7 +41,7 @@ Jab ek hi din par multiple backups hote hain, to **duplistatus** chart par dikha
 
 Yeh consolidation time bucketing ke apply hone se pehle hota hai, isse accurate aggregated metrics ensure hote hain. For example, 5/12/26 par do backups hone par chart par ek consolidated data point dikhayi jayegi.
 
-## Metric Definitions {#metric-definitions}
+## मेट्रिक परिभाषाएँ {/* #metric-definitions */}
 
 - **Uploaded Size**: Duplicati server se destination (local storage, FTP, cloud provider, ...) par backups ke dauran upload/transmit ki gayi total data ki miktar per din.
 - **Duration**: Per din HH:MM mein sabhi backups ke liye total duration.

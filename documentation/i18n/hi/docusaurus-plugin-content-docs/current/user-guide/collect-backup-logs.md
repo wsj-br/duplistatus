@@ -1,10 +1,10 @@
-# Backup Logs Ikattha Karein {#collect-backup-logs}
+# Backup Logs Ikattha Karein {/* #collect-backup-logs */}
 
 **duplistatus** can retrieve backup logs directly from Duplicati servers to populate the database or restore missing log data. The application automatically skips any duplicate logs that already exist in the database.
 
-## Backup Logs Ikattha Karein ke liye Kadam {#steps-to-collect-backup-logs}
+## बैकअप लॉग्स इकट्ठा करें के चरण {/* #steps-to-collect-backup-logs */}
 
-### Manual Collection {#manual-collection}
+### मैनुअल कलेक्शन {/* #manual-collection */}
 
 1.  Click the <IconButton icon="lucide:download" /> **Backup Logs Ikattha Karein** icon on the [Application Toolbar](overview.md#application-toolbar).
 
@@ -31,7 +31,7 @@ If you have server addresses configured in [Settings → Server Settings](settin
 
 <br/>
 
-### Bulk Collection {#bulk-collection}
+### बल्क कलेक्शन {/* #bulk-collection */}
 
 _Right-click_ the <IconButton icon="lucide:download" /> **Backup Logs Ikattha Karein** button in the application toolbar to collect from all configured servers.
 
@@ -41,7 +41,7 @@ _Right-click_ the <IconButton icon="lucide:download" /> **Backup Logs Ikattha Ka
 You can also use the <IconButton icon="lucide:import" label="Sab Kuch Ikattha Karein"/> button in the [Settings → Backup Monitoring](settings/backup-monitoring-settings.md) and [Settings → Server Settings](settings/server-settings.md) pages to collect from all configured servers.
 :::
 
-## Collection Process Kaise Kaam Karta Hai {#how-the-collection-process-works}
+## कलेक्शन प्रक्रिया कैसे काम करती है {/* #how-the-collection-process-works */}
 
 - **duplistatus** स्वचालित रूप से सर्वोत्तम कनेक्शन प्रोटोकॉल का पता लगाता है और निर्दिष्ट Duplicati सर्वर से कनेक्ट होता है।
 - यह बैकअप इतिहास, लॉग जानकारी, और बैकअप सम्मान (बैकअप मॉनिटरिंग के लिए) प्राप्त करता है।
@@ -55,7 +55,7 @@ You can also use the <IconButton icon="lucide:import" label="Sab Kuch Ikattha Ka
 If the same server appears more than once after collecting backup logs (or after a Duplicati reinstall/upgrade), it is usually caused by a changed `machine_id` or by a Duplicati API bug that mixes the `identity` id and the `machine_id`. The fix is to align the ids on the Duplicati server (edit `identity.txt`/`machineid.txt` or set **Duplicati → Settings → Advanced Options → Machine-id**), restart Duplicati, then merge the entries in **duplistatus** via [Settings → Database Maintenance → Duplicate servers merge karein](settings/database-maintenance.md#merge-duplicate-servers). See [Duplicate Servers on the Dashboard](troubleshooting.md#duplicate-servers-on-the-dashboard) for full steps.
 :::
 
-## Collection Issues ke liye Troubleshooting {#troubleshooting-collection-issues}
+## कलेक्शन समस्याओं का निवारण {/* #troubleshooting-collection-issues */}
 
 Backup log collection requires the Duplicati server to be accessible from the **duplistatus** installation. If you encounter issues, please verify the following:
 

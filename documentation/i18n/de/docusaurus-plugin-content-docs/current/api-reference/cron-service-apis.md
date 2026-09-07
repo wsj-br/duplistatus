@@ -1,9 +1,9 @@
-# Cron-Dienstverwaltung {#cron-service-management}
+# Cron-Dienstverwaltung {/* #cron-service-management */}
 
-## Cron-Konfiguration abrufen - `/api/cron-config` {#get-cron-configuration---apicron-config}
+## Cron-Konfiguration abrufen - `/api/cron-config` {/* #get-cron-configuration---apicron-config */}
 - **Endpoint**: `/api/cron-config`
 - **Methode**: GET
-- **Beschreibung**: Ruft die aktuelle Cron-Dienstkonfiguration ab.
+- **Beschreibung**: Ruft die aktuelle Konfiguration des Cron-Dienstes ab.
 - **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
 - **Antwort**:
 
@@ -21,10 +21,10 @@
   - Enthält Cron-Ausdruck und Aktivierungsstatus
   - Wird für die Verwaltung des Cron-Dienstes verwendet
 
-## Cron-Konfiguration aktualisieren - `/api/cron-config` {#update-cron-configuration---apicron-config}
+## Cron-Konfiguration aktualisieren - `/api/cron-config` {/* #update-cron-configuration---apicron-config */}
 - **Endpoint**: `/api/cron-config`
 - **Methode**: POST
-- **Beschreibung**: Aktualisiert die Cron-Dienstkonfiguration.
+- **Beschreibung**: Aktualisiert die Konfiguration des Cron-Dienstes.
 - **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
 - **Anforderungstext**:
 
@@ -51,10 +51,10 @@
   - Überprüft das Intervall anhand der zulässigen Optionen
   - Beeinflusst die Häufigkeit der Überprüfung auf verspätete Sicherungen
 
-## Cron-Dienst-Proxy - `/api/cron/*` {#cron-service-proxy---apicron}
+## Cron-Dienst-Proxy - `/api/cron/*` {/* #cron-service-proxy---apicron */}
 - **Endpoint**: `/api/cron/*`
 - **Methode**: GET, POST
-- **Beschreibung**: Leitet Anfragen an den Cron-Dienst weiter. Dieser Endpoint leitet alle Anfragen an den Cron-Dienst weiter, der auf einem separaten Port läuft.
+- **Beschreibung**: Leitet Anfragen an den Cron-Dienst weiter. Dieser Endpoint leitet alle Anfragen an den auf einem separaten Port laufenden Cron-Dienst weiter.
 - **Authentifizierung**: Erfordert eine gültige Sitzung und ein CSRF-Token. GET ist für authentifizierte Benutzer erlaubt; POST (start/stop/trigger/reload) erfordert einen Administrator.
 - **Parameter**:
   - `*`: Jeder Pfad, der an den Cron-Dienst weitergeleitet wird
@@ -73,5 +73,6 @@
   - Leitet `CRON_SERVICE_SECRET` als `X-Cron-Service-Secret` weiter, wenn gesetzt
   - Gibt 503 zurück, wenn der Cron-Dienst nicht verfügbar ist
   - Unterstützt sowohl GET- als auch POST-Methoden
-  - Wird für die Verwaltung des Cron-Dienstes über die Webschnittstelle verwendet
+  - Wird für die Verwaltung des Cron-Dienstes über die Weboberfläche verwendet
   - `POST /trigger/daily-summary-dispatch` wird vom Cron-Dienst abgelehnt; stattdessen `/api/configuration/daily-summary/send` verwenden
+  - `POST /trigger/database-compact` führt die wöchentliche Komprimierung sofort aus (verwaiste Backups/Server und Benachrichtigungseinstellungen sowie SQLite `VACUUM`)

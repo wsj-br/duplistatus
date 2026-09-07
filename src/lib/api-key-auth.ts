@@ -139,6 +139,12 @@ function isExpired(expiresAt: string | null): boolean {
   return Number.isFinite(expires.getTime()) && expires.getTime() <= Date.now();
 }
 
+const optionalAuthSuccess: ApiKeyAuthSuccess = {
+  ok: true,
+  key: null,
+  fingerprint: null,
+};
+
 export async function authenticateExternalApiKey(
   request: NextRequest,
   requiredScope: ApiKeyScope,
@@ -152,7 +158,7 @@ export async function authenticateExternalApiKey(
 
   if (!secret) {
     if (!required) {
-      return { ok: true, key: null, fingerprint: null };
+      return optionalAuthSuccess;
     }
     await auditKeyAttempt(request, 'failure', {
       reason: 'missing',
@@ -170,19 +176,26 @@ export async function authenticateExternalApiKey(
     ? formatApiKeyFingerprint(row.key_prefix, row.key_suffix)
     : maskApiKeyValue(secret);
 
+  // When keys are optional, a supplied key is best-effort: valid matching-scope
+  // keys authenticate and are tracked; invalid/disabled/expired/wrong-scope keys
+  // are ignored so Duplicati can keep uploading while keys are being rolled out.
   if (!row) {
     const ip = getPeerIp(request) || getClientIpAddress(request) || 'unknown';
-    const throttle = checkRateLimit(
-      `authfail:${ip}`,
-      AUTH_FAILURE_PER_MINUTE,
-      AUTH_FAILURE_PER_HOUR
-    );
     await auditKeyAttempt(request, 'failure', {
       reason: 'invalid',
       requiredScope,
       keyFingerprint: fingerprint,
       unmatched: true,
+      ignoredBecauseOptional: !required,
     }, 'Invalid API key');
+    if (!required) {
+      return optionalAuthSuccess;
+    }
+    const throttle = checkRateLimit(
+      `authfail:${ip}`,
+      AUTH_FAILURE_PER_MINUTE,
+      AUTH_FAILURE_PER_HOUR
+    );
     if (!throttle.allowed) {
       return {
         ok: false,
@@ -209,7 +222,11 @@ export async function authenticateExternalApiKey(
       keyName: row.name,
       keyFingerprint: fingerprint,
       keyScope: row.scope,
+      ignoredBecauseOptional: !required,
     }, 'API key disabled');
+    if (!required) {
+      return optionalAuthSuccess;
+    }
     return {
       ok: false,
       response: jsonError(401, 'API key disabled', 'API_KEY_DISABLED'),
@@ -224,7 +241,11 @@ export async function authenticateExternalApiKey(
       keyName: row.name,
       keyFingerprint: fingerprint,
       keyScope: row.scope,
+      ignoredBecauseOptional: !required,
     }, 'API key expired');
+    if (!required) {
+      return optionalAuthSuccess;
+    }
     return {
       ok: false,
       response: jsonError(401, 'API key expired', 'API_KEY_EXPIRED'),
@@ -239,7 +260,11 @@ export async function authenticateExternalApiKey(
       keyName: row.name,
       keyFingerprint: fingerprint,
       keyScope: row.scope,
+      ignoredBecauseOptional: !required,
     }, 'API key scope mismatch');
+    if (!required) {
+      return optionalAuthSuccess;
+    }
     return {
       ok: false,
       response: jsonError(403, 'API key does not have the required scope', 'API_KEY_WRONG_SCOPE'),

@@ -1,9 +1,9 @@
-# 监控和健康 {#monitoring-health}
+# 监控与健康 {/* #monitoring--health */}
 
-## 健康检查 - `/api/health` {#health-check---apihealth}
+## 健康检查 - `/api/health` {/* #health-check---apihealth */}
 - **端点**: `/api/health`
 - **方法**: GET
-- **描述**: 检查应用程序和数据库的健康状态。
+- **描述**: 应用程序和 SQLite 连接的低成本存活检查。Docker `HEALTHCHECK` 和入口点等待循环使用此 URL 在本地主机上。
 - **响应** (健康):
 
   ```json
@@ -11,12 +11,6 @@
     "status": "healthy",
     "database": "connected",
     "basicConnection": true,
-    "tablesFound": 2,
-    "tables": [
-      "servers",
-      "backups"
-    ],
-    "preparedStatements": true,
     "initializationStatus": "complete",
     "initializationComplete": true,
     "connectionHealth": true,
@@ -29,22 +23,12 @@
   ```json
   {
     "status": "degraded",
-    "database": "connected",
-    "basicConnection": true,
-    "tablesFound": 2,
-    "tables": [
-      "servers",
-      "backups"
-    ],
-    "preparedStatements": false,
-    "preparedStatementsError": "Prepared statement error details",
+    "database": "unavailable",
+    "basicConnection": false,
     "initializationStatus": "complete",
     "initializationComplete": true,
     "connectionHealth": false,
-    "connectionHealthError": "Connection health check failed",
-    "connectionDetails": {
-      "additional": "diagnostic information"
-    },
+    "connectionHealthError": "Database connection test failed",
     "timestamp": "2024-03-20T10:00:00Z"
   }
   ```
@@ -56,17 +40,31 @@
     "status": "unhealthy",
     "error": "Database connection failed",
     "message": "Connection timeout",
-    "stack": "Error: Connection timeout\n    at...",
     "timestamp": "2024-03-20T10:00:00Z"
   }
   ```
 
-- **注意**: 
-  - 返回 200 状态码表示系统健康
-  - 返回 503 状态码表示系统不健康或预备语句失败
-  - 预备语句失败时包含 `preparedStatementsError` 字段
-  - 数据库初始化失败时包含 `initializationError` 字段
-  - 连接健康检查失败时包含 `connectionHealthError` 和 `connectionDetails`
-  - 只在开发模式下包含堆栈跟踪
-  - 测试基本数据库连接、预备语句、初始化状态和连接健康
-  - 提供全面健康诊断用于故障排除
+- **注意事项**:
+  - 当初始化完成且 `SELECT 1` 成功时返回 200
+  - 当初始化或连接检查失败时返回 503
+  - 不列出表名或运行仪表板查询
+  - 永不需要 API 密钥
+  - 当启用任一 IP 白名单时，客户端 IP 必须是回环地址或在管理员或外部 CIDR 列表上列出（否则 `403` `IP_NOT_ALLOWED`）
+  - 非回环客户端受限速（`429` `PROBE_RATE_LIMITED`，每分钟 30 次和每小时 120 次）。回环（`127.0.0.1`，`::1`）永不受限
+
+## 连接探测 - `/api/ping` {/* #connectivity-probe---apiping */}
+- **端点**: `/api/ping`
+- **方法**: GET
+- **描述**: 仪表板连接检查使用的微小 `{ "ok": true }` 回复（每 30 秒一次）。
+- **响应**:
+
+  ```json
+  {
+    "ok": true
+  }
+  ```
+
+- **注意事项**:
+  - 永不需要 API 密钥或会话 cookie
+  - 与 `/api/health` 相同的白名单联合和回环规则
+  - 非回环客户端受限速（`429` `PROBE_RATE_LIMITED`，每分钟 60 次和每小时 600 次）

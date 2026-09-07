@@ -1,4 +1,4 @@
-# Audit Log Retention {#audit-log-retention}
+# Audit Log Retention {/* #audit-log-retention */}
 
 Configure karein kitna samay tak audit logs rakhe jaate hain, phir automatic cleanup hota hai.
 
@@ -8,7 +8,7 @@ Configure karein kitna samay tak audit logs rakhe jaate hain, phir automatic cle
 |:-------|:-----------|:-------------|
 | **Retention (din)** | Sankhya ka din jitna samay tak audit logs rakhe jaate hain, phir automatic deletion hota hai | **90 din** |
 
-## Retention Settings {#retention-settings}
+## रिटेंशन सम्मान {/* #retention-settings */}
 
 - **Range**: 30 se 365 din
 - **Automatic Cleanup**: Daily 02:00 UTC par chalta hai (configurable nahi hai)

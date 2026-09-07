@@ -1,12 +1,12 @@
-# Sicherungsüberwachung {#backup-monitoring}
+# Backup-Überwachung {/* #backup-monitoring */}
 
 ![Backup-Warnungen](../../assets/screen-settings-monitoring.png)
 
-## Server-Filterung {#server-filtering}
+## Serverfilterung {/* #server-filtering */}
 
 Die Serverliste auf dieser Seite kann mithilfe des Filterfeldes gefiltert werden.
 
-Wenn **Tägliche Zusammenfassung** aktiviert ist, wird die Überfälligerkennung fortgesetzt, aber individuelle Überfälligkeitsbenachrichtigungen werden unterdrückt. Siehe [Tägliche Zusammenfassung](daily-summary-settings.md).
+Wenn **Tägliche Zusammenfassung** aktiviert ist, wird die Überfälligkeitserkennung fortgesetzt, aber die Überfälligkeits-E-Mail an den Standard-E-Mail-Empfänger wird unterdrückt. Zusätzliche E-Mail-Ziele werden für übereinstimmende Ereignisse fortgesetzt (Überfällig gilt als Warnung). Siehe [Tägliche Zusammenfassung](daily-summary-settings.md).
 
 **Filterergebnisse:**
 - Server-ID
@@ -15,7 +15,7 @@ Wenn **Tägliche Zusammenfassung** aktiviert ist, wird die Überfälligerkennung
 
 Dies erleichtert das schnelle Auffinden bestimmter Server oder Backups in den Überwachungseinstellungen bei der Verwaltung vieler Systeme.
 
-## Konfigurieren Sie die Überwachungseinstellungen pro Sicherung {#configure-per-backup-monitoring-settings}
+## Konfigurieren der Backup-Überwachungseinstellungen {/* #configure-per-backup-monitoring-settings */}
 
 -  **Servername**: Der Name des Servers, der auf überfällige Sicherungen überwacht werden soll. 
    - Klicken Sie auf <SvgIcon svgFilename="duplicati_logo.svg" height="18"/>, um die Web-Oberfläche des Duplicati-Servers zu öffnen.
@@ -37,7 +37,7 @@ Wenn Sie Backup-Protokolle von einem Duplicati-Server sammeln, aktualisiert **du
 Um optimale Ergebnisse zu erzielen, sammeln Sie Backup-Protokolle, nachdem Sie die Konfiguration der Sicherungsauftragsintervalle auf Ihrem Duplicati-Server geändert haben. Dies stellt sicher, dass **duplistatus** mit Ihrer aktuellen Konfiguration synchronisiert bleibt.
 :::
 
-## Globale Konfigurationen {#global-configurations}
+## Globale Konfigurationen {/* #global-configurations */}
 
 Diese Einstellungen gelten für alle Sicherungen:
 
@@ -47,7 +47,7 @@ Diese Einstellungen gelten für alle Sicherungen:
 | **Intervall der Backup-Überwachung** | Wie oft das System auf überfällige Sicherungen prüft. Der Standardwert ist **5 Minuten**.                                                                                                                                                                                                                                                            |
 | **Benachrichtigungshäufigkeit**      | Wie oft überfällige Benachrichtigungen gesendet werden sollen: <br/> **Einmalig`: Send **just one** notification when the backup becomes overdue. <br/> `Täglich`: Send **daily** notifications while overdue (default). <br/> `Wöchentlich`: Send **weekly** notifications while overdue. <br/> `Monatlich**: Sendet **monatliche** Benachrichtigungen, solange die Sicherung überfällig ist. |
 
-## Verfügbare Aktionen {#available-actions}
+## Verfügbare Aktionen {/* #available-actions */}
 
 | Schaltfläche                                                              | Beschreibung                                                                                                                           |
 |:--------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------|

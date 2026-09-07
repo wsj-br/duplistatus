@@ -1,4 +1,4 @@
-# Duplicati-Konfiguration {#duplicati-configuration}
+# Duplicati-Konfiguration {/* #duplicati-configuration */}
 
 Die Schaltfläche <SvgButton svgFilename="duplicati_logo.svg" /> auf der [Anwendungsleiste](overview.md#application-toolbar) öffnet die Web-Oberfläche des Duplicati-Servers in einem neuen Tab.
 
@@ -11,12 +11,12 @@ Sie können einen Server aus der Dropdown-Liste auswählen. Wenn Sie bereits ein
 - Die Anwendung speichert die URL eines Servers automatisch, wenn Sie die Funktion <IconButton icon="lucide:download" height="16" href="collect-backup-logs" /> [Backup-Protokolle sammeln](collect-backup-logs.md) verwenden.
 - Server werden nicht in der Serverliste angezeigt, wenn ihre Adresse nicht konfiguriert wurde.
 
-## Zugriff auf die alte Duplicati-Benutzeroberfläche {#accessing-the-old-duplicati-ui}
+## Zugriff auf die alte Duplicati-Benutzeroberfläche {/* #accessing-the-old-duplicati-ui */}
 
 Wenn Sie Probleme beim Anmelden mit der neuen Duplicati-Weboberfläche (`/ngclient/`) haben, können Sie mit der rechten Maustaste auf die <SvgButton svgFilename="duplicati_logo.svg" /> Schaltfläche oder auf ein beliebiges Server-Element im Server-Auswahlmenü klicken, um die alte Duplicati-Benutzeroberfläche (`/ngax/`) in einem neuen Tab zu öffnen.
 
 <br/><br/>
 
 :::note
-Alle Produktnamen, Logos und Marken sind Eigentum ihrer jeweiligen Eigentümer. Symbole und Namen werden ausschließlich zu Identifikationszwecken verwendet und implizieren keine Billigung.
+Alle Produktnamen, Logos und Marken sind Eigentum ihrer jeweiligen Inhaber. Icons und Namen werden nur zu Identifikationszwecken verwendet und implizieren keine Unterstützung.
 :::

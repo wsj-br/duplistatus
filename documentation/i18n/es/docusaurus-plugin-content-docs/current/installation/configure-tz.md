@@ -1,4 +1,4 @@
-# Zona horaria {#timezone}
+# Zona horaria {/* #timezone */}
 
 La interfaz de usuario de la aplicación mostrará la fecha y hora según la configuración del navegador. El registro sigue usando la variable de entorno `TZ`. Las notificaciones de Resumen Diario usan la zona horaria IANA guardada en [Configuración → Resumen Diario](../user-guide/settings/daily-summary-settings.md), no `TZ`. Las marcas de tiempo de otras notificaciones que no son Resumen Diario siguen `TZ`.
 
@@ -8,7 +8,7 @@ El valor por defecto es `TZ=Europe/London` si esta variable de entorno no está 
 La configuración de idioma y configuración regional (formatos de número y fecha) para notificaciones se puede configurar en [Configuración → Plantillas](../user-guide/settings/notification-templates.md).
 :::
 
-## Configuración de la Zona horaria {#configuring-the-timezone}
+## Configuración de la Zona Horaria {/* #configuring-the-timezone */}
 
 La interfaz de usuario de la aplicación mostrará la fecha y hora según la configuración del navegador. El registro sigue usando la variable de entorno `TZ`. Las notificaciones de Resumen Diario usan la zona horaria IANA guardada en [Configuración → Resumen Diario](../user-guide/settings/daily-summary-settings.md), no `TZ`. Las marcas de tiempo de otras notificaciones que no son Resumen Diario siguen `TZ`.
 
@@ -27,7 +27,7 @@ o pasar la variable de entorno en la línea de comandos (Docker o Podman):
   --env TZ=America/Sao_Paulo
 ```
 
-### Uso de tu configuración de Linux {#using-your-linux-configuration}
+### Usando tu Configuración de Linux {/* #using-your-linux-configuration */}
 
 Para obtener la configuración de su host Linux, puede ejecutar:
 
@@ -35,6 +35,6 @@ Para obtener la configuración de su host Linux, puede ejecutar:
 echo TZ=\"$(</etc/timezone)\"
 ```
 
-### Lista de Zonas Horarias {#list-of-timezones}
+### Lista de Zonas Horarias {/* #list-of-timezones */}
 
 Puede encontrar una lista de zonas horarias aquí: [Wikipedia: List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List)

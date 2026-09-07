@@ -1,8 +1,8 @@
-# 向后不兼容的API更改 {#api-breaking-changes}
+# 向后不兼容的 API 更改 {/* #backward-incompatible-api-changes */}
 
 本文档概述了duplistatus不同版本中外部API端点的破坏性更改。外部API端点是为其他应用程序和集成（例如首页集成）设计的。
 
-## 概览 {#overview}
+## 概述 {/* #overview */}
 
 本文档涵盖了影响集成、脚本和使用这些端点的应用程序的外部API端点的破坏性更改。对于由Web界面使用的内部API端点，更改会自动处理，不需要手动更新。
 
@@ -10,25 +10,25 @@
 外部API端点在可能的情况下保持向后兼容。仅在必要时为一致性、安全性或功能改进而引入破坏性更改。
 :::
 
-## 版本特定更改 {#version-specific-changes}
+## 版本特定更改 {/* #version-specific-changes */}
 
-### 版本 1.3.0 {#version-130}
-
-**外部API端点无破坏性更改**
-
-### 版本 1.2.1 {#version-121}
+### 版本 1.3.0 {/* #version-130 */}
 
 **外部API端点无破坏性更改**
 
-### 版本 1.1.x {#version-11x}
+### 版本 1.2.1 {/* #version-121 */}
 
 **外部API端点无破坏性更改**
 
-### 版本 1.0.x {#version-10x}
+### 版本 1.1.x {/* #version-11x */}
 
 **外部API端点无破坏性更改**
 
-### 版本 0.9.x {#version-09x}
+### 版本 1.0.x {/* #version-10x */}
+
+**外部API端点无破坏性更改**
+
+### 版本 0.9.x {/* #version-09x */}
 
 **外部API端点无破坏性更改**
 
@@ -41,7 +41,7 @@
 3. **会话失效**：所有现有的会话都失效
 4. **外部API访问**：外部API端点（`/api/summary`，`/api/lastbackup`，`/api/lastbackups`，`/api/upload`）保持不需要身份验证，以便与集成和Duplicati兼容
 
-### 版本 0.8.x {#version-08x}
+### 版本 0.8.x {/* #version-08x */}
 
 **外部API端点无破坏性更改**
 
@@ -52,7 +52,7 @@
 - `/api/lastbackups/{serverId}` - 响应结构未更改
 - `/api/upload` - 请求/响应格式未更改
 
-#### 安全增强 {#security-enhancements}
+#### 安全性增强 {/* #security-enhancements */}
 
 虽然外部API端点没有破坏性更改，但版本0.8.x包括安全增强:
 
@@ -63,28 +63,28 @@
 这些安全增强不会影响用于读取备份数据的外部API端点。如果您有使用内部端点的自定义脚本，它们可能需要CSRF令牌处理。
 :::
 
-### 版本0.7.x {#version-07x}
+### 版本 0.7.x {/* #version-07x */}
 
 版本0.7.x引入了几个外部API端点的破坏性更改，需要更新外部集成。
 
-#### 破坏性更改 {#breaking-changes}
+#### 破坏性更改 {/* #breaking-changes */}
 
-##### 字段重命名 {#field-renaming}
+##### 字段重命名 {/* #field-renaming */}
 
 - `totalMachines` → `totalServers` 在 `/api/summary` 端点
 - `machine` → `server` 在API响应对象
 - `backup_types_count` → `backup_jobs_count` 在 `/api/lastbackups/{serverId}` 端点
 
-##### 端点路径更改 {#endpoint-path-changes}
+##### 端点路径更改 {/* #endpoint-path-changes */}
 
 - 所有以前使用 `/api/machines/...` 的API端点现在使用 `/api/servers/...`
 - 参数名称从 `machine_id` 更改为 `server_id` (URL编码仍然可以使用两个)
 
-#### 响应结构更改 {#response-structure-changes}
+#### 响应结构更改 {/* #response-structure-changes */}
 
 几个端点的响应结构已更新以保持一致性:
 
-##### `/api/summary` {#apisummary}
+##### `/api/summary` {/* #apisummary */}
 
 **之前（0.6.x 及更早版本）：**
 
@@ -116,7 +116,7 @@
 }
 ```
 
-##### `/api/lastbackup/{serverId}` {#apilastbackupserverid}
+##### `/api/lastbackup/{serverId}` {/* #apilastbackupserverid */}
 
 **之前（0.6.x 及更早版本）：**
 
@@ -154,7 +154,7 @@
 }
 ```
 
-##### `/api/lastbackups/{serverId}` {#apilastbackupsserverid}
+##### `/api/lastbackups/{serverId}` {/* #apilastbackupsserverid */}
 
 **之前（0.6.x 及更早版本）：**
 
@@ -196,7 +196,7 @@
 }
 ```
 
-## 迁移步骤 {#migration-steps}
+## 迁移步骤 {/* #migration-steps */}
 
 如果您从 0.7.x 之前的版本升级，请按照以下步骤进行：
 
@@ -217,9 +217,9 @@
 5. **更新文档**：更新任何引用旧 API 的内部文档
    - 更新 API 示例和字段名称引用
 
-## 兼容性 {#compatibility}
+## 兼容性 {/* #compatibility */}
 
-### 向后兼容性 {#backward-compatibility}
+### 向后兼容性 {/* #backward-compatibility */}
 
 - **版本 1.2.1**：与 1.1.x API 结构完全向后兼容
 - **版本 1.1.x**：与 1.0.x API 结构完全向后兼容
@@ -230,13 +230,13 @@
   - 旧字段名称将不起作用
   - 旧端点路径将不起作用
 
-### 未来支持 {#future-support}
+### 未来支持 {/* #future-support */}
 
 - 来自 0.7.x 之前版本的旧字段名称不受支持
 - 来自 0.7.x 之前版本的旧端点路径不受支持
 - 未来版本将保持当前的 API 结构，除非需要进行破坏性更改
 
-## 外部 API 端点摘要 {#summary-of-external-api-endpoints}
+## 外部 API 端点摘要 {/* #summary-of-external-api-endpoints */}
 
 以下外部 API 端点为维护向后兼容性而保留，且无需身份验证：
 
@@ -247,7 +247,7 @@
 | `/api/lastbackups/{serverId}` | GET | 所有备份作业的最新备份 | 0.7.x: `machine` → `server`, `backup_types_count` → `backup_jobs_count` |
 | `/api/upload` | POST | 从 Duplicati 上传备份数据 | 无破坏性变更 |
 
-## 需要帮助？ {#need-help}
+## 需要帮助？ {/* #need-help */}
 
 如果您需要帮助更新您的集成：
 

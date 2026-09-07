@@ -1,10 +1,10 @@
 
 
-# Cron Service {#cron-service}
+# Cron Service {/* #cron-service */}
 
 The application includes a separate cron service for handling scheduled tasks:
 
-## Start cron service in development mode {#start-cron-service-in-development-mode}
+## Start cron service in development mode {/* #start-cron-service-in-development-mode */}
 
 `pnpm dev` already starts the cron service alongside Next.js. To run cron alone (for example in a second terminal):
 
@@ -12,13 +12,13 @@ The application includes a separate cron service for handling scheduled tasks:
 pnpm cron:dev
 ```
 
-## Start cron service in production mode {#start-cron-service-in-production-mode}
+## Start cron service in production mode {/* #start-cron-service-in-production-mode */}
 
 ```bash
 pnpm cron:start
 ```
 
-## Start cron service locally (for testing) {#start-cron-service-locally-for-testing}
+## Start cron service locally (for testing) {/* #start-cron-service-locally-for-testing */}
 
 ```bash
 pnpm cron:start-local
@@ -34,8 +34,9 @@ The cron service includes:
 - **Automatic restart**: The service automatically restarts if it crashes (managed by `docker-entrypoint.sh` in Docker deployments)
 - **Watch mode**: Development mode includes file watching for automatic restarts on code changes
 - **Overdue backup monitoring**: Automated checking and notification of overdue backups (runs every 5 minutes by default)
-- **Daily summary dispatch**: Evaluates the saved Daily Summary schedule every minute in UTC and sends the current-status snapshot when due
+- **Daily summary dispatch**: Sends the current-status snapshot once per day at the stored Daily Summary UTC time (`minute hour * * *`). Default for new installs is 01:00 UTC. Changing the send time reloads this schedule. The task sends if Daily Summary is enabled and does not re-check the clock.
 - **Audit log cleanup**: Automated cleanup of old audit log entries (runs daily at 2 AM UTC)
+- **Database compact**: Weekly Sunday 04:00 UTC. Deletes backup rows whose server no longer exists, server rows with no remaining backups, leftover `backup_settings` and `overdue_notifications` keys, prunes old Daily Summary delivery rows, and runs SQLite `VACUUM`
 - **Duplicati version refresh**: Updates cached latest Duplicati channel versions from GitHub Releases. The default is daily at 3 AM UTC; administrators can change the interval and start time in [Settings → Duplicati Versions](../user-guide/settings/duplicati-versions.md).
 - **Flexible scheduling**: Configurable cron expressions for different tasks
 - **Database integration**: Shares the same SQLite database with the main application

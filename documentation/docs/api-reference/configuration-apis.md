@@ -1,8 +1,8 @@
 
 
-# Configuration Management {#configuration-management}
+# Configuration Management {/* #configuration-management */}
 
-## Get Email Configuration - `/api/configuration/email` {#get-email-configuration---apiconfigurationemail}
+## Get Email Configuration - `/api/configuration/email` {/* #get-email-configuration---apiconfigurationemail */}
 - **Endpoint**: `/api/configuration/email`
 - **Method**: GET
 - **Description**: Retrieves the current email notification configuration and whether email notifications are enabled/configured.
@@ -44,7 +44,7 @@
   - Indicates if email notifications are available for test and production use
   - Handles master key validation errors gracefully
 
-## Update Email Configuration - `/api/configuration/email` {#update-email-configuration---apiconfigurationemail}
+## Update Email Configuration - `/api/configuration/email` {/* #update-email-configuration---apiconfigurationemail */}
 - **Endpoint**: `/api/configuration/email`
 - **Method**: POST
 - **Description**: Updates the SMTP email notification configuration.
@@ -77,7 +77,7 @@
   - Secure field is boolean (true for SSL/TLS)
   - Password is managed separately through the password endpoint
 
-## Delete Email Configuration - `/api/configuration/email` {#delete-email-configuration---apiconfigurationemail}
+## Delete Email Configuration - `/api/configuration/email` {/* #delete-email-configuration---apiconfigurationemail */}
 - **Endpoint**: `/api/configuration/email`
 - **Method**: DELETE
 - **Description**: Deletes the SMTP email notification configuration.
@@ -98,7 +98,7 @@
   - Returns 404 if no configuration exists to delete
   - Returns 400 while Daily Summary mode is enabled, because that mode requires SMTP
 
-## Update Email Password - `/api/configuration/email/password` {#update-email-password---apiconfigurationemailpassword}
+## Update Email Password - `/api/configuration/email/password` {/* #update-email-password---apiconfigurationemailpassword */}
 - **Endpoint**: `/api/configuration/email/password`
 - **Method**: PATCH
 - **Description**: Updates the email password for SMTP authentication.
@@ -132,7 +132,7 @@
   - Config parameter is required when no existing SMTP configuration exists
   - Password is stored securely using encryption
 
-## Get Email Password CSRF Token - `/api/configuration/email/password` {#get-email-password-csrf-token---apiconfigurationemailpassword}
+## Get Email Password CSRF Token - `/api/configuration/email/password` {/* #get-email-password-csrf-token---apiconfigurationemailpassword */}
 - **Endpoint**: `/api/configuration/email/password`
 - **Method**: GET
 - **Description**: Retrieves a CSRF token for email password operations.
@@ -150,7 +150,7 @@
   - Returns CSRF token for use with password update operations
   - Session must be valid to generate token
 
-## Get Unified Configuration - `/api/configuration/unified` {#get-unified-configuration---apiconfigurationunified}
+## Get Unified Configuration - `/api/configuration/unified` {/* #get-unified-configuration---apiconfigurationunified */}
 - **Endpoint**: `/api/configuration/unified`
 - **Method**: GET
 - **Description**: Retrieves a unified configuration object containing all configuration data including cron settings, notification frequency, and servers with backups.
@@ -248,7 +248,7 @@
   - Fetches all data in parallel for better performance
 
 
-## Get NTFY Configuration - `/api/configuration/ntfy` {#get-ntfy-configuration---apiconfigurationntfy}
+## Get NTFY Configuration - `/api/configuration/ntfy` {/* #get-ntfy-configuration---apiconfigurationntfy */}
 - **Endpoint**: `/api/configuration/ntfy`
 - **Method**: GET
 - **Description**: Retrieves the current NTFY configuration settings.
@@ -271,7 +271,7 @@
   - Used for notification system management
   - Requires authentication for accessing configuration data
 
-## Get Notification Configuration - `/api/configuration/notifications` {#get-notification-configuration---apiconfigurationnotifications}
+## Get Notification Configuration - `/api/configuration/notifications` {/* #get-notification-configuration---apiconfigurationnotifications */}
 - **Endpoint**: `/api/configuration/notifications`
 - **Method**: GET
 - **Description**: Retrieves the current notification frequency configuration.
@@ -290,7 +290,7 @@
   - Used for overdue backup notification management
   - Returns one of: `"onetime"`, `"every_day"`, `"every_week"`, `"every_month"`
 
-## Update Notification Configuration - `/api/configuration/notifications` {#update-notification-configuration---apiconfigurationnotifications}
+## Update Notification Configuration - `/api/configuration/notifications` {/* #update-notification-configuration---apiconfigurationnotifications */}
 - **Endpoint**: `/api/configuration/notifications`
 - **Method**: POST
 - **Description**: Updates notification configuration (NTFY settings or notification frequency).
@@ -347,7 +347,7 @@
   - Validates notification frequency value against allowed options
   - Affects how often overdue notifications are sent
 
-## Update Backup Settings - `/api/configuration/backup-settings` {#update-backup-settings---apiconfigurationbackup-settings}
+## Update Backup Settings - `/api/configuration/backup-settings` {/* #update-backup-settings---apiconfigurationbackup-settings */}
 - **Endpoint**: `/api/configuration/backup-settings`
 - **Method**: POST
 - **Description**: Updates the backup notification settings for specific servers/backups.
@@ -380,7 +380,7 @@
   - Cleans up overdue backup notifications for disabled backups
   - Clears notifications when timeout settings change
 
-## Update Notification Templates - `/api/configuration/templates` {#update-notification-templates---apiconfigurationtemplates}
+## Update Notification Templates - `/api/configuration/templates` {/* #update-notification-templates---apiconfigurationtemplates */}
 - **Endpoint**: `/api/configuration/templates`
 - **Method**: POST
 - **Description**: Updates the notification templates.
@@ -414,35 +414,35 @@
   - Templates support Markdown email bodies and `{placeholder}` substitution
   - A `dailySummary` email template (subject and Markdown body) is required
 
-## Daily Summary - `/api/configuration/daily-summary` {#daily-summary---apiconfigurationdaily-summary}
+## Daily Summary - `/api/configuration/daily-summary` {/* #daily-summary---apiconfigurationdaily-summary */}
 - **Endpoint**: `/api/configuration/daily-summary`
 - **Method**: GET, POST
-- **Description**: Reads or updates Daily Summary mode. GET returns sanitized settings, dispatcher health, next occurrence, and email delivery status. POST saves `enabled`, `utcTime` (`HH:mm` UTC), `timeZone` (browser IANA timezone from the last save), and optional `publicUrl`. Enabling requires valid SMTP. Changing the schedule sets the next **future** occurrence.
+- **Description**: Reads or updates Daily Summary mode. GET returns sanitized settings, dispatcher health, next occurrence, and email delivery status. POST saves `enabled`, `utcTime` (`HH:mm` UTC), `timeZone` (browser IANA timezone from the last save), optional `publicUrl`, and optional `smtpRecipient` (empty uses the Email settings SMTP recipient). Enabling requires valid SMTP. Changing `utcTime` updates `daily-summary-dispatch` to `minute hour * * *` UTC and reloads the cron service. Changing the schedule sets the next **future** occurrence.
 - **Authentication**: GET requires a valid session and CSRF token. POST requires an administrator session and CSRF token.
 - **Error Responses**:
-  - `400`: Invalid time/timezone, invalid public URL, or missing SMTP
+  - `400`: Invalid time/timezone, invalid public URL, invalid SMTP recipient, or missing SMTP
   - `401`: Unauthorized
   - `500`: Failed to read or update Daily Summary
 
-## Send Daily Summary - `/api/configuration/daily-summary/send` {#send-daily-summary---apiconfigurationdaily-summarysend}
+## Send Daily Summary - `/api/configuration/daily-summary/send` {/* #send-daily-summary---apiconfigurationdaily-summarysend */}
 - **Endpoint**: `/api/configuration/daily-summary/send`
 - **Method**: POST
-- **Description**: Sends an extra current-status snapshot immediately. Does not consume the next scheduled occurrence. Uses stored SMTP. Does not accept recipient addresses in the request.
+- **Description**: Sends an extra current-status snapshot immediately. Does not consume the next scheduled occurrence. Uses stored SMTP. Sends to `daily_summary.smtpRecipient` when set, otherwise the Email settings recipient. Does not accept recipient addresses in the request. Records `daily_summary_sent` in the audit log (system).
 - **Authentication**: Requires administrator session and CSRF token
 
-## Retry Daily Summary - `/api/configuration/daily-summary/retry` {#retry-daily-summary---apiconfigurationdaily-summaryretry}
+## Retry Daily Summary - `/api/configuration/daily-summary/retry` {/* #retry-daily-summary---apiconfigurationdaily-summaryretry */}
 - **Endpoint**: `/api/configuration/daily-summary/retry`
 - **Method**: POST
 - **Description**: Retries failed channels from the persisted payload. Optional body `{ "occurrenceKey": "..." }`; otherwise retries the latest failed email delivery.
 - **Authentication**: Requires administrator session and CSRF token
 
-## Preview Daily Summary - `/api/configuration/daily-summary/preview` {#preview-daily-summary---apiconfigurationdaily-summarypreview}
+## Preview Daily Summary - `/api/configuration/daily-summary/preview` {/* #preview-daily-summary---apiconfigurationdaily-summarypreview */}
 - **Endpoint**: `/api/configuration/daily-summary/preview`
 - **Method**: POST
 - **Description**: Renders the current snapshot without sending and without writing delivery-ledger rows.
 - **Authentication**: Requires valid session and CSRF token
 
-## Get Overdue Tolerance - `/api/configuration/overdue-tolerance` {#get-overdue-tolerance---apiconfigurationoverdue-tolerance}
+## Get Overdue Tolerance - `/api/configuration/overdue-tolerance` {/* #get-overdue-tolerance---apiconfigurationoverdue-tolerance */}
 - **Endpoint**: `/api/configuration/overdue-tolerance`
 - **Method**: GET
 - **Description**: Retrieves the current overdue tolerance setting.
@@ -458,7 +458,7 @@
   - Returns the current overdue tolerance setting
   - Used for displaying current configuration
 
-## Update Overdue Tolerance - `/api/configuration/overdue-tolerance` {#update-overdue-tolerance---apiconfigurationoverdue-tolerance}
+## Update Overdue Tolerance - `/api/configuration/overdue-tolerance` {/* #update-overdue-tolerance---apiconfigurationoverdue-tolerance */}
 - **Endpoint**: `/api/configuration/overdue-tolerance`
 - **Method**: POST
 - **Description**: Updates the overdue tolerance setting.
@@ -484,7 +484,7 @@
   - Affects when backups are considered overdue
   - Used by the overdue backup checker
 
-## External API Security - `/api/configuration/external-api-security` {#external-api-security---apiconfigurationexternal-api-security}
+## External API Security - `/api/configuration/external-api-security` {/* #external-api-security---apiconfigurationexternal-api-security */}
 - **Endpoint**: `/api/configuration/external-api-security`
 - **Methods**: GET, PATCH
 - **Description**: Reads or updates whether external APIs require a key, plus the `/api/upload` size and rate limits.
@@ -502,7 +502,7 @@
   }
   ```
 
-## IP Allowlist - `/api/configuration/ip-allowlist` {#ip-allowlist---apiconfigurationip-allowlist}
+## IP Allowlist - `/api/configuration/ip-allowlist` {/* #ip-allowlist---apiconfigurationip-allowlist */}
 - **Endpoint**: `/api/configuration/ip-allowlist`
 - **Methods**: GET, PATCH
 - **Description**: Reads or updates trusted proxies and the admin / external-API CIDR allowlists. Enabling the admin list fails unless the current client IP is already listed (loopback is exempt).

@@ -1,4 +1,4 @@
-# Affichage {#display}
+# Affichage {/* #display */}
 
 Configurer les préférences d'interface utilisateur et d'affichage.
 

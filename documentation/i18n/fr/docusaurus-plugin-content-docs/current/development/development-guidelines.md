@@ -1,6 +1,6 @@
-# Référence de Développement {#development-reference}
+# Référence de développement {/* #development-reference */}
 
-## Organisation du code {#code-organisation}
+## Organisation du code {/* #code-organisation */}
 
 - **Composants** : `src/components/` avec sous-répertoires :
   - `ui/` - composants shadcn/ui et éléments d'interface réutilisables
@@ -15,7 +15,7 @@
 - **Scripts** : scripts utilitaires dans le répertoire `scripts/`
 - **Sécurité** : protection CSRF dans `src/lib/csrf-middleware.ts`, utiliser le middleware `withCSRF` pour les endpoints protégés
 
-## Tests et débogage {#testing--debugging}
+## Tests et débogage {/* #testing--debugging */}
 
 - Génération de données de test : `pnpm generate-test-data --servers=N`
 - Test des notifications : endpoint `/api/notifications/test`
@@ -25,25 +25,25 @@
 - Maintenance de la base de données : utiliser le menu de maintenance pour les opérations de nettoyage
 - Pré-vérifications : `scripts/pre-checks.sh` pour le dépannage des problèmes de démarrage
 
-## Références de développement {#development-references}
+## Références de développement {/* #development-references */}
 
 - Points de terminaison API : Voir [Référence API](../api-reference/overview)
 - Schéma de base de données : Voir [Schéma de base de données](database)
 - Suivez les modèles dans `src/lib/db-utils.ts` pour les opérations de base de données
 
-## Frameworks et bibliothèques {#frameworks--libraries}
+## Frameworks et bibliothèques {/* #frameworks--libraries */}
 
 :::info
 Pour les versions exactes, consultez [`package.json`](https://github.com/wsj-br/duplistatus/blob/master/package.json) (`dependencies`, `devDependencies`, `engines` et `packageManager`). La liste ci-dessous est intentionnellement simplifiée au niveau des versions afin de rester exacte lors des mises à jour de dépendances.
 :::
 
-### Runtime et gestion des paquets {#runtime--package-management}
+### Gestion des packages et runtime {/* #runtime--package-management */}
 - Node.js (voir `engines.node`)
 - pnpm (imposé via le script `preinstall` ; voir `engines.pnpm` / `packageManager`)
 
-### Frameworks et bibliothèques principaux {#core-frameworks--libraries}
+### Frameworks et bibliothèques principaux {/* #core-frameworks--libraries */}
 - Next.js (App Router)
-- React et React-DOM
+- React & React-DOM
 - Radix UI (primitives `@radix-ui/react-*`)
 - Tailwind CSS v4 + tailwindcss-animate
 - better-sqlite3
@@ -55,25 +55,25 @@ Pour les versions exactes, consultez [`package.json`](https://github.com/wsj-br/
 - nodemailer, qrcode
 - ai-i18n-tools, i18next, react-i18next (pipeline de traduction de l'UI et de la documentation)
 
-### Vérification des types et linting {#type-checking--linting}
+### Vérification de type et linting {/* #type-checking--linting */}
 - TypeScript (mode strict)
-- TSX (pour l'exécution de scripts TypeScript)
-- ESLint (flat config `eslint.config.mjs` + `eslint-config-next` ; exécuté via `pnpm lint` → `eslint .`)
+- TSX (pour exécuter des scripts TypeScript)
+- ESLint (configuration plate `eslint.config.mjs` + `eslint-config-next` ; exécuter via `pnpm lint` → `eslint .`)
 - webpack
 
-### Construction et déploiement {#build--deployment}
-- Sortie autonome Next.js (`output: 'standalone'`) avec point d'entrée du conteneur lançant `server.js`
-- Docker (base node:alpine) avec des constructions multi-architectures (AMD64, ARM64)
+### Construction et déploiement {/* #build--deployment */}
+- Sortie autonome de Next.js (`output: 'standalone'`) avec point d'entrée de conteneur démarrant `server.js`
+- Docker (base node:alpine) avec des builds multi-architectures (AMD64, ARM64). L'image construit uniquement l'application Next.js (pas le site Docusaurus); la version de pnpm est prise à partir de `packageManager` dans `package.json`
 - Workflows GitHub Actions pour CI/CD
 - Inkscape pour les logos et images
 - Docusaurus pour la documentation
 - Greenfish Icon Editor pour les icônes
 
-### Configuration du Projet {#project-configuration}
+### Configuration du projet {/* #project-configuration */}
 - `tsconfig.json`, `next.config.ts`, `tailwind.config.ts`, `postcss.config.mjs`
 - `pnpm-workspace.yaml`, `components.json` (shadcn/ui)
 
-## Caractéristiques du Système {#system-features}
+## Fonctionnalités du système {/* #system-features */}
 
 - **Service Cron** : Service distinct pour les tâches planifiées, démarré par `docker-entrypoint.sh` dans les déploiements Docker
 - **Notifications** : Intégration ntfy.sh et e-mail SMTP (nodemailer), modèles configurables

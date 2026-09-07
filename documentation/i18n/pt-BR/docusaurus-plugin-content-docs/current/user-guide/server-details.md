@@ -1,10 +1,10 @@
-# Detalhes do Servidor {#server-details}
+# Detalhes do Servidor {/* #server-details */}
 
 Clicar em um servidor do painel abre uma página com uma lista de backups para esse servidor. Você pode visualizar todos os backups ou selecionar um específico se o servidor tiver múltiplos backups configurados.
 
 ![Detalhes do Servidor](../assets/screen-server-backup-list.png)
 
-## Estatísticas do Servidor/Backup {#serverbackup-statistics}
+## Servidor/Estatísticas do Backup {/* #serverbackup-statistics */}
 
 Esta seção mostra estatísticas para todos os backups no servidor ou um backup único selecionado.
 
@@ -24,7 +24,7 @@ Clique em <IconButton icon="lucide:settings" href="settings/backup-monitoring-se
 
 <br/>
 
-## Histórico de backups {#backup-history}
+## Histórico de Backup {/* #backup-history */}
 
 Esta tabela lista os logs de backup para o servidor selecionado.
 
@@ -52,7 +52,7 @@ Quando **Todos os Backups** é selecionado, a lista mostra todos os backups orde
 
 <br/>
 
-## Detalhes do backup {#backup-details}
+## Detalhes do Backup {/* #backup-details */}
 
 Clicar em um badge de status no Painel (visualização de tabela) ou em qualquer linha na tabela de Histórico de backups exibe as Informações do backup detalhadas.
 

@@ -1,9 +1,9 @@
-# Suchnaayein Pranali {#notification-system}
+# अधिसूचना प्रणाली {/* #notification-system */}
 
-## Suchna Parikshan - `/api/notifications/test` {#test-notification---apinotificationstest}
+## Parikshan Suchnaayein - `/api/notifications/test` {/* #test-notification---apinotificationstest */}
 - **Endpoint**: `/api/notifications/test`
 - **Method**: POST
-- **Description**: Suchna configuration ko verify karne ke liye test suchnaayein (sadha, template-based, ya email) bhejein.
+- **Description**: Shochnaayi karyawahi ki janch ke liye Parikshan suchnaayen (sadharan, template-based, ya email) bhejein.
 - **प्रमाणीकरण**: व्यवस्थापक सत्र और CSRF टोकन की आवश्यकता होती है
 - **अनुरोध बॉडी**:
   सरल परीक्षण के लिए:
@@ -96,16 +96,16 @@ Test email content dikhata hai:
   - परीक्षण ईमेल एंडपॉइंट SMTP कॉन्फ़िगरेशन को पढ़ने से पहले अनुरोध कैश को साफ़ करता है, जिससे बाहरी स्क्रिप्ट कॉन्फ़िगरेशन को अपडेट कर सकते हैं और इसे परीक्षण ईमेल में तुरंत प्रतिबिंबित किया जा सके
   - टेम्पलेट परीक्षण और दैनिक सारांश भेजें-अब प्रति-बैकअप दबाव को बायपास करते हैं
 
-## पूर्वावलोकन अधिसूचना टेम्पलेट - `/api/notifications/preview` {#preview-notification-template---apinotificationspreview}
-- **एंडपॉइंट**: `/api/notifications/preview`
-- **विधि**: POST
-- **विवरण**: उत्पादन मार्कडाउन रेंडरर के साथ एक अधिसूचना टेम्पलेट को रेंडर करता है बिना भेजे। बॉडी में `kind` शामिल है (`success`, `warning`, `overdueBackup`, या `dailySummaryEmail`) और संपादित किए जा रहे टेम्पलेट। दैनिक सारांश पूर्वावलोकन वर्तमान वास्तविक स्नैपशॉट का उपयोग करते हैं; अन्य प्रकार निर्धारित नमूना मानों का उपयोग करते हैं। ईमेल HTML एक सैंडबॉक्स्ड iframe के लिए है।
+## Suchnaayi Template ka Poorvavalokan - `/api/notifications/preview` {/* #preview-notification-template---apinotificationspreview */}
+- **Endpoint**: `/api/notifications/preview`
+- **Method**: POST
+- **Description**: Suchnaayi template ko production Markdown renderer ke saath bheje bina render karta hai. Body mein `kind` (`success`, `warning`, `overdueBackup`, ya `dailySummaryEmail`) aur edited ho raha template shamil hai. Daily Summary poorvaavalokan vartaman real snapshot ka upayog karte hain; any prakar deterministic sample values ka upayog karte hain. Email HTML sandboxed iframe ke liye hai.
 - **Authentication**: वैलिड सेशन और CSRF टोकन की आवश्यकता होती है
 
-## Vilambit Backup Janch Karein - `/api/notifications/check-overdue` {#check-overdue-backups---apinotificationscheck-overdue}
+## Vilambit Backups ki Janch karein - `/api/notifications/check-overdue` {/* #check-overdue-backups---apinotificationscheck-overdue */}
 - **Endpoint**: `/api/notifications/check-overdue`
 - **Method**: POST
-- **Description**: Vilambit backup check ko manually trigger karta hai aur notifications bhejein.
+- **Description**: Vilambit backup janch ko manually trigger karta hai aur suchnaayen bheja hai.
 - **Authentication**: वैध सत्र और CSRF टोकन की आवश्यकता होती है
 - **Response**:
 
@@ -128,10 +128,10 @@ Test email content dikhata hai:
   - Check process ke baare mein statistics return karta hai
   - Vilambit backups found ke liye notifications bhejein
 
-## Vilambit Timestamp Clear Karein - `/api/notifications/clear-overdue-timestamps` {#clear-overdue-timestamps---apinotificationsclear-overdue-timestamps}
+## Vilambit Samayachinh ki Safai karein - `/api/notifications/clear-overdue-timestamps` {/* #clear-overdue-timestamps---apinotificationsclear-overdue-timestamps */}
 - **Endpoint**: `/api/notifications/clear-overdue-timestamps`
 - **Method**: POST
-- **Description**: Sabhi vilambit backup notification timestamps ko clear karta hai, isse notifications dobara bhejne ki suvidha deta hai.
+- **Description**: Sabhi vilambit backup suchnaayi samayachinh ko saaf karta hai, jisse suchnaayen phir se bheje ja sakein.
 - **Authentication**: वैध सत्र और CSRF टोकन की आवश्यकता होती है
 - **Response**:
 

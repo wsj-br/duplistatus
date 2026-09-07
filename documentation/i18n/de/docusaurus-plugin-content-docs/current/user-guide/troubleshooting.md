@@ -1,23 +1,26 @@
-# Fehlerbehebung {#troubleshooting}
+# Fehlerbehebung {/* #troubleshooting */}
 
-### Dashboard wird nicht geladen {#dashboard-not-loading}
-- Prüfen Sie, ob der Container ausgeführt wird: `docker ps`
-- Bestätigen Sie, dass Port 9666 erreichbar ist
-- Prüfen Sie die Container-Protokolle: `docker logs duplistatus`
+### Dashboard wird nicht geladen {/* #dashboard-not-loading */}
+- Prüfen Sie, ob der Container läuft: `docker ps`
+- Überprüfen Sie, ob der Port 9666 zugänglich ist
+- Überprüfen Sie die Container-Protokolle: `docker logs duplistatus`
+- Wenn Sie einen Reverse-Proxy verwenden, prüfen Sie die Reverse-Proxy-Protokolle auf Fehler
+- Wenn Sie IP-Zulassungslisten verwenden, prüfen Sie die IP-Zulassungslisten-Protokolle auf Fehler
 
-### Keine Sicherungsdaten {#no-backup-data}
-- Duplicati-Serverkonfiguration überprüfen
-- Netzwerkkonnektivität zwischen Servern überprüfen
-- duplistatus-Logs auf Fehler überprüfen
-- Stellen Sie sicher, dass die Backup-Jobs ausgeführt werden
+### Keine Backup-Daten {/* #no-backup-data */}
+- Überprüfen Sie die Duplicati-Serverkonfiguration
+- Überprüfen Sie die Netzwerkverbindung zwischen den Servern
+- Überprüfen Sie die duplistatus-Protokolle auf Fehler
+- Stellen Sie sicher, dass Sicherungsjobs ausgeführt werden
+- Wenn Sie API-Schlüssel verwenden, stellen Sie sicher, dass der API-Schlüssel korrekt ist, der Bereich korrekt ist und nicht abgelaufen ist (ein Leseschlüssel kann nicht hochladen)
 
-### Benachrichtigungen funktionieren nicht {#notifications-not-working}
-- Benachrichtigungskonfiguration überprüfen
-- NTFY-Serververbindung überprüfen (wenn NTFY verwendet wird)
-- Benachrichtigungseinstellungen testen
+### Benachrichtigungen funktionieren nicht {/* #notifications-not-working */}
+- Überprüfen Sie die Benachrichtigungskonfiguration
+- Überprüfen Sie die NTFY-Serververbindung (wenn Sie NTFY verwenden)
+- Testen Sie die Benachrichtigungseinstellungen
 - Überprüfen Sie die Benachrichtigungs-Logs
 
-### Neue Sicherungen werden nicht angezeigt {#new-backups-not-showing}
+### Neue Backups werden nicht angezeigt {/* #new-backups-not-showing */}
 
 Wenn Sie Duplicati-Server-Warnungen wie `HTTP Response request failed for:` und `Failed to send message: System.Net.Http.HttpRequestException:` sehen und neue Sicherungen nicht im Dashboard oder Sicherungsverlauf angezeigt werden:
 
@@ -30,7 +33,7 @@ Wenn Sie Duplicati-Server-Warnungen wie `HTTP Response request failed for:` und 
 - **Duplicati-Protokolle überprüfen**: Prüfen Sie die Duplicati-Protokolle auf HTTP-Anforderungsfehler.
 - **Doppelte Berichterstattung**: Wenn Sie auch Formberichte an [Duplicati Monitoring](https://www.duplicati-monitoring.com/) senden, kann ein Fehler oder HTTP 500 von diesem Dienst Duplicati daran hindern, den JSON-Bericht an **duplistatus** zu senden. Form-URLs werden zuerst gesendet. Siehe [Berichterstattung an duplistatus und Duplicati Monitoring](../installation/duplicati-server-configuration.md#reporting-to-duplistatus-and-duplicati-monitoring).
 
-### Doppelte Server auf dem Dashboard {#duplicate-servers-on-the-dashboard}
+### Doppelte Server im Dashboard {/* #duplicate-servers-on-the-dashboard */}
 
 Wenn derselbe Server mehrmals auf dem Dashboard angezeigt wird, geschieht dies meistens nach dem [Sammeln von Backup-Protokollen](collect-backup-logs.md) oder nach der Neuinstallation oder dem Upgrade des Duplicati-Servers.
 
@@ -39,7 +42,7 @@ Wenn derselbe Server mehrmals auf dem Dashboard angezeigt wird, geschieht dies m
 - **Geänderte `machine_id`**: Wann Sie Duplicati neu installieren oder aktualisieren, kann sich die `machine_id` des Servers ändern, und **duplistatus** behandelt ihn dann als neuen Server.
 - **Duplicati-API-Fehler**: In neueren Versionen von Duplicati gibt es einen Fehler, bei dem einige API-Endpunkte die `identity`-ID und die `machine_id` vermischen. Diese Inkonsistenz führt dazu, dass **duplistatus** denselben Server unter verschiedenen IDs registriert, was Duplikate erzeugt.
 
-**Problemumgehung:**
+**Fix:**
 
 1.  Führen Sie auf dem **Duplicati-Server** **einen** der folgenden Schritte aus:
     - Bearbeiten Sie die `identity.txt`- und `machineid.txt`-Dateien, damit beide Dateien die **gleiche** ID enthalten; oder
@@ -47,7 +50,7 @@ Wenn derselbe Server mehrmals auf dem Dashboard angezeigt wird, geschieht dies m
 2.  **Starten Sie** den Duplicati-Server neu, damit die Änderung wirksam wird.
 3.  Führen Sie in **duplistatus** die doppelten Einträge zusammen über [Einstellungen → Datenbankverwaltung → Doppelte Server zusammenführen](settings/database-maintenance.md#merge-duplicate-servers).
 
-### Benachrichtigungen funktionieren nicht (Detailliert) {#notifications-not-working-detailed}
+### Benachrichtigungen funktionieren nicht (detailliert) {/* #notifications-not-working-detailed */}
 
 Wenn Benachrichtigungen nicht gesendet oder empfangen werden:
 
@@ -55,13 +58,13 @@ Wenn Benachrichtigungen nicht gesendet oder empfangen werden:
 - **Netzwerkkonnektivität prüfen**: Bestätigen Sie, dass **duplistatus** Ihren NTFY-Server erreichen kann. Überprüfen Sie die Firewall-Einstellungen, falls zutreffend.
 - **Benachrichtigungseinstellungen prüfen**: Bestätigen Sie, dass Benachrichtigungen für die relevanten Sicherungen aktiviert sind.
 
-### Verfügbare Versionen werden nicht angezeigt {#available-versions-not-appearing}
+### Verfügbare Versionen erscheinen nicht {/* #available-versions-not-appearing */}
 
 Wenn Sicherungsversionen auf dem Dashboard oder der Detailseite nicht angezeigt werden:
 
 - **Duplicati-Konfiguration prüfen**: Stellen Sie sicher, dass `send-http-log-level=Information` und `send-http-max-log-lines=500` in den erweiterten Optionen von Duplicati konfiguriert sind. Duplicati behält die ersten N Protokollzeilen bei. Wenn die Versionsliste immer noch fehlt, erhöhen Sie die Obergrenze oder verwenden Sie `0`, wenn Sie keine Berichte an Duplicati Monitoring senden. Die Versions**anzahl** kann weiterhin aus den JSON-Statistiken erscheinen, wenn die detaillierte Liste fehlt. Siehe [Protokollzeilen und verfügbare Versionen](../installation/duplicati-server-configuration.md#log-lines-and-available-versions).
 
-### Überfällige Sicherung Warnungen funktionieren nicht {#overdue-backup-alerts-not-working}
+### Warnungen über überfällige Sicherungen funktionieren nicht {/* #overdue-backup-alerts-not-working */}
 
 Wenn überfällige Backup-Benachrichtigungen nicht gesendet werden:
 
@@ -69,7 +72,7 @@ Wenn überfällige Backup-Benachrichtigungen nicht gesendet werden:
 - **Benachrichtigungshäufigkeit prüfen**: Wenn auf **Einmalig** eingestellt, werden Warnungen nur einmal pro Überfälligkeitsereignis gesendet.
 - **Cron-Dienst prüfen**: Stellen Sie sicher, dass der Cron-Dienst, der auf überfällige Sicherungen überwacht, ordnungsgemäß ausgeführt wird. Überprüfen Sie die Anwendungsprotokolle auf Fehler. Bestätigen Sie, dass der Cron-Dienst am konfigurierten Port erreichbar ist (Standard: `8667`).
 
-### Backup-Protokolle sammeln funktioniert nicht {#collect-backup-logs-not-working}
+### Backup-Protokolle sammeln funktioniert nicht {/* #collect-backup-logs-not-working */}
 
 Wenn die manuelle Sicherungsprotokollerfassung fehlschlägt:
 
@@ -87,7 +90,7 @@ Prüfen Sie auch die DNS-Konfiguration im Container (siehe [DNS-Konfiguration f�
 
 - Bei **Duplicati 2.4 und später** listet `/api/v1/systeminfo` `machine-id` mit einem leeren Standardwert auf. **duplistatus** liest die konfigurierte ID aus den Duplicati-Server-Einstellungen. Falls die Sammlung den Server weiterhin nicht identifizieren kann, legen Sie **Duplicati → Einstellungen → Erweiterte Optionen → Machine-id** fest und versuchen Sie es erneut.
 
-### Upgrade von einer früheren Version (vor 0.9.x) und Anmeldung nicht möglich {#upgrade-from-an-earlier-version-before-09x-and-cant-login}
+### Upgrade von einer früheren Version (vor 0.9.x) und kann sich nicht anmelden {/* #upgrade-from-an-earlier-version-before-09x-and-cant-login */}
 
 **duplistatus** ab Version 0.9.x erfordert Benutzerauthentifizierung. Ein Standard-`admin`-Konto wird automatisch erstellt, wenn die Anwendung zum ersten Mal installiert oder von einer früheren Version aktualisiert wird:
     - Benutzername: `admin`
@@ -95,7 +98,7 @@ Prüfen Sie auch die DNS-Konfiguration im Container (siehe [DNS-Konfiguration f�
 
 Sie können zusätzliche Benutzerkonten in [Einstellungen > Benutzer](settings/user-management-settings.md) nach dem ersten Anmelden erstellen.
 
-### Verlorenes Admin-Passwort oder gesperrt {#lost-admin-password-or-locked-out}
+### Admin-Passwort verloren oder ausgesperrt {/* #lost-admin-password-or-locked-out */}
 
 Wenn Sie Ihr Administrator-Passwort verloren haben oder von Ihrem Konto gesperrt wurden (Sie können `/login` immer noch öffnen):
 
@@ -104,13 +107,19 @@ Wenn Sie Ihr Administrator-Passwort verloren haben oder von Ihrem Konto gesperrt
 
 Wenn der Browser **Zugriff verweigert** (HTTP 403) anzeigt, bevor Sie sich anmelden, handelt es sich um eine [IP-Zulassungslisten-Sperre](#locked-out-by-ip-allowlist), nicht um ein vergessenes Passwort. Das Admin-Wiederherstellungsskript kann diese Sperre nicht umgehen.
 
-### Gesperrt durch IP-Zulassungsliste {#locked-out-by-ip-allowlist}
+### Durch IP-Zulassungsliste ausgesperrt {/* #locked-out-by-ip-allowlist */}
 
 Wenn Einstellungen → [IP-Zulassungsliste](settings/ip-allowlist-settings.md) aktiviert ist, aber die CIDR fehlt oder falsch ist, lehnt der Proxy die Anfrage vor der Authentifizierung ab. Typische Symptome:
 
 - Seiten (`/`, `/login`, `/settings`, …) geben **Zugriff verweigert** (HTTP 403) als Klartext zurück.
 - Session- und Admin-APIs geben JSON `{ "errorCode": "IP_NOT_ALLOWED" }` zurück.
-- `/api/health` und `/api/ping` antworten weiterhin (sie sind ausgenommen). Login-Cookies helfen nicht.
+- `/api/health` und `/api/ping` geben auch 403 von einer nicht aufgelisteten IP zurück, wenn eine der Zulassungslisten aktiviert ist. Sie antworten weiterhin von der Loopback-Adresse. Login-Cookies helfen nicht.
+
+Um zu bestätigen, dass die Anwendung während eines Sperrens aktiv ist, führen Sie die Probe von innerhalb des Containers aus (Loopback ist immer erlaubt):
+
+```bash
+docker exec duplistatus curl -sf http://127.0.0.1:9666/api/ping
+```
 
 Der Speicherpfad versucht, dies zu verhindern: Sie können die **Admin**-Liste nicht aktivieren, es sei denn, Ihre aktuelle IP ist bereits in den CIDRs enthalten (außer beim Speichern von der Loopback-Adresse). Sie können sich trotzdem durch eine CIDR sperren, die jetzt passt, aber später nicht mehr (VPN, DHCP, anderes Netzwerk), durch eine falsche Konfiguration vertrauenswürdiger Proxies oder durch das Aktivieren der Liste von `127.0.0.1` / `::1` ohne das Hinzufügen dieser Adresse.
 
@@ -142,7 +151,7 @@ Die **externe API**-Zulassungsliste (`/api/upload`, `/api/summary`, `/api/lastba
 
 Siehe [IP-Zulassungsliste](settings/ip-allowlist-settings.md#environment-overrides) und [Umgebungsvariablen](../installation/environment-variables.md).
 
-### Datenbanksicherung und Migration {#database-backup-and-migration}
+### Datenbank-Backup und Migration {/* #database-backup-and-migration */}
 
 Beim Migrieren von vorherigen Versionen oder beim Erstellen einer Datenbanksicherung:
 
@@ -166,7 +175,7 @@ Wenn Sie weiterhin Probleme haben, versuchen Sie die folgenden Schritte:
 
 <br/>
 
-# Zusätzliche Ressourcen {#additional-resources}
+# Weitere Ressourcen {/* #additional-resources */}
 
 - **Installationsanleitung**: [Installationsanleitung](../installation/installation.md)
 - **Duplicati-Dokumentation**: [docs.duplicati.com](https://docs.duplicati.com)
@@ -175,5 +184,5 @@ Wenn Sie weiterhin Probleme haben, versuchen Sie die folgenden Schritte:
 - **Entwicklerhandbuch**: [Entwicklerhandbuch](../development/setup.md)
 - **Datenbankschema**: [Datenbankdokumentation](../development/database)
 
-### Unterstützung {#support}
+### Unterstützung {/* #support */}
 - **GitHub Issues**: [Fehler melden oder Funktionen anfordern](https://github.com/wsj-br/duplistatus/issues)

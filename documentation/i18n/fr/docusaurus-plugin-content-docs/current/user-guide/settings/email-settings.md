@@ -1,4 +1,4 @@
-# E-mail {#email}
+# E-mail {/* #email */}
 
 **duplistatus** prend en charge l'envoi de notifications par e-mail via SMTP comme alternative ou complément aux notifications NTFY. La configuration e-mail est maintenant gérée via l'interface web avec un stockage chiffré dans la base de données pour une sécurité renforcée.
 
@@ -24,7 +24,7 @@ Lorsque la configuration n'est pas entièrement configurée, une boîte d'alerte
 
 <br/>
 
-## Actions disponibles {#available-actions}
+## Actions Disponibles {/* #available-actions */}
 
 | Bouton                                                           | Description                                              |
 |:-----------------------------------------------------------------|:---------------------------------------------------------|
@@ -44,7 +44,7 @@ Lorsque la configuration n'est pas entièrement configurée, une boîte d'alerte
 
 <br/>
 
-## Fournisseurs SMTP courants {#common-smtp-providers}
+## Fournisseurs SMTP courants {/* #common-smtp-providers */}
 
 **Gmail :**
 
@@ -73,7 +73,7 @@ Lorsque la configuration n'est pas entièrement configurée, une boîte d'alerte
 - Mot de passe : Utilisez un mot de passe d'application
 - Authentification : Requise
 
-### Meilleures pratiques de sécurité {#security-best-practices}
+### Meilleures pratiques de sécurité {/* #security-best-practices */}
 
 - Envisagez d'utiliser un compte e-mail dédié pour les notifications
  - Testez votre configuration à l'aide du bouton « Envoyer un e-mail de test »

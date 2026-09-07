@@ -1,8 +1,8 @@
-# Service Cron {#cron-service}
+# Service Cron {/* #cron-service */}
 
 L'application inclut un service cron distinct pour gérer les tâches planifiées :
 
-## Démarrer le service cron en mode développement {#start-cron-service-in-development-mode}
+## Démarrer le service cron en mode développement {/* #start-cron-service-in-development-mode */}
 
 `pnpm dev` démarre déjà le service cron aux côtés de Next.js. Pour exécuter cron seul (par exemple dans un deuxième terminal) :
 
@@ -10,13 +10,13 @@ L'application inclut un service cron distinct pour gérer les tâches planifiée
 pnpm cron:dev
 ```
 
-## Démarrer le service cron en mode production {#start-cron-service-in-production-mode}
+## Démarrer le service cron en mode production {/* #start-cron-service-in-production-mode */}
 
 ```bash
 pnpm cron:start
 ```
 
-## Démarrer le service cron localement (pour les tests) {#start-cron-service-locally-for-testing}
+## Démarrer le service cron localement (pour les tests) {/* #start-cron-service-locally-for-testing */}
 
 ```bash
 pnpm cron:start-local
@@ -32,10 +32,11 @@ Le service cron inclut :
 - **Redémarrage automatique** : Le service redémarre automatiquement en cas de panne (géré par `docker-entrypoint.sh` dans les déploiements Docker)
 - **Mode observation** : Le mode développement inclut la surveillance des fichiers pour redémarrer automatiquement en cas de modification du code
 - **Surveillance des sauvegardes en retard** : Vérification automatisée et notification des sauvegardes en retard (exécutée toutes les 5 minutes par défaut)
-- **Envoi du résumé quotidien** : Évalue le planning du Résumé quotidien enregistré toutes les minutes en UTC et envoie la capture d'état actuelle quand il est dû
-- **Nettoyage du journal d'audit** : Nettoyage automatisé des anciennes entrées du journal d'audit (s'exécute quotidiennement à 2h00 UTC)
-- **Actualisation des versions de Duplicati** : Met à jour les versions de chaîne de Duplicati les plus récentes mises en cache à partir des versions GitHub. La valeur par défaut est quotidienne à 3h00 UTC ; les administrateurs peuvent modifier l'intervalle et l'heure de début dans [Paramètres → Versions de Duplicati](../user-guide/settings/duplicati-versions.md).
+- **Envoi du résumé quotidien** : Envoie une capture d'état actuelle une fois par jour à l'heure UTC du Résumé quotidien stockée (`minute hour * * *`). La valeur par défaut pour les nouvelles installations est 01:00 UTC. Modifier l'heure d'envoi recharge ce planning. La tâche s'exécute si le Résumé quotidien est activé et ne vérifie pas à nouveau l'heure.
+- **Nettoyage du journal d'audit** : Nettoyage automatisé des anciennes entrées du journal d'audit (s'exécute quotidiennement à 2 h UTC)
+- **Compactage de la base de données** : Hebdomadaire le dimanche à 04:00 UTC. Supprime les lignes de sauvegarde dont le serveur n'existe plus, les lignes de serveur sans sauvegardes restantes, les clés `backup_settings` et `overdue_notifications` résiduelles, élimine les anciennes lignes de livraison du Résumé quotidien et exécute SQLite `VACUUM`
+- **Actualisation des versions de Duplicati** : Met à jour les versions de canal de Duplicati les plus récentes mises en cache à partir des versions GitHub. La valeur par défaut est quotidienne à 3 h UTC ; les administrateurs peuvent modifier l'intervalle et l'heure de début dans [Paramètres → Versions de Duplicati](../user-guide/settings/duplicati-versions.md).
 - **Planification flexible** : Expressions cron configurables pour différentes tâches
 - **Intégration de la base de données** : Partage la même base de données SQLite avec l'application principale
-- **API RESTful** : API complète pour la gestion et la surveillance du service
+- **API RESTful** : API complète pour la gestion et la surveillance des services
 - **Liaison locale** : Écoute sur `127.0.0.1` par défaut (`CRON_BIND_HOST`). Les liaisons non-loopback nécessitent `CRON_SERVICE_SECRET`

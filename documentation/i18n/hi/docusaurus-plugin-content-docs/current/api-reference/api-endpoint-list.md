@@ -1,4 +1,4 @@
-# API Endpoint List {#api-endpoint-list}
+# एपीआई एंडपॉइंट सूची {/* #api-endpoint-list */}
 
 Ye document sabhi available API endpoints ka ek quick reference table provide karta hai (endpoint alphabetical order mein).
 
@@ -62,6 +62,7 @@ Ye document sabhi available API endpoints ka ek quick reference table provide ka
 | [`/api/dashboard`](core-operations#get-dashboard-data-consolidated---apidashboard)                                                                  | GET    | Dashboard Data prapt karein (Consolidated) | Core Operations           |
 | [`/api/detail/:serverId`](core-operations#get-server-data-with-overdue-info---apidetailserverid)                                                    | GET    | Server Data prapt karein with Overdue Info | Core Operations           |
 | [`/api/health`](monitoring-apis#health-check---apihealth)                                                                                           | GET    | Health Check                      | Monitoring & Health       |
+| [`/api/ping`](monitoring-apis#connectivity-probe---apiping)                                                                                         | GET    | कनेक्टिविटी प्रोब                | मॉनिटरिंग & हेल्थ       |
 | [`/api/lastbackup/:serverId`](external-apis#get-latest-backup---apilastbackupserverid)                                                              | GET    | Latest Backup prapt karein                 | External APIs             |
 | [`/api/lastbackups/:serverId`](external-apis#get-latest-backups---apilastbackupsserverid)                                                           | GET    | Latest Backups prapt karein                | External APIs             |
 | [`/api/notifications/check-overdue`](notification-apis#check-overdue-backups---apinotificationscheck-overdue)                                       | POST   | Overdue Backups janch karein             | Notification System       |

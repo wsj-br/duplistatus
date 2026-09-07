@@ -1,9 +1,9 @@
-# Gestión de Sesiones {#session-management}
+# Gestión de sesiones {/* #session-management */}
 
-## Crear sesión - `/api/session` {#create-session---apisession}
-- **Endpoint**: `/api/session`
-- **Method**: POST
-- **Description**: Crea una nueva sesión para el usuario.
+## Crear sesión - `/api/session` {/* #create-session---apisession */}
+- **Punto final**: `/api/session`
+- **Método**: POST
+- **Descripción**: Crea una nueva sesión para el usuario.
 - **Respuesta**:
 
   ```json
@@ -20,10 +20,10 @@
   - Establece una cookie de sesión HTTP-only
   - Requerido para acceder a los endpoints protegidos
 
-## Validar sesión - `/api/session` {#validate-session---apisession}
+## Validar sesión - `/api/session` {/* #validate-session---apisession */}
 - **Endpoint**: `/api/session`
-- **Method**: GET
-- **Description**: Valida una sesión existente.
+- **Método**: GET
+- **Descripción**: Valida una sesión existente.
 - **Respuesta** (válida):
 
   ```json
@@ -49,10 +49,10 @@
   - Verifica si la cookie de sesión existe y es válida
   - Devuelve el ID de sesión si es válida
 
-## Eliminar sesión - `/api/session` {#delete-session---apisession}
+## Eliminar sesión - `/api/session` {/* #delete-session---apisession */}
 - **Endpoint**: `/api/session`
 - **Method**: DELETE
-- **Description**: Elimina la sesión actual (cerrar sesión).
+- **Descripción**: Elimina la sesión actual (cerrar sesión).
 - **Respuesta**:
 
   ```json
@@ -67,10 +67,10 @@
   - Elimina la sesión del servidor y del cliente
   - Elimina la cookie de sesión
 
-## Obtener token CSRF - `/api/csrf` {#get-csrf-token---apicsrf}
+## Obtener token CSRF - `/api/csrf` {/* #get-csrf-token---apicsrf */}
 - **Endpoint**: `/api/csrf`
-- **Method**: GET
-- **Description**: Genera un token CSRF para la sesión actual.
+- **Método**: GET
+- **Descripción**: Genera un token CSRF para la sesión actual.
 - **Respuesta**:
 
   ```json

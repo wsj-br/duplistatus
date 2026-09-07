@@ -1,8 +1,8 @@
-# Vue d'ensemble de l'API {#api-overview}
+# Aperçu de l'API {/* #api-overview */}
 
 Ce document décrit tous les points de terminaison API disponibles pour l'application duplistatus. L'API suit les principes RESTful et offre des fonctionnalités complètes de surveillance des sauvegardes, de gestion des notifications et d'administration système.
 
-## Structure de l'API {#api-structure}
+## Structure de l'API {/* #api-structure */}
 
 Pour une référence rapide de tous les points de terminaison, consultez la [liste des points de terminaison de l'API](api-endpoint-list).
 
@@ -20,13 +20,13 @@ L'API est organisée en groupes logiques :
 
 Pour une référence rapide de tous les points de terminaison, consultez la [liste des points de terminaison de l'API](api-endpoint-list).
 
-## Format de réponse {#response-format}
+## Format de réponse {/* #response-format */}
 
 Toutes les réponses de l'API sont renvoyées au format JSON avec des modèles de gestion des erreurs cohérents. Les réponses réussies incluent généralement un champ `status`, tandis que les réponses d'erreur incluent les champs `error` et `message`.
 
 ---
 
-## Gestion des erreurs {#error-handling}
+## Gestion des erreurs {/* #error-handling */}
 
 Tous les points de terminaison suivent un modèle de gestion des erreurs cohérent :
 
@@ -46,21 +46,21 @@ Les réponses d'erreur incluent :
 - `stack` : Pile d'appels de l'erreur (en mode développement)
 - `timestamp` : Quand l'erreur s'est produite
 
-## Remarques sur les types de données {#data-type-notes}
+## Notes sur les types de données {/* #data-type-notes */}
 
-### Tableaux de messages {#message-arrays}
-Les champs `messages_array`, `warnings_array` et `errors_array` sont stockés sous forme de chaînes JSON dans la base de données et renvoyés sous forme de tableaux dans les réponses de l'API. Ils contiennent les messages de journal, les avertissements et les erreurs réels des opérations de sauvegarde Duplicati.
+### Tableaux de messages {/* #message-arrays */}
+Les champs `messages_array`, `warnings_array` et `errors_array` sont stockés sous forme de chaînes JSON dans la base de données et renvoyés sous forme de tableaux dans les réponses de l'API. Ceux-ci contiennent les messages de journal, avertissements et erreurs réels des opérations de sauvegarde Duplicati.
 
-### Sauvegardes disponibles {#available-backups}
-Le champ `available_backups` contient un tableau d'horodatages de versions de sauvegarde (au format ISO) disponibles pour restauration. Cela est extrait des messages de journal de sauvegarde.
+### Sauvegardes disponibles {/* #available-backups */}
+Le champ `available_backups` contient un tableau des horodatages des versions de sauvegarde (au format ISO) qui sont disponibles pour restauration. Cela est extrait des messages de journal de sauvegarde.
 
-### Champs de durée {#duration-fields}
+### Champs de durée {/* #duration-fields */}
 - `duration` : Format lisible par l'homme (par exemple, "00:38:31")
 - `duration_seconds` : Durée brute en secondes
-- `durationInMinutes` : Durée convertie en minutes à des fins de graphique
+- `durationInMinutes` : Durée convertie en minutes à des fins de chartage
 
-### Champs de taille de fichier {#file-size-fields}
-Tous les champs de taille de fichier sont renvoyés en octets sous forme de nombres, pas de chaînes formatées. L'interface est responsable de la conversion en formats lisibles (Ko, Mo, Go, etc.).
+### Champs de taille de fichier {/* #file-size-fields */}
+Tous les champs de taille de fichier sont renvoyés en octets sous forme de nombres, et non de chaînes formatées. Le frontend est responsable de la conversion de ceux-ci en formats lisibles par l'homme (Ko, Mo, Go, etc.).
 
 <br/>
 

@@ -1,9 +1,9 @@
-# Kernoperationen {#core-operations}
+# Grundlegende Operationen {/* #core-operations */}
 
-## Dashboard-Daten abrufen (konsolidiert) - `/api/dashboard` {#get-dashboard-data-consolidated---apidashboard}
+## Dashboard-Daten abrufen (konsolidiert) - `/api/dashboard` {/* #get-dashboard-data-consolidated---apidashboard */}
 - **Endpoint**: `/api/dashboard`
 - **Methode**: GET
-- **Beschreibung**: Ruft alle Dashboard-Daten in einer einzigen konsolidierten Antwort ab, einschließlich Server-Zusammenfassungen, Gesamtzusammenfassung und Diagrammdaten.
+- **Beschreibung**: Ruft alle Dashboard-Daten in einer einzigen konsolidierten Antwort ab, einschließlich Serverzusammenfassungen, Gesamtübersicht und Diagrammdaten.
 - **Antwort**:
 
   ```json
@@ -64,10 +64,10 @@
   - Alle Daten werden parallel abgerufen, um optimale Leistung zu erzielen
   - Das Feld `secondsSinceLastBackup` zeigt die Zeit in Sekunden seit der letzten Sicherung über alle Server hinweg an
 
-## Alle Server abrufen - `/api/servers` {#get-all-servers---apiservers}
+## Alle Server abrufen - `/api/servers` {/* #get-all-servers---apiservers */}
 - **Endpoint**: `/api/servers`
 - **Methode**: GET
-- **Beschreibung**: Ruft eine Liste aller Server mit ihren grundlegenden Informationen ab. Optional kann auch Backup-Informationen enthalten sein.
+- **Beschreibung**: Ruft eine Liste aller Server mit ihren grundlegenden Informationen ab. Optional werden Backup-Informationen einbezogen.
 - **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
 - **Abfrageparameter**:
   - `includeBackups` (optional): Auf `true` setzen, um Backup-Informationen für jeden Server einzuschließen
@@ -110,10 +110,10 @@
   - Wird für Serverauswahl, Anzeige und Konfigurationszwecke verwendet
   - Enthält das Feld `hasPassword`, um anzuzeigen, ob ein Server ein gespeichertes Passwort hat
 
-## Serverdetails abrufen - `/api/servers/:id` {#get-server-details---apiserversid}
+## Serverdetails abrufen - `/api/servers/:id` {/* #get-server-details---apiserversid */}
 - **Endpoint**: `/api/servers/:id`
 - **Methode**: GET
-- **Beschreibung**: Ruft Informationen über einen bestimmten Server ab. Kann grundlegende Serverinformationen oder detaillierte Informationen einschließlich Backups und Diagrammdaten zurückgeben.
+- **Beschreibung**: Ruft Informationen über einen bestimmten Server ab. Kann grundlegende Serverinformationen oder detaillierte Informationen einschließlich Sicherungen und Diagrammdaten zurückgeben.
 - **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
 - **Parameter**:
   - `id`: die Serverkennung
@@ -159,10 +159,10 @@
   - Wenn entweder `includeBackups` oder `includeChartData` auf `true` gesetzt ist, werden vollständige Serverdaten einschließlich Backups und chartData zurückgegeben
   - Wird für Servereinstellungen und Detailansichten verwendet
 
-## Server aktualisieren - `/api/servers/:id` {#update-server---apiserversid}
+## Server aktualisieren - `/api/servers/:id` {/* #update-server---apiserversid */}
 - **Endpoint**: `/api/servers/:id`
 - **Methode**: PATCH
-- **Beschreibung**: Aktualisiert Serverdetails, einschließlich Alias, Notiz und Server-URL.
+- **Beschreibung**: Aktualisiert die Serverdetails einschließlich Alias, Notiz und Server-URL.
 - **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
 - **Parameter**:
   - `id`: die Serverkennung
@@ -197,7 +197,7 @@
   - Alle Felder sind optional
   - Leere Zeichenketten sind für alle Felder erlaubt
 
-## Server löschen - `/api/servers/:id` {#delete-server---apiserversid}
+## Server löschen - `/api/servers/:id` {/* #delete-server---apiserversid */}
 - **Endpoint**: `/api/servers/:id`
 - **Methode**: DELETE
 - **Beschreibung**: Löscht einen Server und alle zugehörigen Sicherungen.
@@ -228,10 +228,10 @@
   - Der Servereintrag selbst wird ebenfalls entfernt
   - Gibt die Anzahl der gelöschten Sicherungen und Server zurück
 
-## Serverdaten mit Überfälligkeits-Informationen abrufen - `/api/detail/:serverId` {#get-server-data-with-overdue-info---apidetailserverid}
+## Serverdaten mit überfälligen Informationen abrufen - `/api/detail/:serverId` {/* #get-server-data-with-overdue-info---apidetailserverid */}
 - **Endpoint**: `/api/detail/:serverId`
 - **Methode**: GET
-- **Beschreibung**: Ruft detaillierte Serverinformationen ab, einschließlich des Status für überfällige Sicherungen.
+- **Beschreibung**: Ruft detaillierte Serverinformationen einschließlich des Status überfälliger Sicherungen ab.
 - **Parameter**:
   - `serverId`: die Serverkennung
 
@@ -267,7 +267,7 @@
   - Enthält Details und Zeitstempel zu überfälligen Sicherungen
   - Wird für die Verwaltung und Überwachung überfälliger Sicherungen verwendet
 
-## Doppelte Server abrufen - `/api/servers/duplicates` {#get-duplicate-servers---apiserversduplicates}
+## Doppelte Server abrufen - `/api/servers/duplicates` {/* #get-duplicate-servers---apiserversduplicates */}
 - **Endpoint**: `/api/servers/duplicates`
 - **Methode**: GET
 - **Beschreibung**: Ruft eine Liste doppelter Server basierend auf der Maschinen-ID ab. Doppelte Server sind Server, die dieselbe Maschinen-ID teilen, aber als separate Datensätze in der Datenbank gespeichert sind.
@@ -309,10 +309,10 @@
   - Wird zum Identifizieren und Zusammenführen doppelter Serverdatensätze verwendet
   - Enthält Serverdetails und Sicherungsanzahlen für jedes Duplikat
 
-## Server zusammenführen - `/api/servers/merge` {#merge-servers---apiserversmerge}
+## Server zusammenführen - `/api/servers/merge` {/* #merge-servers---apiserversmerge */}
 - **Endpoint**: `/api/servers/merge`
 - **Methode**: POST
-- **Beschreibung**: Führt mehrere Server mit einem Zielserver zusammen. Alle Sicherungen der Quellserver werden auf den Zielserver übertragen, und die Quellserver werden gelöscht.
+- **Beschreibung**: Führt mehrere Server in einen Zielserver zusammen. Alle Sicherungen von den Quellservern werden auf den Zielserver übertragen, und die Quellserver werden gelöscht.
 - **Authentifizierung**: Erfordert gültige Sitzung, CSRF-Token und Administratorzugriff
 - **Anforderungstext**:
 

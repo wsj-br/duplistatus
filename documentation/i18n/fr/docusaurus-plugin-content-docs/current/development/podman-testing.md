@@ -1,8 +1,8 @@
-# Tests Podman {#podman-testing}
+# Podman Testing {/* #podman-testing */}
 
 Copiez et exécutez les scripts situés à `scripts/podman_testing` sur le Serveur de test Podman.
 
-## Configuration initiale et gestion {#initial-setup-and-management}
+## Configuration initiale et gestion {/* #initial-setup-and-management */}
 
 1. `copy.docker.duplistatus.local` : Copie l'image Docker depuis le daemon Docker local vers Podman (pour les tests en local).
 2. `copy.docker.duplistatus.remote` : Copie l'image Docker depuis un serveur de développement distant vers Podman (nécessite un accès SSH).
@@ -12,7 +12,7 @@ Copiez et exécutez les scripts situés à `scripts/podman_testing` sur le Serve
 5. `stop.duplistatus` : Arrête le pod et supprime le conteneur.
 6. `clean.duplistatus` : Arrête les conteneurs, supprime les pods et nettoie les anciennes images.
 
-## Configuration DNS {#dns-configuration}
+## Configuration DNS {/* #dns-configuration */}
 
 Les scripts détectent et configurent automatiquement les paramètres DNS à partir du système hôte :
 
@@ -27,19 +27,19 @@ Les scripts détectent et configurent automatiquement les paramètres DNS à par
 
 Aucune configuration DNS manuelle n'est nécessaire - les scripts la gèrent automatiquement !
 
-## Surveillance et Contrôles de Santé {#monitoring-and-health-checks}
+## Surveillance et vérifications de santé {/* #monitoring-and-health-checks */}
 
 - `check.duplistatus`: Vérifie les journaux, la connectivité et la santé de l'application.
 
-## Commandes de débogage {#debugging-commands}
+## Commandes de débogage {/* #debugging-commands */}
 
 - `logs.duplistatus` : Affiche les journaux du pod.
 - `exec.shell.duplistatus` : Ouvre un shell dans le conteneur.
 - `restart.duplistatus` : Arrête le pod, supprime le conteneur, copie l'image, crée le conteneur et démarre le pod.
 
-## Flux de travail d'utilisation {#usage-workflow}
+## Flux de travail d'utilisation {/* #usage-workflow */}
 
-### Serveur de développement {#development-server}
+### Serveur de développement {/* #development-server */}
 
 Créer l'image Docker sur le serveur de développement :
 
@@ -47,7 +47,7 @@ Créer l'image Docker sur le serveur de développement :
 docker build . -t wsj-br/duplistatus:devel
 ```
 
-### Serveur Podman {#podman-server}
+### Serveur Podman {/* #podman-server */}
 
 1. Transférez l'image Docker :
    - Utilisez `./copy.docker.duplistatus.local` si Docker et Podman sont sur la même machine
@@ -60,7 +60,7 @@ docker build . -t wsj-br/duplistatus:devel
    - **Note** : Ce script fait actuellement référence à `copy.docker.duplistatus`, ce qui devrait être remplacé par la variante `.local` ou `.remote`
 6. Utilisez `./clean.duplistatus` pour supprimer les conteneurs, les pods et les anciennes images
 
-# Test de l'application {#testing-the-application}
+# Testing the Application {/* #testing-the-application */}
 
 Si vous exécutez le serveur Podman sur la même machine, utilisez `http://localhost:9666`.
 
@@ -70,9 +70,9 @@ Si vous êtes sur un autre serveur, obtenez l'URL avec :
 echo "http://$(hostname -I | awk '{print $1}'):9666"
 ```
 
-## Important {#important-notes}
+## Remarques importantes {/* #important-notes */}
 
-### Mise en réseau des pods Podman {#podman-pod-networking}
+### Réseau de pod Podman {/* #podman-pod-networking */}
 
 Quand l'application s'exécute dans des pods Podman, elle nécessite :
 - Une configuration DNS explicite (gérée automatiquement par le script `pod.testing`)
@@ -80,14 +80,14 @@ Quand l'application s'exécute dans des pods Podman, elle nécessite :
 
 Les scripts gèrent ces exigences automatiquement - aucune configuration manuelle nécessaire.
 
-### Mode sans root vs mode root {#rootless-vs-root-mode}
+### Mode sans privilèges vs mode root {/* #rootless-vs-root-mode */}
 
 - **Mode autonome** (`start.duplistatus`) : S'exécute sans privilèges avec `--userns=keep-id`
 - **Mode pod** (`pod.testing`) : S'exécute en tant que root à l'intérieur du pod à des fins de test
 
 Les deux modes fonctionnent correctement avec la détection DNS automatique.
 
-## Configuration de l'environnement {#environment-configuration}
+## Configuration de l'environnement {/* #environment-configuration */}
 
 Les deux `copy.docker.duplistatus.local` et `copy.docker.duplistatus.remote` nécessitent un fichier `.env` dans le répertoire `scripts/podman_testing` :
 

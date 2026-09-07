@@ -1,12 +1,12 @@
-# Monitoramento de Backup {#backup-monitoring}
+# Monitoramento de Backup {/* #backup-monitoring */}
 
 ![Alertas de backup](../../assets/screen-settings-monitoring.png)
 
-## Filtragem de Servidores {#server-filtering}
+## Filtragem de Servidor {/* #server-filtering */}
 
 A lista de servidores nesta página pode ser filtrada usando o campo de filtro.
 
-Quando **Resumo Diário** está habilitado, a detecção de atrasos continua, mas as notificações individuais de atraso são suprimidas. Consulte [Resumo Diário](daily-summary-settings.md).
+Quando o **Resumo Diário** está habilitado, a detecção de atrasos continua, mas o e-mail de atraso para o destinatário padrão de E-mail é suprimido. Destinos de e-mail adicionais continuam para eventos correspondentes (atrasos contam como um Aviso). Veja [Resumo Diário](daily-summary-settings.md).
 
 **Correspondências de Filtro:**
 - ID do Servidor
@@ -15,7 +15,7 @@ Quando **Resumo Diário** está habilitado, a detecção de atrasos continua, ma
 
 Isso facilita a localização rápida de servidores ou backups específicos nas configurações de monitoramento ao gerenciar muitos sistemas.
 
-## Configurar Configurações de Monitoramento por Backup {#configure-per-backup-monitoring-settings}
+## Configurar Configurações de Monitoramento de Backup {/* #configure-per-backup-monitoring-settings */}
 
 -  **Nome do Servidor**: O nome do servidor a ser monitorado quanto a backups atrasados. 
    - Clique em <SvgIcon svgFilename="duplicati_logo.svg" height="18"/> para abrir a interface web do servidor Duplicati
@@ -37,7 +37,7 @@ Quando você coleta logs de backup de um servidor Duplicati, o **duplistatus** a
 Para obter melhores resultados, colete logs de backup após alterar a configuração de intervalos de trabalho de backup no seu servidor Duplicati. Isso garante que **duplistatus** permaneça sincronizado com sua configuração atual.
 :::
 
-## Configurações Globais {#global-configurations}
+## Configurações Globais {/* #global-configurations */}
 
 Estas configurações aplicam-se a todos os backups:
 
@@ -47,7 +47,7 @@ Estas configurações aplicam-se a todos os backups:
 | **Intervalo de Monitoramento de Backup** | Com que frequência o sistema verifica backups atrasados. O padrão é **5 minutos**.                                                                                                                                                                                                                                                            |
 | **Frequência de Notificação**      | Com que frequência enviar notificações de atraso: <br/> **Uma vez`: Send **just one** notification when the backup becomes overdue. <br/> `Toda semana`: Send **daily** notifications while overdue (default). <br/> `Todo mês`: Send **weekly** notifications while overdue. <br/> `**: Envia notificações **mensais** enquanto estiver atrasado. |
 
-## Ações Disponíveis {#available-actions}
+## Ações Disponíveis {/* #available-actions */}
 
 | Botão                                                              | Descrição                                                                                                                           |
 |:--------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------|

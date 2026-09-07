@@ -1,14 +1,14 @@
-# Workflow zur Übersetzungswartung {#translation-maintenance-workflow}
+# Übersetzungswartungs-Workflow {/* #translation-maintenance-workflow */}
 
 Für allgemeine Dokumentationsbefehle (Build, Deploy, Screenshots, README-Generierung) siehe [Documentation Tools](documentation-tools.md).
 
-## Übersicht {#overview}
+## Übersicht {/* #overview */}
 
 Die Dokumentation verwendet Docusaurus i18n mit Englisch als Standard-Locale. Die Quelldokumentation befindet sich in `docs/`; Übersetzungen werden unter `i18n/{locale}/` erstellt. Unterstützte Locales: en-GB (Standard), fr, de, es, pt-BR, hi, zh-Hans.
 
 **AI-Übersetzung** für die App-Benutzeroberfläche, Docusaurus-Markdown/JSON, SVG-Assets und **Standardbenachrichtigungsvorlagen** wird durch [**ai-i18n-tools**](https://www.npmjs.com/package/ai-i18n-tools) aus dem **Repository-Root** behandelt, konfiguriert in `ai-i18n-tools.config.json` (nicht innerhalb von `documentation/`). Setzen Sie `OPENROUTER_API_KEY` beim Ausführen von Übersetzungsbefehlen.
 
-## Wann sich die englische Dokumentation ändert {#when-english-documentation-changes}
+## Wann sich die englische Dokumentation ändert {/* #when-english-documentation-changes */}
 
 1. **Quelle bearbeiten** in `documentation/docs/` (nur Englisch).
 2. **Docusaurus-UI-Strings** (Themenbeschriftungen, Navigationsleiste usw.): falls erforderlich, führen Sie `pnpm write-translations` in `documentation/` aus, damit `i18n/en/*.json` neue Schlüssel übernimmt.
@@ -23,7 +23,7 @@ Die Dokumentation verwendet Docusaurus i18n mit Englisch als Standard-Locale. Di
 
 Von innerhalb `documentation/` aus sind dieselben Abläufe verknüpft wie `pnpm translate` → Wurzel `i18n:translate`, zusätzlich `pnpm translate:docs`, `translate:ui`, `translate:svg`, `translate:status`, `i18n:extract`, `i18n:sync`.
 
-## UI Mehrzahl {#ui-plurals}
+## UI-Mehrzahl {/* #ui-plurals */}
 
 Kardinale Mehrzahl in der Next.js-App verwenden **ai-i18n-tools**, nicht handgeschriebene `_one` / `_other`-Schlüssel.
 
@@ -48,7 +48,7 @@ Regeln:
 - `pnpm i18n:extract` markiert die Katalogzeile `"plural": true`. `pnpm i18n:translate:ui` füllt CLDR-Formulare aus und schreibt `src/locales/en-GB.json` (nur plurale Schlüssel).
 - `src/i18n.ts` und `src/lib/i18n-server.ts` laden diese Datei als `sourcePluralFlatBundle`, sodass Englisch Singular/Plural zur Laufzeit aufgelöst wird.
 
-## Standardbenachrichtigungsvorlagen {#default-notification-templates}
+## Standard-Benachrichtigungsvorlagen {/* #default-notification-templates */}
 
 Einstellungen → Vorlagen → **Zurücksetzen** lädt die Standardeinstellungen aus `src/locales/templates/{locale}.json` (eingebunden in `src/lib/default-notification-templates.ts`).
 
@@ -59,44 +59,46 @@ Einstellungen → Vorlagen → **Zurücksetzen** lädt die Standardeinstellungen
 
 Siehe die [ai-i18n-tools JSON-Anleitung](https://wsj-br.github.io/ai-i18n-tools/guide/json.html) für Flags (`--locale`, `--force`, etc.).
 
-## Glossar {#glossary}
+## Glossar {/* #glossary */}
 
 - **UI-Fachbegriffe** für die Dokumentation werden über `glossary.uiGlossary` in `ai-i18n-tools.config.json` festgelegt, verweisen auf `src/locales/strings.json` (der Katalog, erzeugt von `pnpm i18n:extract`).
 - **Überschreibungen** befinden sich in `documentation/glossary-user.csv` (`glossary.userGlossary` in der Konfiguration). Siehe [ai-i18n-tools Glossardokumentation](https://github.com/wsj-br/ai-i18n-tools/blob/main/docs/GETTING_STARTED.md) für das Spaltenformat.
 - CSV-Vorlage generieren: `pnpm i18n:glossary-generate` (Wurzel).
 
-## Cache {#cache}
+## Cache {/* #cache */}
 
 Der Übersetzungscache für ai-i18n-tools befindet sich unter `.translation-cache/` im Stammverzeichnis des Repositorys (`cacheDir` in `ai-i18n-tools.config.json`). Er ist gitignored. Verwenden Sie `pnpm i18n:status` und die `--force`-/Cache-Flags der CLI gemäß der [ai-i18n-tools](https://github.com/wsj-br/ai-i18n-tools)-Dokumentation, wenn Sie eine vollständige Aktualisierung benötigen.
 
-## Überschrifts-IDs und Anker {#heading-ids-and-anchors}
+## Überschriften-IDs und Anker {/* #heading-ids-and-anchors */}
 
-Verwenden Sie explizite IDs, damit Links über alle Sprachen hinweg stabil bleiben:
+Verwenden Sie explizite IDs, damit Links über Sprachen hinweg stabil bleiben. Bevorzugen Sie die MDX-Kommentar-Syntax (`pnpm write-heading-ids` verwendet `--syntax mdx-comment`):
 
 ```markdown
-## This is a heading {#this-is-a-heading}
+## This is a heading {/* #this-is-a-heading */}
 ```
+
+Fügen Sie IDs auf `h2` und darunter hinzu. Docusaurus `write-heading-ids` überspringt `h1` (den Seitentitel/Seitenleisten-Titel). `documentation/docusaurus.config.ts` entfernt auch Kommentare für Überschriften-IDs aus abgeleiteten Titeln, da die Docusaurus-Metadaten-Extraktion immer noch nur klassische `{#id}` entfernt.
 
 ```bash
 cd documentation
 pnpm write-heading-ids
 ```
 
-## Ignorierlisten {#ignore-lists}
+## Ignorierlisten {/* #ignore-lists */}
 
 Verwenden Sie `.translate-ignore` im Stammverzeichnis des Repositorys (ähnlich wie `.gitignore`), um Pfade auszuschließen, die der Dokumentenübersetzer überspringen soll, falls Sie eine für Ihren Workflow hinzufügen.
 
-## Docusaurus-Theme-JSON {#docusaurus-theme-json}
+## Docusaurus-Design-JSON {/* #docusaurus-theme-json */}
 
 `pnpm write-translations` extrahiert Docusaurus-UI-Texte nach `documentation/i18n/en/`. Der **ai-i18n-tools** `translate-docs`-Schritt (mit `markdownOutput.style: "docusaurus"`) füllt übersetzte JSON-Dateien in jedem Sprachordner neben dem Markdown gemäß `ai-i18n-tools.config.json`.
 
-## Fehlerbehebung {#troubleshooting}
+## Fehlersuche {/* #troubleshooting */}
 
 - `OPENROUTER_API_KEY` **nicht gesetzt** — exportieren Sie ihn oder fügen Sie ihn zu `.env.local` im Stammverzeichnis des Repositorys hinzu.
 - **Modell / Qualität** — passen Sie `openrouter.translationModels` und verwandte Optionen in `ai-i18n-tools.config.json` an.
 - **Glossar** — bearbeiten Sie `documentation/glossary-user.csv` oder generieren Sie die UI-Strings neu und führen Sie anschließend extract + translate erneut aus.
 
-## Hinzufügen einer neuen Sprache {#adding-a-new-language}
+## Hinzufügen einer neuen Sprache {/* #adding-a-new-language */}
 
 1. Fügen Sie das Gebietsschema zu Docusaurus `i18n.locales` und `localeConfigs` in `documentation/docusaurus.config.ts` hinzu.
 2. Fügen Sie dasselbe Gebietsschema zu `targetLocales` in `ai-i18n-tools.config.json` (Stammverzeichnis des Repositorys) hinzu.

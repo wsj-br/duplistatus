@@ -1,21 +1,21 @@
 
 
-# Database Schema {#database-schema}
+# Database Schema {/* #database-schema */}
 
 This document describes the SQLite database schema used by duplistatus to store backup operation data.
 
-## Database Location {#database-location}
+## Database Location {/* #database-location */}
 
 The database is stored in the application data directory:
 - **Default Location**: `/app/data/backups.db`
 - **Docker Volume**: `duplistatus_data:/app/data`
 - **File Name**: `backups.db`
 
-## Database Migration System {#database-migration-system}
+## Database Migration System {/* #database-migration-system */}
 
 duplistatus uses an automated migration system to handle database schema changes between versions.
 
-### Migration Version History {#migration-version-history}
+### Migration Version History {/* #migration-version-history */}
 
 The following are historical migration versions that brought the database to its current state:
 
@@ -29,20 +29,20 @@ The following are historical migration versions that brought the database to its
 
 Current application version (v1.5.x) uses **Schema v4.2** as the latest database schema version.
 
-### Migration Process {#migration-process}
+### Migration Process {/* #migration-process */}
 
 1. **Automatic Backup**: Creates backup before migration
 2. **Schema Update**: Updates database structure
 3. **Data Migration**: Preserves existing data
 4. **Verification**: Confirms successful migration
 
-## Tables {#tables}
+## Tables {/* #tables */}
 
-### Servers Table {#servers-table}
+### Servers Table {/* #servers-table */}
 
 Stores information about Duplicati servers being monitored.
 
-#### Fields {#fields}
+#### Fields {/* #fields */}
 
 | Field             | Type             | Description                        |
 |-------------------|------------------|------------------------------------|
@@ -54,11 +54,11 @@ Stores information about Duplicati servers being monitored.
 | `server_password` | TEXT             | Server password for authentication |
 | `created_at`      | DATETIME         | Server creation timestamp          |
 
-### Backups Table {#backups-table}
+### Backups Table {/* #backups-table */}
 
 Stores backup operation data received from Duplicati servers.
 
-#### Key Fields {#key-fields}
+#### Key Fields {/* #key-fields */}
 
 | Field              | Type              | Description                                    |
 |--------------------|-------------------|------------------------------------------------|
@@ -76,7 +76,7 @@ Stores backup operation data received from Duplicati servers.
 | `errors`           | INTEGER           | Number of errors                               |
 | `created_at`       | DATETIME          | Record creation timestamp                      |
 
-#### Message Arrays (JSON Storage) {#message-arrays-json-storage}
+#### Message Arrays (JSON Storage) {/* #message-arrays-json-storage */}
 
 | Field               | Type | Description                             |
 |---------------------|------|-----------------------------------------|
@@ -85,7 +85,7 @@ Stores backup operation data received from Duplicati servers.
 | `errors_array`      | TEXT | JSON array of error messages            |
 | `available_backups` | TEXT | JSON array of available backup versions |
 
-#### File Operation Fields {#file-operation-fields}
+#### File Operation Fields {/* #file-operation-fields */}
 
 | Field                 | Type    | Description                  |
 |-----------------------|---------|------------------------------|
@@ -104,7 +104,7 @@ Stores backup operation data received from Duplicati servers.
 | `modified_symlinks`   | INTEGER | Symbolic links modified      |
 | `deleted_symlinks`    | INTEGER | Symbolic links deleted       |
 
-#### File Size Fields {#file-size-fields}
+#### File Size Fields {/* #file-size-fields */}
 
 | Field                    | Type    | Description                          |
 |--------------------------|---------|--------------------------------------|
@@ -113,7 +113,7 @@ Stores backup operation data received from Duplicati servers.
 | `size_of_added_files`    | INTEGER | Size of new files added to backup    |
 | `size_of_modified_files` | INTEGER | Size of files modified in backup     |
 
-#### Operation Status Fields {#operation-status-fields}
+#### Operation Status Fields {/* #operation-status-fields */}
 
 | Field                    | Type              | Description                    |
 |--------------------------|-------------------|--------------------------------|
@@ -129,7 +129,7 @@ Stores backup operation data received from Duplicati servers.
 | `errors_actual_length`   | INTEGER           | Actual errors count            |
 | `messages_actual_length` | INTEGER           | Actual messages count          |
 
-#### Backend Statistics Fields {#backend-statistics-fields}
+#### Backend Statistics Fields {/* #backend-statistics-fields */}
 
 | Field                            | Type     | Description                       |
 |----------------------------------|----------|-----------------------------------|
@@ -148,43 +148,43 @@ Stores backup operation data received from Duplicati servers.
 | `backend_warnings_actual_length` | INTEGER  | Backend warnings count            |
 | `backend_errors_actual_length`   | INTEGER  | Backend errors count              |
 
-### Configurations Table {#configurations-table}
+### Configurations Table {/* #configurations-table */}
 
 Stores application configuration settings.
 
-#### Fields {#fields-1}
+#### Fields {/* #fields-1 */}
 
 | Field   | Type                      | Description                |
 |---------|---------------------------|----------------------------|
 | `key`   | TEXT PRIMARY KEY NOT NULL | Configuration key          |
 | `value` | TEXT                      | Configuration value (JSON) |
 
-#### Common Configuration Keys {#common-configuration-keys}
+#### Common Configuration Keys {/* #common-configuration-keys */}
 
 - `email_config`: Email notification settings
 - `ntfy_config`: NTFY notification settings
 - `overdue_tolerance`: Overdue backup tolerance settings
 - `notification_templates`: Notification message templates
-- `daily_summary`: Daily Summary mode, schedule, and timezone
-- `cron_service`: Cron task schedules, including `daily-summary-dispatch`
+- `daily_summary`: Daily Summary mode, schedule, timezone, optional public dashboard URL, and optional SMTP recipient override (`smtpRecipient`; empty uses Email settings)
+- `cron_service`: Cron task schedules, including `daily-summary-dispatch` (`minute hour * * *` from `daily_summary.utcTime`)
 - `audit_retention_days`: Audit log retention period (default: 90 days)
 
-### Database Version Table {#database-version-table}
+### Database Version Table {/* #database-version-table */}
 
 Tracks database schema version for migration purposes.
 
-#### Fields {#fields-2}
+#### Fields {/* #fields-2 */}
 
 | Field        | Type             | Description                |
 |--------------|------------------|----------------------------|
 | `version`    | TEXT PRIMARY KEY | Database version           |
 | `applied_at` | DATETIME         | When migration was applied |
 
-### Users Table {#users-table}
+### Users Table {/* #users-table */}
 
 Stores user account information for authentication and access control.
 
-#### Fields {#fields-3}
+#### Fields {/* #fields-3 */}
 
 | Field                   | Type                 | Description                         |
 |-------------------------|----------------------|-------------------------------------|
@@ -200,11 +200,11 @@ Stores user account information for authentication and access control.
 | `failed_login_attempts` | INTEGER              | Count of failed login attempts      |
 | `locked_until`          | DATETIME             | Account lock expiration (if locked) |
 
-### Sessions Table {#sessions-table}
+### Sessions Table {/* #sessions-table */}
 
 Stores user session data for authentication and security.
 
-#### Fields {#fields-4}
+#### Fields {/* #fields-4 */}
 
 | Field             | Type              | Description                                                      |
 |-------------------|-------------------|------------------------------------------------------------------|
@@ -218,11 +218,11 @@ Stores user session data for authentication and security.
 | `csrf_token`      | TEXT              | CSRF token for the session                                       |
 | `csrf_expires_at` | DATETIME          | CSRF token expiration                                            |
 
-### Audit Log Table {#audit-log-table}
+### Audit Log Table {/* #audit-log-table */}
 
 Stores audit trail of user actions and system events.
 
-#### Fields {#fields-5}
+#### Fields {/* #fields-5 */}
 
 | Field           | Type                              | Description                                                       |
 |-----------------|-----------------------------------|-------------------------------------------------------------------|
@@ -240,11 +240,11 @@ Stores audit trail of user actions and system events.
 | `status`        | TEXT NOT NULL                     | Status of action ('success', 'failure', 'error')                  |
 | `error_message` | TEXT                              | Error message if action failed                                    |
 
-### API Keys Table {#api-keys-table}
+### API Keys Table {/* #api-keys-table */}
 
 Stores hashed API keys for the external HTTP APIs. The plaintext secret is shown once at creation and is never stored.
 
-#### Fields {#fields-6}
+#### Fields {/* #fields-6 */}
 
 | Field          | Type             | Description                                              |
 |----------------|------------------|----------------------------------------------------------|
@@ -264,18 +264,18 @@ Stores hashed API keys for the external HTTP APIs. The plaintext secret is shown
 
 Related configuration keys in the `configurations` table: `external_api_require_api_key`, `ip_trusted_proxies`, `admin_ip_allowlist`, `external_api_ip_allowlist`, `upload_limits`.
 
-### Daily Summary Deliveries Table {#daily-summary-deliveries-table}
+### Daily Summary Deliveries Table {/* #daily-summary-deliveries-table */}
 
 Per-channel ledger for Daily Summary email delivery. Legacy rows may include an `ntfy` channel from earlier releases. Each scheduled occurrence (or unique manual send) has at most one row per channel. Rendered payloads are stored before sending so retries keep the same snapshot. Rows older than 30 days are pruned.
 
 If the process dies after a provider accepts a message but before success is recorded, that channel may be retried (at-least-once).
 
-#### Fields {#fields-7}
+#### Fields {/* #fields-7 */}
 
 | Field              | Type             | Description                                                                 |
 |--------------------|------------------|-----------------------------------------------------------------------------|
 | `id`               | TEXT PRIMARY KEY | Unique delivery identifier                                                  |
-| `occurrence_key`   | TEXT NOT NULL    | Scheduled local date key or `manual:{uuid}`                                 |
+| `occurrence_key`   | TEXT NOT NULL    | Scheduled key `scheduled:UTC:{date}:{HH:mm}` or `manual:{uuid}`             |
 | `channel`          | TEXT NOT NULL    | `email` or `ntfy`                                                           |
 | `trigger`          | TEXT NOT NULL    | `scheduled`, `manual`, or `retry`                                           |
 | `summary_date`     | TEXT NOT NULL    | Local calendar date for the snapshot                                        |
@@ -292,9 +292,9 @@ If the process dies after a provider accepts a message but before success is rec
 
 A unique index on `(occurrence_key, channel)` prevents duplicate sends of the same occurrence on the same channel.
 
-## Session Management {#session-management}
+## Session Management {/* #session-management */}
 
-### Database-Backed Session Storage {#database-backed-session-storage}
+### Database-Backed Session Storage {/* #database-backed-session-storage */}
 
 Sessions are stored in the database with in-memory fallback:
 - **Primary Storage**: Database-backed sessions table
@@ -304,14 +304,14 @@ Sessions are stored in the database with in-memory fallback:
 - **CSRF Protection**: Cross-site request forgery protection
 - **Automatic Cleanup**: Expired sessions are automatically removed
 
-### Session API Endpoints {#session-api-endpoints}
+### Session API Endpoints {/* #session-api-endpoints */}
 
 - `POST /api/session`: Create new session
 - `GET /api/session`: Validate existing session
 - `DELETE /api/session`: Destroy session
 - `GET /api/csrf`: Get CSRF token
 
-## Indexes {#indexes}
+## Indexes {/* #indexes */}
 
 The database includes several indexes for optimal query performance:
 
@@ -324,7 +324,7 @@ The database includes several indexes for optimal query performance:
 - **Audit Indexes**: Timestamp, user_id, action, category, and status indexes for audit queries
 - **API Key Indexes**: Unique hash, plus enabled/scope lookups for authentication
 
-## Relationships {#relationships}
+## Relationships {/* #relationships */}
 
 - **Servers → Backups**: One-to-many relationship
 - **Users → Sessions**: One-to-many relationship (sessions can exist without users)
@@ -333,7 +333,7 @@ The database includes several indexes for optimal query performance:
 - **Backups → Messages**: Embedded JSON arrays
 - **Configurations**: Key-value storage
 
-## Data Types {#data-types}
+## Data Types {/* #data-types */}
 
 - **TEXT**: String data, JSON arrays
 - **INTEGER**: Numeric data, file counts, sizes
@@ -341,16 +341,16 @@ The database includes several indexes for optimal query performance:
 - **DATETIME**: Timestamp data
 - **BOOLEAN**: True/false values
 
-## Backup Status Values {#backup-status-values}
+## Backup Status Values {/* #backup-status-values */}
 
 - **Success**: Backup completed successfully
 - **Warning**: Backup completed with warnings
 - **Error**: Backup completed with errors
 - **Fatal**: Backup failed fatally
 
-## Common Queries {#common-queries}
+## Common Queries {/* #common-queries */}
 
-### Get Latest Backup for a Server {#get-latest-backup-for-a-server}
+### Get Latest Backup for a Server {/* #get-latest-backup-for-a-server */}
 
 ```sql
 SELECT * FROM backups 
@@ -359,7 +359,7 @@ ORDER BY date DESC
 LIMIT 1;
 ```
 
-### Get All Backups for a Server {#get-all-backups-for-a-server}
+### Get All Backups for a Server {/* #get-all-backups-for-a-server */}
 
 ```sql
 SELECT * FROM backups 
@@ -367,7 +367,7 @@ WHERE server_id = ?
 ORDER BY date DESC;
 ```
 
-### Get Server Summary {#get-server-summary}
+### Get Server Summary {/* #get-server-summary */}
 
 ```sql
 SELECT 
@@ -381,7 +381,7 @@ LEFT JOIN backups b ON s.id = b.server_id
 GROUP BY s.id;
 ```
 
-### Get Overall Summary {#get-overall-summary}
+### Get Overall Summary {/* #get-overall-summary */}
 
 ```sql
 SELECT 
@@ -411,7 +411,7 @@ FROM servers s
 LEFT JOIN backups b ON b.server_id = s.id;
 ```
 
-### Database Cleanup {#database-cleanup}
+### Database Cleanup {/* #database-cleanup */}
 
 ```sql
 -- Delete old backups (older than 30 days)
@@ -423,9 +423,9 @@ DELETE FROM servers
 WHERE id NOT IN (SELECT DISTINCT server_id FROM backups);
 ```
 
-## JSON to Database Mapping {#json-to-database-mapping}
+## JSON to Database Mapping {/* #json-to-database-mapping */}
 
-### API Request Body to Database Columns Mapping {#api-request-body-to-database-columns-mapping}
+### API Request Body to Database Columns Mapping {/* #api-request-body-to-database-columns-mapping */}
 
 When Duplicati sends backup data via HTTP POST, the JSON structure is mapped to database columns:
 

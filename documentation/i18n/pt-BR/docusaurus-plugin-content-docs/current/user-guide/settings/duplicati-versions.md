@@ -1,4 +1,4 @@
-# Versões do Duplicati {#duplicati-versions}
+# Versões do Duplicati {/* #duplicati-versions */}
 
 Esta página mostra as últimas versões do Duplicati armazenadas no cache **duplistatus** e permite que os administradores configurem a frequência com que essas versões são atualizadas do GitHub.
 
@@ -6,7 +6,7 @@ Esta página mostra as últimas versões do Duplicati armazenadas no cache **dup
 
 O cache é usado pelo [painel](../dashboard.md#duplicati-server-version) e pela página [Servidores](server-settings.md) para colorir a versão de cada servidor e mostrar se ela está atualizada ou desatualizada.
 
-## Versões do canal mais recente {#latest-channel-versions}
+## Versões do canal mais recente {/* #latest-channel-versions */}
 
 A tabela lista a versão mais recente em cache para cada canal do Duplicati:
 
@@ -21,7 +21,7 @@ O último horário de atualização bem-sucedida do GitHub é mostrado acima da 
 
 Administradores podem clicar em **Atualizar agora** para buscar as últimas versões imediatamente. Isso não requer que o serviço cron esteja em execução. Se o GitHub não puder ser acessado, **duplistatus** mantém o cache anterior.
 
-## Agendamento de verificação de versão {#version-check-schedule}
+## Verificação de versão {/* #version-check-schedule */}
 
 **Mostrar versão no painel** ativa ou desativa o emblema de versão no [painel](../dashboard.md#duplicati-server-version) na visualização de cartão. A tabela do painel sempre mostra a coluna **Versão**. Ela está ativada por padrão e também está disponível em [Configurações de Exibição](display-settings.md). Isso é uma preferência de exibição por usuário.
 
@@ -42,7 +42,7 @@ Exemplos:
 - A cada 12 horas com uma hora de início de 08:15 executa às 08:15 e 20:15.
 - A cada 6 horas com uma hora de início de 02:45 executa às 02:45, 08:45, 14:45 e 20:45.
 
-Na inicialização, **duplistatus** também atualiza o cache se ele tiver mais de 24 horas, 12 horas ou 6 horas. Atualizações falhas mantêm as últimas versões em cache.
+Na inicialização, **duplistatus** também atualiza o cache se ele estiver mais antigo que o intervalo selecionado (24 horas, 12 horas ou 6 horas), incluindo em um novo banco de dados vazio. Falhas transitórias do GitHub, como HTTP 504, são reenviadas. Atualizações falhadas mantêm as últimas versões em cache.
 
 Usuários regulares podem visualizar as versões em cache e o agendamento, e podem ativar ou desativar **Mostrar versão no painel**. Apenas administradores podem alterar o intervalo, horário de início ou forçar uma atualização.
 

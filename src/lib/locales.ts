@@ -6,7 +6,7 @@ export type LocaleCode = (typeof uiLanguages)[number]['code'];
 // Source locale — must match `src/i18n.ts` usage and `sourceLocale` in ai-i18n-tools.config.json
 export const SOURCE_LOCALE: LocaleCode = 'en-GB';
 
-/** Cookie name for UI locale (root layout, proxy, client locale sync). Safe for Server Components. */
+/** Cookie name for the active UI locale (root layout, proxy, SSR). Durable preference is per-user in localStorage (`ui-locale`). */
 export const LOCALE_COOKIE_NAME = 'NEXT_LOCALE';
 
 // Static locale code list for validation

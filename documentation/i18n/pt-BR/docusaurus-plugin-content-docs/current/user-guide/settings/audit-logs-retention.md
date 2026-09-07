@@ -1,4 +1,4 @@
-# Retenção de log de auditoria {#audit-log-retention}
+# Retenção de Log de Auditoria {/* #audit-log-retention */}
 
 Configurar por quanto tempo os logs de auditoria são retidos antes da limpeza automática.
 
@@ -8,7 +8,7 @@ Configurar por quanto tempo os logs de auditoria são retidos antes da limpeza a
 |:-------|:-----------|:-------------|
 | **Retenção (dias)** | Número de dias para manter logs de auditoria antes da exclusão automática | **90 dias** |
 
-## Configurações de Retenção {#retention-settings}
+## Configurações de Retenção {/* #retention-settings */}
 
 - **Intervalo**: 30 a 365 dias
 - **Limpeza Automática**: Executada diariamente às 02:00 UTC (não configurável)

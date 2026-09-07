@@ -1,10 +1,10 @@
-# Server Details {#server-details}
+# सर्वर विवरण {/* #server-details */}
 
 Dashboard se kisi server par click karne se us server ke liye backup ki ek list ke saath ek page khulega. Aap sabhi backups dekh sakte hain ya agar server par adhikatar backups configured hain to ek specific backup select kar sakte hain.
 
 ![Server Details](../assets/screen-server-backup-list.png)
 
-## Server/Backup Statistics {#serverbackup-statistics}
+## सर्वर/बैकअप आंकड़े {/* #serverbackup-statistics */}
 
 Yah section ya to server par sabhi backups ke liye ya ek selected backup ke liye statistics dikhata hai.
 
@@ -24,7 +24,7 @@ Click the <IconButton icon="lucide:settings" href="settings/backup-monitoring-se
 
 <br/>
 
-## Backup History {#backup-history}
+## बैकअप इतिहास {/* #backup-history */}
 
 Yah table selected server ke liye backup logs list karta hai.
 
@@ -52,7 +52,7 @@ Jab **Sabhi Backups** selected hain, to list newest se oldest tak ordered dikhay
 
 <br/>
 
-## Backup Details {#backup-details}
+## बैकअप विवरण {/* #backup-details */}
 
 Dashboard (table view) mein kisi status badge par click karne se ya backup history table mein kisi bhi row par click karne se detailed backup information dikhayi jayegi.
 

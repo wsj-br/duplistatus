@@ -1,4 +1,4 @@
-# Duplicati Server Configuration (anivarya) {#duplicati-server-configuration-required}
+# Duplicati सर्वर विन्यास (anivarya) {/* #duplicati-server-configuration-required */}
 
 Is application ka sahi kaam karne ke liye, har ek apke Duplicati server ko HTTP reports bhejne ke liye configure kiya jana chahiye har backup run ke liye **duplistatus** server par.
 
@@ -12,7 +12,7 @@ Replace `my.local.server` with the hostname or IP address that the Duplicati ser
 
 See Duplicati's [HTTP notifications](https://docs.duplicati.com/monitoring-and-notifications/sending-reports-via-email/sending-http-notifications) documentation for the option reference.
 
-### Recommended options (Duplicati 2.0.9.106 and later) {#recommended-options-duplicati-209106-and-later}
+### अनुशंसित विकल्प (Duplicati 2.0.9.106 और बाद के) {/* #recommended-options-duplicati-209106-and-later */}
 
 `--send-http-json-urls` already sends JSON, so `--send-http-result-output-format=Json` is not required (and is ignored for these URLs).
 
@@ -40,7 +40,7 @@ Alternatively, you can click on `Edit as text` and copy the lines below, replaci
 
 `--send-http-max-log-lines=500` JSON रिपोर्ट को डिफ़ॉल्ट 5 एमबी अपलोड साइज़ कैप के नीचे रखता है। `--send-http-max-log-lines=0` (असीमित) उस कैप को पार कर सकता है और HTTP 413 लौट सकता है। अगर आपको बड़े रिपोर्ट की आवश्यकता है, तो सेटिंग्स → API कुंजियाँ में लिमिट बढ़ाएं।
 
-### Older Duplicati versions {#older-duplicati-versions}
+### पुराने डुप्लिकेटी संस्करण {/* #older-duplicati-versions */}
 
 If your Duplicati server is older than 2.0.9.106, use the legacy URL option and set the result format to JSON:
 
@@ -58,7 +58,7 @@ If your Duplicati server is older than 2.0.9.106, use the legacy URL option and 
 --send-http-max-log-lines=500
 ```
 
-### Log lines and available versions {#log-lines-and-available-versions}
+### लॉग पंक्तियाँ और उपलब्ध संस्करण {/* #log-lines-and-available-versions */}
 
 **Important notes on messages sent by Duplicati:**
 
@@ -71,7 +71,7 @@ If your Duplicati server is older than 2.0.9.106, use the legacy URL option and 
 **Duplistatus** server configure karne ke baad, [Collect Backup Logs](../user-guide/collect-backup-logs.md) ka use karke apne sabhi Duplicati servers ke liye backup logs ikattha karein.
 :::
 
-### Reporting to duplistatus and Duplicati Monitoring {#reporting-to-duplistatus-and-duplicati-monitoring}
+### duplistatus और Duplicati Monitoring को रिपोर्ट करना {/* #reporting-to-duplistatus-and-duplicati-monitoring */}
 
 You can send reports from the **same** Duplicati server to **duplistatus** and [Duplicati Monitoring](https://www.duplicati-monitoring.com/) at the same time. **duplistatus** must receive JSON. Duplicati Monitoring expects form-encoded reports. Do not point `--send-http-form-urls` at `/api/upload`.
 
@@ -96,13 +96,13 @@ If one HTTP target fails (outage or HTTP 500), Duplicati may not send the remain
 
 [Backup Logs Ikattha Karein](../user-guide/collect-backup-logs.md) does not depend on HTTP reporting. Use it to backfill a run that was not received.
 
-### Duplicati and duplistatus on the same host {#duplicati-and-duplistatus-on-the-same-host}
+### Duplicati और duplistatus एक ही होस्ट पर {/* #duplicati-and-duplistatus-on-the-same-host */}
 
 अपलोड URL **Duplicati प्रक्रिया से** पहुंचने योग्य होना चाहिए, आपके ब्राउज़र से नहीं।
 
-- **होस्ट पर Duplicati, Docker में duplistatus पोर्ट `9666` प्रकाशित:** `http://127.0.0.1:9666/api/upload` (या होस्ट LAN आईपी)।
-- **साझा नेटवर्क पर दोनों Docker में:** `http://duplistatus:9666/api/upload` (Compose सेवा या कंटेनर नाम)। `localhost` Duplicati कंटेनर के अंदर वह कंटेनर है, नहीं **duplistatus**।
-- **समान होस्ट पर HTTPS रिवर्स प्रॉक्सी:** [HTTPS Setup](https-setup.md) में सार्वजनिक HTTPS URL का उपयोग करें।
+- **होस्ट पर Duplicati और डॉक्टर के साथ duplistatus, पोर्ट `9666` प्रकाशित:** `http://127.0.0.1:9666/api/upload` (या होस्ट LAN आईपी).
+- **साझा नेटवर्क पर डॉक्टर में दोनों:** `http://duplistatus:9666/api/upload` (कंपोज सेवा या कंटेनर नाम). `localhost` डुप्लिकेटी कंटेनर के अंदर वह कंटेनर है, न कि **duplistatus**.
+- **समान होस्ट पर HTTPS रिवर्स प्रॉक्सी:** [सुरक्षा मजबूत करना](security-hardening.md) में सार्वजनिक HTTPS URL का उपयोग करें.
 
 Backup Logs Ikattha Karein विपरीत दिशा में है: **duplistatus** कंटेनर से, `localhost:8200` होस्ट पर Duplicati नहीं है। होस्ट आईपी, `host.docker.internal` (Docker Desktop, या एक अतिरिक्त होस्ट जिसे आप कॉन्फ़िगर किया हैं), या Duplicati कंटेनर नाम का उपयोग करें।
 

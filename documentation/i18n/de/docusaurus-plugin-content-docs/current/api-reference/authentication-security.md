@@ -1,23 +1,23 @@
-# Authentifizierung & Sicherheit {#authentication-security}
+# Authentifizierung & Sicherheit {/* #authentication--security */}
 
 Die API verwendet eine Kombination aus sessionbasierter Authentifizierung und CSRF-Schutz für alle Datenbank-Schreiboperationen, um unbefugten Zugriff und potenzielle Denial-of-Service-Angriffe zu verhindern. Externe APIs, die von Duplicati und Homepage verwendet werden, bleiben CSRF-frei. Sie können optional einen bereichsspezifischen API-Schlüssel und/oder eine IP-Zulassungsliste erfordern (beide sind standardmäßig aus). `/api/upload` verfügt auch über eine konfigurierbare Begrenzung der Anforderungskörpergröße und eine Rate-Limitierung.
 
-## Sessionbasierte Authentifizierung {#session-based-authentication}
+## Sitzungsbasierte Authentifizierung {/* #session-based-authentication */}
 
 Geschützte Endpunkte erfordern ein gültiges Sitzungs-Cookie und einen CSRF-Token. Das Sitzungssystem bietet eine sichere Authentifizierung für alle geschützten Operationen.
 
-### Sitzungsverwaltung {#session-management}
-1. **Sitzung erstellen**: POST-Anfrage an `/api/session`, um eine neue Sitzung zu erstellen
-2. **CSRF-Token abrufen**: GET-Anfrage an `/api/csrf`, um ein CSRF-Token für die Sitzung zu erhalten
-3. **In Anfragen einbinden**: Sitzungs-Cookie und CSRF-Token mit geschützten Anfragen senden
+### Sitzungsverwaltung {/* #session-management */}
+1. **Sitzung erstellen**: POST an `/api/session` um eine neue Sitzung zu erstellen
+2. **CSRF-Token abrufen**: GET `/api/csrf` um ein CSRF-Token für die Sitzung zu erhalten
+3. **In Anfragen einfügen**: Sitzungscookie und CSRF-Token mit geschützten Anfragen senden
 4. **Sitzung prüfen**: GET `/api/session`, um zu überprüfen, ob die Sitzung noch gültig ist
 5. **Sitzung löschen**: DELETE `/api/session`, um sich abzumelden und die Sitzung zu löschen
 
-### CSRF-Schutz {#csrf-protection}
-Alle statusändernden Operationen erfordern einen gültigen CSRF-Token, der mit der aktuellen Sitzung übereinstimmt. Der CSRF-Token muss im `X-CSRF-Token`-Header für geschützte Endpunkte enthalten sein.
+### CSRF-Schutz {/* #csrf-protection */}
+Alle zustandsändernden Operationen erfordern ein gültiges CSRF-Token, das mit der aktuellen Sitzung übereinstimmt. Das CSRF-Token muss im `X-CSRF-Token`-Header für geschützte Endpunkte enthalten sein.
 
-### Geschützte Endpunkte {#protected-endpoints}
-Alle Endpunkte, die Datenbankdaten ändern, erfordern eine Sitzungsauthentifizierung und einen CSRF-Token:
+### Geschützte Endpunkte {/* #protected-endpoints */}
+Alle Endpunkte, die Daten in der Datenbank ändern, erfordern Sitzungsauthentifizierung und CSRF-Token:
 
 - **Serververwaltung**: `/api/servers/:id` (PATCH, DELETE), `/api/servers/:id/server-url` (PATCH), `/api/servers/:id/password` (PATCH, GET)
 - **Konfigurationsverwaltung**: `/api/configuration/email` (GET, POST, DELETE), `/api/configuration/unified` (GET), `/api/configuration/ntfy` (GET), `/api/configuration/notifications` (GET, POST), `/api/configuration/backup-settings` (POST), `/api/configuration/templates` (POST), `/api/configuration/overdue-tolerance` (GET, POST), `/api/configuration/daily-summary` (GET, POST), `/api/configuration/daily-summary/send` (POST), `/api/configuration/daily-summary/retry` (POST), `/api/configuration/daily-summary/preview` (POST)
@@ -37,19 +37,19 @@ Alle Endpunkte, die Datenbankdaten ändern, erfordern eine Sitzungsauthentifizie
 - **Überfälligkeitsprüfung**: `/api/notifications/check-overdue` (POST) – erfordert Sitzung und CSRF-Token
 - **Überfällige Zeitstempel löschen**: `/api/notifications/clear-overdue-timestamps` (POST) – erfordert Sitzung und CSRF-Token
 
-### Externe Endpunkte {#external-endpoints}
-Diese Routen verwenden keine Session-Cookies oder CSRF. Die Authentifizierung ist optional und in den Einstellungen konfiguriert:
+### Externe Endpunkte {/* #external-endpoints */}
+Diese Routen verwenden keine Sitzungscookies oder CSRF. Die Authentifizierung ist optional und in den Einstellungen konfiguriert:
 
 - `/api/upload` - Sicherungsdaten-Hochladen von Duplicati (Schlüssel mit Upload-Bereich, Größen- und Rate-Limits)
 - `/api/lastbackup/:serverId` - Aktueller Sicherungsstatus (Schlüssel mit Lese-Bereich)
 - `/api/lastbackups/:serverId` - Aktuelle Sicherungsstatus (Schlüssel mit Lese-Bereich)
 - `/api/summary` - Zusammenfassungsdaten (Schlüssel mit Lese-Bereich)
-- `/api/health` - Health-Check-Endpunkt (kein Schlüssel erforderlich)
-- `/api/ping` - Connectivity-Probe (kein Schlüssel erforderlich)
+- `/api/health` - Health-Check-Endpunkt (nicht geschützt; einfache SQLite-Abfrage; IP-basierte Rate-Limitierung)
+- `/api/ping` - Connectivity-Probe (nicht geschützt; IP-basierte Rate-Limitierung)
 
-Wenn **API-Schlüssel erfordern** aktiviert ist, geben die ersten vier Routen `401` ohne einen gültigen Schlüssel zurück und `403`, wenn der Schlüsselbereich nicht übereinstimmt. Siehe [API-Schlüssel](../user-guide/settings/api-keys-settings.md) und [IP-Zulassungsliste](../user-guide/settings/ip-allowlist-settings.md).
+Wann **API-Schlüssel erforderlich** ist Aus, akzeptieren die ersten vier Routen Anfragen mit oder ohne Schlüssel: ein gültiger Schlüssel im passenden Bereich wird aufgezeichnet; ein ungültiger Schlüssel wird ignoriert. Wenn der Schalter An ist, geben sie `401` ohne einen gültigen Schlüssel und `403` zurück, wenn der Schlüsselbereich nicht übereinstimmt. `/api/health` und `/api/ping` verwenden niemals Schlüssel. Siehe [API-Schlüssel](../user-guide/settings/api-keys-settings.md) und [IP-Zulassungsliste](../user-guide/settings/ip-allowlist-settings.md).
 
-### Verwendungsbeispiel (Sitzung + CSRF) {#usage-example-session--csrf}
+### Anwendungsbeispiel (Sitzung + CSRF) {/* #usage-example-session--csrf */}
 
 ```typescript
 // 1. Create session
@@ -77,12 +77,12 @@ const response = await fetch('/api/servers/server-id', {
 });
 ```
 
-## Authentifizierungs-Endpunkte {#authentication-endpoints}
+## Authentifizierungsendpunkte {/* #authentication-endpoints */}
 
-### Anmeldung - `/api/auth/login` {#login---apiauthlogin}
+### Anmeldung - `/api/auth/login` {/* #login---apiauthlogin */}
 - **Endpunkt**: `/api/auth/login`
 - **Methode**: POST
-- **Beschreibung**: Authentifiziert einen Benutzer und erstellt eine Sitzung. Unterstützt Sperrung des Kontos nach fehlgeschlagenen Versuchen und Passwortänderungsanforderungen.
+- **Beschreibung**: Authentifiziert einen Benutzer und erstellt eine Sitzung. Unterstützt das Sperren von Konten nach fehlgeschlagenen Versuchen und Anforderungen zur Passwortänderung.
 - **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token (aber keinen angemeldeten Benutzer)
 - **Anfrage-Body**:
 
@@ -121,10 +121,10 @@ const response = await fetch('/api/servers/server-id', {
   - Wenn das `mustChangePassword`-Flag beim Benutzer gesetzt ist, sollte er zur Passwortänderungsseite weitergeleitet werden
   - Alle Anmeldeversuche (erfolgreich und fehlgeschlagen) werden im Audit-Log protokolliert
 
-### Abmeldung - `/api/auth/logout` {#logout---apiauthlogout}
+### Abmeldung - `/api/auth/logout` {/* #logout---apiauthlogout */}
 - **Endpunkt**: `/api/auth/logout`
 - **Methode**: POST
-- **Beschreibung**: Meldet den aktuellen Benutzer ab und löscht dessen Sitzung.
+- **Beschreibung**: Meldet den aktuellen Benutzer ab und zerstört seine Sitzung.
 - **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
 - **Antwort** (Erfolg):
 
@@ -144,10 +144,10 @@ const response = await fetch('/api/servers/server-id', {
   - Die Abmeldung wird im Audit-Log protokolliert
   - Die Sitzung wird sofort ungültig gemacht
 
-### Aktuellen Benutzer abrufen - `/api/auth/me` {#get-current-user---apiauthme}
+### Aktuellen Benutzer abrufen - `/api/auth/me` {/* #get-current-user---apiauthme */}
 - **Endpunkt**: `/api/auth/me`
 - **Methode**: GET
-- **Beschreibung**: Gibt die Informationen des aktuell authentifizierten Benutzers zurück oder zeigt an, wenn kein Benutzer angemeldet ist.
+- **Beschreibung**: Gibt die Informationen des aktuell authentifizierten Benutzers zurück oder zeigt an, ob kein Benutzer angemeldet ist.
 - **Authentifizierung**: Erfordert gültige Sitzung (kein angemeldeter Benutzer erforderlich)
 - **Antwort** (authentifiziert):
 
@@ -178,10 +178,10 @@ const response = await fetch('/api/servers/server-id', {
   - Kann ohne angemeldeten Benutzer aufgerufen werden (gibt `authenticated: false` zurück)
   - Nützlich zur Überprüfung des Authentifizierungsstatus beim Laden der Seite
 
-### Passwort ändern - `/api/auth/change-password` {#change-password---apiauthchange-password}
+### Passwort ändern - `/api/auth/change-password` {/* #change-password---apiauthchange-password */}
 - **Endpunkt**: `/api/auth/change-password`
 - **Methode**: POST
-- **Beschreibung**: Ändert das Passwort für den aktuell authentifizierten Benutzer. Wenn `mustChangePassword` gesetzt ist, entfällt die Überprüfung des aktuellen Passworts.
+- **Beschreibung**: Ändert das Passwort für den aktuell authentifizierten Benutzer. Wenn `mustChangePassword` gesetzt ist, wird die Überprüfung des aktuellen Passworts übersprungen.
 - **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token (angemeldeter Benutzer erforderlich)
 - **Anforderungstext**:
 
@@ -218,10 +218,10 @@ const response = await fetch('/api/servers/server-id', {
   - Passwortänderungen werden im Audit-Log protokolliert
   - Neues Passwort muss sich vom aktuellen Passwort unterscheiden
 
-### Überprüfen, ob Administrator Passwort ändern muss - `/api/auth/admin-must-change-password` {#check-admin-must-change-password---apiauthadmin-must-change-password}
+### Überprüfen, ob der Administrator das Passwort ändern muss - `/api/auth/admin-must-change-password` {/* #check-admin-must-change-password---apiauthadmin-must-change-password */}
 - **Endpunkt**: `/api/auth/admin-must-change-password`
 - **Methode**: GET
-- **Beschreibung**: Überprüft, ob der Admin-Benutzer sein Passwort ändern muss. Dieser Endpunkt ist öffentlich (keine Authentifizierung erforderlich), da er lediglich eine boolesche Kennung zurückgibt.
+- **Beschreibung**: Überprüft, ob der Administrator-Benutzer sein Passwort ändern muss. Dieser Endpunkt ist öffentlich (keine Authentifizierung erforderlich), da er nur ein boolesches Flag zurückgibt.
 - **Antwort**:
 
   ```json
@@ -238,10 +238,10 @@ const response = await fetch('/api/servers/server-id', {
   - Wird verwendet, um zu bestimmen, ob der Hinweis zur Passwortänderung angezeigt werden soll
   - Bei Fehlern gibt er `false` zurück, um den Hinweis nicht anzuzeigen, falls ein Datenbankproblem vorliegt
 
-### Passwortsicherheitsrichtlinie abrufen - `/api/auth/password-policy` {#get-password-policy---apiauthpassword-policy}
+### Passwort-Richtlinie abrufen - `/api/auth/password-policy` {/* #get-password-policy---apiauthpassword-policy */}
 - **Endpunkt**: `/api/auth/password-policy`
 - **Methode**: GET
-- **Beschreibung**: Gibt die aktuelle Konfiguration der Passwortsicherheitsrichtlinie zurück. Dieser Endpunkt ist öffentlich (keine Authentifizierung erforderlich), da er für die Frontend-Validierung benötigt wird.
+- **Beschreibung**: Gibt die aktuelle Konfiguration der Passwort-Richtlinie zurück. Dieser Endpunkt ist öffentlich (keine Authentifizierung erforderlich), da er für die Validierung im Frontend benötigt wird.
 - **Antwort**:
 
   ```json
@@ -262,7 +262,7 @@ const response = await fetch('/api/servers/server-id', {
   - Die Richtlinie wird über Umgebungsvariablen konfiguriert (`PWD_ENFORCE`, `PWD_MIN_LEN`)
   - Die Standardpasswortprüfung (um die Verwendung des Standard-Administratorpassworts zu verhindern) wird immer unabhängig von den Richtlinieneinstellungen erzwungen
 
-### Auth-API-Fehler- und Erfolgscodes (i18n) {#auth-api-error-and-success-codes-i18n}
+### Auth-API-Fehler- und Erfolgscodes (i18n) {/* #auth-api-error-and-success-codes-i18n */}
 
 Auth-Endpunkte geben einen stabilen `errorCode` (und bei Erfolg `successCode`) zusätzlich zum menschenlesbaren Feld `error` oder `message` zurück. Die Werte von `error` und `message` sind in Englisch. Clients sollten die Codes verwenden, um lokalisierte Zeichenketten nachzuschlagen, sodass die Benutzeroberfläche Nachrichten in der vom Benutzer gewählten Sprache anzeigt.
 
@@ -274,8 +274,8 @@ Auth-Endpunkte geben einen stabilen `errorCode` (und bei Erfolg `successCode`) z
 | `/api/auth/change-password` | `PASSWORD_CHANGED` | `NEW_PASSWORD_REQUIRED`, `POLICY_NOT_MET`, `USER_NOT_FOUND`, `CURRENT_PASSWORD_INCORRECT`, `NEW_PASSWORD_SAME_AS_CURRENT`, `INTERNAL_ERROR` |
 | `/api/auth/password-policy` | — | `POLICY_RETRIEVE_FAILED` |
 
-### Fehlerantworten {#error-responses}
-- `401 Unauthorized`: Ungültige oder fehlende Sitzung, abgelaufene Sitzung oder fehlgeschlagene CSRF-Token-Validierung
+### Fehlerantworten {/* #error-responses */}
+- `401 Unauthorized`: Ungültige oder fehlende Sitzung, abgelaufene Sitzung oder CSRF-Token-Validierung fehlgeschlagen
 - `403 Forbidden`: CSRF-Token-Validierung fehlgeschlagen oder Operation nicht erlaubt
 
 :::caution

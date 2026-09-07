@@ -1,23 +1,26 @@
-# Solução de Problemas {#troubleshooting}
+# Solução de problemas {/* #troubleshooting */}
 
-### Painel Não Carregando {#dashboard-not-loading}
-- Verificar se o container está em execução: `docker ps`
+### Painel Não Carregando {/* #dashboard-not-loading */}
+- Verificar se o contêiner está em execução: `docker ps`
 - Verificar se a porta 9666 está acessível
-- Verificar logs do container: `docker logs duplistatus`
+- Verificar logs do contêiner: `docker logs duplistatus`
+- Se você estiver usando um proxy reverso, verifique os logs do proxy reverso para erros
+- Se você estiver usando listas de permissões de IP, verifique os logs da lista de permissões de IP para erros
 
-### Sem Dados de Backup {#no-backup-data}
-- Verificar a configuração do servidor Duplicati
-- Verificar a conectividade de rede entre os servidores
-- Revisar os logs do duplistatus em busca de erros
+### Sem Dados de Backup {/* #no-backup-data */}
+- Verificar configuração do servidor duplicati
+- Verificar conectividade de rede entre servidores
+- Revisar logs duplistatus para erros
 - Certifique-se de que os trabalhos de backup estão em execução
+- Se estiver usando chaves de API, certifique-se de que a chave de API está correta, o escopo está correto e não está expirado (uma chave de leitura não pode carregar)
 
-### Notificações Não Estão Funcionando {#notifications-not-working}
-- Verificar a configuração das notificações
-- Verificar a conectividade com o servidor NTFY (se estiver usando NTFY)
-- Testar as configurações de notificação
+### Notificações Não Funcionando {/* #notifications-not-working */}
+- Verificar configuração de notificações
+- Verificar conectividade do servidor NTFY (se estiver usando NTFY)
+- Testar configurações de notificações
 - Verifique os logs das notificações
 
-### Novos Backups Não Aparecem {#new-backups-not-showing}
+### Novos Backups Não Aparecendo {/* #new-backups-not-showing */}
 
 Se você vir avisos do servidor Duplicati como `HTTP Response request failed for:` e `Failed to send message: System.Net.Http.HttpRequestException:`, e novos backups não aparecerem no Painel ou no Histórico de backups:
 
@@ -30,7 +33,7 @@ Se você vir avisos do servidor Duplicati como `HTTP Response request failed for
 - **Revisar Logs do Duplicati**: Verifique erros de solicitação HTTP nos logs do Duplicati.
 - **Relatórios duplos**: Se você também enviar relatórios em formulário para [Monitoramento do Duplicati](https://www.duplicati-monitoring.com/), uma falha ou HTTP 500 desse serviço pode impedir o Duplicati de enviar o relatório JSON para **duplistatus**. URLs de formulário são enviadas primeiro. Veja [Relatórios para duplistatus e Monitoramento do Duplicati](../installation/duplicati-server-configuration.md#reporting-to-duplistatus-and-duplicati-monitoring).
 
-### Servidores Duplicados no Painel {#duplicate-servers-on-the-dashboard}
+### Servidores Duplicados no Painel {/* #duplicate-servers-on-the-dashboard */}
 
 Se o mesmo servidor aparecer mais de uma vez no painel, isso geralmente acontece após [coletar logs de backup](collect-backup-logs.md) ou após reinstalar ou atualizar o servidor Duplicati.
 
@@ -39,7 +42,7 @@ Se o mesmo servidor aparecer mais de uma vez no painel, isso geralmente acontece
 - **`machine_id` alterado**: Quando você reinstala ou atualiza o Duplicati, o `machine_id` do servidor pode mudar, e o **duplistatus** o trata como um novo servidor.
 - **Bug da API do Duplicati**: Nas versões mais recentes do Duplicati, há um bug em que alguns endpoints da API misturam o id `identity` e o `machine_id`. Essa inconsistência faz com que o **duplistatus** registre o mesmo servidor com IDs diferentes, gerando duplicatas.
 
-**Solução alternativa:**
+**Correção:**
 
 1.  No **servidor Duplicati**, faça **um** dos seguintes:
     - Edite os arquivos `identity.txt` e `machineid.txt` para que ambos contenham o **mesmo** id; ou
@@ -47,7 +50,7 @@ Se o mesmo servidor aparecer mais de uma vez no painel, isso geralmente acontece
 2.  **Reinicie** o servidor Duplicati para que a alteração entre em vigor.
 3.  No **duplistatus**, consolide as entradas duplicadas usando [Configurações → Manutenção do Banco de Dados → Mesclar Servidores Duplicados](settings/database-maintenance.md#merge-duplicate-servers).
 
-### Notificações Não Funcionando (Detalhado) {#notifications-not-working-detailed}
+### Notificações Não Funcionando (Detalhado) {/* #notifications-not-working-detailed */}
 
 Se as notificações não estão sendo enviadas ou recebidas:
 
@@ -55,13 +58,13 @@ Se as notificações não estão sendo enviadas ou recebidas:
 - **Verificar Conectividade de Rede**: Verifique se **duplistatus** consegue alcançar seu servidor NTFY. Revise as configurações de firewall, se aplicável.
 - **Verificar Configurações de Notificação**: Confirme que as notificações estão habilitadas para os backups relevantes.
 
-### Versões disponíveis não aparecem {#available-versions-not-appearing}
+### Versões Disponíveis Não Aparecendo {/* #available-versions-not-appearing */}
 
 Se as versões de backup não forem exibidas no Painel ou na página de Detalhes:
 
 - **Verificar Configuração do Duplicati**: Certifique-se de que `send-http-log-level=Information` e `send-http-max-log-lines=500` estão configurados nas opções avançadas do Duplicati. O Duplicati mantém as primeiras N linhas de log. Se a lista de versões ainda estiver ausente, aumente o limite ou use `0` quando não estiver enviando relatórios para o Monitoramento do Duplicati. A **contagem** de versões ainda pode aparecer nas estatísticas JSON quando a lista detalhada estiver ausente. Veja [Linhas de log e versões disponíveis](../installation/duplicati-server-configuration.md#log-lines-and-available-versions).
 
-### Alertas de Backup Atrasado Não Funcionando {#overdue-backup-alerts-not-working}
+### Alertas de Backup Atrasado Não Funcionando {/* #overdue-backup-alerts-not-working */}
 
 Se as notificações de backup atrasado não estão sendo enviadas:
 
@@ -69,7 +72,7 @@ Se as notificações de backup atrasado não estão sendo enviadas:
 - **Verificar Frequência de notificações**: Se definida como **Uma vez**, os alertas são enviados apenas uma vez por evento atrasado.
 - **Verificar Serviço Cron**: Certifique-se de que o serviço cron que monitora backups atrasados está funcionando corretamente. Verifique os logs da aplicação para erros. Verifique se o serviço cron está acessível na porta configurada (padrão: `8667`).
 
-### Coletar logs de backup não está funcionando {#collect-backup-logs-not-working}
+### Coletar Logs de Backup Não Funcionando {/* #collect-backup-logs-not-working */}
 
 Se a coleta manual do log de backup falhar:
 
@@ -87,7 +90,7 @@ Verifique também a configuração de DNS dentro do container (veja mais em [DNS
 
 - No **Duplicati 2.4 e posteriores**, `/api/v1/systeminfo` lista `machine-id` com um padrão vazio. **duplistatus** lê o id configurado das configurações do servidor Duplicati. Se a coleção ainda não puder identificar o servidor, defina **Duplicati → Configurações → Opções Avançadas → Machine-id** e tente novamente.
 
-### Atualização de uma versão anterior (anterior à 0.9.x) e não é possível fazer login {#upgrade-from-an-earlier-version-before-09x-and-cant-login}
+### Atualizar de uma versão anterior (antes de 0.9.x) e não consegue fazer login {/* #upgrade-from-an-earlier-version-before-09x-and-cant-login */}
 
 **duplistatus** desde a versão 0.9.x requer autenticação de usuário. Uma conta `admin` padrão é criada automaticamente ao instalar a aplicação pela primeira vez ou ao atualizar de uma versão anterior:
     - nome de usuário: `admin`
@@ -95,7 +98,7 @@ Verifique também a configuração de DNS dentro do container (veja mais em [DNS
 
 Você pode criar contas de usuários adicionais em [Configurações > Usuários](settings/user-management-settings.md) após o primeiro login.
 
-### Senha de Admin Perdida ou Bloqueado {#lost-admin-password-or-locked-out}
+### Senha de Administrador Perdida ou Bloqueado {/* #lost-admin-password-or-locked-out */}
 
 Se você perdeu sua senha de administrador ou foi bloqueado da sua conta (você ainda pode abrir `/login`):
 
@@ -104,13 +107,19 @@ Se você perdeu sua senha de administrador ou foi bloqueado da sua conta (você 
 
 Se o navegador mostrar **Acesso negado** (HTTP 403) antes do login, isso é um [bloqueio de lista de permissões de IP](#locked-out-by-ip-allowlist), não uma senha esquecida. O script de recuperação de administrador não pode contorná-lo.
 
-### Bloqueado pela Lista de Permissões de IP {#locked-out-by-ip-allowlist}
+### Bloqueado pela Lista de permissões de IP {/* #locked-out-by-ip-allowlist */}
 
 Se Configurações → [Lista de permissões de IP](settings/ip-allowlist-settings.md) estiver habilitado com um CIDR ausente ou incorreto, o proxy rejeita a solicitação antes da autenticação. Sintomas típicos:
 
-- Páginas (`/`, `/login`, `/settings`, …) retornam **Acesso negado** em texto simples (HTTP 403).
-- APIs de sessão e administrador retornam JSON `{ "errorCode": "IP_NOT_ALLOWED" }`.
-- `/api/health` e `/api/ping` ainda respondem (eles estão isentos). Cookies de login não ajudam.
+- As páginas (`/`, `/login`, `/settings`, …) retornam **Acesso negado** (HTTP 403) em texto simples.
+- As APIs de sessão e administrador retornam JSON `{ "errorCode": "IP_NOT_ALLOWED" }`.
+- `/api/health` e `/api/ping` também retornam 403 de um IP não listado quando qualquer lista de permissões está habilitada. Eles ainda respondem do loopback. Cookies de login não ajudam.
+
+Para confirmar que o aplicativo está ativo durante um bloqueio, execute a sondagem dentro do contêiner (o loopback sempre é permitido):
+
+```bash
+docker exec duplistatus curl -sf http://127.0.0.1:9666/api/ping
+```
 
 O caminho de salvamento tenta evitar isso: você não pode habilitar a lista **admin** a menos que seu IP atual já esteja nos CIDRs (exceto ao salvar do loopback). Você ainda pode se bloquear usando um CIDR que corresponda agora mas não mais tarde (VPN, DHCP, outra rede), configurando incorretamente os proxies confiáveis ou habilitando a lista de `127.0.0.1` / `::1` sem adicionar esse endereço.
 
@@ -142,7 +151,7 @@ A lista de permissões de **API externa** (`/api/upload`, `/api/summary`, `/api/
 
 Veja [Lista de permissões de IP](settings/ip-allowlist-settings.md#environment-overrides) e [Variáveis de Ambiente](../installation/environment-variables.md).
 
-### Backup do banco de dados e Migração {#database-backup-and-migration}
+### Backup do Banco de Dados e Migração {/* #database-backup-and-migration */}
 
 Quando migrar de versões anteriores ou criar um backup do banco de dados:
 
@@ -166,7 +175,7 @@ Se você ainda tiver problemas, tente as seguintes etapas:
 
 <br/>
 
-# Recursos Adicionais {#additional-resources}
+# Recursos adicionais {/* #additional-resources */}
 
 - **Guia de Instalação**: [Guia de Instalação](../installation/installation.md)
 - **Documentação do Duplicati**: [docs.duplicati.com](https://docs.duplicati.com)
@@ -175,5 +184,5 @@ Se você ainda tiver problemas, tente as seguintes etapas:
 - **Guia de Desenvolvimento**: [Guia de Desenvolvimento](../development/setup.md)
 - **Esquema do Banco de Dados**: [Documentação do Banco de Dados](../development/database)
 
-### Suporte {#support}
-- **GitHub Issues**: [Relatar bugs ou solicitar recursos](https://github.com/wsj-br/duplistatus/issues)
+### Suporte {/* #support */}
+- **Problemas no GitHub**: [Relatar bugs ou solicitar recursos](https://github.com/wsj-br/duplistatus/issues)

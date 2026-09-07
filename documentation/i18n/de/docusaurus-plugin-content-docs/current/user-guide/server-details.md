@@ -1,10 +1,10 @@
-# Server Details {#server-details}
+# Server-Details {/* #server-details */}
 
 Wenn Sie auf einen Server im Dashboard klicken, wird eine Seite mit einer Liste von Sicherungen für diesen Server geöffnet. Sie können alle Sicherungen anzeigen oder eine bestimmte auswählen, wenn der Server mehrere Sicherungen konfiguriert hat.
 
 ![Serverdetails](../assets/screen-server-backup-list.png)
 
-## Server/Backup-Sicherungsstatistiken {#serverbackup-statistics}
+## Server/Backup-Statistiken {/* #serverbackup-statistics */}
 
 Dieser Abschnitt zeigt Statistiken für alle Sicherungen auf dem Server oder eine einzelne ausgewählte Sicherung.
 
@@ -24,7 +24,7 @@ Klicken Sie auf <IconButton icon="lucide:settings" href="settings/backup-monitor
 
 <br/>
 
-## Sicherungsverlauf {#backup-history}
+## Sicherungsverlauf {/* #backup-history */}
 
 Diese Tabelle listet die Sicherungsprotokolle für den ausgewählten Server auf.
 
@@ -52,7 +52,7 @@ Wenn **Alle Sicherungen** ausgewählt ist, zeigt die Liste alle Sicherungen stan
 
 <br/>
 
-## Sicherungsdetails {#backup-details}
+## Sicherungsdetails {/* #backup-details */}
 
 Das Klicken auf ein Status-Badge im Dashboard (Tabellenansicht) oder auf eine beliebige Zeile in der Sicherungsverlauf-Tabelle zeigt die detaillierten Sicherungsinformationen an.
 

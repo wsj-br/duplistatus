@@ -1,6 +1,6 @@
 ![duplistatus](documentation/static/img/duplistatus_banner.png)
 
-# duplistatus - Überwachung mehrerer [Duplicati](https://github.com/duplicati/duplicati)-Server
+# duplistatus - Überwachen Sie mehrere [Duplicati](https://github.com/duplicati/duplicati) Server {/* #duplistatus----monitor-multiple-duplicatishttpsgithubcomduplicatiduplicati-servers */}
 
 ![version](https://img.shields.io/badge/version-{VERSION}-blue) 
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?logo=github)](https://github.com/wsj-br/duplistatus)
@@ -10,7 +10,7 @@
 Diese Webanwendung überwacht und visualisiert Sicherungsvorgänge von [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** bietet ein umfassendes Dashboard zur Verfolgung von Sicherungsstatus, Benachrichtigungen über überfällige Sicherungen, Auftragsverlauf,
 Metriken und Leistung über mehrere Server hinweg.
 
-Einfach mit Docker, Podman oder Portainer zu deployen und in 7 Sprachen verfügbar (Englisch, Deutsch, Französisch, Spanisch, Portugiesisch, Hindi (lateinisch) und Vereinfachtes Chinesisch), mit vollständiger Dokumentation in jeder Sprache.
+Einfache Bereitstellung mit Docker, Podman oder Portainer und verfügbar in 7 Sprachen (Englisch, Deutsch, Französisch, Spanisch, Portugiesisch, Hindi und Chinesisch), mit vollständiger Dokumentation in jeder Sprache.
 
 [Weitere Informationen](https://wsj-br.github.io/duplistatus)        |
 [Mehr informationen](https://wsj-br.github.io/duplistatus/de/)  | 

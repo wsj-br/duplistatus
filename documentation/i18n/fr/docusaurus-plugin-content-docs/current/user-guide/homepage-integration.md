@@ -1,8 +1,8 @@
-# Intégration de la page d'accueil (Optionnel) {#homepage-integration-optional}
+# Intégration de la page d'accueil (facultatif) {/* #homepage-integration-optional */}
 
 [Homepage](https://gethomepage.dev/) est une application de tableau de bord personnalisable. Pour intégrer **duplistatus** avec Homepage, ajoutez un widget à votre fichier `services.yaml` en utilisant le [type de widget Custom API](https://gethomepage.dev/widgets/services/customapi/).
 
-## Widget Résumé {#summary-widget}
+## Résumé du widget {/* #summary-widget */}
 
 Ce widget affiche les statistiques de sauvegarde globales sur votre tableau de bord Homepage.
 
@@ -44,7 +44,7 @@ Ce widget affiche les statistiques de sauvegarde globales sur votre tableau de b
 
 ![Widget de résumé de la page d'accueil](/img/homepage-summary.png)
 
-## Widget Informations de dernière sauvegarde {#last-backup-information-widget}
+## Informations de sauvegarde Dernier du widget {/* #last-backup-information-widget */}
 
 Ce widget affiche les dernières informations de sauvegarde pour une machine spécifique.
 
@@ -79,7 +79,7 @@ Ce widget affiche les dernières informations de sauvegarde pour une machine sp�
 
 ![Widget Dernière sauvegarde de la page d'accueil](/img/homepage-lastbackup.png)
 
-## Notes de Configuration {#configuration-notes}
+## Notes de configuration {/* #configuration-notes */}
 
 - Remplacez `your-server` par l'adresse IP ou le nom d'hôte de votre serveur.
 - Ajustez l'intervalle `refreshInterval` selon vos besoins (en millisecondes).

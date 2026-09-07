@@ -1,10 +1,10 @@
-# Coletar logs de backup {#collect-backup-logs}
+# Coletar Logs de Backup {/* #collect-backup-logs */}
 
 **duplistatus** pode recuperar logs de backup diretamente de servidores Duplicati para popular o banco de dados ou restaurar dados de log ausentes. A aplicação automaticamente ignora qualquer log duplicado que já exista no banco de dados.
 
-## Etapas para Coletar Logs de Backup {#steps-to-collect-backup-logs}
+## Passos para Coletar Logs de Backup {/* #steps-to-collect-backup-logs */}
 
-### Coleta Manual {#manual-collection}
+### Coleta Manual {/* #manual-collection */}
 
 1.  Clique no ícone <IconButton icon="lucide:download" /> **Coletar Logs de Backup** na [Barra de Ferramentas do Aplicativo](overview.md#application-toolbar).
 
@@ -31,7 +31,7 @@ Os botões <IconButton icon="lucide:download" /> estão disponíveis em [Configu
 
 <br/>
 
-### Coleta em Massa {#bulk-collection}
+### Coleta em Massa {/* #bulk-collection */}
 
 _Clique com o botão direito_ no botão <IconButton icon="lucide:download" /> **Coletar logs de backup** na barra de ferramentas da aplicação para coletar de todos os servidores configurados.
 
@@ -41,7 +41,7 @@ _Clique com o botão direito_ no botão <IconButton icon="lucide:download" /> **
 Você também pode usar o botão <IconButton icon="lucide:import" label="Coletar todos"/> nas páginas [Configurações → Monitoramento de backup](settings/backup-monitoring-settings.md) e [Configurações → Configurações de servidor](settings/server-settings.md) para coletar de todos os servidores configurados.
 :::
 
-## Como o Processo de Coleta Funciona {#how-the-collection-process-works}
+## Como o Processo de Coleta Funciona {/* #how-the-collection-process-works */}
 
 - O **duplistatus** detecta automaticamente o melhor protocolo de conexão e se conecta ao servidor Duplicati especificado.
 - Ele recupera o histórico de backup, informações de log e configurações de backup (para monitoramento de backup).
@@ -55,7 +55,7 @@ Você também pode usar o botão <IconButton icon="lucide:import" label="Coletar
 Se o mesmo servidor aparecer mais de uma vez após coletar logs de backup (ou após uma reinstalação/atualização do Duplicati), isso geralmente é causado por um `machine_id` alterado ou por um bug da API do Duplicati que mistura o id `identity` e o `machine_id`. A solução é alinhar os ids no servidor Duplicati (editar `identity.txt`/`machineid.txt` ou definir **Duplicati → Configurações → Opções Avançadas → Machine-id**), reiniciar o Duplicati e então mesclar as entradas em **duplistatus** via [Configurações → Manutenção do Banco de Dados → Mesclar Servidores Duplicados](settings/database-maintenance.md#merge-duplicate-servers). Consulte [Servidores Duplicados no Painel](troubleshooting.md#duplicate-servers-on-the-dashboard) para obter as etapas completas.
 :::
 
-## Solução de Problemas de Coleta {#troubleshooting-collection-issues}
+## Solução de Problemas com Questões de Coleta {/* #troubleshooting-collection-issues */}
 
 A coleta de log de backup requer que o servidor Duplicati seja acessível a partir da instalação do **duplistatus**. Se você encontrar problemas, verifique o seguinte:
 

@@ -1,4 +1,4 @@
-# Server {#server}
+# Server {/* #server */}
 
 Sie können hier einen alternativen Namen (Alias) für Ihre Server, einen Hinweis zur Beschreibung seiner Funktion und die Webadressen Ihrer Duplicati-Server konfigurieren.
 
@@ -22,7 +22,7 @@ Wenn die Web-Interface-Adresse (URL) nicht konfiguriert ist, wird die Schaltflä
 
 <br/>
 
-## Verfügbare Aktionen für jeden Server {#available-actions-for-each-server}
+## Verfügbare Aktionen für jeden Server {/* #available-actions-for-each-server */}
 
 | Schaltfläche                                                                                                      | Beschreibung                                                             |
 |:------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------|
@@ -44,7 +44,7 @@ Das Passwort wird verschlüsselt in der Datenbank gespeichert und wird nie in de
 
 <br/>
 
-## Verfügbare Aktionen für alle Server {#available-actions-for-all-servers}
+## Verfügbare Aktionen für alle Server {/* #available-actions-for-all-servers */}
 
 | Schaltfläche                                                     | Beschreibung                                     |
 |:-----------------------------------------------------------|:------------------------------------------------|

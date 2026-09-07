@@ -1,15 +1,15 @@
-# Externe APIs {#external-apis}
+# Externe APIs {/* #external-apis */}
 
 Diese Endpunkte sind für die Verwendung durch andere Anwendungen und Integrationen vorgesehen, zum Beispiel [Homepage](../user-guide/homepage-integration.md). Sie sind CSRF-frei und verwenden keine Sitzungscookies.
 
-Die Authentifizierung ist optional und standardmäßig deaktiviert. Wenn **API-Schlüssel erforderlich** in [API-Schlüssel](../user-guide/settings/api-keys-settings.md) aktiviert ist, senden Sie den Schlüssel als `?api_key=`, `X-Api-Key` oder `Authorization: Bearer`. Upload-Schlüssel funktionieren nur auf `POST /api/upload`. Lese-Schlüssel funktionieren nur auf `/api/summary` und `/api/lastbackup*`. Abfragezeichenfolgen-Schlüssel erscheinen in den Zugriffsprotokollen des Reverse-Proxys.
+Die Authentifizierung ist optional und standardmäßig deaktiviert. Während Schlüssel optional sind, können Clients den Schlüssel weglassen oder einen senden: ein gültiger Schlüssel im passenden Bereich wird akzeptiert und aufgezeichnet; ein ungültiger Schlüssel wird ignoriert und die Anfrage wird dennoch fortgesetzt. Wann **API-Schlüssel erforderlich** ist, ist [API-Schlüssel](../user-guide/settings/api-keys-settings.md) aktiviert, senden Sie den Schlüssel als `?api_key=`, `X-Api-Key` oder `Authorization: Bearer`. Hochladen-Schlüssel funktionieren nur auf `POST /api/upload`. Lesen-Schlüssel funktionieren nur auf `/api/summary` und `/api/lastbackup*`. Abfragezeichenfolgen-Schlüssel erscheinen in den Zugriffsprotokollen des Reverse-Proxys.
 
-Eine [IP-Zulassungsliste](../user-guide/settings/ip-allowlist-settings.md) kann diese Routen auch einschränken. `/api/health` und `/api/ping` bleiben offen.
+Eine [IP-Zulassungsliste](../user-guide/settings/ip-allowlist-settings.md) kann diese Routen auch einschränken. `/api/health` und `/api/ping` bleiben öffentlich, solange beide Listen deaktiviert sind; wenn eine der Listen aktiviert ist, akzeptieren sie Loopback und CIDRs aus der Admin- oder externen Liste, und nicht-Loopback-Clients werden rate-limited.
 
-## Gesamtübersicht abrufen - `/api/summary` {#get-overall-summary---apisummary}
-- **Endpunkt**: `/api/summary`
+## Gesamte Zusammenfassung abrufen - `/api/summary` {/* #get-overall-summary---apisummary */}
+- **Endpoint**: `/api/summary`
 - **Methode**: GET
-- **Beschreibung**: Ruft eine Zusammenfassung aller Backup-Operationen auf allen Servern ab.
+- **Beschreibung**: Ruft eine Zusammenfassung aller Sicherungsoperationen über alle Server ab.
 - **Antwort**:
 
   ```json
@@ -38,8 +38,8 @@ Eine [IP-Zulassungsliste](../user-guide/settings/ip-allowlist-settings.md) kann 
   - Gibt eine Rückfallantwort mit Nullen zurück, wenn das Abrufen der Daten fehlschlägt
   - **Notiz**: Für die interne Dashboard-Nutzung sollten Sie `/api/dashboard` verwenden, das diese Daten plus zusätzliche Informationen enthält
 
-## Letztes Backup abrufen - `/api/lastbackup/:serverId` {#get-latest-backup---apilastbackupserverid}
-- **Endpunkt**: `/api/lastbackup/:serverId`
+## Letzte Sicherung abrufen - `/api/lastbackup/:serverId` {/* #get-latest-backup---apilastbackupserverid */}
+- **Endpoint**: `/api/lastbackup/:serverId`
 - **Methode**: GET
 - **Beschreibung**: Ruft die neuesten Backup-Informationen für einen bestimmten Server ab.
 - **Parameter**:
@@ -98,10 +98,10 @@ Die Serverkennung muss URL-kodiert sein.
   - Gibt null für latest_backup zurück, wenn keine Backups existieren
   - Enthält Cache-Steuerungsheader, um das Caching zu verhindern
 
-## Letzte Backups abrufen - `/api/lastbackups/:serverId` {#get-latest-backups---apilastbackupsserverid}
-- **Endpunkt**: `/api/lastbackups/:serverId`
+## Letzte Sicherungen abrufen - `/api/lastbackups/:serverId` {/* #get-latest-backups---apilastbackupsserverid */}
+- **Endpoint**: `/api/lastbackups/:serverId`
 - **Methode**: GET
-- **Beschreibung**: Ruft die neuesten Backup-Informationen für alle konfigurierten Backups (z. B. 'Dateien', 'Datenbanken') auf einem bestimmten Server ab.
+- **Beschreibung**: Ruft die neuesten Backup-Informationen für alle konfigurierten Sicherungen (z.B. 'Dateien', 'Datenbanken') auf einem bestimmten Server ab.
 - **Parameter**:
   - `serverId`: die Serverkennung (ID oder Name)
 
@@ -185,10 +185,10 @@ Die Serverkennung muss URL-kodiert sein.
   - Im Gegensatz zu `/api/lastbackup/:serverId`, das nur das neueste Backup des Servers zurückgibt (unabhängig vom Sicherungsauftrag)
   - Enthält Cache-Steuerungsheader, um das Caching zu verhindern
 
-## Backup-Daten hochladen - `/api/upload` {#upload-backup-data---apiupload}
-- **Endpunkt**: `/api/upload`
+## Sicherungsdaten hochladen - `/api/upload` {/* #upload-backup-data---apiupload */}
+- **Endpoint**: `/api/upload`
 - **Methode**: POST
-- **Beschreibung**: Lädt Backup-Operationsdaten für einen Server hoch. Unterstützt die Erkennung doppelter Backup-Läufe und sendet Benachrichtigungen.
+- **Beschreibung**: Lädt Daten zur Sicherungsoperation für einen Server hoch. Unterstützt die Erkennung von doppelten Sicherungsläufen und sendet Benachrichtigungen.
 - **Anforderungstext**: JSON, gesendet von Duplicati, mit folgenden Optionen:
 
   ```bash

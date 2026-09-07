@@ -942,7 +942,7 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
           <div className="px-6 pb-4">
             <Alert>
               <AlertDescription>
-                {t('Daily Summary mode is enabled. Overdue detection continues, but individual overdue email notifications are suppressed until Daily Summary is turned off. NTFY notifications continue.')}
+                {t('Daily Summary mode is enabled. Overdue detection continues, but overdue email to the default Email recipient is suppressed until Daily Summary is turned off. Additional email destinations continue for matching events. NTFY notifications continue.')}
               </AlertDescription>
             </Alert>
           </div>

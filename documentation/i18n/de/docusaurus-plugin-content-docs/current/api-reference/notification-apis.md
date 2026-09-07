@@ -1,9 +1,9 @@
-# Benachrichtigungssystem {#notification-system}
+# Benachrichtigungssystem {/* #notification-system */}
 
-## Testbenachrichtigung - `/api/notifications/test` {#test-notification---apinotificationstest}
-- **Endpunkt**: `/api/notifications/test`
+## Testbenachrichtigung - `/api/notifications/test` {/* #test-notification---apinotificationstest */}
+- **Endpoint**: `/api/notifications/test`
 - **Methode**: POST
-- **Beschreibung**: Sendet Testbenachrichtigungen (einfach, vorlagenbasiert oder per E-Mail), um die Benachrichtigungskonfiguration zu überprüfen.
+- **Beschreibung**: Testbenachrichtigungen (einfach, vorlagenbasiert oder E-Mail) senden, um die Benachrichtigungskonfiguration zu überprüfen.
 - **Authentifizierung**: Erfordert eine Administrator-Sitzung und einen CSRF-Token
 - **Anfragekörper**:
   Für einfache Tests:
@@ -96,16 +96,16 @@ Der Inhalt der Test-E-Mail zeigt Folgendes an:
   - Der Test-E-Mail-Endpunkt leert den Anfrage-Cache, bevor die SMTP-Konfiguration gelesen wird, sodass externe Skripte die Konfiguration aktualisieren und die Änderungen sofort in den Test-E-Mails widerspiegeln können
   - Vorlagen-Tests und die sofortige Senden-Funktion der Täglichen Zusammenfassung umgehen die pro-Sicherung-Unterdrückung
 
-## Vorschau der Benachrichtigung Vorlage - `/api/notifications/preview` {#preview-notification-template---apinotificationspreview}
-- **Endpunkt**: `/api/notifications/preview`
+## Vorschau der Benachrichtigungsvorlage - `/api/notifications/preview` {/* #preview-notification-template---apinotificationspreview */}
+- **Endpoint**: `/api/notifications/preview`
 - **Methode**: POST
-- **Beschreibung**: Rendert eine Benachrichtigungsvorlage mit dem Produktions-Markdown-Renderer ohne Senden. Der Body enthält `kind` (`success`, `warning`, `overdueBackup`, oder `dailySummaryEmail`) und die bearbeitete Vorlage. Tägliche Zusammenfassungen verwenden die aktuelle reale Momentaufnahme; andere Arten verwenden deterministische Beispielwerte. E-Mail HTML ist für ein sandboxed iframe vorgesehen.
+- **Beschreibung**: Rendert eine Benachrichtigungsvorlage mit dem Produktions-Markdown-Renderer, ohne sie zu senden. Der Body enthält `kind` (`success`, `warning`, `overdueBackup` oder `dailySummaryEmail`) und die bearbeitete Vorlage. Tägliche Zusammenfassungen verwenden den aktuellen echten Snapshot; andere Arten verwenden deterministische Beispielwerte. E-Mail HTML ist für ein sandboxed iframe gedacht.
 - **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
 
-## Überfällige Sicherungen prüfen - `/api/notifications/check-overdue` {#check-overdue-backups---apinotificationscheck-overdue}
-- **Endpunkt**: `/api/notifications/check-overdue`
+## Überfällige Backups prüfen - `/api/notifications/check-overdue` {/* #check-overdue-backups---apinotificationscheck-overdue */}
+- **Endpoint**: `/api/notifications/check-overdue`
 - **Methode**: POST
-- **Beschreibung**: Löst manuell die Prüfung auf überfällige Sicherungen aus und sendet Benachrichtigungen.
+- **Beschreibung**: Auslösen der Überprüfung überfälliger Backups und Versenden von Benachrichtigungen.
 - **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
 - **Antwort**:
 
@@ -128,10 +128,10 @@ Der Inhalt der Test-E-Mail zeigt Folgendes an:
   - Gibt Statistiken über den Überprüfungsprozess zurück
   - Sendet Benachrichtigungen für gefundene überfällige Sicherungen
 
-## Überfällige Zeitstempel löschen - `/api/notifications/clear-overdue-timestamps` {#clear-overdue-timestamps---apinotificationsclear-overdue-timestamps}
-- **Endpunkt**: `/api/notifications/clear-overdue-timestamps`
+## Überfällige Zeitstempel löschen - `/api/notifications/clear-overdue-timestamps` {/* #clear-overdue-timestamps---apinotificationsclear-overdue-timestamps */}
+- **Endpoint**: `/api/notifications/clear-overdue-timestamps`
 - **Methode**: POST
-- **Beschreibung**: Löscht alle Zeitstempel für Benachrichtigungen zu überfälligen Sicherungen, sodass Benachrichtigungen erneut gesendet werden können.
+- **Beschreibung**: Löscht alle Zeitstempel überfälliger Backupbenachrichtigungen, sodass Benachrichtigungen erneut gesendet werden können.
 - **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
 - **Antwort**:
 

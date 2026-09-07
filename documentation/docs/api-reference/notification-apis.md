@@ -1,8 +1,8 @@
 
 
-# Notification System {#notification-system}
+# Notification System {/* #notification-system */}
 
-## Test Notification - `/api/notifications/test` {#test-notification---apinotificationstest}
+## Test Notification - `/api/notifications/test` {/* #test-notification---apinotificationstest */}
 - **Endpoint**: `/api/notifications/test`
 - **Method**: POST
 - **Description**: Send test notifications (simple, template-based, or email) to verify notification configuration.
@@ -86,13 +86,13 @@
   - The test email endpoint clears the request cache before reading SMTP configuration, ensuring that external scripts can update the configuration and have it immediately reflected in test emails
   - Template tests and Daily Summary send-now bypass per-backup suppression
 
-## Preview Notification Template - `/api/notifications/preview` {#preview-notification-template---apinotificationspreview}
+## Preview Notification Template - `/api/notifications/preview` {/* #preview-notification-template---apinotificationspreview */}
 - **Endpoint**: `/api/notifications/preview`
 - **Method**: POST
 - **Description**: Renders a notification template with the production Markdown renderer without sending. Body includes `kind` (`success`, `warning`, `overdueBackup`, or `dailySummaryEmail`) and the template being edited. Daily Summary previews use the current real snapshot; other kinds use deterministic sample values. Email HTML is intended for a sandboxed iframe.
 - **Authentication**: Requires valid session and CSRF token
 
-## Check Overdue Backups - `/api/notifications/check-overdue` {#check-overdue-backups---apinotificationscheck-overdue}
+## Check Overdue Backups - `/api/notifications/check-overdue` {/* #check-overdue-backups---apinotificationscheck-overdue */}
 - **Endpoint**: `/api/notifications/check-overdue`
 - **Method**: POST
 - **Description**: Manually triggers the overdue backup check and sends notifications.
@@ -116,7 +116,7 @@
   - Returns statistics about the check process
   - Sends notifications for overdue backups found
 
-## Clear Overdue Timestamps - `/api/notifications/clear-overdue-timestamps` {#clear-overdue-timestamps---apinotificationsclear-overdue-timestamps}
+## Clear Overdue Timestamps - `/api/notifications/clear-overdue-timestamps` {/* #clear-overdue-timestamps---apinotificationsclear-overdue-timestamps */}
 - **Endpoint**: `/api/notifications/clear-overdue-timestamps`
 - **Method**: POST
 - **Description**: Clears all overdue backup notification timestamps, allowing notifications to be sent again.

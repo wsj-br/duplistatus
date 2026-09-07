@@ -20,7 +20,7 @@
   "dailySummary": {
     "email": {
       "title": "📬 duplistatus — Daily backup summary — {summary_date}",
-      "message": "## 📊 Daily backup summary\n\n🕐 Generated: **{generated_at}** ({time_zone})\n\n### 📈 Overview\n\n| Metric | Count |\n| --- | ---: |\n| 🖥️ Servers | {server_count} |\n| 💼 Backup jobs | {job_count} |\n| ✅ Success | {success_count} |\n| ⚠️ Warnings | {warning_count} |\n| 🛑 Errors | {error_count} |\n| 💀 Fatal | {fatal_count} |\n| ❓ Unknown | {unknown_count} |\n| ❓ No report received | {no_report_count} |\n| 🕑 Overdue | {overdue_count} |\n\n### 🚨 Attention required\n\n{problem_table}\n\n### 📋 All latest backup results\n\n{all_jobs_table}\n\n{duplistatus_link}\n"
+      "message": "## 📊 Daily backup summary\n\n🕐 Generated: **{generated_at}** ({time_zone})\n\n### 📈 Overview\n\n| Metric | Count |\n| --- | ---: |\n| 🖥️ Servers | {server_count} |\n| 💼 Backup jobs / ✅ Success | {job_count} / {success_count} |\n| ⚠️ Warnings / 🛑 Errors / 💀 Fatal / ❓ Unknown | {warning_count} / {error_count} / {fatal_count} / {unknown_count} |\n| ❓ No report received | {no_report_count} |\n| 🕑 Overdue | {overdue_count} |\n\n### 🚨 Attention required\n\n{problem_table}\n\n### 📋 All latest backup results\n\n{all_jobs_table}\n\n{duplistatus_link}\n"
     }
   }
 }

@@ -1,5 +1,5 @@
 
-# API Endpoint List {#api-endpoint-list}
+# API Endpoint List {/* #api-endpoint-list */}
 
 This document provides a quick reference table of all available API endpoints (in endpoint alphabetical order).
 
@@ -63,6 +63,7 @@ This document provides a quick reference table of all available API endpoints (i
 | [`/api/dashboard`](core-operations#get-dashboard-data-consolidated---apidashboard)                                                                  | GET    | Get Dashboard Data (Consolidated) | Core Operations           |
 | [`/api/detail/:serverId`](core-operations#get-server-data-with-overdue-info---apidetailserverid)                                                    | GET    | Get Server Data with Overdue Info | Core Operations           |
 | [`/api/health`](monitoring-apis#health-check---apihealth)                                                                                           | GET    | Health Check                      | Monitoring & Health       |
+| [`/api/ping`](monitoring-apis#connectivity-probe---apiping)                                                                                         | GET    | Connectivity Probe                | Monitoring & Health       |
 | [`/api/lastbackup/:serverId`](external-apis#get-latest-backup---apilastbackupserverid)                                                              | GET    | Get Latest Backup                 | External APIs             |
 | [`/api/lastbackups/:serverId`](external-apis#get-latest-backups---apilastbackupsserverid)                                                           | GET    | Get Latest Backups                | External APIs             |
 | [`/api/notifications/check-overdue`](notification-apis#check-overdue-backups---apinotificationscheck-overdue)                                       | POST   | Check Overdue Backups             | Notification System       |

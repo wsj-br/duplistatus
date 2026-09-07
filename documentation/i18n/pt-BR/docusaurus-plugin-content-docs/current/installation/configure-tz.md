@@ -1,4 +1,4 @@
-# Fuso horário {#timezone}
+# Fuso horário {/* #timezone */}
 
 A interface do usuário do aplicativo exibirá data e hora de acordo com as configurações do navegador. O registro ainda usa a variável de ambiente `TZ`. As notificações de Resumo Diário usam o fuso horário IANA salvo em [Configurações → Resumo Diário](../user-guide/settings/daily-summary-settings.md), não `TZ`. Outras marcas temporais de notificação que não são Resumo Diário ainda seguem `TZ`.
 
@@ -8,7 +8,7 @@ O valor padrão é `TZ=Europe/London` se esta variável de ambiente não estiver
 As configurações de idioma e localidade (formatos de número e data) para notificações podem ser configuradas em [Configurações → Modelos](../user-guide/settings/notification-templates.md).
 :::
 
-## Configurando o Fuso horário {#configuring-the-timezone}
+## Configurando o Fuso Horário {/* #configuring-the-timezone */}
 
 A interface do usuário do aplicativo exibirá data e hora de acordo com as configurações do navegador. O registro ainda usa a variável de ambiente `TZ`. As notificações de Resumo Diário usam o fuso horário IANA salvo em [Configurações → Resumo Diário](../user-guide/settings/daily-summary-settings.md), não `TZ`. Outras marcas temporais de notificação que não são Resumo Diário ainda seguem `TZ`.
 
@@ -27,7 +27,7 @@ ou passe a variável de ambiente na linha de comando (Docker ou Podman):
   --env TZ=America/Sao_Paulo
 ```
 
-### Usando sua Configuração Linux {#using-your-linux-configuration}
+### Usando sua Configuração do Linux {/* #using-your-linux-configuration */}
 
 Para obter a configuração do seu host Linux, você pode executar:
 
@@ -35,6 +35,6 @@ Para obter a configuração do seu host Linux, você pode executar:
 echo TZ=\"$(</etc/timezone)\"
 ```
 
-### Lista de Fusos Horários {#list-of-timezones}
+### Lista de Fusos Horários {/* #list-of-timezones */}
 
 Você pode encontrar uma lista de fusos horários aqui: [Wikipedia: List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List)

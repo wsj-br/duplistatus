@@ -2381,7 +2381,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
           <div className="px-6 pb-4">
             <Alert>
               <AlertDescription>
-                {t('Daily Summary mode is enabled, so individual and additional backup email notifications are currently suppressed. NTFY notifications continue. These settings are preserved and become active again when Daily Summary is turned off.')}
+                {t('Daily Summary mode is enabled, so emails to the default Email recipient are suppressed. Additional email destinations continue to receive matching events. NTFY notifications continue. These settings are preserved and become active again when Daily Summary is turned off.')}
               </AlertDescription>
             </Alert>
           </div>

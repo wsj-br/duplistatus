@@ -7,18 +7,20 @@ import path from 'node:path';
 import Database from 'better-sqlite3';
 import { DatabaseMigrator, DAILY_SUMMARY_DELIVERIES_SCHEMA, LATEST_SCHEMA_VERSION } from '../src/lib/db-migrations';
 import {
-  evaluateScheduledOccurrence,
+  buildDailySummaryDispatchCronExpression,
   findNextOccurrence,
   isValidIanaTimeZone,
   resolveZonedLocalDateTime,
-  type DueEvaluation,
 } from '../src/lib/daily-summary-schedule';
 import { buildDailySummarySnapshot } from '../src/lib/daily-summary-aggregate';
+import { pruneConfigurationRecord } from '../src/lib/orphaned-configuration';
+import { pruneOrphanedBackupAndServerRows } from '../src/lib/orphaned-table-rows';
 import {
   claimDelivery,
   ensureDeliveryRows,
   finalizeDeliveryFailure,
   finalizeDeliverySuccess,
+  getLatestSuccessAt,
 } from '../src/lib/daily-summary-ledger';
 import { renderMarkdownEmail, substitutePlainTemplate } from '../src/lib/notification-template-renderer';
 import { truncateNtfyAtLineBoundary, utf8ByteLength } from '../src/lib/notification-template-validation';
@@ -33,24 +35,19 @@ function testSchedule(): void {
   assert.equal(isValidIanaTimeZone('Europe/London'), true);
   assert.equal(isValidIanaTimeZone('Not/AZone'), false);
 
-  const config: DailySummaryConfig = {
+  assert.equal(buildDailySummaryDispatchCronExpression('20:12'), '12 20 * * *');
+  assert.equal(buildDailySummaryDispatchCronExpression('01:00'), '0 1 * * *');
+  assert.equal(buildDailySummaryDispatchCronExpression('00:00'), '0 0 * * *');
+  assert.equal(buildDailySummaryDispatchCronExpression('invalid'), '0 1 * * *');
+
+  const alreadyEnabled: DailySummaryConfig = {
     enabled: true,
     utcTime: '08:00',
     timeZone: 'UTC',
-    effectiveFromIso: '2026-04-01T10:00:00.000Z',
-    publicUrl: '',
-  };
-  const before = evaluateScheduledOccurrence(config, new Date('2026-04-01T07:59:00.000Z'));
-  assert.equal(before.due, false);
-  const after = evaluateScheduledOccurrence(config, new Date('2026-04-01T08:00:00.000Z'));
-  assert.equal(after.due, false, 'enable after due time must skip today');
-
-  const alreadyEnabled: DailySummaryConfig = {
-    ...config,
     effectiveFromIso: '2026-03-01T00:00:00.000Z',
+    publicUrl: '',
+    smtpRecipient: '',
   };
-  const catchUp: DueEvaluation = evaluateScheduledOccurrence(alreadyEnabled, new Date('2026-04-01T15:00:00.000Z'));
-  assert.equal(catchUp.due, true);
 
   const londonGap = resolveZonedLocalDateTime(2026, 3, 29, 1, 30, 'Europe/London');
   const gapParts = londonGap.toISOString();
@@ -66,7 +63,18 @@ function testSchedule(): void {
   }, new Date('2026-04-01T15:00:00.000Z'));
   assert.ok(next);
   assert.equal(next?.toISOString(), '2026-04-01T20:00:00.000Z');
-  pass('due evaluation, catch-up, DST, next occurrence');
+
+  const savedDuringMinute: DailySummaryConfig = {
+    ...alreadyEnabled,
+    utcTime: '19:50',
+    effectiveFromIso: '2026-09-07T19:50:41.000Z',
+  };
+  const nextDuringMinute = findNextOccurrence(
+    savedDuringMinute,
+    new Date('2026-09-07T19:50:41.000Z')
+  );
+  assert.equal(nextDuringMinute?.toISOString(), '2026-09-07T19:50:00.000Z');
+  pass('cron expression, DST, next occurrence');
 }
 
 function testSnapshot(): void {
@@ -126,9 +134,10 @@ function testSnapshot(): void {
     backupSettings: settings,
     overdueToleranceMinutes: 0,
   });
-  assert.equal(snapshot.jobCount, 2);
+  assert.equal(snapshot.jobCount, 1);
   assert.equal(snapshot.warningCount, 1);
-  assert.equal(snapshot.noReportCount, 1);
+  assert.equal(snapshot.noReportCount, 0);
+  assert.equal(snapshot.jobs[0]?.backupName, 'Documents');
   assert.equal(snapshot.successCount + snapshot.warningCount + snapshot.errorCount + snapshot.fatalCount + snapshot.unknownCount + snapshot.noReportCount, snapshot.jobCount);
   const empty = buildDailySummarySnapshot({
     generatedAt,
@@ -139,7 +148,7 @@ function testSnapshot(): void {
     overdueToleranceMinutes: 0,
   });
   assert.equal(empty.jobCount, 0);
-  pass('known jobs, no-report, orphan exclusion, empty install');
+  pass('latest backup jobs only, leftover settings ignored, empty install');
 }
 
 function testRenderer(): void {
@@ -176,21 +185,43 @@ function testLedger(): void {
     emailText: 'e',
   };
   ensureDeliveryRows(database, {
-    occurrenceKey: 'scheduled:UTC:2026-04-01',
+    occurrenceKey: 'scheduled:UTC:2026-04-01:08:00',
     channels: ['email'],
     trigger: 'scheduled',
     summaryDate: '2026-04-01',
     timeZone: 'UTC',
     payload,
   });
-  const email = claimDelivery(database, 'scheduled:UTC:2026-04-01', 'email');
-  const emailAgain = claimDelivery(database, 'scheduled:UTC:2026-04-01', 'email');
+  const email = claimDelivery(database, 'scheduled:UTC:2026-04-01:08:00', 'email');
+  const emailAgain = claimDelivery(database, 'scheduled:UTC:2026-04-01:08:00', 'email');
   assert.ok(email);
   assert.equal(emailAgain, null);
   finalizeDeliverySuccess(database, email.id);
-  const sentEmail = claimDelivery(database, 'scheduled:UTC:2026-04-01', 'email');
+  const sentEmail = claimDelivery(database, 'scheduled:UTC:2026-04-01:08:00', 'email');
   assert.equal(sentEmail, null);
-  pass('claim isolation and success');
+  ensureDeliveryRows(database, {
+    occurrenceKey: 'scheduled:UTC:2026-04-01:08:30',
+    channels: ['email'],
+    trigger: 'scheduled',
+    summaryDate: '2026-04-01',
+    timeZone: 'UTC',
+    payload,
+  });
+  const laterTime = claimDelivery(database, 'scheduled:UTC:2026-04-01:08:30', 'email');
+  assert.ok(laterTime, 'a later send time on the same date must still be claimable');
+  finalizeDeliverySuccess(database, laterTime.id);
+  const latestSuccess = getLatestSuccessAt(database, 'email');
+  assert.ok(latestSuccess);
+  ensureDeliveryRows(database, {
+    occurrenceKey: 'manual:pending',
+    channels: ['email'],
+    trigger: 'manual',
+    summaryDate: '2026-04-01',
+    timeZone: 'UTC',
+    payload,
+  });
+  assert.equal(getLatestSuccessAt(database, 'email'), latestSuccess);
+  pass('claim isolation, success, and schedule-change key');
 }
 
 function testMigration(): void {
@@ -231,9 +262,61 @@ function testMigration(): void {
   pass('upgrade from 4.1 preserves customized templates');
 }
 
+function testOrphanPrune(): void {
+  console.log('Orphan prune');
+  const liveJobKeys = new Set(['s1:Documents']);
+  const liveServerIds = new Set(['s1']);
+  const { kept, removedKeys } = pruneConfigurationRecord(
+    {
+      's1:Documents': 1,
+      's1:ConfiguredOnly': 2,
+      's1:__default__': 3,
+      'missing:Orphan': 4,
+    },
+    liveJobKeys,
+    liveServerIds
+  );
+  assert.deepEqual(kept, { 's1:Documents': 1, 's1:__default__': 3 });
+  assert.equal(removedKeys.sort().join(','), 'missing:Orphan,s1:ConfiguredOnly');
+  pass('keeps live jobs and server defaults, drops leftovers');
+}
+
+function testOrphanTableRows(): void {
+  console.log('Orphan table rows');
+  const database = new Database(':memory:');
+  database.exec(`
+    CREATE TABLE servers (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL
+    );
+    CREATE TABLE backups (
+      id TEXT PRIMARY KEY,
+      server_id TEXT NOT NULL,
+      backup_name TEXT NOT NULL
+    );
+  `);
+  database.prepare('INSERT INTO servers (id, name) VALUES (?, ?)').run('live', 'Live Server');
+  database.prepare('INSERT INTO servers (id, name) VALUES (?, ?)').run('empty', 'Empty Server');
+  database.prepare('INSERT INTO backups (id, server_id, backup_name) VALUES (?, ?, ?)').run('b1', 'live', 'System');
+  database.prepare('INSERT INTO backups (id, server_id, backup_name) VALUES (?, ?, ?)').run('b2', 'missing', 'Files');
+
+  const result = pruneOrphanedBackupAndServerRows(database);
+  assert.equal(result.orphanedBackupsRemoved, 1);
+  assert.equal(result.orphanedServersRemoved, 1);
+
+  const remainingServers = database.prepare('SELECT id FROM servers ORDER BY id').all() as Array<{ id: string }>;
+  const remainingBackups = database.prepare('SELECT id FROM backups ORDER BY id').all() as Array<{ id: string }>;
+  assert.deepEqual(remainingServers.map((row) => row.id), ['live']);
+  assert.deepEqual(remainingBackups.map((row) => row.id), ['b1']);
+  database.close();
+  pass('drops backups without a server and servers without backups');
+}
+
 testSchedule();
 testSnapshot();
 testRenderer();
 testLedger();
 testMigration();
+testOrphanPrune();
+testOrphanTableRows();
 console.log('\nDaily summary validation passed.');

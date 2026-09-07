@@ -1,4 +1,4 @@
-# Métricas de Backup {#backup-metrics}
+# Métricas de copia de seguridad {/* #backup-metrics */}
 
 Se muestra un gráfico de métricas de backup a lo largo del tiempo tanto en el Panel de control (vista de tabla) como en la página de detalles del servidor.
 
@@ -7,11 +7,11 @@ Se muestra un gráfico de métricas de backup a lo largo del tiempo tanto en el 
 
 ![Métricas de copia de seguridad](../assets/screen-metrics.png)
 
-## Controles en línea del Gráfico {#inline-chart-controls}
+## Controles de gráfico en línea {/* #inline-chart-controls */}
 
 Controles de acceso rápido están disponibles directamente en los encabezados del panel de gráficos para una configuración fácil sin navegar a Configuración de visualización:
 
-### Selector de Rango de Tiempo {#time-range-selector}
+### Selector de rango de hora {/* #time-range-selector */}
 
 Botones de pastilla aparecen en el encabezado del gráfico para selección rápida de rango de tiempo: **1S | 2S | 1M | 3M**
 
@@ -22,7 +22,7 @@ Botones de pastilla aparecen en el encabezado del gráfico para selección rápi
 
 Los cambios realizados aquí se sincronizan con su Configuración de visualización, por lo que su preferencia se recuerda entre actualizaciones de página.
 
-### Alternador de Estilo de Gráfico {#chart-style-toggle}
+### Alternar estilo de gráfico {/* #chart-style-toggle */}
 
 Un botón de alternancia en el encabezado del gráfico le permite cambiar entre:
 
@@ -31,7 +31,7 @@ Un botón de alternancia en el encabezado del gráfico le permite cambiar entre:
 
 Ambos modos utilizan agregación de cubos de tiempo para una visualización óptima. Los períodos vacíos en modo de barras no muestran barra. Su preferencia persiste entre actualizaciones de página y se sincroniza con Configuración de visualización.
 
-## Consolidación de Datos del Gráfico {#chart-data-consolidation}
+## Consolidación de datos del gráfico {/* #chart-data-consolidation */}
 
 Cuando ocurren múltiples copias de seguridad en el mismo día, **duplistatus** consolida los datos antes de mostrarlos en los gráficos:
 
@@ -41,7 +41,7 @@ Cuando ocurren múltiples copias de seguridad en el mismo día, **duplistatus** 
 
 Esta consolidación ocurre antes de aplicar la agrupación por tiempo, asegurando métricas agregadas precisas. Por ejemplo, dos copias de seguridad el 5/12/26 producirán un punto de datos consolidado en el gráfico.
 
-## Definiciones de Métricas {#metric-definitions}
+## Definiciones de métricas {/* #metric-definitions */}
 
 - **Tamaño subido**: Cantidad total de datos cargados/transmitidos durante las copias de seguridad desde el servidor Duplicati al destino (almacenamiento local, FTP, proveedor en la nube, ...) por día.
 - **Duración**: La duración total de todas las copias de seguridad recibidas por día en HH:MM.

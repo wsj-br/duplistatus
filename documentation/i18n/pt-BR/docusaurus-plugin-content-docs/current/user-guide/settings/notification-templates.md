@@ -1,4 +1,4 @@
-# Modelos {#templates}
+# Modelos {/* #templates */}
 
 **duplistatus** usa quatro modelos para mensagens de notificação. Os corpos de e-mail são Markdown (títulos, listas, links e tabelas). NTFY para Sucesso, Aviso/Erro e Atrasado é derivado do mesmo conteúdo. Resumo Diário é apenas para e-mail.
 
@@ -15,13 +15,13 @@ A página inclui um seletor de **Idioma do Modelo** que define a localidade para
 
 <br/>
 
-## Idioma do Modelo {#template-language}
+## Idioma do Modelo {/* #template-language */}
 
-Um seletor de **Idioma do Modelo** no topo da página permite que você escolha o idioma para modelos padrão (Inglês, Alemão, Francês, Espanhol, Português, Hindi (Romano) e Chinês Simplificado). Alterar o idioma atualiza a localidade para os padrões, mas os modelos personalizados existentes mantêm seu texto atual até que você os atualize ou use um dos botões de redefinição.
+Um seletor **Idioma do Modelo** na parte superior da página permite que você escolha o idioma para modelos padrão (Inglês, Alemão, Francês, Espanhol, Português, Hindi e Chinês Simplificado). Alterar o idioma atualiza a localização para os padrões, mas os modelos personalizados existentes mantêm seu texto atual até que você os atualize ou use um dos botões de redefinição.
 
 <br/>
 
-## Ações Disponíveis {#available-actions}
+## Ações Disponíveis {/* #available-actions */}
 
 | Botão                                                              | Descrição                                                                                         |
 |:--------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------|
@@ -32,7 +32,7 @@ Um seletor de **Idioma do Modelo** no topo da página permite que você escolha 
 
 <br/>
 
-## Variáveis {#variables}
+## Variáveis {/* #variables */}
 
 Os corpos de e-mail são Markdown. Títulos, listas, links e tabelas são suportados. Valores de espaço reservado são inseridos como texto escapado e não podem introduzir Markdown ou HTML. HTML bruto incorporado anteriormente em modelos personalizados agora é escapado.
 
@@ -56,7 +56,7 @@ Todos os modelos de Sucesso, Aviso/Erro e Atrasado suportam variáveis que serã
 | `{messages_count}`     | Número de mensagens.                             | Sucesso, Aviso |
 | `{warnings_count}`     | Número de avisos.                             | Sucesso, Aviso |
 | `{errors_count}`       | Número de erros.                               | Sucesso, Aviso |
-| `{log_text}`           | Mensagens de log (avisos e erros)              | Sucesso, Aviso |
+| `{log_text}`           | Aviso e linhas de log de erro apenas (não logs de Informação completos). NTFY usa um resumo curto e pode truncar. | Sucesso, Aviso |
 | `{last_backup_date}`   | Data do último backup.                        | Atrasado          |
 | `{last_elapsed}`       | Tempo decorrido desde o último backup.             | Atrasado          |
 | `{expected_date}`      | Data esperada do backup.                           | Atrasado          |

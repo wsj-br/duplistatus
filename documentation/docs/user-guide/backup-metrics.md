@@ -1,6 +1,6 @@
 
 
-# Backup Metrics {#backup-metrics}
+# Backup Metrics {/* #backup-metrics */}
 
 A chart of backup metrics over time is shown on both the dashboard (table view) and the server details page.
 
@@ -9,11 +9,11 @@ A chart of backup metrics over time is shown on both the dashboard (table view) 
 
 ![Backup Metrics](../assets/screen-metrics.png)
 
-## Inline Chart Controls {#inline-chart-controls}
+## Inline Chart Controls {/* #inline-chart-controls */}
 
 Quick access controls are available directly on chart panel headers for easy configuration without navigating to Display Settings:
 
-### Time Range Selector {#time-range-selector}
+### Time Range Selector {/* #time-range-selector */}
 
 Pill buttons appear in the chart header for quick time range selection: **1W | 2W | 1M | 3M**
 
@@ -24,7 +24,7 @@ Pill buttons appear in the chart header for quick time range selection: **1W | 2
 
 Changes made here sync with your Display Settings, so your preference is remembered across page refreshes.
 
-### Chart Style Toggle {#chart-style-toggle}
+### Chart Style Toggle {/* #chart-style-toggle */}
 
 A toggle button in the chart header allows you to switch between:
 
@@ -33,7 +33,7 @@ A toggle button in the chart header allows you to switch between:
 
 Both modes use time-bucket aggregation for optimal display. Empty periods in bar mode render no bar. Your preference persists across page refreshes and is synced with Display Settings.
 
-## Chart Data Consolidation {#chart-data-consolidation}
+## Chart Data Consolidation {/* #chart-data-consolidation */}
 
 When multiple backups occur on the same day, **duplistatus** consolidates the data before displaying it on charts:
 
@@ -43,7 +43,7 @@ When multiple backups occur on the same day, **duplistatus** consolidates the da
 
 This consolidation happens before time bucketing is applied, ensuring accurate aggregated metrics. For example, two backups on 5/12/26 will produce one consolidated data point on the chart.
 
-## Metric Definitions {#metric-definitions}
+## Metric Definitions {/* #metric-definitions */}
 
 - **Uploaded Size**: Total amount of data uploaded/transmitted during backups from Duplicati server to the destination (local storage, FTP, cloud provider, ...) per day.
 - **Duration**: The total duration of all backups received per day in HH:MM.

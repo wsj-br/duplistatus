@@ -1,9 +1,9 @@
-# 通知系统 {#notification-system}
+# 通知系统 {/* #notification-system */}
 
-## 测试通知 - `/api/notifications/test` {#test-notification---apinotificationstest}
-- **端点**: `/api/notifications/test`
-- **方法**: POST
-- **描述**: 发送测试通知（简单、模板或电子邮件）以验证通知配置。
+## 测试通知 - `/api/notifications/test` {/* #test-notification---apinotificationstest */}
+- **端点**：`/api/notifications/test`
+- **方法**：POST
+- **描述**：发送测试通知（简单、基于模板或电子邮件）以验证通知配置。
 - **身份验证**：需要管理员会话和 CSRF 令牌
 - **请求正文**：
   简单测试：
@@ -96,16 +96,16 @@
   - 测试电子邮件端点在读取 SMTP 配置之前清除请求缓存，确保外部脚本可以更新配置并立即反映在测试电子邮件中
   - 模板测试和每日摘要立即发送功能绕过每次备份的抑制
 
-## 预览通知模板 - `/api/notifications/preview` {#preview-notification-template---apinotificationspreview}
-- **端点**: `/api/notifications/preview`
-- **方法**: POST
-- **描述**: 使用生产Markdown渲染器渲染通知模板，而不发送。正文包括`kind`（`success`、`warning`、`overdueBackup`或`dailySummaryEmail`）和正在编辑的模板。每日摘要预览使用当前的真实快照；其他类型使用确定性的示例值。电子邮件HTML用于沙盒化的iframe。
+## 预览通知模板 - `/api/notifications/preview` {/* #preview-notification-template---apinotificationspreview */}
+- **端点**：`/api/notifications/preview`
+- **方法**：POST
+- **描述**：使用生产 Markdown 渲染器渲染通知模板而不发送。请求体包含 `kind`（`success`、`warning`、`overdueBackup` 或 `dailySummaryEmail`）和正在编辑的模板。每日摘要预览使用当前真实快照；其他类型使用确定性示例值。电子邮件HTML适用于沙盒 iframe。
 - **认证**: 需要有效的会话和CSRF令牌
 
-## 检查逾期备份 - `/api/notifications/check-overdue` {#check-overdue-backups---apinotificationscheck-overdue}
-- **端点**: `/api/notifications/check-overdue`
-- **方法**: POST
-- **描述**: 手动触发逾期备份检查并发送通知。
+## 检查过期备份 - `/api/notifications/check-overdue` {/* #check-overdue-backups---apinotificationscheck-overdue */}
+- **端点**：`/api/notifications/check-overdue`
+- **方法**：POST
+- **描述**：手动触发过期备份检查并发送通知。
 - **身份验证**: 需要有效的会话和 CSRF 令牌
 - **响应**:
 
@@ -128,10 +128,10 @@
   - 返回检查过程的统计信息
   - 为找到的逾期备份发送通知
 
-## 清除逾期时间戳 - `/api/notifications/clear-overdue-timestamps` {#clear-overdue-timestamps---apinotificationsclear-overdue-timestamps}
-- **端点**: `/api/notifications/clear-overdue-timestamps`
-- **方法**: POST
-- **描述**: 清除所有逾期备份通知时间戳，允许再次发送通知。
+## 清除过期时间戳 - `/api/notifications/clear-overdue-timestamps` {/* #clear-overdue-timestamps---apinotificationsclear-overdue-timestamps */}
+- **端点**：`/api/notifications/clear-overdue-timestamps`
+- **方法**：POST
+- **描述**：清除所有过期备份通知时间戳，允许再次发送通知。
 - **身份验证**: 需要有效的会话和 CSRF 令牌
 - **响应**:
 

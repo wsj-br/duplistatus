@@ -1,6 +1,6 @@
-# 我如何使用 AI 工具构建此应用程序 {#how-i-build-this-application-using-ai-tools}
+# 我如何使用AI工具构建这个应用程序 {/* #how-i-build-this-application-using-ai-tools */}
 
-# 动机 {#motivation}
+# 动机 {/* #motivation */}
 
 我开始使用 Duplicati 作为家庭服务器的备份工具。我尝试了官方的 [Duplicati 仪表盘](https://app.duplicati.com/) 和 [Duplicati 监控](https://www.duplicati-monitoring.com/)，但我有两个主要要求：(1) 自托管；和 (2) 暴露 API 以便与 [首页](https://gethomepage.dev/) 集成，因为我使用它作为我的家庭实验室的首页。
 
@@ -8,7 +8,7 @@
 
 由于我也在尝试使用 AI 代码工具，我决定尝试使用 AI 构建此工具。以下是我使用的过程...
 
-# 使用的工具 {#tools-used}
+# 使用的工具 {/* #tools-used */}
 
 1. 用于 UI：[Google 的 Firebase Studio](https://firebase.studio/)
 2. 用于实现：Cursor (https://www.cursor.com/)
@@ -17,7 +17,7 @@
 我使用 Firebase 进行 UI 设计，但您也可以使用 [v0.app](https://v0.app/) 或其他工具生成原型。我使用 Cursor 生成实现，但您也可以使用其他工具，如 VS Code/Copilot、Windsurf、...
 :::
 
-# UI {#ui}
+# 用户界面 {/* #ui */}
 
 我在 [Firebase Studio](https://studio.firebase.google.com/) 中创建了一个新项目，并使用以下提示在 "使用 AI 原型化应用程序" 功能中：
 
@@ -77,9 +77,9 @@
 
 完成初始原型后，我通过点击界面中的 `</>` 按钮访问了源代码，然后使用 Git 扩展将代码导出并推送到 [GitHub](https://www.github.com) 上的一个私有仓库。
 
-# 后端 {#backend}
+# 后端 {/* #backend */}
 
-## 设置 {#setup}
+## 设置 {/* #setup */}
 
 我从 GitHub 下载了代码（使用 `git clone` 命令）到一个本地文件夹（在我的情况下，是一个运行 Linux 的 Raspberry Pi 5），并安装了 Node.js、npm 和 pnpm 的依赖项。请参阅 [DEVELOPMENT.md](../development/setup.md) 中的更多详细信息。
 
@@ -87,11 +87,11 @@
 
 我将 Duplicati 发送的 JSON 的样本复制到一个文件中（请参阅 [样本备份报告](../api-reference/database-values) 文档），并清除了一些不需要的字段。
 
-## 实现 {#implementation}
+## 实现 {/* #implementation */}
 
 我使用一个初始提示开始了实现，重点关注持久性、修复和新功能。这是一个漫长但非常有趣的过程。
 
-### 使用 AI 生成提示 {#using-ai-to-generate-the-prompt}
+### 使用 AI 生成提示词 {/* #using-ai-to-generate-the-prompt */}
 
 我使用 Cursor Chat （`Manual` 模式，`Auto` 模型）创建了一个详细的提示：
 
@@ -141,7 +141,7 @@ AI 生成了以下提示：
 
 我将生成的提示复制到剪贴板。
 
-### 开始实现之旅 {#start-the-implementation-journey}
+### 开始实现之旅 {/* #start-the-implementation-journey */}
 
 我通过点击 `+` 按钮创建了一个新聊天，切换到 `Agent` 模式，并使用 Ctrl+Shift+V（作为文本）粘贴了提示。
 
@@ -151,7 +151,7 @@ AI 生成了以下提示：
 我只包括了起点，因为我没有记录所有使用的提示。有很多。
 :::
 
-# 备注 {#notes}
+# 注意事项 {/* #notes */}
 
 - 一些模型在修复错误时可能会卡住。"claude-3.5" 和 "claude-4" 通常更好，但有时您需要尝试另一个模型（GPT、Gemini 等）。对于复杂的错误或错误，请使用提示分析错误的可能原因，而不是简单地要求修复它。
 - 在进行复杂的修改时，使用提示创建一个计划，然后要求 AI 代理实现它。这总是更好。

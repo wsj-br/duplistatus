@@ -1,4 +1,4 @@
-# Display {#display}
+# प्रदर्शन {/* #display */}
 
 Upyogkarta interface aur display preferences configure karein.
 

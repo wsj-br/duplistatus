@@ -1,8 +1,8 @@
-# पिछले संस्करणों के साथ असंगत API परिवर्तन {#api-breaking-changes}
+# {/* #backward-incompatible-api-changes */} पिछले संस्करण के साथ असंगत एपीआई परिवर्तन
 
 यह दस्तावेज़ duplistatus के विभिन्न संस्करणों में बाहरी API एंडपॉइंट्स के लिए असंगत परिवर्तनों का विवरण देता है। बाहरी API एंडपॉइंट्स वे हैं जो अन्य अनुप्रयोगों और एकीकरणों के लिए डिज़ाइन किए गए हैं (जैसे, होमपेज एकीकरण)।
 
-## Overview {#overview}
+## Overview {/* #overview */}
 
 यह दस्तावेज़ बाहरी API एंडपॉइंट्स के लिए असंगत परिवर्तनों को कवर करता है जो एकीकरणों, स्क्रिप्ट्स और इन एंडपॉइंट्स का उपयोग करने वाले अनुप्रयोगों को प्रभावित करते हैं। वेब इंटरफ़ेस द्वारा उपयोग किए जाने वाले आंतरिक API एंडपॉइंट्स के लिए परिवर्तन स्वचालित रूप से हैंडल किए जाते हैं और उन्हें मैन्युअल अपडेट की आवश्यकता नहीं होती है।
 
@@ -10,25 +10,25 @@
 बाहरी API एंडपॉइंट्स जब संभव हो तो पिछले संस्करणों के साथ संगतता के लिए बनाए रखे जाते हैं। असंगत परिवर्तन केवल तभी पेश किए जाते हैं जब यह एकीकरण, सुरक्षा, या कार्यक्षमता में सुधार के लिए आवश्यक हो।
 :::
 
-## संस्करण-विशिष्ट परिवर्तन {#version-specific-changes}
+## संस्करण-विशिष्ट परिवर्तन {/* #version-specific-changes */}
 
-### संस्करण 1.3.0 {#version-130}
-
-**बाहरी API एंडपॉइंट्स में कोई असंगत परिवर्तन नहीं**
-
-### संस्करण 1.2.1 {#version-121}
+### संस्करण 1.3.0 {/* #version-130 */}
 
 **बाहरी API एंडपॉइंट्स में कोई असंगत परिवर्तन नहीं**
 
-### संस्करण 1.1.x {#version-11x}
+### संस्करण 1.2.1 {/* #version-121 */}
 
 **बाहरी API एंडपॉइंट्स में कोई असंगत परिवर्तन नहीं**
 
-### संस्करण 1.0.x {#version-10x}
+### संस्करण 1.1.x {/* #version-11x */}
 
 **बाहरी API एंडपॉइंट्स में कोई असंगत परिवर्तन नहीं**
 
-### संस्करण 0.9.x {#version-09x}
+### संस्करण 1.0.x {/* #version-10x */}
+
+**बाहरी API एंडपॉइंट्स में कोई असंगत परिवर्तन नहीं**
+
+### संस्करण 0.9.x {/* #version-09x */}
 
 **बाहरी API एंडपॉइंट्स में कोई असंगत परिवर्तन नहीं**
 
@@ -41,7 +41,7 @@
 3. **सत्र अवैध**: सभी मौजूदा सत्र अवैध कर दिए जाते हैं
 4. **बाहरी API एक्सेस**: बाहरी API एंडपॉइंट्स (`/api/summary`, `/api/lastbackup`, `/api/lastbackups`, `/api/upload`) एकीकरणों और डुप्लिकेटी के साथ संगतता के लिए प्रमाणीकरण रहित रहते हैं
 
-### संस्करण 0.8.x {#version-08x}
+### संस्करण 0.8.x {/* #version-08x */}
 
 **बाहरी API एंडपॉइंट्स में कोई असंगत परिवर्तन नहीं**
 
@@ -52,7 +52,7 @@
 - `/api/lastbackups/{serverId}` - प्रतिक्रिया संरचना अपरिवर्तित
 - `/api/upload` - अनुरोध/प्रतिक्रिया प्रारूप अपरिवर्तित
 
-#### सुरक्षा सुधार {#security-enhancements}
+#### सुरक्षा संवर्धन {/* #security-enhancements */}
 
 हालांकि बाहरी API एंडपॉइंट में कोई ब्रेकिंग चेंजेज नहीं की गईं, संस्करण 0.8.x में सुरक्षा सुधार शामिल हैं:
 
@@ -63,28 +63,28 @@
 ये सुरक्षा सुधार बाहरी API एंडपॉइंट को प्रभावित नहीं करते जो बैकअप डेटा पढ़ने के लिए उपयोग किए जाते हैं। यदि आपके पास आंतरिक एंडपॉइंट का उपयोग करने वाले कस्टम स्क्रिप्ट हैं, तो उन्हें CSRF टोकन हैंडलिंग की आवश्यकता हो सकती है।
 :::
 
-### संस्करण 0.7.x {#version-07x}
+### संस्करण 0.7.x {/* #version-07x */}
 
 संस्करण 0.7.x बाहरी API एंडपॉइंट में कई ब्रेकिंग चेंजेज को शामिल करता है जो बाहरी इंटीग्रेशन को अपडेट करने की आवश्यकता होती है।
 
-#### ब्रेकिंग चेंजेज {#breaking-changes}
+#### ब्रेकिंग परिवर्तन {/* #breaking-changes */}
 
-##### फ़ील्ड नाम बदलाव {#field-renaming}
+##### फ़ील्ड पुनर्नामकरण {/* #field-renaming */}
 
 - `totalMachines` → `totalServers` में `/api/summary` एंडपॉइंट
 - `machine` → `server` में API प्रतिक्रिया ऑब्जेक्ट
 - `backup_types_count` → `backup_jobs_count` में `/api/lastbackups/{serverId}` एंडपॉइंट
 
-##### एंडपॉइंट पथ बदलाव {#endpoint-path-changes}
+##### एंडपॉइंट पथ परिवर्तन {/* #endpoint-path-changes */}
 
 - सभी API एंडपॉइंट जो पहले `/api/machines/...` का उपयोग करते थे अब `/api/servers/...` का उपयोग करते हैं
 - पैरामीटर नाम `machine_id` से `server_id` में बदल गए (URL एन्कोडिंग दोनों के साथ काम करता है)
 
-#### प्रतिक्रिया संरचना बदलाव {#response-structure-changes}
+#### प्रतिक्रिया संरचना परिवर्तन {/* #response-structure-changes */}
 
 कई एंडपॉइंट की प्रतिक्रिया संरचना एकसारिकता के लिए अपडेट की गई है:
 
-##### `/api/summary` {#apisummary}
+##### `/api/summary` {/* #apisummary */}
 
 **Before (0.6.x and earlier):**
 
@@ -116,7 +116,7 @@
 }
 ```
 
-##### `/api/lastbackup/{serverId}` {#apilastbackupserverid}
+##### `/api/lastbackup/{serverId}` {/* #apilastbackupserverid */}
 
 **Before (0.6.x and earlier):**
 
@@ -154,7 +154,7 @@
 }
 ```
 
-##### `/api/lastbackups/{serverId}` {#apilastbackupsserverid}
+##### `/api/lastbackups/{serverId}` {/* #apilastbackupsserverid */}
 
 **Before (0.6.x and earlier):**
 
@@ -196,7 +196,7 @@
 }
 ```
 
-## Migration Steps {#migration-steps}
+## माइग्रेशन चरण {/* #migration-steps */}
 
 If you're upgrading from a version prior to 0.7.x, follow these steps:
 
@@ -217,9 +217,9 @@ If you're upgrading from a version prior to 0.7.x, follow these steps:
 5. **Update Documentation**: Update any internal documentation referencing the old API
    - Update API examples and field name references
 
-## Compatibility {#compatibility}
+## संगतता {/* #compatibility */}
 
-### Backward Compatibility {#backward-compatibility}
+### पश्चगामी संगतता {/* #backward-compatibility */}
 
 - **Version 1.2.1**: Fully backward compatible with 1.1.x API structure
 - **Version 1.1.x**: Fully backward compatible with 1.0.x API structure
@@ -230,13 +230,13 @@ If you're upgrading from a version prior to 0.7.x, follow these steps:
   - Old field names will not work
   - Old endpoint paths will not work
 
-### Future Support {#future-support}
+### भविष्य समर्थन {/* #future-support */}
 
 - Old field names from pre-0.7.x versions are not supported
 - Old endpoint paths from pre-0.7.x versions are not supported
 - Future versions will maintain the current API structure unless breaking changes are necessary
 
-## Summary of External API Endpoints {#summary-of-external-api-endpoints}
+## बाहरी एपीआई एंडपॉइंट्स का सारांश {/* #summary-of-external-api-endpoints */}
 
 The following external API endpoints are maintained for backward compatibility and remain unauthenticated:
 
@@ -247,7 +247,7 @@ The following external API endpoints are maintained for backward compatibility a
 | `/api/lastbackups/{serverId}` | GET | सभी बैकअप जॉब्स के लिए नवीनतम बैकअप | 0.7.x: `machine` → `server`, `backup_types_count` → `backup_jobs_count` |
 | `/api/upload` | POST | डुप्लिकेटी से बैकअप डेटा अपलोड करें | कोई ब्रेकिंग चेंज नहीं |
 
-## सहायता चाहिए? {#need-help}
+## सहायता चाहिए? {/* #need-help */}
 
 अगर आपको अपने इंटीग्रेशन को अपडेट करने में सहायता चाहिए:
 

@@ -1,4 +1,4 @@
-# Modèles {#templates}
+# Modèles {/* #templates */}
 
 **duplistatus** utilise quatre modèles pour les messages de notification. Les corps des emails sont en Markdown (titres, listes, liens et tableaux). NTFY pour Succès, Avertissement/Erreur et En retard est dérivé du même contenu. Le Résumé quotidien est uniquement pour les emails.
 
@@ -15,13 +15,13 @@ La page comprend un sélecteur de **Langue du modèle** qui définit la locale p
 
 <br/>
 
-## Langue du modèle {#template-language}
+## Langue du modèle {/* #template-language */}
 
-Un sélecteur de **Langue du modèle** situé en haut de la page vous permet de choisir la langue des modèles par défaut (anglais, allemand, français, espagnol, portugais, hindi (roman) et chinois simplifié). La modification de la langue met à jour les paramètres régionaux par défaut, mais les modèles personnalisés existants conservent leur texte actuel jusqu'à ce que vous les mettiez à jour ou utilisiez l'un des boutons de réinitialisation.
+Un sélecteur **Langue du modèle** en haut de la page vous permet de choisir la langue pour les modèles par défaut (Anglais, Allemand, Français, Espagnol, Portugais, Hindi et Chinois simplifié). Changer la langue met à jour la locale pour les valeurs par défaut, mais les modèles personnalisés existants conservent leur texte actuel jusqu'à ce que vous les mettiez à jour ou utilisiez l'un des boutons de réinitialisation.
 
 <br/>
 
-## Actions disponibles {#available-actions}
+## Actions Disponibles {/* #available-actions */}
 
 | Bouton                                                              | Description                                                                                         |
 |:--------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------|
@@ -32,7 +32,7 @@ Un sélecteur de **Langue du modèle** situé en haut de la page vous permet de 
 
 <br/>
 
-## Variables {#variables}
+## Variables {/* #variables */}
 
 Les corps des e-mails sont en Markdown. Les titres, listes, liens et tableaux sont pris en charge. Les valeurs des variables sont insérées comme texte échappé et ne peuvent pas introduire de Markdown ou de HTML. Les balises HTML brutes intégrées précédemment dans les modèles personnalisés sont maintenant échappées.
 
@@ -56,7 +56,7 @@ Tous les modèles Succès, Avertissement/Erreur et En retard prennent en charge 
 | `{messages_count}`     | Nombre de messages.                             | Succès, Avertissement |
 | `{warnings_count}`     | Nombre d'avertissements.                             | Succès, Avertissement |
 | `{errors_count}`       | Nombre d'erreurs.                               | Succès, Avertissement |
-| `{log_text}`           | Messages du journal (avertissements et erreurs)              | Succès, Avertissement |
+| `{log_text}`           | Avertissement et lignes de journal d'erreur uniquement (pas de journaux d'information complets). NTFY utilise un résumé court et peut tronquer. | Succès, Avertissement |
 | `{last_backup_date}`   | Date de la dernière sauvegarde.                        | En retard          |
 | `{last_elapsed}`       | Temps écoulé depuis la dernière sauvegarde.             | En retard          |
 | `{expected_date}`      | Date prévue de la sauvegarde.                           | En retard          |

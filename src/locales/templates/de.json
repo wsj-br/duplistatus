@@ -20,7 +20,7 @@
   "dailySummary": {
     "email": {
       "title": "📬 duplistatus — Tägliche Sicherungszusammenfassung — {summary_date}",
-      "message": "## 📊 Tägliche Sicherungszusammenfassung\n\n🕐 Generiert: **{generated_at}** ({time_zone})\n\n### 📈 Übersicht\n\n| Metrik | Anzahl |\n| --- | ---: |\n| 🖥️ Server | {server_count} |\n| 💼 Sicherungsjobs | {job_count} |\n| ✅ Erfolgreich | {success_count} |\n| ⚠️ Warnungen | {warning_count} |\n| 🛑 Fehler | {error_count} |\n| 💀 Fatal | {fatal_count} |\n| ❓ Unbekannt | {unknown_count} |\n| ❓ Kein Bericht empfangen | {no_report_count} |\n| 🕑 Überfällig | {overdue_count} |\n\n### 🚨 Aufmerksamkeit erforderlich\n\n{problem_table}\n\n### 📋 Alle neuesten Sicherungsergebnisse\n\n{all_jobs_table}\n\n{duplistatus_link}\n"
+      "message": "## 📊 Tägliche Sicherungszusammenfassung\n\n🕐 Generiert: **{generated_at}** ({time_zone})\n\n### 📈 Übersicht\n\n| Metrik | Anzahl |\n| --- | ---: |\n| 🖥️ Server | {server_count} |\n| 💼 Sicherungsjobs / ✅ Erfolgreich | {job_count} / {success_count} |\n| ⚠️ Warnungen / 🛑 Fehler / 💀 Fatal / ❓ Unbekannt | {warning_count} / {error_count} / {fatal_count} / {unknown_count} |\n| ❓ Kein Bericht empfangen | {no_report_count} |\n| 🕑 Überfällig | {overdue_count} |\n\n### 🚨 Aufmerksamkeit erforderlich\n\n{problem_table}\n\n### 📋 Alle neuesten Sicherungsergebnisse\n\n{all_jobs_table}\n\n{duplistatus_link}\n"
     }
   }
 }

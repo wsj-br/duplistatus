@@ -20,7 +20,7 @@
   "dailySummary": {
     "email": {
       "title": "📬 duplistatus — Daily backup summary — {summary_date}",
-      "message": "## 📊 दैनिक बैकअप सारांश\n\n🕐 उत्पन्न: **{generated_at}** ({time_zone})\n\n### 📈 अवलोकन\n\n| मैट्रिक | गिनती |\n| --- | ---: |\n| 🖥️ सर्वर | {server_count} |\n| 💼 बैकअप कार्य | {job_count} |\n| ✅ सफलता | {success_count} |\n| ⚠️ चेतावनियाँ | {warning_count} |\n| 🛑 त्रुटियाँ | {error_count} |\n| 💀 गंभीर | {fatal_count} |\n| ❓ अज्ञात | {unknown_count} |\n| ❓ कोई रिपोर्ट प्राप्त नहीं हुई | {no_report_count} |\n| 🕑 विलंबित | {overdue_count} |\n\n### 🚨 ध्यान की आवश्यकता\n\n{problem_table}\n\n### 📋 सभी नवीनतम बैकअप परिणाम\n\n{all_jobs_table}\n\n{duplistatus_link}\n"
+      "message": "## 📊 Daily backup summary\n\n🕐 Generated: **{generated_at}** ({time_zone})\n\n### 📈 Overview\n\n| Metric | Count |\n| --- | ---: |\n| 🖥️ Servers | {server_count} |\n| 💼 Backup jobs / ✅ Success | {job_count} / {success_count} |\n| ⚠️ Warnings / 🛑 Errors / 💀 Fatal / ❓ Unknown | {warning_count} / {error_count} / {fatal_count} / {unknown_count} |\n| ❓ No report received | {no_report_count} |\n| 🕑 Overdue | {overdue_count} |\n\n### 🚨 Attention required\n\n{problem_table}\n\n### 📋 All latest backup results\n\n{all_jobs_table}\n\n{duplistatus_link}\n"
     }
   }
 }

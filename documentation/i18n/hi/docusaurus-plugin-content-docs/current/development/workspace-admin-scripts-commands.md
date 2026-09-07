@@ -1,6 +1,6 @@
-# कार्यस्थान प्रशासन स्क्रिप्ट और कमांड {#workspace-admin-scripts-commands}
+# कार्यस्थान प्रबंधक स्क्रिप्ट और कमांड {/* #workspace-admin-scripts--commands */}
 
-## डेटाबेस साफ़ करें {#clean-database}
+## डेटाबेस साफ़ करें {/* #clean-database */}
 
 ```bash
 ./scripts/clean-db.sh
@@ -11,7 +11,7 @@
 >[!CAUTION]
 > सावधान रहें क्योंकि यह सभी मौजूदा डेटा को हटा देगा।
 
-## बिल्ड आर्टिफैक्ट और निर्भरताओं को साफ़ करें {#clean-build-artefacts-and-dependencies}
+## बिल्ड आर्टिफैक्ट्स aur डिपेंडेंसीज़ साफ़ करें {/* #clean-build-artefacts-and-dependencies */}
 
 ```bash
 scripts/clean-workspace.sh
@@ -32,7 +32,7 @@ scripts/clean-workspace.sh
 - pnpm स्टोर कैश (via `pnpm store prune`)
 - Docker बिल्ड कैश और सिस्टम प्रून (इमेज, नेटवर्क, वॉल्यूम)
 
-## Docker Compose और Docker पर्यावरण को साफ़ करें {#clean-docker-compose-and-docker-environment}
+## Docker Compose aur Docker वातावरण साफ़ करें {/* #clean-docker-compose-and-docker-environment */}
 
 ```bash
 scripts/clean-docker.sh
@@ -44,7 +44,7 @@ scripts/clean-docker.sh
 - विकास या परीक्षण सत्रों के बाद साफ़-चुपाई करना
 - एक साफ डॉकर पर्यावरण बनाए रखना
 
-## पैकेजों को नवीनतम संस्करण में अपडेट करें {#update-the-packages-to-the-latest-version}
+## पैकेजों को नवीनतम संस्करण में अपडेट करें {/* #update-the-packages-to-the-latest-version */}
 
 आप पैकेजों को मैन्युअल रूप से अपडेट कर सकते हैं:
 
@@ -70,13 +70,13 @@ The `upgrade-dependencies.sh` स्क्रिप्ट पूरे निर
 
 यह स्क्रिप्ट निर्भरताओं को नवीनतम और सुरक्षित रखने के लिए एक पूर्ण वर्कफ़्लो प्रदान करता है।
 
-## अनुपयोगित पैकेजों की जाँच करें {#check-for-unused-packages}
+## अप्रयुक्त पैकेजों की Janch karein {/* #check-for-unused-packages */}
 
 ```bash
 pnpm depcheck
 ```
 
-## संस्करण सूचना को अपडेट करें {#update-version-information}
+## Sanskaran जानकारी अपडेट करें {/* #update-version-information */}
 
 ```bash
 ./scripts/update-version.sh
@@ -90,7 +90,7 @@ pnpm depcheck
 - केवल तब अपडेट करता है जब संस्करण बदल गया हो
 - प्रत्येक ऑपरेशन पर प्रतिक्रिया प्रदान करता है
 
-## प्री-चेक स्क्रिप्ट {#pre-checks-script}
+## प्री-चेक स्क्रिप्ट {/* #pre-checks-script */}
 
 ```bash
 ./scripts/pre-checks.sh
@@ -102,7 +102,7 @@ pnpm depcheck
 
 यह स्क्रिप्ट स्वचालित रूप से `pnpm dev`, `pnpm build`, और `pnpm start-local` द्वारा कॉल की जाती है।
 
-## मुख्य फ़ाइल का अस्तित्व सुनिश्चित करें {#ensure-key-file-exists}
+## कुंजी फ़ाइल मौजूद है सुनिश्चित करें {/* #ensure-key-file-exists */}
 
 ```bash
 ./scripts/ensure-key-file.sh
@@ -116,7 +116,7 @@ pnpm depcheck
 
 कुंजी फ़ाइल एप्लिकेशन में क्रिप्टोग्राफिक ऑपरेशन के लिए उपयोग की जाती है।
 
-## एडमिन खाता पुनर्प्राप्ति {#admin-account-recovery}
+## Prabandhak खाता पुनर्प्राप्ति {/* #admin-account-recovery */}
 
 ```bash
 ./admin-recovery <username> <new-password>
@@ -139,7 +139,7 @@ pnpm depcheck
 >[!CAUTION]
 > यह स्क्रिप्ट डेटाबेस को सीधे संशोधित करती है। केवल खाता पुनर्प्राप्ति के लिए उपयोग करें।
 
-## इमेज कॉपी {#copy-images}
+## छवियाँ Copy करें {/* #copy-images */}
 
 ```bash
 ./scripts/copy-images.sh
@@ -152,7 +152,7 @@ pnpm depcheck
 
 एप्लिकेशन इमेज को डॉक्यूमेंटेशन इमेज के साथ सिंक्रनाइज़ रखने के लिए उपयोगी है।
 
-## विकास और डॉकर के बीच संस्करणों की तुलना {#compare-versions-between-development-and-docker}
+## विकास aur Docker के बीच Sanskaran तुलना करें {/* #compare-versions-between-development-and-docker */}
 
 ```bash
 ./scripts/compare-versions.sh
@@ -184,7 +184,7 @@ pnpm depcheck
 
 **Note:** SQLite संस्करणों को केवल प्रमुख संस्करण के आधार पर तुलना की जाती है क्योंकि एक ही प्रमुख संस्करण के भीतर विभिन्न पैच संस्करण आमतौर पर संगत होते हैं। स्क्रिप्ट बताएगी कि SQLite संस्करण प्रमुख स्तर पर मैच करते हैं लेकिन पैच संस्करण में भिन्न हैं।
 
-## डेटाबेस में कॉन्फ़िगरेशन देखने {#viewing-the-configurations-in-the-database}
+## डेटाबेस में कॉन्फ़िगरेशन देखना {/* #viewing-the-configurations-in-the-database */}
 
 ```bash
 sqlite3 data/backups.db "SELECT key, value FROM configurations;" | awk -F'|' '
@@ -200,7 +200,7 @@ sqlite3 /var/lib/docker/volumes/duplistatus_data/_data/backups.db "SELECT key, v
    else {print $2;}}' | less -R
 ```
 
-## बैकअप सेटिंग्स दिखाएँ {#show-backup-settings}
+## बैकअप Sammaan Dikhayein {/* #show-backup-settings */}
 
 ```bash
 ./scripts/show-backup-settings.sh [database_path]

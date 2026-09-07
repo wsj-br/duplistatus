@@ -1,9 +1,9 @@
-# Gestion des sessions {#session-management}
+# Gestion des sessions {/* #session-management */}
 
-## Créer une session - `/api/session` {#create-session---apisession}
-- **Point de terminaison** : `/api/session`
-- **Méthode** : POST
-- **Description** : Crée une nouvelle session pour l'utilisateur.
+## Créer une session - `/api/session` {/* #create-session---apisession */}
+- **Point de terminaison**: `/api/session`
+- **Méthode**: POST
+- **Description**: Crée une nouvelle session pour l'utilisateur.
 - **Réponse** :
 
   ```json
@@ -20,10 +20,10 @@
   - Définit un cookie de session HTTP-only
   - Requis pour accéder aux endpoints protégés
 
-## Valider la session - `/api/session` {#validate-session---apisession}
-- **Point de terminaison** : `/api/session`
-- **Méthode** : GET
-- **Description** : Valide une session existante.
+## Valider la session - `/api/session` {/* #validate-session---apisession */}
+- **Point de terminaison**: `/api/session`
+- **Méthode**: GET
+- **Description**: Valide une session existante.
 - **Réponse** (valide):
 
   ```json
@@ -49,10 +49,10 @@
   - Vérifie si le cookie de session existe et est valide
   - Retourne l'identifiant de session s'il est valide
 
-## Supprimer la session - `/api/session` {#delete-session---apisession}
-- **Point de terminaison** : `/api/session`
-- **Méthode** : DELETE
-- **Description** : Supprime la session actuelle (déconnexion).
+## Supprimer la session - `/api/session` {/* #delete-session---apisession */}
+- **Point de terminaison**: `/api/session`
+- **Méthode**: DELETE
+- **Description**: Supprime la session actuelle (déconnexion).
 - **Réponse** :
 
   ```json
@@ -67,10 +67,10 @@
   - Supprime la session du serveur et du client
   - Supprime le cookie de session
 
-## Obtenir le jeton CSRF - `/api/csrf` {#get-csrf-token---apicsrf}
-- **Point de terminaison** : `/api/csrf`
-- **Méthode** : GET
-- **Description** : Génère un jeton CSRF pour la session en cours.
+## Obtenir le jeton CSRF - `/api/csrf` {/* #get-csrf-token---apicsrf */}
+- **Point de terminaison**: `/api/csrf`
+- **Méthode**: GET
+- **Description**: Génère un jeton CSRF pour la session actuelle.
 - **Réponse** :
 
   ```json

@@ -1,9 +1,9 @@
-# Administração {#administration}
+# Administração {/* #administration */}
 
-## Coletar Backups - `/api/backups/collect` {#collect-backups---apibackupscollect}
+## Coletar Backups - `/api/backups/collect` {/* #collect-backups---apibackupscollect */}
 - **Endpoint**: `/api/backups/collect`
 - **Method**: POST
-- **Description**: Coleta dados de backup diretamente de um servidor Duplicati por meio de sua API. Este endpoint detecta automaticamente o melhor protocolo de conexão (HTTPS com validação SSL, HTTPS com certificados autoassinados ou HTTP como alternativa) e se conecta ao servidor Duplicati para recuperar as informações de backup e processá-las no banco de dados local.
+- **Descrição**: Coleta dados de backup diretamente de um servidor Duplicati via sua API. Este endpoint detecta automaticamente o melhor protocolo de conexão (HTTPS com validação SSL, HTTPS com certificados autoassinados ou HTTP como fallback) e se conecta ao servidor Duplicati para recuperar informações de backup e processá-las no banco de dados local.
 - **Autenticação**: Requer sessão válida e token CSRF
 - **Corpo da Requisição**:
 
@@ -50,10 +50,10 @@
   - A interface deve usar `serverAlias || serverName` para fins de exibição
   - Suporta métodos de download JSON e coleta direta via API
 
-## Limpar Backups - `/api/backups/cleanup` {#cleanup-backups---apibackupscleanup}
+## Limpar Backups - `/api/backups/cleanup` {/* #cleanup-backups---apibackupscleanup */}
 - **Endpoint**: `/api/backups/cleanup`
 - **Method**: POST
-- **Description**: Exclui dados antigos de backup com base no período de retenção. Este endpoint ajuda a gerenciar o tamanho do banco de dados removendo registros de backup desatualizados, preservando dados recentes e importantes.
+- **Descrição**: Exclui dados de backup antigos com base no período de retenção. Este endpoint ajuda a gerenciar o tamanho do banco de dados removendo registros de backup desatualizados enquanto preserva dados recentes e importantes.
 - **Autenticação**: Requer sessão válida e token CSRF
 - **Corpo da Requisição**:
 
@@ -94,10 +94,10 @@ Para a opção "Excluir todos os dados":
   - O relatório de erros aprimorado inclui detalhes e rastreamento de pilha no modo de desenvolvimento
   - Suporta retenção baseada em tempo e exclusão completa de dados
 
-## Excluir Tarefa de Backup - `/api/backups/delete-job` {#delete-backup-job---apibackupsdelete-job}
+## Excluir Tarefa de Backup - `/api/backups/delete-job` {/* #delete-backup-job---apibackupsdelete-job */}
 - **Endpoint**: `/api/backups/delete-job`
 - **Method**: DELETE
-- **Description**: Exclui todos os registros de backup para uma combinação específica de servidor e backup. Este endpoint está disponível apenas no modo de desenvolvimento.
+- **Descrição**: Exclui todos os registros de backup para uma combinação específica de servidor-backup. Este endpoint está disponível apenas no modo de desenvolvimento.
 - **Autenticação**: Requer sessão válida e token CSRF
 - **Corpo da Requisição**:
 
@@ -133,10 +133,10 @@ Para a opção "Excluir todos os dados":
   - Retorna a contagem de backups excluídos e as informações do servidor
   - Usa o apelido do servidor para exibição, se disponível; caso contrário, usa o nome do servidor
 
-## Sincronizar Agendamentos de Backup - `/api/backups/sync-schedule` {#sync-backup-schedules---apibackupssync-schedule}
+## Sincronizar Agendas de Backup - `/api/backups/sync-schedule` {/* #sync-backup-schedules---apibackupssync-schedule */}
 - **Endpoint**: `/api/backups/sync-schedule`
 - **Method**: POST
-- **Description**: Sincroniza as informações de agendamento de backup de um servidor Duplicati. Este endpoint se conecta ao servidor, recupera as informações de agendamento para todos os backups e atualiza as configurações locais de backup com detalhes do agendamento, incluindo intervalos de repetição, dias da semana permitidos e horários do agendamento.
+- **Descrição**: Sincroniza informações de agenda de backup de um servidor Duplicati. Este endpoint se conecta ao servidor, recupera informações de agenda para todos os backups e atualiza as configurações de backup local com detalhes da agenda, incluindo intervalos de repetição, dias da semana permitidos e horários da agenda.
 - **Autenticação**: Requer sessão válida e token CSRF
 - **Corpo da Requisição**:
 
@@ -216,10 +216,10 @@ Com erros:
   - Registra eventos de auditoria para operações de sincronização bem-sucedidas e com falha
   - Usa a porta padrão 8200 se não especificada
 
-## Testar Conexão com o Servidor - `/api/servers/test-connection` {#test-server-connection---apiserverstest-connection}
+## Testar Conexão com o Servidor - `/api/servers/test-connection` {/* #test-server-connection---apiserverstest-connection */}
 - **Endpoint**: `/api/servers/test-connection`
 - **Method**: POST
-- **Description**: Testa a conexão com um servidor Duplicati para verificar se ele está acessível.
+- **Descrição**: Testa a conexão com um servidor Duplicati para verificar se está acessível.
 - **Corpo da Requisição**:
 
   ```json
@@ -247,10 +247,10 @@ Com erros:
   - Suporta os protocolos HTTP e HTTPS
   - Usa a configuração de tempo limite para o teste de conexão
 
-## Obter URL do Servidor - `/api/servers/:serverId/server-url` {#get-server-url---apiserversserveridserver-url}
+## Obter URL do Servidor - `/api/servers/:serverId/server-url` {/* #get-server-url---apiserversserveridserver-url */}
 - **Endpoint**: `/api/servers/:serverId/server-url`
 - **Method**: GET
-- **Description**: Recupera a URL do servidor para um servidor específico.
+- **Descrição**: Recupera a URL do servidor para um servidor específico.
 - **Parâmetros**:
   - `serverId`: o identificador do servidor
 
@@ -271,10 +271,10 @@ Com erros:
   - Utilizado para gerenciamento de conexão do servidor
   - Retorna string vazia se nenhuma URL do servidor estiver definida
 
-## Atualizar URL do Servidor - `/api/servers/:serverId/server-url` {#update-server-url---apiserversserveridserver-url}
+## Atualizar URL do Servidor - `/api/servers/:serverId/server-url` {/* #update-server-url---apiserversserveridserver-url */}
 - **Endpoint**: `/api/servers/:serverId/server-url`
 - **Method**: PATCH
-- **Description**: Atualiza a URL do servidor para um servidor específico.
+- **Descrição**: Atualiza a URL do servidor para um servidor específico.
 - **Autenticação**: Requer sessão válida e token CSRF
 - **Parâmetros**:
   - `serverId`: o identificador do servidor
@@ -308,10 +308,10 @@ Com erros:
   - Suporta os protocolos HTTP e HTTPS
   - Retorna as informações atualizadas do servidor
 
-## Obter Senha do Servidor - `/api/servers/:serverId/password` {#get-server-password---apiserversserveridpassword}
+## Obter Senha do Servidor - `/api/servers/:serverId/password` {/* #get-server-password---apiserversserveridpassword */}
 - **Endpoint**: `/api/servers/:serverId/password`
 - **Method**: GET
-- **Description**: Recupera um token CSRF para operações de senha do servidor.
+- **Descrição**: Recupera um token CSRF para operações de senha do servidor.
 - **Autenticação**: Requer sessão válida
 - **Parâmetros**:
   - `serverId`: o identificador do servidor
@@ -331,10 +331,10 @@ Com erros:
   - Retorna token CSRF para uso em operações de atualização de senha
   - A sessão deve ser válida para gerar o token
 
-## Atualizar Senha do Servidor - `/api/servers/:serverId/password` {#update-server-password---apiserversserveridpassword}
+## Atualizar Senha do Servidor - `/api/servers/:serverId/password` {/* #update-server-password---apiserversserveridpassword */}
 - **Endpoint**: `/api/servers/:serverId/password`
 - **Method**: PATCH
-- **Description**: Atualiza a senha de um servidor específico.
+- **Descrição**: Atualiza a senha para um servidor específico.
 - **Autenticação**: Requer sessão válida e token CSRF
 - **Parâmetros**:
   - `serverId`: o identificador do servidor
@@ -363,12 +363,12 @@ Com erros:
   - A senha pode ser uma string vazia para limpar a senha
   - A senha é armazenada com segurança usando o sistema de gerenciamento de segredos
 
-## Gerenciamento de Usuários {#user-management}
+## Gerenciamento de Usuários {/* #user-management */}
 
-### Listar Usuários - `/api/users` {#list-users---apiusers}
+### Listar Usuários - `/api/users` {/* #list-users---apiusers */}
 - **Endpoint**: `/api/users`
 - **Method**: GET
-- **Description**: Lista todos os usuários com paginação e filtro de pesquisa opcional. Retorna informações do usuário, incluindo histórico de login e status da conta.
+- **Descrição**: Lista todos os usuários com paginação e filtragem de pesquisa opcional. Retorna informações do usuário, incluindo histórico de login e status da conta.
 - **Autenticação**: Requer privilégios de administrador, sessão válida e token CSRF
 - **Parâmetros de Consulta**:
   - `page` (opcional): Número da página (padrão: 1)
@@ -410,10 +410,10 @@ Com erros:
   - Suporta paginação e filtro de pesquisa
   - Retorna o status da conta do usuário, incluindo status de bloqueio
 
-### Criar Usuário - `/api/users` {#create-user---apiusers}
+### Criar Usuário - `/api/users` {/* #create-user---apiusers */}
 - **Endpoint**: `/api/users`
 - **Method**: POST
-- **Description**: Cria uma nova conta de usuário. Pode gerar uma senha temporária ou usar uma senha fornecida.
+- **Descrição**: Cria uma nova conta de usuário. Pode gerar uma senha temporária ou usar uma senha fornecida.
 - **Autenticação**: Requer privilégios de administrador, sessão válida e token CSRF
 - **Corpo da requisição**:
 
@@ -458,10 +458,10 @@ Com erros:
   - Senhas temporárias geradas são retornadas apenas uma vez na resposta
   - A criação de usuário é registrada no Registro de Auditoria
 
-### Atualizar Usuário - `/api/users/:id` {#update-user---apiusersid}
+### Atualizar Usuário - `/api/users/:id` {/* #update-user---apiusersid */}
 - **Endpoint**: `/api/users/:id`
 - **Method**: PATCH
-- **Description**: Atualiza as informações do usuário, incluindo nome de usuário, status de administrador, exigência de alteração de senha e redefinição de senha.
+- **Descrição**: Atualiza informações do usuário, incluindo nome de usuário, status de administrador, requisito de alteração de senha e redefinição de senha.
 - **Autenticação**: Requer privilégios de administrador, sessão válida e token CSRF
 - **Parâmetros**:
   - `id`: ID do usuário a ser atualizado
@@ -518,10 +518,10 @@ Com erros:
   - A redefinição de senha gera uma senha temporária segura de 12 caracteres
   - Todas as alterações são registradas no log de auditoria
 
-### Excluir Usuário - `/api/users/:id` {#delete-user---apiusersid}
+### Excluir Usuário - `/api/users/:id` {/* #delete-user---apiusersid */}
 - **Endpoint**: `/api/users/:id`
 - **Method**: DELETE
-- **Description**: Exclui uma conta de usuário. Impede a exclusão do próprio usuário ou da última conta de administrador.
+- **Descrição**: Exclui uma conta de usuário. Impede a exclusão de si mesmo ou da última conta de administrador.
 - **Autenticação**: Requer privilégios de administrador, sessão válida e token CSRF
 - **Parâmetros**:
   - `id`: ID do usuário a ser excluído
@@ -547,12 +547,12 @@ Com erros:
   - A exclusão do usuário é registrada no log de auditoria
   - As sessões associadas são automaticamente excluídas (em cascata)
 
-## Gerenciamento de Registro de Auditoria {#audit-log-management}
+## Gerenciamento de Log de Auditoria {/* #audit-log-management */}
 
-### Listar Registros de Auditoria - `/api/audit-log` {#list-audit-logs---apiaudit-log}
+### Listar Logs de Auditoria - `/api/audit-log` {/* #list-audit-logs---apiaudit-log */}
 - **Endpoint**: `/api/audit-log`
 - **Method**: GET
-- **Description**: Recupera entradas do registro de auditoria com filtros, paginação e capacidade de pesquisa. Suporta paginação baseada em página e baseada em deslocamento.
+- **Descrição**: Recupera entradas de log de auditoria com filtragem, paginação e capacidades de pesquisa. Suporta paginação baseada em página e baseada em offset.
 - **Autenticação**: Requer sessão válida e token CSRF (usuário logado necessário)
 - **Parâmetros de Consulta**:
   - `page` (opcional): Número da página para paginação baseada em página
@@ -605,10 +605,10 @@ Com erros:
   - O campo `details` contém JSON analisado com contexto adicional
   - Todas as consultas ao registro de auditoria são registradas
 
-### Obter Valores de Filtro do Registro de Auditoria - `/api/audit-log/filters` {#get-audit-log-filter-values---apiaudit-logfilters}
+### Obter Valores de Filtro de Log de Auditoria - `/api/audit-log/filters` {/* #get-audit-log-filter-values---apiaudit-logfilters */}
 - **Endpoint**: `/api/audit-log/filters`
 - **Method**: GET
-- **Description**: Recupera valores exclusivos de filtro disponíveis para filtrar registros de auditoria. Retorna todas as ações, categorias e status distintos existentes no banco de dados do registro de auditoria. Útil para preencher listas suspensas de filtro na interface do usuário.
+- **Descrição**: Recupera valores de filtro únicos disponíveis para filtragem de logs de auditoria. Retorna todas as ações, categorias e status distintos que existem no banco de dados de logs de auditoria. Útil para preencher dropdowns de filtro na interface do usuário.
 - **Autenticação**: Requer sessão válida e token CSRF (usuário logado necessário)
 - **Resposta**:
 
@@ -645,10 +645,10 @@ Com erros:
   - Arrays vazios são retornados se não houver dados ou em caso de erro
   - Utilizado pelo visualizador de log de auditoria para preencher dinamicamente as listas suspensas de filtro
 
-### Baixar Registros de Auditoria - `/api/audit-log/download` {#download-audit-logs---apiaudit-logdownload}
+### Baixar Logs de Auditoria - `/api/audit-log/download` {/* #download-audit-logs---apiaudit-logdownload */}
 - **Endpoint**: `/api/audit-log/download`
 - **Method**: GET
-- **Description**: Baixa registros de auditoria nos formatos CSV ou JSON com filtro opcional. Útil para análise externa e relatórios.
+- **Descrição**: Baixa logs de auditoria em formato CSV ou JSON com filtragem opcional. Útil para análise e relatórios externos.
 - **Autenticação**: Requer sessão válida e token CSRF (usuário logado necessário)
 - **Parâmetros de consulta**:
   - `format` (opcional): Formato de exportação - `csv` ou `json` (padrão: `csv`)
@@ -677,10 +677,10 @@ Com erros:
   - Campo Detalhes no CSV é serializado em JSON
   - Nome do arquivo inclui a data atual
 
-### Limpar Registros de Auditoria - `/api/audit-log/cleanup` {#cleanup-audit-logs---apiaudit-logcleanup}
+### Limpar Logs de Auditoria - `/api/audit-log/cleanup` {/* #cleanup-audit-logs---apiaudit-logcleanup */}
 - **Endpoint**: `/api/audit-log/cleanup`
 - **Method**: POST
-- **Description**: Aciona manualmente a limpeza de registros de auditoria antigos com base no período de retenção. Suporta o modo de simulação para visualizar o que será excluído.
+- **Descrição**: Aciona manualmente a limpeza de logs de auditoria antigos com base no período de retenção. Suporta modo de simulação para visualizar o que seria excluído.
 - **Autenticação**: Requer privilégios de administrador, sessão válida e token CSRF
 - **Corpo da requisição**:
 
@@ -727,7 +727,7 @@ Com erros:
   - Operação de limpeza é registrada no log de auditoria
   - Modo de simulação é útil para visualizar o impacto da limpeza
 
-### Obter Retenção de Log de Auditoria - `/api/audit-log/retention` {#get-audit-log-retention---apiaudit-logretention}
+### Obter Retenção de Log de Auditoria - `/api/audit-log/retention` {/* #get-audit-log-retention---apiaudit-logretention */}
 - **Endpoint**: `/api/audit-log/retention`
 - **Método**: GET
 - **Descrição**: Recupera a configuração atual de retenção de log de auditoria em dias.
@@ -746,7 +746,7 @@ Com erros:
   - Retenção padrão é de 90 dias se não configurado
   - Pode ser acessado sem autenticação (somente leitura)
 
-### Atualizar Retenção de Log de Auditoria - `/api/audit-log/retention` {#update-audit-log-retention---apiaudit-logretention}
+### Atualizar Retenção de Log de Auditoria - `/api/audit-log/retention` {/* #update-audit-log-retention---apiaudit-logretention */}
 - **Endpoint**: `/api/audit-log/retention`
 - **Método**: PATCH
 - **Descrição**: Atualiza o período de retenção de log de auditoria em dias. Esta configuração determina por quanto tempo os logs de auditoria são mantidos antes da limpeza automática.
@@ -779,21 +779,21 @@ Com erros:
   - A alteração de configuração é registrada no Registro de Auditoria
   - O período de retenção afeta operações de limpeza automáticas e manuais
 
-## Chaves de API {#api-keys}
+## Chaves de API {/* #api-keys */}
 
-### Listar chaves de API - `/api/api-keys` {#list-api-keys---apiapi-keys}
+### Listar Chaves de API - `/api/api-keys` {/* #list-api-keys---apiapi-keys */}
 - **Endpoint**: `/api/api-keys`
-- **Method**: GET
-- **Descrição**: Lista todas as chaves de API. Os segredos nunca são retornados; cada chave inclui uma impressão digital (`Qk7v…3xTa`).
+- **Método**: GET
+- **Descrição**: Lista todas as chaves de API. Segredos nunca são retornados; cada chave inclui uma impressão digital (`Qk7v…3xTa`).
 - **Autenticação**: Requer privilégios de administrador, sessão válida e token CSRF
 - **Respostas de erro**:
   - `401`: Não autorizado - Sessão ou token CSRF inválido
   - `403`: Proibido - Privilégios de administrador necessários
   - `500`: Erro interno do servidor
 
-### Criar chave de API - `/api/api-keys` {#create-api-key---apiapi-keys}
+### Criar chave de API - `/api/api-keys` {/* #create-api-key---apiapi-keys */}
 - **Endpoint**: `/api/api-keys`
-- **Method**: POST
+- **Método**: POST
 - **Descrição**: Cria uma chave de API com escopo. O segredo em texto simples é retornado apenas nesta resposta.
 - **Autenticação**: Requer privilégios de administrador, sessão válida e token CSRF
 - **Corpo da requisição**:
@@ -813,24 +813,24 @@ Com erros:
   - `403`: Proibido - Privilégios de administrador necessários
   - `500`: Erro interno do servidor
 
-### Atualizar chave de API - `/api/api-keys/:id` {#update-api-key---apiapi-keysid}
+### Atualizar chave de API - `/api/api-keys/:id` {/* #update-api-key---apiapi-keysid */}
 - **Endpoint**: `/api/api-keys/:id`
-- **Method**: PATCH
+- **Método**: PATCH
 - **Descrição**: Habilita ou desabilita uma chave.
 - **Autenticação**: Requer privilégios de administrador, sessão válida e token CSRF
 
-### Excluir chave de API - `/api/api-keys/:id` {#delete-api-key---apiapi-keysid}
+### Excluir chave de API - `/api/api-keys/:id` {/* #delete-api-key---apiapi-keysid */}
 - **Endpoint**: `/api/api-keys/:id`
-- **Method**: DELETE
+- **Método**: DELETE
 - **Descrição**: Exclui uma chave. Clientes existentes que usam esse segredo perdem imediatamente o acesso.
 - **Autenticação**: Requer privilégios de administrador, sessão válida e token CSRF
 
-## Gerenciamento de Banco de Dados {#database-management}
+## Gerenciamento de Banco de Dados {/* #database-management */}
 
-### Fazer Backup do Banco de Dados - `/api/database/backup` {#backup-database---apidatabasebackup}
+### Backup do Banco de Dados - `/api/database/backup` {/* #backup-database---apidatabasebackup */}
 - **Endpoint**: `/api/database/backup`
 - **Método**: GET
-- **Descrição**: Cria um backup do banco de dados em formato binário (.db) ou SQL (.sql). O arquivo de backup é automaticamente baixado com um nome contendo carimbo de data/hora.
+- **Descrição**: Cria um backup do banco de dados em formato binário (.db) ou SQL (.sql). O arquivo de backup é baixado automaticamente com um nome de arquivo com timestamp.
 - **Autenticação**: Requer privilégios de administrador, sessão válida e token CSRF
 - **Parâmetros de Consulta**:
   - `format` (opcional): Formato do backup - `db` (binário) ou `sql` (dump SQL). Padrão: `db`
@@ -851,10 +851,10 @@ Com erros:
   - A operação de backup é registrada no Registro de Auditoria
   - Arquivos temporários são automaticamente removidos após o download
 
-### Restaurar Banco de Dados - `/api/database/restore` {#restore-database---apidatabaserestore}
+### Restaurar Banco de Dados - `/api/database/restore` {/* #restore-database---apidatabaserestore */}
 - **Endpoint**: `/api/database/restore`
 - **Método**: POST
-- **Descrição**: Restaura o banco de dados a partir de um arquivo de backup (formato .db ou .sql). Cria um backup de segurança antes da restauração e limpa todas as sessões após a restauração por motivos de segurança.
+- **Descrição**: Restaura o banco de dados a partir de um arquivo de backup (.db ou .sql). Cria um backup de segurança antes da restauração e limpa todas as sessões após a restauração por motivos de segurança.
 - **Autenticação**: Requer privilégios de administrador, sessão válida e token CSRF
 - **Corpo da Requisição**: FormData com um campo de arquivo chamado `database`
   - O arquivo deve ser `.db`, `.sqlite`, `.sqlite3` (formato binário) ou `.sql` (formato SQL)
@@ -888,12 +888,12 @@ Com erros:
   - A conexão com o banco de dados é reinitializada após a restauração
   - Todos os caches são invalidados após a restauração
 
-## Timestamps de Backup {#backup-timestamps}
+## Timestamps de Backup {/* #backup-timestamps */}
 
-### Obter Carimbos de Data/Hora do Último Backup - `/api/backups/last-timestamps` {#get-last-backup-timestamps---apibackupslast-timestamps}
+### Obter Timestamps do Último Backup - `/api/backups/last-timestamps` {/* #get-last-backup-timestamps---apibackupslast-timestamps */}
 - **Endpoint**: `/api/backups/last-timestamps`
 - **Método**: GET
-- **Descrição**: Recupera o carimbo de data/hora do último backup para cada combinação servidor-backup. Retorna um mapa para facilitar a consulta.
+- **Descrição**: Recupera o timestamp do último backup para cada combinação servidor-backup. Retorna um mapa para fácil consulta.
 - **Autenticação**: Requer sessão válida e token CSRF
 - **Resposta**:
 
@@ -924,12 +924,12 @@ Com erros:
   - Útil para rastrear os horários do último backup em todas as combinações de servidor e backup
   - Os carimbos de data/hora estão no formato ISO
 
-## Gerenciamento de Logs da Aplicação {#application-logs-management}
+## Gerenciamento de Logs do Aplicativo {/* #application-logs-management */}
 
-### Obter Logs da Aplicação - `/api/application-logs` {#get-application-logs---apiapplication-logs}
+### Obter Logs do Aplicativo - `/api/application-logs` {/* #get-application-logs---apiapplication-logs */}
 - **Endpoint**: `/api/application-logs`
 - **Método**: GET
-- **Descrição**: Recupera entradas de log da aplicação a partir dos arquivos de log. Suporta leitura de arquivos de log atuais e rotacionados com funcionalidade de tail.
+- **Descrição**: Recupera entradas de log do aplicativo a partir de arquivos de log. Suporta leitura de arquivos de log atuais e rotacionados com funcionalidade de tail.
 - **Autenticação**: Exige privilégios de administrador, sessão válida e token CSRF
 - **Parâmetros de consulta**:
   - `file` (opcional): Nome do arquivo de log a ser lido - `application.log`, `application.log.1`, `application.log.2`, etc. Se não for fornecido, retorna a lista de arquivos disponíveis
@@ -975,10 +975,10 @@ Com erros:
   - Os nomes de arquivos são validados para evitar ataques de travessia de diretório
   - Os arquivos rotacionados são numerados sequencialmente (`.1`, `.2`, etc.)
 
-### Exportar Logs da Aplicação - `/api/application-logs/export` {#export-application-logs---apiapplication-logsexport}
+### Exportar Logs do Aplicativo - `/api/application-logs/export` {/* #export-application-logs---apiapplication-logsexport */}
 - **Endpoint**: `/api/application-logs/export`
 - **Método**: GET
-- **Descrição**: Exporta entradas de log da aplicação em formato de texto filtrado. Suporta filtragem por nível de log e string de pesquisa.
+- **Descrição**: Exporta entradas de log do aplicativo em formato de texto filtrado. Suporta filtragem por nível de log e string de pesquisa.
 - **Autenticação**: Exige privilégios de administrador, sessão válida e token CSRF
 - **Parâmetros de consulta**:
   - `file` (obrigatório): Nome do arquivo de log a ser exportado - `application.log`, `application.log.1`, `application.log.2`, etc.

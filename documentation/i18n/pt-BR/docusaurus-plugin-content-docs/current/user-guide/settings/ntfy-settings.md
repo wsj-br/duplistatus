@@ -1,4 +1,4 @@
-# NTFY {#ntfy}
+# NTFY {/* #ntfy */}
 
 [NTFY](https://github.com/binwiederhier/ntfy) é um serviço de notificação simples que pode enviar notificações push para seu telefone ou desktop. Esta seção permite que você configure sua conexão com o servidor de notificações e autenticação.
 
@@ -15,7 +15,7 @@
 Um ícone <IIcon2 icon="lucide:message-square" color="green"/> verde ao lado de **NTFY** na barra lateral significa que suas configurações são válidas. Se o ícone for <IIcon2 icon="lucide:message-square" color="yellow"/> amarelo, suas configurações não são válidas.
 Quando a configuração não é válida, as caixas de seleção NTFY na aba [`Notificações de Backup`](backup-notifications-settings.md) também ficarão desativadas.
 
-## Ações Disponíveis {#available-actions}
+## Ações Disponíveis {/* #available-actions */}
 
 | Botão                                                                | Descrição                                                                                                  |
 |:----------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------|
@@ -23,7 +23,7 @@ Quando a configuração não é válida, as caixas de seleção NTFY na aba [`No
 | <IconButton icon="lucide:send-horizontal" label="Enviar Mensagem de Teste"/> | Enviar uma mensagem de teste para o seu servidor NTFY para verificar sua configuração.                                         |
 | <IconButton icon="lucide:qr-code" label="Configurar Dispositivo"/>          | Exibir um código QR que permite configurar rapidamente seu dispositivo móvel ou desktop para notificações NTFY. |
 
-## Configuração de Dispositivo {#device-configuration}
+## Configuração do Dispositivo {/* #device-configuration */}
 
 Você deve instalar o aplicativo NTFY em seu dispositivo antes de configurá-lo ([veja aqui](https://ntfy.sh/)). Clicar no botão <IconButton icon="lucide:qr-code" label="Configurar dispositivo"/> ou clicar com o botão direito no ícone <SvgButton svgFilename="ntfy.svg" /> na barra de ferramentas do aplicativo exibirá um código QR. Escanear este código QR configurará automaticamente seu dispositivo com o tópico NTFY correto para notificações.
 
@@ -45,5 +45,5 @@ Para melhor segurança, considere usar [autenticação por token de acesso](http
 <br/>
 
 :::note
-Todos os nomes de produtos, logotipos e marcas registradas são de propriedade de seus respectivos proprietários. Ícones e nomes são usados apenas para fins de identificação e não implicam endosso.
+Todos os nomes de produtos, logotipos e marcas registradas são propriedade de seus respectivos proprietários. Ícones e nomes são usados apenas para fins de identificação e não implicam endosse.
 :::

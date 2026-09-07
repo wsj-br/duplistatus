@@ -1,4 +1,4 @@
-# Mantenimiento de base de datos {#database-maintenance}
+# Mantenimiento de base de datos {/* #database-maintenance */}
 
 Administre sus datos de backup y optimice el rendimiento a través de operaciones de mantenimiento de base de datos.
 
@@ -6,7 +6,7 @@ Administre sus datos de backup y optimice el rendimiento a través de operacione
 
 <br/>
 
-## Backup de base de datos {#database-backup}
+## Copia de seguridad de base de datos {/* #database-backup */}
 
 Crea un backup de toda tu base de datos para su custodia o propósitos de migración.
 
@@ -30,7 +30,7 @@ Crea un backup de toda tu base de datos para su custodia o propósitos de migrac
 
 <br/>
 
-## Restauración de base de datos {#database-restore}
+## Restauración de base de datos {/* #database-restore */}
 
 Restaure su base de datos desde un archivo de backup creado anteriormente.
 
@@ -79,9 +79,11 @@ Esto se aplica a todas las funciones de mantenimiento a continuación: todas las
 Si accidentalmente elimina datos, puede restaurarlos utilizando la función [Recopilar logs de backup](../collect-backup-logs.md).
 :::
 
+El servicio cron también **compacta** la base de datos cada domingo a las 04:00 UTC. Ese paso elimina las filas de copia de seguridad cuyo servidor ya no existe, las filas de servidor sin informes de copia de seguridad restantes, la configuración de monitoreo de copias de seguridad y las notificaciones vencidas, las filas de entrega de resumen diario antiguas y ejecuta SQLite `VACUUM` para recuperar espacio en disco. Eliminar un servidor o un trabajo de copia de seguridad también limpia la configuración coincidente de inmediato.
+
 <br/>
 
-## Período de Limpieza de Datos {#data-cleanup-period}
+## Data Cleanup Period {/* #data-cleanup-period */}
 
 Elimine registros de backup obsoletos para liberar espacio de almacenamiento y mejorar el rendimiento del sistema.
 
@@ -109,7 +111,7 @@ Se recomienda encarecidamente crear un backup de base de datos antes de proceder
 
 <br/>
 
-## Eliminar trabajo de backup {#delete-backup-job-data}
+## Eliminar trabajo de copia de seguridad {/* #delete-backup-job-data */}
 
 Eliminar datos de un Trabajo de Backup (tipo) específico.
 
@@ -127,7 +129,7 @@ Eliminar datos de un Trabajo de Backup (tipo) específico.
 
 <br/>
 
-## Eliminar datos del servidor {#delete-server-data}
+## Eliminar datos del servidor {/* #delete-server-data */}
 
 Eliminar un servidor específico y todos sus datos de backup asociados.
 
@@ -144,7 +146,7 @@ Eliminar un servidor específico y todos sus datos de backup asociados.
 
 <br/>
 
-## Fusionar servidores duplicados {#merge-duplicate-servers}
+## Combinar servidores duplicados {/* #merge-duplicate-servers */}
 
 Detectar y fusionar servidores duplicados que tienen el mismo nombre pero diferentes IDs. Utilice esta función para consolidarlos en una única entrada de servidor.
 

@@ -1,8 +1,8 @@
-# Guía de Instalación {#installation-guide}
+# Guía de instalación {/* #installation-guide */}
 
 La aplicación se puede implementar usando Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks), o Podman. Después de la instalación, es posible que desee configurar la ZONA HORARIA, como se describe en la sección [Configurar Zona horaria](./configure-tz.md) y necesita configurar los servidores Duplicati para enviar logs de backup a **duplistatus**, como se describe en la sección [Configuración de Duplicati](./duplicati-server-configuration.md).
 
-## Requisitos previos {#prerequisites}
+## Requisitos previos {/* #prerequisites */}
 
 Asegúrese de tener lo siguiente instalado:
 
@@ -11,7 +11,7 @@ Asegúrese de tener lo siguiente instalado:
 - Portainer (opcional) - [Guía de instalación en Docker](https://docs.portainer.io/start/install-ce/server/docker/linux)
 - Podman (opcional) - [Guía de instalación](http://podman.io/docs/installation#debian)
 
-## Autenticación {#authentication}
+## Autenticación {/* #authentication */}
 
 **duplistatus** desde la versión 0.9.x requiere autenticación de usuario. Una cuenta `admin` por defecto se crea automáticamente al instalar la aplicación por primera vez o al actualizar desde una versión anterior:
     - Nombre de usuario: `admin`
@@ -25,14 +25,14 @@ Los administradores también pueden requerir opcionalmente [claves de API](../us
 El sistema aplica una longitud mínima de contraseña y requisitos de complejidad. Estos requisitos se pueden ajustar utilizando las [variables de entorno](environment-variables.md) `PWD_ENFORCE` y `PWD_MIN_LEN`. Utilizar una contraseña sin suficiente complejidad o con una longitud corta puede comprometer la seguridad. Por favor, utilice estas configuraciones con cuidado.
 ::::
 
-### Imágenes de Contenedor {#container-images}
+### Imágenes de Contenedor {/* #container-images */}
 
 Puede utilizar las imágenes de:
 
 - **Docker Hub**: `docker.io/wsjbr/duplistatus:latest`
 - **GitHub Container Registry**: `ghcr.io/wsj-br/duplistatus:latest`
 
-### Opción 1: Usar Docker Compose {#option-1-using-docker-compose}
+### Opción 1: Usando Docker Compose {/* #option-1-using-docker-compose */}
 
 Este es el método recomendado para implementaciones locales o cuando desea personalizar la configuración. Utiliza un archivo `docker compose` para definir y ejecutar el contenedor con todos sus parámetros.
 
@@ -45,7 +45,7 @@ docker compose -f duplistatus.yml up -d
 
 Consulte la sección [Zona horaria](./configure-tz.md) para obtener más detalles sobre cómo ajustar la zona horaria y el formato de número/fecha/hora.
 
-### Opción 2: Usar Pilas de Portainer (Docker Compose) {#option-2-using-portainer-stacks-docker-compose}
+### Opción 2: Usando Pilas de Portainer (Docker Compose) {/* #option-2-using-portainer-stacks-docker-compose */}
 
 1. Vaya a "Stacks" en su servidor [Portainer](https://docs.portainer.io/user/docker/stacks) y haga clic en "Añadir stack".
 2. Asigne un nombre a su stack (p. ej., "duplistatus").
@@ -82,7 +82,7 @@ volumes:
 5. Consulte la sección [Zona horaria](./configure-tz.md) para obtener más detalles sobre cómo ajustar la zona horaria y el formato de número/fecha/hora.
 6. Haga clic en "Implementar el stack".
 
-### Opción 3: Uso de Portainer Stacks (Repositorio de GitHub) {#option-3-using-portainer-stacks-github-repository}
+### Opción 3: Usando Pilas de Portainer (Repositorio de GitHub) {/* #option-3-using-portainer-stacks-github-repository */}
 
 1. En [Portainer](https://docs.portainer.io/user/docker/stacks), vaya a "Pilas" y haga clic en "Agregar pila".
 2. Asigne un nombre a su pila (por ejemplo, "duplistatus").
@@ -92,7 +92,7 @@ volumes:
 6. (opcional) Establezca las variables de entorno `TZ`, `LANG`, `PWD_ENFORCE` y `PWD_MIN_LEN` en la sección "Variables de entorno". Consulte la sección [Zona horaria](./configure-tz.md) para obtener más detalles sobre cómo ajustar la zona horaria y el formato de número/fecha/hora. 
 6. Haga clic en "Desplegar la pila".
 
-### Opción 4: Usar Docker CLI {#option-4-using-docker-cli}
+### Opción 4: Usando Docker CLI {/* #option-4-using-docker-cli */}
 
 ```bash
 # Create the volume
@@ -110,7 +110,7 @@ docker run -d \
 
 - El volumen `duplistatus_data` se utiliza para almacenamiento persistente. La imagen del contenedor utiliza `Europe/London` como zona horaria por defecto e `en_GB` como idioma por defecto.
 
-### Opción 5: Usar Podman (CLI) `rootless` {#option-5-using-podman-cli-rootless}
+### Opción 5: Usando Podman (CLI) `rootless` {/* #option-5-using-podman-cli-rootless */}
 
 Para configuraciones básicas, puede iniciar el contenedor sin configuración de DNS:
 
@@ -127,7 +127,7 @@ podman run -d \
   ghcr.io/wsj-br/duplistatus:latest
 ```
 
-#### Configuración de DNS para contenedores Podman {#configuring-dns-for-podman-containers}
+#### Configurando DNS para Contenedores de Podman {/* #configuring-dns-for-podman-containers */}
 
 Si necesita una configuración de DNS personalizada (por ejemplo, para Tailscale MagicDNS, redes corporativas o configuraciones de DNS personalizadas), puede configurar manualmente los servidores DNS y los dominios de búsqueda.
 
@@ -184,7 +184,7 @@ Puede especificar múltiples dominios de búsqueda añadiendo múltiples bandera
 
 Consulte la sección [Zona horaria](./configure-tz.md) para obtener más detalles sobre cómo ajustar la zona horaria y el formato de número/fecha/hora.
 
-### Opción 6: Uso de Pods de Podman {#option-6-using-podman-pods}
+### Opción 6: Usando Pods de Podman {/* #option-6-using-podman-pods */}
 
 Los pods de Podman le permiten ejecutar múltiples contenedores en un espacio de nombres de red compartido. Esto es útil para pruebas o cuándo necesita ejecutar duplistatus junto con otros contenedores.
 
@@ -209,7 +209,7 @@ podman create --name duplistatus \
 podman pod start duplistatus-pod
 ```
 
-#### Configuración de DNS para Pods de Podman {#configuring-dns-for-podman-pods}
+#### Configurando DNS para Pods de Podman {/* #configuring-dns-for-podman-pods */}
 
 Cuando se utilizan pods, la configuración de DNS debe establecerse a nivel de pod, no a nivel de contenedor.
 Utilice los mismos métodos descritos en la Opción 5 para encontrar sus servidores DNS y dominios de búsqueda.
@@ -251,7 +251,7 @@ podman pod start duplistatus-pod
 podman pod rm -f duplistatus-pod
 ```
 
-## Configuración Esencial {#essential-configuration}
+## Configuración Esencial {/* #essential-configuration */}
 
 1. Configura tus [servidores Duplicati](duplicati-server-configuration.md) para enviar mensajes de registro de copia de seguridad a duplistatus (obligatorio). En Duplicati 2.0.9.106 y versiones posteriores, usa `--send-http-json-urls` como se describe en esa guía.
 2. Inicia sesión en duplistatus – consulta las instrucciones en la [Guía del Usuario](../user-guide/overview.md#accessing-the-dashboard).
@@ -261,4 +261,4 @@ podman pod rm -f duplistatus-pod
 6. Configure los ajustes de correo electrónico – configure notificaciones por correo en [Configuración → Correo electrónico](../user-guide/settings/email-settings.md).
 7. Configure las notificaciones de copia de seguridad – configure notificaciones por copia de seguridad o por servidor en [Configuración → Notificaciones de copia de seguridad](../user-guide/settings/backup-notifications-settings.md).
 
-Consulte las siguientes secciones para configurar la configuración opcional como zona horaria, formato de números e HTTPS.
+Consulte las siguientes secciones para configurar la configuración opcional, como la zona horaria, el formato de número y la [fortalecimiento de seguridad](security-hardening.md).

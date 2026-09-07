@@ -1,10 +1,10 @@
-# 收集备份日志 {#collect-backup-logs}
+# 收集备份日志 {/* #collect-backup-logs */}
 
 **duplistatus** 可以直接从 Duplicati 服务器检索备份日志以填充数据库或恢复丢失的日志数据。应用程序会自动跳过数据库中已经存在的重复日志。
 
-## 收集备份日志步骤 {#steps-to-collect-backup-logs}
+## 收集备份日志的步骤 {/* #steps-to-collect-backup-logs */}
 
-### 手动收集 {#manual-collection}
+### 手动收集 {/* #manual-collection */}
 
 1.  点击 [应用程序工具栏](overview.md#application-toolbar) 上的 <IconButton icon="lucide:download" /> **收集备份日志** 图标。
 
@@ -31,7 +31,7 @@
 
 <br/>
 
-### 批量收集 {#bulk-collection}
+### 批量收集 {/* #bulk-collection */}
 
 _右键点击_ 应用程序工具栏中的 <IconButton icon="lucide:download" /> **收集备份日志** 按钮以从所有配置的服务器中收集。
 
@@ -41,7 +41,7 @@ _右键点击_ 应用程序工具栏中的 <IconButton icon="lucide:download" />
 您还可以使用 [设置 → 备份监控](settings/backup-monitoring-settings.md) 和 [设置 → 服务器设置](settings/server-settings.md) 页面中的 <IconButton icon="lucide:import" label="收集全部"/> 按钮从所有配置的服务器中收集。
 :::
 
-## 收集过程的工作原理 {#how-the-collection-process-works}
+## 收集过程的工作原理 {/* #how-the-collection-process-works */}
 
 - **duplistatus** 自动检测最佳连接协议并连接到指定的 Duplicati 服务器。
 - 它检索备份历史、日志信息和备份设置（用于备份监控）。
@@ -55,7 +55,7 @@ _右键点击_ 应用程序工具栏中的 <IconButton icon="lucide:download" />
 如果在收集备份日志后（或在重新安装/升级 Duplicati 后），同一台服务器出现多次，这通常是由更改的 `machine_id` 引起的，或者是由于 Duplicati API 错误混淆了 `identity` ID 和 `machine_id`。解决方法是在 Duplicati 服务器上对齐 ID（编辑 `identity.txt`/`machineid.txt` 或设置 **Duplicati → 设置 → 高级选项 → Machine-id**），重启 Duplicati，然后通过 [设置 → 数据库维护 → 合并重复服务器](settings/database-maintenance.md#merge-duplicate-servers) 合并 **duplistatus** 中的条目。有关完整步骤，请参阅[仪表板上的重复服务器](troubleshooting.md#duplicate-servers-on-the-dashboard)。
 :::
 
-## 故障排除收集问题 {#troubleshooting-collection-issues}
+## 收集问题排查 {/* #troubleshooting-collection-issues */}
 
 备份日志收集需要 Duplicati 服务器可以从 **duplistatus** 安装中访问。如果您遇到问题，请验证以下内容:
 

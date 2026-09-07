@@ -1,8 +1,8 @@
-# Integração da Página Inicial (Opcional) {#homepage-integration-optional}
+# Integração da Página Inicial (Opcional) {/* #homepage-integration-optional */}
 
 [Homepage](https://gethomepage.dev/) é um aplicativo de painel personalizável. Para integrar **duplistatus** com Homepage, adicione um widget ao seu arquivo `services.yaml` usando o [tipo de widget Custom API](https://gethomepage.dev/widgets/services/customapi/).
 
-## Widget de Resumo {#summary-widget}
+## Resumo do Widget {/* #summary-widget */}
 
 Este widget exibe as estatísticas gerais do backup no painel da sua página inicial.
 
@@ -44,7 +44,7 @@ Este widget exibe as estatísticas gerais do backup no painel da sua página ini
 
 ![Widget de Resumo da Página Inicial](/img/homepage-summary.png)
 
-## Widget de Informações da Última Backup {#last-backup-information-widget}
+## Informações do Backup Último Widget {/* #last-backup-information-widget */}
 
 Este widget exibe as informações de backup mais recentes para uma máquina específica.
 
@@ -79,7 +79,7 @@ Este widget exibe as informações de backup mais recentes para uma máquina esp
 
 ![Widget de Último Backup da Página Inicial](/img/homepage-lastbackup.png)
 
-## Notas de Configuração {#configuration-notes}
+## Notas de Configuração {/* #configuration-notes */}
 
 - Substitua `your-server` pelo endereço IP ou nome do host do seu servidor.
 - Ajuste o `refreshInterval` conforme necessário (em milissegundos).

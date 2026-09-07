@@ -1,9 +1,9 @@
-# Surveillance et état de santé {#monitoring-health}
+# Surveillance et santé {/* #monitoring--health */}
 
-## Vérification d'intégrité - `/api/health` {#health-check---apihealth}
+## Vérification de santé - `/api/health` {/* #health-check---apihealth */}
 - **Point de terminaison** : `/api/health`
 - **Méthode** : GET
-- **Description** : Vérifie le statut de santé de l'application et de la base de données.
+- **Description** : Vérification de vitalité économique pour l'application et la connexion SQLite. Le `HEALTHCHECK` Docker et la boucle d'entrée utilisent cette URL sur localhost.
 - **Réponse** (système sain) :
 
   ```json
@@ -11,12 +11,6 @@
     "status": "healthy",
     "database": "connected",
     "basicConnection": true,
-    "tablesFound": 2,
-    "tables": [
-      "servers",
-      "backups"
-    ],
-    "preparedStatements": true,
     "initializationStatus": "complete",
     "initializationComplete": true,
     "connectionHealth": true,
@@ -29,22 +23,12 @@
   ```json
   {
     "status": "degraded",
-    "database": "connected",
-    "basicConnection": true,
-    "tablesFound": 2,
-    "tables": [
-      "servers",
-      "backups"
-    ],
-    "preparedStatements": false,
-    "preparedStatementsError": "Prepared statement error details",
+    "database": "unavailable",
+    "basicConnection": false,
     "initializationStatus": "complete",
     "initializationComplete": true,
     "connectionHealth": false,
-    "connectionHealthError": "Connection health check failed",
-    "connectionDetails": {
-      "additional": "diagnostic information"
-    },
+    "connectionHealthError": "Database connection test failed",
     "timestamp": "2024-03-20T10:00:00Z"
   }
   ```
@@ -56,17 +40,31 @@
     "status": "unhealthy",
     "error": "Database connection failed",
     "message": "Connection timeout",
-    "stack": "Error: Connection timeout\n    at...",
     "timestamp": "2024-03-20T10:00:00Z"
   }
   ```
 
-- **Notes** : 
-  - Retourne le statut 200 pour les systèmes sains
-  - Retourne le statut 503 pour les systèmes défaillants ou en cas d'échec des instructions préparées
-  - Inclut le champ `preparedStatementsError` en cas d'échec des instructions préparées
-  - Inclut le champ `initializationError` en cas d'échec de l'initialisation de la base de données
-  - Inclut `connectionHealthError` et `connectionDetails` en cas d'échec des vérifications de santé de la connexion
-  - La trace de pile n'est incluse qu'en mode développement
-  - Teste la connexion de base à la base de données, les instructions préparées, le statut d'initialisation et la santé de la connexion
-  - Fournit un diagnostic complet de l'état de santé pour le dépannage
+- **Remarques** :
+  - Retourne 200 lorsque l'initialisation est terminée et que `SELECT 1` réussit
+  - Retourne 503 lorsque l'initialisation ou la vérification de la connexion échoue
+  - Ne liste pas les noms de table ou n'exécute pas les requêtes du tableau de bord
+  - Ne nécessite jamais une clé API
+  - Lorsque l'une des listes d'adresses IP autorisées est activée, l'adresse IP du client doit être en boucle ou figurée sur la liste CIDR admin ou externe (`403` `IP_NOT_ALLOWED` sinon)
+  - Les clients non en boucle sont limités en taux (`429` `PROBE_RATE_LIMITED`, 30/minute et 120/heure). La boucle (`127.0.0.1`, `::1`) n'est jamais limitée
+
+## Sonde de connectivité - `/api/ping` {/* #connectivity-probe---apiping */}
+- **Point de terminaison** : `/api/ping`
+- **Méthode** : GET
+- **Description** : Réponse `{ "ok": true }` minuscule utilisée par la vérification de connectivité du tableau de bord (toutes les 30 secondes).
+- **Réponse** :
+
+  ```json
+  {
+    "ok": true
+  }
+  ```
+
+- **Remarques** :
+  - Ne nécessite jamais une clé API ou un cookie de session
+  - Mêmes règles d'union de liste d'adresses IP et de boucle que `/api/health`
+  - Les clients non en boucle sont limités en taux (`429` `PROBE_RATE_LIMITED`, 60/minute et 600/heure)

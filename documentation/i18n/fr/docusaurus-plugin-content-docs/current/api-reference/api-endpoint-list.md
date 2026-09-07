@@ -1,4 +1,4 @@
-# Liste des points de terminaison d'API {#api-endpoint-list}
+# Liste des points de terminaison de l'API {/* #api-endpoint-list */}
 
 Ce document fournit un tableau de référence rapide de tous les points de terminaison d'API disponibles (par ordre alphabétique des points de terminaison).
 
@@ -62,6 +62,7 @@ Ce document fournit un tableau de référence rapide de tous les points de termi
 | [`/api/dashboard`](core-operations#get-dashboard-data-consolidated---apidashboard)                                                                  | GET    | Obtenir les données du tableau de bord (consolidées) | Opérations principales           |
 | [`/api/detail/:serverId`](core-operations#get-server-data-with-overdue-info---apidetailserverid)                                                    | GET    | Obtenir les données du serveur avec informations en retard | Opérations principales           |
 | [`/api/health`](monitoring-apis#health-check---apihealth)                                                                                           | GET    | Vérification d'intégrité                      | Surveillance et état       |
+| [`/api/ping`](monitoring-apis#connectivity-probe---apiping)                                                                                         | GET    | Sonde de connectivité              | Surveillance et santé      |
 | [`/api/lastbackup/:serverId`](external-apis#get-latest-backup---apilastbackupserverid)                                                              | GET    | Obtenir la dernière sauvegarde                 | API externes             |
 | [`/api/lastbackups/:serverId`](external-apis#get-latest-backups---apilastbackupsserverid)                                                           | GET    | Obtenir les dernières sauvegardes                | API externes             |
 | [`/api/notifications/check-overdue`](notification-apis#check-overdue-backups---apinotificationscheck-overdue)                                       | POST   | Vérifier les sauvegardes en retard             | Système de notification       |

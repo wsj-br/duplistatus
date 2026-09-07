@@ -1,6 +1,6 @@
-# Gestion des versions {#release-management}
+# Gestion des versions {/* #release-management */}
 
-## Versioning (Semantic Versioning) {#versioning-semantic-versioning}
+## Versionnage (Versionnage Sémantique) {/* #versioning-semantic-versioning */}
 
 Le projet suit le Versioning Sémantique (SemVer) avec le format `MAJOR.MINOR.PATCH` :
 
@@ -8,7 +8,7 @@ Le projet suit le Versioning Sémantique (SemVer) avec le format `MAJOR.MINOR.PA
 - **Version MINEURE** (0.x.0) : Quand vous ajoutez des fonctionnalités de manière rétrocompatible
 - **Version CORRECTIF** (0.0.x) : Quand vous apportez des corrections de bogues rétrocompatibles
 
-## Liste de contrôle de pré-lancement {#pre-release-checklist}
+## Liste de Vérification de Pré-Lancement {/* #pre-release-checklist */}
 
 Avant de publier une nouvelle version, assurez-vous d'avoir terminé les éléments suivants :
 
@@ -20,15 +20,15 @@ Avant de publier une nouvelle version, assurez-vous d'avoir terminé les éléme
 - [ ] Les notes de publication sont préparées dans `documentation/docs/release-notes/VERSION.md`.
 - [ ] Exécutez `scripts/generate-readme-from-intro.sh` pour mettre à jour `README.md` avec la nouvelle version et les modifications provenant de `documentation/docs/intro.md`. Ce script génère automatiquement `README_dockerhub.md` et `RELEASE_NOTES_github_VERSION.md`.
 
-## Vue d'ensemble du processus de publication {#release-process-overview}
+## Aperçu du Processus de Lancement {/* #release-process-overview */}
 
 Le processus de publication recommandé utilise **GitHub Pull Requests and Releases** (voir ci-dessous). Cela offre une meilleure visibilité, des capacités d'examen et déclenche automatiquement les compilations d'images Docker. La méthode en ligne de commande est disponible comme alternative.
 
-## Méthode 1 : Demande de tirage GitHub et publication (Recommandé) {#method-1-github-pull-request-and-release-recommended}
+## Méthode 1 : Demande de Tirage GitHub et Lancement (Recommandé) {/* #method-1-github-pull-request-and-release-recommended */}
 
 Ceci est la méthode préférée car elle offre une meilleure traçabilité et déclenche automatiquement les compilations Docker.
 
-### Étape 1 : Créer une demande de tirage {#step-1-create-pull-request}
+### Étape 1 : Créer une Demande de Tirage {/* #step-1-create-pull-request */}
 
 1. Accédez au [dépôt duplistatus](https://github.com/wsj-br/duplistatus) sur GitHub.
 2. Cliquez sur l’onglet **"Pull requests"**.
@@ -39,7 +39,7 @@ Ceci est la méthode préférée car elle offre une meilleure traçabilité et d
 7. Ajoutez un titre descriptif (par exemple, "Release v1.2.0") et une description résumant les modifications.
 8. Cliquez à nouveau sur **"Create pull request"**.
 
-### Étape 2 : Fusionner la demande d'extraction {#step-2-merge-the-pull-request}
+### Étape 2 : Fusionner la Demande de Tirage {/* #step-2-merge-the-pull-request */}
 
 Après examen de la demande de fusion :
 
@@ -47,7 +47,7 @@ Après examen de la demande de fusion :
 2. Choisissez votre stratégie de fusion (généralement « Créer un commit de fusion »).
 3. Confirmez la fusion.
 
-### Étape 3 : Créer une version GitHub {#step-3-create-github-release}
+### Étape 3 : Créer un Lancement GitHub {/* #step-3-create-github-release */}
 
 Une fois la fusion terminée, créez une version GitHub :
 
@@ -70,11 +70,11 @@ Une fois la fusion terminée, créez une version GitHub :
   - Docker Hub : `wsjbr/duplistatus:VERSION` et `wsjbr/duplistatus:latest` (si c’est la dernière version)
   - GitHub Container Registry : `ghcr.io/wsj-br/duplistatus:VERSION` et `ghcr.io/wsj-br/duplistatus:latest` (si c’est la dernière version)
 
-## Méthode 2 : Ligne de commande (Alternative) {#method-2-command-line-alternative}
+## Méthode 2 : Ligne de Commande (Alternative) {/* #method-2-command-line-alternative */}
 
 Si vous préférez utiliser la ligne de commande, suivez ces étapes :
 
-### Étape 1 : Mettre à jour la branche maître locale {#step-1-update-local-master-branch}
+### Étape 1 : Mettre à Jour la Branche Master Locale {/* #step-1-update-local-master-branch */}
 
 Assurez-vous que votre branche `master` locale est à jour :
 
@@ -86,7 +86,7 @@ git checkout master
 git pull origin master
 ```
 
-### Étape 2 : Fusionner la branche de développement {#step-2-merge-development-branch}
+### Étape 2 : Fusionner la Branche de Développement {/* #step-2-merge-development-branch */}
 
 Fusionner la branche `vMAJOR.MINOR.x` dans `master` :
 
@@ -100,7 +100,7 @@ S'il y a des **conflits de fusion**, résolvez-les manuellement :
 2. Indexez les fichiers résolus : `git add <file>`
 3. Complétez la fusion : `git commit`
 
-### Étape 3 : Étiqueter la version {#step-3-tag-the-release}
+### Étape 3 : Taguer le Lancement {/* #step-3-tag-the-release */}
 
 Créer une étiquette annotée pour la nouvelle version :
 
@@ -111,7 +111,7 @@ git tag -a vMAJOR.MINOR.PATCH -m "Release vMAJOR.MINOR.PATCH - Brief description
 
 L'indicateur `-a` crée une balise annotée (recommandée pour les versions), et l'indicateur `-m` ajoute un message.
 
-### Étape 4 : Pousser vers GitHub {#step-4-push-to-github}
+### Étape 4 : Pousser vers GitHub {/* #step-4-push-to-github */}
 
 Poussez à la fois la branche `master` mise à jour et la nouvelle étiquette :
 
@@ -125,11 +125,11 @@ git push origin vMAJOR.MINOR.PATCH
 
 Vous pouvez également envoyer tous les tags à la fois : `git push --tags`
 
-### Étape 5 : Créer une version GitHub {#step-5-create-github-release}
+### Étape 5 : Créer un Lancement GitHub {/* #step-5-create-github-release */}
 
 Après avoir poussé l'étiquette, créez une version GitHub (voir Méthode 1, Étape 3) pour déclencher le flux de travail de construction Docker.
 
-## Construction manuelle d'image Docker {#manual-docker-image-build}
+## Construction Manuelle de l'Image Docker {/* #manual-docker-image-build */}
 
 Pour déclencher manuellement le workflow de construction de l'image Docker sans créer de version :
 
@@ -142,11 +142,11 @@ Pour déclencher manuellement le workflow de construction de l'image Docker sans
 
 **Note :** Les builds manuels ne marqueront pas automatiquement les images avec le tag `latest` sauf si le workflow détermine qu'il s'agit de la dernière version.
 
-## Publication de la documentation {#releasing-documentation}
+## Publication de la Documentation {/* #releasing-documentation */}
 
 La documentation est hébergée sur [GitHub Pages](https://wsj-br.github.io/duplistatus/) et est déployée séparément de la version de l'application. Suivez ces étapes pour publier la documentation mise à jour :
 
-### Conditions préalables {#prerequisites}
+### Prérequis {/* #prerequisites */}
 
 1. Assurez-vous que vous disposez d'un jeton d'accès personnel GitHub avec la portée `repo`.
 2. Configurez les identifiants Git (configuration unique) :
@@ -158,7 +158,7 @@ cd documentation
 
 Cela vous demandera votre jeton d'accès personnel GitHub et le stockera de manière sécurisée.
 
-### Déployer la Documentation {#deploy-documentation}
+### Déployer la Documentation {/* #deploy-documentation */}
 
 1. Accédez au répertoire `documentation` :
 
@@ -179,7 +179,7 @@ Cette commande va :
 - Envoyer le site construit vers la branche `gh-pages`
 - Rendre la documentation disponible à [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/)
 
-### Quand Déployer la Documentation {#when-to-deploy-documentation}
+### Quand Déployer la Documentation {/* #when-to-deploy-documentation */}
 
 Déployer les mises à jour de la documentation :
 - Après la fusion des modifications de documentation vers `master`
@@ -188,7 +188,7 @@ Déployer les mises à jour de la documentation :
 
 **Note :** Le déploiement de la documentation est indépendant des versions de l'application. Vous pouvez déployer la documentation plusieurs fois entre les versions de l'application.
 
-### Préparation des notes de version pour GitHub {#preparing-release-notes-for-github}
+### Préparer les Notes de Lancement pour GitHub {/* #preparing-release-notes-for-github */}
 
 Le script `generate-readme-from-intro.sh` génère automatiquement les notes de version GitHub lors de son exécution. Il lit les notes de version depuis `documentation/docs/release-notes/VERSION.md` (où VERSION est extrait de `package.json`) et crée `RELEASE_NOTES_github_VERSION.md` à la racine du projet.
 
@@ -203,7 +203,7 @@ Le fichier de notes de version généré peut être copié et collé directement
 
 **Note :** Le fichier généré est temporaire et peut être supprimé après la création de la version GitHub. Il est recommandé d'ajouter `RELEASE_NOTES_github_*.md` à `.gitignore` si vous ne souhaitez pas valider ces fichiers.
 
-### Mettre à jour README.md {#update-readmemd}
+### Mettre à Jour README.md {/* #update-readmemd */}
 
 Si vous avez apporté des modifications à `documentation/docs/intro.md`, régénérez le fichier `README.md` du référentiel :
 

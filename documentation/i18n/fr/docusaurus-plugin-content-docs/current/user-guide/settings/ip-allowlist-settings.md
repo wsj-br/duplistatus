@@ -1,4 +1,4 @@
-# Liste d'adresses IP autorisées {#ip-allowlist}
+# Liste d'adresses IP autorisées {/* #ip-allowlist */}
 
 Les administrateurs peuvent restreindre qui peut accéder à l'interface d'administration et aux API de données externes. Les deux listes sont indépendantes. Les deux sont désactivées par défaut.
 
@@ -6,11 +6,13 @@ Les administrateurs peuvent restreindre qui peut accéder à l'interface d'admin
 
 L'application lit l'adresse du pair TCP à partir d'un en-tête interne défini par `scripts/peer-ip.cjs`. Un client ne peut pas falsifier cet en-tête. **IP détectée** affiche l'**IP du pair** et l'**IP autorisée** utilisées pour les décisions d'accès (elles correspondent sauf si les en-têtes de proxy de confiance s'appliquent).
 
-## Proxies de confiance {#trusted-proxies}
+Les requêtes refusées retournent HTTP 403 (`IP_NOT_ALLOWED` sur les chemins API). Elles ne sont pas écrites dans le journal d'audit. Une ligne de `console.warn` limitée par le taux est émise vers la sortie standard de l'application (par exemple `docker logs`) — au plus une fois par adresse IP client et par surface (admin, externe ou probe) par minute, et dix par heure — afin que les scanners ne puissent pas submerger les logs.
+
+## Proxies de confiance {/* #trusted-proxies */}
 
 Activez **Faire confiance aux en-têtes de proxy inverse** uniquement lorsque duplistatus n'est pas accessible sauf par un proxy inverse qui **écrase** `X-Forwarded-For` / `X-Real-IP` (ne pas ajouter). Ajoutez chaque CIDR de proxy avec **Ajouter** (ou collez une liste séparée par des virgules ou des sauts de ligne). Les entrées apparaissent sous forme de puces supprimables. Lorsque le pair TCP ne fait pas partie de cette liste, les en-têtes transférés sont ignorés.
 
-## Interface d'administration {#admin-interface}
+## Interface d'administration {/* #admin-interface */}
 
 Quand activé, les pages, les connexions, les API CSRF et de session n'acceptent que les CIDR listés. Ajoutez des entrées avec **Ajouter** ; votre **IP autorisée** est marquée **IP actuelle** lorsqu'elle est dans la liste. **127.0.0.1** et **::1** sont inclus par défaut et ne peuvent pas être supprimés. **Ajouter l'IP actuelle** et les **IP de connexion récente de l'administrateur** (à partir du journal d'audit) offrent des suggestions rapides. Vous ne pouvez pas activer cette liste sauf si votre IP actuelle est déjà incluse (ou si vous vous connectez depuis la boucle locale). Un verrouillage peut être récupéré avec :
 
@@ -20,15 +22,19 @@ ADMIN_IP_ALLOWLIST_ENABLED=false
 
 ou en ajoutant votre CIDR à `ADMIN_IP_ALLOWLIST`. Les étapes complètes de récupération (recreate Docker, puis corriger les Paramètres et supprimer le remplacement) sont dans [Verrouillé par la Liste d'adresses IP autorisées](../troubleshooting.md#locked-out-by-ip-allowlist).
 
-## API externes {#external-apis}
+## API externes {/* #external-apis */}
 
-Quand activé, `/api/upload`, `/api/summary`, et `/api/lastbackup*` acceptent uniquement les CIDR listés. `/api/health` et `/api/ping` restent ouverts afin que les vérifications de santé Docker et la sonde de connectivité continuent de fonctionner.
+Quand activé, `/api/upload`, `/api/summary`, et `/api/lastbackup*` n'acceptent que les CIDR listés.
+
+`/api/health` et `/api/ping` ne sont pas sur la liste externe seule (le ping du tableau de bord provient de l'adresse IP de l'interface admin). Quand **l'une des deux** listes d'autorisation est activée, ces sondes acceptent la boucle locale (`127.0.0.1`, `::1`) et les CIDR de la **liste admin ou externe**. Les adresses IP non listées reçoivent HTTP 403. Quand les deux listes sont désactivées, les sondes restent publiques.
+
+Les requêtes de sondage non en boucle locale sont également limitées par le taux (HTTP 429, `PROBE_RATE_LIMITED`): `/api/ping` 60/minute et 600/heure; `/api/health` 30/minute et 120/heure. Les vérifications Docker en conteneur touchent localhost et ne sont jamais ralenties. Les limites au niveau de l'application ne stoppent pas une inondation de connexions volumétriques; mettez cela sur le reverse proxy.
 
 Cette liste est la protection à utiliser lorsque les clés API ne sont pas requises. Ajoutez des CIDR comme des puces comme la liste d'administration. **127.0.0.1** et **::1** sont inclus par défaut et ne peuvent pas être supprimés. Les **IP sources récentes de téléchargement** du journal d'audit sont proposées comme suggestions d'ajout rapide.
 
 Si cette liste d'adresses IP autorisées et les clés API sont requises, une requête doit passer **les deux**.
 
-## Remplacements d'environnement {#environment-overrides}
+## Remplacements d'environnement {/* #environment-overrides */}
 
 | Variable | But |
 |----------|-----|

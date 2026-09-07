@@ -1,4 +1,4 @@
-# Duplicati 版本 {#duplicati-versions}
+# Duplicati 版本 {/* #duplicati-versions */}
 
 此页面显示存储在 **duplistatus** 缓存中的最新 Duplicati 发布版本，并允许管理员配置从 GitHub 刷新这些版本的频率。
 
@@ -6,7 +6,7 @@
 
 缓存被 [仪表板](../dashboard.md#duplicati-server-version) 和 [服务器](server-settings.md) 页面用于为每个服务器版本着色，并显示其是否为当前或过时。
 
-## 最新频道版本 {#latest-channel-versions}
+## 最新频道版本 {/* #latest-channel-versions */}
 
 表格列出了每个 Duplicati 频道的最新缓存版本：
 
@@ -21,7 +21,7 @@
 
 管理员可以点击 **立即更新** 立即获取最新版本。这不需要 cron 服务运行。如果无法访问 GitHub，**duplistatus** 会保留之前的缓存。
 
-## 版本检查计划 {#version-check-schedule}
+## 版本检查计划 {/* #version-check-schedule */}
 
 **在仪表板上显示版本** 在 [仪表板](../dashboard.md#duplicati-server-version) 卡片视图中开启或关闭版本徽章。仪表板表格始终显示 **版本** 列。默认情况下是开启的，也可以在 [显示设置](display-settings.md) 中找到。这是一个每个用户的显示偏好。
 
@@ -42,7 +42,7 @@
 - 每 12 小时，开始时间为 08:15，在 08:15 和 20:15 运行。
 - 每 6 小时，开始时间为 02:45，在 02:45、08:45、14:45 和 20:45 运行。
 
-启动时，**duplistatus** 也会刷新缓存，如果缓存时间超过所选间隔（24 小时、12 小时或 6 小时）。刷新失败会保留最近缓存的版本。
+启动时，**duplistatus** 也会刷新缓存，如果缓存的时间超过所选的时间间隔（24 小时、12 小时或 6 小时），包括新的空数据库。瞬时的 GitHub 故障，例如 HTTP 504，会被重试。刷新失败会保留最后缓存的版本。
 
 普通用户可以查看缓存版本和计划，并可以开启或关闭 **在仪表板上显示版本**。只有管理员可以更改间隔、开始时间或强制更新。
 

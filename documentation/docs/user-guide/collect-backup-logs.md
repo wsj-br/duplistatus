@@ -1,14 +1,14 @@
 
 
-# Collect Backup Logs {#collect-backup-logs}
+# Collect Backup Logs {/* #collect-backup-logs */}
 
 **duplistatus** can retrieve backup logs directly from Duplicati servers to populate the database or restore missing log data. The application automatically skips any duplicate logs that already exist in the database.
 
 
-## Steps to Collect Backup Logs {#steps-to-collect-backup-logs}
+## Steps to Collect Backup Logs {/* #steps-to-collect-backup-logs */}
 
 
-### Manual Collection {#manual-collection}
+### Manual Collection {/* #manual-collection */}
 
 1.  Click the <IconButton icon="lucide:download" /> **Collect Backup Logs** icon on the [Application Toolbar](overview.md#application-toolbar).
 
@@ -38,7 +38,7 @@
 
 <br/>
 
-### Bulk Collection {#bulk-collection}
+### Bulk Collection {/* #bulk-collection */}
 
 _Right-click_ the <IconButton icon="lucide:download" /> **Collect Backup Logs** button in the application toolbar to collect from all configured servers.
 
@@ -49,7 +49,7 @@ You can also use the <IconButton icon="lucide:import" label="Collect All"/> butt
 :::
 
 
-## How the Collection Process Works {#how-the-collection-process-works}
+## How the Collection Process Works {/* #how-the-collection-process-works */}
 
 - **duplistatus** automatically detects the best connection protocol and connects to the specified Duplicati server.
 - It retrieves backup history, log information, and backup settings (for backup monitoring).
@@ -63,7 +63,7 @@ You can also use the <IconButton icon="lucide:import" label="Collect All"/> butt
 If the same server appears more than once after collecting backup logs (or after a Duplicati reinstall/upgrade), it is usually caused by a changed `machine_id` or by a Duplicati API bug that mixes the `identity` id and the `machine_id`. The fix is to align the ids on the Duplicati server (edit `identity.txt`/`machineid.txt` or set **Duplicati → Settings → Advanced Options → Machine-id**), restart Duplicati, then merge the entries in **duplistatus** via [Settings → Database Maintenance → Merge Duplicate Servers](settings/database-maintenance.md#merge-duplicate-servers). See [Duplicate Servers on the Dashboard](troubleshooting.md#duplicate-servers-on-the-dashboard) for full steps.
 :::
 
-## Troubleshooting Collection Issues {#troubleshooting-collection-issues}
+## Troubleshooting Collection Issues {/* #troubleshooting-collection-issues */}
 
 Backup log collection requires the Duplicati server to be accessible from the **duplistatus** installation. If you encounter issues, please verify the following:
 

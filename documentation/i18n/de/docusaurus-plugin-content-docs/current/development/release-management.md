@@ -1,6 +1,6 @@
-# Versionsverwaltung {#release-management}
+# Release-Management {/* #release-management */}
 
-## Versionierung (Semantische Versionierung) {#versioning-semantic-versioning}
+## Versionierung (Semantische Versionierung) {/* #versioning-semantic-versioning */}
 
 Das Projekt folgt Semantic Versioning (SemVer) mit dem Format `MAJOR.MINOR.PATCH`:
 
@@ -8,7 +8,7 @@ Das Projekt folgt Semantic Versioning (SemVer) mit dem Format `MAJOR.MINOR.PATCH
 - **MINOR** Version (0.x.0): Wann Sie Funktionalität auf rückwärtskompatible Weise hinzufügen
 - **PATCH** Version (0.0.x): Wann Sie rückwärtskompatible Fehlerbehebungen vornehmen
 
-## Checkliste vor der Veröffentlichung {#pre-release-checklist}
+## Checkliste für Vorabversionen {/* #pre-release-checklist */}
 
 Vor der Veröffentlichung einer neuen Version müssen Sie sicherstellen, dass Sie Folgendes abgeschlossen haben:
 
@@ -20,15 +20,15 @@ Vor der Veröffentlichung einer neuen Version müssen Sie sicherstellen, dass Si
 - [ ] Release Notes sind in `documentation/docs/release-notes/VERSION.md` vorbereitet.
 - [ ] Führen Sie `scripts/generate-readme-from-intro.sh` aus, um `README.md` mit der neuen Version und allen Änderungen aus `documentation/docs/intro.md` zu aktualisieren. Dieses Skript generiert automatisch `README_dockerhub.md` und `RELEASE_NOTES_github_VERSION.md`.
 
-## Freigabeprozess – Übersicht {#release-process-overview}
+## Übersicht des Veröffentlichungsprozesses {/* #release-process-overview */}
 
 Der empfohlene Releaseprozess verwendet **GitHub Pull Requests und Releases** (siehe unten). Dies bietet bessere Sichtbarkeit, Überprüfungsmöglichkeiten und löst automatisch Docker-Image-Builds aus. Die Befehlszeilenmethode ist als Alternative verfügbar.
 
-## Methode 1: GitHub Pull Request und Release (Empfohlen) {#method-1-github-pull-request-and-release-recommended}
+## Methode 1: GitHub Pull Request und Veröffentlichung (Empfohlen) {/* #method-1-github-pull-request-and-release-recommended */}
 
 Dies ist die bevorzugte Methode, da sie bessere Nachverfolgbarkeit bietet und Docker-Builds automatisch auslöst.
 
-### Schritt 1: Pull Request erstellen {#step-1-create-pull-request}
+### Schritt 1: Pull Request erstellen {/* #step-1-create-pull-request */}
 
 1. Navigieren Sie zum [duplistatus-Repository](https://github.com/wsj-br/duplistatus) auf GitHub.
 2. Klicken Sie auf den Reiter **"Pull requests"**.
@@ -39,7 +39,7 @@ Dies ist die bevorzugte Methode, da sie bessere Nachverfolgbarkeit bietet und Do
 7. Geben Sie einen aussagekräftigen Titel ein (z. B. "Release v1.2.0") und fassen Sie die Änderungen in der Beschreibung zusammen.
 8. Klicken Sie erneut auf **"Create pull request"**.
 
-### Schritt 2: Pull Request zusammenführen {#step-2-merge-the-pull-request}
+### Schritt 2: Pull Request zusammenführen {/* #step-2-merge-the-pull-request */}
 
 Nach Überprüfung des Pull Requests:
 
@@ -47,7 +47,7 @@ Nach Überprüfung des Pull Requests:
 2. Wählen Sie Ihre Merge-Strategie (normalerweise "Merge Commit erstellen").
 3. Bestätigen Sie den Merge.
 
-### Schritt 3: GitHub-Release erstellen {#step-3-create-github-release}
+### Schritt 3: GitHub Veröffentlichung erstellen {/* #step-3-create-github-release */}
 
 Sobald der Merge abgeschlossen ist, erstellen Sie ein GitHub-Release:
 
@@ -70,11 +70,11 @@ Sobald der Merge abgeschlossen ist, erstellen Sie ein GitHub-Release:
   - Docker Hub: `wsjbr/duplistatus:VERSION` und `wsjbr/duplistatus:latest` (wenn es sich um das aktuellste Release handelt)
   - GitHub Container Registry: `ghcr.io/wsj-br/duplistatus:VERSION` und `ghcr.io/wsj-br/duplistatus:latest` (wenn es sich um das aktuellste Release handelt)
 
-## Methode 2: Befehlszeile (Alternative) {#method-2-command-line-alternative}
+## Methode 2: Kommandozeile (Alternative) {/* #method-2-command-line-alternative */}
 
 Wenn Sie die Befehlszeile bevorzugen, führen Sie diese Schritte aus:
 
-### Schritt 1: Lokalen Master-Branch aktualisieren {#step-1-update-local-master-branch}
+### Schritt 1: Lokalen Master-Branch aktualisieren {/* #step-1-update-local-master-branch */}
 
 Stellen Sie sicher, dass Ihr lokaler `master`-Branch auf dem neuesten Stand ist:
 
@@ -86,7 +86,7 @@ git checkout master
 git pull origin master
 ```
 
-### Schritt 2: Entwicklungszweig zusammenführen {#step-2-merge-development-branch}
+### Schritt 2: Entwicklungs-Branch zusammenführen {/* #step-2-merge-development-branch */}
 
 Merge des `vMAJOR.MINOR.x`-Branches in `master`:
 
@@ -100,7 +100,7 @@ Wenn es **Merge-Konflikte** gibt, lösen Sie diese manuell:
 2. Fügen Sie die aufgelösten Dateien hinzu: `git add <file>`
 3. Schließen Sie den Merge ab: `git commit`
 
-### Schritt 3: Das Release taggen {#step-3-tag-the-release}
+### Schritt 3: Die Veröffentlichung taggen {/* #step-3-tag-the-release */}
 
 Erstellen Sie ein kommentiertes Tag für die neue Version:
 
@@ -111,7 +111,7 @@ git tag -a vMAJOR.MINOR.PATCH -m "Release vMAJOR.MINOR.PATCH - Brief description
 
 Das Flag `-a` erstellt ein annotiertes Tag (empfohlen für Releases), und das Flag `-m` fügt eine Nachricht hinzu.
 
-### Schritt 4: Zu GitHub hochladen {#step-4-push-to-github}
+### Schritt 4: Zu GitHub pushen {/* #step-4-push-to-github */}
 
 Pushen Sie sowohl den aktualisierten `master`-Branch als auch das neue Tag:
 
@@ -125,11 +125,11 @@ git push origin vMAJOR.MINOR.PATCH
 
 Alternativ können Sie alle Tags auf einmal pushen: `git push --tags`
 
-### Schritt 5: GitHub-Release erstellen {#step-5-create-github-release}
+### Schritt 5: GitHub Veröffentlichung erstellen {/* #step-5-create-github-release */}
 
 Nach dem Pushen des Tags erstellen Sie ein GitHub Release (siehe Methode 1, Schritt 3), um den Docker-Build-Workflow auszulösen.
 
-## Manueller Docker-Image-Build {#manual-docker-image-build}
+## Manuelles Erstellen von Docker-Images {/* #manual-docker-image-build */}
 
 Um den Docker-Image-Build-Workflow manuell auszulösen, ohne ein Release zu erstellen:
 
@@ -142,11 +142,11 @@ Um den Docker-Image-Build-Workflow manuell auszulösen, ohne ein Release zu erst
 
 **Hinweis:** Manuelle Builds taggen Bilder nicht automatisch als `latest`, es sei denn, der Workflow bestimmt, dass es sich um die neueste Version handelt.
 
-## Dokumentation veröffentlichen {#releasing-documentation}
+## Dokumentation veröffentlichen {/* #releasing-documentation */}
 
 Die Dokumentation wird auf [GitHub Pages](https://wsj-br.github.io/duplistatus/) gehostet und wird separat vom Anwendungsrelease bereitgestellt. Führen Sie diese Schritte aus, um aktualisierte Dokumentation freizugeben:
 
-### Voraussetzungen {#prerequisites}
+### Voraussetzungen {/* #prerequisites */}
 
 1. Stellen Sie sicher, dass Sie über ein GitHub Personal Access Token mit dem Bereich `repo` verfügen.
 2. Richten Sie Git-Anmeldedaten ein (einmalige Einrichtung):
@@ -158,7 +158,7 @@ cd documentation
 
 Dies fordert Sie auf, Ihr GitHub Personal Access Token einzugeben, und speichert es sicher.
 
-### Dokumentation bereitstellen {#deploy-documentation}
+### Dokumentation bereitstellen {/* #deploy-documentation */}
 
 1. Navigieren Sie zum Verzeichnis `documentation`:
 
@@ -179,7 +179,7 @@ Dieser Befehl wird:
 - Die erstellte Website in den Branch `gh-pages` übertragen
 - Die Dokumentation unter [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/) verfügbar machen
 
-### Wann sollte Dokumentation bereitgestellt werden {#when-to-deploy-documentation}
+### Wann Dokumentation bereitstellen {/* #when-to-deploy-documentation */}
 
 Dokumentationsaktualisierungen bereitstellen:
 - Nach dem Zusammenführen von Dokumentationsänderungen in `master`
@@ -188,7 +188,7 @@ Dokumentationsaktualisierungen bereitstellen:
 
 **Hinweis:** Die Dokumentationsbereitstellung ist unabhängig von Anwendungsversionen. Sie können die Dokumentation mehrmals zwischen Anwendungsversionen bereitstellen.
 
-### Vorbereitung von Versionshinweisen für GitHub {#preparing-release-notes-for-github}
+### Veröffentlichungsnotizen für GitHub vorbereiten {/* #preparing-release-notes-for-github */}
 
 Das Skript `generate-readme-from-intro.sh` generiert automatisch GitHub-Versionshinweise bei der Ausführung. Es liest die Versionshinweise aus `documentation/docs/release-notes/VERSION.md` (wobei VERSION aus `package.json` extrahiert wird) und erstellt `RELEASE_NOTES_github_VERSION.md` im Projektstammverzeichnis.
 
@@ -203,7 +203,7 @@ Die generierte Releasehinweis-Datei kann direkt in die GitHub-Release-Beschreibu
 
 **Hinweis:** Die generierte Datei ist temporär und kann nach der Erstellung des GitHub-Release gelöscht werden. Es wird empfohlen, `RELEASE_NOTES_github_*.md` zu `.gitignore` hinzuzufügen, wenn Sie diese Dateien nicht committen möchten.
 
-### README.md aktualisieren {#update-readmemd}
+### README.md aktualisieren {/* #update-readmemd */}
 
 Wenn Sie Änderungen an `documentation/docs/intro.md` vorgenommen haben, generieren Sie die Repository-Datei `README.md` neu:
 

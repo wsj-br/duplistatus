@@ -1,4 +1,4 @@
-# Database Maintenance {#database-maintenance}
+# डेटाबेस रखरखाव {/* #database-maintenance */}
 
 अपने बैकअप डेटा और डेटाबेस रखरखाव ऑपरेशन के माध्यम से प्रदर्शन को अनुकूलित करें।
 
@@ -6,7 +6,7 @@
 
 <br/>
 
-## Database Backup {#database-backup}
+## डेटाबेस बैकअप {/* #database-backup */}
 
 सुरक्षा या माइग्रेशन उद्देश्यों के लिए अपने पूरे डेटाबेस का बैकअप बनाएं।
 
@@ -30,7 +30,7 @@
 
 <br/>
 
-## Database Restore {#database-restore}
+## डेटाबेस रिस्टोर {/* #database-restore */}
 
 पहले से बनाए गए बैकअप फ़ाइल से अपने डेटाबेस को पुनर्स्थापित करें।
 
@@ -79,9 +79,11 @@ Yeh sabhi maintenance functions ke liye lagta hai: dashboard par sabhi statistic
 Agar aapne by mistake data delete kiya hai, toh aap [Collect Backup Logs](../collect-backup-logs.md) feature ka use karke usko restore kar sakte hain.
 :::
 
+cron सेवा हर रविवार 04:00 UTC पर डेटाबेस को **संक्षिप्त** करती है। वह पास सर्वर रॉ की हटाता है जो अब मौजूद नहीं है, सर्वर रॉ जो कोई बाकी बैकअप रिपोर्ट नहीं रखते हैं, बाकी Backup Monitoring और विलंबित-नोटिफिकेशन सम्मान, पुरानी Daily Summary डिलीवरी रॉ, और फ़ाइल स्पेस को पुनः प्राप्त करने के लिए SQLite `VACUUM` चलाता है। एक सर्वर या बैकअप जॉब को हटाने से मिलान सम्मान तुरंत साफ़ हो जाते हैं।
+
 <br/>
 
-## Data Cleanup Period {#data-cleanup-period}
+## डेटा क्लीनअप अवधि {/* #data-cleanup-period */}
 
 Outdated backup records ko remove karke storage space free karo aur system performance improve karo.
 
@@ -109,7 +111,7 @@ Yeh strongly recommended hai ki aap is action se pehle database backup create ka
 
 <br/>
 
-## Delete Backup Job Data {#delete-backup-job-data}
+## बैकअप जॉब डेटा डिलीट करें {/* #delete-backup-job-data */}
 
 Remove a specific Backup Job (type) data.
 
@@ -127,7 +129,7 @@ Remove a specific Backup Job (type) data.
 
 <br/>
 
-## Delete Server Data {#delete-server-data}
+## सर्वर डेटा डिलीट करें {/* #delete-server-data */}
 
 Remove a specific server and all its associated backup data.
 
@@ -144,7 +146,7 @@ Remove a specific server and all its associated backup data.
 
 <br/>
 
-## Merge Duplicate Servers {#merge-duplicate-servers}
+## डुप्लिकेट सर्वर्स मर्ज करें {/* #merge-duplicate-servers */}
 
 Detect and merge duplicate servers that have the same name but different IDs. se this feature to consolidate them into a single server entry.
 

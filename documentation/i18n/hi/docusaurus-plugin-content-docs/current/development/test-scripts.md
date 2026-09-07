@@ -1,11 +1,11 @@
-# परीक्षण स्क्रिप्ट {#test-scripts}
+# परीक्षण स्क्रिप्ट {/* #test-scripts */}
 
 इस परियोजना में विकास और परीक्षण के लिए कई परीक्षण स्क्रिप्ट शामिल हैं:
 
 > [!NOTE]
 > विलंबित डीबगिंग, SMTP मैट्रिक्स परीक्षण और क्रॉन पोर्ट चेक के लिए पुराने रिपॉजिटरी-रूट `pnpm` हेल्पर हटाए गए थे। नीचे दस्तावेज़ किए गए अनुसार एप्लिकेशन UI (**सेटिंग्स → बैकअप मॉनिटरिंग**), प्रमाणित HTTP APIs, और क्रॉन सेवा के खिलाफ `curl` का उपयोग करें।
 
-## परीक्षण डेटा जनरेट करें {#generate-test-data}
+## Parikshan Data उत्पन्न करें {/* #generate-test-data */}
 
 ```bash
 pnpm generate-test-data --servers=N
@@ -49,26 +49,26 @@ pnpm generate-test-data --servers=30
 > यह स्क्रिप्ट डेटाबेस में सभी पिछले डेटा को हटा देती है और इसे परीक्षण डेटा से बदल देती है।
 > इस स्क्रिप्ट को चलाने से पहले अपने डेटाबेस का बैकअप लें।
 
-## विलंबित चेक और क्रॉन कनेक्टिविटी (विकास) {#overdue-checks-and-cron-connectivity-development}
+## Vilambit Janch aur cron connectivity (development) {/* #overdue-checks-and-cron-connectivity-development */}
 
-### एक विलंबित बैकअप चेक चलाएँ {#run-an-overdue-backup-check}
+### Vilambit Backup Janch चलाएं {/* #run-an-overdue-backup-check */}
 
 जब एप्लिकेशन चल रहा होता है:
 
 - **UI (अनुशंसित):** **सेटिंग्स → बैकअप मॉनिटरिंग** खोलें और **टेस्ट विलंबित बैकअप्स** का उपयोग करें। यह निर्धारित कार्य की उसी लॉजिक को चलाता है जो प्रमाणित `POST /api/notifications/check-overdue` के माध्यम से चलाया जाता है।
 
-### क्रॉन सेवा स्वास्थ्य {#cron-service-health}
+### Cron service health {/* #cron-service-health */}
 
 ```bash
 curl http://localhost:8667/health
 curl http://localhost:8666/api/cron/health
 ```
 
-### एक विशिष्ट तिथि या समय को सिम्युलेट करना {#simulating-a-specific-date-or-time}
+### एक विशिष्ट Taareekh या Samay का अनुकरण {/* #simulating-a-specific-date-or-time */}
 
 सिम्युलेटेड “वर्तमान” समय को इंजेक्ट करने के लिए कोई बंडल्ड CLI नहीं है। एल्गोरिदम और मैनुअल परीक्षण के विचार के लिए, रिपॉजिटरी फ़ाइल `dev/OVERDUE_DETECTION_ALGORITHM.md` और `src/lib/overdue-backup-checker.ts` में कार्यान्वयन देखें।
 
-## CSV निर्यात की वैधता {#validate-csv-export}
+## CSV export को मान्य करें {/* #validate-csv-export */}
 
 ```bash
 pnpm validate-csv-export
@@ -81,7 +81,7 @@ pnpm validate-csv-export
 
 रिलीज़ से पहले CSV निर्यात सही ढंग से काम करते हैं यह सुनिश्चित करने के लिए उपयोगी है।
 
-## NTFY सर्वर को अस्थायी रूप से ब्लॉक करें (परीक्षण के लिए) {#temporarily-block-ntfy-server-for-testing}
+## NTFY सर्वर को अस्थायी रूप से ब्लॉक करें (परीक्षण के लिए) {/* #temporarily-block-ntfy-server-for-testing */}
 
 ```bash
 sudo ./scripts/temporary_ntfy.sh_block.sh
@@ -97,11 +97,11 @@ sudo ./scripts/temporary_ntfy.sh_block.sh
 >[!CAUTION]
 > यह स्क्रिप्ट iptables नियमों को संशोधित करती है और रूट विशेषाधिकार की आवश्यकता होती है। इसका उपयोग केवल नोटिफिकेशन रिट्राई मेकानिज्म का परीक्षण करने के लिए करें।
 
-## डेटाबेस माइग्रेशन परीक्षण {#database-migration-testing}
+## Database Migration Parikshan {/* #database-migration-testing */}
 
 प्रोजेक्ट में डेटाबेस माइग्रेशन का परीक्षण करने के लिए स्क्रिप्ट शामिल हैं, जो पुराने संस्करणों से वर्तमान संस्करण तक। ये स्क्रिप्ट सुनिश्चित करती हैं कि डेटाबेस माइग्रेशन सही ढंग से काम करते हैं और डेटा एकीकरण बनाए रखते हैं।
 
-### माइग्रेशन परीक्षण डेटा जनरेट करें {#generate-migration-test-data}
+### Migration Parikshan Data उत्पन्न करें {/* #generate-migration-test-data */}
 
 ```bash
 ./scripts/generate-migration-test-data.sh
@@ -143,7 +143,7 @@ sudo ./scripts/temporary_ntfy.sh_block.sh
 >[!IMPORTANT]
 > यह स्क्रिप्ट केवल एक बार चलानी चाहिए, क्योंकि नए संस्करणों के लिए डेवलपर डेटाबेस फ़ाइल और स्क्रीनशॉट को सीधे `scripts/migration_test_data/` डायरेक्टरी पर कॉपी कर सकते हैं। विकास के दौरान, माइग्रेशन का परीक्षण करने के लिए केवल `./scripts/test-migrations.sh` स्क्रिप्ट चलाएं।
 
-### डेटाबेस माइग्रेशन का परीक्षण करें {#test-database-migrations}
+### Database Migrations का Parikshan {/* #test-database-migrations */}
 
 ```bash
 ./scripts/test-migrations.sh
@@ -220,11 +220,11 @@ echo $?  # 0 = all passed, 1 = some failed
 >[!NOTE]
 > यह स्क्रिप्ट आंतरिक रूप से TypeScript माइग्रेशन परीक्षण स्क्रिप्ट (`test-migration.ts`) का उपयोग करती है। परीक्षण स्क्रिप्ट माइग्रेशन के बाद डेटाबेस संरचना को मान्य करती है और डेटा एकीकरण सुनिश्चित करती है।
 
-## SMTP और ईमेल (विकास) {#smtp-and-email-development}
+## SMTP aur Email (development) {/* #smtp-and-email-development */}
 
 **सेटिंग्स → ईमेल** के तहत SMTP कॉन्फ़िगर करें और ऐप के भीतर ईमेल परीक्षण और अधिसूचना प्रवाहों का उपयोग करें। पूर्व `pnpm set-smtp-test-config` और `pnpm test-smtp-connections` सहायक स्क्रिप्ट को रिपॉजिटरी से हटा दिया गया था।
 
-## परीक्षण Docker एंट्रीपॉइंट स्क्रिप्ट {#test-docker-entrypoint-script}
+## Docker Entrypoint Script का Parikshan {/* #test-docker-entrypoint-script */}
 
 ```bash
 pnpm test-entrypoint
@@ -267,10 +267,10 @@ pnpm test-entrypoint
 - शांत शटडाउन और सिग्नल हैंडलिंग का परीक्षण
 - स्थानीय वातावरण में एंट्रीपॉइंट स्क्रिप्ट व्यवहार को डीबग करना
 
-## दैनिक सारांश सत्यापन {#daily-summary-validation}
+## दैनिक सारांश validation {/* #daily-summary-validation */}
 
 ```bash
 pnpm validate-daily-summary
 ```
 
-दैनिक सारांश शेड्यूलिंग (DST सहित) के लिए निर्धारित सत्यापन चलाता है, स्नैपशॉट एग्रीगेशन, मार्कडाउन सैनिटाइज़ेशन, डिलीवरी-लेडजर क्लेम्स, और कस्टम टेम्प्लेट्स के साथ स्कीमा 4.1 से 4.2 माइग्रेशन। ईमेल या NTFY नहीं भेजता।
+दैनिक सारांश अनुसूचीकरण के लिए निर्धारित जाँच चलाता है (DST सहित), स्नैपशॉट एग्रीगेशन (नवीनतम बैकअप कार्यों के लिए), बाकी नोटिफिकेशन-सेटिंग्स प्रूनिंग, अनाथ बैकअप/सर्वर पंक्तियाँ, मार्कडाउन सैनिटाइज़ेशन, डिलीवरी-लेजर क्लेम्स, और स्कीमा 4.1 → 4.2 माइग्रेशन कस्टम टेम्प्लेट्स के साथ। ईमेल या NTFY नहीं भेजता।

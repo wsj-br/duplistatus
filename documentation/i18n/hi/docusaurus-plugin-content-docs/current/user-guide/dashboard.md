@@ -1,6 +1,6 @@
-# डैशबोर्ड {#dashboard}
+# डैशबोर्ड {/* #dashboard */}
 
-## डैशबोर्ड सारांश {#dashboard-summary}
+## डैशबोर्ड सारांश {/* #dashboard-summary */}
 
 इस अनुभाग में सभी बैकअप के लिए एकत्रित आँकड़े प्रदर्शित किए जाते हैं।
 
@@ -20,7 +20,7 @@
 यदि डैशबोर्ड पर एक ही सर्वर एक से अधिक बार दिखाई देता है, तो उन्हें एकत्रित करने के लिए [सेटिंग्स → डेटाबेस मेनटेनेंस → डुप्लिकेट सर्वर मर्ज करें](settings/database-maintenance.md#merge-duplicate-servers) का उपयोग करें। डुप्लिकेट तब हो सकते हैं जब आप डुप्लिकेट को पुनः इंस्टॉल या अपग्रेड करते हैं, क्योंकि सर्वर का `machine_id` बदल सकता है और **duplistatus** इसे एक नए सर्वर के रूप में देखता है।
 :::
 
-## सर्वर फ़िल्टरिंग {#server-filtering}
+## सर्वर फ़िल्टरिंग {/* #server-filtering */}
 
 आप एप्लिकेशन टूलबार में सर्च फ़ील्ड का उपयोग करके डैशबोर्ड पर प्रदर्शित सर्वर और बैकअप को फ़िल्टर कर सकते हैं। सर्च फ़ील्ड को प्रकट करने के लिए फ़िल्टर आइकन <IconButton icon="lucide:search" /> पर क्लिक करें।
 
@@ -36,7 +36,7 @@
 
 यह कई मॉनिटर किए जाने वाले सिस्टम के बीच विशिष्ट सर्वर या बैकअप को जल्दी से स्थानांतरित करने में मदद करता है।
 
-## कार्ड्स लेआउट {#cards-layout}
+## कार्ड लेआउट {/* #cards-layout */}
 
 कार्ड्स लेआउट प्रत्येक बैकअप के लिए प्राप्त नवीनतम बैकअप लॉग की स्थिति को दिखाता है।
 
@@ -65,7 +65,7 @@
 
 ![charts panel](../assets/screen-overview-side-charts.png)
 
-### बैकअप विवरण {#backup-details}
+### बैकअप विवरण {/* #backup-details */}
 
 List mein kisi backup par hover karne se, last backup log ke details aur kisi bhi vilambit jankari dikhati hai.
 
@@ -85,7 +85,7 @@ Agar ye backup vilambit hai, tooltip bhi dikhayega:
 
 Aap bhi bottom par buttons click karke [Settings → Backup Notifications](settings/backup-notifications-settings.md) khol sakte hain monitoring settings configure karne ke liye ya Duplicati server's web interface kholne ke liye.
 
-## Table Layout {#table-layout}
+## तालिका लेआउट {/* #table-layout */}
 
 Table layout lists the most recent backup logs received for all servers and backups.
 
@@ -107,7 +107,7 @@ Table layout lists the most recent backup logs received for all servers and back
 
 Aap [Display Settings](settings/display-settings.md) use kar sakte hain table size aur other configurations configure karne ke liye.
 
-### Suchnaayein Icons {#notifications-icons}
+### सूचनाएँ आइकन {/* #notifications-icons */}
 
 | Icon                                                                                                                               | Notification Option | Description                                                                                         |
 |------------------------------------------------------------------------------------------------------------------------------------|---------------------|-----------------------------------------------------------------------------------------------------|
@@ -120,7 +120,7 @@ Aap [Display Settings](settings/display-settings.md) use kar sakte hain table si
 Yah suchnaayein samaan sirf tab lagta hai jab **duplistatus** ek naya backup log Duplicati server se praapt karta hai. Vilambit suchnaayein alag se samaan ki gayi hain aur is samaan ke bina bheje jaayenge.
 :::
 
-### Vilambit Vistrit {#overdue-details}
+### समय से अधिक विस्तृत {/* #overdue-details */}
 
 Vilambit chetaavani icon par mouse rakhne se vilambit backup ke baare mein vishesh vivaran dikhaye jaate hain.
 
@@ -131,7 +131,7 @@ Vilambit chetaavani icon par mouse rakhne se vilambit backup ke baare mein vishe
 - **Anumati Backup**: Backup ka anumati samay, vilambit ke roop mein mark kiye jaane se pehle anumati samay (extra samay) shamil kiya gaya tha.
 - **Antim Suchnaayein**: Kab aakhiri vilambit suchnaayein bheji gayi thi.
 
-## Duplicati Server Version {#duplicati-server-version}
+## duplicati सर्वर संस्करण {/* #duplicati-server-version */}
 
 Dashboard har server (card view) ya backup job (Table view) ke liye sabse antim backup log mein report kiye gaye Duplicati sanskaran ko dikhata hai.
 
@@ -145,7 +145,7 @@ Dashboard har server (card view) ya backup job (Table view) ke liye sabse antim 
 **duplistatus** vartaman mein chal rahe sanskaran ke liye Duplicati server se query nahi karta hai. Yah prapt kiye gaye ya [Ekathrit](collect-backup-logs.md) antim backup log mein store kiye gaye sanskaran ka upyog karta hai. Duplicati upgrade karne ke baad, dashboard naya backup log aane tak pichla sanskaran dikhata rehta hai.
 :::
 
-### Upalabdh Backup Sanskaran {#available-backup-versions}
+### उपलब्ध बैकअप संस्करण {/* #available-backup-versions */}
 
 Neela ghadi icon par click karne se backup ke samay praapt upalabdh backup versions ki ek list khuli jaati hai, jise Duplicati server ne report kiya hai.
 

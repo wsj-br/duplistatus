@@ -167,7 +167,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 315
+        "line": 382
       },
       {
         "file": "src/components/settings/ip-allowlist-form.tsx",
@@ -196,7 +196,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 380
+        "line": 458
       }
     ]
   },
@@ -360,7 +360,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 266
+        "line": 321
       }
     ]
   },
@@ -775,7 +775,7 @@
     "locations": [
       {
         "file": "src/app/login/page.tsx",
-        "line": 293
+        "line": 290
       }
     ]
   },
@@ -825,11 +825,11 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 369
+        "line": 521
       },
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 570
+        "line": 713
       }
     ]
   },
@@ -1641,7 +1641,7 @@
       },
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 175
+        "line": 189
       }
     ]
   },
@@ -1728,7 +1728,7 @@
       },
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 174
+        "line": 188
       }
     ]
   },
@@ -1782,7 +1782,7 @@
     "locations": [
       {
         "file": "src/app/login/page.tsx",
-        "line": 165
+        "line": 163
       }
     ]
   },
@@ -1809,7 +1809,7 @@
     "locations": [
       {
         "file": "src/app/login/page.tsx",
-        "line": 167
+        "line": 165
       }
     ]
   },
@@ -1836,7 +1836,7 @@
     "locations": [
       {
         "file": "src/app/login/page.tsx",
-        "line": 169
+        "line": 167
       }
     ]
   },
@@ -1863,7 +1863,7 @@
     "locations": [
       {
         "file": "src/app/login/page.tsx",
-        "line": 171
+        "line": 169
       }
     ]
   },
@@ -1890,11 +1890,11 @@
     "locations": [
       {
         "file": "src/app/login/page.tsx",
-        "line": 173
+        "line": 171
       },
       {
         "file": "src/components/change-password-modal.tsx",
-        "line": 198
+        "line": 200
       }
     ]
   },
@@ -1921,7 +1921,7 @@
     "locations": [
       {
         "file": "src/app/login/page.tsx",
-        "line": 175
+        "line": 173
       }
     ]
   },
@@ -1948,11 +1948,11 @@
     "locations": [
       {
         "file": "src/app/login/page.tsx",
-        "line": 203
+        "line": 201
       },
       {
         "file": "src/components/change-password-modal.tsx",
-        "line": 222
+        "line": 229
       }
     ]
   },
@@ -1979,7 +1979,7 @@
     "locations": [
       {
         "file": "src/app/login/page.tsx",
-        "line": 245
+        "line": 242
       }
     ]
   },
@@ -2006,11 +2006,11 @@
     "locations": [
       {
         "file": "src/app/login/page.tsx",
-        "line": 250
+        "line": 247
       },
       {
         "file": "src/app/login/page.tsx",
-        "line": 298
+        "line": 295
       }
     ]
   },
@@ -2037,7 +2037,7 @@
     "locations": [
       {
         "file": "src/app/login/page.tsx",
-        "line": 251
+        "line": 248
       }
     ]
   },
@@ -2064,7 +2064,7 @@
     "locations": [
       {
         "file": "src/app/login/page.tsx",
-        "line": 262
+        "line": 259
       },
       {
         "file": "src/components/settings/audit-log-viewer.tsx",
@@ -2103,7 +2103,7 @@
     "locations": [
       {
         "file": "src/app/login/page.tsx",
-        "line": 269
+        "line": 266
       }
     ]
   },
@@ -2130,7 +2130,7 @@
     "locations": [
       {
         "file": "src/app/login/page.tsx",
-        "line": 276
+        "line": 273
       },
       {
         "file": "src/components/backup-collect-menu.tsx",
@@ -2161,7 +2161,7 @@
     "locations": [
       {
         "file": "src/app/login/page.tsx",
-        "line": 281
+        "line": 278
       }
     ]
   },
@@ -2188,7 +2188,7 @@
     "locations": [
       {
         "file": "src/app/login/page.tsx",
-        "line": 298
+        "line": 295
       }
     ]
   },
@@ -2215,7 +2215,7 @@
     "locations": [
       {
         "file": "src/app/login/page.tsx",
-        "line": 310
+        "line": 307
       }
     ]
   },
@@ -2242,7 +2242,7 @@
     "locations": [
       {
         "file": "src/app/login/page.tsx",
-        "line": 313
+        "line": 310
       }
     ]
   },
@@ -2269,7 +2269,7 @@
     "locations": [
       {
         "file": "src/app/login/page.tsx",
-        "line": 331
+        "line": 328
       },
       {
         "file": "src/components/conditional-layout.tsx",
@@ -2300,7 +2300,7 @@
     "locations": [
       {
         "file": "src/app/login/page.tsx",
-        "line": 360
+        "line": 357
       },
       {
         "file": "src/components/dashboard/dashboard-layout.tsx",
@@ -2343,7 +2343,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 70
+        "line": 73
       }
     ]
   },
@@ -2370,7 +2370,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 71
+        "line": 74
       }
     ]
   },
@@ -2397,7 +2397,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 129
+        "line": 133
       }
     ]
   },
@@ -2424,7 +2424,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 139
+        "line": 143
       },
       {
         "file": "src/components/ui/back-button.tsx",
@@ -2455,7 +2455,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 151
+        "line": 155
       }
     ]
   },
@@ -2482,7 +2482,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 160
+        "line": 164
       },
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
@@ -2517,7 +2517,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 190
+        "line": 194
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
@@ -2548,15 +2548,15 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 199
+        "line": 203
       },
       {
         "file": "src/components/change-password-modal.tsx",
-        "line": 231
+        "line": 238
       },
       {
         "file": "src/components/change-password-modal.tsx",
-        "line": 341
+        "line": 348
       },
       {
         "file": "src/components/settings/email-configuration-form.tsx",
@@ -2595,7 +2595,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 206
+        "line": 210
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
@@ -2630,7 +2630,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 213
+        "line": 217
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
@@ -2665,7 +2665,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 219
+        "line": 223
       }
     ]
   },
@@ -2692,7 +2692,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 234
+        "line": 238
       }
     ]
   },
@@ -2767,27 +2767,27 @@
       },
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 155
+        "line": 193
       },
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 174
+        "line": 212
       },
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 201
+        "line": 239
       },
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 228
+        "line": 266
       },
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 261
+        "line": 299
       },
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 318
+        "line": 388
       },
       {
         "file": "src/components/settings/application-logs-viewer.tsx",
@@ -3992,7 +3992,7 @@
       },
       {
         "file": "src/components/change-password-modal.tsx",
-        "line": 341
+        "line": 348
       },
       {
         "file": "src/components/dashboard/overview-status-cards.tsx",
@@ -4131,7 +4131,7 @@
       },
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 254
+        "line": 309
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
@@ -5287,15 +5287,15 @@
       },
       {
         "file": "src/components/change-password-modal.tsx",
-        "line": 334
+        "line": 341
       },
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 598
+        "line": 741
       },
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 618
+        "line": 761
       },
       {
         "file": "src/components/settings/backup-notifications-form.tsx",
@@ -5307,11 +5307,11 @@
       },
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 493
+        "line": 571
       },
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 510
+        "line": 588
       },
       {
         "file": "src/components/settings/database-maintenance-form.tsx",
@@ -5518,7 +5518,7 @@
       },
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 357
+        "line": 509
       },
       {
         "file": "src/components/settings/audit-log-viewer.tsx",
@@ -5600,7 +5600,7 @@
       },
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 594
+        "line": 737
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
@@ -5631,7 +5631,7 @@
     "locations": [
       {
         "file": "src/components/change-password-modal.tsx",
-        "line": 160
+        "line": 162
       }
     ]
   },
@@ -5658,7 +5658,7 @@
     "locations": [
       {
         "file": "src/components/change-password-modal.tsx",
-        "line": 188
+        "line": 190
       }
     ]
   },
@@ -5685,7 +5685,7 @@
     "locations": [
       {
         "file": "src/components/change-password-modal.tsx",
-        "line": 190
+        "line": 192
       }
     ]
   },
@@ -5712,7 +5712,7 @@
     "locations": [
       {
         "file": "src/components/change-password-modal.tsx",
-        "line": 192
+        "line": 194
       }
     ]
   },
@@ -5739,7 +5739,7 @@
     "locations": [
       {
         "file": "src/components/change-password-modal.tsx",
-        "line": 194
+        "line": 196
       }
     ]
   },
@@ -5766,7 +5766,7 @@
     "locations": [
       {
         "file": "src/components/change-password-modal.tsx",
-        "line": 196
+        "line": 198
       }
     ]
   },
@@ -5793,7 +5793,7 @@
     "locations": [
       {
         "file": "src/components/change-password-modal.tsx",
-        "line": 200
+        "line": 202
       }
     ]
   },
@@ -5820,7 +5820,7 @@
     "locations": [
       {
         "file": "src/components/change-password-modal.tsx",
-        "line": 234
+        "line": 241
       }
     ]
   },
@@ -5847,7 +5847,7 @@
     "locations": [
       {
         "file": "src/components/change-password-modal.tsx",
-        "line": 237
+        "line": 244
       }
     ]
   },
@@ -5874,7 +5874,7 @@
     "locations": [
       {
         "file": "src/components/change-password-modal.tsx",
-        "line": 253
+        "line": 260
       }
     ]
   },
@@ -5901,7 +5901,7 @@
     "locations": [
       {
         "file": "src/components/change-password-modal.tsx",
-        "line": 259
+        "line": 266
       },
       {
         "file": "src/components/settings/email-configuration-form.tsx",
@@ -5936,7 +5936,7 @@
     "locations": [
       {
         "file": "src/components/change-password-modal.tsx",
-        "line": 265
+        "line": 272
       },
       {
         "file": "src/components/settings/email-configuration-form.tsx",
@@ -5971,7 +5971,7 @@
     "locations": [
       {
         "file": "src/components/change-password-modal.tsx",
-        "line": 273
+        "line": 280
       }
     ]
   },
@@ -5998,7 +5998,7 @@
     "locations": [
       {
         "file": "src/components/change-password-modal.tsx",
-        "line": 278
+        "line": 285
       },
       {
         "file": "src/components/settings/email-configuration-form.tsx",
@@ -6033,7 +6033,7 @@
     "locations": [
       {
         "file": "src/components/change-password-modal.tsx",
-        "line": 289
+        "line": 296
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
@@ -6064,7 +6064,7 @@
     "locations": [
       {
         "file": "src/components/change-password-modal.tsx",
-        "line": 295
+        "line": 302
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
@@ -6095,7 +6095,7 @@
     "locations": [
       {
         "file": "src/components/change-password-modal.tsx",
-        "line": 302
+        "line": 309
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
@@ -6126,7 +6126,7 @@
     "locations": [
       {
         "file": "src/components/change-password-modal.tsx",
-        "line": 308
+        "line": 315
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
@@ -6157,7 +6157,7 @@
     "locations": [
       {
         "file": "src/components/change-password-modal.tsx",
-        "line": 314
+        "line": 321
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
@@ -6188,7 +6188,7 @@
     "locations": [
       {
         "file": "src/components/change-password-modal.tsx",
-        "line": 319
+        "line": 326
       }
     ]
   },
@@ -6215,7 +6215,7 @@
     "locations": [
       {
         "file": "src/components/change-password-modal.tsx",
-        "line": 341
+        "line": 348
       }
     ]
   },
@@ -6990,7 +6990,7 @@
       },
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 173
+        "line": 187
       }
     ]
   },
@@ -10050,11 +10050,11 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 130
+        "line": 168
       },
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 156
+        "line": 194
       }
     ]
   },
@@ -10079,7 +10079,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 139
+        "line": 177
       }
     ]
   },
@@ -10104,7 +10104,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 174
+        "line": 212
       }
     ]
   },
@@ -10129,11 +10129,11 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 191
+        "line": 229
       },
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 202
+        "line": 240
       }
     ]
   },
@@ -10158,7 +10158,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 228
+        "line": 266
       }
     ]
   },
@@ -10185,11 +10185,11 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 242
+        "line": 280
       },
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 300
+        "line": 345
       },
       {
         "file": "src/components/settings/audit-log-viewer.tsx",
@@ -10246,11 +10246,11 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 243
+        "line": 281
       },
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 301
+        "line": 346
       }
     ]
   },
@@ -10275,7 +10275,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 261
+        "line": 299
       }
     ]
   },
@@ -10300,7 +10300,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 273
+        "line": 311
       }
     ]
   },
@@ -10327,7 +10327,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 279
+        "line": 317
       },
       {
         "file": "src/components/settings/backup-monitoring-form.tsx",
@@ -10358,7 +10358,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 285
+        "line": 323
       },
       {
         "file": "src/components/settings/backup-monitoring-form.tsx",
@@ -10395,11 +10395,11 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 313
+        "line": 379
       },
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 319
+        "line": 389
       }
     ]
   },
@@ -10424,7 +10424,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 315
+        "line": 383
       }
     ]
   },
@@ -10449,7 +10449,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 339
+        "line": 491
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
@@ -10482,7 +10482,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 341
+        "line": 493
       }
     ]
   },
@@ -10507,7 +10507,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 345
+        "line": 497
       }
     ]
   },
@@ -10532,11 +10532,11 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 350
+        "line": 502
       },
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 576
+        "line": 719
       }
     ]
   },
@@ -10561,11 +10561,11 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 351
+        "line": 503
       },
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 556
+        "line": 699
       }
     ]
   },
@@ -10590,11 +10590,11 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 352
+        "line": 504
       },
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 564
+        "line": 707
       }
     ]
   },
@@ -10621,7 +10621,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 353
+        "line": 505
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
@@ -10654,7 +10654,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 354
+        "line": 506
       }
     ]
   },
@@ -10679,7 +10679,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 355
+        "line": 507
       }
     ]
   },
@@ -10704,7 +10704,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 356
+        "line": 508
       }
     ]
   },
@@ -10731,7 +10731,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 358
+        "line": 510
       },
       {
         "file": "src/components/settings/audit-log-viewer.tsx",
@@ -10772,11 +10772,11 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 369
+        "line": 521
       },
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 571
+        "line": 714
       }
     ]
   },
@@ -10803,15 +10803,15 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 371
+        "line": 523
       },
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 372
+        "line": 524
       },
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 353
+        "line": 431
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
@@ -10840,7 +10840,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 386
+        "line": 538
       }
     ]
   },
@@ -10865,7 +10865,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 387
+        "line": 539
       }
     ]
   },
@@ -10890,7 +10890,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 391
+        "line": 543
       }
     ]
   },
@@ -10915,7 +10915,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 393
+        "line": 545
       }
     ]
   },
@@ -10940,7 +10940,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 394
+        "line": 546
       }
     ]
   },
@@ -10965,7 +10965,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 402
+        "line": 554
       }
     ]
   },
@@ -10990,7 +10990,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 403
+        "line": 555
       }
     ]
   },
@@ -11015,11 +11015,11 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 416
+        "line": 568
       },
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 539
+        "line": 682
       }
     ]
   },
@@ -11044,7 +11044,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 425
+        "line": 577
       }
     ]
   },
@@ -11069,7 +11069,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 428
+        "line": 580
       }
     ]
   },
@@ -11094,7 +11094,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 440
+        "line": 592
       }
     ]
   },
@@ -11119,7 +11119,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 441
+        "line": 593
       }
     ]
   },
@@ -11144,7 +11144,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 451
+        "line": 603
       }
     ]
   },
@@ -11169,7 +11169,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 455
+        "line": 607
       }
     ]
   },
@@ -11194,7 +11194,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 476
+        "line": 620
       }
     ]
   },
@@ -11219,95 +11219,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 487
-      }
-    ]
-  },
-  "575f5f86": {
-    "source": "Saving...",
-    "translated": {
-      "pt-BR": "Salvando...",
-      "es": "Guardando...",
-      "fr": "Enregistrement...",
-      "de": "Speichern...",
-      "zh-CN": "保存中...",
-      "zh-Hans": "正在保存...",
-      "hi": "Saving..."
-    },
-    "models": {
-      "pt-BR": "anthropic/claude-3.5-haiku",
-      "es": "anthropic/claude-3.5-haiku",
-      "fr": "anthropic/claude-3.5-haiku",
-      "de": "anthropic/claude-3.5-haiku",
-      "zh-CN": "manual",
-      "zh-Hans": "meta-llama/llama-3.3-70b-instruct",
-      "hi": "meta-llama/llama-3.3-70b-instruct"
-    },
-    "locations": [
-      {
-        "file": "src/components/settings/api-keys-form.tsx",
-        "line": 500
-      },
-      {
-        "file": "src/components/settings/audit-log-retention-form.tsx",
-        "line": 144
-      },
-      {
-        "file": "src/components/settings/backup-monitoring-form.tsx",
-        "line": 1396
-      },
-      {
-        "file": "src/components/settings/email-configuration-form.tsx",
-        "line": 894
-      },
-      {
-        "file": "src/components/settings/email-configuration-form.tsx",
-        "line": 1030
-      },
-      {
-        "file": "src/components/settings/ip-allowlist-form.tsx",
-        "line": 327
-      },
-      {
-        "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 959
-      },
-      {
-        "file": "src/components/settings/ntfy-form.tsx",
-        "line": 257
-      },
-      {
-        "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1163
-      },
-      {
-        "file": "src/components/settings/server-settings-form.tsx",
-        "line": 1310
-      }
-    ]
-  },
-  "a3152ba4": {
-    "source": "Save protection settings",
-    "translated": {
-      "es": "Guardar configuración de protección",
-      "pt-BR": "Salvar configurações de proteção",
-      "de": "Schutz-Einstellungen speichern",
-      "fr": "Enregistrer les paramètres de protection",
-      "zh-Hans": "保存保护设置",
-      "hi": "सुरक्षा सेटिंग्स सहेजें"
-    },
-    "models": {
-      "es": "mistralai/codestral-2508",
-      "pt-BR": "mistralai/codestral-2508",
-      "de": "mistralai/codestral-2508",
-      "fr": "mistralai/codestral-2508",
-      "zh-Hans": "mistralai/codestral-2508",
-      "hi": "mistralai/codestral-2508"
-    },
-    "locations": [
-      {
-        "file": "src/components/settings/api-keys-form.tsx",
-        "line": 500
+        "line": 632
       }
     ]
   },
@@ -11332,7 +11244,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 543
+        "line": 686
       }
     ]
   },
@@ -11357,7 +11269,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 544
+        "line": 687
       }
     ]
   },
@@ -11382,7 +11294,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 581
+        "line": 724
       }
     ]
   },
@@ -11407,7 +11319,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 585
+        "line": 728
       }
     ]
   },
@@ -11434,7 +11346,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 601
+        "line": 744
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
@@ -11463,7 +11375,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 601
+        "line": 744
       }
     ]
   },
@@ -11488,7 +11400,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 612
+        "line": 755
       }
     ]
   },
@@ -11513,7 +11425,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 614
+        "line": 757
       }
     ]
   },
@@ -11540,7 +11452,7 @@
     "locations": [
       {
         "file": "src/components/settings/api-keys-form.tsx",
-        "line": 619
+        "line": 762
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
@@ -12375,6 +12287,65 @@
       {
         "file": "src/components/settings/audit-log-retention-form.tsx",
         "line": 126
+      }
+    ]
+  },
+  "575f5f86": {
+    "source": "Saving...",
+    "translated": {
+      "pt-BR": "Salvando...",
+      "es": "Guardando...",
+      "fr": "Enregistrement...",
+      "de": "Speichern...",
+      "zh-CN": "保存中...",
+      "zh-Hans": "正在保存...",
+      "hi": "Saving..."
+    },
+    "models": {
+      "pt-BR": "anthropic/claude-3.5-haiku",
+      "es": "anthropic/claude-3.5-haiku",
+      "fr": "anthropic/claude-3.5-haiku",
+      "de": "anthropic/claude-3.5-haiku",
+      "zh-CN": "manual",
+      "zh-Hans": "meta-llama/llama-3.3-70b-instruct",
+      "hi": "meta-llama/llama-3.3-70b-instruct"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/audit-log-retention-form.tsx",
+        "line": 144
+      },
+      {
+        "file": "src/components/settings/backup-monitoring-form.tsx",
+        "line": 1396
+      },
+      {
+        "file": "src/components/settings/email-configuration-form.tsx",
+        "line": 894
+      },
+      {
+        "file": "src/components/settings/email-configuration-form.tsx",
+        "line": 1030
+      },
+      {
+        "file": "src/components/settings/ip-allowlist-form.tsx",
+        "line": 334
+      },
+      {
+        "file": "src/components/settings/notification-templates-form.tsx",
+        "line": 959
+      },
+      {
+        "file": "src/components/settings/ntfy-form.tsx",
+        "line": 257
+      },
+      {
+        "file": "src/components/settings/server-settings-form.tsx",
+        "line": 1163
+      },
+      {
+        "file": "src/components/settings/server-settings-form.tsx",
+        "line": 1310
       }
     ]
   },
@@ -15241,23 +15212,23 @@
       }
     ]
   },
-  "76d6807c": {
-    "source": "Daily Summary mode is enabled. Overdue detection continues, but individual overdue email notifications are suppressed until Daily Summary is turned off. NTFY notifications continue.",
+  "a54c14ce": {
+    "source": "Daily Summary mode is enabled. Overdue detection continues, but overdue email to the default Email recipient is suppressed until Daily Summary is turned off. Additional email destinations continue for matching events. NTFY notifications continue.",
     "translated": {
-      "fr": "Le mode Résumé quotidien est activé. La détection des retards continue, mais les notifications par e-mail individuelles en retard sont supprimées jusqu'à ce que le Résumé quotidien soit désactivé. Les notifications NTFY continuent.",
-      "es": "El modo Resumen diario está activado. La detección de vencimientos continuará, pero las notificaciones por correo electrónico individuales de vencimientos se suprimirán hasta que se desactive el Resumen diario. Las notificaciones NTFY continúan.",
-      "pt-BR": "O modo Resumo Diário está ativado. A detecção de atrasos continua, mas as notificações por e-mail individuais de atrasos são suprimidas até que o Resumo Diário seja desativado. As notificações NTFY continuam.",
-      "de": "Der Tägliche Zusammenfassungsmodus ist aktiviert. Die Überfälligkeitserkennung läuft weiter, aber individuelle Überfälligkeits-E-Mail-Benachrichtigungen werden unterdrückt, bis der Tägliche Zusammenfassung deaktiviert wird. NTFY-Benachrichtigungen laufen weiter.",
-      "zh-Hans": "已启用每日摘要模式。过期检测继续进行，但单个过期电子邮件通知将被抑制，直到每日摘要关闭。NTFY通知继续。",
-      "hi": "दैनिक सारांश मोड सक्षम है। अतिदेयता का पता लगाना जारी है, लेकिन व्यक्तिगत अतिदेय ईमेल सूचनाएँ दैनिक सारांश बंद होने तक रोक दी जाती हैं। NTFY सूचनाएँ जारी रहती हैं।"
+      "pt-BR": "O modo Resumo Diário está ativado. A detecção de atraso continua, mas o e-mail de atraso para o destinatário de e-mail padrão é suprimido até que o Resumo Diário seja desativado. Os destinos de e-mail adicionais continuam para eventos correspondentes. As notificações NTFY continuam.",
+      "fr": "Le mode Résumé quotidien est activé. La détection des sauvegardes en retard se poursuit, mais l'e-mail de retard vers le destinataire par défaut est suspendu jusqu'à la désactivation du Résumé quotidien. Les destinations e-mail supplémentaires continuent de recevoir les événements correspondants. Les notifications NTFY continuent.",
+      "es": "El modo Resumen Diario está activado. La detección de retrasos continúa, pero el correo de retraso al destinatario de correo predeterminado se suprime hasta que se desactive el Resumen Diario. Los destinos de correo adicionales siguen recibiendo eventos coincidentes. Las notificaciones NTFY continúan.",
+      "de": "Der Tageszusammenfassung-Modus ist aktiviert. Die Erkennung überfälliger Sicherungen läuft weiter, aber E-Mails zu überfälligen Sicherungen an den Standard-E-Mail-Empfänger werden unterdrückt, bis die Tageszusammenfassung deaktiviert wird. Zusätzliche E-Mail-Ziele erhalten weiterhin passende Ereignisse. NTFY-Benachrichtigungen laufen weiter.",
+      "zh-Hans": "每日摘要模式已启用。过期检测仍会继续，但发送给默认邮件收件人的过期通知邮件将被暂停，直到关闭每日摘要功能。发送到其他邮件目标的匹配事件通知不受影响。NTFY 通知继续发送。",
+      "hi": "डेली सारांश मोड सक्षम है। अतिदेय (ओवरड्यू) पहचान जारी रहेगी, लेकिन डिफ़ॉल्ट ईमेल प्राप्तकर्ता को अतिदेय ईमेल तब तक रोकी जाएगी जब तक डेली सारांश बंद नहीं किया जाता। मेल खाने वाली घटनाओं के लिए अतिरिक्त ईमेल गंतव्य जारी रहेंगे। NTFY सूचनाएं जारी रहेंगी।"
     },
     "models": {
-      "fr": "mistralai/codestral-2508",
-      "es": "mistralai/codestral-2508",
-      "pt-BR": "mistralai/codestral-2508",
-      "de": "mistralai/codestral-2508",
-      "zh-Hans": "mistralai/codestral-2508",
-      "hi": "mistralai/codestral-2508"
+      "pt-BR": "~anthropic/claude-sonnet-latest",
+      "fr": "~anthropic/claude-sonnet-latest",
+      "es": "~anthropic/claude-sonnet-latest",
+      "de": "~anthropic/claude-sonnet-latest",
+      "zh-Hans": "~anthropic/claude-sonnet-latest",
+      "hi": "~anthropic/claude-sonnet-latest"
     },
     "locations": [
       {
@@ -17777,23 +17748,23 @@
       }
     ]
   },
-  "6e41a2ba": {
-    "source": "Daily Summary mode is enabled, so individual and additional backup email notifications are currently suppressed. NTFY notifications continue. These settings are preserved and become active again when Daily Summary is turned off.",
+  "daecc8b8": {
+    "source": "Daily Summary mode is enabled, so emails to the default Email recipient are suppressed. Additional email destinations continue to receive matching events. NTFY notifications continue. These settings are preserved and become active again when Daily Summary is turned off.",
     "translated": {
-      "fr": "Le mode Résumé quotidien est activé, donc les notifications par e-mail individuelles et supplémentaires de sauvegarde sont actuellement supprimées. Les notifications NTFY continuent. Ces paramètres sont conservés et deviennent actifs à nouveau lorsque le Résumé quotidien est désactivé.",
-      "es": "El modo Resumen diario está activado, por lo que las notificaciones por correo electrónico individuales y adicionales de respaldo están actualmente suprimidas. Las notificaciones NTFY continúan. Estos ajustes se conservan y vuelven a estar activos cuando se desactive el Resumen diario.",
-      "pt-BR": "O modo Resumo Diário está ativado, portanto, as notificações por e-mail individuais e adicionais de backup estão atualmente suprimidas. As notificações NTFY continuam. Essas configurações são preservadas e tornam-se ativas novamente quando o Resumo Diário for desativado.",
-      "de": "Der Tägliche Zusammenfassungsmodus ist aktiviert, sodass individuelle und zusätzliche Sicherungs-E-Mail-Benachrichtigungen derzeit unterdrückt werden. NTFY-Benachrichtigungen laufen weiter. Diese Einstellungen werden beibehalten und werden wieder aktiv, wenn der Tägliche Zusammenfassung deaktiviert wird.",
-      "zh-Hans": "已启用每日摘要模式，因此单个和额外的备份电子邮件通知目前被抑制。NTFY通知继续。这些设置被保留，并在每日摘要关闭时重新激活。",
-      "hi": "दैनिक सारांश मोड सक्षम है, इसलिए व्यक्तिगत और अतिरिक्त बैकअप ईमेल सूचनाएँ वर्तमान में रोक दी गई हैं। NTFY सूचनाएँ जारी रहती हैं। ये सेटिंग्स संरक्षित रहती हैं और दैनिक सारांश बंद होने पर फिर से सक्रिय हो जाती हैं।"
+      "pt-BR": "O modo Resumo Diário está ativado, portanto os e-mails para o destinatário de e-mail padrão são suprimidos. Os destinos de e-mail adicionais continuam recebendo eventos correspondentes. As notificações NTFY continuam. Essas configurações são preservadas e voltam a ficar ativas quando o Resumo Diário é desativado.",
+      "fr": "Le mode Résumé quotidien est activé, les e-mails vers le destinataire par défaut sont donc suspendus. Les destinations e-mail supplémentaires continuent de recevoir les événements correspondants. Les notifications NTFY continuent. Ces paramètres sont conservés et réactivés dès que le Résumé quotidien est désactivé.",
+      "es": "El modo Resumen Diario está activado, por lo que los correos al destinatario de correo predeterminado se suprimen. Los destinos de correo adicionales siguen recibiendo eventos coincidentes. Las notificaciones NTFY continúan. Estos ajustes se conservan y vuelven a estar activos cuando se desactiva el Resumen Diario.",
+      "de": "Der Tageszusammenfassung-Modus ist aktiviert, daher werden E-Mails an den Standard-E-Mail-Empfänger unterdrückt. Zusätzliche E-Mail-Ziele erhalten weiterhin passende Ereignisse. NTFY-Benachrichtigungen laufen weiter. Diese Einstellungen bleiben erhalten und werden wieder aktiv, sobald die Tageszusammenfassung deaktiviert wird.",
+      "zh-Hans": "每日摘要模式已启用，因此发送给默认邮件收件人的邮件将被暂停。其他邮件目标仍会继续接收匹配的事件通知。NTFY 通知继续发送。这些设置会被保留，并在关闭每日摘要后重新生效。",
+      "hi": "डेली सारांश मोड सक्षम है, इसलिए डिफ़ॉल्ट ईमेल प्राप्तकर्ता को भेजी जाने वाली ईमेल रोक दी गई हैं। मेल खाने वाली घटनाओं के लिए अतिरिक्त ईमेल गंतव्य प्राप्त होते रहेंगे। NTFY सूचनाएं जारी रहेंगी। जब डेली सारांश बंद किया जाएगा, तो ये सेटिंग्स सुरक्षित रहेंगी और फिर से सक्रिय हो जाएंगी।"
     },
     "models": {
-      "fr": "mistralai/codestral-2508",
-      "es": "mistralai/codestral-2508",
-      "pt-BR": "mistralai/codestral-2508",
-      "de": "mistralai/codestral-2508",
-      "zh-Hans": "mistralai/codestral-2508",
-      "hi": "mistralai/codestral-2508"
+      "pt-BR": "~anthropic/claude-sonnet-latest",
+      "fr": "~anthropic/claude-sonnet-latest",
+      "es": "~anthropic/claude-sonnet-latest",
+      "de": "~anthropic/claude-sonnet-latest",
+      "zh-Hans": "~anthropic/claude-sonnet-latest",
+      "hi": "~anthropic/claude-sonnet-latest"
     },
     "locations": [
       {
@@ -20818,15 +20789,15 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 118
+        "line": 134
       },
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 119
+        "line": 135
       },
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 126
+        "line": 142
       }
     ]
   },
@@ -20851,7 +20822,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 125
+        "line": 141
       }
     ]
   },
@@ -20876,11 +20847,11 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 185
+        "line": 240
       },
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 192
+        "line": 247
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
@@ -20917,7 +20888,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 191
+        "line": 246
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
@@ -20946,11 +20917,11 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 209
+        "line": 264
       },
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 216
+        "line": 271
       }
     ]
   },
@@ -20975,7 +20946,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 212
+        "line": 267
       }
     ]
   },
@@ -21000,7 +20971,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 212
+        "line": 267
       }
     ]
   },
@@ -21025,7 +20996,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 215
+        "line": 270
       }
     ]
   },
@@ -21050,11 +21021,11 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 234
+        "line": 289
       },
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 241
+        "line": 296
       }
     ]
   },
@@ -21079,7 +21050,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 237
+        "line": 292
       }
     ]
   },
@@ -21104,7 +21075,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 237
+        "line": 292
       }
     ]
   },
@@ -21129,7 +21100,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 240
+        "line": 295
       }
     ]
   },
@@ -21154,7 +21125,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 252
+        "line": 307
       }
     ]
   },
@@ -21179,7 +21150,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 256
+        "line": 311
       }
     ]
   },
@@ -21204,7 +21175,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 258
+        "line": 313
       }
     ]
   },
@@ -21229,11 +21200,11 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 260
+        "line": 315
       },
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 350
+        "line": 428
       }
     ]
   },
@@ -21258,7 +21229,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 274
+        "line": 329
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
@@ -21282,28 +21253,28 @@
       }
     ]
   },
-  "e8275871": {
-    "source": "When enabled, duplistatus sends one daily status snapshot by email and suppresses individual backup and overdue email notifications, including additional email destinations. Per-job NTFY settings are kept and continue to work. All settings become active again as soon as this mode is turned off.",
+  "7e2a2c42": {
+    "source": "When enabled, duplistatus sends one daily status snapshot by email and suppresses backup and overdue emails to the default Email recipient. Additional email destinations in Backup Notifications continue to receive matching events. Per-job NTFY settings are kept and continue to work. All settings become active again as soon as this mode is turned off.",
     "translated": {
-      "fr": "Lorsqu'il est activé, duplistatus envoie un instantané quotidien de l'état par e-mail et supprime les notifications par e-mail individuelles de sauvegarde et de retard, y compris les destinations e-mail supplémentaires. Les paramètres NTFY par tâche sont conservés et continuent de fonctionner. Tous les paramètres deviennent actifs à nouveau dès que ce mode est désactivé.",
-      "es": "Cuando esté activado, duplistatus envía un único resumen de estado diario por correo electrónico y suprime las notificaciones por correo electrónico individuales de respaldo y vencimiento, incluyendo destinos adicionales de correo electrónico. Los ajustes de NTFY por trabajo se mantienen y continúan funcionando. Todos los ajustes vuelven a estar activos tan pronto como se desactive este modo.",
-      "pt-BR": "Quando ativado, o duplistatus envia um único relatório de status diário por e-mail e suprime as notificações por e-mail individuais de backup e de atrasos, incluindo destinos de e-mail adicionais. As configurações de NTFY por trabalho são mantidas e continuam a funcionar. Todas as configurações tornam-se ativas novamente assim que este modo for desativado.",
-      "de": "Wenn aktiviert, sendet duplistatus eine tägliche Status-Snapshot-E-Mail und unterdrückt individuelle Sicherungs- und Überfälligkeits-E-Mail-Benachrichtigungen, einschließlich zusätzlicher E-Mail-Adressen. Die pro-Job NTFY-Einstellungen bleiben erhalten und funktionieren weiter. Alle Einstellungen werden wieder aktiv, sobald dieser Modus deaktiviert wird.",
-      "zh-Hans": "启用时，duplistatus通过电子邮件发送每日状态快照，并抑制单个备份和过期电子邮件通知，包括额外的电子邮件目的地。每个作业的NTFY设置被保留并继续工作。所有设置在该模式关闭后立即激活。",
-      "hi": "जब सक्षम किया जाता है, तो duplistatus एक दैनिक स्थिति स्नैपशॉट ईमेल भेजता है और व्यक्तिगत बैकअप और अतिदेय ईमेल सूचनाएँ रोक देता है, जिसमें अतिरिक्त ईमेल गंतव्य भी शामिल हैं। प्रति-जॉब NTFY सेटिंग्स बनाए रखे जाते हैं और जारी रहती हैं। सभी सेटिंग्स इस मोड बंद होने के तुरंत ही सक्रिय हो जाती हैं।"
+      "pt-BR": "Quando ativado, o duplistatus envia um resumo diário de status por e-mail e suprime os e-mails de backup e de atraso para o destinatário de e-mail padrão. Os destinos de e-mail adicionais em Notificações de Backup continuam recebendo eventos correspondentes. As configurações de NTFY por tarefa são mantidas e continuam funcionando. Todas as configurações voltam a ficar ativas assim que esse modo é desativado.",
+      "fr": "Lorsqu'il est activé, duplistatus envoie un résumé quotidien unique par e-mail et suspend les e-mails de sauvegarde et de retard vers le destinataire par défaut. Les destinations e-mail supplémentaires dans Notifications de sauvegarde continuent de recevoir les événements correspondants. Les paramètres NTFY par tâche sont conservés et continuent de fonctionner. Tous les paramètres sont réactivés dès que ce mode est désactivé.",
+      "es": "Cuando está activado, duplistatus envía una instantánea de estado diaria por correo y suprime los correos de copia de seguridad y de retraso al destinatario de correo predeterminado. Los destinos de correo adicionales en Notificaciones de Copia de Seguridad siguen recibiendo eventos coincidentes. Los ajustes de NTFY por tarea se conservan y siguen funcionando. Todos los ajustes vuelven a estar activos en cuanto se desactiva este modo.",
+      "de": "Wenn aktiviert, sendet duplistatus einmal täglich eine Statusübersicht per E-Mail und unterdrückt Sicherungs- und Überfällig-E-Mails an den Standard-E-Mail-Empfänger. Zusätzliche E-Mail-Ziele in den Sicherungsbenachrichtigungen erhalten weiterhin passende Ereignisse. Auftragsspezifische NTFY-Einstellungen bleiben erhalten und funktionieren weiter. Alle Einstellungen werden wieder aktiv, sobald dieser Modus deaktiviert wird.",
+      "zh-Hans": "启用后，duplistatus 会每天通过邮件发送一次状态摘要，并暂停发送给默认邮件收件人的备份和过期通知邮件。备份通知中的其他邮件目标仍会继续接收匹配的事件通知。各任务的 NTFY 设置会被保留并继续生效。关闭此模式后，所有设置将立即恢复生效。",
+      "hi": "सक्षम होने पर, duplistatus ईमेल द्वारा एक दैनिक स्थिति स्नैपशॉट भेजता है और डिफ़ॉल्ट ईमेल प्राप्तकर्ता को बैकअप और अतिदेय ईमेल रोक देता है। बैकअप सूचनाओं में मौजूद अतिरिक्त ईमेल गंतव्य मेल खाने वाली घटनाएं प्राप्त करते रहेंगे। प्रति-जॉब NTFY सेटिंग्स बनी रहती हैं और काम करती रहती हैं। यह मोड बंद होते ही सभी सेटिंग्स फिर से सक्रिय हो जाती हैं।"
     },
     "models": {
-      "fr": "mistralai/codestral-2508",
-      "es": "mistralai/codestral-2508",
-      "pt-BR": "mistralai/codestral-2508",
-      "de": "mistralai/codestral-2508",
-      "zh-Hans": "mistralai/codestral-2508",
-      "hi": "mistralai/codestral-2508"
+      "pt-BR": "~anthropic/claude-sonnet-latest",
+      "fr": "~anthropic/claude-sonnet-latest",
+      "es": "~anthropic/claude-sonnet-latest",
+      "de": "~anthropic/claude-sonnet-latest",
+      "zh-Hans": "~anthropic/claude-sonnet-latest",
+      "hi": "~anthropic/claude-sonnet-latest"
     },
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 277
+        "line": 332
       }
     ]
   },
@@ -21328,7 +21299,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 286
+        "line": 341
       }
     ]
   },
@@ -21353,7 +21324,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 297
+        "line": 352
       }
     ]
   },
@@ -21378,7 +21349,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 304
+        "line": 360
       }
     ]
   },
@@ -21403,7 +21374,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 314
+        "line": 370
       }
     ]
   },
@@ -21428,7 +21399,113 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 314
+        "line": 370
+      }
+    ]
+  },
+  "c1e99ce0": {
+    "source": "Override SMTP recipient",
+    "translated": {
+      "fr": "Remplacer le destinataire SMTP",
+      "es": "Sobrecribir destinatario SMTP",
+      "de": "SMTP-Empfänger überschreiben",
+      "pt-BR": "Substituir destinatário SMTP",
+      "zh-Hans": "覆盖 SMTP 收件人",
+      "hi": "SMTP प्राप्तकर्ता ओवरराइड करें"
+    },
+    "models": {
+      "fr": "~anthropic/claude-sonnet-latest",
+      "es": "~anthropic/claude-sonnet-latest",
+      "de": "~anthropic/claude-sonnet-latest",
+      "pt-BR": "~anthropic/claude-sonnet-latest",
+      "zh-Hans": "~anthropic/claude-sonnet-latest",
+      "hi": "~anthropic/claude-sonnet-latest"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/daily-summary-form.tsx",
+        "line": 376
+      }
+    ]
+  },
+  "1621db76": {
+    "source": "recipient@example.com",
+    "translated": {
+      "pt-BR": "destinatario@exemplo.com",
+      "de": "empfaenger@beispiel.com",
+      "fr": "destinataire@exemple.com",
+      "es": "destinatario@ejemplo.com",
+      "zh-CN": "recipient@example.com",
+      "zh-Hans": "recipient@example.com",
+      "hi": "recipient@example.com"
+    },
+    "models": {
+      "pt-BR": "anthropic/claude-3.5-haiku",
+      "de": "anthropic/claude-3.5-haiku",
+      "fr": "anthropic/claude-3.5-haiku",
+      "es": "anthropic/claude-3.5-haiku",
+      "zh-CN": "manual",
+      "zh-Hans": "meta-llama/llama-3.3-70b-instruct",
+      "hi": "google/gemini-2.5-flash-lite"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/daily-summary-form.tsx",
+        "line": 382
+      },
+      {
+        "file": "src/components/settings/email-configuration-form.tsx",
+        "line": 774
+      }
+    ]
+  },
+  "f16b2073": {
+    "source": "Leave empty to send the Daily Summary to the SMTP recipient configured in Email settings.",
+    "translated": {
+      "fr": "Laisser vide pour envoyer le résumé quotidien au destinataire SMTP configuré dans les paramètres Email.",
+      "es": "Deja este campo vacío para enviar el resumen diario al destinatario SMTP configurado en los ajustes de correo electrónico.",
+      "de": "Leer lassen, um die Tageszusammenfassung an den in den E-Mail-Einstellungen konfigurierten SMTP-Empfänger zu senden.",
+      "pt-BR": "Deixe em branco para enviar o Resumo Diário ao destinatário SMTP configurado nas configurações de Email.",
+      "zh-Hans": "留空以将每日摘要发送到“邮件设置”中配置的 SMTP 收件人。",
+      "hi": "Daily Summary को Email सेटिंग में कॉन्फ़िगर किए गए SMTP प्राप्तकर्ता को भेजने के लिए खाली छोड़ें।"
+    },
+    "models": {
+      "fr": "~anthropic/claude-sonnet-latest",
+      "es": "~anthropic/claude-sonnet-latest",
+      "de": "~anthropic/claude-sonnet-latest",
+      "pt-BR": "~anthropic/claude-sonnet-latest",
+      "zh-Hans": "~anthropic/claude-sonnet-latest",
+      "hi": "~anthropic/claude-sonnet-latest"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/daily-summary-form.tsx",
+        "line": 388
+      }
+    ]
+  },
+  "e7b07847": {
+    "source": "Enter a valid email address, or leave empty to use the SMTP recipient.",
+    "translated": {
+      "fr": "Saisissez une adresse e-mail valide, ou laissez vide pour utiliser le destinataire SMTP.",
+      "es": "Introduce una dirección de correo electrónico válida o déjalo vacío para usar el destinatario SMTP.",
+      "de": "Geben Sie eine gültige E-Mail-Adresse ein, oder lassen Sie das Feld leer, um den SMTP-Empfänger zu verwenden.",
+      "pt-BR": "Digite um endereço de email válido ou deixe em branco para usar o destinatário SMTP.",
+      "zh-Hans": "请输入有效的电子邮件地址，或留空以使用 SMTP 收件人。",
+      "hi": "एक मान्य ईमेल पता दर्ज करें, या SMTP प्राप्तकर्ता का उपयोग करने के लिए खाली छोड़ें।"
+    },
+    "models": {
+      "fr": "~anthropic/claude-sonnet-latest",
+      "es": "~anthropic/claude-sonnet-latest",
+      "de": "~anthropic/claude-sonnet-latest",
+      "pt-BR": "~anthropic/claude-sonnet-latest",
+      "zh-Hans": "~anthropic/claude-sonnet-latest",
+      "hi": "~anthropic/claude-sonnet-latest"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/daily-summary-form.tsx",
+        "line": 392
       }
     ]
   },
@@ -21453,7 +21530,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 326
+        "line": 404
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
@@ -21482,11 +21559,11 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 326
+        "line": 404
       },
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 457
+        "line": 535
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
@@ -21519,7 +21596,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 333
+        "line": 411
       }
     ]
   },
@@ -21544,7 +21621,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 343
+        "line": 421
       }
     ]
   },
@@ -21571,7 +21648,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 349
+        "line": 427
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
@@ -21604,7 +21681,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 353
+        "line": 431
       }
     ]
   },
@@ -21631,7 +21708,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 363
+        "line": 441
       },
       {
         "file": "src/components/settings/email-configuration-form.tsx",
@@ -21672,7 +21749,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 363
+        "line": 441
       }
     ]
   },
@@ -21699,7 +21776,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 367
+        "line": 445
       },
       {
         "file": "src/components/ui/connectivity-error-modal.tsx",
@@ -21728,7 +21805,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 367
+        "line": 445
       }
     ]
   },
@@ -21753,7 +21830,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 383
+        "line": 461
       }
     ]
   },
@@ -21778,7 +21855,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 388
+        "line": 466
       }
     ]
   },
@@ -21803,7 +21880,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 403
+        "line": 481
       }
     ]
   },
@@ -21828,7 +21905,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 409
+        "line": 487
       }
     ]
   },
@@ -21853,7 +21930,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 419
+        "line": 497
       }
     ]
   },
@@ -21878,7 +21955,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 422
+        "line": 500
       }
     ]
   },
@@ -21903,7 +21980,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 428
+        "line": 506
       }
     ]
   },
@@ -21928,7 +22005,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 439
+        "line": 517
       }
     ]
   },
@@ -21953,7 +22030,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 446
+        "line": 524
       }
     ]
   },
@@ -21978,7 +22055,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 459
+        "line": 537
       }
     ]
   },
@@ -22003,7 +22080,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 465
+        "line": 543
       }
     ]
   },
@@ -22030,7 +22107,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 465
+        "line": 543
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
@@ -22038,7 +22115,7 @@
       },
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 170
+        "line": 184
       }
     ]
   },
@@ -22063,15 +22140,15 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 465
+        "line": 543
       },
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 135
+        "line": 149
       },
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 184
+        "line": 198
       }
     ]
   },
@@ -22096,7 +22173,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 470
+        "line": 548
       }
     ]
   },
@@ -22121,7 +22198,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 475
+        "line": 553
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
@@ -22150,32 +22227,32 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 487
+        "line": 565
       }
     ]
   },
-  "77891cd0": {
-    "source": "Individual backup and overdue email notifications will be paused, including additional email destinations. NTFY notifications continue. Detection of overdue backups continues.",
+  "afaf7d95": {
+    "source": "Backup and overdue emails to the default Email recipient will be paused. Additional email destinations in Backup Notifications continue. NTFY notifications continue. Detection of overdue backups continues.",
     "translated": {
-      "fr": "Les notifications par e-mail individuelles de sauvegarde et de retard seront suspendues, y compris les destinations e-mail supplémentaires. Les notifications NTFY continuent. La détection des sauvegardes en retard continue.",
-      "es": "Las notificaciones por correo electrónico individuales de respaldo y vencimiento se pausarán, incluyendo destinos adicionales de correo electrónico. Las notificaciones NTFY continúan. La detección de respaldos vencidos continúa.",
-      "pt-BR": "As notificações por e-mail individuais de backup e de atrasos serão pausadas, incluindo destinos de e-mail adicionais. As notificações NTFY continuam. A detecção de backups em atraso continua.",
-      "de": "Individuelle Sicherungs- und Überfälligkeits-E-Mail-Benachrichtigungen werden angehalten, einschließlich zusätzlicher E-Mail-Adressen. NTFY-Benachrichtigungen laufen weiter. Die Erkennung von überfälligen Sicherungen läuft weiter.",
-      "zh-Hans": "单个备份和过期电子邮件通知将被暂停，包括额外的电子邮件目的地。NTFY通知继续。过期备份的检测继续进行。",
-      "hi": "व्यक्तिगत बैकअप और अतिदेय ईमेल सूचनाएँ रोक दी जाएंगी, जिसमें अतिरिक्त ईमेल गंतव्य भी शामिल हैं। NTFY सूचनाएँ जारी रहती हैं। अतिदेय बैकअप का पता लगाना जारी रहता है।"
+      "pt-BR": "Os e-mails de backup e de atraso para o destinatário de e-mail padrão serão pausados. Os destinos de e-mail adicionais em Notificações de Backup continuam. As notificações NTFY continuam. A detecção de backups atrasados continua.",
+      "fr": "Les e-mails de sauvegarde et de retard vers le destinataire par défaut seront suspendus. Les destinations e-mail supplémentaires dans Notifications de sauvegarde continuent. Les notifications NTFY continuent. La détection des sauvegardes en retard continue.",
+      "es": "Los correos de copia de seguridad y de retraso al destinatario de correo predeterminado se pausarán. Los destinos de correo adicionales en Notificaciones de Copia de Seguridad continúan. Las notificaciones NTFY continúan. La detección de copias de seguridad retrasadas continúa.",
+      "de": "Sicherungs- und Überfällig-E-Mails an den Standard-E-Mail-Empfänger werden pausiert. Zusätzliche E-Mail-Ziele in den Sicherungsbenachrichtigungen bleiben aktiv. NTFY-Benachrichtigungen laufen weiter. Die Erkennung überfälliger Sicherungen läuft weiter.",
+      "zh-Hans": "发送给默认邮件收件人的备份和过期通知邮件将被暂停。备份通知中的其他邮件目标不受影响。NTFY 通知继续发送。过期备份的检测仍会继续。",
+      "hi": "डिफ़ॉल्ट ईमेल प्राप्तकर्ता को बैकअप और अतिदेय ईमेल रोकी जाएंगी। बैकअप सूचनाओं में मौजूद अतिरिक्त ईमेल गंतव्य जारी रहेंगे। NTFY सूचनाएं जारी रहेंगी। अतिदेय बैकअप की पहचान जारी रहेगी।"
     },
     "models": {
-      "fr": "mistralai/codestral-2508",
-      "es": "mistralai/codestral-2508",
-      "pt-BR": "mistralai/codestral-2508",
-      "de": "mistralai/codestral-2508",
-      "zh-Hans": "mistralai/codestral-2508",
-      "hi": "mistralai/codestral-2508"
+      "pt-BR": "~anthropic/claude-sonnet-latest",
+      "fr": "~anthropic/claude-sonnet-latest",
+      "es": "~anthropic/claude-sonnet-latest",
+      "de": "~anthropic/claude-sonnet-latest",
+      "zh-Hans": "~anthropic/claude-sonnet-latest",
+      "hi": "~anthropic/claude-sonnet-latest"
     },
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 489
+        "line": 567
       }
     ]
   },
@@ -22200,7 +22277,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 495
+        "line": 573
       }
     ]
   },
@@ -22225,7 +22302,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 504
+        "line": 582
       }
     ]
   },
@@ -22250,7 +22327,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 506
+        "line": 584
       }
     ]
   },
@@ -22275,7 +22352,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 511
+        "line": 589
       }
     ]
   },
@@ -27678,33 +27755,6 @@
       }
     ]
   },
-  "1621db76": {
-    "source": "recipient@example.com",
-    "translated": {
-      "pt-BR": "destinatario@exemplo.com",
-      "de": "empfaenger@beispiel.com",
-      "fr": "destinataire@exemple.com",
-      "es": "destinatario@ejemplo.com",
-      "zh-CN": "recipient@example.com",
-      "zh-Hans": "recipient@example.com",
-      "hi": "recipient@example.com"
-    },
-    "models": {
-      "pt-BR": "anthropic/claude-3.5-haiku",
-      "de": "anthropic/claude-3.5-haiku",
-      "fr": "anthropic/claude-3.5-haiku",
-      "es": "anthropic/claude-3.5-haiku",
-      "zh-CN": "manual",
-      "zh-Hans": "meta-llama/llama-3.3-70b-instruct",
-      "hi": "google/gemini-2.5-flash-lite"
-    },
-    "locations": [
-      {
-        "file": "src/components/settings/email-configuration-form.tsx",
-        "line": 774
-      }
-    ]
-  },
   "e279c07f": {
     "source": "Connection Type",
     "translated": {
@@ -28912,6 +28962,31 @@
       }
     ]
   },
+  "1fa36e88": {
+    "source": "When either allowlist is enabled, /api/health and /api/ping accept loopback and CIDRs from either list. Other IPs receive 403. Non-loopback requests are also rate-limited.",
+    "translated": {
+      "fr": "Lorsque l'une des listes blanches est activée, /api/health et /api/ping acceptent les adresses de bouclage et les plages CIDR de l'une ou l'autre liste. Les autres adresses IP reçoivent une erreur 403. Les requêtes autres que de bouclage sont également soumises à une limitation de débit.",
+      "es": "Cuando cualquiera de las listas de permitidos está activada, /api/health y /api/ping aceptan loopback y CIDR de cualquiera de las listas. El resto de IP reciben 403. Las solicitudes que no son loopback también tienen limitación de frecuencia.",
+      "de": "Wenn eine der beiden Positivlisten aktiviert ist, akzeptieren /api/health und /api/ping Loopback- und CIDR-Adressen aus jeder der Listen. Andere IPs erhalten 403. Nicht-Loopback-Anfragen unterliegen zudem einer Ratenbegrenzung.",
+      "pt-BR": "Quando qualquer uma das listas de permissões estiver ativada, /api/health e /api/ping aceitam loopback e CIDRs de qualquer uma das listas. Outros IPs recebem 403. Solicitações que não sejam de loopback também têm limite de taxa.",
+      "zh-Hans": "当启用任一允许列表时，/api/health 和 /api/ping 会接受回环地址以及任一列表中的 CIDR。其他 IP 将收到 403 响应。非回环请求还会受到速率限制。",
+      "hi": "जब दोनों में से किसी भी अनुमति-सूची (allowlist) को सक्षम किया जाता है, तो /api/health और /api/ping लूपबैक और किसी भी सूची के CIDR स्वीकार करते हैं। अन्य IP को 403 प्राप्त होता है। गैर-लूपबैक अनुरोधों पर भी दर सीमा (rate limit) लागू होती है।"
+    },
+    "models": {
+      "fr": "~anthropic/claude-sonnet-latest",
+      "es": "~anthropic/claude-sonnet-latest",
+      "de": "~anthropic/claude-sonnet-latest",
+      "pt-BR": "~anthropic/claude-sonnet-latest",
+      "zh-Hans": "~anthropic/claude-sonnet-latest",
+      "hi": "~anthropic/claude-sonnet-latest"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/ip-allowlist-form.tsx",
+        "line": 329
+      }
+    ]
+  },
   "52e788d6": {
     "source": "Save IP allowlist",
     "translated": {
@@ -28933,7 +29008,7 @@
     "locations": [
       {
         "file": "src/components/settings/ip-allowlist-form.tsx",
-        "line": 327
+        "line": 334
       }
     ]
   },
@@ -36334,7 +36409,7 @@
     "locations": [
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 150
+        "line": 164
       }
     ]
   },
@@ -36359,7 +36434,7 @@
     "locations": [
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 168
+        "line": 182
       }
     ]
   },
@@ -36384,7 +36459,7 @@
     "locations": [
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 169
+        "line": 183
       }
     ]
   },
@@ -36409,7 +36484,7 @@
     "locations": [
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 171
+        "line": 185
       }
     ]
   },
@@ -36434,7 +36509,7 @@
     "locations": [
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 172
+        "line": 186
       }
     ]
   },
@@ -36459,7 +36534,7 @@
     "locations": [
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 176
+        "line": 190
       }
     ]
   },
@@ -36484,19 +36559,19 @@
     "locations": [
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 203
+        "line": 217
       },
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 204
+        "line": 218
       },
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 232
+        "line": 246
       },
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 236
+        "line": 250
       }
     ]
   },
@@ -36521,11 +36596,11 @@
     "locations": [
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 206
+        "line": 220
       },
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 207
+        "line": 221
       }
     ]
   },
@@ -36550,7 +36625,7 @@
     "locations": [
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 239
+        "line": 253
       }
     ]
   }

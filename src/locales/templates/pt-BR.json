@@ -20,7 +20,7 @@
   "dailySummary": {
     "email": {
       "title": "📬 duplistatus — Resumo diário do backup — {summary_date}",
-      "message": "## 📊 Resumo diário do backup\n\n🕐 Gerado: **{generated_at}** ({time_zone})\n\n### 📈 Visão geral\n\n| Métrica | Contagem |\n| --- | ---: |\n| 🖥️ Servidores | {server_count} |\n| 💼 Trabalhos de backup | {job_count} |\n| ✅ Sucesso | {success_count} |\n| ⚠️ Avisos | {warning_count} |\n| 🛑 Erros | {error_count} |\n| 💀 Fatal | {fatal_count} |\n| ❓ Desconhecido | {unknown_count} |\n| ❓ Nenhum relatório recebido | {no_report_count} |\n| 🕑 Atrasado | {overdue_count} |\n\n### 🚨 Atenção necessária\n\n{problem_table}\n\n### 📋 Todos os últimos resultados de backup\n\n{all_jobs_table}\n\n{duplistatus_link}\n"
+      "message": "## 📊 Resumo diário de backup\n\n🕐 Gerado: **{generated_at}** ({time_zone})\n\n### 📈 Visão geral\n\n| Métrica | Contagem |\n| --- | ---: |\n| 🖥️ Servidores | {server_count} |\n| 💼 Trabalhos de backup / ✅ Sucesso | {job_count} / {success_count} |\n| ⚠️ Avisos / 🛑 Erros / 💀 Fatal / ❓ Desconhecido | {warning_count} / {error_count} / {fatal_count} / {unknown_count} |\n| ❓ Nenhum relatório recebido | {no_report_count} |\n| 🕑 Atrasado | {overdue_count} |\n\n### 🚨 Atenção necessária\n\n{problem_table}\n\n### 📋 Todos os resultados mais recentes de backup\n\n{all_jobs_table}\n\n{duplistatus_link}\n"
     }
   }
 }

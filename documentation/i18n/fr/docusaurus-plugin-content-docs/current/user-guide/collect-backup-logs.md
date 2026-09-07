@@ -1,10 +1,10 @@
-# Collecter les journaux de sauvegarde {#collect-backup-logs}
+# Collecter les journaux de sauvegarde {/* #collect-backup-logs */}
 
 **duplistatus** peut récupérer les journaux de sauvegarde directement à partir des serveurs Duplicati pour remplir la base de données ou restaurer les données de journaux manquantes. L'application ignore automatiquement tous les journaux en double qui existent déjà dans la base de données.
 
-## Étapes pour collecter les journaux de sauvegarde {#steps-to-collect-backup-logs}
+## Étapes pour Collecter les journaux de sauvegarde {/* #steps-to-collect-backup-logs */}
 
-### Collecte manuelle {#manual-collection}
+### Collecte manuelle {/* #manual-collection */}
 
 1.  Cliquez sur l'icône <IconButton icon="lucide:download" /> **Collecter les journaux de sauvegarde** dans la [barre d'outils de l'application](overview.md#application-toolbar).
 
@@ -31,7 +31,7 @@ Les boutons <IconButton icon="lucide:download" /> sont disponibles dans [Paramè
 
 <br/>
 
-### Collecte en masse {#bulk-collection}
+### Collecte en masse {/* #bulk-collection */}
 
 _Cliquez avec le bouton droit_ sur le bouton <IconButton icon="lucide:download" /> **Collecter les journaux de sauvegarde** dans la barre d'outils de l'application pour collecter à partir de tous les serveurs configurés.
 
@@ -41,7 +41,7 @@ _Cliquez avec le bouton droit_ sur le bouton <IconButton icon="lucide:download" 
 Vous pouvez également utiliser le bouton <IconButton icon="lucide:import" label="Tout collecter"/> dans les pages [Paramètres → Surveillance des sauvegardes](settings/backup-monitoring-settings.md) et [Paramètres → Paramètres des serveurs](settings/server-settings.md) pour collecter à partir de tous les serveurs configurés.
 :::
 
-## Comment fonctionne le processus de collecte {#how-the-collection-process-works}
+## Comment fonctionne le processus de collecte {/* #how-the-collection-process-works */}
 
 - **duplistatus** détecte automatiquement le meilleur protocole de connexion et se connecte au serveur Duplicati spécifié.
 - Il récupère l'historique des sauvegardes, les informations de journalisation et les paramètres de sauvegarde (pour la surveillance des sauvegardes).
@@ -55,7 +55,7 @@ Vous pouvez également utiliser le bouton <IconButton icon="lucide:import" label
 Si le même serveur apparaît plusieurs fois après la collecte des journaux de sauvegarde (ou après une réinstallation/mise à niveau de Duplicati), c'est généralement dû à un changement de `machine_id` ou à un bogue de l'API Duplicati qui mélange l'`identity` id et l'`machine_id`. La solution consiste à aligner les identifiants sur le serveur Duplicati (modifier `identity.txt`/`machineid.txt` ou définir **Duplicati → Paramètres → Options avancées → Machine-id**), redémarrer Duplicati, puis fusionner les entrées dans **duplistatus** via [Paramètres → Maintenance de la base de données → Fusionner les serveurs en double](settings/database-maintenance.md#merge-duplicate-servers). Voir [Serveurs en double sur le tableau de bord](troubleshooting.md#duplicate-servers-on-the-dashboard) pour les étapes complètes.
 :::
 
-## Dépannage des problèmes de collection {#troubleshooting-collection-issues}
+## Résoudre les problèmes de collecte {/* #troubleshooting-collection-issues */}
 
 La collecte des journaux de sauvegarde nécessite que le Serveur Duplicati soit accessible à partir de l'installation **duplistatus**. Si vous rencontrez des problèmes, veuillez vérifier les éléments suivants :
 

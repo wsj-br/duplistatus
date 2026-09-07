@@ -1,9 +1,9 @@
-# विन्यास प्रबंधन {#configuration-management}
+# प्रबंधन विन्यास {/* #configuration-management */}
 
-## ईमेल विन्यास प्राप्त करें - `/api/configuration/email` {#get-email-configuration---apiconfigurationemail}
+## Email Configuration Praapt Karein - `/api/configuration/email` {/* #get-email-configuration---apiconfigurationemail */}
 - **Endpoint**: `/api/configuration/email`
 - **Method**: GET
-- **Description**: वर्तमान ईमेल सूचना विन्यास और क्या ईमेल सूचना सक्रिय/विन्यस्त हैं, प्राप्त करता है।
+- **विवरण**: Vartaman email suchnaayi configuration aur yeh praapt karta hai ki email suchnaayein enabled/configured hain ya nahin.
 - **Authentication**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
 - **Response** (configured):
 
@@ -46,10 +46,10 @@
   - इंगित करता है कि क्या ईमेल सूचना परीक्षण और उत्पादन उपयोग के लिए उपलब्ध है
   - मास्टर कुंजी त्रुटियों को सुलभता से संभालता है
 
-## ईमेल विन्यास अपडेट करें - `/api/configuration/email` {#update-email-configuration---apiconfigurationemail}
+## Email Configuration Ko Update Karein - `/api/configuration/email` {/* #update-email-configuration---apiconfigurationemail */}
 - **Endpoint**: `/api/configuration/email`
 - **Method**: POST
-- **Description**: SMTP ईमेल सूचना विन्यास को अपडेट करता है।
+- **विवरण**: SMTP email suchnaayi configuration ko update karta hai.
 - **Authentication**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
 - **Request Body**:
 
@@ -83,10 +83,10 @@
   - सुरक्षित फ़ील्ड बूलियन है (SSL/TLS के लिए सच)
   - पासवर्ड को अलग से पासवर्ड एंडपॉइंट के माध्यम से प्रबंधित किया जाता है
 
-## ईमेल विन्यास हटाएं - `/api/configuration/email` {#delete-email-configuration---apiconfigurationemail}
+## Email Configuration Ko Delete karein - `/api/configuration/email` {/* #delete-email-configuration---apiconfigurationemail */}
 - **Endpoint**: `/api/configuration/email`
 - **Method**: DELETE
-- **Description**: SMTP ईमेल सूचना विन्यास को हटाता है।
+- **विवरण**: SMTP email suchnaayi configuration ko delete karta hai.
 - **Authentication**: वैध सत्र और CSRF टोकन की आवश्यकता होती है
 - **Response**:
 
@@ -106,10 +106,10 @@
   - अगर हटाने के लिए कोई कॉन्फ़िगरेशन मौजूद नहीं है तो 404 लौटाता है
   - जब Daily Summary मोड सक्षम है तो 400 लौटाता है, क्योंकि उस मोड को SMTP की आवश्यकता होती है
 
-## ईमेल पासवर्ड अपडेट करें - `/api/configuration/email/password` {#update-email-password---apiconfigurationemailpassword}
+## Email Password Ko Update Karein - `/api/configuration/email/password` {/* #update-email-password---apiconfigurationemailpassword */}
 - **Endpoint**: `/api/configuration/email/password`
 - **Method**: PATCH
-- **Description**: SMTP प्रमाणीकरण के लिए ईमेल पासवर्ड को अपडेट करता है।
+- **विवरण**: SMTP authentication ke liye email password ko update karta hai.
 - **Authentication**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
 - **Request Body**:
 
@@ -144,10 +144,10 @@
   - जब कोई मौजूदा SMTP विन्यास मौजूद नहीं है तो कॉन्फ़िग पैरामीटर आवश्यक है
   - पासवर्ड को एन्क्रिप्शन का उपयोग करके सुरक्षित रूप से संग्रहीत किया जाता है
 
-## ईमेल पासवर्ड CSRF टोकन प्राप्त करें - `/api/configuration/email/password` {#get-email-password-csrf-token---apiconfigurationemailpassword}
+## Email Password CSRF Token Praapt Karein - `/api/configuration/email/password` {/* #get-email-password-csrf-token---apiconfigurationemailpassword */}
 - **Endpoint**: `/api/configuration/email/password`
 - **Method**: GET
-- **Description**: ईमेल पासवर्ड ऑपरेशन के लिए एक CSRF टोकन प्राप्त करता है।
+- **विवरण**: Email password operations ke liye CSRF token praapt karta hai.
 - **Authentication**: मान्य सत्र की आवश्यकता होती है
 - **Response**:
 
@@ -164,10 +164,10 @@
   - Password update operations ke liye CSRF token return karta hai
   - Token generate karne ke liye session valid hona chahiye
 
-## एकीकृत कॉन्फ़िगरेशन प्राप्त करें - `/api/configuration/unified` {#get-unified-configuration---apiconfigurationunified}
-- **एंडपॉइंट**: `/api/configuration/unified`
-- **विधि**: GET
-- **विवरण**: एक एकीकृत कॉन्फ़िगरेशन ऑब्जेक्ट प्राप्त करता है जिसमें क्रॉन सेटिंग्स, सूचना आवृत्ति, और बैकअप के साथ सर्वर शामिल हैं।
+## Unified Configuration Praapt Karein - `/api/configuration/unified` {/* #get-unified-configuration---apiconfigurationunified */}
+- **Endpoint**: `/api/configuration/unified`
+- **Method**: GET
+- **विवरण**: Ek unified configuration object praapt karta hai jismein sabhi configuration data shamil hai jaise cron settings, notification frequency, aur backups wale servers.
 - **Authentication**: वैध सत्र और CSRF टोकन की आवश्यकता होती है
 - **Response**:
 
@@ -263,10 +263,10 @@
   - ईमेल कॉन्फ़िगरेशन में `hasPassword` फ़ील्ड शामिल है लेकिन वास्तविक पासवर्ड नहीं
   - बेहतर प्रदर्शन के लिए सभी डेटा को समानांतर में प्राप्त करता है
 
-## NTFY कॉन्फ़िगरेशन प्राप्त करें - `/api/configuration/ntfy` {#get-ntfy-configuration---apiconfigurationntfy}
-- **एंडपॉइंट**: `/api/configuration/ntfy`
-- **विधि**: GET
-- **विवरण**: वर्तमान NTFY कॉन्फ़िगरेशन सेटिंग्स प्राप्त करता है।
+## NTFY Configuration Praapt Karein - `/api/configuration/ntfy` {/* #get-ntfy-configuration---apiconfigurationntfy */}
+- **Endpoint**: `/api/configuration/ntfy`
+- **Method**: GET
+- **विवरण**: Vartaman NTFY Configuration settings praapt karta hai.
 - **Authentication**: वैध सत्र और CSRF टोकन की आवश्यकता होती है
 - **Response**:
 
@@ -288,10 +288,10 @@
   - सूचना प्रणाली प्रबंधन के लिए उपयोग किया जाता है
   - कॉन्फ़िगरेशन डेटा तक पहुंचने के लिए प्रमाणीकरण की आवश्यकता होती है
 
-## सूचना कॉन्फ़िगरेशन प्राप्त करें - `/api/configuration/notifications` {#get-notification-configuration---apiconfigurationnotifications}
-- **एंडपॉइंट**: `/api/configuration/notifications`
-- **विधि**: GET
-- **विवरण**: वर्तमान सूचना आवृत्ति कॉन्फ़िगरेशन प्राप्त करता है।
+## Notification Configuration Praapt Karein - `/api/configuration/notifications` {/* #get-notification-configuration---apiconfigurationnotifications */}
+- **Endpoint**: `/api/configuration/notifications`
+- **Method**: GET
+- **विवरण**: Vartaman notification frequency configuration praapt karta hai.
 - **Authentication**: वैध सत्र और CSRF टोकन की आवश्यकता होती है
 - **Response**:
 
@@ -309,10 +309,10 @@
   - विलंबित बैकअप सूचना प्रबंधन के लिए उपयोग किया जाता है
   - एक में से एक लौटाता है: `"onetime"`, `"every_day"`, `"every_week"`, `"every_month"`
 
-## सूचना कॉन्फ़िगरेशन अपडेट करें - `/api/configuration/notifications` {#update-notification-configuration---apiconfigurationnotifications}
-- **एंडपॉइंट**: `/api/configuration/notifications`
-- **विधि**: POST
-- **विवरण**: सूचना कॉन्फ़िगरेशन (NTFY सेटिंग्स या सूचना आवृत्ति) अपडेट करता है।
+## Notification Configuration Ko Update Karein - `/api/configuration/notifications` {/* #update-notification-configuration---apiconfigurationnotifications */}
+- **Endpoint**: `/api/configuration/notifications`
+- **Method**: POST
+- **विवरण**: Notification configuration ko update karta hai (NTFY settings ya notification frequency).
 - **प्रमाणीकरण**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
 - **अनुरोध बॉडी**:
   NTFY कॉन्फ़िगरेशन के लिए:
@@ -374,10 +374,10 @@
   - अनुमत विकल्पों के खिलाफ सूचना आवृत्ति मान की वैधता की जाँच करता है
   - यह निर्धारित करता है कि विलंबित सूचनाएँ कितनी बार भेजी जाती हैं
 
-## बैकअप सेटिंग्स अपडेट करें - `/api/configuration/backup-settings` {#update-backup-settings---apiconfigurationbackup-settings}
-- **एंडपॉइंट**: `/api/configuration/backup-settings`
-- **विधि**: POST
-- **विवरण**: विशिष्ट सर्वरों/बैकअप के लिए बैकअप सूचना सेटिंग्स अपडेट करता है।
+## Backup Settings Ko Update Karein - `/api/configuration/backup-settings` {/* #update-backup-settings---apiconfigurationbackup-settings */}
+- **Endpoint**: `/api/configuration/backup-settings`
+- **Method**: POST
+- **विवरण**: Specific servers/backups ke liye backup notification settings ko update karta hai.
 - **Authentication**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
 - **Request Body**:
 
@@ -411,10 +411,10 @@
   - निष्क्रिय backup के लिए विलंबित backup notifications को साफ़ करता है
   - timeout settings बदलने पर notifications को clear करता है
 
-## Notification Templates को Update करें - `/api/configuration/templates` {#update-notification-templates---apiconfigurationtemplates}
+## Notification Templates Ko Update Karein - `/api/configuration/templates` {/* #update-notification-templates---apiconfigurationtemplates */}
 - **Endpoint**: `/api/configuration/templates`
 - **Method**: POST
-- **Description**: Notification templates को update करता है।
+- **विवरण**: Notification Templates ko update karta hai.
 - **Authentication**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
 - **Request Body**:
 
@@ -449,38 +449,38 @@
   - टेम्प्लेट्स Markdown ईमेल बॉडी और `{placeholder}` प्रतिस्थापन का समर्थन करते हैं
   - एक `dailySummary` ईमेल टेम्पलेट (विषय और मार्कडाउन बॉडी) आवश्यक है
 
-## दैनिक सारांश - `/api/configuration/daily-summary` {#daily-summary---apiconfigurationdaily-summary}
+## दैनिक सारांश - `/api/configuration/daily-summary` {/* #daily-summary---apiconfigurationdaily-summary */}
 - **Endpoint**: `/api/configuration/daily-summary`
 - **Method**: GET, POST
-- **विवरण**: दैनिक सारांश मोड को पढ़ता या अपडेट करता है। GET स्वच्छ सेटिंग्स, डिस्पैचर स्वास्थ्य, अगली घटना, और Email वितरण स्थिति लौटाता है। POST `enabled`, `utcTime` (`HH:mm` UTC), `timeZone` (पिछली बचत से ब्राउज़र IANA समय क्षेत्र), और वैकल्पिक `publicUrl` को सहेजता है। सक्षम करने के लिए मान्य SMTP की आवश्यकता होती है। शेड्यूल बदलने से अगली **भविष्य** घटना सेट होती है।
-- **प्रमाणीकरण**: GET एक मान्य सत्र और CSRF टोकन की आवश्यकता होती है। POST एक प्रशासक सत्र और CSRF टोकन की आवश्यकता होती है।
-- **त्रुटि प्रतिक्रियाएँ**:
-  - `400`: अमान्य समय/समय क्षेत्र, अमान्य सार्वजनिक URL, या SMTP गायब
-  - `401`: अधिकृत नहीं
+- **Description**: दैनिक सारांश मोड को पढ़ता या अपडेट करता है। GET सैनिटाइज़्ड सेटिंग्स, डिस्पैचर स्वास्थ्य, अगला घटना, और ईमेल वितरण स्थिति लौटाता है। POST `enabled`, `utcTime` (`HH:mm` UTC), `timeZone` (अंतिम सहेजे गए ब्राउज़र IANA समय क्षेत्र), वैकल्पिक `publicUrl`, और वैकल्पिक `smtpRecipient` (खाली ईमेल सेटिंग्स SMTP प्राप्तकर्ता का उपयोग करता है) सहेजता है। सक्षम करने के लिए वैध SMTP की आवश्यकता होती है। `utcTime` बदलने से `daily-summary-dispatch` को `minute hour * * *` UTC में अपडेट किया जाता है और क्रॉन सेवा को पुनः लोड किया जाता है। अनुसूची बदलने से अगली **भविष्य की** घटना सेट की जाती है।
+- **Authentication**: GET के लिए एक वैध सत्र और CSRF टोकन की आवश्यकता होती है। POST के लिए एक व्यवस्थापक सत्र और CSRF टोकन की आवश्यकता होती है।
+- **Error Responses**:
+  - `400`: अमान्य समय/समय क्षेत्र, अमान्य सार्वजनिक URL, अमान्य SMTP प्राप्तकर्ता, या SMTP का अभाव
+  - `401`: अनधिकृत
   - `500`: Daily Summary को पढ़ने या अपडेट करने में असफल
 
-## दैनिक सारांश भेजें - `/api/configuration/daily-summary/send` {#send-daily-summary---apiconfigurationdaily-summarysend}
-- **एंडपॉइंट**: `/api/configuration/daily-summary/send`
-- **विधि**: POST
-- **विवरण**: वर्तमान स्थिति का एक अतिरिक्त स्नैपशॉट तुरंत भेजता है। अगले अनुसूचित घटना का उपयोग नहीं करता। स्टोर किए गए SMTP का उपयोग करता है। अनुरोध में प्राप्तकर्ता पते स्वीकार नहीं करता।
+## दैनिक सारांश भेजें - `/api/configuration/daily-summary/send` {/* #send-daily-summary---apiconfigurationdaily-summarysend */}
+- **Endpoint**: `/api/configuration/daily-summary/send`
+- **Method**: POST
+- **Description**: वर्तमान स्थिति का एक अतिरिक्त स्नैपशॉट तुरंत भेजता है। अगली अनुसूचित घटना का उपयोग नहीं करता। स्टोर किए गए SMTP का उपयोग करता है। जब सेट किया जाता है तो `daily_summary.smtpRecipient` को भेजता है, अन्यथा ईमेल सेटिंग्स प्राप्तकर्ता। अनुरोध में प्राप्तकर्ता पते स्वीकार नहीं करता। ऑडिट लॉग में `daily_summary_sent` रिकॉर्ड करता है (प्रणाली)।
 - **Authentication**: व्यवस्थापक सेशन और CSRF टोकन की आवश्यकता होती है
 
-## दैनिक सारांश पुन: प्रयास करें - `/api/configuration/daily-summary/retry` {#retry-daily-summary---apiconfigurationdaily-summaryretry}
-- **एंडपॉइंट**: `/api/configuration/daily-summary/retry`
-- **विधि**: POST
-- **विवरण**: संरक्षित पेलोड से असफल चैनलों को पुन: प्रयास करता है। वैकल्पिक बॉडी `{ "occurrenceKey": "..." }`; अन्यथा नवीनतम असफल ईमेल वितरण को पुन: प्रयास करता है।
+## Daily Summary Phir Se Try Karein - `/api/configuration/daily-summary/retry` {/* #retry-daily-summary---apiconfigurationdaily-summaryretry */}
+- **Endpoint**: `/api/configuration/daily-summary/retry`
+- **Method**: POST
+- **विवरण**: Persisted payload se failed channels ko phir se try karta hai. Optional body `{ "occurrenceKey": "..." }`; otherwise latest failed email delivery ko phir se try karta hai.
 - **Authentication**: व्यवस्थापक सेशन और CSRF टोकन की आवश्यकता होती है
 
-## Preview Daily Summary - `/api/configuration/daily-summary/preview` {#preview-daily-summary---apiconfigurationdaily-summarypreview}
+## Daily Summary Ka पूर्वावलोकन Karein - `/api/configuration/daily-summary/preview` {/* #preview-daily-summary---apiconfigurationdaily-summarypreview */}
 - **Endpoint**: `/api/configuration/daily-summary/preview`
 - **Method**: POST
-- **Description**: वर्तमान स्नैपशॉट को रेंडर करता है बिना भेजे और बिना वितरण-लेजर पंक्तियों को लिखे।
+- **विवरण**: Current snapshot ko bina bheje aur bina delivery-ledger rows likhe render karta hai.
 - **Authentication**: वैलिड सेशन और CSRF टोकन की आवश्यकता होती है
 
-## Overdue Tolerance प्राप्त करें - `/api/configuration/overdue-tolerance` {#get-overdue-tolerance---apiconfigurationoverdue-tolerance}
+## Overdue Tolerance Praapt Karein - `/api/configuration/overdue-tolerance` {/* #get-overdue-tolerance---apiconfigurationoverdue-tolerance */}
 - **Endpoint**: `/api/configuration/overdue-tolerance`
 - **Method**: GET
-- **Description**: वर्तमान overdue tolerance setting को प्राप्त करता है।
+- **विवरण**: Vartaman Overdue tolerance setting praapt karta hai.
 - **Response**:
 
   ```json
@@ -495,10 +495,10 @@
   - वर्तमान overdue tolerance setting को लौटाता है
   - वर्तमान configuration को प्रदर्शित करने के लिए उपयोग किया जाता है
 
-## Overdue Tolerance को Update करें - `/api/configuration/overdue-tolerance` {#update-overdue-tolerance---apiconfigurationoverdue-tolerance}
+## Overdue Tolerance Ko Update Karein - `/api/configuration/overdue-tolerance` {/* #update-overdue-tolerance---apiconfigurationoverdue-tolerance */}
 - **Endpoint**: `/api/configuration/overdue-tolerance`
 - **Method**: POST
-- **Description**: Overdue tolerance setting को update करता है।
+- **विवरण**: Overdue tolerance setting ko update karta hai.
 - **Authentication**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
 - **Request Body**:
 
@@ -525,10 +525,10 @@
   - जब backups को विलंबित माना जाता है, उस पर प्रभाव डालता है
   - Overdue backup checker द्वारा उपयोग किया जाता है
 
-## बाहरी एपीआई सुरक्षा - `/api/configuration/external-api-security` {#external-api-security---apiconfigurationexternal-api-security}
-- **एंडपॉइंट**: `/api/configuration/external-api-security`
-- **विधियाँ**: GET, PATCH
-- **विवरण**: बाहरी एपीआई के लिए कुंजी की आवश्यकता है या नहीं, साथ ही `/api/upload` आकार और दर सीमाएँ पढ़ें या अपडेट करें।
+## External API Security - `/api/configuration/external-api-security` {/* #external-api-security---apiconfigurationexternal-api-security */}
+- **Endpoint**: `/api/configuration/external-api-security`
+- **Methods**: GET, PATCH
+- **विवरण**: Padhta ya update karta hai ki बाहरी एपीआई ko key chahiye ya nahin, saath hi `/api/upload` Aakar aur rate limits.
 - **प्रमाणीकरण**: व्यवस्थापक विशेषाधिकार, मान्य सत्र और CSRF टोकन की आवश्यकता होती है
 - **PATCH शरीर**:
 
@@ -544,8 +544,8 @@
   }
   ```
 
-## आईपी अनुमति सूची - `/api/configuration/ip-allowlist` {#ip-allowlist---apiconfigurationip-allowlist}
-- **एंडपॉइंट**: `/api/configuration/ip-allowlist`
-- **विधियाँ**: GET, PATCH
-- **विवरण**: विश्वसनीय प्रॉक्सी और व्यवस्थापक / बाहरी-एपीआई CIDR अनुमति सूचियों को पढ़ें या अपडेट करें। व्यवस्थापक सूची को सक्षम करने से पहले, वर्तमान क्लाइंट आईपी को पहले सूचीबद्ध होना चाहिए (लूपबैक को छोड़ दिया जाता है)।
+## आईपी अनुमति सूची - `/api/configuration/ip-allowlist` {/* #ip-allowlist---apiconfigurationip-allowlist */}
+- **Endpoint**: `/api/configuration/ip-allowlist`
+- **Methods**: GET, PATCH
+- **विवरण**: विश्वसनीय प्रॉक्सी aur admin / external-API CIDR allowlists padhta ya update karta hai. Admin list enable karna fail hoga jab tak current client IP pehle se listed nahin hai (loopback exempt hai).
 - **Authentication**: एडमिन प्राइविलेज, वैध सेशन और CSRF टोकन की आवश्यकता होती है

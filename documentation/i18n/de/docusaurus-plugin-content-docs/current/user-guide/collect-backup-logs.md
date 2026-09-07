@@ -1,10 +1,10 @@
-# Backup-Protokolle sammeln {#collect-backup-logs}
+# Backup-Protokolle sammeln {/* #collect-backup-logs */}
 
 **duplistatus** kann Sicherungsprotokolle direkt von Duplicati-Servern abrufen, um die Datenbank zu füllen oder fehlende Protokolldaten wiederherzustellen. Die Anwendung überspringt automatisch alle doppelten Protokolle, die bereits in der Datenbank vorhanden sind.
 
-## Schritte zum Sammeln von Sicherungsprotokollen {#steps-to-collect-backup-logs}
+## Schritte zum Sammeln von Backup-Protokollen {/* #steps-to-collect-backup-logs */}
 
-### Manuelle Erfassung {#manual-collection}
+### Manuelle Sammlung {/* #manual-collection */}
 
 1.  Klicken Sie auf das <IconButton icon="lucide:download" /> **Backup-Logs sammeln**-Symbol in der [Anwendungsleiste](overview.md#application-toolbar).
 
@@ -31,7 +31,7 @@ Wenn Sie Server-Adressen in [Einstellungen → Server-Einstellungen](settings/se
 
 <br/>
 
-### Massenerfassung {#bulk-collection}
+### Massenhafte Sammlung {/* #bulk-collection */}
 
 _Klicken Sie mit der rechten Maustaste_ auf die Schaltfläche <IconButton icon="lucide:download" /> **Backup-Protokolle sammeln** in der Anwendungssymbolleiste, um von allen konfigurierten Servern zu sammeln.
 
@@ -41,7 +41,7 @@ _Klicken Sie mit der rechten Maustaste_ auf die Schaltfläche <IconButton icon="
 Sie können auch die Schaltfläche <IconButton icon="lucide:import" label="Alle sammeln"/> auf den Seiten [Einstellungen → Sicherungsüberwachung](settings/backup-monitoring-settings.md) und [Einstellungen → Server-Einstellungen](settings/server-settings.md) verwenden, um von allen konfigurierten Servern zu sammeln.
 :::
 
-## Wie der Erfassungsprozess funktioniert {#how-the-collection-process-works}
+## Wie der Sammelprozess funktioniert {/* #how-the-collection-process-works */}
 
 - **duplistatus** erkennt automatisch das beste Verbindungsprotokoll und verbindet sich mit dem angegebenen Duplicati-Server.
 - Es ruft den Sicherungsverlauf, Protokollinformationen und Sicherungseinstellungen ab (für die Backup-Überwachung).
@@ -55,7 +55,7 @@ Sie können auch die Schaltfläche <IconButton icon="lucide:import" label="Alle 
 Wenn derselbe Server nach dem Sammeln von Backup-Protokollen mehrmals angezeigt wird (oder nach einer Neuinstallation oder einem Upgrade von Duplicati), wird dies meist durch eine geänderte `machine_id` oder einen Duplicati-API-Fehler verursacht, der die `identity`-ID und die `machine_id` vermischt. Die Lösung besteht darin, die IDs auf dem Duplicati-Server anzugleichen (bearbeiten Sie `identity.txt`/`machineid.txt` oder setzen Sie **Duplicati → Einstellungen → Erweiterte Optionen → Machine-id**), Duplicati neu zu starten und dann die Einträge in **duplistatus** über [Einstellungen → Datenbankverwaltung → Doppelte Server zusammenführen](settings/database-maintenance.md#merge-duplicate-servers) zusammenzuführen. Vollständige Schritte finden Sie unter [Doppelte Server auf dem Dashboard](troubleshooting.md#duplicate-servers-on-the-dashboard).
 :::
 
-## Fehlerbehebung bei Sammlungsproblemen {#troubleshooting-collection-issues}
+## Fehlersuche bei Sammelproblemen {/* #troubleshooting-collection-issues */}
 
 Die Erfassung von Sicherungsprotokollen erfordert, dass der Duplicati-Server von der **duplistatus**-Installation aus erreichbar ist. Falls Sie auf Probleme stoßen, bestätigen Sie bitte Folgendes:
 

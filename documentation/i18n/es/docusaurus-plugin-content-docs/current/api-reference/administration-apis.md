@@ -1,9 +1,9 @@
-# Administración {#administration}
+# Administración {/* #administration */}
 
-## Recopilar Copias de Seguridad - `/api/backups/collect` {#collect-backups---apibackupscollect}
+## Recopilar copias de seguridad - `/api/backups/collect` {/* #collect-backups---apibackupscollect */}
 - **Endpoint**: `/api/backups/collect`
 - **Method**: POST
-- **Description**: Recopila datos de copia de seguridad directamente desde un servidor Duplicati a través de su API. Este endpoint detecta automáticamente el mejor protocolo de conexión (HTTPS con validación SSL, HTTPS con certificados autofirmados o HTTP como alternativa) y se conecta al servidor Duplicati para recuperar la información de copia de seguridad y procesarla en la base de datos local.
+- **Descripción**: Recopila datos de copia de seguridad directamente desde un servidor Duplicati a través de su API. Este endpoint detecta automáticamente el mejor protocolo de conexión (HTTPS con validación SSL, HTTPS con certificados autofirmados o HTTP como respaldo) y se conecta al servidor Duplicati para recuperar información de copia de seguridad y procesarla en la base de datos local.
 - **Autenticación**: Requiere sesión válida y token CSRF
 - **Cuerpo de la solicitud**:
 
@@ -50,10 +50,10 @@
   - La interfaz debe usar `serverAlias || serverName` con fines de visualización
   - Admite tanto la descarga en formato JSON como la recopilación directa mediante API
 
-## Limpiar Copias de Seguridad - `/api/backups/cleanup` {#cleanup-backups---apibackupscleanup}
+## Limpiar copias de seguridad - `/api/backups/cleanup` {/* #cleanup-backups---apibackupscleanup */}
 - **Endpoint**: `/api/backups/cleanup`
 - **Method**: POST
-- **Description**: Elimina datos antiguos de copias de seguridad según el período de retención. Este endpoint ayuda a gestionar el tamaño de la base de datos eliminando registros de copias de seguridad obsoletos, manteniendo los datos recientes e importantes.
+- **Descripción**: Elimina datos de copia de seguridad antiguos basados en el período de retención. Este endpoint ayuda a gestionar el tamaño de la base de datos eliminando registros de copia de seguridad obsoletos mientras preserva datos recientes e importantes.
 - **Autenticación**: Requiere sesión válida y token CSRF
 - **Cuerpo de la solicitud**:
 
@@ -94,10 +94,10 @@ Para la opción "Eliminar todos los datos":
   - El informe de errores mejorado incluye detalles y traza de pila en modo desarrollo
   - Admite retención basada en tiempo y eliminación completa de datos
 
-## Eliminar trabajo de copia de seguridad - `/api/backups/delete-job` {#delete-backup-job---apibackupsdelete-job}
+## Eliminar trabajo de copia de seguridad - `/api/backups/delete-job` {/* #delete-backup-job---apibackupsdelete-job */}
 - **Endpoint**: `/api/backups/delete-job`
 - **Method**: DELETE
-- **Description**: Elimina todos los registros de copia de seguridad para una combinación específica de servidor y copia de seguridad. Este endpoint solo está disponible en modo desarrollo.
+- **Descripción**: Elimina todos los registros de copia de seguridad para una combinación específica de servidor y copia de seguridad. Este endpoint solo está disponible en modo de desarrollo.
 - **Autenticación**: Requiere sesión válida y token CSRF
 - **Cuerpo de la solicitud**:
 
@@ -133,10 +133,10 @@ Para la opción "Eliminar todos los datos":
   - Devuelve la cantidad de copias de seguridad eliminadas y la información del servidor
   - Usa el alias del servidor para mostrarlo si está disponible, de lo contrario utiliza el nombre del servidor
 
-## Sincronizar horarios de copia de seguridad - `/api/backups/sync-schedule` {#sync-backup-schedules---apibackupssync-schedule}
+## Sincronizar horarios de copia de seguridad - `/api/backups/sync-schedule` {/* #sync-backup-schedules---apibackupssync-schedule */}
 - **Endpoint**: `/api/backups/sync-schedule`
 - **Method**: POST
-- **Description**: Sincroniza la información de programación de copias de seguridad desde un servidor Duplicati. Este endpoint se conecta al servidor, recupera la información de programación para todas las copias de seguridad y actualiza la configuración local de copias de seguridad con detalles de programación, incluyendo intervalos de repetición, días de la semana permitidos y horarios de programación.
+- **Descripción**: Sincroniza la información del horario de copia de seguridad desde un servidor Duplicati. Este endpoint se conecta al servidor, recupera información del horario para todas las copias de seguridad y actualiza la configuración local de copia de seguridad con los detalles del horario, incluidos los intervalos de repetición, los días de la semana permitidos y los tiempos del horario.
 - **Autenticación**: Requiere sesión válida y token CSRF
 - **Cuerpo de la solicitud**:
 
@@ -216,10 +216,10 @@ Con errores:
   - Registra eventos de auditoría para operaciones de sincronización exitosas y fallidas
   - Usa el puerto por defecto 8200 si no se especifica
 
-## Probar conexión al servidor - `/api/servers/test-connection` {#test-server-connection---apiserverstest-connection}
+## Probar conexión al servidor - `/api/servers/test-connection` {/* #test-server-connection---apiserverstest-connection */}
 - **Endpoint**: `/api/servers/test-connection`
 - **Method**: POST
-- **Description**: Prueba la conexión a un servidor Duplicati para verificar que sea accesible.
+- **Descripción**: Prueba la conexión a un servidor Duplicati para verificar que sea accesible.
 - **Cuerpo de la solicitud**:
 
   ```json
@@ -247,10 +247,10 @@ Con errores:
   - Admite los protocolos HTTP y HTTPS
   - Usa la configuración de tiempo de espera para la prueba de conexión
 
-## Obtener URL del servidor - `/api/servers/:serverId/server-url` {#get-server-url---apiserversserveridserver-url}
+## Obtener URL del servidor - `/api/servers/:serverId/server-url` {/* #get-server-url---apiserversserveridserver-url */}
 - **Endpoint**: `/api/servers/:serverId/server-url`
 - **Method**: GET
-- **Description**: Recupera la URL del servidor para un servidor específico.
+- **Descripción**: Recupera la URL del servidor para un servidor específico.
 - **Parámetros**:
   - `serverId`: el identificador del servidor
 
@@ -271,10 +271,10 @@ Con errores:
   - Se utiliza para la gestión de la conexión del servidor
   - Devuelve una cadena vacía si no se ha establecido ninguna URL del servidor
 
-## Actualizar URL del servidor - `/api/servers/:serverId/server-url` {#update-server-url---apiserversserveridserver-url}
+## Actualizar URL del servidor - `/api/servers/:serverId/server-url` {/* #update-server-url---apiserversserveridserver-url */}
 - **Endpoint**: `/api/servers/:serverId/server-url`
 - **Method**: PATCH
-- **Description**: Actualiza la URL del servidor para un servidor específico.
+- **Descripción**: Actualiza la URL del servidor para un servidor específico.
 - **Autenticación**: Requiere sesión válida y token CSRF
 - **Parámetros**:
   - `serverId`: el identificador del servidor
@@ -308,10 +308,10 @@ Con errores:
   - Admite los protocolos HTTP y HTTPS
   - Devuelve la información actualizada del servidor
 
-## Obtener contraseña del servidor - `/api/servers/:serverId/password` {#get-server-password---apiserversserveridpassword}
+## Obtener contraseña del servidor - `/api/servers/:serverId/password` {/* #get-server-password---apiserversserveridpassword */}
 - **Endpoint**: `/api/servers/:serverId/password`
 - **Method**: GET
-- **Description**: Recupera un token CSRF para operaciones relacionadas con la contraseña del servidor.
+- **Descripción**: Recupera un token CSRF para operaciones de contraseña del servidor.
 - **Autenticación**: Requiere una sesión válida
 - **Parámetros**:
   - `serverId`: el identificador del servidor
@@ -331,10 +331,10 @@ Con errores:
   - Devuelve el token CSRF para usarlo en operaciones de actualización de contraseña
   - La sesión debe ser válida para generar el token
 
-## Actualizar contraseña del servidor - `/api/servers/:serverId/password` {#update-server-password---apiserversserveridpassword}
+## Actualizar contraseña del servidor - `/api/servers/:serverId/password` {/* #update-server-password---apiserversserveridpassword */}
 - **Endpoint**: `/api/servers/:serverId/password`
 - **Method**: PATCH
-- **Description**: Actualiza la contraseña para un servidor específico.
+- **Descripción**: Actualiza la contraseña para un servidor específico.
 - **Autenticación**: Requiere sesión válida y token CSRF
 - **Parámetros**:
   - `serverId`: el identificador del servidor
@@ -363,12 +363,12 @@ Con errores:
   - La contraseña puede ser una cadena vacía para eliminarla
   - La contraseña se almacena de forma segura mediante el sistema de gestión de secretos
 
-## Gestión de usuarios {#user-management}
+## Gestión de usuarios {/* #user-management */}
 
-### Listar Usuarios - `/api/users` {#list-users---apiusers}
+### Listar usuarios - `/api/users` {/* #list-users---apiusers */}
 - **Endpoint**: `/api/users`
 - **Method**: GET
-- **Description**: Lista todos los usuarios con paginación y filtrado de búsqueda opcional. Devuelve información del usuario, incluyendo historial de inicio de sesión y estado de la cuenta.
+- **Descripción**: Lista todos los usuarios con paginación y filtrado de búsqueda opcional. Devuelve información del usuario, incluida la historia de inicio de sesión y el estado de la cuenta.
 - **Autenticación**: Requiere privilegios de administrador, sesión válida y token CSRF
 - **Parámetros de consulta**:
   - `page` (opcional): Número de página (por defecto: 1)
@@ -410,10 +410,10 @@ Con errores:
   - Admite paginación y filtrado de búsqueda
   - Devuelve el estado de la cuenta del usuario, incluido el estado de bloqueo
 
-### Crear usuario - `/api/users` {#create-user---apiusers}
+### Crear usuario - `/api/users` {/* #create-user---apiusers */}
 - **Endpoint**: `/api/users`
 - **Method**: POST
-- **Description**: Crea una nueva cuenta de usuario. Puede generar una contraseña temporal o utilizar una contraseña proporcionada.
+- **Descripción**: Crea una nueva cuenta de usuario. Puede generar una contraseña temporal o usar una contraseña proporcionada.
 - **Autenticación**: Requiere privilegios de administrador, sesión válida y token CSRF
 - **Cuerpo de la solicitud**:
 
@@ -458,10 +458,10 @@ Con errores:
   - Las contraseñas temporales generadas solo se devuelven una vez en la respuesta
   - La creación de usuarios se registra en el registro de auditoría
 
-### Actualizar usuario - `/api/users/:id` {#update-user---apiusersid}
+### Actualizar usuario - `/api/users/:id` {/* #update-user---apiusersid */}
 - **Endpoint**: `/api/users/:id`
 - **Method**: PATCH
-- **Description**: Actualiza la información del usuario, incluyendo nombre de usuario, estado de administrador, requisito de cambio de contraseña y restablecimiento de contraseña.
+- **Descripción**: Actualiza la información del usuario, incluido el nombre de usuario, el estado de administrador, el requisito de cambio de contraseña y el restablecimiento de contraseña.
 - **Autenticación**: Requiere privilegios de administrador, sesión válida y token CSRF
 - **Parámetros**:
   - `id`: ID del usuario a actualizar
@@ -518,10 +518,10 @@ Con errores:
   - El restablecimiento de contraseña genera una contraseña temporal segura de 12 caracteres
   - Todos los cambios se registran en el registro de auditoría
 
-### Eliminar usuario - `/api/users/:id` {#delete-user---apiusersid}
+### Eliminar usuario - `/api/users/:id` {/* #delete-user---apiusersid */}
 - **Endpoint**: `/api/users/:id`
 - **Method**: DELETE
-- **Description**: Elimina una cuenta de usuario. Impide eliminar tu propia cuenta o la última cuenta de administrador.
+- **Descripción**: Elimina una cuenta de usuario. Impide eliminarte a ti mismo o la última cuenta de administrador.
 - **Autenticación**: Requiere privilegios de administrador, sesión válida y token CSRF
 - **Parámetros**:
   - `id`: ID del usuario a eliminar
@@ -547,12 +547,12 @@ Con errores:
   - La eliminación del usuario se registra en el registro de auditoría
   - Las sesiones asociadas se eliminan automáticamente (en cascada)
 
-## Gestión del registro de auditoría {#audit-log-management}
+## Gestión del registro de auditoría {/* #audit-log-management */}
 
-### Listar registros de auditoría - `/api/audit-log` {#list-audit-logs---apiaudit-log}
+### Listar registros de auditoría - `/api/audit-log` {/* #list-audit-logs---apiaudit-log */}
 - **Endpoint**: `/api/audit-log`
 - **Method**: GET
-- **Description**: Recupera entradas del registro de auditoría con filtros, paginación y capacidades de búsqueda. Admite paginación basada en páginas y basada en desplazamiento.
+- **Descripción**: Recupera entradas del registro de auditoría con capacidades de filtrado, paginación y búsqueda. Soporta tanto paginación basada en páginas como paginación basada en desplazamiento.
 - **Autenticación**: Requiere sesión válida y token CSRF (se requiere usuario autenticado)
 - **Parámetros de consulta**:
   - `page` (opcional): Número de página para paginación basada en página
@@ -605,10 +605,10 @@ Con errores:
   - El campo `details` contiene JSON analizado con contexto adicional
   - Todas las consultas del registro de auditoría se registran
 
-### Obtener valores de filtro del registro de auditoría - `/api/audit-log/filters` {#get-audit-log-filter-values---apiaudit-logfilters}
+### Obtener valores de filtro del registro de auditoría - `/api/audit-log/filters` {/* #get-audit-log-filter-values---apiaudit-logfilters */}
 - **Endpoint**: `/api/audit-log/filters`
 - **Method**: GET
-- **Description**: Recupera valores únicos de filtro disponibles para filtrar registros de auditoría. Devuelve todas las acciones, categorías y estados distintos que existen en la base de datos del registro de auditoría. Útil para rellenar menús desplegables de filtro en la interfaz de usuario.
+- **Descripción**: Recupera valores de filtro únicos disponibles para filtrar registros de auditoría. Devuelve todas las acciones, categorías y estados distintos que existen en la base de datos del registro de auditoría. Útil para poblar menús desplegables de filtro en la interfaz de usuario.
 - **Autenticación**: Requiere sesión válida y token CSRF (se requiere usuario autenticado)
 - **Respuesta**:
 
@@ -645,10 +645,10 @@ Con errores:
   - Se devuelven matrices vacías si no hay datos o en caso de error
   - Utilizado por el visor de registros de auditoría para rellenar dinámicamente los desplegables de filtro
 
-### Descargar registros de auditoría - `/api/audit-log/download` {#download-audit-logs---apiaudit-logdownload}
+### Descargar registros de auditoría - `/api/audit-log/download` {/* #download-audit-logs---apiaudit-logdownload */}
 - **Endpoint**: `/api/audit-log/download`
 - **Method**: GET
-- **Description**: Descarga registros de auditoría en formato CSV o JSON con filtrado opcional. Útil para análisis externos e informes.
+- **Descripción**: Descarga registros de auditoría en formato CSV o JSON con filtrado opcional. Útil para análisis y reportes externos.
 - **Autenticación**: Requiere sesión válida y token CSRF (se requiere usuario autenticado)
 - **Parámetros de consulta**:
   - `format` (opcional): Formato de exportación - `csv` o `json` (por defecto: `csv`)
@@ -677,10 +677,10 @@ Con errores:
   - El campo Detalles en CSV está serializado en formato JSON
   - El nombre del archivo incluye la fecha actual
 
-### Limpiar registros de auditoría - `/api/audit-log/cleanup` {#cleanup-audit-logs---apiaudit-logcleanup}
+### Limpiar registros de auditoría - `/api/audit-log/cleanup` {/* #cleanup-audit-logs---apiaudit-logcleanup */}
 - **Endpoint**: `/api/audit-log/cleanup`
 - **Method**: POST
-- **Description**: Dispara manualmente la limpieza de registros de auditoría antiguos según el período de retención. Admite el modo de prueba (dry-run) para previsualizar qué se eliminaría.
+- **Descripción**: Activa manualmente la limpieza de registros de auditoría antiguos basados en el período de retención. Soporta modo de prueba para previsualizar lo que se eliminaría.
 - **Autenticación**: Requiere privilegios de administrador, sesión válida y token CSRF
 - **Cuerpo de la solicitud**:
 
@@ -727,10 +727,10 @@ Con errores:
   - La operación de limpieza se registra en el registro de auditoría
   - El modo de prueba es útil para previsualizar el impacto de la limpieza
 
-### Obtener retención del registro de auditoría - `/api/audit-log/retention` {#get-audit-log-retention---apiaudit-logretention}
+### Obtener Retención de Registro de Auditoría - `/api/audit-log/retention` {/* #get-audit-log-retention---apiaudit-logretention */}
 - **Endpoint**: `/api/audit-log/retention`
 - **Método**: GET
-- **Descripción**: Recupera la configuración actual de retención del registro de auditoría en días.
+- **Descripción**: Recupera la configuración actual de retención de registros de auditoría en días.
 - **Autenticación**: Requiere sesión válida y token CSRF (no se requiere usuario autenticado)
 - **Respuesta**:
 
@@ -746,10 +746,10 @@ Con errores:
   - La retención por defecto es de 90 días si no está configurada
   - Puede accederse sin autenticación (solo lectura)
 
-### Actualizar retención del registro de auditoría - `/api/audit-log/retention` {#update-audit-log-retention---apiaudit-logretention}
+### Actualizar Retención de Registro de Auditoría - `/api/audit-log/retention` {/* #update-audit-log-retention---apiaudit-logretention */}
 - **Endpoint**: `/api/audit-log/retention`
 - **Método**: PATCH
-- **Descripción**: Actualiza el período de retención del registro de auditoría en días. Esta configuración determina cuánto tiempo se conservan los registros de auditoría antes de la eliminación automática.
+- **Descripción**: Actualiza el período de retención de registros de auditoría en días. Esta configuración determina cuánto tiempo se conservan los registros de auditoría antes de la limpieza automática.
 - **Autenticación**: Requiere privilegios de administrador, sesión válida y token CSRF
 - **Cuerpo de la solicitud**:
 
@@ -779,11 +779,11 @@ Con errores:
   - El cambio de configuración se registra en el registro de auditoría
   - El período de retención afecta las operaciones de limpieza automáticas y manuales
 
-## Claves de API {#api-keys}
+## Claves de API {/* #api-keys */}
 
-### Listar claves de API - `/api/api-keys` {#list-api-keys---apiapi-keys}
+### Listar Claves de API - `/api/api-keys` {/* #list-api-keys---apiapi-keys */}
 - **Endpoint**: `/api/api-keys`
-- **Method**: GET
+- **Método**: GET
 - **Descripción**: Lista todas las claves de API. Los secretos nunca se devuelven; cada clave incluye una huella digital (`Qk7v…3xTa`).
 - **Autenticación**: Requiere privilegios de administrador, sesión válida y token CSRF
 - **Respuestas de error**:
@@ -791,10 +791,10 @@ Con errores:
   - `403`: Prohibido - Se requieren privilegios de administrador
   - `500`: Error interno del servidor
 
-### Crear clave de API - `/api/api-keys` {#create-api-key---apiapi-keys}
+### Crear clave de API - `/api/api-keys` {/* #create-api-key---apiapi-keys */}
 - **Endpoint**: `/api/api-keys`
-- **Method**: POST
-- **Descripción**: Crea una clave de API con ámbito. El secreto en texto plano solo se devuelve en esta respuesta.
+- **Método**: POST
+- **Descripción**: Crea una clave de API con alcance. El secreto en texto plano se devuelve solo en esta respuesta.
 - **Autenticación**: Requiere privilegios de administrador, sesión válida y token CSRF
 - **Cuerpo de la solicitud**:
 
@@ -813,24 +813,24 @@ Con errores:
   - `403`: Prohibido - Se requieren privilegios de administrador
   - `500`: Error interno del servidor
 
-### Actualizar clave de API - `/api/api-keys/:id` {#update-api-key---apiapi-keysid}
+### Actualizar clave de API - `/api/api-keys/:id` {/* #update-api-key---apiapi-keysid */}
 - **Endpoint**: `/api/api-keys/:id`
-- **Method**: PATCH
+- **Método**: PATCH
 - **Descripción**: Habilita o deshabilita una clave.
 - **Autenticación**: Requiere privilegios de administrador, sesión válida y token CSRF
 
-### Eliminar clave de API - `/api/api-keys/:id` {#delete-api-key---apiapi-keysid}
+### Eliminar clave API - `/api/api-keys/:id` {/* #delete-api-key---apiapi-keysid */}
 - **Endpoint**: `/api/api-keys/:id`
-- **Method**: DELETE
-- **Descripción**: Elimina una clave. Los clientes existentes que usen ese secreto pierden el acceso inmediatamente.
+- **Método**: DELETE
+- **Descripción**: Elimina una clave. Los clientes existentes que usan ese secreto pierden el acceso de inmediato.
 - **Autenticación**: Requiere privilegios de administrador, sesión válida y token CSRF
 
-## Gestión de base de datos {#database-management}
+## Gestión de Bases de Datos {/* #database-management */}
 
-### Copiar base de datos - `/api/database/backup` {#backup-database---apidatabasebackup}
+### Copia de seguridad de la base de datos - `/api/database/backup` {/* #backup-database---apidatabasebackup */}
 - **Endpoint**: `/api/database/backup`
 - **Método**: GET
-- **Descripción**: Crea una copia de seguridad de la base de datos en formato binario (.db) o SQL (.sql). El archivo de copia de seguridad se descarga automáticamente con un nombre que incluye la marca de tiempo.
+- **Descripción**: Crea una copia de seguridad de la base de datos en formato binario (.db) o SQL (.sql). El archivo de copia de seguridad se descarga automáticamente con un nombre de archivo con marca de tiempo.
 - **Autenticación**: Requiere privilegios de administrador, sesión válida y token CSRF
 - **Parámetros de consulta**:
   - `format` (opcional): Formato de copia de seguridad - `db` (binario) o `sql` (volcado SQL). Por defecto: `db`
@@ -851,10 +851,10 @@ Con errores:
   - La operación de copia de seguridad se registra en el registro de auditoría
   - Los archivos temporales se eliminan automáticamente después de la descarga
 
-### Restaurar base de datos - `/api/database/restore` {#restore-database---apidatabaserestore}
+### Restaurar base de datos - `/api/database/restore` {/* #restore-database---apidatabaserestore */}
 - **Endpoint**: `/api/database/restore`
 - **Método**: POST
-- **Descripción**: Restaura la base de datos desde un archivo de copia de seguridad (formato .db o .sql). Crea una copia de seguridad de seguridad antes de la restauración y elimina todas las sesiones tras la restauración por motivos de seguridad.
+- **Descripción**: Restaura la base de datos desde un archivo de copia de seguridad (.db o .sql). Crea una copia de seguridad de seguridad antes de la restauración y borra todas las sesiones después de la restauración por seguridad.
 - **Autenticación**: Requiere privilegios de administrador, sesión válida y token CSRF
 - **Cuerpo de la solicitud**: FormData con un campo de archivo llamado `database`
   - El archivo debe ser `.db`, `.sqlite`, `.sqlite3` (formato binario) o `.sql` (formato SQL)
@@ -888,12 +888,12 @@ Con errores:
   - La conexión a la base de datos se reinicializa después de la restauración
   - Todas las cachés se invalidan después de la restauración
 
-## Marcas de tiempo de copia de seguridad {#backup-timestamps}
+## Marcas de Tiempo de Copia de Seguridad {/* #backup-timestamps */}
 
-### Obtener marcas de tiempo de la última copia de seguridad - `/api/backups/last-timestamps` {#get-last-backup-timestamps---apibackupslast-timestamps}
+### Obtener Marcas de Tiempo de Última Copia de Seguridad - `/api/backups/last-timestamps` {/* #get-last-backup-timestamps---apibackupslast-timestamps */}
 - **Endpoint**: `/api/backups/last-timestamps`
 - **Método**: GET
-- **Descripción**: Recupera la marca de tiempo de la última copia de seguridad para cada combinación servidor-copia de seguridad. Devuelve un mapa para facilitar la búsqueda.
+- **Descripción**: Recupera la marca de tiempo de la última copia de seguridad para cada combinación de servidor-copia de seguridad. Devuelve un mapa para una fácil búsqueda.
 - **Autenticación**: Requiere sesión válida y token CSRF
 - **Respuesta**:
 
@@ -924,12 +924,12 @@ Con errores:
   - Útil para rastrear los tiempos de la última copia de seguridad en todas las combinaciones de servidor y copia de seguridad
   - Las marcas de tiempo están en formato ISO
 
-## Gestión de registros de la aplicación {#application-logs-management}
+## Gestión de Registros de la Aplicación {/* #application-logs-management */}
 
-### Obtener registros de la aplicación - `/api/application-logs` {#get-application-logs---apiapplication-logs}
+### Obtener Registros de la Aplicación - `/api/application-logs` {/* #get-application-logs---apiapplication-logs */}
 - **Endpoint**: `/api/application-logs`
 - **Método**: GET
-- **Descripción**: Recupera entradas de registro de la aplicación desde archivos de registro. Admite la lectura de archivos de registro actuales y rotados con funcionalidad de seguimiento final (tail).
+- **Descripción**: Recupera entradas de registros de la aplicación de los archivos de registro. Soporta la lectura de archivos de registro actuales y rotados con funcionalidad de tail.
 - **Autenticación**: Requiere privilegios de administrador, sesión válida y token CSRF
 - **Parámetros de consulta**:
   - `file` (opcional): Nombre del archivo de registro a leer - `application.log`, `application.log.1`, `application.log.2`, etc. Si no se proporciona, devuelve la lista de archivos disponibles
@@ -975,10 +975,10 @@ Con errores:
   - Los nombres de archivo se validan para evitar ataques de recorrido de directorio
   - Los archivos rotados se numeran secuencialmente (`.1`, `.2`, etc.)
 
-### Exportar registros de la aplicación - `/api/application-logs/export` {#export-application-logs---apiapplication-logsexport}
+### Exportar Registros de la Aplicación - `/api/application-logs/export` {/* #export-application-logs---apiapplication-logsexport */}
 - **Endpoint**: `/api/application-logs/export`
 - **Método**: GET
-- **Descripción**: Exporta entradas de registro de la aplicación en formato de texto filtrado. Admite filtrado por nivel de registro y cadena de búsqueda.
+- **Descripción**: Exporta entradas de registros de la aplicación en formato de texto filtrado. Soporta filtrado por nivel de registro y cadena de búsqueda.
 - **Autenticación**: Requiere privilegios de administrador, sesión válida y token CSRF
 - **Parámetros de consulta**:
   - `file` (requerido): Nombre del archivo de registro a exportar - `application.log`, `application.log.1`, `application.log.2`, etc.

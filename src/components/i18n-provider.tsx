@@ -3,23 +3,8 @@
 import { type ReactNode, useEffect } from "react";
 import { I18nextProvider } from "react-i18next";
 import i18n, { loadLocale } from "@/i18n";
-import {
-  LOCALE_COOKIE_NAME,
-  resolveLocalePreference,
-} from "@/lib/locales";
-
-function readLocaleCookie(): string | undefined {
-  if (typeof document === "undefined") return undefined;
-  const m = document.cookie.match(
-    new RegExp(`(?:^|; )${LOCALE_COOKIE_NAME}=([^;]*)`)
-  );
-  if (!m) return undefined;
-  try {
-    return decodeURIComponent(m[1]);
-  } catch {
-    return undefined;
-  }
-}
+import { resolveLocalePreference } from "@/lib/locales";
+import { readLocaleCookie } from "@/lib/ui-locale-client";
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   useEffect(() => {

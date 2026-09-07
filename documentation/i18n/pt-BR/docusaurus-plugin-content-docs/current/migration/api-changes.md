@@ -1,8 +1,8 @@
-# Mudanças de API incompatíveis com versões anteriores {#api-breaking-changes}
+# Alterações incompatíveis com versões anteriores na API {/* #backward-incompatible-api-changes */}
 
 Este documento descreve mudanças significativas nos endpoints da API externa em diferentes versões do duplistatus. Os endpoints da API externa são aqueles projetados para uso por outras aplicações e integrações (por exemplo, integração de Homepage).
 
-## Visão geral {#overview}
+## Visão geral {/* #overview */}
 
 Este documento aborda mudanças significativas nos endpoints da API externa que afetam integrações, scripts e aplicações que consomem esses endpoints. Para endpoints da API interna usados pela interface web, as alterações são tratadas automaticamente e não requerem atualizações manuais.
 
@@ -10,25 +10,25 @@ Este documento aborda mudanças significativas nos endpoints da API externa que 
 Os endpoints da API externa são mantidos para compatibilidade com versões anteriores quando possível. Mudanças significativas são introduzidas apenas quando necessárias para melhorias de consistência, segurança ou funcionalidade.
 :::
 
-## Alterações Específicas da Versão {#version-specific-changes}
+## Mudanças Específicas da Versão {/* #version-specific-changes */}
 
-### Versão 1.3.0 {#version-130}
-
-**Não há alterações significativas nos pontos de extremidade da API externa**
-
-### Versão 1.2.1 {#version-121}
+### Versão 1.3.0 {/* #version-130 */}
 
 **Não há alterações significativas nos pontos de extremidade da API externa**
 
-### Versão 1.1.x {#version-11x}
+### Versão 1.2.1 {/* #version-121 */}
 
 **Não há alterações significativas nos pontos de extremidade da API externa**
 
-### Versão 1.0.x {#version-10x}
+### Versão 1.1.x {/* #version-11x */}
 
 **Não há alterações significativas nos pontos de extremidade da API externa**
 
-### Versão 0.9.x {#version-09x}
+### Versão 1.0.x {/* #version-10x */}
+
+**Não há alterações significativas nos pontos de extremidade da API externa**
+
+### Versão 0.9.x {/* #version-09x */}
 
 **Não há alterações significativas nos pontos de extremidade da API externa**
 
@@ -41,7 +41,7 @@ A Versão 0.9.x introduz autenticação e requer que todos os usuários entrem. 
 3. **Invalidação de Sessões**: Todas as sessões existentes são invalidadas
 4. **Acesso à API Externa**: Endpoints da API externa (`/api/summary`, `/api/lastbackup`, `/api/lastbackups`, `/api/upload`) permanecem sem autenticação para compatibilidade com integrações e Duplicati
 
-### Versão 0.8.x {#version-08x}
+### Versão 0.8.x {/* #version-08x */}
 
 **Não há alterações significativas nos pontos de extremidade da API externa**
 
@@ -52,7 +52,7 @@ Versão 0.8.x não introduz nenhuma alteração significativa nos endpoints da A
 - `/api/lastbackups/{serverId}` - Estrutura de resposta inalterada
 - `/api/upload` - Formato de requisição/resposta inalterado
 
-#### Melhorias de Segurança {#security-enhancements}
+#### Melhorias de Segurança {/* #security-enhancements */}
 
 Embora nenhuma alteração significativa tenha sido feita aos endpoints da API externa, a versão 0.8.x inclui melhorias de segurança:
 
@@ -63,28 +63,28 @@ Embora nenhuma alteração significativa tenha sido feita aos endpoints da API e
 Estes aprimoramentos de segurança não afetam os endpoints da API externa usados para leitura de dados de backup. Se você tiver scripts personalizados usando endpoints internos, eles podem exigir tratamento de token CSRF.
 :::
 
-### Versão 0.7.x {#version-07x}
+### Versão 0.7.x {/* #version-07x */}
 
 A Versão 0.7.x introduz várias mudanças significativas nos endpoints da API externa que exigem atualizações nas Integrações externas.
 
-#### Mudanças Significativas {#breaking-changes}
+#### Mudanças Quebradoras {/* #breaking-changes */}
 
-##### Renomeação de Campo {#field-renaming}
+##### Renomeação de Campos {/* #field-renaming */}
 
 - `totalMachines` → `totalServers` no endpoint `/api/summary`
 - `machine` → `server` em objetos de resposta da API
 - `backup_types_count` → `backup_jobs_count` no endpoint `/api/lastbackups/{serverId}`
 
-##### Mudanças no Caminho do Endpoint {#endpoint-path-changes}
+##### Mudanças no Caminho do Endpoint {/* #endpoint-path-changes */}
 
 - Todos os endpoints de API que anteriormente usavam `/api/machines/...` agora usam `/api/servers/...`
 - Nomes de parâmetros alterados de `machine_id` para `server_id` (a codificação de URL ainda funciona com ambos)
 
-#### Mudanças na Estrutura de Resposta {#response-structure-changes}
+#### Mudanças na Estrutura da Resposta {/* #response-structure-changes */}
 
 A estrutura de resposta para vários endpoints foi atualizada para consistência:
 
-##### `/api/summary` {#apisummary}
+##### `/api/summary` {/* #apisummary */}
 
 **Antes (0.6.x e anteriores):**
 
@@ -116,7 +116,7 @@ A estrutura de resposta para vários endpoints foi atualizada para consistência
 }
 ```
 
-##### `/api/lastbackup/{serverId}` {#apilastbackupserverid}
+##### `/api/lastbackup/{serverId}` {/* #apilastbackupserverid */}
 
 **Antes (0.6.x e anteriores):**
 
@@ -154,7 +154,7 @@ A estrutura de resposta para vários endpoints foi atualizada para consistência
 }
 ```
 
-##### `/api/lastbackups/{serverId}` {#apilastbackupsserverid}
+##### `/api/lastbackups/{serverId}` {/* #apilastbackupsserverid */}
 
 **Antes (0.6.x e anteriores):**
 
@@ -196,7 +196,7 @@ A estrutura de resposta para vários endpoints foi atualizada para consistência
 }
 ```
 
-## Etapas de Migração {#migration-steps}
+## Etapas de Migração {/* #migration-steps */}
 
 Se você está atualizando de uma versão anterior à 0.7.x, siga estas etapas:
 
@@ -217,9 +217,9 @@ Se você está atualizando de uma versão anterior à 0.7.x, siga estas etapas:
 5. **Atualizar Documentação**: Atualize qualquer documentação interna que faça referência à API antiga
    - Atualize exemplos de API e referências de nomes de campos
 
-## Compatibilidade {#compatibility}
+## Compatibilidade {/* #compatibility */}
 
-### Compatibilidade com Versões Anteriores {#backward-compatibility}
+### Compatibilidade Reversa {/* #backward-compatibility */}
 
 - **Versão 1.2.1**: Totalmente compatível com a estrutura da API 1.1.x
 - **Versão 1.1.x**: Totalmente compatível com a estrutura da API 1.0.x
@@ -230,13 +230,13 @@ Se você está atualizando de uma versão anterior à 0.7.x, siga estas etapas:
   - Nomes antigos de campos não funcionarão
   - Caminhos antigos de endpoints não funcionarão
 
-### Suporte Futuro {#future-support}
+### Suporte Futuro {/* #future-support */}
 
 - Nomes de campos antigos de versões anteriores à 0.7.x não são suportados
 - Caminhos de endpoint antigos de versões anteriores à 0.7.x não são suportados
 - Versões futuras manterão a estrutura de API atual, a menos que alterações significativas sejam necessárias
 
-## Resumo dos Endpoints da API Externa {#summary-of-external-api-endpoints}
+## Resumo dos Endpoints da API Externa {/* #summary-of-external-api-endpoints */}
 
 Os seguintes endpoints de API externa são mantidos para compatibilidade com versões anteriores e permanecem não autenticados:
 
@@ -247,7 +247,7 @@ Os seguintes endpoints de API externa são mantidos para compatibilidade com ver
 | `/api/lastbackups/{serverId}` | GET | Últimos backups para todas as tarefas de backup | 0.7.x: `machine` → `server`, `backup_types_count` → `backup_jobs_count` |
 | `/api/upload` | POST | Enviar dados de backup do Duplicati | Sem alterações significativas |
 
-## Precisa de Ajuda? {#need-help}
+## Precisa de Ajuda? {/* #need-help */}
 
 Se você precisa de assistência para atualizar sua integração:
 

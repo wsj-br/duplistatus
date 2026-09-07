@@ -1,4 +1,4 @@
-# Pantalla {#display}
+# Mostrar {/* #display */}
 
 Configurar preferencias de interfaz de usuario y pantalla.
 

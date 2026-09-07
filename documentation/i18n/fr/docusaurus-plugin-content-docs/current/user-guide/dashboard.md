@@ -1,6 +1,6 @@
-# Tableau de bord {#dashboard}
+# Tableau de bord {/* #dashboard */}
 
-## Tableau de bord {#dashboard-summary}
+## Résumé du tableau de bord {/* #dashboard-summary */}
 
 Cette section affiche les statistiques agrégées pour toutes les sauvegardes.
 
@@ -20,7 +20,7 @@ Cette section affiche les statistiques agrégées pour toutes les sauvegardes.
 Si le même serveur apparaît plusieurs fois sur le tableau de bord, utilisez [Paramètres → Maintenance de la base de données → Fusionner les serveurs en double](settings/database-maintenance.md#merge-duplicate-servers) pour les consolider. Des doublons peuvent apparaître lorsque vous réinstallez ou mettez à jour Duplicati, car le `machine_id` du serveur peut changer et **duplistatus** le considère alors comme un nouveau serveur.
 :::
 
-## Filtrage des serveurs {#server-filtering}
+## Filtrage du serveur {/* #server-filtering */}
 
 Vous pouvez filtrer les serveurs et sauvegardes affichés sur le tableau de bord en utilisant le champ de recherche dans la barre d'outils de l'application. Cliquez sur l'icône de filtre <IconButton icon="lucide:search" /> pour afficher le champ de recherche.
 
@@ -36,7 +36,7 @@ Vous pouvez filtrer les serveurs et sauvegardes affichés sur le tableau de bord
 
 Cela permet de localiser rapidement des serveurs ou des sauvegardes spécifiques parmi de nombreux systèmes surveillés.
 
-## Disposition des cartes {#cards-layout}
+## Mise en page des cartes {/* #cards-layout */}
 
 La disposition des cartes affiche le statut du journal de sauvegarde le plus récent reçu pour chaque sauvegarde.
 
@@ -65,7 +65,7 @@ L'affichage du panneau offre deux affichages informationnels, accessibles en cli
 
 ![panneau de graphiques](../assets/screen-overview-side-charts.png)
 
-### Détails de la sauvegarde {#backup-details}
+### Détails de la sauvegarde {/* #backup-details */}
 
 Survoler une sauvegarde dans la liste affiche les détails du dernier journal de sauvegarde reçu et toute information en retard.
 
@@ -85,7 +85,7 @@ Si cette sauvegarde est en retard, l'infobulle affiche également :
 
 Vous pouvez également cliquer sur les boutons en bas pour ouvrir [Paramètres → Notifications de sauvegarde](settings/backup-notifications-settings.md) afin de configurer les paramètres de surveillance ou ouvrir l'interface web du serveur Duplicati.
 
-## Disposition de tableau {#table-layout}
+## Mise en page du tableau {/* #table-layout */}
 
 La disposition du tableau répertorie les journaux de sauvegarde les plus récents reçus pour tous les serveurs et sauvegardes.
 
@@ -107,7 +107,7 @@ La disposition du tableau répertorie les journaux de sauvegarde les plus récen
 
 Vous pouvez utiliser les [Paramètres d'affichage](settings/display-settings.md) pour configurer la taille du tableau et d'autres configurations.
 
-### Icônes de Notifications {#notifications-icons}
+### Icônes de notifications {/* #notifications-icons */}
 
 | Icône                                                                                                                               | Option de notification | Description                                                                                         |
 |------------------------------------------------------------------------------------------------------------------------------------|------------------------|-----------------------------------------------------------------------------------------------------|
@@ -120,7 +120,7 @@ Vous pouvez utiliser les [Paramètres d'affichage](settings/display-settings.md)
 Ce paramètre de notification s'applique uniquement quand **duplistatus** reçoit un nouveau journal de sauvegarde d'un serveur Duplicati. Les notifications en retard sont configurées séparément et seront envoyées indépendamment de ce paramètre.
 :::
 
-### Détails des retards {#overdue-details}
+### Détails du retard {/* #overdue-details */}
 
 Survoler l'icône d'avertissement de sauvegarde en retard affiche les détails à propos de la sauvegarde en retard.
 
@@ -131,7 +131,7 @@ Survoler l'icône d'avertissement de sauvegarde en retard affiche les détails �
 - **Sauvegarde attendue** : L'heure à laquelle la sauvegarde était attendue, y compris le délai de grâce configuré (temps supplémentaire autorisé avant de marquer comme en retard).
 - **Dernière notification** : Quand la dernière notification en retard a été envoyée.
 
-## Duplicati Server Version {#duplicati-server-version}
+## Version du serveur duplicati {/* #duplicati-server-version */}
 
 Le tableau de bord affiche la version de Duplicati rapportée dans le dernier journal de sauvegarde pour chaque serveur (vue carte) ou job de sauvegarde (vue tableau).
 
@@ -145,7 +145,7 @@ Le tableau de bord affiche la version de Duplicati rapportée dans le dernier jo
 **duplistatus** n'interroge pas le serveur Duplicati pour connaître la version qui est actuellement en cours d'exécution. Il utilise la version stockée dans le dernier journal de sauvegarde qui a été reçu ou [collecté](collect-backup-logs.md). Après avoir mis à jour Duplicati, le tableau de bord continue d'afficher la version précédente jusqu'à ce qu'un nouveau journal de sauvegarde arrive.
 :::
 
-### Versions de sauvegarde disponibles {#available-backup-versions}
+### Versions de sauvegarde disponibles {/* #available-backup-versions */}
 
 Cliquer sur l'icône d'horloge bleue ouvre une liste des versions de sauvegarde disponibles au moment de la sauvegarde, telle que rapportée par le serveur Duplicati.
 

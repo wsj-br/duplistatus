@@ -15,6 +15,7 @@ import { ToastProvider } from "@/components/ui/use-toast";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SessionInitializer } from "@/components/session-initializer";
 import { GlobalSessionErrorHandler } from "@/components/global-session-error-handler";
+import { UserLocaleSync } from "@/components/user-locale-sync";
 import { ConditionalLayout } from "@/components/conditional-layout";
 import { ClientLocaleProvider } from "@/contexts/locale-context";
 import { I18nProvider } from "@/components/i18n-provider";
@@ -205,6 +206,7 @@ export default async function RootLayout({
                       <TooltipProvider delayDuration={300}>
                         <ToastProvider>
                         <SessionInitializer />
+                        <UserLocaleSync />
                         <GlobalSessionErrorHandler />
                         <ConditionalLayout>{children}</ConditionalLayout>
                         <Toaster />

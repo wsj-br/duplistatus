@@ -1,8 +1,8 @@
-# 概览 {#overview}
+# 概述 {/* #overview */}
 
 欢迎来到 duplistatus 用户指南。本综合文档提供了有关使用 duplistatus 监控和管理 Duplicati 备份操作的详细说明，涵盖多个服务器。
 
-## 什么是 duplistatus？ {#what-is-duplistatus}
+## 什么是 duplistatus？ {/* #what-is-duplistatus */}
 
 duplistatus 是一种为 Duplicati 备份系统设计的强大监控仪表盘。它提供以下功能：
 
@@ -10,16 +10,15 @@ duplistatus 是一种为 Duplicati 备份系统设计的强大监控仪表盘。
 - 实时跟踪所有备份操作的状态
 - 自动检测过期备份并提供可配置的警报
 - 备份性能的综合指标和可视化
-- 灵活的通知系统，通过 NTFY 和电子邮件
-- 可选的 [API 密钥](settings/api-keys-settings.md) 用于 Duplicati 上传和主页小部件，具有上传大小和速率限制
-- 可选的 [IP 允许列表](settings/ip-allowlist-settings.md) 用于管理界面和外部 API
-- 多语言支持（英语、法语、德语、西班牙语、巴西葡萄牙语、印地语（罗马）和简体中文）。
+- 灵活的通知系统通过 NTFY 和电子邮件
+- 可选的[安全加固](../installation/security-hardening.md)功能
+- 多语言支持（英语、法语、德语、西班牙语、巴西葡萄牙语、印地语和简体中文）。
 
-## 安装 {#installation}
+## 安装 {/* #installation */}
 
 有关先决条件和详细安装说明，请参阅 [安装指南](../installation/installation.md)。
 
-## 访问仪表盘 {#accessing-the-dashboard}
+## 访问仪表板 {/* #accessing-the-dashboard */}
 
 安装成功后，按照以下步骤访问 duplistatus 网络界面：
 
@@ -37,7 +36,7 @@ duplistatus 是一种为 Duplicati 备份系统设计的强大监控仪表盘。
 
 4. 登录后，主仪表盘将自动显示（首次使用时无数据）
 
-## 用户界面概览 {#user-interface-overview}
+## 用户界面概览 {/* #user-interface-overview */}
 
 duplistatus 提供了一个直观的仪表盘，用于监控 Duplicati 备份操作，涵盖整个基础设施。
 
@@ -54,7 +53,7 @@ duplistatus 提供了一个直观的仪表盘，用于监控 Duplicati 备份操
 7. [服务器详情](server-details.md)：特定服务器的记录备份的综合列表，包括详细统计信息
 8. [备份详情](server-details.md#backup-details)：个别备份的详细信息，包括执行日志、警告和错误
 
-## 应用程序工具栏 {#application-toolbar}
+## 应用程序工具栏 {/* #application-toolbar */}
 
 应用程序工具栏提供了方便的访问关键功能和设置，组织了高效的工作流程。
 
@@ -72,9 +71,9 @@ duplistatus 提供了一个直观的仪表盘，用于监控 Duplicati 备份操
 | <IconButton icon="lucide:user" label="用户名" />                                                                                               | 显示已连接的用户，用户类型 (`Admin`, `User`)，点击用户菜单（包括语言选择）。请参阅 [用户管理](settings/user-management-settings.md) 中的更多信息               |
 | <IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; 用户指南                                                                    | 打开 [用户指南](overview.md) 到您当前查看的页面相关部分。工具提示显示 "[页面名称] 的帮助" 以指示将要打开的文档。 |
 
-### 用户菜单 {#user-menu}
+### 用户菜单 {/* #user-menu */}
 
-单击用户按钮会打开一个包含特定于用户选项的下拉菜单。菜单选项会有所不同，具体取决于您是以管理员还是普通用户身份登录。这两种角色均可通过 **Language** 子菜单更改界面语言。支持的语言：英语、法语、德语、西班牙语、巴西葡萄牙语、印地语（罗马字）和简体中文。
+点击用户按钮会打开一个下拉菜单，其中包含特定于用户的选项。菜单选项根据您是以管理员身份还是普通用户身份登录而有所不同。两种角色都可以通过**语言**子菜单更改界面语言。所选语言会保存到此浏览器的用户设置中（不是系统范围的设置），因此不同的账户可以保留不同的语言。支持的语言：英语、法语、德语、西班牙语、巴西葡萄牙语、印地语和简体中文。
 
 <table>
   <tr>
@@ -87,7 +86,7 @@ duplistatus 提供了一个直观的仪表盘，用于监控 Duplicati 备份操
   </tr>
 </table>
 
-## 基本配置 {#essential-configuration}
+## 基本配置 {/* #essential-configuration */}
 
 1. 配置你的 [Duplicati 服务器](../installation/duplicati-server-configuration.md) 以发送备份日志消息到 duplistatus （必填）。
 2. 收集初始备份日志 – 使用 [收集备份日志](collect-backup-logs.md) 功能来用所有 Duplicati 服务器的历史备份数据填充数据库。这也会自动更新备份监控间隔基于每个服务器的配置。
@@ -108,3 +107,9 @@ duplistatus 提供了一个直观的仪表盘，用于监控 Duplicati 备份操
 :::note
 所有产品名称、标志和商标都是其各自所有者的财产。图标和名称仅用于识别目的，不意味着认可。
 :::
+
+<small>
+
+> **关于界面和文档翻译的说明：** 除英语（英国）外的所有界面和文档语言均使用 [ai-i18n-tools](https://wsj-br.github.io/ai-i18n-tools/) 进行AI翻译；翻译可能不够准确或存在错误。
+
+</small>

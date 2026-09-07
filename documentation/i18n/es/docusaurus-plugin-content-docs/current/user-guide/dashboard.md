@@ -1,6 +1,6 @@
-# Panel de control {#dashboard}
+# Panel de control {/* #dashboard */}
 
-## Panel de control {#dashboard-summary}
+## Resumen del Panel {/* #dashboard-summary */}
 
 Esta sección muestra estadísticas agregadas para todas las copias de seguridad.
 
@@ -20,7 +20,7 @@ Esta sección muestra estadísticas agregadas para todas las copias de seguridad
 Si el mismo servidor aparece más de una vez en el panel de control, use [Configuración → Mantenimiento de base de datos → Combinar servidores duplicados](settings/database-maintenance.md#merge-duplicate-servers) para consolidarlos. Los duplicados pueden ocurrir cuando reinstala o actualiza Duplicati, ya que el `machine_id` del servidor puede cambiar y **duplistatus** entonces lo trata como un servidor nuevo.
 :::
 
-## Filtrado de servidores {#server-filtering}
+## Filtrado de Servidor {/* #server-filtering */}
 
 Puede filtrar los servidores y backups mostrados en el panel de control utilizando el campo de búsqueda en la barra de herramientas de la aplicación. Haga clic en el icono de filtro <IconButton icon="lucide:search" /> para mostrar el campo de búsqueda.
 
@@ -36,7 +36,7 @@ Puede filtrar los servidores y backups mostrados en el panel de control utilizan
 
 Esto facilita la localización rápida de servidores o copias de seguridad específicos entre muchos sistemas monitoreados.
 
-## Diseño de Tarjetas {#cards-layout}
+## Diseño de Tarjetas {/* #cards-layout */}
 
 El diseño de tarjetas muestra el estado del registro de backup más reciente recibido para cada backup.
 
@@ -65,7 +65,7 @@ La vista de panel ofrece dos pantallas informativas, accesibles haciendo clic en
 
 ![panel de gráficos](../assets/screen-overview-side-charts.png)
 
-### Detalles del backup {#backup-details}
+### Detalles de la Copia de Seguridad {/* #backup-details */}
 
 Al pasar el cursor sobre un backup en la lista se muestran los detalles del último registro de backup recibido y cualquier información retrasada.
 
@@ -85,7 +85,7 @@ Si este backup está retrasado, la información sobre herramientas también mues
 
 También puede hacer clic en los botones en la parte inferior para abrir [Configuración → Notificaciones de backup](settings/backup-notifications-settings.md) para configurar los ajustes de monitoreo o abrir la interfaz web del servidor Duplicati.
 
-## Diseño de Tabla {#table-layout}
+## Diseño de Tabla {/* #table-layout */}
 
 La disposición de la tabla enumera los logs de backup más recientes recibidos para todos los servidores y backups.
 
@@ -107,7 +107,7 @@ La disposición de la tabla enumera los logs de backup más recientes recibidos 
 
 Puede utilizar la [Configuración de pantalla](settings/display-settings.md) para configurar el tamaño de la tabla y otras configuraciones.
 
-### Iconos de Notificaciones {#notifications-icons}
+### Iconos de Notificaciones {/* #notifications-icons */}
 
 | Icono                                                                                                                              | Opción de notificación | Descripción                                                                                         |
 |------------------------------------------------------------------------------------------------------------------------------------|------------------------|-----------------------------------------------------------------------------------------------------|
@@ -120,7 +120,7 @@ Puede utilizar la [Configuración de pantalla](settings/display-settings.md) par
 Esta configuración de notificación solo se aplica cuando **duplistatus** recibe un nuevo registro de backup de un servidor Duplicati. Las notificaciones de backup retrasado se configuran por separado y se enviarán independientemente de esta configuración.
 :::
 
-### Detalles de retrasos {#overdue-details}
+### Detalles de Vencimiento {/* #overdue-details */}
 
 Al pasar el cursor sobre el icono de advertencia de backup retrasado se muestran los detalles acerca del backup retrasado.
 
@@ -131,7 +131,7 @@ Al pasar el cursor sobre el icono de advertencia de backup retrasado se muestran
 - **Backup esperado**: La hora en que se esperaba el backup, incluido el período de gracia configurado (tiempo adicional permitido antes de marcar como retrasado).
 - **Última notificación**: Cuándo se envió la última notificación de retrasado.
 
-## Versión del servidor Duplicati {#duplicati-server-version}
+## Versión del Servidor Duplicati {/* #duplicati-server-version */}
 
 El panel de control muestra la versión de Duplicati reportada en el último registro de copia de seguridad para cada servidor (vista de tarjetas) o trabajo de copia de seguridad (vista de tabla).
 
@@ -145,7 +145,7 @@ El panel de control muestra la versión de Duplicati reportada en el último reg
 **duplistatus** no consulta al servidor Duplicati para obtener la versión que se está ejecutando actualmente. Utiliza la versión almacenada en el último registro de copia de seguridad que fue recibido o [Recopilado](collect-backup-logs.md). Después de actualizar Duplicati, el panel de control seguirá mostrando la versión anterior hasta que llegue un nuevo registro de copia de seguridad.
 :::
 
-### Versiones de backup disponibles {#available-backup-versions}
+### Versiones de copia de seguridad disponibles {/* #available-backup-versions */}
 
 Al hacer clic en el icono de reloj azul se abre una lista de versiones de backup disponibles en el momento del backup, según lo reportado por el Servidor Duplicati.
 

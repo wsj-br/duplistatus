@@ -316,16 +316,18 @@ export function resolveAllowlistIp(request: NextRequest): string {
   return peer;
 }
 
-export type AllowlistSurface = 'admin' | 'external' | 'exempt';
+export type AllowlistSurface = 'admin' | 'external' | 'exempt' | 'probe';
+
+export function isProbePath(pathname: string): boolean {
+  return pathname === '/api/health' || pathname === '/api/ping';
+}
 
 export function classifyAllowlistPath(pathname: string): AllowlistSurface {
-  if (
-    pathname.startsWith('/_next/') ||
-    pathname === '/favicon.ico' ||
-    pathname === '/api/health' ||
-    pathname === '/api/ping'
-  ) {
+  if (pathname.startsWith('/_next/') || pathname === '/favicon.ico') {
     return 'exempt';
+  }
+  if (isProbePath(pathname)) {
+    return 'probe';
   }
   if (
     pathname === '/api/upload' ||
@@ -340,29 +342,52 @@ export function classifyAllowlistPath(pathname: string): AllowlistSurface {
   return 'admin';
 }
 
+function warnMissingPeer(): void {
+  if (!missingPeerWarned) {
+    missingPeerWarned = true;
+    console.warn(
+      '[IP allowlist] Peer IP header is missing. Ensure scripts/peer-ip.cjs is loaded via --require / NODE_OPTIONS. Denying while the allowlist is enabled.'
+    );
+  }
+}
+
 export function isIpAllowed(surface: AllowlistSurface, ip: string, _peer: string): boolean {
-  if (surface === 'exempt') {
-    return true;
-  }
-  const cached = loadCached();
-  const list = surface === 'admin' ? cached.admin : cached.external;
-  const block = surface === 'admin' ? cached.adminBlock : cached.externalBlock;
-
-  if (!list.enabled) {
-    return true;
-  }
-
-  if (!ip) {
-    if (!missingPeerWarned) {
-      missingPeerWarned = true;
-      console.warn(
-        '[IP allowlist] Peer IP header is missing. Ensure scripts/peer-ip.cjs is loaded via --require / NODE_OPTIONS. Denying while the allowlist is enabled.'
-      );
+  switch (surface) {
+    case 'exempt':
+      return true;
+    case 'probe': {
+      const cached = loadCached();
+      if (!cached.admin.enabled && !cached.external.enabled) {
+        return true;
+      }
+      if (!ip) {
+        warnMissingPeer();
+        return false;
+      }
+      return ipInBlock(cached.adminBlock, ip) || ipInBlock(cached.externalBlock, ip);
     }
-    return false;
-  }
+    case 'admin':
+    case 'external': {
+      const cached = loadCached();
+      const list = surface === 'admin' ? cached.admin : cached.external;
+      const block = surface === 'admin' ? cached.adminBlock : cached.externalBlock;
 
-  return ipInBlock(block, ip);
+      if (!list.enabled) {
+        return true;
+      }
+
+      if (!ip) {
+        warnMissingPeer();
+        return false;
+      }
+
+      return ipInBlock(block, ip);
+    }
+    default: {
+      const _exhaustive: never = surface;
+      return _exhaustive;
+    }
+  }
 }
 
 export function ipMatchesCidrs(ip: string, cidrs: string[]): boolean {

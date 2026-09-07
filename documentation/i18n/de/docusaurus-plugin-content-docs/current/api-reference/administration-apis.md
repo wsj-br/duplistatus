@@ -1,9 +1,9 @@
-# Administration {#administration}
+# Verwaltung {/* #administration */}
 
-## Backups sammeln - `/api/backups/collect` {#collect-backups---apibackupscollect}
+## Backups sammeln - `/api/backups/collect` {/* #collect-backups---apibackupscollect */}
 - **Endpoint**: `/api/backups/collect`
-- **Methode**: POST
-- **Beschreibung**: Sammelt Sicherungsdaten direkt von einem Duplicati-Server über dessen API. Dieser Endpunkt erkennt automatisch das beste Verbindungsprotokoll (HTTPS mit SSL-Überprüfung, HTTPS mit selbstsignierten Zertifikaten oder HTTP als Fallback) und stellt eine Verbindung zum Duplicati-Server her, um Sicherungsinformationen abzurufen und in die lokale Datenbank zu übernehmen.
+- **Method**: POST
+- **Description**: Sammelt Backup-Daten direkt von einem Duplicati-Server über dessen API. Dieser Endpoint erkennt automatisch das beste Verbindungsprotokoll (HTTPS mit SSL-Validierung, HTTPS mit selbstsignierten Zertifikaten oder HTTP als Fallback) und verbindet sich mit dem Duplicati-Server, um Backup-Informationen abzurufen und in die lokale Datenbank zu verarbeiten.
 - **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
 - **Anforderungstext**:
 
@@ -50,10 +50,10 @@
   - Die Oberfläche sollte `serverAlias || serverName` zu Anzeigezwecken verwenden
   - Unterstützt sowohl den JSON-Download als auch direkte API-Sammlungsmethoden
 
-## Sicherungen bereinigen - `/api/backups/cleanup` {#cleanup-backups---apibackupscleanup}
+## Backups bereinigen - `/api/backups/cleanup` {/* #cleanup-backups---apibackupscleanup */}
 - **Endpoint**: `/api/backups/cleanup`
-- **Methode**: POST
-- **Beschreibung**: Löscht alte Sicherungsdaten basierend auf der Aufbewahrungsfrist. Dieser Endpunkt hilft dabei, die Datenbankgröße zu verwalten, indem veraltete Sicherungsdatensätze entfernt werden, während aktuelle und wichtige Daten erhalten bleiben.
+- **Method**: POST
+- **Description**: Löscht alte Backup-Daten basierend auf der Aufbewahrungsfrist. Dieser Endpoint hilft, die Datenbankgröße zu verwalten, indem veraltete Backup-Datensätze entfernt werden, während aktuelle und wichtige Daten erhalten bleiben.
 - **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
 - **Anforderungstext**:
 
@@ -94,10 +94,10 @@ Für die Option „Alle Daten löschen“:
   - Verbessertes Fehlermeldesystem enthält Details und Stack-Trace im Entwicklungsmodus
   - Unterstützt sowohl zeitbasierte Aufbewahrung als auch vollständige Datenlöschung
 
-## Sicherungsauftrag löschen - `/api/backups/delete-job` {#delete-backup-job---apibackupsdelete-job}
+## Sicherungsauftrag löschen - `/api/backups/delete-job` {/* #delete-backup-job---apibackupsdelete-job */}
 - **Endpoint**: `/api/backups/delete-job`
-- **Methode**: DELETE
-- **Beschreibung**: Löscht alle Sicherungsdatensätze für eine bestimmte Server-Sicherungs-Kombination. Dieser Endpunkt ist nur im Entwicklungsmodus verfügbar.
+- **Method**: DELETE
+- **Description**: Löscht alle Backup-Datensätze für eine bestimmte Server-Backup-Kombination. Dieser Endpoint ist nur im Entwicklungsmodus verfügbar.
 - **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
 - **Anforderungstext**:
 
@@ -133,10 +133,10 @@ Für die Option „Alle Daten löschen“:
   - Gibt die Anzahl der gelöschten Sicherungen und Serverinformationen zurück
   - Verwendet den Server-Alias zur Anzeige, falls verfügbar, andernfalls den Servernamen
 
-## Sicherungspläne synchronisieren - `/api/backups/sync-schedule` {#sync-backup-schedules---apibackupssync-schedule}
+## Backup-Zeitpläne synchronisieren - `/api/backups/sync-schedule` {/* #sync-backup-schedules---apibackupssync-schedule */}
 - **Endpoint**: `/api/backups/sync-schedule`
-- **Methode**: POST
-- **Beschreibung**: Synchronisiert Informationen zu Sicherungsplänen von einem Duplicati-Server. Dieser Endpunkt stellt eine Verbindung zum Server her, ruft Planungsinformationen für alle Sicherungen ab und aktualisiert die lokalen Sicherungseinstellungen mit Details wie Wiederholungsintervallen, erlaubten Wochentagen und geplanten Zeitpunkten.
+- **Method**: POST
+- **Description**: Synchronisiert Backup-Zeitplaninformationen von einem Duplicati-Server. Dieser Endpoint verbindet sich mit dem Server, ruft Zeitplaninformationen für alle Backups ab und aktualisiert die lokalen Backup-Einstellungen mit Zeitplandetails, einschließlich Wiederholungsintervallen, erlaubten Wochentagen und Zeitplänen.
 - **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
 - **Anforderungstext**:
 
@@ -216,10 +216,10 @@ Mit Fehlern:
   - Protokolliert Audit-Ereignisse für erfolgreiche und fehlgeschlagene Synchronisierungsvorgänge
   - Verwendet Standardport 8200, wenn nicht anders angegeben
 
-## Serververbindung testen - `/api/servers/test-connection` {#test-server-connection---apiserverstest-connection}
+## Serververbindung testen - `/api/servers/test-connection` {/* #test-server-connection---apiserverstest-connection */}
 - **Endpoint**: `/api/servers/test-connection`
-- **Methode**: POST
-- **Beschreibung**: Testet die Verbindung zu einem Duplicati-Server, um sicherzustellen, dass er erreichbar ist.
+- **Method**: POST
+- **Description**: Testet die Verbindung zu einem Duplicati-Server, um zu überprüfen, ob er erreichbar ist.
 - **Anfrage-Body**:
 
   ```json
@@ -247,10 +247,10 @@ Mit Fehlern:
   - Unterstützt sowohl HTTP als auch HTTPS-Protokolle
   - Verwendet Timeout-Konfiguration für den Verbindungstest
 
-## Server-URL abrufen - `/api/servers/:serverId/server-url` {#get-server-url---apiserversserveridserver-url}
+## Server-URL abrufen - `/api/servers/:serverId/server-url` {/* #get-server-url---apiserversserveridserver-url */}
 - **Endpoint**: `/api/servers/:serverId/server-url`
-- **Methode**: GET
-- **Beschreibung**: Ruft die Server-URL für einen bestimmten Server ab.
+- **Method**: GET
+- **Description**: Ruft die Server-URL für einen bestimmten Server ab.
 - **Parameter**:
   - `serverId`: die Serverkennung
 
@@ -271,10 +271,10 @@ Mit Fehlern:
   - Wird für die Verwaltung der Serververbindung verwendet
   - Gibt einen leeren String zurück, wenn keine Server-URL festgelegt ist
 
-## Server-URL aktualisieren - `/api/servers/:serverId/server-url` {#update-server-url---apiserversserveridserver-url}
+## Server-URL aktualisieren - `/api/servers/:serverId/server-url` {/* #update-server-url---apiserversserveridserver-url */}
 - **Endpoint**: `/api/servers/:serverId/server-url`
-- **Methode**: PATCH
-- **Beschreibung**: Aktualisiert die Server-URL für einen bestimmten Server.
+- **Method**: PATCH
+- **Description**: Aktualisiert die Server-URL für einen bestimmten Server.
 - **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
 - **Parameter**:
   - `serverId`: Die Serverkennung
@@ -308,10 +308,10 @@ Mit Fehlern:
   - Unterstützt sowohl HTTP als auch HTTPS-Protokolle
   - Gibt aktualisierte Serverinformationen zurück
 
-## Server-Passwort abrufen - `/api/servers/:serverId/password` {#get-server-password---apiserversserveridpassword}
+## Server-Passwort abrufen - `/api/servers/:serverId/password` {/* #get-server-password---apiserversserveridpassword */}
 - **Endpoint**: `/api/servers/:serverId/password`
-- **Methode**: GET
-- **Beschreibung**: Ruft ein CSRF-Token für Server-Passwort-Operationen ab.
+- **Method**: GET
+- **Description**: Ruft ein CSRF-Token für Server-Passwortoperationen ab.
 - **Authentifizierung**: Gültige Sitzung erforderlich
 - **Parameter**:
   - `serverId`: die Serverkennung
@@ -331,10 +331,10 @@ Mit Fehlern:
   - Gibt ein CSRF-Token zurück, das bei Passwortaktualisierungen verwendet werden muss
   - Die Sitzung muss gültig sein, um das Token zu generieren
 
-## Server-Passwort aktualisieren - `/api/servers/:serverId/password` {#update-server-password---apiserversserveridpassword}
+## Server-Passwort aktualisieren - `/api/servers/:serverId/password` {/* #update-server-password---apiserversserveridpassword */}
 - **Endpoint**: `/api/servers/:serverId/password`
-- **Methode**: PATCH
-- **Beschreibung**: Aktualisiert das Passwort für einen bestimmten Server.
+- **Method**: PATCH
+- **Description**: Aktualisiert das Passwort für einen bestimmten Server.
 - **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
 - **Parameter**:
   - `serverId`: Die Serverkennung
@@ -363,12 +363,12 @@ Mit Fehlern:
   - Das Passwort kann eine leere Zeichenkette sein, um das Passwort zu löschen
   - Das Passwort wird sicher über das Geheimnisseverwaltungssystem gespeichert
 
-## Benutzerverwaltung {#user-management}
+## Benutzerverwaltung {/* #user-management */}
 
-### Benutzer auflisten - `/api/users` {#list-users---apiusers}
+### Benutzer auflisten - `/api/users` {/* #list-users---apiusers */}
 - **Endpoint**: `/api/users`
-- **Methode**: GET
-- **Beschreibung**: Listet alle Benutzer mit Seitennummerierung und optionaler Suchfilterung auf. Gibt Benutzerinformationen einschließlich Anmeldeverlauf und Kontostatus zurück.
+- **Method**: GET
+- **Description**: Listet alle Benutzer mit Paginierung und optionaler Suchfilterung auf. Gibt Benutzerinformationen einschließlich Anmeldehistorie und Kontostatus zurück.
 - **Authentifizierung**: Erfordert Administratorrechte, gültige Sitzung und CSRF-Token
 - **Abfrageparameter**:
   - `page` (optional): Seitennummer (Standard: 1)
@@ -410,10 +410,10 @@ Mit Fehlern:
   - Unterstützt Seitennummerierung und Suchfilterung
   - Gibt den Benutzerkontostatus einschließlich Sperrstatus zurück
 
-### Benutzer erstellen - `/api/users` {#create-user---apiusers}
+### Benutzer erstellen - `/api/users` {/* #create-user---apiusers */}
 - **Endpoint**: `/api/users`
-- **Methode**: POST
-- **Beschreibung**: Erstellt ein neues Benutzerkonto. Kann ein temporäres Passwort generieren oder ein vorgegebenes Passwort verwenden.
+- **Method**: POST
+- **Description**: Erstellt ein neues Benutzerkonto. Kann ein temporäres Passwort generieren oder ein bereitgestelltes Passwort verwenden.
 - **Authentifizierung**: Administratorrechte, gültige Sitzung und CSRF-Token erforderlich
 - **Anforderungstext**:
 
@@ -458,10 +458,10 @@ Mit Fehlern:
   - Generierte temporäre Passwörter werden nur einmal in der Antwort zurückgegeben
   - Die Benutzererstellung wird im Audit-Log protokolliert
 
-### Benutzer aktualisieren - `/api/users/:id` {#update-user---apiusersid}
+### Benutzer aktualisieren - `/api/users/:id` {/* #update-user---apiusersid */}
 - **Endpoint**: `/api/users/:id`
-- **Methode**: PATCH
-- **Beschreibung**: Aktualisiert Benutzerinformationen, einschließlich Benutzername, Administratorstatus, Passwortänderungspflicht und Passwortzurücksetzung.
+- **Method**: PATCH
+- **Description**: Aktualisiert Benutzerinformationen einschließlich Benutzername, Admin-Status, Passwortänderungsanforderung und Passwort-Zurücksetzung.
 - **Authentifizierung**: Erfordert Administratorrechte, gültige Sitzung und CSRF-Token
 - **Parameter**:
   - `id`: Zu aktualisierende Benutzer-ID
@@ -518,10 +518,10 @@ Mit Fehlern:
   - Beim Zurücksetzen des Passworts wird ein sicheres temporäres 12-stelliges Passwort generiert
   - Alle Änderungen werden im Audit-Log protokolliert
 
-### Benutzer löschen - `/api/users/:id` {#delete-user---apiusersid}
+### Benutzer löschen - `/api/users/:id` {/* #delete-user---apiusersid */}
 - **Endpoint**: `/api/users/:id`
-- **Methode**: DELETE
-- **Beschreibung**: Löscht ein Benutzerkonto. Verhindert das Löschen des eigenen Kontos oder des letzten Administrator-Kontos.
+- **Method**: DELETE
+- **Description**: Löscht ein Benutzerkonto. Verhindert das Löschen des eigenen Kontos oder des letzten Admin-Kontos.
 - **Authentifizierung**: Erfordert Administratorrechte, gültige Sitzung und CSRF-Token
 - **Parameter**:
   - `id`: Zu löschende Benutzer-ID
@@ -547,12 +547,12 @@ Mit Fehlern:
   - Die Löschung eines Benutzers wird im Audit-Log protokolliert
   - Zugehörige Sitzungen werden automatisch gelöscht (Kaskade)
 
-## Audit-Log-Verwaltung {#audit-log-management}
+## Audit-Protokollverwaltung {/* #audit-log-management */}
 
-### Audit-Logs auflisten - `/api/audit-log` {#list-audit-logs---apiaudit-log}
+### Audit-Protokolle auflisten - `/api/audit-log` {/* #list-audit-logs---apiaudit-log */}
 - **Endpoint**: `/api/audit-log`
-- **Methode**: GET
-- **Beschreibung**: Ruft Audit-Log-Einträge mit Filterung, Seitennummerierung und Suchfunktion ab. Unterstützt sowohl seitenbasierte als auch offsetbasierte Paginierung.
+- **Method**: GET
+- **Description**: Ruft Audit-Protokolleinträge mit Filterung, Paginierung und Suchfunktionen ab. Unterstützt sowohl seitenbasierte als auch offsetbasierte Paginierung.
 - **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token (angemeldeter Benutzer erforderlich)
 - **Abfrageparameter**:
   - `page` (optional): Seitennummer für seitenbasierte Paginierung
@@ -605,10 +605,10 @@ Mit Fehlern:
   - Das Feld `details` enthält geparstes JSON mit zusätzlichem Kontext
   - Alle Abfragen des Audit-Logs werden protokolliert
 
-### Filterwerte für Audit-Log abrufen - `/api/audit-log/filters` {#get-audit-log-filter-values---apiaudit-logfilters}
+### Filterwerte für Audit-Protokolle abrufen - `/api/audit-log/filters` {/* #get-audit-log-filter-values---apiaudit-logfilters */}
 - **Endpoint**: `/api/audit-log/filters`
-- **Methode**: GET
-- **Beschreibung**: Ruft verfügbare eindeutige Filterwerte für die Filterung von Audit-Logs ab. Gibt alle unterschiedlichen Aktionen, Kategorien und Status zurück, die in der Audit-Log-Datenbank vorhanden sind. Nützlich zur Befüllung von Filter-Dropdowns in der Benutzeroberfläche.
+- **Method**: GET
+- **Description**: Ruft eindeutige Filterwerte ab, die für die Filterung von Audit-Protokollen verfügbar sind. Gibt alle unterschiedlichen Aktionen, Kategorien und Status zurück, die in der Audit-Protokolldatenbank vorhanden sind. Nützlich zum Befüllen von Filter-Dropdowns in der Benutzeroberfläche.
 - **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token (angemeldeter Benutzer erforderlich)
 - **Antwort**:
 
@@ -645,10 +645,10 @@ Mit Fehlern:
   - Leere Arrays werden zurückgegeben, wenn keine Daten vorhanden sind oder ein Fehler auftritt
   - Wird vom Audit-Protokollbetrachter verwendet, um Filterdropdowns dynamisch zu befüllen
 
-### Audit-Logs herunterladen - `/api/audit-log/download` {#download-audit-logs---apiaudit-logdownload}
+### Audit-Protokolle herunterladen - `/api/audit-log/download` {/* #download-audit-logs---apiaudit-logdownload */}
 - **Endpoint**: `/api/audit-log/download`
-- **Methode**: GET
-- **Beschreibung**: Lädt Audit-Logs im CSV- oder JSON-Format mit optionaler Filterung herunter. Nützlich für externe Analyse und Berichterstattung.
+- **Method**: GET
+- **Description**: Lädt Audit-Protokolle im CSV- oder JSON-Format mit optionaler Filterung herunter. Nützlich für externe Analysen und Berichterstattung.
 - **Authentifizierung**: Gültige Sitzung und CSRF-Token erforderlich (angemeldeter Benutzer erforderlich)
 - **Abfrageparameter**:
   - `format` (optional): Exportformat – `csv` oder `json` (Standard: `csv`)
@@ -677,10 +677,10 @@ Mit Fehlern:
   - Das Feld „Details“ im CSV ist als JSON-String serialisiert
   - Der Dateiname enthält das aktuelle Datum
 
-### Audit-Logs bereinigen - `/api/audit-log/cleanup` {#cleanup-audit-logs---apiaudit-logcleanup}
+### Audit-Protokolle bereinigen - `/api/audit-log/cleanup` {/* #cleanup-audit-logs---apiaudit-logcleanup */}
 - **Endpoint**: `/api/audit-log/cleanup`
-- **Methode**: POST
-- **Beschreibung**: Löst manuell die Bereinigung alter Audit-Logs basierend auf der Aufbewahrungsfrist aus. Unterstützt den Trockenlauf-Modus, um eine Vorschau der zu löschenden Einträge anzuzeigen.
+- **Method**: POST
+- **Description**: Löst manuell die Bereinigung alter Audit-Protokolle basierend auf der Aufbewahrungsfrist aus. Unterstützt den Trockenlaufmodus, um anzuzeigen, was gelöscht werden würde.
 - **Authentifizierung**: Administratorrechte, gültige Sitzung und CSRF-Token erforderlich
 - **Anforderungstext**:
 
@@ -727,10 +727,10 @@ Mit Fehlern:
   - Der Bereinigungsvorgang wird im Audit-Log protokolliert
   - Der Trockenlauf-Modus ist nützlich, um die Auswirkungen der Bereinigung vorab einzusehen
 
-### Audit-Protokoll-Beibehaltung abrufen - `/api/audit-log/retention` {#get-audit-log-retention---apiaudit-logretention}
-- **Endpunkt**: `/api/audit-log/retention`
-- **Methode**: GET
-- **Beschreibung**: Ruft die aktuelle Konfiguration für die Beibehaltung des Audit-Logs in Tagen ab.
+### Abrufen der Prüfprotokoll-Aufbewahrung - `/api/audit-log/retention` {/* #get-audit-log-retention---apiaudit-logretention */}
+- **Endpoint**: `/api/audit-log/retention`
+- **Method**: GET
+- **Description**: Ruft die aktuelle Prüfprotokoll-Aufbewahrungskonfiguration in Tagen ab.
 - **Authentifizierung**: Gültige Sitzung und CSRF-Token erforderlich (kein angemeldeter Benutzer erforderlich)
 - **Antwort**:
 
@@ -746,10 +746,10 @@ Mit Fehlern:
   - Standardmäßige Beibehaltung beträgt 90 Tage, wenn nicht konfiguriert
   - Kann ohne Authentifizierung abgerufen werden (schreibgeschützt)
 
-### Audit-Protokoll-Beibehaltung aktualisieren - `/api/audit-log/retention` {#update-audit-log-retention---apiaudit-logretention}
-- **Endpunkt**: `/api/audit-log/retention`
-- **Methode**: PATCH
-- **Beschreibung**: Aktualisiert die Beibehaltungsdauer des Audit-Logs in Tagen. Diese Einstellung legt fest, wie lange Audit-Logs vor der automatischen Bereinigung aufbewahrt werden.
+### Aktualisieren der Prüfprotokoll-Aufbewahrung - `/api/audit-log/retention` {/* #update-audit-log-retention---apiaudit-logretention */}
+- **Endpoint**: `/api/audit-log/retention`
+- **Method**: PATCH
+- **Description**: Aktualisiert den Zeitraum der Prüfprotokoll-Aufbewahrung in Tagen. Diese Einstellung bestimmt, wie lange Prüfprotokolle aufbewahrt werden, bevor sie automatisch bereinigt werden.
 - **Authentifizierung**: Administratorrechte, gültige Sitzung und CSRF-Token erforderlich
 - **Anforderungstext**:
 
@@ -779,22 +779,22 @@ Mit Fehlern:
   - Konfigurationsänderungen werden im Audit-Log protokolliert
   - Die Aufbewahrungsfrist wirkt sich auf automatische und manuelle Bereinigungsvorgänge aus
 
-## API-Schlüssel {#api-keys}
+## API-Schlüssel {/* #api-keys */}
 
-### API-Schlüssel auflisten - `/api/api-keys` {#list-api-keys---apiapi-keys}
-- **Endpunkt**: `/api/api-keys`
-- **Methode**: GET
-- **Beschreibung**: Listet alle API-Schlüssel auf. Geheimnisse werden nie zurückgegeben; jeder Schlüssel enthält einen Fingerabdruck (`Qk7v…3xTa`).
+### Auflisten der API-Schlüssel - `/api/api-keys` {/* #list-api-keys---apiapi-keys */}
+- **Endpoint**: `/api/api-keys`
+- **Method**: GET
+- **Description**: Listet alle API-Schlüssel auf. Geheimnisse werden niemals zurückgegeben; jeder Schlüssel enthält einen Fingerabdruck (`Qk7v…3xTa`).
 - **Authentifizierung**: Erfordert Admin-Rechte, gültige Sitzung und CSRF-Token
 - **Fehlerantworten**:
   - `401`: Unautorisiert - Ungültige Sitzung oder CSRF-Token
   - `403`: Verboten - Admin-Rechte erforderlich
   - `500`: Interner Serverfehler
 
-### API-Schlüssel erstellen - `/api/api-keys` {#create-api-key---apiapi-keys}
-- **Endpunkt**: `/api/api-keys`
-- **Methode**: POST
-- **Beschreibung**: Erstellt einen bereichsspezifischen API-Schlüssel. Das Klartext-Geheimnis wird nur in dieser Antwort zurückgegeben.
+### API-Schlüssel erstellen - `/api/api-keys` {/* #create-api-key---apiapi-keys */}
+- **Endpoint**: `/api/api-keys`
+- **Method**: POST
+- **Description**: Erstellt einen eingeschränkten API-Schlüssel. Das Klartextgeheimnis wird nur in dieser Antwort zurückgegeben.
 - **Authentifizierung**: Administratorrechte, gültige Sitzung und CSRF-Token erforderlich
 - **Anforderungstext**:
 
@@ -813,24 +813,24 @@ Mit Fehlern:
   - `403`: Verboten - Admin-Rechte erforderlich
   - `500`: Interner Serverfehler
 
-### API-Schlüssel aktualisieren - `/api/api-keys/:id` {#update-api-key---apiapi-keysid}
-- **Endpunkt**: `/api/api-keys/:id`
-- **Methode**: PATCH
-- **Beschreibung**: Aktiviert oder deaktiviert einen Schlüssel.
+### API-Schlüssel aktualisieren - `/api/api-keys/:id` {/* #update-api-key---apiapi-keysid */}
+- **Endpoint**: `/api/api-keys/:id`
+- **Method**: PATCH
+- **Description**: Aktiviert oder deaktiviert einen Schlüssel.
 - **Authentifizierung**: Erfordert Admin-Rechte, gültige Sitzung und CSRF-Token
 
-### API-Schlüssel löschen - `/api/api-keys/:id` {#delete-api-key---apiapi-keysid}
-- **Endpunkt**: `/api/api-keys/:id`
-- **Methode**: DELETE
-- **Beschreibung**: Löscht einen Schlüssel. Existierende Clients, die dieses Geheimnis verwenden, verlieren sofort den Zugriff.
+### API-Schlüssel löschen - `/api/api-keys/:id` {/* #delete-api-key---apiapi-keysid */}
+- **Endpoint**: `/api/api-keys/:id`
+- **Method**: DELETE
+- **Description**: Löscht einen Schlüssel. Bestehende Clients, die dieses Geheimnis verwenden, verlieren sofort den Zugriff.
 - **Authentifizierung**: Erfordert Admin-Rechte, gültige Sitzung und CSRF-Token
 
-## Database Management {#database-management}
+## Datenbankverwaltung {/* #database-management */}
 
-### Datenbank sichern - `/api/database/backup` {#backup-database---apidatabasebackup}
-- **Endpunkt**: `/api/database/backup`
-- **Methode**: GET
-- **Beschreibung**: Erstellt eine Sicherung der Datenbank im binären Format (.db) oder im SQL-Format (.sql). Die Sicherungsdatei wird automatisch mit einem zeitgestempelten Dateinamen heruntergeladen.
+### Datenbank sichern - `/api/database/backup` {/* #backup-database---apidatabasebackup */}
+- **Endpoint**: `/api/database/backup`
+- **Method**: GET
+- **Description**: Erstellt eine Sicherung der Datenbank im binären (.db) oder SQL (.sql) Format. Die Sicherungsdatei wird automatisch mit einem zeitgestempelten Dateinamen heruntergeladen.
 - **Authentifizierung**: Erfordert Administratorrechte, gültige Sitzung und CSRF-Token
 - **Abfrageparameter**:
   - `format` (optional): Backup-Format - `db` (binär) oder `sql` (SQL-Dump). Standard: `db`
@@ -851,10 +851,10 @@ Mit Fehlern:
   - Der Backup-Vorgang wird im Audit-Log protokolliert
   - Temporäre Dateien werden nach dem Download automatisch bereinigt
 
-### Datenbank wiederherstellen - `/api/database/restore` {#restore-database---apidatabaserestore}
-- **Endpunkt**: `/api/database/restore`
-- **Methode**: POST
-- **Beschreibung**: Stellt die Datenbank aus einer Sicherungsdatei (.db oder .sql-Format) wieder her. Erstellt vor der Wiederherstellung eine Sicherungskopie und löscht alle Sitzungen nach der Wiederherstellung aus Sicherheitsgründen.
+### Datenbank wiederherstellen - `/api/database/restore` {/* #restore-database---apidatabaserestore */}
+- **Endpoint**: `/api/database/restore`
+- **Method**: POST
+- **Description**: Stellt die Datenbank aus einer Sicherungsdatei (.db oder .sql Format) wieder her. Erstellt eine Sicherheitskopie vor der Wiederherstellung und löscht alle Sitzungen nach der Wiederherstellung aus Sicherheitsgründen.
 - **Authentifizierung**: Erfordert Administratorrechte, gültige Sitzung und CSRF-Token
 - **Anfrage-Body**: FormData mit einem Dateifeld namens `database`
   - Die Datei muss entweder `.db`, `.sqlite`, `.sqlite3` (binäres Format) oder `.sql` (SQL-Format) sein
@@ -888,12 +888,12 @@ Mit Fehlern:
   - Die Datenbankverbindung wird nach der Wiederherstellung neu initialisiert
   - Alle Caches werden nach der Wiederherstellung ungültig gemacht
 
-## Backup-Zeitstempel {#backup-timestamps}
+## Sicherungszeitstempel {/* #backup-timestamps */}
 
-### Zeitstempel der letzten Sicherung abrufen - `/api/backups/last-timestamps` {#get-last-backup-timestamps---apibackupslast-timestamps}
-- **Endpunkt**: `/api/backups/last-timestamps`
-- **Methode**: GET
-- **Beschreibung**: Ruft den Zeitstempel der letzten Sicherung für jede Kombination aus Server und Sicherung ab. Gibt eine Zuordnung für eine einfache Nachschlagefunktion zurück.
+### Abrufen der letzten Sicherungszeitstempel - `/api/backups/last-timestamps` {/* #get-last-backup-timestamps---apibackupslast-timestamps */}
+- **Endpoint**: `/api/backups/last-timestamps`
+- **Method**: GET
+- **Description**: Ruft den letzten Sicherungszeitstempel für jede Server-Sicherungs-Kombination ab. Gibt eine Karte für eine einfache Suche zurück.
 - **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
 - **Antwort**:
 
@@ -924,12 +924,12 @@ Mit Fehlern:
   - Nützlich zur Verfolgung der letzten Sicherungszeiten über alle Server-Sicherungs-Kombinationen hinweg
   - Zeitstempel sind im ISO-Format
 
-## Verwaltung der Anwendungsprotokolle {#application-logs-management}
+## Anwendungsprotokollverwaltung {/* #application-logs-management */}
 
-### Anwendungsprotokolle abrufen - `/api/application-logs` {#get-application-logs---apiapplication-logs}
-- **Endpunkt**: `/api/application-logs`
-- **Methode**: GET
-- **Beschreibung**: Ruft Einträge aus den Anwendungsprotokolldateien ab. Unterstützt das Lesen der aktuellen und rotierten Protokolldateien mit Tail-Funktionalität.
+### Abrufen der Anwendungsprotokolle - `/api/application-logs` {/* #get-application-logs---apiapplication-logs */}
+- **Endpoint**: `/api/application-logs`
+- **Method**: GET
+- **Description**: Ruft Einträge aus den Anwendungsprotokollen aus Protokolldateien ab. Unterstützt das Lesen aktueller und rotierender Protokolldateien mit Tail-Funktionalität.
 - **Authentifizierung**: Erfordert Administratorrechte, gültige Sitzung und CSRF-Token
 - **Abfrageparameter**:
   - `file` (optional): Name der zu lesenden Protokolldatei – `application.log`, `application.log.1`, `application.log.2`, usw. Wenn nicht angegeben, wird eine Liste der verfügbaren Dateien zurückgegeben
@@ -975,10 +975,10 @@ Mit Fehlern:
   - Dateinamen werden validiert, um Verzeichnisdurchlaufangriffe zu verhindern
   - Rotierte Dateien sind fortlaufend nummeriert (`.1`, `.2`, usw.)
 
-### Anwendungsprotokolle exportieren - `/api/application-logs/export` {#export-application-logs---apiapplication-logsexport}
-- **Endpunkt**: `/api/application-logs/export`
-- **Methode**: GET
-- **Beschreibung**: Exportiert Anwendungsprotokolleinträge im gefilterten Textformat. Unterstützt Filterung nach Protokollstufe und Suchbegriff.
+### Exportieren der Anwendungsprotokolle - `/api/application-logs/export` {/* #export-application-logs---apiapplication-logsexport */}
+- **Endpoint**: `/api/application-logs/export`
+- **Method**: GET
+- **Description**: Exportiert Einträge aus den Anwendungsprotokollen im gefilterten Textformat. Unterstützt das Filtern nach Protokollebene und Suchzeichenfolge.
 - **Authentifizierung**: Erfordert Administratorrechte, gültige Sitzung und CSRF-Token
 - **Abfrageparameter**:
   - `file` (erforderlich): Name der zu exportierenden Protokolldatei – `application.log`, `application.log.1`, `application.log.2`, usw.

@@ -1,4 +1,4 @@
-# NTFY {#ntfy}
+# NTFY {/* #ntfy */}
 
 [NTFY](https://github.com/binwiederhier/ntfy) ist ein einfacher Benachrichtigungsdienst, der Push-Benachrichtigungen an Ihr Telefon oder Ihren Desktop senden kann. In diesem Abschnitt können Sie Ihre Benachrichtigungsserver-Verbindung und Authentifizierung einrichten.
 
@@ -15,7 +15,7 @@
 Ein <IIcon2 icon="lucide:message-square" color="green"/> grünes Symbol neben **NTFY** in der Seitenleiste bedeutet, dass Ihre Einstellungen gültig sind. Wenn das Symbol <IIcon2 icon="lucide:message-square" color="yellow"/> gelb ist, sind Ihre Einstellungen nicht gültig.
 Wenn die Konfiguration nicht gültig ist, werden die NTFY-Kontrollkästchen auf der Registerkarte [`Sicherungsbenachrichtigungen`](backup-notifications-settings.md) ebenfalls ausgegraut.
 
-## Verfügbare Aktionen {#available-actions}
+## Verfügbare Aktionen {/* #available-actions */}
 
 | Schaltfläche                                                                | Beschreibung                                                                                                  |
 |:----------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------|
@@ -23,7 +23,7 @@ Wenn die Konfiguration nicht gültig ist, werden die NTFY-Kontrollkästchen auf 
 | <IconButton icon="lucide:send-horizontal" label="Send Test Message"/> | Senden Sie eine Testnachricht an Ihren NTFY-Server, um Ihre Konfiguration zu überprüfen.                                         |
 | <IconButton icon="lucide:qr-code" label="Configure Device"/>          | Zeigen Sie einen QR-Code an, mit dem Sie Ihr Mobilgerät oder Ihren Desktop schnell für NTFY-Benachrichtigungen konfigurieren können. |
 
-## Gerätekonfiguration {#device-configuration}
+## Gerätekonfiguration {/* #device-configuration */}
 
 Sie sollten die NTFY-Anwendung auf Ihrem Gerät installieren, bevor Sie es konfigurieren ([siehe hier](https://ntfy.sh/)). Wenn Sie auf die Schaltfläche <IconButton icon="lucide:qr-code" label="Gerät konfigurieren"/> klicken oder mit der rechten Maustaste auf das Symbol <SvgButton svgFilename="ntfy.svg" /> in der Anwendungssymbolleiste klicken, wird ein QR-Code angezeigt. Durch das Scannen dieses QR-Codes wird Ihr Gerät automatisch mit dem korrekten NTFY-Thema für Benachrichtigungen konfiguriert.
 
@@ -45,5 +45,5 @@ Für verbesserte Sicherheit sollten Sie [Zugriffstokenauthentifizierung](https:/
 <br/>
 
 :::note
-Alle Produktnamen, Logos und Marken sind Eigentum ihrer jeweiligen Eigentümer. Symbole und Namen werden ausschließlich zu Identifikationszwecken verwendet und implizieren keine Billigung.
+Alle Produktnamen, Logos und Marken sind Eigentum ihrer jeweiligen Inhaber. Icons und Namen werden nur zu Identifikationszwecken verwendet und implizieren keine Unterstützung.
 :::

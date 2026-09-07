@@ -1,6 +1,6 @@
-# Configuration de développement {#development-setup}
+# Configuration du développement {/* #development-setup */}
 
-## Conditions préalables {#prerequisites}
+## Prérequis {/* #prerequisites */}
 
 - Docker / Docker Compose
 - Node.js (voir `engines.node` dans `package.json`)
@@ -11,23 +11,23 @@
 - direnv (pour charger automatiquement les fichiers `.env*`)
 - Playwright Chromium (exécuter `pnpm take-screenshots:install` après `pnpm install` ; cela exécute `playwright install chromium`)
 
-## Étapes {#steps}
+## Étapes {/* #steps */}
 
-### 1. Cloner le dépôt : {#1-clone-the-repository}
+### 1. Cloner le dépôt : {/* #1-clone-the-repository */}
 
     ```bash
     git clone https://github.com/wsj-br/duplistatus.git
     cd duplistatus
     ```
 
-### 2. Installer les dépendances (Debian/Ubuntu) : {#2-install-dependencies-debianubuntu}
+### 2. Installer les dépendances (Debian/Ubuntu) : {/* #2-install-dependencies-debianubuntu */}
 
     ```bash
     sudo apt update
     sudo apt install sqlite3 git inkscape bat -y
     ```
 
-### 3. Supprimer les installations Node.js existantes (si déjà installées) {#3-remove-old-nodejs-installations-if-you-already-have-it-installed}
+### 3. Supprimer les anciennes installations de Node.js (si vous l'avez déjà installé) {/* #3-remove-old-nodejs-installations-if-you-already-have-it-installed */}
 
     ```bash
     sudo apt-get purge nodejs npm -y
@@ -45,7 +45,7 @@
     sudo rm -rf /usr/local/bin/node*
     ```
 
-### 4. Installer Node.js et pnpm : {#4-install-nodejs-and-pnpm}
+### 4. Installer Node.js et pnpm : {/* #4-install-nodejs-and-pnpm */}
 
     ```bash
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
@@ -55,7 +55,7 @@
     npm install -g pnpm npm-check-updates doctoc
     ```
 
-### 5. Configurer le support de direnv {#5-set-up-direnv-support}
+### 5. Configurer le support direnv {/* #5-set-up-direnv-support */}
 
 Ajoutez ces lignes à votre fichier `~/.bashrc`
 
@@ -95,7 +95,7 @@ avec cette commande :
   Cursor, Lingma, Antigravity, Zed, ...) pour que ces modifications prennent effet.
 :::
 
-### 6. Créer le fichier `.env` à la racine du dépôt avec ces variables. {#6-create-the-env-file-at-the-repository-basedir-with-these-variables}
+### 6. Créer le fichier `.env` à la racine du dépôt avec ces variables. {/* #6-create-the-env-file-at-the-repository-basedir-with-these-variables */}
 
 - Vous pouvez utiliser n'importe quelle valeur pour `VERSION` ; elle sera automatiquement mise à jour lors de l'utilisation des scripts de développement.
 - Utilisez des mots de passe aléatoires pour `ADMIN_PASSWORD` et `USER_PASSWORD` ; ces mots de passe seront utilisés dans le script `pnpm take-screenshots`.
@@ -113,12 +113,12 @@ avec cette commande :
     OPENROUTER_API_KEY=sk-or-v1-your-key-for-translate-files
     ```
 
-## Scripts Disponibles {#available-scripts}
+## Scripts disponibles {/* #available-scripts */}
 
 Le projet inclut plusieurs scripts npm pour différentes tâches de développement :
 
-### Scripts de développement {#development-scripts}
-- `pnpm dev` - Démarrer le serveur de développement Next.js (port 8666) et le service cron (port 8667) ensemble via `concurrently` (inclut des pré-vérifications). CTRL-C arrête les deux. `NODE_OPTIONS` pour Next.js charge `scripts/dev-preload.cjs`, qui applique `scripts/peer-ip.cjs` (adresse de pair TCP pour les listes d'autorisation IP) et les horodatages des journaux de requêtes.
+### Scripts de développement {/* #development-scripts */}
+- `pnpm dev` - Démarrer le serveur de développement Next.js (port 8666) et le service cron (port 8667) ensemble via `concurrently` (inclut des pré-vérifications). CTRL-C arrête les deux. `NODE_OPTIONS` pour Next.js charge `scripts/dev-preload.cjs`, qui applique `scripts/peer-ip.cjs` (adresse IP des pairs pour les listes d'autorisation) et les horodatages des journaux de requêtes.
 - `pnpm dev:next` - Démarrer uniquement le serveur de développement Next.js sur le port 8666 (sans cron).
 - `pnpm build` - Construire l'application pour la production (inclut des pré-vérifications)
 - `pnpm lint` - Exécuter ESLint pour vérifier la qualité du code
@@ -128,7 +128,7 @@ Le projet inclut plusieurs scripts npm pour différentes tâches de développeme
 
 **Note :** Le script `preinstall` applique automatiquement pnpm comme gestionnaire de paquets.
 
-### Scripts de Documentation {#documentation-scripts}
+### Scripts de documentation {/* #documentation-scripts */}
 
 Ces scripts doivent être exécutés depuis le répertoire `documentation/` :
 
@@ -145,26 +145,26 @@ Ces scripts doivent être exécutés depuis le répertoire `documentation/` :
 
 Les serveurs de développement (`start:*`) offrent un remplacement de module à chaud pour un développement rapide. Le port par défaut est 3000.
 
-### Scripts de production {#production-scripts}
-- `pnpm build-local` - Construire et préparer pour la production locale (inclut des vérifications préalables, copie les fichiers statiques dans un répertoire autonome)
-- `pnpm start-local` - Démarrer le serveur de production localement (port 8666, inclut des vérifications préalables). **Remarque :** Exécutez `pnpm build-local` en premier. Démarre le serveur autonome avec `--require ./scripts/peer-ip.cjs`.
+### Scripts de production {/* #production-scripts */}
+- `pnpm build-local` - Construire et préparer pour la production locale (inclut des pré-vérifications, copie des fichiers statiques dans un répertoire autonome)
+- `pnpm start-local` - Démarrer le serveur de production localement (port 8666, inclut des pré-vérifications). **Remarque :** Exécutez `pnpm build-local` d'abord. Démarre le serveur autonome avec `--require ./scripts/peer-ip.cjs`.
 - `pnpm start` - Démarrer le serveur de production (port 9666) avec le même préchargement d'IP de pair. Docker utilise `docker-entrypoint.sh` pour charger le même script.
 
-### Scripts Docker {#docker-scripts}
+### Scripts Docker {/* #docker-scripts */}
 - `pnpm docker:up` - Démarrer la pile Docker Compose
 - `pnpm docker:down` - Arrêter la pile Docker Compose
-- `pnpm docker:clean` - Nettoyer l'environnement Docker et le cache
+- `pnpm docker:clean` - Nettoyer l'environnement et le cache Docker
 - `pnpm docker:devel` - Créer une image Docker de développement marquée comme `wsj-br/duplistatus:devel`
 
-### Scripts de service cron {#cron-service-scripts}
+### Scripts de service Cron {/* #cron-service-scripts */}
 - `pnpm cron:start` - Démarrer le service cron en mode production
 - `pnpm cron:dev` - Démarrer uniquement le service cron en mode développement avec surveillance de fichiers (port 8667). Généralement inutile lors de l'utilisation de `pnpm dev`, qui démarre déjà cron.
 - `pnpm cron:start-local` - Démarrer le service cron localement pour les tests (port 8667)
 
-### Scripts de test {#test-scripts}
+### Scripts de test {/* #test-scripts */}
 - `pnpm generate-test-data` - Générer des données de sauvegarde de test (nécessite le paramètre --servers=N)
-- `pnpm validate-csv-export` - Valider la fonctionnalité d'export CSV
-- `pnpm test-entrypoint` - Tester le script d'entrée Docker en développement local (voir [Scripts de test](test-scripts))
+- `pnpm validate-csv-export` - Valider la fonctionnalité d'exportation CSV
+- `pnpm test-entrypoint` - Tester le script d'entrée Docker dans le développement local (voir [Scripts de test](test-scripts))
 - `pnpm take-screenshots` - Prendre des captures d'écran pour la documentation (voir [Outils de documentation](documentation-tools))
 
 Les vérifications en retard, les contrôles de santé cron et les tests SMTP sont effectués via l'application en cours d'exécution et `curl` (voir [Test Scripts](test-scripts)) ; les anciens utilitaires autonomes `pnpm` pour ceux-ci ont été supprimés.

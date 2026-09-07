@@ -1,6 +1,6 @@
-# रिलीज़ प्रबंधन {#release-management}
+# रिलीज़ प्रबंधन {/* #release-management */}
 
-## संस्करणिंग (सेमांटिक संस्करणिंग) {#versioning-semantic-versioning}
+## वर्ज़निंग (सिमेंटिक वर्ज़निंग) {/* #versioning-semantic-versioning */}
 
 प्रोजेक्ट सेमांटिक संस्करणिंग (सेमवर) का पालन करता है, जो इस प्रारूप का उपयोग करता है `MAJOR.MINOR.PATCH`:
 
@@ -8,7 +8,7 @@
 - **MINOR** संस्करण (0.x.0): जब आप पिछले संगत तरीके से कार्यक्षमता जोड़ते हैं
 - **PATCH** संस्करण (0.0.x): जब आप पिछले संगत बग फिक्स करते हैं
 
-## प्री-रिलीज़ चेकलिस्ट {#pre-release-checklist}
+## रिलीज़-पूर्व चेकलिस्ट {/* #pre-release-checklist */}
 
 नया संस्करण रिलीज़ करने से पहले, सुनिश्चित करें कि आपने निम्नलिखित पूरा कर लिया है:
 
@@ -20,15 +20,15 @@
 - [ ] रिलीज़ नोट्स `documentation/docs/release-notes/VERSION.md` में तैयार किए गए हैं।
 - [ ] `scripts/generate-readme-from-intro.sh` चलाएं `README.md` को नए संस्करण और `documentation/docs/intro.md` से परिवर्तनों के साथ अपडेट करने के लिए। यह स्क्रिप्ट `README_dockerhub.md` और `RELEASE_NOTES_github_VERSION.md` को स्वचालित रूप से उत्पन्न भी करती है।
 
-## रिलीज़ प्रक्रिया अवलोकन {#release-process-overview}
+## रिलीज़ प्रक्रिया Overview {/* #release-process-overview */}
 
 अनुशंसित रिलीज़ प्रक्रिया **GitHub पुल रिक्वेस्ट्स और रिलीज़ेस** का उपयोग करती है (नीचे देखें)। यह बेहतर दृश्यता, समीक्षा क्षमताएं प्रदान करता है, और स्वचालित रूप से डॉकर इमेज बिल्ड ट्रिगर करता है। कमांड-लाइन विधि एक विकल्प के रूप में उपलब्ध है।
 
-## विधि 1: GitHub पुल रिक्वेस्ट और रिलीज़ (अनुशंसित) {#method-1-github-pull-request-and-release-recommended}
+## विधि 1: GitHub पुल रिक्वेस्ट aur रिलीज़ (अनुशंसित) {/* #method-1-github-pull-request-and-release-recommended */}
 
 यह विधि पसंदीदा है क्योंकि यह बेहतर ट्रेसबिलिटी प्रदान करती है और स्वचालित रूप से डॉकर बिल्ड ट्रिगर करती है।
 
-### कदम 1: पुल रिक्वेस्ट बनाएं {#step-1-create-pull-request}
+### चरण 1: पुल रिक्वेस्ट बनाएँ {/* #step-1-create-pull-request */}
 
 1. GitHub पर [duplistatus रिपॉजिटरी](https://github.com/wsj-br/duplistatus) पर जाएं।
 2. **"Pull requests"** टैब पर क्लिक करें।
@@ -39,7 +39,7 @@
 7. एक वर्णनात्मक शीर्षक जोड़ें (उदाहरण के लिए, "Release v1.2.0") और परिवर्तनों का सारांश देने वाला विवरण।
 8. फिर से **"Create pull request"** पर क्लिक करें।
 
-### कदम 2: पुल रिक्वेस्ट मर्ज करें {#step-2-merge-the-pull-request}
+### चरण 2: पुल रिक्वेस्ट मर्ज करें {/* #step-2-merge-the-pull-request */}
 
 पुल रिक्वेस्ट की समीक्षा के बाद:
 
@@ -47,7 +47,7 @@
 2. अपनी मर्ज स्ट्रैटेजी चुनें (सामान्यत: "Create a merge commit")।
 3. मर्ज की पुष्टि करें।
 
-### कदम 3: GitHub रिलीज़ बनाएं {#step-3-create-github-release}
+### चरण 3: GitHub रिलीज़ बनाएँ {/* #step-3-create-github-release */}
 
 एक बार मर्ज पूरा हो जाने के बाद, एक GitHub रिलीज़ बनाएं:
 
@@ -70,11 +70,11 @@
   - Docker Hub: `wsjbr/duplistatus:VERSION` और `wsjbr/duplistatus:latest` (यदि यह नवीनतम रिलीज़ है)
   - GitHub Container Registry: `ghcr.io/wsj-br/duplistatus:VERSION` और `ghcr.io/wsj-br/duplistatus:latest` (यदि यह नवीनतम रिलीज़ है)
 
-## विधि 2: कमांड लाइन (वैकल्पिक) {#method-2-command-line-alternative}
+## विधि 2: कमांड लाइन (वैकल्पिक) {/* #method-2-command-line-alternative */}
 
 यदि आप कमांड लाइन का उपयोग करना पसंद करते हैं, तो निम्नलिखित चरणों का पालन करें:
 
-### चरण 1: स्थानीय मास्टर शाखा अपडेट करें {#step-1-update-local-master-branch}
+### चरण 1: लोकल मास्टर ब्रांच अपडेट करें {/* #step-1-update-local-master-branch */}
 
 सुनिश्चित करें कि आपका स्थानीय `master` शाखा अप टू डेट है:
 
@@ -86,7 +86,7 @@ git checkout master
 git pull origin master
 ```
 
-### चरण 2: विकास शाखा मर्ज करें {#step-2-merge-development-branch}
+### चरण 2: डेवलपमेंट ब्रांच मर्ज करें {/* #step-2-merge-development-branch */}
 
 `vMAJOR.MINOR.x` शाखा को `master` में मर्ज करें:
 
@@ -100,7 +100,7 @@ git merge vMAJOR.MINOR.x
 2. हल की गई फाइलें स्टेज करें: `git add <file>`
 3. मर्ज पूरा करें: `git commit`
 
-### चरण 3: रिलीज़ टैग करें {#step-3-tag-the-release}
+### चरण 3: रिलीज़ को टैग करें {/* #step-3-tag-the-release */}
 
 नए संस्करण के लिए एक एनोटेटेड टैग बनाएं:
 
@@ -111,7 +111,7 @@ git tag -a vMAJOR.MINOR.PATCH -m "Release vMAJOR.MINOR.PATCH - Brief description
 
 `-a` फ़्लैग एक एनोटेटेड टैग बनाता है (रिलीज़ के लिए अनुशंसित), और `-m` फ़्लैग एक संदेश जोड़ता है।
 
-### चरण 4: GitHub पर पुश करें {#step-4-push-to-github}
+### चरण 4: GitHub पर पुश करें {/* #step-4-push-to-github */}
 
 अपडेट की गई `master` शाखा और नया टैग दोनों पुश करें:
 
@@ -125,11 +125,11 @@ git push origin vMAJOR.MINOR.PATCH
 
 वैकल्पिक रूप से, एक बार में सभी टैग पुश करें: `git push --tags`
 
-### चरण 5: GitHub रिलीज़ बनाएं {#step-5-create-github-release}
+### चरण 5: GitHub रिलीज़ बनाएँ {/* #step-5-create-github-release */}
 
 टैग पुश करने के बाद, Docker बिल्ड वर्कफ़्लो ट्रिगर करने के लिए GitHub रिलीज़ बनाएं (विधि 1, चरण 3 देखें)।
 
-## Docker छवि निर्माण {#manual-docker-image-build}
+## मैन्युअल डॉकर इमेज बिल्ड {/* #manual-docker-image-build */}
 
 Docker छवि निर्माण वर्कफ़्लो को रिलीज़ बनाए बिना मैन्युअल रूप से ट्रिगर करने के लिए:
 
@@ -142,11 +142,11 @@ Docker छवि निर्माण वर्कफ़्लो को रि
 
 **Note:** मैन्युअल निर्माण छवियों को `latest` के रूप में स्वचालित रूप से टैग नहीं करेंगे जब तक कि वर्कफ़्लो नवीनतम रिलीज़ के रूप में निर्धारित न कर दे।
 
-## दस्तावेज़ रिलीज़ {#releasing-documentation}
+## डॉक्यूमेंटेशन रिलीज़ करना {/* #releasing-documentation */}
 
 दस्तावेज़ [GitHub Pages](https://wsj-br.github.io/duplistatus/) पर होस्ट किए गए हैं और एप्लिकेशन रिलीज़ से अलग डिप्लॉय किए जाते हैं। अपडेट किए गए दस्तावेज़ रिलीज़ करने के लिए निम्नलिखित चरणों का पालन करें:
 
-### आवश्यकताएँ {#prerequisites}
+### पूर्व-आवश्यकताएँ {/* #prerequisites */}
 
 1. सुनिश्चित करें कि आपके पास GitHub Personal Access Token है जिसमें `repo` स्कोप है।
 2. Git क्रेडेंशियल्स सेट अप करें (एक बार की सेटअप):
@@ -158,7 +158,7 @@ cd documentation
 
 यह आपको GitHub Personal Access Token के लिए प्रॉम्प्ट देगा और इसे सुरक्षित रूप से स्टोर करेगा।
 
-### दस्तावेज़ डिप्लॉय करें {#deploy-documentation}
+### डॉक्यूमेंटेशन डिप्लॉय करें {/* #deploy-documentation */}
 
 1. `documentation` डायरेक्टरी पर जाएं:
 
@@ -179,7 +179,7 @@ pnpm run deploy
 - बनाई गई साइट को `gh-pages` शाखा पर पुश करें
 - [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/) पर दस्तावेज़ उपलब्ध कराएँ
 
-### दस्तावेज़ डिप्लॉय करने का समय {#when-to-deploy-documentation}
+### डॉक्यूमेंटेशन कब डिप्लॉय करें {/* #when-to-deploy-documentation */}
 
 दस्तावेज़ अपडेट डिप्लॉय करें:
 - जब `master` में दस्तावेज़ परिवर्तन मर्ज किए गए हों
@@ -188,7 +188,7 @@ pnpm run deploy
 
 **Note:** दस्तावेज़ डिप्लॉयमेंट एप्लिकेशन रिलीज़ से स्वतंत्र है। आप एप्लिकेशन रिलीज़ के बीच कई बार दस्तावेज़ डिप्लॉय कर सकते हैं।
 
-### GitHub के लिए रिलीज़ नोट्स तैयार करना {#preparing-release-notes-for-github}
+### GitHub के लिए रिलीज़ नोट्स तैयार करना {/* #preparing-release-notes-for-github */}
 
 `generate-readme-from-intro.sh` स्क्रिप्ट स्वचालित रूप से रन होने पर GitHub रिलीज़ नोट्स उत्पन्न करती है। यह रिलीज़ नोट्स को `documentation/docs/release-notes/VERSION.md` से पढ़ती है (जहाँ VERSION `package.json` से निकाला जाता है) और प्रोजेक्ट रूट में `RELEASE_NOTES_github_VERSION.md` बनाती है।
 
@@ -203,7 +203,7 @@ pnpm run deploy
 
 **Note:** The generated file is temporary and can be deleted after creating the GitHub release. It's recommended to add `RELEASE_NOTES_github_*.md` to `.gitignore` if you don't want to commit these files.
 
-### README.md {#update-readmemd} को अपडेट करें
+### README.md अपडेट करें {/* #update-readmemd */}
 
 If you've made changes to `documentation/docs/intro.md`, regenerate the repository `README.md`:
 

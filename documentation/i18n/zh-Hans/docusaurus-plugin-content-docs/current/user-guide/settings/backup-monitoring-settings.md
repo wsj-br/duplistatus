@@ -1,12 +1,12 @@
-# 备份监控 {#backup-monitoring}
+# 备份监控 {/* #backup-monitoring */}
 
 ![备份警报](../../assets/screen-settings-monitoring.png)
 
-## 服务器过滤 {#server-filtering}
+## 服务器筛选 {/* #server-filtering */}
 
 此页面上的服务器列表可以使用过滤字段进行过滤。
 
-当**每日摘要**已启用时，过期检测将继续进行，但单个过期通知将被抑制。请参阅[每日摘要](daily-summary-settings.md)。
+当**每日摘要**启用时，逾期检测继续进行，但不会向默认电子邮件收件人发送逾期电子邮件。对于匹配的事件，其他电子邮件目的地继续发送（逾期计为警告）。请参阅[每日摘要](daily-summary-settings.md)。
 
 **过滤匹配：**
 - 服务器 ID
@@ -15,7 +15,7 @@
 
 这使得在管理多个系统时，快速找到特定的服务器或备份在监控设置中变得容易。
 
-## 配置每个备份监控设置 {#configure-per-backup-monitoring-settings}
+## 配置单次备份监控设置 {/* #configure-per-backup-monitoring-settings */}
 
 -  **服务器名称**：要监控的服务器名称，以检测过期备份。 
    - 点击 <SvgIcon svgFilename="duplicati_logo.svg" height="18"/> 打开 Duplicati 服务器的 Web 界面
@@ -37,7 +37,7 @@
 为了获得最佳结果，在更改 Duplicati 服务器中的备份作业间隔配置后，请收集备份日志。这确保 **duplistatus** 与当前配置保持同步。
 :::
 
-## 全局配置 {#global-configurations}
+## 全局配置 {/* #global-configurations */}
 
 这些设置适用于所有备份:
 
@@ -47,7 +47,7 @@
 | **备份监控间隔** | 系统检查过期备份的频率。默认为 **5 分钟**。                                                                                                                                                                                                                                                            |
 | **通知频率**      | 发送过期通知的频率： <br/> **一次性`: Send **just one** notification when the backup becomes overdue. <br/> `每天`: Send **daily** notifications while overdue (default). <br/> `每周`: Send **weekly** notifications while overdue. <br/> `每月**：在过期期间发送 **每月** 通知。 |
 
-## 可用操作 {#available-actions}
+## 可用操作 {/* #available-actions */}
 
 | 按钮                                                              | 描述                                                                                                                           |
 |:--------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------|

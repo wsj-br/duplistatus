@@ -1,9 +1,9 @@
-# Operaciones principales {#core-operations}
+# Operaciones principales {/* #core-operations */}
 
-## Obtener datos del panel (consolidado) - `/api/dashboard` {#get-dashboard-data-consolidated---apidashboard}
+## Obtener datos del panel (consolidados) - `/api/dashboard` {/* #get-dashboard-data-consolidated---apidashboard */}
 - **Endpoint**: `/api/dashboard`
-- **Method**: GET
-- **Description**: Recupera todos los datos del panel en una única respuesta consolidada, incluyendo resúmenes de servidores, resumen general y datos de gráficos.
+- **Método**: GET
+- **Descripción**: Recupera todos los datos del panel en una única respuesta consolidada, incluyendo resúmenes de servidores, resumen general y datos de gráficos.
 - **Respuesta**:
 
   ```json
@@ -64,10 +64,10 @@
   - Todos los datos se recuperan en paralelo para un rendimiento óptimo
   - El campo `secondsSinceLastBackup` muestra el tiempo en segundos desde la última copia de seguridad en todos los servidores
 
-## Obtener todos los servidores - `/api/servers` {#get-all-servers---apiservers}
+## Obtener todos los servidores - `/api/servers` {/* #get-all-servers---apiservers */}
 - **Endpoint**: `/api/servers`
-- **Method**: GET
-- **Description**: Recupera una lista de todos los servidores con su información básica. Opcionalmente puede incluir información de copias de seguridad.
+- **Método**: GET
+- **Descripción**: Recupera una lista de todos los servidores con su información básica. Opcionalmente incluye información de copia de seguridad.
 - **Autenticación**: Requiere sesión válida y token CSRF
 - **Parámetros de consulta**:
   - `includeBackups` (opcional): Establecer a `true` para incluir información de copia de seguridad para cada servidor
@@ -110,10 +110,10 @@
   - Se utiliza para selección, visualización y configuración de servidores
   - Incluye el campo `hasPassword` para indicar si el servidor tiene una contraseña almacenada
 
-## Obtener detalles del servidor - `/api/servers/:id` {#get-server-details---apiserversid}
+## Obtener detalles del servidor - `/api/servers/:id` {/* #get-server-details---apiserversid */}
 - **Endpoint**: `/api/servers/:id`
-- **Method**: GET
-- **Description**: Recupera información sobre un servidor específico. Puede devolver información básica del servidor o información detallada que incluye copias de seguridad y datos de gráficos.
+- **Método**: GET
+- **Descripción**: Recupera información sobre un servidor específico. Puede devolver información básica del servidor o información detallada incluyendo copias de seguridad y datos de gráficos.
 - **Autenticación**: Requiere sesión válida y token CSRF
 - **Parámetros**:
   - `id`: el identificador del servidor
@@ -159,10 +159,10 @@
   - Establecer cualquiera de `includeBackups` o `includeChartData` a `true` devuelve todos los datos del servidor, incluyendo copias de seguridad y chartData
   - Se utiliza para vistas de configuración y detalles del servidor
 
-## Actualizar servidor - `/api/servers/:id` {#update-server---apiserversid}
+## Actualizar servidor - `/api/servers/:id` {/* #update-server---apiserversid */}
 - **Endpoint**: `/api/servers/:id`
-- **Method**: PATCH
-- **Description**: Actualiza los detalles del servidor, incluyendo alias, nota y URL del servidor.
+- **Método**: PATCH
+- **Descripción**: Actualiza los detalles del servidor incluyendo alias, nota y URL del servidor.
 - **Autenticación**: Requiere sesión válida y token CSRF
 - **Parámetros**:
   - `id`: el identificador del servidor
@@ -197,10 +197,10 @@
   - Todos los campos son opcionales
   - Se permiten cadenas vacías para todos los campos
 
-## Eliminar servidor - `/api/servers/:id` {#delete-server---apiserversid}
+## Eliminar servidor - `/api/servers/:id` {/* #delete-server---apiserversid */}
 - **Endpoint**: `/api/servers/:id`
-- **Method**: DELETE
-- **Description**: Elimina un servidor y todas sus copias de seguridad asociadas.
+- **Método**: DELETE
+- **Descripción**: Elimina un servidor y todas sus copias de seguridad asociadas.
 - **Autenticación**: Requiere una sesión válida y token CSRF
 - **Parámetros**:
   - `id`: el identificador del servidor
@@ -228,10 +228,10 @@
   - El registro del servidor también será eliminado
   - Devuelve la cantidad de copias de seguridad y servidores eliminados
 
-## Obtener datos del servidor con información de retraso - `/api/detail/:serverId` {#get-server-data-with-overdue-info---apidetailserverid}
+## Obtener datos del servidor con información vencida - `/api/detail/:serverId` {/* #get-server-data-with-overdue-info---apidetailserverid */}
 - **Endpoint**: `/api/detail/:serverId`
-- **Method**: GET
-- **Description**: Recupera información detallada del servidor, incluyendo el estado de copias de seguridad retrasadas.
+- **Método**: GET
+- **Descripción**: Recupera información detallada del servidor incluyendo el estado de la copia de seguridad vencida.
 - **Parámetros**:
   - `serverId`: el identificador del servidor
 
@@ -267,10 +267,10 @@
   - Incluye detalles y marcas de tiempo de copias de seguridad retrasadas
   - Se utiliza para la gestión y supervisión de copias de seguridad retrasadas
 
-## Obtener servidores duplicados - `/api/servers/duplicates` {#get-duplicate-servers---apiserversduplicates}
+## Obtener servidores duplicados - `/api/servers/duplicates` {/* #get-duplicate-servers---apiserversduplicates */}
 - **Endpoint**: `/api/servers/duplicates`
-- **Method**: GET
-- **Description**: Recupera una lista de servidores duplicados basada en el ID de máquina. Los servidores duplicados son aquellos que comparten el mismo ID de máquina pero se almacenan como registros separados en la base de datos.
+- **Método**: GET
+- **Descripción**: Recupera una lista de servidores duplicados basados en el ID de máquina. Los servidores duplicados son servidores que comparten el mismo ID de máquina pero se almacenan como registros separados en la base de datos.
 - **Autenticación**: Requiere sesión válida, token CSRF y acceso de administrador
 - **Respuesta**:
 
@@ -309,10 +309,10 @@
   - Se utiliza para identificar y fusionar registros duplicados de servidores
   - Incluye detalles del servidor y conteos de copias de seguridad para cada duplicado
 
-## Fusionar servidores - `/api/servers/merge` {#merge-servers---apiserversmerge}
+## Combinar servidores - `/api/servers/merge` {/* #merge-servers---apiserversmerge */}
 - **Endpoint**: `/api/servers/merge`
-- **Method**: POST
-- **Description**: Fusiona múltiples servidores en un servidor destino. Todas las copias de seguridad de los servidores origen se transfieren al servidor destino, y los servidores origen se eliminan.
+- **Método**: POST
+- **Descripción**: Combina múltiples servidores en un servidor de destino. Todas las copias de seguridad de los servidores de origen se transfieren al servidor de destino, y los servidores de origen se eliminan.
 - **Autenticación**: Requiere sesión válida, token CSRF y acceso de administrador
 - **Cuerpo de la solicitud**:
 

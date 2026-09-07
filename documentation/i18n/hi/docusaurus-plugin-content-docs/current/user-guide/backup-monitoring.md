@@ -1,12 +1,12 @@
 import { ZoomMermaid } from '@site/src/components/ZoomMermaid';
 
-# Backup Monitoring {#backup-monitoring}
+# Backup Monitoring {/* #backup-monitoring */}
 
 Backup monitoring feature se aap overdue backups ko track kar sakte hain aur unpar alert kar sakte hain. Suchnaayein NTFY ya Email ke through ho sakti hain.
 
 Upyogkarta interface mein, overdue backups ko warning icon ke saath dikhaya jata hai. Icon par mouse lekar jane se overdue backup ke vivaran dikhaye jate hain, jismein antim backup samay, apekshit backup samay, tolerance period aur aage aane wala backup samay shamil hai.
 
-## Overdue Check Process {#overdue-check-process}
+## विलंबित जाँच प्रक्रिया {/* #overdue-check-process */}
 
 **Kaise kaam karta hai:**
 
@@ -50,11 +50,11 @@ gantt
 - At `2024-01-02 08:30` (🔹Check 2), the backup is **on time**, as it is still within the tolerance period.
 - At `2024-01-02 10:00` (🔹Check 3), the backup is **overdue**, as this is after the `Expected Next Backup` time.
 
-## Periodic Checks {#periodic-checks}
+## आवधिक जाँचें {/* #periodic-checks */}
 
 **duplistatus** configurable intervals par overdue backups ke liye periodic checks karta hai. Default interval hai 20 minute, par aap isko [Settings → Backup Monitoring](settings/backup-monitoring-settings.md) mein configure kar sakte hain.
 
-## Automatic Configuration {#automatic-configuration}
+## स्वचालित कॉन्फ़िगरेशन {/* #automatic-configuration */}
 
 Jab aap Duplicati server se backup logs collect karte hain, **duplistatus** automatically:
 

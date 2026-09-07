@@ -1,4 +1,4 @@
-# Muestra de informe de copia de seguridad (valores de base de datos) {#database-values}
+# Informe de copia de seguridad de ejemplo (valores de la base de datos) {/* #sample-backup-report-database-values */}
 
 Este documento contiene un ejemplo de la carga útil JSON enviada por Duplicati al usar `--send-http-json-urls` (o la opción heredada `--send-http-url` con `--send-http-result-output-format=Json`). Ilustra la estructura y los campos que duplistatus recibe y persiste. Algunos campos pueden estar vacíos o censurados en este ejemplo.
 

@@ -1,9 +1,9 @@
-# 会话管理 {#session-management}
+# 会话管理 {/* #session-management */}
 
-## 创建会话 - `/api/session` {#create-session---apisession}
+## 创建会话 - `/api/session` {/* #create-session---apisession */}
 - **端点**: `/api/session`
 - **方法**: POST
-- **描述**: 为用户创建一个新的会话。
+- **描述**: 为用户创建新会话。
 - **响应**:
 
   ```json
@@ -20,10 +20,10 @@
   - 设置仅HTTP的会话cookie
   - 必须访问受保护的端点
 
-## 验证会话 - `/api/session` {#validate-session---apisession}
+## 验证会话 - `/api/session` {/* #validate-session---apisession */}
 - **端点**: `/api/session`
 - **方法**: GET
-- **描述**: 验证一个现有的会话。
+- **描述**: 验证现有会话。
 - **响应** (有效):
 
   ```json
@@ -49,7 +49,7 @@
   - 检查会话cookie是否存在且有效
   - 如果有效，则返回会话ID
 
-## 删除会话 - `/api/session` {#delete-session---apisession}
+## 删除会话 - `/api/session` {/* #delete-session---apisession */}
 - **端点**: `/api/session`
 - **方法**: DELETE
 - **描述**: 删除当前会话（登出）。
@@ -67,10 +67,10 @@
   - 从服务器和客户端清除会话
   - 删除会话cookie
 
-## 获取CSRF令牌 - `/api/csrf` {#get-csrf-token---apicsrf}
+## 获取 CSRF 令牌 - `/api/csrf` {/* #get-csrf-token---apicsrf */}
 - **端点**: `/api/csrf`
 - **方法**: GET
-- **描述**: 为当前会话生成一个CSRF令牌。
+- **描述**: 为当前会话生成 CSRF 令牌。
 - **响应**:
 
   ```json

@@ -1,4 +1,4 @@
-# Lista de puntos de conexión de API {#api-endpoint-list}
+# Lista de puntos finales de API {/* #api-endpoint-list */}
 
 Este documento proporciona una tabla de referencia rápida de todos los puntos de conexión de API disponibles (en orden alfabético del punto de conexión).
 
@@ -62,6 +62,7 @@ Este documento proporciona una tabla de referencia rápida de todos los puntos d
 | [`/api/dashboard`](core-operations#get-dashboard-data-consolidated---apidashboard)                                                                  | GET    | Obtener Datos del Panel (Consolidados) | Operaciones Principales           |
 | [`/api/detail/:serverId`](core-operations#get-server-data-with-overdue-info---apidetailserverid)                                                    | GET    | Obtener Datos del Servidor con Información de Retraso | Operaciones Principales           |
 | [`/api/health`](monitoring-apis#health-check---apihealth)                                                                                           | GET    | Comprobación de Estado                      | Supervisión y Estado       |
+| [`/api/ping`](monitoring-apis#connectivity-probe---apiping)                                                                                         | GET    | Sonda de Conectividad                | Monitoreo y Salud       |
 | [`/api/lastbackup/:serverId`](external-apis#get-latest-backup---apilastbackupserverid)                                                              | GET    | Obtener Último Respaldo                 | APIs Externas             |
 | [`/api/lastbackups/:serverId`](external-apis#get-latest-backups---apilastbackupsserverid)                                                           | GET    | Obtener Últimos Respaldos                | APIs Externas             |
 | [`/api/notifications/check-overdue`](notification-apis#check-overdue-backups---apinotificationscheck-overdue)                                       | POST   | Verificar Respaldos Atrasados             | Sistema de Notificaciones       |

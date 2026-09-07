@@ -1,10 +1,10 @@
-# Journaux d'audit {#audit-logs}
+# Journaux d'audit {/* #audit-logs */}
 
 Le journal d'audit fournit un enregistrement complet de tous les changements système et actions utilisateur dans **duplistatus**. Cela aide à suivre les modifications de configuration, les activités des utilisateurs et les opérations système à des fins de sécurité et de dépannage.
 
 ![Journal d'audit](../../assets/screen-settings-audit.png)
 
-## Visualiseur de journal d'audit {#audit-log-viewer}
+## Visionneuse de journaux d'audit {/* #audit-log-viewer */}
 
 Le visualiseur de journal d'audit affiche une liste chronologique de tous les événements enregistrés avec les informations suivantes :
 
@@ -16,7 +16,7 @@ Le visualiseur de journal d'audit affiche une liste chronologique de tous les é
 - **Cible** : L'objet qui a été affecté (le cas échéant)
 - **Détails** : Informations supplémentaires sur l'action
 
-### Affichage des détails du journal {#viewing-log-details}
+### Affichage des Détails {/* #viewing-log-details */}
 
 Cliquez sur l'icône <IconButton icon="lucide:eye" /> œil située à côté d'une entrée de journal pour afficher des informations détaillées, notamment :
 - L'horodatage complet
@@ -25,7 +25,7 @@ Cliquez sur l'icône <IconButton icon="lucide:eye" /> œil située à côté d'u
 - Adresse IP et agent utilisateur
 - Messages d'erreur (si l'action a échoué)
 
-### Exportation des Journaux d'audit {#exporting-audit-logs}
+### Exportation des journaux d'audit {/* #exporting-audit-logs */}
 
 Vous pouvez exporter les journaux d'audit filtrés dans deux formats :
 

@@ -1,12 +1,12 @@
 import { ZoomMermaid } from '@site/src/components/ZoomMermaid';
 
-# Sicherungsüberwachung {#backup-monitoring}
+# Backup-Überwachung {/* #backup-monitoring */}
 
 Die Sicherungsüberwachungsfunktion ermöglicht es Ihnen, überfällige Sicherungen zu verfolgen und Benachrichtigungen dazu zu erhalten. Die Benachrichtigungen können über NTFY oder E-Mail erfolgen.
 
 In der Benutzeroberfläche werden überfällige Sicherungen mit einem Warnsymbol angezeigt. Wenn Sie den Mauszeiger über das Symbol bewegen, werden die Details der überfälligen Sicherung angezeigt, einschließlich der letzten Sicherungszeit, der erwarteten Sicherungszeit, der Toleranzperiode und der erwarteten nächsten Sicherungszeit.
 
-## Überfällig Prüfen Prozess {#overdue-check-process}
+## Überfälliger Prüfprozess {/* #overdue-check-process */}
 
 **Funktionsweise:**
 
@@ -50,11 +50,11 @@ gantt
 - Um `2024-01-02 08:30` (🔹Check 2) ist die Sicherung **pünktlich**, da sie sich noch innerhalb der Toleranzperiode befindet.
 - Um `2024-01-02 10:00` (🔹Check 3) ist die Sicherung **überfällig**, da dies nach der `Expected Weiter Backup`-Zeit liegt.
 
-## Periodische Überprüfungen {#periodic-checks}
+## Periodische Prüfungen {/* #periodic-checks */}
 
 **duplistatus** führt regelmäßig Überprüfungen auf überfällige Sicherungen in konfigurierbaren Intervallen durch. Das Standard-Intervall beträgt 20 Minuten, aber Sie können es unter [Einstellungen → Sicherungsüberwachung](settings/backup-monitoring-settings.md) konfigurieren.
 
-## Automatische Konfiguration {#automatic-configuration}
+## Automatische Konfiguration {/* #automatic-configuration */}
 
 Wenn Sie Backup-Protokolle von einem Duplicati-Server sammeln, führt **duplistatus** automatisch folgende Aktionen durch:
 

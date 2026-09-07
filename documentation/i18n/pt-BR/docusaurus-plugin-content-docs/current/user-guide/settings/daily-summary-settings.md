@@ -1,52 +1,55 @@
-# Resumo Diário {#daily-summary}
+# Resumo Diário {/* #daily-summary */}
 
-O Resumo Diário é um modo de notificação opcional que envia **um** snapshot localizado de cada job de backup conhecido em um horário local exato. Enquanto estiver habilitado, as mensagens de **e-mail** individuais de backup e de atraso são pausadas, incluindo destinos de e-mail adicionais por job. As Notificações NTFY por job continuam. Essas Configurações permanecem armazenadas e tornam-se ativas novamente assim que o Resumo Diário é desativado.
+O Resumo Diário é um modo de notificação opcional que envia **um** instantâneo localizado de todos os trabalhos de backup conhecidos em um horário local exato. Enquanto estiver habilitado, os e-mails de backup e atrasados para o destinatário de E-mail padrão (Configurações → E-mail → E-mail do Destinatário) são pausados. Destinos de e-mail adicionais configurados em [Notificações de Backup](backup-notifications-settings.md) continuam a receber eventos correspondentes. As notificações NTFY por trabalho continuam. Essas configurações permanecem armazenadas e se tornam ativas novamente assim que o Resumo Diário for desativado.
 
 O instantâneo é o **status atual** no momento do envio (o último resultado para cada trabalho). Não é um histórico das execuções do dia anterior.
 
-![Configurações do Resumo Diário](../../assets/screen-settings-left-panel-admin.png)
+![Configurações do Resumo Diário](../../assets/screen-settings-daily-summary.png)
 
-## Requisitos {#requirements}
+## Requisitos {/* #requirements */}
 
-- O SMTP deve ser configurado. O E-mail é sempre enviado uma vez para o Destinatário SMTP.
-- A entrega agendada requer o serviço cron. O despachante verifica a cada minuto em UTC quando está em execução.
+- O SMTP deve estar configurado. O e-mail é enviado uma vez, para o **Destinatário SMTP substituído** se um estiver salvo, caso contrário, para o destinatário SMTP nas [Configurações de E-mail](/user-guide/settings/email-settings).
+- Verifique sua configuração SMTP e certifique-se de que ela está funcionando antes de confiar no Resumo Diário.
+- A entrega agendada requer o serviço cron. O despachante é acionado uma vez por dia na hora de envio UTC armazenada.
 
-## O que está incluído {#what-is-included}
+## O que está incluído {/* #what-is-included */}
 
-Os trabalhos conhecidos são a união de:
+Os trabalhos conhecidos são os **últimos backups observados** para cada servidor e nome de backup — o mesmo conjunto que o painel e Configurações → Monitoramento de Backup.
 
-- o último backup observado para cada servidor e nome de backup
-- configurações explícitas por trabalho cujos servidores ainda existem
+Os buckets de status (Sucesso, Aviso, Erro, Fatal, Desconhecido) são mutuamente exclusivos e somam-se ao número de trabalhos. **Atrasado** é contado separadamente: um trabalho bem-sucedido atrasado ainda é Sucesso e também está atrasado.
 
-Um trabalho configurado que nunca enviou um relatório é rotulado como **Nenhum relatório recebido**. Os buckets de status (Sucesso, Aviso, Erro, Fatal, Desconhecido, Nenhum relatório recebido) são mutuamente exclusivos e somam ao número de trabalhos. **Atrasado** é contado separadamente: um trabalho bem-sucedido atrasado ainda é Sucesso e também está atrasado.
+## Cronograma {/* #schedule */}
 
-## Agendamento {#schedule}
-
-Escolha um horário exato `HH:mm` na sua **fuso horário do navegador**. duplistatus armazena a programação como UTC e mostra ambos os valores na Página (mesmo padrão que **Versões do Duplicati**). As alterações nesta Página são salvas automaticamente.
+Escolha um horário exato `HH:mm` no **fuso horário do navegador**. O duplistatus armazena o agendamento como UTC e mostra ambos os valores na página (mesmo padrão que as **Versões do Duplicati**). As alterações nesta página são salvas automaticamente. O horário padrão de envio para novas instalações é **01:00 UTC**.
 
 - Habilitar ou alterar o agendamento começa na **próxima ocorrência futura**, nunca um envio surpresa imediato.
-- Reiniciar mais tarde no mesmo dia local ainda captura após o horário configurado.
-- Dias completamente perdidos não são reproduzidos.
-- Horários perdidos no horário de verão são executados no primeiro minuto válido após o intervalo. Horas repetidas no horário de inverno são enviadas uma vez.
+- O horário do cronograma sempre envia quando o trabalho do cron é acionado. **Enviar resumo agora**, uma tentativa novamente, ou um envio anterior no mesmo dia não o pula.
 
-## URL do painel público {#public-dashboard-url}
+## URL do painel público {/* #public-dashboard-url */}
 
 A **URL do painel público** opcional nesta página alimenta o placeholder `{duplistatus_link}` nos e-mails de Resumo Diário. Use uma URL `http://` ou `https://` sem barra no final. Deixe em branco para omitir o link.
 
 Quando `DUPLISTATUS_PUBLIC_URL` está definido no ambiente, ele substitui a configuração salva (veja [Variáveis de Ambiente](/installation/environment-variables)).
 
-## Comportamento de substituição {#replacement-behaviour}
+## Substituir destinatário SMTP {/* #override-smtp-recipient */}
+
+O **Destinatário SMTP substituído** opcional envia o Resumo Diário para um endereço diferente do destinatário nas Configurações de E-mail. Deixe-o vazio para continuar usando o padrão. O valor é armazenado na chave de configuração `daily_summary` (`smtpRecipient`) e é usado para envios agendados, **Enviar resumo agora** e tentativas novamente. As APIs de envio ainda não aceitam um destinatário na solicitação.
+
+## Comportamento de substituição {/* #replacement-behaviour */}
 
 Quando o Resumo Diário está ativado:
 
-- e-mail de carregamento e atrasado não são enviados
+- e-mail de upload e atrasado para o destinatário de E-mail padrão não são enviados
+- destinos de e-mail adicionais em Notificações de Backup ainda recebem eventos correspondentes (atrasado conta como um Aviso para esse filtro)
 - notificações NTFY por trabalho continuam
-- os carimbos de data/hora de atraso não avançam, então os alertas de atraso podem ser retomados imediatamente quando o modo for desativado
-- a visualização do modelo, testes de transporte e **Enviar resumo agora** ainda funcionam
+- carimbos de data/hora de atraso não avançam quando nada foi enviado, então alertas de atraso podem retomar imediatamente quando o modo for desativado
+- visualização do modelo, testes de transporte e **Enviar resumo agora** ainda funcionam
 
 **Enviar resumo agora** é uma entrega extra. Ele não consome a próxima ocorrência agendada.
 
-## Modelos {#templates}
+Entregas agendadas, **Enviar resumo agora** e novas tentativas são registradas no [log de auditoria](audit-logs-viewer.md) como `daily_summary_sent` (Operações do Sistema). Salvar configurações é `daily_summary_updated` (Configuração).
+
+## Modelos {/* #templates */}
 
 Edite o modelo de e-mail de resumo diário (Markdown) em [Configurações → Modelos](/user-guide/settings/notification-templates). Os corpos dos e-mails para Sucesso, Aviso/Erro, Atrasado e Resumo Diário usam Markdown. O modelo padrão inclui `{duplistatus_link}` no final quando uma URL do painel público está configurada nesta página ou via `DUPLISTATUS_PUBLIC_URL`.
 

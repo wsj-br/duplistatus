@@ -1,6 +1,6 @@
 ![duplistatus](documentation/static/img/duplistatus_banner.png)
 
-# duplistatus -  कई [Duplicati's](https://github.com/duplicati/duplicati) Server की निगरानी करें
+# duplistatus - [Duplicati](https://github.com/duplicati/duplicati) के कई सर्वर की स्थिति देखें {/* #duplistatus----monitor-multiple-duplicatishttpsgithubcomduplicatiduplicati-servers */}
 
 ![संस्करण](https://img.shields.io/badge/version-{VERSION}-blue) 
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?logo=github)](https://github.com/wsj-br/duplistatus)
@@ -10,7 +10,7 @@
 यह वेब एप्लिकेशन [Duplicati](https://github.com/duplicati/duplicati) से बैकअप संचालन की निगरानी और दृश्यता प्रदान करता है। **duplistatus** बैकअप स्थिति, ओवरड्यू बैकअप की सूचना, कार्य इतिहास,
 मेट्रिक्स, और कई सर्वरों में प्रदर्शन को ट्रैक करने के लिए एक व्यापक डैशबोर्ड प्रदान करता है।
 
-Docker, Podman, या Portainer के साथ तैनात करना आसान है और 7 भाषाओं (अंग्रेज़ी, जर्मन, फ्रेंच, स्पेनिश, पुर्तगाली, हिंदी (रोमन), और सरल चीनी) में उपलब्ध है, प्रत्येक भाषा में पूर्ण दस्तावेज़ीकरण के साथ।
+Docker, Podman, या Portainer के साथ आसानी से डिप्लॉय किया जा सकता है और 7 भाषाओं में उपलब्ध है (अंग्रेज़ी, जर्मन, फ़्रेंच, स्पैनिश, पुर्तगाली, हिंदी, और सरलीकृत चीनी), जिसमें प्रत्येक भाषा में पूरा दस्तावेज़ीकरण शामिल है।
 
 [अधिक जानकारी](https://wsj-br.github.io/duplistatus)        |
 [Mehr informationen](https://wsj-br.github.io/duplistatus/de/)  | 

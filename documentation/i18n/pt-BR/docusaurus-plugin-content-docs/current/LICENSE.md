@@ -1,11 +1,11 @@
-# Licença Apache {#apache-license}
+# Licença Apache {/* #apache-license */}
 
 **Versão 2.0, Janeiro 2004**  
 http://www.apache.org/licenses/
 
-## TERMOS E CONDIÇÕES PARA USO, REPRODUÇÃO E DISTRIBUIÇÃO {#terms-and-conditions-for-use-reproduction-and-distribution}
+## TERMOS E CONDIÇÕES PARA USO, REPRODUÇÃO E DISTRIBUIÇÃO {/* #terms-and-conditions-for-use-reproduction-and-distribution */}
 
-### 1. Definições {#1-definitions}
+### 1. Definições {/* #1-definitions */}
 
 **"Licença"** significa os termos e condições para uso, reprodução e distribuição conforme definidos nas Seções 1 a 9 deste documento.
 
@@ -27,15 +27,15 @@ http://www.apache.org/licenses/
 
 **"Colaborador"** significa o Concedente e qualquer indivíduo ou Entidade Jurídica em nome de quem uma Contribuição tenha sido recebida pelo Concedente e posteriormente incorporada ao Trabalho.
 
-### 2. Concessão de Licença de Copyright {#2-grant-of-copyright-license}
+### 2. Concessão de Licença de Copyright {/* #2-grant-of-copyright-license */}
 
 Sujeito aos termos e condições desta Licença, cada Colaborador concede a Você uma licença de copyright perpétua, mundial, não exclusiva, sem custo, isenta de royalties e irrevogável para reproduzir, preparar Obras Derivadas, exibir publicamente, executar publicamente, sublicenciar e distribuir o Trabalho e tais Obras Derivadas na forma-fonte ou objeto.
 
-### 3. Concessão de Licença de Patente {#3-grant-of-patent-license}
+### 3. Concessão de Licença de Patente {/* #3-grant-of-patent-license */}
 
 Sujeito aos termos e condições desta Licença, cada Colaborador concede a Você uma licença de patente perpétua, mundial, não exclusiva, isenta de encargos, livre de royalties e irrevogável (exceto conforme declarado nesta seção) para produzir, fazer produzir, usar, oferecer para venda, vender, importar e de outra forma transferir o Trabalho, desde que tal licença se aplique apenas às reivindicações de patente licenciáveis por tal Colaborador que sejam necessariamente infringidas por suas Contribuições isoladamente ou pela combinação de suas Contribuições com o Trabalho ao qual tais Contribuições foram submetidas. Se Você iniciar litígio de patente contra qualquer entidade (incluindo reivindicação cruzada ou reconvenção em uma ação judicial) alegando que o Trabalho ou uma Contribuição incorporada ao Trabalho constitui infração direta ou contributiva de patente, então quaisquer licenças de patente concedidas a Você sob esta Licença para esse Trabalho serão encerradas a partir da data em que tal litígio for ajuizado.
 
-### 4. Redistribuição {#4-redistribution}
+### 4. Redistribuição {/* #4-redistribution */}
 
 Você pode reproduzir e distribuir cópias do Trabalho ou Obras Derivadas dele em qualquer meio, com ou sem modificações, e na forma de Código Fonte ou Objeto, desde que Você atenda às seguintes condições:
 
@@ -49,26 +49,26 @@ Você pode reproduzir e distribuir cópias do Trabalho ou Obras Derivadas dele e
 
 Você pode adicionar sua própria declaração de copyright às suas modificações e pode fornecer termos e condições de licença adicionais ou diferentes para uso, reprodução ou distribuição de suas modificações, ou para tais Obras Derivadas como um todo, desde que seu uso, reprodução e distribuição do Trabalho de outra forma cumpram as condições estabelecidas nesta Licença.
 
-### 5. Submissão de Contribuições {#5-submission-of-contributions}
+### 5. Submissão de Contribuições {/* #5-submission-of-contributions */}
 
 Salvo se Você declarar expressamente o contrário, qualquer Contribuição submetida intencionalmente para inclusão no Trabalho por Você ao Licenciante estará sob os termos e condições desta Licença, sem quaisquer termos ou condições adicionais. Não obstante o acima, nada aqui deve substituir ou modificar os termos de qualquer acordo de licença separado que Você possa ter celebrado com o Licenciante em relação a tais Contribuições.
 
-### 6. Marcas Registradas {#6-trademarks}
+### 6. Marcas Registradas {/* #6-trademarks */}
 
 Esta Licença não concede permissão para usar os nomes comerciais, marcas registradas, marcas de serviço ou nomes de produtos do Licenciante, exceto conforme necessário para uso razoável e costumeiro na descrição da origem do Trabalho e na reprodução do conteúdo do arquivo NOTICE.
 
-### 7. Isenção de Garantia {#7-disclaimer-of-warranty}
+### 7. Isenção de Garantia {/* #7-disclaimer-of-warranty */}
 
 Salvo quando exigido por lei aplicável ou acordado por escrito, o Licenciante fornece o Trabalho (e cada Contribuinte fornece suas Contribuições) em uma **"BASE "AS IS"", SEM GARANTIAS OU CONDIÇÕES DE QUALQUER NATUREZA**, expressas ou implícitas, incluindo, sem limitação, quaisquer garantias ou condições de **TÍTULO, NÃO INFRAÇÃO, COMERCIALIZAÇÃO ou ADEQUAÇÃO A UM PROPÓSITO ESPECÍFICO**. Você é exclusivamente responsável por determinar a adequação do uso ou redistribuição do Trabalho e assume todos os riscos associados ao exercício de suas permissões sob esta Licença.
 
-### 8. Limitação de Responsabilidade {#8-limitation-of-liability}
+### 8. Limitação de Responsabilidade {/* #8-limitation-of-liability */}
 
 Em nenhum caso e sob nenhuma teoria legal, seja por ato ilícito (incluindo negligência), contrato ou outro motivo, salvo quando exigido por lei aplicável (como atos dolosos ou gravemente negligentes) ou acordado por escrito, qualquer Contribuinte será responsável perante Você por danos, incluindo quaisquer danos diretos, indiretos, especiais, incidentais ou consequenciais de qualquer natureza decorrentes desta Licença ou pelo uso ou incapacidade de uso do Trabalho (incluindo, mas não se limitando a danos por perda de reputação, interrupção de trabalho, falha ou mau funcionamento de computador, ou quaisquer outros danos comerciais ou perdas), mesmo que tal Contribuinte tenha sido informado sobre a possibilidade de tais danos.
 
-### 9. Aceitação de Garantia ou Responsabilidade Adicional {#9-accepting-warranty-or-additional-liability}
+### 9. Aceitação de Garantia ou Responsabilidade Adicional {/* #9-accepting-warranty-or-additional-liability */}
 
 Ao redistribuir o Trabalho ou Obras Derivadas deste, Você poderá optar por oferecer, e cobrar uma taxa por, aceitação de suporte, garantia, indenização ou outras obrigações e/ou direitos de responsabilidade compatíveis com esta Licença. Contudo, ao aceitar tais obrigações, Você poderá agir apenas em seu próprio nome e sob sua única responsabilidade, não em nome de qualquer outro Contribuinte, e somente se Você concordar em indenizar, defender e isentar cada Contribuinte de qualquer responsabilidade incorrida por, ou reclamações alegadas contra, tal Contribuinte em razão da sua aceitação de qualquer garantia ou responsabilidade adicional.
 
 ---
 
-## FIM DOS TERMOS E CONDIÇÕES {#end-of-terms-and-conditions}
+## FIM DOS TERMOS E CONDIÇÕES {/* #end-of-terms-and-conditions */}

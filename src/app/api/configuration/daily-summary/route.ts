@@ -6,12 +6,13 @@ import { AuditLogger } from '@/lib/audit-logger';
 import {
   getDailySummaryConfig,
   getSMTPConfig,
+  parseDailySummaryConfig,
   setDailySummaryConfig,
 } from '@/lib/db-utils';
-import { parseDailySummaryConfig } from '@/lib/db-utils';
 import {
   getDailySummaryPublicStatus,
   isSmtpConfiguredForSummary,
+  reloadCronServiceConfiguration,
 } from '@/lib/daily-summary';
 import { isValidHttpPublicUrl } from '@/lib/public-url-utils';
 import { isValidIanaTimeZone, isValidLocalTime } from '@/lib/daily-summary-schedule';
@@ -36,12 +37,14 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
       utcTime?: string;
       timeZone?: string;
       publicUrl?: string;
+      smtpRecipient?: string;
     };
     const current = getDailySummaryConfig();
     const nextEnabled = body.enabled ?? current.enabled;
     const nextUtcTime = body.utcTime ?? current.utcTime;
     const nextTimeZone = body.timeZone ?? current.timeZone;
     const nextPublicUrl = body.publicUrl ?? current.publicUrl;
+    const nextSmtpRecipient = body.smtpRecipient ?? current.smtpRecipient ?? '';
 
     if (!isValidLocalTime(nextUtcTime)) {
       return NextResponse.json({ error: 'Invalid send time' }, { status: 400 });
@@ -53,6 +56,10 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
     if (trimmedPublicUrl.length > 0 && !isValidHttpPublicUrl(trimmedPublicUrl)) {
       return NextResponse.json({ error: 'Invalid public dashboard URL' }, { status: 400 });
     }
+    if (typeof nextSmtpRecipient !== 'string' || (nextSmtpRecipient.trim() !== '' && !nextSmtpRecipient.includes('@'))) {
+      return NextResponse.json({ error: 'Invalid SMTP recipient' }, { status: 400 });
+    }
+    const parsedSmtpRecipient = nextSmtpRecipient.trim();
 
     if (nextEnabled) {
       if (!isSmtpConfiguredForSummary(getSMTPConfig())) {
@@ -71,9 +78,18 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
       timeZone: nextTimeZone,
       effectiveFromIso: scheduleChanged ? new Date().toISOString() : current.effectiveFromIso,
       publicUrl: nextPublicUrl,
+      smtpRecipient: parsedSmtpRecipient,
     });
 
     setDailySummaryConfig(nextConfig);
+
+    if (nextUtcTime !== current.utcTime) {
+      try {
+        await reloadCronServiceConfiguration();
+      } catch (cronError) {
+        console.warn('Cron service not available, but daily summary configuration was saved:', cronError);
+      }
+    }
 
     if (authContext) {
       await AuditLogger.logConfigChange(
@@ -86,6 +102,7 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
           utcTime: nextConfig.utcTime,
           timeZone: nextConfig.timeZone,
           publicUrl: nextConfig.publicUrl,
+          smtpRecipient: nextConfig.smtpRecipient,
         },
         getClientIpAddress(request),
         request.headers.get('user-agent') || 'unknown'

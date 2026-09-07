@@ -1,8 +1,8 @@
-# Outils de Documentation {#documentation-tools}
+# Outils de documentation {/* #documentation-tools */}
 
 La documentation est construite à l'aide de [Docusaurus](https://docusaurus.io/) et se trouve dans le dossier `documentation`. La documentation est hébergée sur [GitHub Pages](https://wsj-br.github.io/duplistatus/) et n'est plus incluse dans l'image du conteneur Docker.
 
-## Structure des dossiers {#folder-structure}
+## Structure des Dossiers {/* #folder-structure */}
 
 ```
 documentation/
@@ -17,7 +17,7 @@ documentation/
 │   ├── de/            # German
 │   ├── es/            # Spanish
 │   ├── fr/            # French
-│   ├── hi/            # Hindi (Roman)
+│   ├── hi/            # Hindi
 │   ├── pt-BR/         # Brazilian Portuguese
 │   └── zh-Hans/       # Simplified Chinese
 ├── src/               # React components and pages
@@ -30,7 +30,7 @@ documentation/
 └── package.json       # Dependencies and scripts
 ```
 
-### Internationalisation (i18n) {#internationalization-i18n}
+### Internationalisation (i18n) {/* #internationalization-i18n */}
 
 La documentation utilise le système d'internationalisation intégré de Docusaurus avec l'anglais comme langue par défaut. Le contenu traduit se trouve dans `i18n/{locale}/docusaurus-plugin-content-docs/current/`, en miroir de la structure du dossier `docs/`.
 
@@ -45,7 +45,7 @@ La commande `pnpm write-translations` extrait les chaînes d'interface utilisate
 Modifiez uniquement les fichiers dans `docs/` et les fichiers JSON source dans `i18n/en/`. Les fichiers markdown traduits dans `i18n/{autres-locales}/` sont générés automatiquement et ne doivent pas être modifiés manuellement.
 :::
 
-### Paramètres régionaux pris en charge {#supported-locales}
+### Locales Supportées {/* #supported-locales */}
 
 | Paramètres régionaux | Langue | Répertoire |
 |---------|----------------------|------------------------------------------------------|
@@ -53,21 +53,21 @@ Modifiez uniquement les fichiers dans `docs/` et les fichiers JSON source dans `
 | `de`    | Allemand               | `i18n/de/docusaurus-plugin-content-docs/current/`    |
 | `es`    | Espagnol              | `i18n/es/docusaurus-plugin-content-docs/current/`    |
 | `fr`    | Français               | `i18n/fr/docusaurus-plugin-content-docs/current/`    |
-| `hi`     | Hindi (Roman)        | `i18n/hi/docusaurus-plugin-content-docs/current/`     |
+| `hi`     | Hindi        | `i18n/hi/docusaurus-plugin-content-docs/current/`     |
 | `pt-BR` | Portugais brésilien | `i18n/pt-BR/docusaurus-plugin-content-docs/current/` |
 | `zh-Hans`| Chinois simplifié   | `i18n/zh-Hans/docusaurus-plugin-content-docs/current/`|
 
-## Traduire la Documentation {#translate-the-documentation}
+## Traduire la Documentation {/* #translate-the-documentation */}
 
-La documentation utilise un système de traduction basé sur l'IA pour traduire à la fois le contenu (fichiers markdown) et les chaînes de l'interface utilisateur (issues de Docusaurus et de composants personnalisés). Le contenu source est en anglais (`docs/`), et des traductions sont générées pour l'allemand, le français, l'espagnol, le portugais brésilien, l'hindi (roman) et le chinois simplifié.
+La documentation utilise un système de traduction alimenté par l'IA pour traduire à la fois le contenu (fichiers markdown) et les chaînes d'interface utilisateur (à partir de Docusaurus et de composants personnalisés). Le contenu source est en anglais (`docs/`), et les traductions sont générées pour l'allemand, le français, l'espagnol, le portugais brésilien, le hindi et le chinois simplifié.
 
-### Fonctionnement de la traduction {#how-translation-works}
+### Comment la Traduction Fonctionne {/* #how-translation-works */}
 
 1. **Chaînes d'interface utilisateur de Docusaurus** : `pnpm write-translations` extrait les chaînes de thème/personnalisées dans `i18n/en/*.json`.
 2. **Traduction par IA** (OpenRouter ; configuration dans `ai-i18n-tools.config.json` à la racine du dépôt) : à partir de `documentation/`, `pnpm translate` exécute le script racine `i18n:translate` (chaînes d'interface utilisateur, SVG, markdown/JSON de Docusaurus et modèles de notifications par défaut) dans `documentation/i18n/`, `src/locales/` et `src/locales/templates/` comme configuré.
 3. **Construction** : `pnpm build` génère du HTML statique pour toutes les langues sous `documentation/build/`.
 
-### Exécution de la traduction {#running-translation}
+### Exécution de la Traduction {/* #running-translation */}
 
 ```bash
 cd documentation
@@ -81,15 +81,15 @@ pnpm translate:status
 
 Les indicateurs CLI sont définis par **ai-i18n-tools** ; exécutez `pnpm exec ai-i18n-tools --help` depuis la racine du dépôt ou consultez [Translation Workflow](translation-workflow.md).
 
-### Remplacements manuels de traduction {#manual-translation-overrides}
+### Remplacements Manuels de Traduction {/* #manual-translation-overrides */}
 
 Modifiez `documentation/glossary-user.csv` (et éventuellement effacez les entrées obsolètes situées sous `.translation-cache/` à la racine du dépôt), puis relancez la commande `pnpm translate:*` correspondante.
 
-## Commandes courantes {#common-commands}
+## Commandes Courantes {/* #common-commands */}
 
 Toutes les commandes doivent être exécutées à partir du répertoire `documentation` :
 
-### Développement {#development}
+### Développement {/* #development */}
 
 Démarrer le serveur de développement avec rechargement à chaud pour une locale spécifique :
 
@@ -102,9 +102,9 @@ pnpm start:es    # Spanish
 pnpm start:pt-br # Brazilian Portuguese
 ```
 
-Le site sera disponible à `http://localhost:3000` (ou au prochain port disponible).
+Le site sera disponible à `http://localhost:3000/duplistatus/` (ou le prochain port disponible). Le chemin `/duplistatus/` correspond aux `baseUrl` de GitHub Pages et aux liens du bouton Aide dans l'application.
 
-### Construire {#build}
+### Construire {/* #build */}
 
 Construire le site de documentation pour la production :
 
@@ -115,7 +115,7 @@ pnpm build
 
 Cela génère des fichiers HTML statiques dans le répertoire `documentation/build`.
 
-### Servir la version de production {#serve-production-build}
+### Servir la Construction de Production {/* #serve-production-build */}
 
 Prévisualisez la version de production localement :
 
@@ -126,13 +126,13 @@ pnpm serve
 
 Cela sert le site construit à partir du répertoire `documentation/build`.
 
-### Autres Commandes Utiles {#other-useful-commands}
+### Autres Commandes Utiles {/* #other-useful-commands */}
 
-- `pnpm clear` - Effacer le cache Docusaurus
+- `pnpm clear` - Effacer le cache de Docusaurus
 - `pnpm typecheck` - Exécuter la vérification des types TypeScript
-- `pnpm write-heading-ids` - Écrire des ancres de titre explicites `{#id}` dans le markdown en utilisant les règles de Docusaurus (à exécuter depuis `documentation/` pour des liens stables entre les traductions)
+- `pnpm write-heading-ids` - Écrire des ancres de titre explicites `{/* #id */}` dans le markdown en utilisant la syntaxe de commentaire MDX de Docusaurus (à exécuter depuis `documentation/` pour des liens stables entre les traductions). L'interface en ligne de commande ignore les titres `h1`, que Docusaurus utilise comme libellés de la barre latérale.
 
-## Génération de README.md {#generating-readmemd}
+## Générer README.md {/* #generating-readmemd */}
 
 Le fichier `README.md` du projet est généré automatiquement à partir de `documentation/docs/intro.md` pour maintenir la synchronisation du fichier README du référentiel GitHub avec la documentation Docusaurus.
 
@@ -153,7 +153,7 @@ Ce script :
 - Génère `README_dockerhub.md` avec un formatage compatible Docker Hub (convertit les images et les liens en URL absolues, convertit les alertes GitHub en format basé sur des émojis)
 - Génère les notes de publication GitHub (`RELEASE_NOTES_github_VERSION.md`) à partir de `documentation/docs/release-notes/VERSION.md` (convertit les liens et les images en URL absolues)
 
-## Mettre à jour le README pour Docker Hub {#update-readme-for-docker-hub}
+## Mettre à Jour le README pour Docker Hub {/* #update-readme-for-docker-hub */}
 
 Le script `generate-readme-from-intro.sh` génère automatiquement `README_dockerhub.md` avec un formatage compatible Docker Hub. Il :
 - Copie `README.md` vers `README_dockerhub.md`
@@ -162,7 +162,7 @@ Le script `generate-readme-from-intro.sh` génère automatiquement `README_docke
 - Convertit les alertes au format GitHub (`[!NOTE]`, `[!WARNING]`, etc.) en format basé sur des émojis pour une meilleure compatibilité avec Docker Hub
 - S'assure que toutes les images et tous les liens fonctionnent correctement sur Docker Hub
 
-## Générer les notes de version GitHub {#generate-github-release-notes}
+## Générer les Notes de Version GitHub {/* #generate-github-release-notes */}
 
 Le script `generate-readme-from-intro.sh` génère automatiquement les notes de publication GitHub lorsqu'il est exécuté. Il :
 - Lit les notes de publication depuis `documentation/docs/release-notes/VERSION.md` (où VERSION est extraite depuis `package.json`)
@@ -182,7 +182,7 @@ Le script `generate-readme-from-intro.sh` génère automatiquement les notes de 
 
 Le fichier de notes de version généré peut être copié et collé directement dans la description de la version GitHub. Tous les liens et images fonctionneront correctement dans le contexte de la version GitHub.
 
-## Prendre des captures d'écran pour la documentation {#take-screenshots-for-documentation}
+## Prendre des Captures d'Écran pour la Documentation {/* #take-screenshots-for-documentation */}
 
 ```bash
 pnpm take-screenshots
@@ -191,18 +191,18 @@ pnpm take-screenshots
 Ou exécuter directement : `pnpm take-screenshots` (utilisez `--env-file=.env` si nécessaire pour les variables d'environnement).
 
 Ce script prend automatiquement des captures d'écran de l'application à des fins de documentation. Il :
+- Après les vérifications d'environnement et de santé, exécute `pnpm exec playwright install` pour que les navigateurs Playwright soient présents
 - Lance un navigateur sans tête (Playwright Chromium)
-- Se connecte en tant qu'admin et utilisateur régulier
+- Se connecte en tant qu'administrateur et utilisateur régulier
 - Navigue à travers différentes pages (tableau de bord, détails du serveur, paramètres, etc.)
-- Prend des captures d'écran à différentes tailles de fenêtre d'affichage
-- Enregistre les captures d'écran dans `documentation/static/assets/` (anglais) ou `documentation/i18n/{locale}/docusaurus-plugin-content-docs/current/assets` (autres langues)
+- Prend des captures d'écran à différentes tailles de fenêtre
+- Enregistre les captures d'écran dans `documentation/static/assets/` (Anglais) ou `documentation/i18n/{locale}/docusaurus-plugin-content-docs/current/assets` (autres locales)
 
-**Prérequis :**
+**Exigences :**
 - Le serveur de développement doit être en cours d'exécution sur `http://localhost:8666`
-- Le navigateur Playwright Chromium doit être installé (exécutez `pnpm take-screenshots:install` une fois, ce qui exécute `playwright install chromium`)
 - Les variables d'environnement doivent être définies, ajoutez-les à votre fichier `.env` ou exportez-les :
-  - `ADMIN_PASSWORD` : Mot de passe du compte admin
-  - `USER_PASSWORD` : Mot de passe du compte utilisateur régulier
+  - `ADMIN_PASSWORD` : Mot de passe pour le compte administrateur
+  - `USER_PASSWORD` : Mot de passe pour le compte utilisateur régulier
 
 **Options :** `--locale` limite les captures d'écran à une ou plusieurs locales (séparées par des virgules). Si omis, toutes les locales sont capturées. Locales valides : `en-GB`, `de`, `fr`, `es`, `pt-BR`, `hi`, `zh-Hans`. Utilisez `-h` ou `--help` pour imprimer l'utilisation.
 
@@ -220,7 +220,7 @@ pnpm take-screenshots --locale en-GB
 pnpm take-screenshots --locale en-GB,de,pt-BR
 ```
 
-## Déploiement de la documentation {#deploying-the-documentation}
+## Déployer la Documentation {/* #deploying-the-documentation */}
 
 Pour déployer la documentation sur GitHub Pages, vous devrez générer un jeton d'accès personnel GitHub. Allez à [GitHub Personal Access Tokens](https://github.com/settings/tokens) et créez un nouveau jeton avec la portée `repo`.
 
@@ -234,11 +234,11 @@ pnpm run deploy
 
 Cela construira la documentation et la poussera vers la branche `gh-pages` du référentiel, et la documentation sera disponible à l'adresse [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/).
 
-## Travailler avec la documentation {#working-with-documentation}
+## Travailler avec la Documentation {/* #working-with-documentation */}
 
 Pour le workflow de traduction complet (gestion du glossaire, traduction par IA, gestion du cache), consultez [Workflow de Traduction](translation-workflow.md).
 
-### Fichiers source {#source-files}
+### Fichiers Sources {/* #source-files */}
 
 - **Contenu de la documentation** : fichiers markdown en anglais dans `documentation/docs/`
 - **Traductions de l'interface utilisateur** : fichiers JSON en anglais dans `documentation/i18n/en/` (générés automatiquement par `pnpm write-translations`)
@@ -248,14 +248,14 @@ Pour le workflow de traduction complet (gestion du glossaire, traduction par IA,
 - **Ressources statiques** : `documentation/static/`
 - **Page d'accueil principale** : `documentation/docs/intro.md` (source pour générer `README.md`)
 
-### Ajout de nouveaux composants {#adding-new-components}
+### Ajout de nouveaux composants {/* #adding-new-components */}
 
 1. Créez votre composant React dans `documentation/src/components/`
 2. Exportez-le depuis `documentation/src/theme/MDXComponents.js` pour le rendre disponible dans MDX
 3. Si le composant contient des chaînes de l'interface traduisibles, exécutez `pnpm write-translations` pour les extraire
 4. Exécutez `pnpm translate` pour traduire les nouvelles chaînes dans tous les locales
 
-### Ajout de nouvelles pages de documentation {#adding-new-documentation-pages}
+### Ajout de nouvelles pages de documentation {/* #adding-new-documentation-pages */}
 
 1. Créez un nouveau fichier `.md` dans `documentation/docs/` (ou un sous-répertoire)
 2. Ajoutez-le à la barre latérale dans `documentation/sidebars.ts`
@@ -264,13 +264,13 @@ Pour le workflow de traduction complet (gestion du glossaire, traduction par IA,
 5. Exécutez `pnpm translate` pour traduire la nouvelle page dans toutes les langues
 6. Générez et testez : `pnpm build`
 
-### Ressources statiques {#static-assets}
+### Actifs statiques {/* #static-assets */}
 
 - **Images** : Placez-les dans `documentation/static/img/` et référencez-les avec `/img/filename.png` dans le markdown
 - **Téléchargements/PDFs** : Placez-les dans `documentation/static/` et référencez-les avec `/filename.pdf`
 - **Ressources par locale** : Si une ressource doit être spécifique à un locale (par exemple, des captures d'écran), placez-la dans `documentation/i18n/{locale}/docusaurus-plugin-content-docs/current/assets/`
 
-### Créer et tester {#build--test}
+### Construire et tester {/* #build--test */}
 
 ```bash
 cd documentation

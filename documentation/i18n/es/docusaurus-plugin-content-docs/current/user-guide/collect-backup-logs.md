@@ -1,10 +1,10 @@
-# Recopilar logs de backup {#collect-backup-logs}
+# Recopilar registros de copias de seguridad {/* #collect-backup-logs */}
 
 **duplistatus** puede recuperar logs de backup directamente desde servidores Duplicati para rellenar la base de datos o restaurar datos de logs faltantes. La aplicación omite automáticamente cualquier log duplicado que ya exista en la base de datos.
 
-## Pasos para recopilar logs de backup {#steps-to-collect-backup-logs}
+## Pasos para Recopilar registros de copias de seguridad {/* #steps-to-collect-backup-logs */}
 
-### Recopilación Manual {#manual-collection}
+### Recopilación manual {/* #manual-collection */}
 
 1.  Haga clic en el icono <IconButton icon="lucide:download" /> **Recopilar Registros de Copia de Seguridad** en la [Barra de Herramientas de la Aplicación](overview.md#application-toolbar).
 
@@ -31,7 +31,7 @@ Los botones <IconButton icon="lucide:download" /> están disponibles en [Configu
 
 <br/>
 
-### Recopilación en Lote {#bulk-collection}
+### Recopilación masiva {/* #bulk-collection */}
 
 _Haga clic con el botón derecho_ en el botón <IconButton icon="lucide:download" /> **Recopilar logs de backup** en la barra de herramientas de la aplicación para recopilar desde todos los servidores configurados.
 
@@ -41,7 +41,7 @@ _Haga clic con el botón derecho_ en el botón <IconButton icon="lucide:download
 También puede utilizar el botón <IconButton icon="lucide:import" label="Recopilar todo"/> en las páginas [Configuración → Monitoreo de backups](settings/backup-monitoring-settings.md) y [Configuración → Configuración de servidores](settings/server-settings.md) para recopilar desde todos los servidores configurados.
 :::
 
-## Cómo funciona el proceso de recopilación {#how-the-collection-process-works}
+## Cómo funciona el proceso de recopilación {/* #how-the-collection-process-works */}
 
 - **duplistatus** detecta automáticamente el mejor protocolo de conexión y se conecta al servidor Duplicati especificado.
 - Recupera el historial de copias de seguridad, información de registros y configuración de copias de seguridad (para el monitoreo de copias de seguridad).
@@ -55,7 +55,7 @@ También puede utilizar el botón <IconButton icon="lucide:import" label="Recopi
 Si el mismo servidor aparece más de una vez después de recopilar los registros de copia de seguridad (o después de una reinstalación/actualización de Duplicati), generalmente se debe a un cambio en `machine_id` o a un error de la API de Duplicati que mezcla el id de `identity` y `machine_id`. La solución es alinear los ids en el servidor de Duplicati (editar `identity.txt`/`machineid.txt` o establecer **Duplicati → Configuración → Opciones avanzadas → Machine-id**), reiniciar Duplicati y, a continuación, combinar las entradas en **duplistatus** mediante [Configuración → Mantenimiento de base de datos → Combinar servidores duplicados](settings/database-maintenance.md#merge-duplicate-servers). Consulte [Servidores duplicados en el Panel de control](troubleshooting.md#duplicate-servers-on-the-dashboard) para ver los pasos completos.
 :::
 
-## Solución de problemas de recopilación {#troubleshooting-collection-issues}
+## Solución de problemas de problemas de recopilación {/* #troubleshooting-collection-issues */}
 
 La recopilación del registro de backup requiere que el servidor Duplicati sea accesible desde la instalación de **duplistatus**. Si encuentra problemas, verifique lo siguiente:
 

@@ -1,4 +1,4 @@
-# Anzeige {#display}
+# Anzeige {/* #display */}
 
 Konfigurieren Sie die Benutzeroberfläche und Anzeigeeinstellungen.
 

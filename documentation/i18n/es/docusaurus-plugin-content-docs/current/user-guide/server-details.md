@@ -1,10 +1,10 @@
-# Detalles del Servidor {#server-details}
+# Detalles del Servidor {/* #server-details */}
 
 Al hacer clic en un servidor desde el panel de control se abre una página con una lista de backups para ese servidor. Puede ver todas las copias de seguridad o seleccionar una específica si el servidor tiene múltiples backups configurados.
 
 ![Detalles del Servidor](../assets/screen-server-backup-list.png)
 
-## Estadísticas del servidor/backup {#serverbackup-statistics}
+## Servidor/Estadísticas de Copia de Seguridad {/* #serverbackup-statistics */}
 
 Esta sección muestra estadísticas para todas las copias de seguridad en el servidor o un backup individual seleccionado.
 
@@ -24,7 +24,7 @@ Haga clic en el <IconButton icon="lucide:settings" href="settings/backup-monitor
 
 <br/>
 
-## Historial de backups {#backup-history}
+## Historial de Copias de Seguridad {/* #backup-history */}
 
 Esta tabla enumera los logs de backup para el servidor seleccionado.
 
@@ -52,7 +52,7 @@ Cuando se selecciona **Todas las Copias de Seguridad**, la lista muestra todas l
 
 <br/>
 
-## Detalles del backup {#backup-details}
+## Detalles de Copia de seguridad {/* #backup-details */}
 
 Al hacer clic en una insignia de estado en el panel de control (vista de tabla) o en cualquier fila de la tabla del historial de backups se muestra la información detallada del backup.
 

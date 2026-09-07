@@ -9,19 +9,24 @@ import {
   selectHighestChannelVersions,
 } from './duplicati-version';
 import { getDataDir } from './paths';
-import type {
-  DuplicatiChannel,
-  DuplicatiVersionCache,
-  DuplicatiVersionRefreshResult,
-  DuplicatiVersionRefreshTrigger,
+import {
+  DUPLICATI_CHANNELS,
+  type DuplicatiChannel,
+  type DuplicatiChannelVersion,
+  type DuplicatiVersionCache,
+  type DuplicatiVersionRefreshResult,
+  type DuplicatiVersionRefreshTrigger,
 } from './types';
 
 export const runtime = 'nodejs';
 
 const GITHUB_RELEASES_URL = 'https://api.github.com/repos/duplicati/duplicati/releases';
 const GITHUB_PAGE_SIZE = 100;
-const GITHUB_MAX_PAGES = 5;
+const GITHUB_MAX_PAGES = 2;
 const GITHUB_REQUEST_TIMEOUT_MS = 15000;
+const GITHUB_MAX_ATTEMPTS = 3;
+const GITHUB_RETRY_DELAY_MS = 750;
+const GITHUB_RETRYABLE_STATUS_CODES = new Set([502, 503, 504]);
 const LOCK_TIMEOUT_MS = 30000;
 const LOCK_RETRY_INTERVAL_MS = 250;
 const LOCK_FILE_NAME = '.duplicati-version-refresh.lock';
@@ -126,56 +131,151 @@ function isGitHubRelease(value: unknown): value is GitHubRelease {
   return isRecord(value);
 }
 
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function isRetryableGitHubStatus(status: number): boolean {
+  return GITHUB_RETRYABLE_STATUS_CODES.has(status);
+}
+
+function isRetryableGitHubFetchError(error: unknown): boolean {
+  if (!(error instanceof Error)) {
+    return false;
+  }
+
+  const nodeError = error as NodeJS.ErrnoException;
+  if (
+    nodeError.code === 'ABORT_ERR'
+    || nodeError.code === 'ETIMEDOUT'
+    || nodeError.code === 'ECONNRESET'
+    || nodeError.code === 'EAI_AGAIN'
+    || nodeError.code === 'UND_ERR_CONNECT_TIMEOUT'
+    || nodeError.code === 'UND_ERR_HEADERS_TIMEOUT'
+    || nodeError.code === 'UND_ERR_BODY_TIMEOUT'
+  ) {
+    return true;
+  }
+
+  return error.name === 'AbortError'
+    || error.name === 'TimeoutError'
+    || error.name === 'ConnectTimeoutError'
+    || /HTTP 50[234]/.test(error.message);
+}
+
+function hasAllChannelVersions(
+  channels: Record<DuplicatiChannel, DuplicatiChannelVersion | null>
+): boolean {
+  return DUPLICATI_CHANNELS.every((channel) => channels[channel] !== null);
+}
+
+function hasAnyChannelVersion(
+  channels: Record<DuplicatiChannel, DuplicatiChannelVersion | null>
+): boolean {
+  return DUPLICATI_CHANNELS.some((channel) => channels[channel] !== null);
+}
+
 async function fetchGitHubReleasePage(page: number): Promise<GitHubRelease[]> {
   const url = `${GITHUB_RELEASES_URL}?per_page=${GITHUB_PAGE_SIZE}&page=${page}`;
-  const response = await fetch(url, {
-    headers: {
-      Accept: 'application/vnd.github+json',
-      'User-Agent': 'duplistatus',
-      'X-GitHub-Api-Version': '2022-11-28',
-    },
-    signal: AbortSignal.timeout(GITHUB_REQUEST_TIMEOUT_MS),
-  });
+  let lastError: Error | null = null;
 
-  if (!response.ok) {
-    throw new Error(`GitHub releases request failed with HTTP ${response.status}`);
+  for (let attempt = 1; attempt <= GITHUB_MAX_ATTEMPTS; attempt += 1) {
+    try {
+      // Bypass the Next.js Data Cache so production/standalone startup uses a
+      // live GitHub request instead of a cached or in-progress fetch.
+      const response = await fetch(url, {
+        cache: 'no-store',
+        headers: {
+          Accept: 'application/vnd.github+json',
+          'User-Agent': 'duplistatus',
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+        signal: AbortSignal.timeout(GITHUB_REQUEST_TIMEOUT_MS),
+      });
+
+      if (!response.ok) {
+        await response.arrayBuffer().catch(() => undefined);
+        const error = new Error(`GitHub releases request failed with HTTP ${response.status}`);
+        if (!isRetryableGitHubStatus(response.status) || attempt === GITHUB_MAX_ATTEMPTS) {
+          throw error;
+        }
+        lastError = error;
+      } else {
+        const payload: unknown = await response.json();
+        if (!Array.isArray(payload)) {
+          throw new Error('GitHub releases response is not an array');
+        }
+        return payload.filter(isGitHubRelease);
+      }
+    } catch (error) {
+      if (attempt === GITHUB_MAX_ATTEMPTS || !isRetryableGitHubFetchError(error)) {
+        throw error;
+      }
+      lastError = error instanceof Error ? error : new Error(String(error));
+    }
+
+    await sleep(GITHUB_RETRY_DELAY_MS * attempt);
   }
 
-  const payload: unknown = await response.json();
-  if (!Array.isArray(payload)) {
-    throw new Error('GitHub releases response is not an array');
+  throw lastError ?? new Error('GitHub releases request failed');
+}
+
+function collectReleasesFromPage(
+  items: GitHubRelease[]
+): Array<{ tagName: string; publishedAt: string | null }> {
+  const releases: Array<{ tagName: string; publishedAt: string | null }> = [];
+
+  for (const item of items) {
+    if (item.draft === true) {
+      continue;
+    }
+
+    const tagName = typeof item.tag_name === 'string'
+      ? item.tag_name
+      : typeof item.name === 'string'
+        ? item.name
+        : '';
+    if (!tagName || !parseDuplicatiReleaseTag(tagName)) {
+      continue;
+    }
+
+    releases.push({
+      tagName,
+      publishedAt: typeof item.published_at === 'string' ? item.published_at : null,
+    });
   }
 
-  return payload.filter(isGitHubRelease);
+  return releases;
 }
 
 async function fetchLatestDuplicatiVersions(): Promise<DuplicatiVersionCache> {
   const releases: Array<{ tagName: string; publishedAt: string | null }> = [];
 
   for (let page = 1; page <= GITHUB_MAX_PAGES; page += 1) {
-    const items = await fetchGitHubReleasePage(page);
+    let items: GitHubRelease[];
+    try {
+      items = await fetchGitHubReleasePage(page);
+    } catch (error) {
+      const channelsSoFar = selectHighestChannelVersions(releases);
+      if (hasAnyChannelVersion(channelsSoFar)) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        console.warn(
+          '[DuplicatiVersion] GitHub page fetch failed after collecting channel versions; using releases gathered so far:',
+          errorMessage
+        );
+        break;
+      }
+      throw error;
+    }
+
     if (items.length === 0) {
       break;
     }
 
-    for (const item of items) {
-      if (item.draft === true) {
-        continue;
-      }
+    releases.push(...collectReleasesFromPage(items));
 
-      const tagName = typeof item.tag_name === 'string'
-        ? item.tag_name
-        : typeof item.name === 'string'
-          ? item.name
-          : '';
-      if (!tagName || !parseDuplicatiReleaseTag(tagName)) {
-        continue;
-      }
-
-      releases.push({
-        tagName,
-        publishedAt: typeof item.published_at === 'string' ? item.published_at : null,
-      });
+    if (hasAllChannelVersions(selectHighestChannelVersions(releases))) {
+      break;
     }
 
     if (items.length < GITHUB_PAGE_SIZE) {
@@ -184,8 +284,7 @@ async function fetchLatestDuplicatiVersions(): Promise<DuplicatiVersionCache> {
   }
 
   const channels = selectHighestChannelVersions(releases);
-  const hasAnyChannel = Object.values(channels).some((value) => value !== null);
-  if (!hasAnyChannel) {
+  if (!hasAnyChannelVersion(channels)) {
     throw new Error('No valid Duplicati channel releases were found');
   }
 

@@ -1,9 +1,9 @@
-# Gestión de configuración {#configuration-management}
+# Gestión de configuración {/* #configuration-management */}
 
-## Obtener la configuración de correo electrónico - `/api/configuration/email` {#get-email-configuration---apiconfigurationemail}
+## Obtener Configuración de Correo Electrónico - `/api/configuration/email` {/* #get-email-configuration---apiconfigurationemail */}
 - **Endpoint**: `/api/configuration/email`
 - **Método**: GET
-- **Descripción**: Recupera la configuración actual de notificaciones por correo electrónico y si las notificaciones por correo están habilitadas/configuradas.
+- **Descripción**: Recupera la configuración actual de notificaciones por correo electrónico y si las notificaciones por correo electrónico están habilitadas/configuradas.
 - **Autenticación**: Requiere sesión válida y token CSRF
 - **Respuesta** (configurado):
 
@@ -46,7 +46,7 @@
   - Indica si las notificaciones por correo están disponibles para uso en pruebas y producción
   - Maneja los errores de validación de la clave maestra de forma adecuada
 
-## Actualizar la configuración de correo electrónico - `/api/configuration/email` {#update-email-configuration---apiconfigurationemail}
+## Actualizar Configuración de Correo Electrónico - `/api/configuration/email` {/* #update-email-configuration---apiconfigurationemail */}
 - **Endpoint**: `/api/configuration/email`
 - **Método**: POST
 - **Descripción**: Actualiza la configuración de notificaciones por correo electrónico SMTP.
@@ -83,7 +83,7 @@
   - El campo secure es booleano (true para SSL/TLS)
   - La contraseña se gestiona por separado mediante el punto de conexión de contraseña
 
-## Eliminar la configuración de correo electrónico - `/api/configuration/email` {#delete-email-configuration---apiconfigurationemail}
+## Eliminar Configuración de Correo Electrónico - `/api/configuration/email` {/* #delete-email-configuration---apiconfigurationemail */}
 - **Endpoint**: `/api/configuration/email`
 - **Método**: DELETE
 - **Descripción**: Elimina la configuración de notificaciones por correo electrónico SMTP.
@@ -106,7 +106,7 @@
   - Devuelve 404 si no existe una configuración para eliminar
   - Devuelve 400 mientras el modo Resumen Diario está habilitado, porque ese modo requiere SMTP
 
-## Actualizar la contraseña de correo electrónico - `/api/configuration/email/password` {#update-email-password---apiconfigurationemailpassword}
+## Actualizar Contraseña de Correo Electrónico - `/api/configuration/email/password` {/* #update-email-password---apiconfigurationemailpassword */}
 - **Endpoint**: `/api/configuration/email/password`
 - **Método**: PATCH
 - **Descripción**: Actualiza la contraseña de correo electrónico para la autenticación SMTP.
@@ -144,10 +144,10 @@
   - El parámetro config es obligatorio cuando no existe una configuración SMTP existente
   - La contraseña se almacena de forma segura mediante cifrado
 
-## Obtener el token CSRF de contraseña de correo electrónico - `/api/configuration/email/password` {#get-email-password-csrf-token---apiconfigurationemailpassword}
+## Obtener Token CSRF de Contraseña de Correo Electrónico - `/api/configuration/email/password` {/* #get-email-password-csrf-token---apiconfigurationemailpassword */}
 - **Endpoint**: `/api/configuration/email/password`
 - **Método**: GET
-- **Descripción**: Recupera un token CSRF para operaciones relacionadas con la contraseña de correo electrónico.
+- **Descripción**: Recupera un token CSRF para operaciones de contraseña de correo electrónico.
 - **Autenticación**: Requiere sesión válida
 - **Respuesta**:
 
@@ -164,10 +164,10 @@
   - Devuelve el token CSRF para usarlo en operaciones de actualización de contraseña
   - La sesión debe ser válida para generar el token
 
-## Obtener la configuración unificada - `/api/configuration/unified` {#get-unified-configuration---apiconfigurationunified}
+## Obtener Configuración Unificada - `/api/configuration/unified` {/* #get-unified-configuration---apiconfigurationunified */}
 - **Endpoint**: `/api/configuration/unified`
 - **Método**: GET
-- **Descripción**: Recupera un objeto de configuración unificada que contiene todos los datos de configuración, incluyendo ajustes de cron, frecuencia de notificaciones y servidores con copias de seguridad.
+- **Descripción**: Recupera un objeto de configuración unificada que contiene todos los datos de configuración, incluyendo configuraciones de cron, frecuencia de notificación y servidores con copias de seguridad.
 - **Autenticación**: Requiere sesión válida y token CSRF
 - **Respuesta**:
 
@@ -263,7 +263,7 @@
   - La configuración de correo electrónico incluye el campo `hasPassword` pero no la contraseña real
   - Obtiene todos los datos en paralelo para un mejor rendimiento
 
-## Obtener la configuración de NTFY - `/api/configuration/ntfy` {#get-ntfy-configuration---apiconfigurationntfy}
+## Obtener Configuración de NTFY - `/api/configuration/ntfy` {/* #get-ntfy-configuration---apiconfigurationntfy */}
 - **Endpoint**: `/api/configuration/ntfy`
 - **Método**: GET
 - **Descripción**: Recupera la configuración actual de NTFY.
@@ -288,10 +288,10 @@
   - Se utiliza para la gestión del sistema de notificaciones
   - Requiere autenticación para acceder a los datos de configuración
 
-## Obtener la configuración de notificaciones - `/api/configuration/notifications` {#get-notification-configuration---apiconfigurationnotifications}
+## Obtener Configuración de Notificación - `/api/configuration/notifications` {/* #get-notification-configuration---apiconfigurationnotifications */}
 - **Endpoint**: `/api/configuration/notifications`
 - **Método**: GET
-- **Descripción**: Recupera la configuración actual de frecuencia de notificaciones.
+- **Descripción**: Recupera la configuración actual de frecuencia de notificación.
 - **Autenticación**: Requiere sesión válida y token CSRF
 - **Respuesta**:
 
@@ -309,10 +309,10 @@
   - Se utiliza para la gestión de notificaciones de copia de seguridad retrasada
   - Devuelve uno de: `"onetime"`, `"every_day"`, `"every_week"`, `"every_month"`
 
-## Actualizar la configuración de notificaciones - `/api/configuration/notifications` {#update-notification-configuration---apiconfigurationnotifications}
+## Actualizar Configuración de Notificación - `/api/configuration/notifications` {/* #update-notification-configuration---apiconfigurationnotifications */}
 - **Endpoint**: `/api/configuration/notifications`
 - **Método**: POST
-- **Descripción**: Actualiza la configuración de notificaciones (ajustes de NTFY o frecuencia de notificaciones).
+- **Descripción**: Actualiza la configuración de notificación (configuraciones de NTFY o frecuencia de notificación).
 - **Autenticación**: Requiere sesión válida y token CSRF
 - **Cuerpo de la solicitud**:
   Para la configuración de NTFY:
@@ -374,10 +374,10 @@ Para la frecuencia de notificación:
   - Valida el valor de frecuencia de notificación contra las opciones permitidas
   - Afecta la frecuencia con la que se envían las notificaciones retrasadas
 
-## Actualizar la configuración de copias de seguridad - `/api/configuration/backup-settings` {#update-backup-settings---apiconfigurationbackup-settings}
+## Actualizar Configuración de Copia de Seguridad - `/api/configuration/backup-settings` {/* #update-backup-settings---apiconfigurationbackup-settings */}
 - **Endpoint**: `/api/configuration/backup-settings`
 - **Método**: POST
-- **Descripción**: Actualiza la configuración de notificaciones de copia de seguridad para servidores/copias de seguridad específicos.
+- **Descripción**: Actualiza la configuración de notificación de copia de seguridad para servidores/copias de seguridad específicas.
 - **Autenticación**: Requiere sesión válida y token CSRF
 - **Cuerpo de la solicitud**:
 
@@ -411,7 +411,7 @@ Para la frecuencia de notificación:
   - Limpia las notificaciones de copia de seguridad retrasada para copias deshabilitadas
   - Borra las notificaciones cuando cambian los ajustes de tiempo de espera
 
-## Actualizar plantillas de notificación - `/api/configuration/templates` {#update-notification-templates---apiconfigurationtemplates}
+## Actualizar Plantillas de Notificación - `/api/configuration/templates` {/* #update-notification-templates---apiconfigurationtemplates */}
 - **Endpoint**: `/api/configuration/templates`
 - **Método**: POST
 - **Descripción**: Actualiza las plantillas de notificación.
@@ -449,38 +449,38 @@ Para la frecuencia de notificación:
   - Las plantillas admiten cuerpos de correo electrónico en Markdown y sustitución de `{placeholder}`
 - Se requiere una plantilla de correo electrónico `dailySummary` (asunto y cuerpo en Markdown)
 
-## Resumen Diario - `/api/configuration/daily-summary` {#daily-summary---apiconfigurationdaily-summary}
-- **Endpoint**: `/api/configuration/daily-summary`
+## Resumen Diario - `/api/configuration/daily-summary` {/* #daily-summary---apiconfigurationdaily-summary */}
+- **Punto de acceso**: `/api/configuration/daily-summary`
 - **Método**: GET, POST
-- **Descripción**: Lee o actualiza el modo Resumen Diario. GET devuelve configuraciones sanitizadas, estado del despachador, próxima ocurrencia y estado de entrega de correo electrónico. POST guarda `enabled`, `utcTime` (`HH:mm` UTC), `timeZone` (zona horaria IANA del navegador desde el último guardado) y opcional `publicUrl`. Habilitar requiere SMTP válido. Cambiar el horario establece la próxima **futura** ocurrencia.
+- **Descripción**: Lee o actualiza el modo Resumen Diario. GET devuelve la configuración sanitizada, el estado del despachador, la próxima ocurrencia y el estado de entrega del correo electrónico. POST guarda `enabled`, `utcTime` (`HH:mm` UTC), `timeZone` (zona horaria IANA del navegador de la última guardada), `publicUrl` opcional y `smtpRecipient` opcional (vacío usa el destinatario SMTP de la configuración de correo electrónico). Habilitar requiere SMTP válido. Cambiar `utcTime` actualiza `daily-summary-dispatch` a `minute hour * * *` UTC y recarga el servicio cron. Cambiar el horario establece la próxima ocurrencia **futura**.
 - **Autenticación**: GET requiere una sesión válida y un token CSRF. POST requiere una sesión de administrador y un token CSRF.
-- **Respuestas de Error**:
-  - `400`: Hora/zona horaria inválida, URL pública inválida o falta SMTP
+- **Respuestas de error**:
+  - `400`: Hora/hora inválida, URL pública inválida, destinatario SMTP inválido o falta SMTP
   - `401`: No autorizado
   - `500`: Error al leer o actualizar el Resumen Diario
 
-## Enviar Resumen Diario - `/api/configuration/daily-summary/send` {#send-daily-summary---apiconfigurationdaily-summarysend}
-- **Punto final**: `/api/configuration/daily-summary/send`
+## Enviar Resumen Diario - `/api/configuration/daily-summary/send` {/* #send-daily-summary---apiconfigurationdaily-summarysend */}
+- **Punto de acceso**: `/api/configuration/daily-summary/send`
 - **Método**: POST
-- **Descripción**: Envía una instantánea adicional del estado actual inmediatamente. No consume la próxima ocurrencia programada. Usa el SMTP almacenado. No acepta direcciones de destinatarios en la solicitud.
+- **Descripción**: Envía una instantánea adicional del estado actual. No consume la próxima ocurrencia programada. Usa SMTP almacenado. Envía a `daily_summary.smtpRecipient` cuando esté configurado, de lo contrario al destinatario de la configuración de correo electrónico. No acepta direcciones de destinatario en la solicitud. Registra `daily_summary_sent` en el registro de auditoría (sistema).
 - **Autenticación**: Requiere una sesión de administrador y un token CSRF
 
-## Reintentar Resumen Diario - `/api/configuration/daily-summary/retry` {#retry-daily-summary---apiconfigurationdaily-summaryretry}
-- **Punto final**: `/api/configuration/daily-summary/retry`
+## Reintentar Resumen Diario - `/api/configuration/daily-summary/retry` {/* #retry-daily-summary---apiconfigurationdaily-summaryretry */}
+- **Endpoint**: `/api/configuration/daily-summary/retry`
 - **Método**: POST
-- **Descripción**: Reintenta los canales fallidos de la carga útil persistente. Cuerpo `{ "occurrenceKey": "..." }` opcional; de lo contrario, reintenta el último envío de correo electrónico fallido.
+- **Descripción**: Reintenta canales fallidos del payload persistido. Cuerpo opcional `{ "occurrenceKey": "..." }`; de lo contrario, reintenta la última entrega de correo electrónico fallida.
 - **Autenticación**: Requiere una sesión de administrador y un token CSRF
 
-## Vista previa del Resumen Diario - `/api/configuration/daily-summary/preview` {#preview-daily-summary---apiconfigurationdaily-summarypreview}
+## Vista previa del Resumen Diario - `/api/configuration/daily-summary/preview` {/* #preview-daily-summary---apiconfigurationdaily-summarypreview */}
 - **Endpoint**: `/api/configuration/daily-summary/preview`
 - **Método**: POST
-- **Descripción**: Representa la instantánea actual sin enviar y sin escribir filas del registro de entrega.
+- **Descripción**: Renderiza la instantánea actual sin enviar y sin escribir filas de libro de entrega.
 - **Autenticación**: Requiere una sesión válida y un token CSRF
 
-## Obtener la tolerancia de retraso - `/api/configuration/overdue-tolerance` {#get-overdue-tolerance---apiconfigurationoverdue-tolerance}
+## Obtener Tolerancia a Retrasos - `/api/configuration/overdue-tolerance` {/* #get-overdue-tolerance---apiconfigurationoverdue-tolerance */}
 - **Endpoint**: `/api/configuration/overdue-tolerance`
 - **Método**: GET
-- **Descripción**: Recupera la configuración actual de tolerancia de retraso.
+- **Descripción**: Recupera la configuración actual de tolerancia a retrasos.
 - **Respuesta**:
 
   ```json
@@ -495,10 +495,10 @@ Para la frecuencia de notificación:
   - Devuelve la configuración actual de tolerancia de retraso
   - Se utiliza para mostrar la configuración actual
 
-## Actualizar la tolerancia de retraso - `/api/configuration/overdue-tolerance` {#update-overdue-tolerance---apiconfigurationoverdue-tolerance}
+## Actualizar Tolerancia a Retrasos - `/api/configuration/overdue-tolerance` {/* #update-overdue-tolerance---apiconfigurationoverdue-tolerance */}
 - **Endpoint**: `/api/configuration/overdue-tolerance`
 - **Método**: POST
-- **Descripción**: Actualiza la configuración de tolerancia de retraso.
+- **Descripción**: Actualiza la configuración de tolerancia a retrasos.
 - **Autenticación**: Requiere sesión válida y token CSRF
 - **Cuerpo de la solicitud**:
 
@@ -525,10 +525,10 @@ Para la frecuencia de notificación:
   - Afecta cuándo se consideran vencidas las copias de seguridad
   - Utilizada por el verificador de copias de seguridad vencidas
 
-## Seguridad de APIs externas - `/api/configuration/external-api-security` {#external-api-security---apiconfigurationexternal-api-security}
-- **Punto final**: `/api/configuration/external-api-security`
+## Seguridad de API Externa - `/api/configuration/external-api-security` {/* #external-api-security---apiconfigurationexternal-api-security */}
+- **Endpoint**: `/api/configuration/external-api-security`
 - **Métodos**: GET, PATCH
-- **Descripción**: Lee o actualiza si las APIs externas requieren una clave, además del tamaño de `/api/upload` y los límites de tasa.
+- **Descripción**: Lee o actualiza si las APIs externas requieren una clave, además del tamaño y límites de tasa de `/api/upload`.
 - **Autenticación**: Requiere privilegios de administrador, sesión válida y token CSRF
 - **Cuerpo PATCH**:
 
@@ -544,8 +544,8 @@ Para la frecuencia de notificación:
   }
   ```
 
-## Lista de IPs permitidas - `/api/configuration/ip-allowlist` {#ip-allowlist---apiconfigurationip-allowlist}
-- **Punto final**: `/api/configuration/ip-allowlist`
+## Lista de IPs Permitidas - `/api/configuration/ip-allowlist` {/* #ip-allowlist---apiconfigurationip-allowlist */}
+- **Endpoint**: `/api/configuration/ip-allowlist`
 - **Métodos**: GET, PATCH
-- **Descripción**: Lee o actualiza los proxies de confianza y las listas de CIDR permitidas para administradores y APIs externas. Habilitar la lista de administradores fallará a menos que la IP del cliente actual ya esté en la lista (el bucle de retroalimentación está exento).
+- **Descripción**: Lee o actualiza proxies de confianza y las listas permitidas de CIDR de administrador / API externa. Habilitar la lista de administrador falla a menos que la IP del cliente actual ya esté en la lista (el loopback está exento).
 - **Autenticación**: Requiere privilegios de administrador, sesión válida y token CSRF

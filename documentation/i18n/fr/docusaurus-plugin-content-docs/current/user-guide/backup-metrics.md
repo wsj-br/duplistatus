@@ -1,4 +1,4 @@
-# Métriques de sauvegarde {#backup-metrics}
+# Métriques de sauvegarde {/* #backup-metrics */}
 
 Un graphique des métriques de sauvegarde au fil du temps est affiché à la fois sur le tableau de bord (vue tableau) et sur la page de détails du serveur.
 
@@ -7,11 +7,11 @@ Un graphique des métriques de sauvegarde au fil du temps est affiché à la foi
 
 ![Métriques de sauvegarde](../assets/screen-metrics.png)
 
-## Commandes de graphique en ligne {#inline-chart-controls}
+## Contrôles de graphique en ligne {/* #inline-chart-controls */}
 
 Des commandes d'accès rapide sont disponibles directement sur les en-têtes de panneau de graphique pour une configuration facile sans naviguer vers les Paramètres d'affichage :
 
-### Sélecteur de plage horaire {#time-range-selector}
+### Sélecteur de plage horaire {/* #time-range-selector */}
 
 Des boutons à pilule apparaissent dans l'en-tête du graphique pour une sélection rapide de la plage horaire : **1S | 2S | 1M | 3M**
 
@@ -22,7 +22,7 @@ Des boutons à pilule apparaissent dans l'en-tête du graphique pour une sélect
 
 Les modifications effectuées ici se synchronisent avec vos Paramètres d'affichage, de sorte que votre préférence est mémorisée entre les actualisations de page.
 
-### Bascule de style de graphique {#chart-style-toggle}
+### Basculer le style de graphique {/* #chart-style-toggle */}
 
 Un bouton de bascule dans l'en-tête du graphique vous permet de basculer entre :
 
@@ -31,7 +31,7 @@ Un bouton de bascule dans l'en-tête du graphique vous permet de basculer entre 
 
 Les deux modes utilisent l'agrégation par intervalles de temps pour un affichage optimal. Les périodes vides en mode barre n'affichent aucune barre. Votre préférence persiste entre les actualisations de page et est synchronisée avec les Paramètres d'affichage.
 
-## Consolidation des données de graphique {#chart-data-consolidation}
+## Consolidation des données du graphique {/* #chart-data-consolidation */}
 
 Lorsque plusieurs sauvegardes se produisent le même jour, **duplistatus** consolide les données avant de les afficher sur les graphiques :
 
@@ -41,7 +41,7 @@ Lorsque plusieurs sauvegardes se produisent le même jour, **duplistatus** conso
 
 Cette consolidation a lieu avant l'application du regroupement par intervalles de temps, garantissant des métriques agrégées précises. Par exemple, deux sauvegardes le 5/12/26 produiront un seul point de données consolidé sur le graphique.
 
-## Définitions des métriques {#metric-definitions}
+## Définitions des métriques {/* #metric-definitions */}
 
 - **Taille téléchargée** : Quantité totale de données téléchargées/transmises lors des sauvegardes depuis le serveur Duplicati vers la destination (stockage local, FTP, fournisseur de cloud, etc.) par jour.
 - **Durée** : Durée totale de toutes les sauvegardes reçues par jour au format HH:MM.

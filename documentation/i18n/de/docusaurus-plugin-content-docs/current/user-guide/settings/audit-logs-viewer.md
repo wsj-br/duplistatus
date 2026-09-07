@@ -1,10 +1,10 @@
-# Audit-Protokolle {#audit-logs}
+# Auditprotokolle {/* #audit-logs */}
 
 Das Audit-Log bietet eine umfassende Aufzeichnung aller Systemänderungen und Benutzeraktionen in **duplistatus**. Dies hilft beim Nachverfolgen von Konfigurationsänderungen, Benutzeraktivitäten und Systemoperationen für Sicherheits- und Fehlerbehebungszwecke.
 
 ![Audit-Protokoll](../../assets/screen-settings-audit.png)
 
-## Audit-Log-Viewer {#audit-log-viewer}
+## Prüfprotokoll-Viewer {/* #audit-log-viewer */}
 
 Der Audit-Log-Viewer zeigt eine chronologische Liste aller protokollierten Ereignisse mit den folgenden Informationen an:
 
@@ -16,7 +16,7 @@ Der Audit-Log-Viewer zeigt eine chronologische Liste aller protokollierten Ereig
 - **Ziel**: Das betroffene Objekt (falls zutreffend)
 - **Details**: Zusätzliche Informationen zur Aktion
 
-### Anzeigen von Protokolldetails {#viewing-log-details}
+### Anzeigen von Log-Details {/* #viewing-log-details */}
 
 Klicken Sie auf das <IconButton icon="lucide:eye" />-Augensymbol neben einem Protokolleintrag, um detaillierte Informationen anzuzeigen, einschließlich:
 - Vollständiger Zeitstempel
@@ -25,7 +25,7 @@ Klicken Sie auf das <IconButton icon="lucide:eye" />-Augensymbol neben einem Pro
 - IP-Adresse und User-Agent
 - Fehlermeldungen (falls die Aktion fehlgeschlagen ist)
 
-### Exportieren von Audit-Protokollen {#exporting-audit-logs}
+### Exportieren von Prüfprotokollen {/* #exporting-audit-logs */}
 
 Sie können gefilterte Audit-Protokolle in zwei Formaten exportieren:
 

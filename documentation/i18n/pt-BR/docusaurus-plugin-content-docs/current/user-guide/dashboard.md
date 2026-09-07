@@ -1,6 +1,6 @@
-# Painel {#dashboard}
+# Painel {/* #dashboard */}
 
-## Painel Resumido {#dashboard-summary}
+## Resumo do Painel {/* #dashboard-summary */}
 
 Esta seção exibe estatísticas agregadas para todos os backups.
 
@@ -20,7 +20,7 @@ Esta seção exibe estatísticas agregadas para todos os backups.
 Se o mesmo servidor aparecer mais de uma vez no painel, use [Configurações → Manutenção do Banco de Dados → Mesclar Servidores Duplicados](settings/database-maintenance.md#merge-duplicate-servers) para consolidá-los. Duplicatas podem ocorrer quando você reinstala ou atualiza o Duplicati, porque o `machine_id` do servidor pode mudar e o **duplistatus** então o trata como um novo servidor.
 :::
 
-## Filtragem de Servidores {#server-filtering}
+## Filtragem de Servidor {/* #server-filtering */}
 
 Você pode filtrar os servidores e backups exibidos no painel usando o campo de pesquisa na barra de ferramentas do aplicativo. Clique no ícone de filtro <IconButton icon="lucide:search" /> para revelar o campo de pesquisa.
 
@@ -36,7 +36,7 @@ Você pode filtrar os servidores e backups exibidos no painel usando o campo de 
 
 Isso facilita a localização rápida de servidores ou backups específicos entre vários sistemas monitorados.
 
-## Layout de Cartões {#cards-layout}
+## Layout dos Cartões {/* #cards-layout */}
 
 O layout de cards mostra o status do log de backup mais recente recebido para cada backup.
 
@@ -65,7 +65,7 @@ A visualização do painel oferece duas exibições informacionais, acessíveis 
 
 ![painel de gráficos](../assets/screen-overview-side-charts.png)
 
-### Detalhes do backup {#backup-details}
+### Detalhes do Backup {/* #backup-details */}
 
 Passar o mouse sobre um backup na lista exibe detalhes do último log de backup recebido e qualquer informação de atraso.
 
@@ -85,7 +85,7 @@ Se este backup está atrasado, a dica de ferramenta também mostra:
 
 Você também pode clicar nos botões na parte inferior para abrir [Configurações → Notificações de backup](settings/backup-notifications-settings.md) para configurar as configurações de monitoramento ou abrir a interface web do servidor Duplicati.
 
-## Layout de Tabela {#table-layout}
+## Layout da Tabela {/* #table-layout */}
 
 O layout da tabela lista os logs de backup mais recentes recebidos para todos os servidores e backups.
 
@@ -107,7 +107,7 @@ O layout da tabela lista os logs de backup mais recentes recebidos para todos os
 
 Você pode usar [Configurações de exibição](settings/display-settings.md) para configurar o tamanho da tabela e outras configurações.
 
-### Ícones de Notificações {#notifications-icons}
+### Ícones de Notificações {/* #notifications-icons */}
 
 | Ícone                                                                                                                               | Opção de Notificação | Descrição                                                                                         |
 |------------------------------------------------------------------------------------------------------------------------------------|---------------------|-----------------------------------------------------------------------------------------------------|
@@ -120,7 +120,7 @@ Você pode usar [Configurações de exibição](settings/display-settings.md) pa
 Esta configuração de notificação se aplica apenas quando **duplistatus** recebe um novo log de backup de um servidor Duplicati. As notificações de atraso são configuradas separadamente e serão enviadas independentemente desta configuração.
 :::
 
-### Detalhes de atrasos {#overdue-details}
+### Detalhes do Atraso {/* #overdue-details */}
 
 Passar o mouse sobre o ícone de aviso de backup atrasado exibe detalhes sobre o backup atrasado.
 
@@ -131,7 +131,7 @@ Passar o mouse sobre o ícone de aviso de backup atrasado exibe detalhes sobre o
 - **Backup esperado**: A hora em que o backup era esperado, incluindo o período de tolerância configurado (tempo extra permitido antes de marcar como atrasado).
 - **Última notificação**: Quando a última notificação de backup atrasado foi enviada.
 
-## Duplicati Server Version {#duplicati-server-version}
+## Versão do Servidor Duplicati {/* #duplicati-server-version */}
 
 O dashboard mostra a versão do Duplicati relatada no último log de backup para cada servidor (visualização em cartão) ou job de backup (visualização em tabela).
 
@@ -145,7 +145,7 @@ O dashboard mostra a versão do Duplicati relatada no último log de backup para
 O **duplistatus** não consulta o servidor Duplicati para saber a versão que está sendo executada no momento. Ele usa a versão armazenada no último log de backup que foi recebido ou [Coletado](collect-backup-logs.md). Após você atualizar o Duplicati, o dashboard continuará mostrando a versão anterior até que um novo log de backup chegue.
 :::
 
-### Versões de backup disponíveis {#available-backup-versions}
+### Versões de Backup Disponíveis {/* #available-backup-versions */}
 
 Clicar no ícone de relógio azul abre uma lista de versões de backup disponíveis no momento do backup, conforme relatado pelo servidor Duplicati.
 

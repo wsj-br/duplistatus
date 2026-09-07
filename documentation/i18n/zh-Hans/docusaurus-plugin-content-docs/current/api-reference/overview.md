@@ -1,8 +1,8 @@
-# API 概览 {#api-overview}
+# API 概述 {/* #api-overview */}
 
 本文档描述了 duplistatus 应用程序的所有可用 API 端点。API 遵循 RESTful 原则，提供全面备份监控、通知管理和系统管理功能。
 
-## API 结构 {#api-structure}
+## API 结构 {/* #api-structure */}
 
 有关所有端点的快速参考，请参阅 [API 端点列表](api-endpoint-list)。
 
@@ -20,13 +20,13 @@ API 分为逻辑组：
 
 有关所有端点的快速参考，请参阅 [API 端点列表](api-endpoint-list)。
 
-## 响应格式 {#response-format}
+## 响应格式 {/* #response-format */}
 
 所有 API 响应都以 JSON 格式返回，具有一致的错误处理模式。成功的响应通常包括 `status` 字段，而错误响应包括 `error` 和 `message` 字段。
 
 ---
 
-## 错误处理 {#error-handling}
+## 错误处理 {/* #error-handling */}
 
 所有端点都遵循一致的错误处理模式：
 
@@ -46,21 +46,21 @@ API 分为逻辑组：
 - `stack`：错误堆栈跟踪（在开发模式下）
 - `timestamp`：错误发生的时间
 
-## 数据类型注释 {#data-type-notes}
+## 数据类型说明 {/* #data-type-notes */}
 
-### 消息数组 {#message-arrays}
-`messages_array`、`warnings_array` 和 `errors_array` 字段作为 JSON 字符串存储在数据库中，并在 API 响应中返回为数组。这些包含 Duplicati 备份操作的实际日志消息、警告和错误。
+### 消息数组 {/* #message-arrays */}
+`messages_array`、`warnings_array` 和 `errors_array` 字段在数据库中以 JSON 字符串形式存储，并在 API 响应中作为数组返回。这些字段包含来自 Duplicati 备份操作的实际日志消息、警告和错误。
 
-### 可用备份 {#available-backups}
-`available_backups` 字段包含一个备份版本时间戳（ISO 格式）数组，用于恢复。这些从备份日志消息中提取。
+### 可用备份 {/* #available-backups */}
+`available_backups` 字段包含可用于恢复的备份版本时间戳数组（ISO 格式）。这是从备份日志消息中提取的。
 
-### 持续时间字段 {#duration-fields}
-- `duration`：人类可读的格式（例如 "00:38:31"
-- `duration_seconds`：原始持续时间（以秒为单位）
-- `durationInMinutes`：用于图表的持续时间（以分钟为单位）
+### 持续时间字段 {/* #duration-fields */}
+- `duration`：人类可读格式（例如，"00:38:31"）
+- `duration_seconds`：以秒为单位的原始持续时间
+- `durationInMinutes`：转换为分钟以用于绘图的持续时间
 
-### 文件大小字段 {#file-size-fields}
-全部文件大小字段以字节为单位返回数字，而不是格式化字符串。前端负责将这些转换为人类可读的格式（KB、MB、GB等）。
+### 文件大小字段 {/* #file-size-fields */}
+所有文件大小字段均以数字形式的字节数返回，而不是格式化字符串。前端负责将这些转换为人类可读格式（KB、MB、GB 等）。
 
 <br/>
 

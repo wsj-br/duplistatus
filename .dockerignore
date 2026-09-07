@@ -4,8 +4,10 @@
 
 # Dependencies
 node_modules
+documentation/node_modules
 .pnpm-store
 .pnpm-debug.log
+.translation-cache
 
 # Build output
 .next
@@ -23,9 +25,9 @@ dist
 *.log
 *.md
 !README.md
-# Exclude docs node_modules and build but keep the source
-docs/node_modules
-docs/build
+# Docusaurus output (the app image does not build the docs site)
+documentation/build
+documentation/.docusaurus
 backups.db
 *.db
 *.sqlite

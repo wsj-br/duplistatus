@@ -1,5 +1,5 @@
 
-# Duplicati Server Configuration (Required) {#duplicati-server-configuration-required}
+# Duplicati Server Configuration (Required) {/* #duplicati-server-configuration-required */}
 
 In order for this application to work properly, each of your Duplicati servers needs to be configured to send HTTP reports for each backup run to the **duplistatus** server.
 
@@ -13,7 +13,7 @@ Replace `my.local.server` with the hostname or IP address that the Duplicati ser
 
 See Duplicati's [HTTP notifications](https://docs.duplicati.com/monitoring-and-notifications/sending-reports-via-email/sending-http-notifications) documentation for the option reference.
 
-### Recommended options (Duplicati 2.0.9.106 and later) {#recommended-options-duplicati-209106-and-later}
+### Recommended options (Duplicati 2.0.9.106 and later) {/* #recommended-options-duplicati-209106-and-later */}
 
 `--send-http-json-urls` already sends JSON, so `--send-http-result-output-format=Json` is not required (and is ignored for these URLs).
 
@@ -41,7 +41,7 @@ Duplicati cannot set custom HTTP headers. The query parameter is the supported w
 
 `--send-http-max-log-lines=500` keeps the JSON report well under the default 5 MB upload size cap. `--send-http-max-log-lines=0` (unlimited) can exceed that cap and return HTTP 413. Increase the limit in Settings → API Keys if you need larger reports.
 
-### Older Duplicati versions {#older-duplicati-versions}
+### Older Duplicati versions {/* #older-duplicati-versions */}
 
 If your Duplicati server is older than 2.0.9.106, use the legacy URL option and set the result format to JSON:
 
@@ -59,7 +59,7 @@ If your Duplicati server is older than 2.0.9.106, use the legacy URL option and 
 --send-http-max-log-lines=500
 ```
 
-### Log lines and available versions {#log-lines-and-available-versions}
+### Log lines and available versions {/* #log-lines-and-available-versions */}
 
 **Important notes on messages sent by Duplicati:**
 
@@ -72,7 +72,7 @@ If your Duplicati server is older than 2.0.9.106, use the legacy URL option and 
 After configuring the **duplistatus** server, collect the backup logs for all your Duplicati servers using [Collect Backup Logs](../user-guide/collect-backup-logs.md).
 :::
 
-### Reporting to duplistatus and Duplicati Monitoring {#reporting-to-duplistatus-and-duplicati-monitoring}
+### Reporting to duplistatus and Duplicati Monitoring {/* #reporting-to-duplistatus-and-duplicati-monitoring */}
 
 You can send reports from the **same** Duplicati server to **duplistatus** and [Duplicati Monitoring](https://www.duplicati-monitoring.com/) at the same time. **duplistatus** must receive JSON. Duplicati Monitoring expects form-encoded reports. Do not point `--send-http-form-urls` at `/api/upload`.
 
@@ -97,13 +97,13 @@ If one HTTP target fails (outage or HTTP 500), Duplicati may not send the remain
 
 [Collect Backup Logs](../user-guide/collect-backup-logs.md) does not depend on HTTP reporting. Use it to backfill a run that was not received.
 
-### Duplicati and duplistatus on the same host {#duplicati-and-duplistatus-on-the-same-host}
+### Duplicati and duplistatus on the same host {/* #duplicati-and-duplistatus-on-the-same-host */}
 
 The upload URL must be reachable **from the Duplicati process**, not from your browser.
 
 - **Duplicati on the host, duplistatus in Docker with port `9666` published:** `http://127.0.0.1:9666/api/upload` (or the host LAN IP).
 - **Both in Docker on a shared network:** `http://duplistatus:9666/api/upload` (the Compose service or container name). `localhost` inside the Duplicati container is that container, not **duplistatus**.
-- **HTTPS reverse proxy on the same host:** use the public HTTPS URL as in [HTTPS Setup](https-setup.md).
+- **HTTPS reverse proxy on the same host:** use the public HTTPS URL as in [Security Hardening](security-hardening.md).
 
 Collect Backup Logs is the reverse direction: from the **duplistatus** container, `localhost:8200` is not Duplicati on the host. Use the host IP, `host.docker.internal` (Docker Desktop, or an extra host you configured), or the Duplicati container name.
 

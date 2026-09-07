@@ -1,4 +1,4 @@
-# Templates {#templates}
+# Templates {/* #templates */}
 
 **duplistatus** चार टेम्पलेट्स का उपयोग सूचना संदेशों के लिए करता है। ईमेल बॉडी मार्कडाउन होती है (शीर्षक, सूचियाँ, लिंक, और तालिकाएँ)। सफलता, चेतावनी/त्रुटि, और विलंबित के लिए NTFY एक ही सामग्री से प्राप्त होता है। दैनिक सारांश केवल ईमेल है।
 
@@ -15,13 +15,13 @@
 
 <br/>
 
-## Template Language {#template-language}
+## Templeit Bhasha {/* #template-language */}
 
-A **Template Language** selector at the top of the page lets you choose the language for default templates (English, German, French, Spanish, Portuguese, Hindi (Roman), and Simplified Chinese). Changing the language updates the locale for defaults, but existing customized templates keep their current text until you update them or use one of the reset buttons.
+Prushth ke upar ek **Templeit Bhasha** chayanak lets you choose the language for default templates (English, German, French, Spanish, Portuguese, Hindi, aur Simplified Chinese). Bhaasha badalane se defaults ke liye locale update hota hai, lekin existing customized templates apne Vartaman text rakhte hain jab tak aap unhe update nahi karte ya reset buttons me se ek use nahi karte.
 
 <br/>
 
-## Available Actions {#available-actions}
+## उपलब्ध क्रियाएं {/* #available-actions */}
 
 | बटन                                                              | विवरण                                                                                         |
 |:--------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------|
@@ -32,7 +32,7 @@ A **Template Language** selector at the top of the page lets you choose the lang
 
 <br/>
 
-## Variables {#variables}
+## चर {/* #variables */}
 
 ईमेल बॉडी मार्कडाउन होती हैं। शीर्षक, सूचियाँ, लिंक, और टेबल समर्थित हैं। प्लेसहोल्डर मान एस्केप्ड टेक्स्ट के रूप में इन्सर्ट किए जाते हैं और मार्कडाउन या HTML को परिचय नहीं दे सकते। पहले से एम्बेडेड रॉ HTML को कस्टमाइज़ किए गए टेम्प्लेट्स में अब एस्केप किया गया है।
 
@@ -56,7 +56,7 @@ A **Template Language** selector at the top of the page lets you choose the lang
 | `{messages_count}`     | संदेशों की संख्या.                             | Safalta, Chetavaniya |
 | `{warnings_count}`     | चेतावनियों की संख्या.                             | Safalta, Chetavaniya |
 | `{errors_count}`       | त्रुटियों की संख्या.                               | Safalta, Chetavaniya |
-| `{log_text}`           | लॉग संदेश (चेतावनियाँ और त्रुटियाँ)              | Safalta, Chetavaniya |
+| `{log_text}`           | केवल Warning aur Truti log लाइनें (संपूर्ण Information logs नहीं)। NTFY एक संक्षिप्त सारांश का उपयोग करता है और छोटा कर सकता है। | Safalta, Warning |
 | `{last_backup_date}`   | अंतिम backup की तारीख.                        | Vilambit          |
 | `{last_elapsed}`       | अंतिम backup से बीते समय.             | Vilambit          |
 | `{expected_date}`      | अपेक्षित backup तारीख.                           | Vilambit          |

@@ -1,11 +1,11 @@
-# Apache-Lizenz {#apache-license}
+# Apache-Lizenz {/* #apache-license */}
 
 **Version 2.0, Januar 2004**  
 http://www.apache.org/licenses/
 
-## NUTZUNGS- UND VERWENDUNGSBEDINGUNGEN FÜR VERWENDUNG, VERVIELFÄLTIGUNG UND VERBREITUNG {#terms-and-conditions-for-use-reproduction-and-distribution}
+## NUTZUNGS-, REPRODUKTIONS- UND VERTEILUNGSBEDINGUNGEN {/* #terms-and-conditions-for-use-reproduction-and-distribution */}
 
-### 1. Definitionen {#1-definitions}
+### 1. Definitionen {/* #1-definitions */}
 
 **"Lizenz"** meint die Bedingungen für die Nutzung, Vervielfältigung und Verbreitung gemäß den Abschnitten 1 bis 9 dieses Dokuments.
 
@@ -27,15 +27,15 @@ http://www.apache.org/licenses/
 
 **"Mitwirkender"** meint den Lizenzgeber sowie jede Einzelperson oder juristische Person, für die ein Beitrag vom Lizenzgeber empfangen und anschließend in das Werk eingearbeitet wurde.
 
-### 2. Gewährung der Urheberrechtslizenz {#2-grant-of-copyright-license}
+### 2. Gewährung der Urheberrechtslizenz {/* #2-grant-of-copyright-license */}
 
 Vorbehaltlich der Bedingungen dieser Lizenz gewährt jeder Mitwirkende Ihnen hiermit eine unwiderrufliche, weltweite, nichtausschließliche, gebührenfreie, royaltiefreie Urheberrechtslizenz zur Vervielfältigung, Erstellung abgeleiteter Werke, öffentlichen Wiedergabe, öffentlichen Aufführung, Unterlizenzierung und Verbreitung des Werkes und solcher abgeleiteten Werke in Quell- oder Objektform.
 
-### 3. Gewährung der Patentlizenz {#3-grant-of-patent-license}
+### 3. Gewährung der Patentslizenz {/* #3-grant-of-patent-license */}
 
 Vorbehaltlich der Bedingungen dieser Lizenz gewährt jeder Mitwirkende Ihnen hiermit eine dauerhafte, weltweite, nicht ausschließliche, gebührenfreie, royltyfreie, unwiderrufliche (außer wie in diesem Abschnitt angegeben) Patentlizenz, um die Arbeit herzustellen, herstellen zu lassen, zu nutzen, zum Verkauf anzubieten, zu verkaufen, zu importieren und anderweitig zu übertragen, wobei diese Lizenz nur für diejenigen Patentansprüche gilt, die von solchen Mitwirkenden lizenziert werden können und die notwendigerweise durch deren Beiträge allein oder durch die Kombination ihrer Beiträge mit der Arbeit, zu der diese Beiträge eingereicht wurden, verletzt werden. Wenn Sie eine Patentklage gegen eine beliebige Einheit einreichen (einschließlich einer Gegenklage oder Widerklage in einem Rechtsverfahren), in der behauptet wird, dass die Arbeit oder ein Beitrag innerhalb der Arbeit eine direkte oder mittelbare Patentverletzung darstellt, dann enden alle Patentlizenzen, die Ihnen unter dieser Lizenz für diese Arbeit gewährt wurden, mit dem Datum des Einreichens dieser Klage.
 
-### 4. Weiterverteilung {#4-redistribution}
+### 4. Weiterverbreitung {/* #4-redistribution */}
 
 Sie dürfen Kopien der Arbeit oder davon abgeleiteter Werke in jedem Medium vervielfältigen und verbreiten, mit oder ohne Modifikationen und in Quell- oder Objektform, vorausgesetzt, dass Sie die folgenden Bedingungen erfüllen:
 
@@ -49,26 +49,26 @@ Sie dürfen Kopien der Arbeit oder davon abgeleiteter Werke in jedem Medium verv
 
 Sie dürfen Ihre eigenen Copyright-Erklärungen zu Ihren Modifikationen hinzufügen und zusätzliche oder abweichende Lizenzbedingungen für die Nutzung, Vervielfältigung oder Verbreitung Ihrer Modifikationen oder für solche abgeleiteten Werke insgesamt bereitstellen, vorausgesetzt, dass Ihre Nutzung, Vervielfältigung und Verbreitung der Arbeit ansonsten den in dieser Lizenz genannten Bedingungen entspricht.
 
-### 5. Einreichung von Beiträgen {#5-submission-of-contributions}
+### 5. Einreichung von Beiträgen {/* #5-submission-of-contributions */}
 
 Sofern Sie nicht ausdrücklich etwas anderes angeben, unterliegen alle Beiträge, die Sie absichtlich zur Aufnahme in die Arbeit beim Lizenzgeber einreichen, den Bedingungen dieser Lizenz, ohne zusätzliche Bedingungen. Ungeachtet des Vorstehenden ersetzt oder ändert nichts hierin die Bedingungen eines separaten Lizenzvertrags, den Sie möglicherweise mit dem Lizenzgeber hinsichtlich solcher Beiträge abgeschlossen haben.
 
-### 6. Marken {#6-trademarks}
+### 6. Marken {/* #6-trademarks */}
 
 Diese Lizenz gewährt keine Erlaubnis zur Nutzung von Handelsnamen, Marken, Dienstleistungsmarken oder Produktnamen des Lizenzgebers, außer soweit dies für eine angemessene und übliche Beschreibung des Ursprungs der Arbeit und zur Reproduktion des Inhalts der NOTICE-Datei erforderlich ist.
 
-### 7. Ausschluss der Gewährleistung {#7-disclaimer-of-warranty}
+### 7. Haftungsausschluss {/* #7-disclaimer-of-warranty */}
 
 Sofern nicht durch anwendbares Recht vorgeschrieben oder schriftlich vereinbart, stellt der Lizenzgeber die Arbeit (und jeder Beitragende seine Beiträge) auf einer **"WIE BESEHEN"-BASIS ZUR VERFÜGUNG, OHNE GEWÄHRLEISTUNGEN ODER BEDINGUNGEN JEGLICHER ART**, sei es ausdrücklich oder konkludent, einschließlich, aber nicht beschränkt auf Gewährleistungen oder Bedingungen bezüglich **Titel, Nichtverletzung von Rechten, Marktgängigkeit oder EIGNUNG FÜR EINEN BESTIMMTEN ZWECK**. Sie tragen die alleinige Verantwortung dafür, die Angemessenheit der Nutzung oder Weitergabe der Arbeit zu beurteilen, und übernehmen alle Risiken, die mit der Ausübung Ihrer Rechte gemäß dieser Lizenz verbunden sind.
 
-### 8. Haftungsbeschränkung {#8-limitation-of-liability}
+### 8. Haftungsbeschränkung {/* #8-limitation-of-liability */}
 
 In keinem Fall und nach keiner Rechtsgrundlage, sei es aus unerlaubter Handlung (einschließlich Fahrlässigkeit), Vertrag oder anderweitig, haftet ein Beitragender Ihnen gegenüber für Schäden, einschließlich direkter, indirekter, besonderer, zufälliger oder Folgeschäden jeglicher Art, die aus dieser Lizenz oder aus der Nutzung oder der Unfähigkeit, die Arbeit zu nutzen, entstehen (einschließlich, aber nicht beschränkt auf Schäden für entgangenen Geschäftsruf, Arbeitsunterbrechung, Computerfehler oder -ausfall oder jegliche und alle sonstigen kaufmännischen Schäden oder Verluste), auch wenn der Beitragende über die Möglichkeit solcher Schäden informiert wurde.
 
-### 9. Übernahme von Gewährleistung oder zusätzlicher Haftung {#9-accepting-warranty-or-additional-liability}
+### 9. Akzeptieren von Garantien oder zusätzlicher Haftung {/* #9-accepting-warranty-or-additional-liability */}
 
 Beim Weitergeben der Arbeit oder abgeleiteter Werke davon können Sie die Übernahme von Support, Gewährleistung, Entschädigung oder anderen Haftungsverpflichtungen und/oder Rechten, die mit dieser Lizenz vereinbar sind, anbieten und dafür eine Gebühr verlangen. Wenn Sie jedoch solche Verpflichtungen übernehmen, dürfen Sie nur in Ihrem eigenen Namen und auf Ihre alleinige Verantwortung handeln, nicht im Namen eines anderen Beitragenden, und nur, wenn Sie sich bereit erklären, jeden Beitragenden schadlos zu halten, zu verteidigen und von jeder Haftung frei zu stellen, die dem Beitragenden entsteht oder Ansprüche gegen ihn geltend gemacht werden, weil Sie eine solche Gewährleistung oder zusätzliche Haftung übernommen haben.
 
 ---
 
-## ENDE DER BEDINGUNGEN UND KONDITIONEN {#end-of-terms-and-conditions}
+## ENDE DER NUTZUNGS-, REPRODUKTIONS- UND VERTEILUNGSBEDINGUNGEN {/* #end-of-terms-and-conditions */}

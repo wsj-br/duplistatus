@@ -1,6 +1,6 @@
-# Comment j'ai construit cette application en utilisant les outils d'IA {#how-i-build-this-application-using-ai-tools}
+# Comment j'ai construit cette application en utilisant des outils d'IA {/* #how-i-build-this-application-using-ai-tools */}
 
-# Motivation {#motivation}
+# Motivation {/* #motivation */}
 
 J'ai commencé à utiliser Duplicati comme outil de sauvegarde pour mes serveurs domestiques. J'ai essayé le [tableau de bord Duplicati](https://app.duplicati.com/) officiel et [Duplicati Monitoring](https://www.duplicati-monitoring.com/), mais j'avais deux exigences principales : (1) auto-hébergé ; et (2) une API exposée pour l'intégration avec [Homepage](https://gethomepage.dev/), car je l'utilise pour la page d'accueil de mon laboratoire domestique.
 
@@ -8,7 +8,7 @@ J'ai également essayé de me connecter directement à chaque serveur Duplicati 
 
 Comme j'expérimentais également avec les outils de code IA, j'ai décidé d'essayer d'utiliser l'IA pour construire cet outil. Voici le processus que j'ai utilisé...
 
-# Outils utilisés {#tools-used}
+# Outils utilisés {/* #tools-used */}
 
 1. Pour l'interface utilisateur : [Google's Firebase Studio](https://firebase.studio/)
 2. Pour l'implémentation : Cursor (https://www.cursor.com/)
@@ -17,7 +17,7 @@ Comme j'expérimentais également avec les outils de code IA, j'ai décidé d'es
 J'ai utilisé Firebase pour l'interface utilisateur, mais vous pouvez également utiliser [v0.app](https://v0.app/) ou tout autre outil pour générer le prototype. J'ai utilisé Cursor pour générer l'implémentation, mais vous pouvez utiliser d'autres outils, comme VS Code/Copilot, Windsurf, ...
 :::
 
-# Interface utilisateur {#ui}
+# Interface utilisateur {/* #ui */}
 
 J'ai créé un nouveau projet dans [Firebase Studio](https://studio.firebase.google.com/) et j'ai utilisé cette invite dans la fonctionnalité « Prototype an app with AI » :
 
@@ -77,9 +77,9 @@ Un point intéressant était que, depuis la première interaction, Firebase Stud
 
 Après avoir complété le prototype initial, j'ai accédé au code source en cliquant sur le bouton `</>` dans l'interface. J'ai ensuite utilisé l'extension Git pour exporter le code et le pousser vers un référentiel privé sur [GitHub](https://www.github.com).
 
-# Backend {#backend}
+# Backend {/* #backend */}
 
-## Configuration {#setup}
+## Configuration {/* #setup */}
 
 J'ai téléchargé le code depuis GitHub (en utilisant la commande `git clone`) dans un dossier local (dans mon cas, un Raspberry Pi 5 exécutant Linux) et j'ai installé les dépendances Node.js, npm et pnpm. Voir plus de détails dans [DEVELOPMENT.md](../development/setup.md).
 
@@ -87,11 +87,11 @@ J'ai configuré Cursor pour accéder au dossier de code de ma machine Windows en
 
 J'ai copié un exemple du JSON envoyé par Duplicati dans un fichier (voir le document [exemple de rapport de sauvegarde](../api-reference/database-values)), en supprimant certains champs indésirables.
 
-## Implémentation {#implementation}
+## Mise en œuvre {/* #implementation */}
 
 J'ai utilisé une invite initiale pour commencer la mise en œuvre, en mettant l'accent sur la persistance, les corrections et les nouvelles fonctionnalités. C'était un processus long mais très intéressant.
 
-### Utiliser l'IA pour générer l'invite {#using-ai-to-generate-the-prompt}
+### Utiliser l'IA pour générer l'invite {/* #using-ai-to-generate-the-prompt */}
 
 J'ai créé une invite détaillée en utilisant Cursor Chat (mode `Manual`, modèle `Auto`) :
 
@@ -141,7 +141,7 @@ L'IA a généré l'invite suivante :
 
 J'ai copié l'invite générée dans le presse-papiers.
 
-### Démarrer le parcours de mise en œuvre {#start-the-implementation-journey}
+### Commencer le parcours de mise en œuvre {/* #start-the-implementation-journey */}
 
 J'ai créé un nouveau chat en cliquant sur le bouton `+`, basculé en mode `Agent`, et collé l'invite à l'aide de Ctrl+Maj+V (en tant que texte).
 
@@ -151,7 +151,7 @@ Après la génération du plan, j'ai tapé `please, implement this plan` dans le
 J'ai inclus uniquement le point de départ car je n'ai pas enregistré tous les invites utilisés. Il y en avait beaucoup.
 :::
 
-# Notes {#notes}
+# Notes {/* #notes */}
 
 - Certains modèles peuvent rester bloqués lors de la correction de bogues. « claude-3.5 » et « claude-4 » sont généralement meilleurs, mais parfois vous devez essayer un autre modèle (GPT, Gemini, etc.).
 Pour les bogues ou erreurs complexes, utilisez une invite pour analyser les causes possibles de l'erreur au lieu de simplement demander de la corriger.

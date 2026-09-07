@@ -8,6 +8,10 @@ import { formatInteger, formatBytes as formatBytesLocale } from './number-format
 import { SOURCE_LOCALE } from './locales';
 import { getServerI18nForLanguage } from './i18n-server';
 import { htmlList, renderMarkdownEmail } from './notification-template-renderer';
+import {
+  NTFY_MESSAGE_MAX_BYTES,
+  truncateNtfyAtLineBoundary,
+} from './notification-template-validation';
 
 // Ensure this runs in Node.js runtime, not Edge Runtime
 export const runtime = 'nodejs';
@@ -30,7 +34,62 @@ export interface NotificationContext {
   uploaded_size: string | number;
   storage_size: string | number;
   available_versions: number;
-  log_text?: string; // Plain text, one item per line (warnings + errors, or messages as fallback)
+  log_text?: string; // Plain text, one item per line (warnings + errors only)
+}
+
+/** Options for {@link extractLogText} when building short NTFY bodies. */
+export interface ExtractLogTextOptions {
+  /** Keep only the human message (first line / after `]: `), truncate length, and cap entry count. */
+  compact?: boolean;
+  maxEntries?: number;
+  maxEntryLength?: number;
+}
+
+const DUPLICATI_LEVEL_RE = /\[(Warning|Error|Fatal)-/i;
+const DEFAULT_NTFY_LOG_MAX_ENTRIES = 15;
+const DEFAULT_NTFY_LOG_ENTRY_LENGTH = 300;
+
+function parseJsonStringArray(raw: string | null | undefined): string[] {
+  if (!raw || raw.trim() === '') {
+    return [];
+  }
+  try {
+    const parsed = JSON.parse(raw) as unknown;
+    if (!Array.isArray(parsed)) {
+      return [];
+    }
+    return parsed
+      .filter((item): item is string => typeof item === 'string' && item.trim() !== '')
+      .map((item) => item.trim());
+  } catch {
+    return [];
+  }
+}
+
+/** True when a Duplicati log line is Warning, Error, or Fatal (not Information). */
+export function isWarningOrErrorLogLine(line: string): boolean {
+  return DUPLICATI_LEVEL_RE.test(line);
+}
+
+/**
+ * Shorten a log entry for push notifications: first line only, prefer the message
+ * after Duplicati's `]: ` marker, and cap length.
+ */
+export function summarizeLogEntryForNtfy(entry: string, maxLength: number = DEFAULT_NTFY_LOG_ENTRY_LENGTH): string {
+  const firstLine = entry.split(/\r?\n/)[0]?.trim() ?? '';
+  if (!firstLine) {
+    return '';
+  }
+  const marker = ']: ';
+  const idx = firstLine.indexOf(marker);
+  let summary = idx >= 0 ? firstLine.slice(idx + marker.length).trim() : firstLine;
+  if (!summary) {
+    summary = firstLine;
+  }
+  if (summary.length <= maxLength) {
+    return summary;
+  }
+  return `${summary.slice(0, Math.max(0, maxLength - 1))}…`;
 }
 
 export interface OverdueBackupContext {
@@ -154,47 +213,43 @@ function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// Helper function to extract log text from backup arrays
-// Combines warnings and errors, or falls back to messages if both are empty
-export function extractLogText(backup: Backup): string {
+// Extract warning/error log text for notification templates.
+// Prefer Warnings/Errors arrays; when those are empty (common with Duplicati HTTP reports),
+// filter Messages/LogLines to Warning/Error/Fatal lines only — never dump Information noise.
+export function extractLogText(backup: Backup, options?: ExtractLogTextOptions): string {
   try {
-    // Parse warnings and errors arrays
-    let warnings: string[] = [];
-    let errors: string[] = [];
-    
-    if (backup.warnings_array) {
-      try {
-        const parsed = JSON.parse(backup.warnings_array);
-        warnings = Array.isArray(parsed) ? parsed.filter((item: unknown) => item != null && item !== '') : [];
-      } catch {
-        // Invalid JSON, skip
+    const warnings = parseJsonStringArray(backup.warnings_array);
+    const errors = parseJsonStringArray(backup.errors_array);
+    let combined = [...warnings, ...errors];
+
+    if (combined.length === 0) {
+      const messages = parseJsonStringArray(backup.messages_array);
+      // LogLines embed stack traces after the first line; keep the log line only.
+      combined = messages
+        .filter(isWarningOrErrorLogLine)
+        .map((line) => line.split(/\r?\n/)[0]?.trim() ?? '')
+        .filter((line) => line.length > 0);
+    }
+
+    const compact = options?.compact === true;
+    const maxEntries = options?.maxEntries ?? (compact ? DEFAULT_NTFY_LOG_MAX_ENTRIES : undefined);
+    const maxEntryLength = options?.maxEntryLength ?? DEFAULT_NTFY_LOG_ENTRY_LENGTH;
+
+    if (typeof maxEntries === 'number' && maxEntries > 0 && combined.length > maxEntries) {
+      const omitted = combined.length - maxEntries;
+      combined = combined.slice(0, maxEntries);
+      if (compact) {
+        combined.push(`…and ${omitted} more`);
       }
     }
-    
-    if (backup.errors_array) {
-      try {
-        const parsed = JSON.parse(backup.errors_array);
-        errors = Array.isArray(parsed) ? parsed.filter((item: unknown) => item != null && item !== '') : [];
-      } catch {
-        // Invalid JSON, skip
-      }
+
+    if (compact) {
+      return combined
+        .map((entry) => summarizeLogEntryForNtfy(entry, maxEntryLength))
+        .filter((entry) => entry.length > 0)
+        .join('\n');
     }
-    
-    // Combine warnings and errors
-    const combined = [...warnings, ...errors];
-    
-    // If combined array is empty, try messages as fallback
-    if (combined.length === 0 && backup.messages_array) {
-      try {
-        const parsed = JSON.parse(backup.messages_array);
-        const messages = Array.isArray(parsed) ? parsed.filter((item: unknown) => item != null && item !== '') : [];
-        return messages.join('\n');
-      } catch {
-        // Invalid JSON, return empty
-        return '';
-      }
-    }
-    
+
     return combined.join('\n');
   } catch {
     return '';
@@ -674,7 +729,8 @@ export async function sendBackupNotification(
   serverName: string,
   context: NotificationContext
 ): Promise<NotificationDeliveryOutcome> {
-  const suppressEmail = isDailySummaryEnabled();
+  // Daily Summary suppresses only the global SMTP recipient; additional emails still send.
+  const suppressDefaultEmail = isDailySummaryEnabled();
 
   const config = await getNotificationConfig();
   if (!config) {
@@ -748,10 +804,34 @@ export async function sendBackupNotification(
     template = config.templates?.warning || defaultNotificationTemplates.warning;
   }
 
-  let processedTemplate;
+  let processedTemplate: Awaited<ReturnType<typeof processTemplate>> | undefined;
+  let ntfyProcessedTemplate: Awaited<ReturnType<typeof processTemplate>> | undefined;
   try {
     const locale = config.templates?.language || SOURCE_LOCALE;
     processedTemplate = await processTemplate(template, context, locale);
+
+    const needsNtfy =
+      (shouldSendStandard && backupConfig.ntfyEnabled !== false) ||
+      (shouldSendToAdditional &&
+        !!backupConfig.additionalNtfyTopic &&
+        backupConfig.additionalNtfyTopic.trim() !== '' &&
+        !!config.ntfy.url);
+
+    if (needsNtfy) {
+      const ntfyContext: NotificationContext = {
+        ...context,
+        log_text: extractLogText(backup, { compact: true }),
+      };
+      ntfyProcessedTemplate = await processTemplate(template, ntfyContext, locale);
+      ntfyProcessedTemplate = {
+        ...ntfyProcessedTemplate,
+        message: truncateNtfyAtLineBoundary(
+          ntfyProcessedTemplate.message,
+          NTFY_MESSAGE_MAX_BYTES,
+          '… (message truncated)'
+        ),
+      };
+    }
   } catch (error) {
     console.error(`Failed to process notification template for backup ${backup.name} on server ${serverName}:`, error instanceof Error ? error.message : String(error));
     throw error;
@@ -763,15 +843,15 @@ export async function sendBackupNotification(
     const notifications: Promise<void>[] = [];
 
     // Send NTFY notification if enabled
-    if (backupConfig.ntfyEnabled !== false) { // Default to true if not specified
+    if (backupConfig.ntfyEnabled !== false && ntfyProcessedTemplate) { // Default to true if not specified
       notifications.push(
         sendNtfyNotification(
           config.ntfy.url,
           config.ntfy.topic,
-          processedTemplate.title,
-          processedTemplate.message,
-          processedTemplate.priority,
-          processedTemplate.tags,
+          ntfyProcessedTemplate.title,
+          ntfyProcessedTemplate.message,
+          ntfyProcessedTemplate.priority,
+          ntfyProcessedTemplate.tags,
           config.ntfy.accessToken
         ).then(async () => {
           standardNotificationTypes.push('NTFY');
@@ -821,7 +901,7 @@ export async function sendBackupNotification(
     }
 
     // Send email notification if enabled and configured
-    if (!suppressEmail && backupConfig.emailEnabled === true && getSMTPConfig()) {
+    if (!suppressDefaultEmail && backupConfig.emailEnabled === true && getSMTPConfig()) {
       const htmlContent = processedTemplate.emailHtml;
       const smtpConfig = getSMTPConfig();
       notifications.push(
@@ -927,14 +1007,21 @@ export async function sendBackupNotification(
 
   // Send to additional destinations if configured and needed
   if (!shouldSendToAdditional) {
-    return 'sent';
+    if (standardNotificationTypes.length > 0) {
+      return 'sent';
+    }
+    if (suppressDefaultEmail) {
+      console.log(`Daily summary mode is enabled; suppressing default-recipient email for backup ${backup.name} on server ${serverName}`);
+      return 'suppressed';
+    }
+    return 'skipped';
   }
 
   const additionalNotifications: Promise<void>[] = [];
   const additionalNotificationTypes: string[] = [];
 
-  // Send to additional email addresses if configured
-  if (!suppressEmail && backupConfig.additionalEmails && backupConfig.additionalEmails.trim() && getSMTPConfig()) {
+  // Send to additional email addresses if configured (not suppressed by Daily Summary)
+  if (backupConfig.additionalEmails && backupConfig.additionalEmails.trim() && getSMTPConfig()) {
     const emailAddresses = backupConfig.additionalEmails
       .split(',')
       .map(email => email.trim())
@@ -1039,16 +1126,16 @@ export async function sendBackupNotification(
   }
 
   // Send to additional NTFY topic if configured
-  if (backupConfig.additionalNtfyTopic && backupConfig.additionalNtfyTopic.trim() && config.ntfy.url) {
+  if (backupConfig.additionalNtfyTopic && backupConfig.additionalNtfyTopic.trim() && config.ntfy.url && ntfyProcessedTemplate) {
     const additionalTopic = backupConfig.additionalNtfyTopic.trim();
     additionalNotifications.push(
       sendNtfyNotification(
         config.ntfy.url,
         additionalTopic,
-        processedTemplate.title,
-        processedTemplate.message,
-        processedTemplate.priority,
-        processedTemplate.tags,
+        ntfyProcessedTemplate.title,
+        ntfyProcessedTemplate.message,
+        ntfyProcessedTemplate.priority,
+        ntfyProcessedTemplate.tags,
         config.ntfy.accessToken
       ).then(async () => {
         additionalNotificationTypes.push('Additional NTFY');
@@ -1116,8 +1203,8 @@ export async function sendBackupNotification(
   if (anyChannelSent) {
     return 'sent';
   }
-  if (suppressEmail) {
-    console.log(`Daily summary mode is enabled; suppressing individual email for backup ${backup.name} on server ${serverName}`);
+  if (suppressDefaultEmail) {
+    console.log(`Daily summary mode is enabled; suppressing default-recipient email for backup ${backup.name} on server ${serverName}`);
     return 'suppressed';
   }
 
@@ -1127,7 +1214,8 @@ export async function sendBackupNotification(
 export async function sendOverdueBackupNotification(
   context: OverdueBackupContext
 ): Promise<NotificationDeliveryOutcome> {
-  const suppressEmail = isDailySummaryEnabled();
+  // Daily Summary suppresses only the global SMTP recipient; additional emails still send.
+  const suppressDefaultEmail = isDailySummaryEnabled();
 
   const notificationConfig = await getNotificationConfig();
   
@@ -1209,7 +1297,7 @@ export async function sendOverdueBackupNotification(
     }
 
     // Send email notification if enabled and configured
-    if (!suppressEmail && backupConfig.emailEnabled === true && getSMTPConfig()) {
+    if (!suppressDefaultEmail && backupConfig.emailEnabled === true && getSMTPConfig()) {
       const htmlContent = processedTemplate.emailHtml;
       const smtpConfig = getSMTPConfig();
       notifications.push(
@@ -1310,16 +1398,32 @@ export async function sendOverdueBackupNotification(
       console.log(`No notification channels enabled for overdue backup ${context.backup_name} on server ${context.server_name}, skipping`);
     }
 
-    // Send to additional destinations if configured
-    // For overdue notifications, we always send unless additionalNotificationEvent is 'off'
+    // Send to additional destinations if configured.
+    // Overdue is classified as a Warning for additional Notification Event filtering.
     const additionalNotificationEvent = backupConfig.additionalNotificationEvent ?? backupConfig.notificationEvent;
-    const shouldSendToAdditional = additionalNotificationEvent !== 'off';
+    let shouldSendToAdditional = false;
+    switch (additionalNotificationEvent) {
+      case 'all':
+      case 'warnings':
+        shouldSendToAdditional = true;
+        break;
+      case 'errors':
+      case 'off':
+        shouldSendToAdditional = false;
+        break;
+      default: {
+        const _exhaustive: never = additionalNotificationEvent;
+        void _exhaustive;
+        shouldSendToAdditional = false;
+        break;
+      }
+    }
 
     if (shouldSendToAdditional) {
       const additionalNotifications: Promise<void>[] = [];
 
-      // Send to additional email addresses if configured
-      if (!suppressEmail && backupConfig.additionalEmails && backupConfig.additionalEmails.trim() && getSMTPConfig()) {
+      // Send to additional email addresses if configured (not suppressed by Daily Summary)
+      if (backupConfig.additionalEmails && backupConfig.additionalEmails.trim() && getSMTPConfig()) {
         const emailAddresses = backupConfig.additionalEmails
           .split(',')
           .map(email => email.trim())
@@ -1503,8 +1607,8 @@ export async function sendOverdueBackupNotification(
   if (anyChannelSent) {
     return 'sent';
   }
-  if (suppressEmail) {
-    console.log(`Daily summary mode is enabled; suppressing overdue email for backup ${context.backup_name} on server ${context.server_name}`);
+  if (suppressDefaultEmail) {
+    console.log(`Daily summary mode is enabled; suppressing default-recipient overdue email for backup ${context.backup_name} on server ${context.server_name}`);
     return 'suppressed';
   }
 

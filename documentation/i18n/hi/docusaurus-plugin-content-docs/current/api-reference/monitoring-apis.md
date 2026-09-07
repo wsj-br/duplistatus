@@ -1,9 +1,9 @@
-# निगरानी और स्वास्थ्य {#monitoring-health}
+# निगरानी और स्वास्थ्य {/* #monitoring--health */}
 
-## स्वास्थ्य जाँच - `/api/health` {#health-check---apihealth}
+## स्वास्थ्य जाँच - `/api/health` {/* #health-check---apihealth */}
 - **एंडपॉइंट**: `/api/health`
 - **विधि**: GET
-- **विवरण**: एप्लिकेशन और डेटाबेस की स्वास्थ्य स्थिति की जाँच करता है।
+- **विवरण**: एप्लिकेशन और SQLite कनेक्शन के लिए सस्ता जीवितता जाँच। Docker `HEALTHCHECK` और एंट्रीपॉइंट वेट लूप इस URL का उपयोग localhost पर करते हैं।
 - **प्रतिक्रिया** (स्वस्थ):
 
   ```json
@@ -11,12 +11,6 @@
     "status": "healthy",
     "database": "connected",
     "basicConnection": true,
-    "tablesFound": 2,
-    "tables": [
-      "servers",
-      "backups"
-    ],
-    "preparedStatements": true,
     "initializationStatus": "complete",
     "initializationComplete": true,
     "connectionHealth": true,
@@ -29,22 +23,12 @@
   ```json
   {
     "status": "degraded",
-    "database": "connected",
-    "basicConnection": true,
-    "tablesFound": 2,
-    "tables": [
-      "servers",
-      "backups"
-    ],
-    "preparedStatements": false,
-    "preparedStatementsError": "Prepared statement error details",
+    "database": "unavailable",
+    "basicConnection": false,
     "initializationStatus": "complete",
     "initializationComplete": true,
     "connectionHealth": false,
-    "connectionHealthError": "Connection health check failed",
-    "connectionDetails": {
-      "additional": "diagnostic information"
-    },
+    "connectionHealthError": "Database connection test failed",
     "timestamp": "2024-03-20T10:00:00Z"
   }
   ```
@@ -56,17 +40,31 @@
     "status": "unhealthy",
     "error": "Database connection failed",
     "message": "Connection timeout",
-    "stack": "Error: Connection timeout\n    at...",
     "timestamp": "2024-03-20T10:00:00Z"
   }
   ```
 
-- **नोट्स**: 
-  - स्वस्थ प्रणालियों के लिए 200 स्थिति लौटाता है
-  - अस्वस्थ प्रणालियों या तैयार कथन विफलताओं के लिए 503 स्थिति लौटाता है
-  - तैयार कथन विफल होने पर `preparedStatementsError` फ़ील्ड शामिल करता है
-  - डेटाबेस प्रारंभ विफल होने पर `initializationError` फ़ील्ड शामिल करता है
-  - कनेक्शन स्वास्थ्य जाँच विफल होने पर `connectionHealthError` और `connectionDetails` शामिल करता है
-  - स्टैक ट्रेस केवल विकास मोड में शामिल होता है
-  - बुनियादी डेटाबेस कनेक्शन, तैयार कथन, प्रारंभ स्थिति और कनेक्शन स्वास्थ्य की जाँच करता है
-  - समस्याओं के निदान के लिए व्यापक स्वास्थ्य निदान प्रदान करता है
+- **नोट्स**:
+  - जब प्रारंभ पूरा हो जाता है और `SELECT 1` सफल होता है, तो 200 लौटाता है
+  - जब प्रारंभ या कनेक्शन जाँच विफल होती है, तो 503 लौटाता है
+  - टेबल नामों की सूची नहीं बनाता और डैशबोर्ड क्वेरी नहीं चलाता
+  - कभी भी एपीआई कुंजी की आवश्यकता नहीं होती
+  - जब कोई भी आईपी अनुमति सूची सक्षम की जाती है, तो क्लाइंट आईपी लूपबैक होनी चाहिए या प्रशासक या बाहरी CIDR सूची पर सूचीबद्ध होनी चाहिए (`403` `IP_NOT_ALLOWED` अन्यथा)
+  - गैर-लूपबैक क्लाइंट को रेट लिमिट किया जाता है (`429` `PROBE_RATE_LIMITED`, प्रति मिनट 30 और प्रति घंटा 120)। लूपबैक (`127.0.0.1`, `::1`) कभी थ्रॉटल नहीं किया जाता
+
+## कनेक्टिविटी प्रोब - `/api/ping` {/* #connectivity-probe---apiping */}
+- **एंडपॉइंट**: `/api/ping`
+- **विधि**: GET
+- **विवरण**: डैशबोर्ड कनेक्टिविटी जाँच के लिए छोटा `{ "ok": true }` उत्तर (हर 30 सेकंड)।
+- **Response**:
+
+  ```json
+  {
+    "ok": true
+  }
+  ```
+
+- **नोट्स**:
+  - कभी भी एपीआई कुंजी या सेशन कुकी की आवश्यकता नहीं होती
+  - `/api/health` के समान अनुमति सूची संघ और लूपबैक नियम
+  - गैर-लूपबैक क्लाइंट को रेट लिमिट किया जाता है (`429` `PROBE_RATE_LIMITED`, प्रति मिनट 60 और प्रति घंटा 600)

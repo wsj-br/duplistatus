@@ -1,9 +1,9 @@
-# चार्ट डेटा {#chart-data}
+# चार्ट डेटा {/* #chart-data */}
 
-## एकत्रित चार्ट डेटा प्राप्त करें - `/api/chart-data/aggregated` {#get-aggregated-chart-data---apichart-dataaggregated}
+## समेकित चार्ट डेटा प्राप्त करें - `/api/chart-data/aggregated` {/* #get-aggregated-chart-data---apichart-dataaggregated */}
 - **एंडपॉइंट**: `/api/chart-data/aggregated`
-- **विधि**: GET
-- **विवरण**: एकत्रित चार्ट डेटा प्राप्त करता है, जिसमें वैकल्पिक समय सीमा फ़िल्टरिंग शामिल है।
+- **मेथड**: GET
+- **विवरण**: वैकल्पिक समय सीमा फ़िल्टरिंग के साथ समेकित चार्ट डेटा प्राप्त करता है।
 - **क्वेरी पैरामीटर**:
   - `startDate` (optional): फ़िल्टरिंग के लिए प्रारंभ तिथि (ISO प्रारूप)
   - `endDate` (optional): फ़िल्टरिंग के लिए अंतिम तिथि (ISO प्रारूप)
@@ -32,10 +32,10 @@
   - प्रोसेसिंग से पहले तिथि प्रारूप की जाँच करता है
   - सभी सर्वरों के माध्यम से एकत्रित डेटा लौटाता है
 
-## सर्वर चार्ट डेटा प्राप्त करें - `/api/chart-data/server/:serverId` {#get-server-chart-data---apichart-dataserverserverid}
+## सर्वर चार्ट डेटा प्राप्त करें - `/api/chart-data/server/:serverId` {/* #get-server-chart-data---apichart-dataserverserverid */}
 - **एंडपॉइंट**: `/api/chart-data/server/:serverId`
-- **विधि**: GET
-- **विवरण**: एक विशिष्ट सर्वर के लिए चार्ट डेटा प्राप्त करता है, जिसमें वैकल्पिक समय सीमा फ़िल्टरिंग शामिल है।
+- **मेथड**: GET
+- **विवरण**: वैकल्पिक समय सीमा फ़िल्टरिंग के साथ किसी विशिष्ट सर्वर के लिए चार्ट डेटा प्राप्त करता है।
 - **पैरामीटर**:
   - `serverId`: सर्वर पहचानकर्ता
 - **क्वेरी पैरामीटर**:
@@ -66,10 +66,10 @@
   - प्रोसेसिंग से पहले तिथि प्रारूप की जाँच करता है
   - विशिष्ट सर्वर के लिए चार्ट डेटा लौटाता है
 
-## सर्वर बैकअप चार्ट डेटा प्राप्त करें - `/api/chart-data/server/:serverId/backup/:backupName` {#get-server-backup-chart-data---apichart-dataserverserveridbackupbackupname}
+## सर्वर बैकअप चार्ट डेटा प्राप्त करें - `/api/chart-data/server/:serverId/backup/:backupName` {/* #get-server-backup-chart-data---apichart-dataserverserveridbackupbackupname */}
 - **एंडपॉइंट**: `/api/chart-data/server/:serverId/backup/:backupName`
-- **विधि**: GET
-- **विवरण**: एक विशिष्ट सर्वर और बैकअप के लिए चार्ट डेटा प्राप्त करता है, जिसमें वैकल्पिक समय सीमा फ़िल्टरिंग शामिल है।
+- **मेथड**: GET
+- **विवरण**: वैकल्पिक समय सीमा फ़िल्टरिंग के साथ किसी विशिष्ट सर्वर और बैकअप के लिए चार्ट डेटा प्राप्त करता है।
 - **पैरामीटर**:
   - `serverId`: सर्वर पहचानकर्ता
   - `backupName`: बैकअप नाम (URL एन्कोडेड)

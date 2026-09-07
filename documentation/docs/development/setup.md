@@ -1,8 +1,8 @@
 
 
-# Development Setup {#development-setup}
+# Development Setup {/* #development-setup */}
 
-## Prerequisites {#prerequisites}
+## Prerequisites {/* #prerequisites */}
 
 - Docker / Docker Compose
 - Node.js (see `engines.node` in `package.json`)
@@ -15,22 +15,22 @@
 
 
 
-## Steps {#steps}
+## Steps {/* #steps */}
 
-### 1. Clone the repository: {#1-clone-the-repository}
+### 1. Clone the repository: {/* #1-clone-the-repository */}
     ```bash
     git clone https://github.com/wsj-br/duplistatus.git
     cd duplistatus
     ```
 
 
-### 2. Install dependencies (Debian/Ubuntu): {#2-install-dependencies-debianubuntu}
+### 2. Install dependencies (Debian/Ubuntu): {/* #2-install-dependencies-debianubuntu */}
     ```bash
     sudo apt update
     sudo apt install sqlite3 git inkscape bat -y
     ```
 
-### 3. Remove old Node.js installations (if you already have it installed) {#3-remove-old-nodejs-installations-if-you-already-have-it-installed}
+### 3. Remove old Node.js installations (if you already have it installed) {/* #3-remove-old-nodejs-installations-if-you-already-have-it-installed */}
 
     ```bash
     sudo apt-get purge nodejs npm -y
@@ -48,7 +48,7 @@
     sudo rm -rf /usr/local/bin/node*
     ```
 
-### 4. Install Node.js and pnpm: {#4-install-nodejs-and-pnpm}
+### 4. Install Node.js and pnpm: {/* #4-install-nodejs-and-pnpm */}
 
     ```bash
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
@@ -58,7 +58,7 @@
     npm install -g pnpm npm-check-updates doctoc
     ```
 
-### 5. Set up direnv support {#5-set-up-direnv-support}
+### 5. Set up direnv support {/* #5-set-up-direnv-support */}
 
 Add these lines to your `~/.bashrc` file
 
@@ -99,7 +99,7 @@ Add these lines to your `~/.profile` file
   Cursor, Lingma, Antigravity, Zed, ...) for these changes to take effect.
   :::
 
-### 6. Create the `.env` file at the repository basedir with these variables. {#6-create-the-env-file-at-the-repository-basedir-with-these-variables}
+### 6. Create the `.env` file at the repository basedir with these variables. {/* #6-create-the-env-file-at-the-repository-basedir-with-these-variables */}
 
 - You can use any value for `VERSION`; it will be automatically updated when using the development scripts.
 - Use random passwords for the `ADMIN_PASSWORD` and `USER_PASSWORD`; these passwords will be used in the `pnpm take-screenshots` script.
@@ -119,11 +119,11 @@ Add these lines to your `~/.profile` file
     ```
 
 
-## Available Scripts {#available-scripts}
+## Available Scripts {/* #available-scripts */}
 
 The project includes several npm scripts for different development tasks:
 
-### Development Scripts {#development-scripts}
+### Development Scripts {/* #development-scripts */}
 - `pnpm dev` - Start the Next.js development server (port 8666) and the cron service (port 8667) together via `concurrently` (includes pre-checks). CTRL-C stops both. `NODE_OPTIONS` for Next.js loads `scripts/dev-preload.cjs`, which applies `scripts/peer-ip.cjs` (TCP peer address for IP allowlists) and request-log timestamps.
 - `pnpm dev:next` - Start only the Next.js development server on port 8666 (no cron).
 - `pnpm build` - Build the application for production (includes pre-checks)
@@ -134,7 +134,7 @@ The project includes several npm scripts for different development tasks:
 
 **Note:** The `preinstall` script automatically enforces pnpm as the package manager.
 
-### Documentation Scripts {#documentation-scripts}
+### Documentation Scripts {/* #documentation-scripts */}
 
 These scripts must be run from the `documentation/` directory:
 
@@ -152,23 +152,23 @@ These scripts must be run from the `documentation/` directory:
 The development servers (`start:*`) provide hot module replacement for rapid development. The default port is 3000.
 
 
-### Production Scripts {#production-scripts}
+### Production Scripts {/* #production-scripts */}
 - `pnpm build-local` - Build and prepare for local production (includes pre-checks, copies static files to standalone directory)
 - `pnpm start-local` - Start production server locally (port 8666, includes pre-checks). **Note:** Run `pnpm build-local` first. Starts the standalone server with `--require ./scripts/peer-ip.cjs`.
 - `pnpm start` - Start production server (port 9666) with the same peer-ip preload. Docker uses `docker-entrypoint.sh` to load the same script.
 
-### Docker Scripts {#docker-scripts}
+### Docker Scripts {/* #docker-scripts */}
 - `pnpm docker:up` - Start Docker Compose stack
 - `pnpm docker:down` - Stop Docker Compose stack
 - `pnpm docker:clean` - Clean Docker environment and cache
 - `pnpm docker:devel` - Build a development Docker image tagged as `wsj-br/duplistatus:devel`
 
-### Cron Service Scripts {#cron-service-scripts}
+### Cron Service Scripts {/* #cron-service-scripts */}
 - `pnpm cron:start` - Start cron service in production mode
 - `pnpm cron:dev` - Start only the cron service in development mode with file watching (port 8667). Usually unnecessary when using `pnpm dev`, which already starts cron.
 - `pnpm cron:start-local` - Start cron service locally for testing (port 8667)
 
-### Test Scripts {#test-scripts}
+### Test Scripts {/* #test-scripts */}
 - `pnpm generate-test-data` - Generate test backup data (requires --servers=N parameter)
 - `pnpm validate-csv-export` - Validate CSV export functionality
 - `pnpm test-entrypoint` - Test Docker entrypoint script in local development (see [Test Scripts](test-scripts))

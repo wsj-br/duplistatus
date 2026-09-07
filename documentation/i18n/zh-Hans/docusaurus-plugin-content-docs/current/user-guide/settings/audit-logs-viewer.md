@@ -1,10 +1,10 @@
-# 审计日志 {#audit-logs}
+# 审计日志 {/* #audit-logs */}
 
 审计日志提供了系统更改和用户操作的全面记录，包括 **duplistatus**。这有助于跟踪配置更改、用户活动和系统操作，以实现安全和故障排除目的。
 
 ![审计日志](../../assets/screen-settings-audit.png)
 
-## 审计日志查看器 {#audit-log-viewer}
+## 审计日志查看器 {/* #audit-log-viewer */}
 
 审计日志查看器显示了所有已记录事件的时间顺序列表，包括以下信息:
 
@@ -16,7 +16,7 @@
 - **目标**: 受影响的对象（如果适用）
 - **详细信息**: 关于操作的额外信息
 
-### 查看日志详细信息 {#viewing-log-details}
+### 查看日志详情 {/* #viewing-log-details */}
 
 单击任何日志条目旁边的 <IconButton icon="lucide:eye" /> 眼睛图标以查看详细信息，包括:
 - 完整时间戳
@@ -25,7 +25,7 @@
 - IP 地址和用户代理
 - 错误消息（如果操作失败）
 
-### 导出审计日志 {#exporting-audit-logs}
+### 导出审计日志 {/* #exporting-audit-logs */}
 
 您可以以两种格式导出筛选后的审计日志:
 

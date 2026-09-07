@@ -1,12 +1,12 @@
-# Surveillance des sauvegardes {#backup-monitoring}
+# Surveillance des sauvegardes {/* #backup-monitoring */}
 
 ![Alertes de sauvegarde](../../assets/screen-settings-monitoring.png)
 
-## Filtrage des serveurs {#server-filtering}
+## Filtrage du serveur {/* #server-filtering */}
 
 La liste des serveurs sur cette page peut être filtrée à l'aide du champ de filtrage.
 
-Quand **Résumé quotidien** est activé, la détection des tâches en retard continue mais les notifications individuelles de retard sont supprimées. Voir [Résumé quotidien](daily-summary-settings.md).
+Quand **Résumé quotidien** est activé, la détection des retards continue mais l'e-mail de retard à l'adresse e-mail par défaut est supprimé. Les destinations e-mail supplémentaires continuent pour les événements correspondants (les retards comptent comme un Avertissement). Voir [Résumé quotidien](daily-summary-settings.md).
 
 **Correspondances de filtre :**
 - ID du serveur
@@ -15,7 +15,7 @@ Quand **Résumé quotidien** est activé, la détection des tâches en retard co
 
 Cela permet de localiser rapidement des serveurs ou des sauvegardes spécifiques dans les paramètres de surveillance lors de la gestion de nombreux systèmes.
 
-## Configurer les paramètres de surveillance par sauvegarde {#configure-per-backup-monitoring-settings}
+## Configurer les paramètres de surveillance des sauvegardes {/* #configure-per-backup-monitoring-settings */}
 
 -  **Nom du serveur** : Le nom du serveur à surveiller pour les sauvegardes en retard. 
    - Cliquez sur <SvgIcon svgFilename="duplicati_logo.svg" height="18"/> pour ouvrir l'interface web du serveur Duplicati
@@ -37,7 +37,7 @@ Lorsque vous collectez les journaux de sauvegarde d'un serveur Duplicati, **dupl
 Pour obtenir les meilleurs résultats, collectez les journaux de sauvegarde après avoir modifié la configuration des intervalles de travaux de sauvegarde dans votre serveur Duplicati. Cela garantit que **duplistatus** reste synchronisé avec votre configuration actuelle.
 :::
 
-## Configurations globales {#global-configurations}
+## Configurations globales {/* #global-configurations */}
 
 Ces paramètres s'appliquent à toutes les sauvegardes :
 
@@ -47,7 +47,7 @@ Ces paramètres s'appliquent à toutes les sauvegardes :
 | **Intervalle de surveillance des sauvegardes** | Fréquence à laquelle le système vérifie les sauvegardes en retard. La valeur par défaut est **5 minutes**.                                                                                                                                                                                                                                                            |
 | **Fréquence des notifications**      | Fréquence d'envoi des notifications d'impayé : <br/> **Une fois`: Send **just one** notification when the backup becomes overdue. <br/> `Tous les jours`: Send **daily** notifications while overdue (default). <br/> `Toutes les semaines`: Send **weekly** notifications while overdue. <br/> `Tous les mois**: Envoyer des notifications **mensuelles** tant que la sauvegarde est en retard. |
 
-## Actions disponibles {#available-actions}
+## Actions Disponibles {/* #available-actions */}
 
 | Bouton                                                              | Description                                                                                                                           |
 |:--------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------|

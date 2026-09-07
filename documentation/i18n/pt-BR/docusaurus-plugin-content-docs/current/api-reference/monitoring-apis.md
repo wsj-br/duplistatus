@@ -1,9 +1,9 @@
-# Monitoramento e Saúde {#monitoring-health}
+# Monitoramento e Saúde {/* #monitoring--health */}
 
-## Verificação de Integridade - `/api/health` {#health-check---apihealth}
+## Verificação de Saúde - `/api/health` {/* #health-check---apihealth */}
 - **Endpoint**: `/api/health`
 - **Método**: GET
-- **Descrição**: Verifica o status de integridade da aplicação e do banco de dados.
+- **Descrição**: Verificação de vitalidade barata para a aplicação e conexão SQLite. O Docker `HEALTHCHECK` e o loop de entrada usam esta URL no localhost.
 - **Resposta** (saudável):
 
   ```json
@@ -11,12 +11,6 @@
     "status": "healthy",
     "database": "connected",
     "basicConnection": true,
-    "tablesFound": 2,
-    "tables": [
-      "servers",
-      "backups"
-    ],
-    "preparedStatements": true,
     "initializationStatus": "complete",
     "initializationComplete": true,
     "connectionHealth": true,
@@ -29,22 +23,12 @@
   ```json
   {
     "status": "degraded",
-    "database": "connected",
-    "basicConnection": true,
-    "tablesFound": 2,
-    "tables": [
-      "servers",
-      "backups"
-    ],
-    "preparedStatements": false,
-    "preparedStatementsError": "Prepared statement error details",
+    "database": "unavailable",
+    "basicConnection": false,
     "initializationStatus": "complete",
     "initializationComplete": true,
     "connectionHealth": false,
-    "connectionHealthError": "Connection health check failed",
-    "connectionDetails": {
-      "additional": "diagnostic information"
-    },
+    "connectionHealthError": "Database connection test failed",
     "timestamp": "2024-03-20T10:00:00Z"
   }
   ```
@@ -56,17 +40,31 @@
     "status": "unhealthy",
     "error": "Database connection failed",
     "message": "Connection timeout",
-    "stack": "Error: Connection timeout\n    at...",
     "timestamp": "2024-03-20T10:00:00Z"
   }
   ```
 
-- **Notas**: 
-  - Retorna status 200 para sistemas saudáveis
-  - Retorna status 503 para sistemas não saudáveis ou falhas em prepared statements
-  - Inclui o campo `preparedStatementsError` quando ocorrem falhas em prepared statements
-  - Inclui o campo `initializationError` quando a inicialização do banco de dados falha
-  - Inclui `connectionHealthError` e `connectionDetails` quando as verificações de saúde da conexão falham
-  - O rastreamento de pilha é incluído apenas no modo de desenvolvimento
-  - Testa a conexão básica com o banco de dados, prepared statements, status de inicialização e saúde da conexão
-  - Fornece diagnósticos abrangentes de saúde para solução de problemas
+- **Notas**:
+  - Retorna 200 quando a inicialização é concluída e `SELECT 1` bem-sucedido
+  - Retorna 503 quando a inicialização ou a verificação de conexão falha
+  - Não lista nomes de tabelas ou executa consultas do painel
+  - Nunca requer uma chave de API
+  - Quando qualquer lista de permissões de IP está habilitada, o IP do cliente deve ser loopback ou listado na lista CIDR do administrador ou externo (`403` `IP_NOT_ALLOWED` caso contrário)
+  - Clientes não loopback são limitados em taxa (`429` `PROBE_RATE_LIMITED`, 30/minuto e 120/hora). Loopback (`127.0.0.1`, `::1`) nunca é limitado
+
+## Verificação de Conectividade - `/api/ping` {/* #connectivity-probe---apiping */}
+- **Endpoint**: `/api/ping`
+- **Método**: GET
+- **Descrição**: Resposta pequena `{ "ok": true }` usada pela verificação de conectividade do painel (a cada 30 segundos).
+- **Resposta**:
+
+  ```json
+  {
+    "ok": true
+  }
+  ```
+
+- **Notas**:
+  - Nunca requer uma chave de API ou um cookie de sessão
+  - Mesmas regras de lista de permissões e loopback que `/api/health`
+  - Clientes não loopback são limitados em taxa (`429` `PROBE_RATE_LIMITED`, 60/minuto e 600/hora)

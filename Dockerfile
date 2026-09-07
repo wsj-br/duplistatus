@@ -2,6 +2,12 @@
 
 FROM node:lts-alpine AS base
 
+# pnpm 11+ defaults verify-deps-before-run to "install". After COPY --from=deps,
+# node_modules lives on a lower overlayfs layer, so that auto-install fails with
+# EXDEV (Cross-device link / pacquet-stage). The image install is authoritative.
+ENV PNPM_CONFIG_VERIFY_DEPS_BEFORE_RUN=false \
+    CI=true
+
 # ------------------------------------------------------------
 # Install dependencies only when needed
 # ------------------------------------------------------------
@@ -10,15 +16,16 @@ FROM base AS deps
 # Install build dependencies needed for native modules (better-sqlite3)
 RUN apk add --no-cache libc6-compat tzdata icu-libs icu-data-full python3 make g++
 
-# Install pnpm for workspace install/build (build-only; not copied to runner)
-RUN npm install -g pnpm@latest-11
-
 WORKDIR /app
 
-# Copy workspace configuration files
+# Copy workspace configuration files (docs package.json keeps the workspace valid)
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .pnpmfile.cjs ./
+COPY documentation/package.json ./documentation/package.json
 
-# Install all workspace dependencies
+# Install pnpm matching packageManager (build-only; not copied to runner)
+RUN npm install -g --allow-scripts=pnpm "pnpm@$(node -e "console.log(require('./package.json').packageManager.split('@')[1])")"
+
+# Frozen lockfile for the whole workspace (docs is a member; the image does not build Docusaurus)
 RUN pnpm install --frozen-lockfile
 
 # ------------------------------------------------------------
@@ -29,12 +36,12 @@ FROM base AS builder
 # Install build dependencies needed for native modules
 RUN apk add --no-cache libc6-compat python3 make g++
 
-# Install pnpm for build (build-only tool)
-RUN npm install -g pnpm@latest-11
-
 WORKDIR /app
 
-# Copy node_modules from deps stage (includes all dependencies)
+COPY package.json ./
+RUN npm install -g --allow-scripts=pnpm "pnpm@$(node -e "console.log(require('./package.json').packageManager.split('@')[1])")"
+
+# Copy node_modules from deps stage
 COPY --from=deps /app/node_modules ./node_modules
 
 # Copy source code and configuration files
@@ -44,11 +51,12 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # Build the application (standalone output will be in .next/standalone)
-RUN mkdir -p /app/data && pnpm run build
+RUN --mount=type=cache,id=next-cache,target=/app/.next/cache \
+    mkdir -p /app/data && pnpm run build
 
 # Bundle cron service into a single JS file for production runtime
 # This avoids needing a separate full node_modules in the runner image.
-RUN npm install -g esbuild@0.25.1 && NODE_PATH=/usr/local/lib/node_modules node scripts/bundle-cron-service.cjs
+RUN npm install -g --allow-scripts=esbuild esbuild@0.25.1 && NODE_PATH=/usr/local/lib/node_modules node scripts/bundle-cron-service.cjs
 
 # ------------------------------------------------------------
 # Production image - minimal runtime environment

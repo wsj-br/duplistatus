@@ -1,15 +1,15 @@
-# APIs Externas {#external-apis}
+# APIs externas {/* #external-apis */}
 
 Esses endpoints são projetados para uso por outros aplicativos e integrações, por exemplo [Página Inicial](../user-guide/homepage-integration.md). Eles são isentos de CSRF e não usam cookies de sessão.
 
-A autenticação é opcional e desativada por padrão. Quando **Exigir chaves de API** estiver habilitado em [Chaves de API](../user-guide/settings/api-keys-settings.md), envie a chave como `?api_key=`, `X-Api-Key` ou `Authorization: Bearer`. Chaves de upload funcionam apenas em `POST /api/upload`. Chaves de leitura funcionam apenas em `/api/summary` e `/api/lastbackup*`. Chaves de consulta de string aparecem nos logs de acesso do proxy reverso.
+A autenticação é opcional e desativada por padrão. Embora as chaves sejam opcionais, os clientes podem omitir a chave ou enviar uma: uma chave válida de escopo correspondente é aceita e registrada; uma chave inválida é ignorada e a solicitação ainda prossegue. Quando **Requer Chaves de API** está habilitado em [Chaves de API](../user-guide/settings/api-keys-settings.md), envie a chave como `?api_key=`, `X-Api-Key` ou `Authorization: Bearer`. Chaves de carregamento funcionam apenas em `POST /api/upload`. Chaves de leitura funcionam apenas em `/api/summary` e `/api/lastbackup*`. Chaves de string de consulta aparecem nos logs de acesso do proxy reverso.
 
-Uma [lista de permissões de IP](../user-guide/settings/ip-allowlist-settings.md) também pode restringir essas rotas. `/api/health` e `/api/ping` permanecem abertos.
+Uma [lista de permissões de IP](../user-guide/settings/ip-allowlist-settings.md) também pode restringir essas rotas. `/api/health` e `/api/ping` permanecem públicas enquanto ambas as listas estão desativadas; quando qualquer uma das listas é habilitada, elas aceitam loopback e CIDRs da lista do administrador ou externa, e clientes não-loopback são limitados por taxa.
 
-## Obter Resumo Geral - `/api/summary` {#get-overall-summary---apisummary}
+## Obter Resumo Geral - `/api/summary` {/* #get-overall-summary---apisummary */}
 - **Endpoint**: `/api/summary`
 - **Method**: GET
-- **Description**: Recupera um resumo de todas as operações de backup em todos os servidores.
+- **Descrição**: Recupera um resumo de todas as operações de backup em todos os servidores.
 - **Resposta**:
 
   ```json
@@ -38,10 +38,10 @@ Uma [lista de permissões de IP](../user-guide/settings/ip-allowlist-settings.md
   - Retorna resposta de fallback com zeros se a busca de dados falhar
   - **Nota**: Para uso no painel interno, considere usar `/api/dashboard` que inclui esses dados mais informações adicionais
 
-## Obter Último Backup - `/api/lastbackup/:serverId` {#get-latest-backup---apilastbackupserverid}
+## Obter Último Backup - `/api/lastbackup/:serverId` {/* #get-latest-backup---apilastbackupserverid */}
 - **Endpoint**: `/api/lastbackup/:serverId`
 - **Method**: GET
-- **Description**: Recupera as informações do último backup para um servidor específico.
+- **Descrição**: Recupera as informações do último backup para um servidor específico.
 - **Parâmetros**:
   - `serverId`: o identificador do servidor (ID ou nome)
 
@@ -98,10 +98,10 @@ O identificador do servidor deve ser codificado em URL.
   - Retorna nulo para latest_backup se nenhum backup existir
   - Inclui cabeçalhos de controle de cache para evitar o cache
 
-## Obter Últimos Backups - `/api/lastbackups/:serverId` {#get-latest-backups---apilastbackupsserverid}
+## Obter Últimos Backups - `/api/lastbackups/:serverId` {/* #get-latest-backups---apilastbackupsserverid */}
 - **Endpoint**: `/api/lastbackups/:serverId`
 - **Method**: GET
-- **Description**: Recupera as informações dos últimos backups para todos os backups configurados (por exemplo, 'Arquivos', 'Bancos de Dados') em um servidor específico.
+- **Descrição**: Recupera as informações do último backup para todos os backups configurados (por exemplo, 'Arquivos', 'Banco de Dados') em um servidor específico.
 - **Parâmetros**:
   - `serverId`: o identificador do servidor (ID ou nome)
 
@@ -185,10 +185,10 @@ O identificador do servidor deve ser codificado em URL.
   - Ao contrário de `/api/lastbackup/:serverId` que retorna apenas o backup mais recente do servidor (independente do trabalho de backup)
   - Inclui cabeçalhos de controle de cache para evitar o cache
 
-## Enviar Dados de Backup - `/api/upload` {#upload-backup-data---apiupload}
+## Carregar Dados de Backup - `/api/upload` {/* #upload-backup-data---apiupload */}
 - **Endpoint**: `/api/upload`
 - **Method**: POST
-- **Description**: Envia dados da operação de backup para um servidor. Suporta detecção de execuções duplicadas de backup e envia notificações.
+- **Descrição**: Carrega dados de operação de backup para um servidor. Suporta detecção de execução de backup duplicado e envia notificações.
 - **Corpo da Requisição**: JSON enviado pelo Duplicati com as seguintes opções:
 
   ```bash

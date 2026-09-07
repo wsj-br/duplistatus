@@ -27,7 +27,7 @@ const sidebars: SidebarsConfig = {
         'installation/configure-tz',
         'installation/environment-variables',
         'installation/duplicati-server-configuration',
-        'installation/https-setup',
+        'installation/security-hardening',
       ],
     },
     {

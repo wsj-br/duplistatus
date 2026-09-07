@@ -1,13 +1,13 @@
 
 
-# Test Scripts {#test-scripts}
+# Test Scripts {/* #test-scripts */}
 
 The project includes several test scripts to help with development and testing:
 
 > [!NOTE]
 > Legacy repository-root `pnpm` helpers for overdue debugging, SMTP matrix testing, and cron port checks were removed. Use the application UI (**Settings → Backup monitoring**), authenticated HTTP APIs, and `curl` against the cron service as documented below.
 
-## Generate Test Data {#generate-test-data}
+## Generate Test Data {/* #generate-test-data */}
 
 ```bash
 pnpm generate-test-data --servers=N
@@ -49,26 +49,26 @@ The script assigns Duplicati versions **per server** (the same report string is 
 > This script deletes all previous data in the database and replaces it with test data.
 > Back up your database before running this script.
 
-## Overdue checks and cron connectivity (development) {#overdue-checks-and-cron-connectivity-development}
+## Overdue checks and cron connectivity (development) {/* #overdue-checks-and-cron-connectivity-development */}
 
-### Run an overdue backup check {#run-an-overdue-backup-check}
+### Run an overdue backup check {/* #run-an-overdue-backup-check */}
 
 While the app is running:
 
 - **UI (recommended):** open **Settings → Backup monitoring** and use **Test overdue backups**. That runs the same logic as the scheduled job via authenticated `POST /api/notifications/check-overdue`.
 
-### Cron service health {#cron-service-health}
+### Cron service health {/* #cron-service-health */}
 
 ```bash
 curl http://localhost:8667/health
 curl http://localhost:8666/api/cron/health
 ```
 
-### Simulating a specific date or time {#simulating-a-specific-date-or-time}
+### Simulating a specific date or time {/* #simulating-a-specific-date-or-time */}
 
 There is no bundled CLI for injecting a simulated “current” time. For the algorithm and manual testing ideas, see the repository file `dev/OVERDUE_DETECTION_ALGORITHM.md` and the implementation in `src/lib/overdue-backup-checker.ts`.
 
-## Validate CSV export {#validate-csv-export}
+## Validate CSV export {/* #validate-csv-export */}
 
 ```bash
 pnpm validate-csv-export
@@ -81,7 +81,7 @@ This script validates the CSV export functionality. It:
 
 Useful for ensuring CSV exports work correctly before releases.
 
-## Temporarily block NTFY server (for testing) {#temporarily-block-ntfy-server-for-testing}
+## Temporarily block NTFY server (for testing) {/* #temporarily-block-ntfy-server-for-testing */}
 
 ```bash
 sudo ./scripts/temporary_ntfy.sh_block.sh
@@ -97,11 +97,11 @@ This script temporarily blocks outgoing network access to the NTFY server (`ntfy
 >[!CAUTION]
 > This script modifies iptables rules and requires root privileges. Use only for testing notification retry mechanisms.
 
-## Database Migration Testing {#database-migration-testing}
+## Database Migration Testing {/* #database-migration-testing */}
 
 The project includes scripts to test database migrations from older versions to the current version. These scripts ensure that database migrations work correctly and preserve data integrity.
 
-### Generate Migration Test Data {#generate-migration-test-data}
+### Generate Migration Test Data {/* #generate-migration-test-data */}
 
 ```bash
 ./scripts/generate-migration-test-data.sh
@@ -143,7 +143,7 @@ This script generates test databases for multiple historical versions of the app
 >[!IMPORTANT]
 > This script was supposed to run only once, as new versions the developer can copy the database file and screenshots directly to the `scripts/migration_test_data/` directory. During development, just run the `./scripts/test-migrations.sh` script to test the migrations.
 
-### Test Database Migrations {#test-database-migrations}
+### Test Database Migrations {/* #test-database-migrations */}
 
 ```bash
 ./scripts/test-migrations.sh
@@ -218,11 +218,11 @@ echo $?  # 0 = all passed, 1 = some failed
 >[!NOTE]
 > This script uses the TypeScript migration test script (`test-migration.ts`) internally. The test script validates the database structure after migration and ensures data integrity.
 
-## SMTP and email (development) {#smtp-and-email-development}
+## SMTP and email (development) {/* #smtp-and-email-development */}
 
 Configure SMTP under **Settings → Email** and use the in-app email test and notification flows. The former `pnpm set-smtp-test-config` and `pnpm test-smtp-connections` helper scripts were removed from the repository.
 
-## Test Docker Entrypoint Script {#test-docker-entrypoint-script}
+## Test Docker Entrypoint Script {/* #test-docker-entrypoint-script */}
 
 ```bash
 pnpm test-entrypoint
@@ -264,12 +264,13 @@ pnpm test-entrypoint
 - Testing graceful shutdown and signal handling
 - Debugging entrypoint script behavior in a local environment
 
-## Daily Summary validation {#daily-summary-validation}
+## Daily Summary validation {/* #daily-summary-validation */}
 
 ```bash
 pnpm validate-daily-summary
 ```
 
-Runs deterministic checks for Daily Summary scheduling (including DST), snapshot aggregation, Markdown sanitization, delivery-ledger claims, and schema 4.1 → 4.2 migration with customized templates. Does not send email or NTFY.
+Runs deterministic checks for Daily Summary scheduling (including DST), snapshot aggregation (latest backup jobs only), leftover notification-settings pruning, orphaned backup/server rows, Markdown sanitization, delivery-ledger claims, and schema 4.1 → 4.2 migration with customized templates. Does not send email or NTFY.
+
 
 

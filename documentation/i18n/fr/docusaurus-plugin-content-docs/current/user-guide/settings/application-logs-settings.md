@@ -1,4 +1,4 @@
-# Journaux d'application {#application-logs}
+# Journaux de l'application {/* #application-logs */}
 
 Le Visualiseur de journaux d'application permet aux administrateurs de surveiller tous les journaux d'application au même endroit, avec filtrage, export et mises à jour en temps réel directement depuis l'interface web.
 
@@ -6,7 +6,7 @@ Le Visualiseur de journaux d'application permet aux administrateurs de surveille
 
 <br/>
 
-## Actions disponibles {#available-actions}
+## Actions Disponibles {/* #available-actions */}
 
 | Bouton                                                              | Description                                                                                         |
 |:--------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------|
@@ -18,7 +18,7 @@ Le Visualiseur de journaux d'application permet aux administrateurs de surveille
 
 <br/>
 
-## Contrôles et Filtres {#controls-and-filters}
+## Contrôles et Filtres {/* #controls-and-filters */}
 
 | Contrôle | Description |
 |:--------|:-----------|

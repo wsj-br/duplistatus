@@ -1,14 +1,14 @@
 
 
-# External APIs {#external-apis}
+# External APIs {/* #external-apis */}
 
 These endpoints are designed for use by other applications and integrations, for instance [Homepage](../user-guide/homepage-integration.md). They are CSRF-exempt and do not use session cookies.
 
-Authentication is optional and off by default. When **Require API keys** is enabled in [API Keys](../user-guide/settings/api-keys-settings.md), send the key as `?api_key=`, `X-Api-Key`, or `Authorization: Bearer`. Upload keys work only on `POST /api/upload`. Read keys work only on `/api/summary` and `/api/lastbackup*`. Query-string keys appear in reverse-proxy access logs.
+Authentication is optional and off by default. While keys are optional, clients may omit the key or send one: a valid matching-scope key is accepted and recorded; a bad key is ignored and the request still proceeds. When **Require API keys** is enabled in [API Keys](../user-guide/settings/api-keys-settings.md), send the key as `?api_key=`, `X-Api-Key`, or `Authorization: Bearer`. Upload keys work only on `POST /api/upload`. Read keys work only on `/api/summary` and `/api/lastbackup*`. Query-string keys appear in reverse-proxy access logs.
 
-An [IP allowlist](../user-guide/settings/ip-allowlist-settings.md) can also restrict these routes. `/api/health` and `/api/ping` stay open.
+An [IP allowlist](../user-guide/settings/ip-allowlist-settings.md) can also restrict these routes. `/api/health` and `/api/ping` stay public while both lists are off; when either list is enabled they accept loopback and CIDRs from the admin or external list, and non-loopback clients are rate-limited.
 
-## Get Overall Summary - `/api/summary` {#get-overall-summary---apisummary}
+## Get Overall Summary - `/api/summary` {/* #get-overall-summary---apisummary */}
 - **Endpoint**: `/api/summary`
 - **Method**: GET
 - **Description**: Retrieves a summary of all backup operations across all servers.
@@ -38,7 +38,7 @@ An [IP allowlist](../user-guide/settings/ip-allowlist-settings.md) can also rest
   - Returns fallback response with zeros if data fetching fails
   - **Note**: For internal dashboard use, consider using `/api/dashboard` which includes this data plus additional information
 
-## Get Latest Backup - `/api/lastbackup/:serverId` {#get-latest-backup---apilastbackupserverid}
+## Get Latest Backup - `/api/lastbackup/:serverId` {/* #get-latest-backup---apilastbackupserverid */}
 - **Endpoint**: `/api/lastbackup/:serverId`
 - **Method**: GET
 - **Description**: Retrieves the latest backup information for a specific server.
@@ -96,7 +96,7 @@ The server identifier has to be URL Encoded.
   - Returns null for latest_backup if no backups exist
   - Includes cache control headers to prevent caching
 
-## Get Latest Backups - `/api/lastbackups/:serverId` {#get-latest-backups---apilastbackupsserverid}
+## Get Latest Backups - `/api/lastbackups/:serverId` {/* #get-latest-backups---apilastbackupsserverid */}
 - **Endpoint**: `/api/lastbackups/:serverId`
 - **Method**: GET
 - **Description**: Retrieves the latest backup information for all configured backups (e.g. 'Files', 'Databases') on a specific server.
@@ -181,7 +181,7 @@ The server identifier has to be URL Encoded.
   - Unlike `/api/lastbackup/:serverId` which returns only the single most recent backup of the server (independ of backup job)
   - Includes cache control headers to prevent caching
 
-## Upload Backup Data - `/api/upload` {#upload-backup-data---apiupload}
+## Upload Backup Data - `/api/upload` {/* #upload-backup-data---apiupload */}
 - **Endpoint**: `/api/upload`
 - **Method**: POST
 - **Description**: Uploads backup operation data for a server. Supports duplicate backup run detection and sends notifications.

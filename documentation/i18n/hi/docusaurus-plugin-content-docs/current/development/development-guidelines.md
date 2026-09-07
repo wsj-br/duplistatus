@@ -1,6 +1,6 @@
-# विकास संदर्भ {#development-reference}
+# विकास संदर्भ {/* #development-reference */}
 
-## कोड संगठन {#code-organisation}
+## कोड संगठन {/* #code-organisation */}
 
 - **अंश**: `src/components/` के साथ उप-निर्देशिकाएँ:
   - `ui/` - शैडसी/यूआई घटक और पुन: उपयोग योग्य यूआई तत्व
@@ -15,7 +15,7 @@
 - **स्क्रिप्ट्स**: उपयोगिता स्क्रिप्ट्स `scripts/` निर्देशिका में
 - **सुरक्षा**: CSRF संरक्षण `src/lib/csrf-middleware.ts` में, सुरक्षित एंडपॉइंट्स के लिए `withCSRF` मिडलवेयर का उपयोग करें
 
-## परीक्षण और डीबगिंग {#testing--debugging}
+## परीक्षण और डिबगिंग {/* #testing--debugging */}
 
 - परीक्षण डेटा जनरेशन: `pnpm generate-test-data --servers=N`
 - अधिसूचना परीक्षण: `/api/notifications/test` एंडपॉइंट
@@ -25,26 +25,26 @@
 - डेटाबेस रखरखाव: सफाई ऑपरेशन के लिए रखरखाव मेनू का उपयोग करें
 - पूर्व-चेक: `scripts/pre-checks.sh` स्टार्टअप समस्याओं के लिए ट्रबलशूटिंग
 
-## विकास संदर्भ {#development-references}
+## विकास संदर्भ {/* #development-references */}
 
 - API एंडपॉइंट्स: देखें [API संदर्भ](../api-reference/overview)
 - डेटाबेस स्कीमा: देखें [डेटाबेस स्कीमा](database)
 - डेटाबेस ऑपरेशन के लिए `src/lib/db-utils.ts` में पैटर्न का पालन करें
 
-## फ्रेमवर्क और लाइब्रेरीज़ {#frameworks--libraries}
+## फ़्रेमवर्क और लाइब्रेरी {/* #frameworks--libraries */}
 
 :::info
 सटीक संस्करणों के लिए, देखें [`package.json`](https://github.com/wsj-br/duplistatus/blob/master/package.json) (`dependencies`, `devDependencies`, `engines`, और `packageManager`). नीचे दी गई सूची उद्देश्य से संस्करण-लाइट है ताकि यह निर्भरता अपग्रेड के दौरान सटीक रहे।
 :::
 
-### रनटाइम और पैकेज मैनेजमेंट {#runtime--package-management}
+### रनटाइम और पैकेज प्रबंधन {/* #runtime--package-management */}
 - Node.js (देखें `engines.node`)
 - pnpm (`preinstall` स्क्रिप्ट के माध्यम से लागू; देखें `engines.pnpm` / `packageManager`)
 
-### कोर फ्रेमवर्क और लाइब्रेरीज़ {#core-frameworks--libraries}
+### मुख्य फ़्रेमवर्क और लाइब्रेरी {/* #core-frameworks--libraries */}
 - Next.js (ऐप राउटर)
 - React और React-DOM
-- Radix UI (`@radix-ui/react-*` प्राइमिटिव्स)
+- Radix UI (`@radix-ui/react-*` प्रिमिटिव्स)
 - Tailwind CSS v4 + tailwindcss-animate
 - better-sqlite3
 - Recharts, react-day-picker, react-hook-form, react-datepicker
@@ -55,25 +55,25 @@
 - nodemailer, qrcode
 - ai-i18n-tools, i18next, react-i18next (यूआई और दस्तावेज़ अनुवाद पाइपलाइन)
 
-### टाइप चेकिंग और लिंटिंग {#type-checking--linting}
-- TypeScript (स्ट्रिक्ट मोड)
+### प्रकार जाँच और लिंटिंग {/* #type-checking--linting */}
+- TypeScript (सख्त मोड)
 - TSX (TypeScript स्क्रिप्ट चलाने के लिए)
-- ESLint (फ्लैट कॉन्फ़िग `eslint.config.mjs` + `eslint-config-next`; `pnpm lint` के माध्यम से चलाएं → `eslint .`)
+- ESLint (फ्लैट कॉन्फ़िग `eslint.config.mjs` + `eslint-config-next`; `pnpm lint` के माध्यम से चलाएँ → `eslint .`)
 - webpack
 
-### बिल्ड और डिप्लॉयमेंट {#build--deployment}
-- Next.js स्टैंडअलोन आउटपुट (`output: 'standalone'`) के साथ कंटेनर एंट्रीपॉइंट `server.js` शुरू करता है
-- Docker (node:alpine बेस) के साथ बहु-आर्किटेक्चर बिल्ड्स (AMD64, ARM64)
-- CI/CD के लिए GitHub Actions वर्कफ़्लो
+### निर्माण और डिप्लॉयमेंट {/* #build--deployment */}
+- Next.js स्टैंडअलोन आउटपुट (`output: 'standalone'`) के साथ कंटेनर एंट्रीपॉइंट शुरू होता है (`server.js`)
+- Docker (node:alpine आधार) के साथ बहु-आर्किटेक्चर बिल्ड्स (AMD64, ARM64)। छवि केवल Next.js ऐप को बिल्ड करती है (Docusaurus साइट को नहीं); pnpm संस्करण `packageManager` से लिया जाता है `package.json`
+- GitHub Actions वर्कफ़्लो CI/CD के लिए
 - Inkscape for logos and pictures
 - Docusaurus for documentation
 - Greenfish Icon Editor for icons
 
-### Project Configuration {#project-configuration}
+### प्रोजेक्ट कॉन्फ़िगरेशन {/* #project-configuration */}
 - `tsconfig.json`, `next.config.ts`, `tailwind.config.ts`, `postcss.config.mjs`
 - `pnpm-workspace.yaml`, `components.json` (shadcn/ui)
 
-## System Features {#system-features}
+## प्रणाली सुविधाएँ {/* #system-features */}
 
 - **Cron Service**: Separate service for scheduled tasks, started by `docker-entrypoint.sh` in Docker deployments
 - **Suchnaayein**: ntfy.sh integration and SMTP email (nodemailer), configurable templates

@@ -56,7 +56,7 @@ const EMAIL_CSS = `
 .email-shell h1, .email-shell h2, .email-shell h3 { color: #111827; margin: 1.2em 0 0.6em; }
 .email-shell p { margin: 0.6em 0; }
 .email-shell a { color: #1d4ed8; }
-.email-table { border-collapse: collapse; width: 100%; max-width: 100%; margin: 0.8em 0; }
+.email-table { border-collapse: collapse; width: auto; max-width: 100%; margin: 0.8em 0; }
 .email-table th, .email-table td { border: 1px solid #d1d5db; padding: 6px 8px; text-align: left; vertical-align: top; word-break: break-word; }
 .email-table th { background: #f3f4f6; font-weight: 600; }
 .email-table td.numeric, .email-table th.numeric { text-align: right; }

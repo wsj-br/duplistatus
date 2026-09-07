@@ -3,7 +3,6 @@ import type { TFunction } from "i18next";
 import { useTranslation } from "react-i18next";
 import { useState, useEffect, useRef, Suspense, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import i18n, { loadLocale } from "@/i18n";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,18 +13,17 @@ import { Checkbox } from "@/components/ui/checkbox";
 import AppVersion from "@/components/app-version";
 import { GithubLink } from "@/components/github-link";
 import DupliLogo from "../../../public/images/duplistatus_logo.png";
-import { Info } from "lucide-react";
+import { Info, Languages } from "lucide-react";
 import { KeyChangedModal } from "@/components/key-changed-modal";
 import { useLocale } from "@/contexts/locale-context";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Languages } from "lucide-react";
 import {
   getLocaleLabel,
   isSupportedLocale,
   LOCALE_CODE_LIST,
-  LOCALE_COOKIE_NAME,
   type LocaleCode,
 } from "@/lib/locales";
+import { applyUiLocale } from "@/lib/ui-locale-client";
 
 const REMEMBERED_USERNAME_KEY = "duplistatus_remembered_username";
 const REMEMBER_ME_ENABLED_KEY = "duplistatus_remember_me_enabled";
@@ -208,9 +206,8 @@ function LoginForm({ t }: { t: TFunction }) {
   const handleLocaleChange = async (newLocale: string) => {
     if (newLocale === locale) return;
     if (!isSupportedLocale(newLocale)) return;
-    document.cookie = `${LOCALE_COOKIE_NAME}=${encodeURIComponent(newLocale)}; path=/; max-age=${365 * 24 * 60 * 60}; SameSite=Lax`;
-    await loadLocale(newLocale);
-    await i18n.changeLanguage(newLocale);
+    // Pre-login: cookie only; UserLocaleSync seeds per-user storage after authentication.
+    await applyUiLocale(newLocale);
     router.refresh();
   };
 

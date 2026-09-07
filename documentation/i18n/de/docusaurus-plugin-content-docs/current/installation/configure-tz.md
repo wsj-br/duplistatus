@@ -1,4 +1,4 @@
-# Zeitzone {#timezone}
+# Zeitzone {/* #timezone */}
 
 Die Benutzeroberfläche der Anwendung zeigt Datum und Uhrzeit entsprechend den Browsereinstellungen an. Logging verwendet weiterhin die `TZ` Umgebungsvariable. Tägliche Zusammenfassung Benachrichtigungen verwenden die IANA Zeitzone, die in [Einstellungen → Tägliche Zusammenfassung](../user-guide/settings/daily-summary-settings.md) gespeichert ist, nicht `TZ`. Andere Benachrichtigungszeitstempel, die keine Tägliche Zusammenfassung sind, folgen weiterhin `TZ`.
 
@@ -8,7 +8,7 @@ Der Standardwert ist `TZ=Europe/London`, wenn diese Umgebungsvariable nicht gese
 Die Sprache und Gebietsschema-Einstellungen (Zahlen- und Datumsformate) für Benachrichtigungen können in [Einstellungen → Vorlagen](../user-guide/settings/notification-templates.md) konfiguriert werden.
 :::
 
-## Konfigurieren der Zeitzone {#configuring-the-timezone}
+## Konfigurieren der Zeitzone {/* #configuring-the-timezone */}
 
 Die Benutzeroberfläche der Anwendung zeigt Datum und Uhrzeit entsprechend den Browsereinstellungen an. Logging verwendet weiterhin die `TZ` Umgebungsvariable. Tägliche Zusammenfassung Benachrichtigungen verwenden die IANA Zeitzone, die in [Einstellungen → Tägliche Zusammenfassung](../user-guide/settings/daily-summary-settings.md) gespeichert ist, nicht `TZ`. Andere Benachrichtigungszeitstempel, die keine Tägliche Zusammenfassung sind, folgen weiterhin `TZ`.
 
@@ -27,7 +27,7 @@ oder übergeben Sie die Umgebungsvariable in der Befehlszeile (Docker oder Podma
   --env TZ=America/Sao_Paulo
 ```
 
-### Verwendung Ihrer Linux-Konfiguration {#using-your-linux-configuration}
+### Verwendung Ihrer Linux-Konfiguration {/* #using-your-linux-configuration */}
 
 Um die Konfiguration Ihres Linux-Hosts zu erhalten, können Sie Folgendes ausführen:
 
@@ -35,6 +35,6 @@ Um die Konfiguration Ihres Linux-Hosts zu erhalten, können Sie Folgendes ausfü
 echo TZ=\"$(</etc/timezone)\"
 ```
 
-### Liste der Zeitzonen {#list-of-timezones}
+### Liste der Zeitzonen {/* #list-of-timezones */}
 
 Sie können hier eine Liste von Zeitzonen finden: [Wikipedia: List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List)

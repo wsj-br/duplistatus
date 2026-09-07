@@ -1,4 +1,4 @@
-# Backup-Benachrichtigungen {#backup-notifications}
+# Backup-Benachrichtigungen {/* #backup-notifications */}
 
 Verwenden Sie diese Einstellungen, um Benachrichtigungen zu senden, wenn ein [neues Sicherungsprotokoll empfangen wird](../../installation/duplicati-server-configuration.md).
 
@@ -12,17 +12,17 @@ Die Tabelle für Sicherungshinweise ist nach Servern organisiert. Das Anzeigefor
 
 Diese Seite verfügt über eine Automatisches-Speichern-Funktion. Alle Änderungen, die Sie vornehmen, werden automatisch gespeichert.
 
-Wenn **Tägliche Zusammenfassung** aktiviert ist, werden individuelle und zusätzliche Backup-Benachrichtigungen unterdrückt. Die Einstellungen auf dieser Seite werden beibehalten und werden wieder aktiv, wenn die Tägliche Zusammenfassung deaktiviert wird. Siehe [Tägliche Zusammenfassung](daily-summary-settings.md).
+Wenn **Tägliche Zusammenfassung** aktiviert ist, werden E-Mails an den Standard-E-Mail-Empfänger unterdrückt. Zusätzliche E-Mail-Ziele auf dieser Seite erhalten weiterhin übereinstimmende Ereignisse. Die Einstellungen auf dieser Seite werden beibehalten und werden wieder aktiv, wenn die Tägliche Zusammenfassung deaktiviert wird. Siehe [Tägliche Zusammenfassung](daily-summary-settings.md).
 
 <br/>
 
-## Filter {#filter}
+## Filter {/* #filter */}
 
 Verwenden Sie das Feld **Nach Servername filtern** oben auf der Seite, um schnell bestimmte Sicherungen nach Servername oder Alias zu finden. Die Tabelle wird automatisch gefiltert, um nur übereinstimmende Einträge einzublenden.
 
 <br/>
 
-## Benachrichtigungseinstellungen pro Sicherung konfigurieren {#configure-per-backup-notification-settings}
+## Konfigurieren der Benachrichtigungseinstellungen pro Sicherung {/* #configure-per-backup-notification-settings */}
 
 | Einstellung                       | Beschreibung                                               | Standardwert |
 | :---------------------------- | :-------------------------------------------------------- | :------------ |
@@ -39,7 +39,7 @@ Verwenden Sie das Feld **Nach Servername filtern** oben auf der Seite, um schnel
 
 <br/>
 
-## Zusätzliche Ziele {#additional-destinations}
+## Zusätzliche Ziele {/* #additional-destinations */}
 
 Zusätzliche Benachrichtigungsziele ermöglichen es Ihnen, Benachrichtigungen an bestimmte E-Mail-Adressen oder NTFY-Themen über die globalen Einstellungen hinaus zu senden. Das System verwendet ein hierarchisches Vererbungsmodell, bei dem Sicherungen Standard-Einstellungen von ihrem Server erben oder diese mit sicherungsspezifischen Werten überschreiben können.
 
@@ -55,7 +55,7 @@ Wenn kein Symbol angezeigt wird, hat der Server oder die Sicherung keine zusätz
 
 ![Server-Ebene zusätzliche Ziele](../../assets/screen-settings-notifications-server.png)
 
-### Standardwerte auf Serverebene {#server-level-defaults}
+### Server-Level Standards {/* #server-level-defaults */}
 
 Sie können Standard-Zusätzliche Ziele auf der Serverebene konfigurieren, die alle Sicherungen auf diesem Server automatisch erben.
 
@@ -73,7 +73,7 @@ Sie können Standard-Zusätzliche Ziele auf der Serverebene konfigurieren, die a
 - **Sync to All**: Löscht alle Sicherungsüberschreibungen, sodass alle Sicherungen von den Serverstandardwerten erben.
 - **Clear All**: Löscht alle zusätzlichen Ziele sowohl aus den Serverstandardwerten als auch aus allen Sicherungen, während die Vererbungsstruktur beibehalten wird.
 
-### Konfiguration pro Sicherung {#per-backup-configuration}
+### Konfiguration pro Sicherung {/* #per-backup-configuration */}
 
 Einzelne Sicherungen erben automatisch die Serverstandards, aber Sie können diese für bestimmte Sicherungsaufträge außer Kraft setzen.
 
@@ -90,14 +90,16 @@ Einzelne Sicherungen erben automatisch die Serverstandards, aber Sie können die
 
 **Verhalten zusätzlicher Ziele:**
 
-- Benachrichtigungen werden an die globalen Einstellungen und die zusätzlichen Ziele gesendet, wenn diese konfiguriert sind.
-- Die Benachrichtigungsereignis-Einstellung für zusätzliche Ziele ist unabhängig von der Hauptbenachrichtigungsereignis-Einstellung.
-- Wenn zusätzliche Ziele auf **aus** eingestellt sind, werden keine Benachrichtigungen an diese Ziele gesendet, aber die Hauptbenachrichtigungen funktionieren weiterhin gemäß den primären Einstellungen.
-- Wenn eine Sicherung von Server-Standardeinstellungen erbt, werden alle Änderungen an den Server-Standardeinstellungen automatisch auf diese Sicherung angewendet (sofern sie nicht überschrieben wurde).
+- Benachrichtigungen werden sowohl an die globalen Einstellungen als auch an die zusätzlichen Ziele gesendet, wenn sie konfiguriert sind.
+- Die Einstellung für das Benachrichtigungsereignis für zusätzliche Ziele ist unabhängig von der Hauptbenachrichtigungsereigniseinstellung.
+- Wenn zusätzliche Ziele auf **Aus** gesetzt sind, werden keine Benachrichtigungen an diese Ziele gesendet, die Hauptbenachrichtigungen funktionieren jedoch weiterhin gemäß den primären Einstellungen.
+- **Überfällig**-Warnungen zählen als **Warnung** für den zusätzlichen Benachrichtigungsereignis-Filter: Sie werden gesendet, wenn das Ereignis **alle** oder **Warnungen** ist, und nicht, wenn es **Fehler** oder **aus** ist. Der gleiche Filter gilt für zusätzliche NTFY-Themen.
+- Wenn eine Sicherung von den Server-Standardeinstellungen erbt, werden Änderungen an den Server-Standardeinstellungen automatisch auf diese Sicherung angewendet (sofern sie nicht überschrieben wurde).
+- Während [Tägliche Zusammenfassung](daily-summary-settings.md) aktiviert ist, erhalten zusätzliche E-Mail-Ziele weiterhin übereinstimmende Ereignisse; nur der Standard-E-Mail-Empfänger wird unterdrückt.
 
 <br/>
 
-## Massenbearbeitung {#bulk-edit}
+## Sammelbearbeitung {/* #bulk-edit */}
 
 Sie können zusätzliche Zieleinstellungen für mehrere Sicherungen gleichzeitig mithilfe der Massenbearbeitungsfunktion bearbeiten. Dies ist besonders nützlich, wenn Sie dieselben zusätzlichen Ziele auf viele Sicherungsaufträge anwenden müssen.
 

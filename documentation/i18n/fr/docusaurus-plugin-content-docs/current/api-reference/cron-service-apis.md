@@ -1,9 +1,9 @@
-# Gestion du service Cron {#cron-service-management}
+# Gestion du service Cron {/* #cron-service-management */}
 
-## Obtenir la configuration Cron - `/api/cron-config` {#get-cron-configuration---apicron-config}
-- **Point de terminaison** : `/api/cron-config`
-- **Méthode** : GET
-- **Description** : Récupère la configuration actuelle du service cron.
+## Obtenir la configuration Cron - `/api/cron-config` {/* #get-cron-configuration---apicron-config */}
+- **Point de terminaison**: `/api/cron-config`
+- **Méthode**: GET
+- **Description**: Récupère la configuration actuelle du service cron.
 - **Authentification** : Nécessite une session valide et un jeton CSRF
 - **Réponse** :
 
@@ -21,10 +21,10 @@
   - Inclut l'expression Cron et le statut activé
   - Utilisé pour la gestion du service Cron
 
-## Mettre à jour la configuration Cron - `/api/cron-config` {#update-cron-configuration---apicron-config}
-- **Point de terminaison** : `/api/cron-config`
-- **Méthode** : POST
-- **Description** : Met à jour la configuration du service cron.
+## Mettre à jour la configuration Cron - `/api/cron-config` {/* #update-cron-configuration---apicron-config */}
+- **Point de terminaison**: `/api/cron-config`
+- **Méthode**: POST
+- **Description**: Met à jour la configuration du service cron.
 - **Authentification** : Nécessite une session valide et un jeton CSRF
 - **Corps de la requête** :
 
@@ -51,10 +51,10 @@
   - Valide l'intervalle par rapport aux options autorisées
   - Affecte la fréquence de vérification des sauvegardes en retard
 
-## Proxy du service Cron - `/api/cron/*` {#cron-service-proxy---apicron}
-- **Point de terminaison** : `/api/cron/*`
-- **Méthode** : GET, POST
-- **Description** : Fait transiter les requêtes vers le service cron. Ce point de terminaison transfère toutes les requêtes au service cron en cours d'exécution sur un port distinct.
+## Proxy du service Cron - `/api/cron/*` {/* #cron-service-proxy---apicron */}
+- **Point de terminaison**: `/api/cron/*`
+- **Méthode**: GET, POST
+- **Description**: Proxy des requêtes vers le service cron. Ce point de terminaison transfère toutes les requêtes au service cron fonctionnant sur un port séparé.
 - **Authentification** : Nécessite une session valide et un jeton CSRF. GET est autorisé pour les utilisateurs authentifiés ; POST (démarrer/arrêter/déclencher/recharger) nécessite un administrateur.
 - **Paramètres** :
   - `*` : Tout chemin qui sera transféré au service cron
@@ -75,3 +75,4 @@
   - Prend en charge les méthodes GET et POST
   - Utilisé pour la gestion du service cron depuis l'interface web
   - `POST /trigger/daily-summary-dispatch` est rejeté par le service cron ; utilisez `/api/configuration/daily-summary/send` à la place
+  - `POST /trigger/database-compact` exécute le compactage hebdomadaire immédiatement (sauvegardes orphelines/serveurs et paramètres de notification, ainsi que SQLite `VACUUM`)

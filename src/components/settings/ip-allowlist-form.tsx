@@ -323,6 +323,13 @@ export function IpAllowlistForm() {
         </CardContent>
       </Card>
 
+      <Alert>
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription>
+          {t('When either allowlist is enabled, /api/health and /api/ping accept loopback and CIDRs from either list. Other IPs receive 403. Non-loopback requests are also rate-limited.')}
+        </AlertDescription>
+      </Alert>
+
       <Button variant="gradient" onClick={save} disabled={saving || loading}>
         {saving ? t('Saving...') : t('Save IP allowlist')}
       </Button>

@@ -36,8 +36,8 @@ export function PasswordChangeGuard({ children }: PasswordChangeGuardProps) {
     );
   }
 
-  // If user must change password, block rendering and show modal
-  // The modal will reload the page after successful password change
+  // If user must change password, block rendering and show modal.
+  // After a successful required change the modal navigates to `/` so this unblocks.
   if (user?.mustChangePassword) {
     return (
       <>

@@ -788,9 +788,11 @@ async function populateDefaultConfigurations() {
       'daily_summary',
       JSON.stringify({
         enabled: false,
-        utcTime: '08:00',
+        utcTime: '01:00',
         timeZone: 'UTC',
         effectiveFromIso: new Date().toISOString(),
+        publicUrl: '',
+        smtpRecipient: '',
       })
     );
     
@@ -979,6 +981,15 @@ function performDatabaseMaintenance(): { success: boolean; error?: string } {
     errorWithTimestamp('[Database] Maintenance failed:', errorMessage);
     return { success: false, error: errorMessage };
   }
+}
+
+function vacuumDatabase(): { pageCountBefore: number; pageCountAfter: number } {
+  const pageCountBefore = Number(db.pragma('page_count', { simple: true }));
+  db.exec('VACUUM');
+  db.pragma('wal_checkpoint(TRUNCATE)');
+  const pageCountAfter = Number(db.pragma('page_count', { simple: true }));
+  logWithTimestamp('[Database] VACUUM completed:', { pageCountBefore, pageCountAfter });
+  return { pageCountBefore, pageCountAfter };
 }
 
 // Start initialization immediately and block until complete
@@ -2347,5 +2358,6 @@ export {
   ensureDatabaseInitialized, 
   getDatabaseStatus, 
   checkDatabaseHealth, 
-  performDatabaseMaintenance 
+  performDatabaseMaintenance,
+  vacuumDatabase,
 }; 

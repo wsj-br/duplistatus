@@ -1,4 +1,4 @@
-# Backup Suchnaayein {#backup-notifications}
+# Backup suchnaayein {/* #backup-notifications */}
 
 Use this settings to send notifications when a [new backup log is received](../../installation/duplicati-server-configuration.md).
 
@@ -12,17 +12,17 @@ The backup notifications table is organised by server. The display format depend
 
 This page has an auto-save feature. Any changes you make will be saved automatically.
 
-जब **दैनिक सारांश** सक्शम किया गया है, तो व्यक्तिगत और अतिरिक्त बैकअप सूचनाएं दबाई जाती हैं। इस पृष्ठ पर रखे गए सेटिंग्स संरक्षित रहती हैं और फिर से सक्रिय हो जाती हैं जब दैनिक सारांश बंद किया जाता है। [दैनिक सारांश](daily-summary-settings.md) देखें।
+जब **दैनिक सारांश** सक्रिय है, तो डिफ़ॉल्ट ईमेल प्राप्तकर्ता को ईमेल रोक दी जाती है। इस पृष्ठ पर अतिरिक्त ईमेल गंतव्यों को मिलान घटनाएँ जारी रखते हैं। इस पृष्ठ पर सेटिंग्स संरक्षित रहती हैं और फिर से सक्रिय हो जाती हैं जब दैनिक सारांश बंद हो जाता है। [दैनिक सारांश](daily-summary-settings.md) देखें।
 
 <br/>
 
-## Filter {#filter}
+## फ़िल्टर {/* #filter */}
 
 Use the **Filter by Server Name** field at the top of the page to quickly find specific backups by server name or alias. The table will automatically filter to show only matching entries.
 
 <br/>
 
-## Configure Per-Backup Notification Settings {#configure-per-backup-notification-settings}
+## प्रति-बैकअप सूचना सम्मान कॉन्फ़िगर करें {/* #configure-per-backup-notification-settings */}
 
 | Setting                       | Description                                               | Default Value |
 | :---------------------------- | :-------------------------------------------------------- | :------------ |
@@ -39,7 +39,7 @@ Use the **Filter by Server Name** field at the top of the page to quickly find s
 
 <br/>
 
-## Aadhitheeya Gantavya {#additional-destinations}
+## आधितेय गंतव्य {/* #additional-destinations */}
 
 Additional notification destinations allow you to send notifications to specific email addresses or NTFY topics beyond the global settings. The system uses a hierarchical inheritance model where backups can inherit default settings from their server, or override them with backup-specific values.
 
@@ -55,7 +55,7 @@ If no icon is displayed, the server or backup does not have additional destinati
 
 ![Server-level additional destinations](../../assets/screen-settings-notifications-server.png)
 
-### Server-Level Defaults {#server-level-defaults}
+### सर्वर-स्तरीय डिफ़ॉल्ट {/* #server-level-defaults */}
 
 Aap server level par default aadhaar rihaishi gantavya sanrachit kar sakte hain jo ki us server par sabhi backups ke liye aadhaar sankalit honge.
 
@@ -73,7 +73,7 @@ Aap server level par default aadhaar rihaishi gantavya sanrachit kar sakte hain 
 - **Sync to All**: Clears all backup overrides, making all backups inherit from the server defaults.
 - **Clear All**: Clears all additional destinations from both server defaults and all backups while maintaining the inheritance structure.
 
-### Per-Backup Configuration {#per-backup-configuration}
+### प्रति-बैकअप कॉन्फ़िगरेशन {/* #per-backup-configuration */}
 
 Individual backups automatically inherit the server defaults, but you can override them for specific backup jobs.
 
@@ -90,14 +90,16 @@ Individual backups automatically inherit the server defaults, but you can overri
 
 **Additional Destinations Behavior:**
 
-- Notifications are sent to both the global settings and the additional destinations when configured.
-- The notification event setting for additional destinations is independent of the main notification event setting.
-- If additional destinations are set to **off**, no notifications will be sent to those destinations, but the main notifications will still work according to the primary settings.
-- When a backup inherits from server defaults, any changes to the server defaults will automatically apply to that backup (unless it has been overridden).
+- जब कॉन्फ़िगर किया जाता है, तो नोटिफ़िकेशन दोनों ग्लोबल सेटिंग्स और अतिरिक्त गंतव्यों को भेजा जाता है।
+- अतिरिक्त गंतव्यों के लिए नोटिफ़िकेशन इवेंट सेटिंग मुख्य नोटिफ़िकेशन इवेंट सेटिंग से स्वतंत्र है।
+- यदि अतिरिक्त गंतव्यों को **बंद** कर दिया जाता है, तो उन गंतव्यों को कोई नोटिफ़िकेशन नहीं भेजा जाएगा, लेकिन मुख्य नोटिफ़िकेशन प्राथमिक सेटिंग्स के अनुसार काम करेंगे।
+- **विलंबित** चेतावनियाँ अतिरिक्त नोटिफ़िकेशन इवेंट फ़िल्टर के लिए एक **चेतावनी** के रूप में गिनाई जाती हैं: वे तब भेजे जाते हैं जब घटना **सभी** या **चेतावनियाँ** है, और नहीं जब यह **त्रुटियाँ** या **बंद** है। उसी फ़िल्टर को अतिरिक्त NTFY टॉपिक्स पर लागू किया जाता है।
+- जब एक बैकअप सर्वर डिफ़ॉल्ट्स से विरासत में मिलता है, तो सर्वर डिफ़ॉल्ट्स में किसी भी बदलाव को स्वचालित रूप से उस बैकअप पर लागू किया जाएगा (यदि यह ओवरराइड नहीं किया गया है)।
+- जब [दैनिक सारांश](daily-summary-settings.md) चालू है, तो अतिरिक्त ईमेल गंतव्यों को मिलान घटनाएँ जारी रखते हैं; केवल डिफ़ॉल्ट ईमेल प्राप्तकर्ता रोक दिया जाता है।
 
 <br/>
 
-## Bulk Edit {#bulk-edit}
+## बल्क संपादन {/* #bulk-edit */}
 
 You can edit additional destination settings for multiple backups at once using the bulk edit feature. This is particularly useful when you need to apply the same additional destinations to many backup jobs.
 

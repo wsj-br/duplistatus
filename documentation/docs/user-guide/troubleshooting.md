@@ -1,25 +1,28 @@
 
 
-# Troubleshooting {#troubleshooting}
+# Troubleshooting {/* #troubleshooting */}
 
-### Dashboard Not Loading {#dashboard-not-loading}
+### Dashboard Not Loading {/* #dashboard-not-loading */}
 - Check if the container is running: `docker ps`
 - Verify port 9666 is accessible
 - Check container logs: `docker logs duplistatus`
+- If you are using a reverse proxy, check the reverse proxy logs for errors
+- If you are using IP allowlists, check the IP allowlist logs for errors
 
-### No Backup Data {#no-backup-data}
+### No Backup Data {/* #no-backup-data */}
 - Verify Duplicati server configuration
 - Check network connectivity between servers
 - Review duplistatus logs for errors
 - Ensure backup jobs are running
+- If using API keys, ensure the API key is correct, the scope is correct and not expired (a read key cannot upload)
 
-### Notifications Not Working {#notifications-not-working}
+### Notifications Not Working {/* #notifications-not-working */}
 - Check notification configuration
 - Verify NTFY server connectivity (if using NTFY)
 - Test notification settings
 - Check notification logs
 
-### New Backups Not Showing {#new-backups-not-showing}
+### New Backups Not Showing {/* #new-backups-not-showing */}
 
 If you see Duplicati server warnings like `HTTP Response request failed for:` and `Failed to send message: System.Net.Http.HttpRequestException:`, and new backups do not appear in the dashboard or backup history:
 
@@ -32,7 +35,7 @@ If you see Duplicati server warnings like `HTTP Response request failed for:` an
 - **Review Duplicati Logs**: Check for HTTP request errors in the Duplicati logs.
 - **Dual reporting**: If you also send form reports to [Duplicati Monitoring](https://www.duplicati-monitoring.com/), a failure or HTTP 500 from that service can stop Duplicati from sending the JSON report to **duplistatus**. Form URLs are sent first. See [Reporting to duplistatus and Duplicati Monitoring](../installation/duplicati-server-configuration.md#reporting-to-duplistatus-and-duplicati-monitoring).
 
-### Duplicate Servers on the Dashboard {#duplicate-servers-on-the-dashboard}
+### Duplicate Servers on the Dashboard {/* #duplicate-servers-on-the-dashboard */}
 
 If the same server appears more than once on the dashboard, this most often happens after [collecting backup logs](collect-backup-logs.md), or after reinstalling or upgrading the Duplicati server.
 
@@ -41,7 +44,7 @@ If the same server appears more than once on the dashboard, this most often happ
 - **Changed `machine_id`**: When you reinstall or upgrade Duplicati, the server's `machine_id` may change, and **duplistatus** then treats it as a new server.
 - **Duplicati API bug**: In newer versions of Duplicati there is a bug where some API endpoints mix the `identity` id and the `machine_id`. This inconsistency causes **duplistatus** to register the same server under different IDs, generating duplicates.
 
-**Workaround:**
+**Fix:**
 
 1.  On the **Duplicati server**, do **one** of the following:
     - Edit the `identity.txt` and `machineid.txt` files so that both files contain the **same** id; or
@@ -49,7 +52,7 @@ If the same server appears more than once on the dashboard, this most often happ
 2.  **Restart** the Duplicati server so the change takes effect.
 3.  In **duplistatus**, consolidate the duplicate entries using [Settings → Database Maintenance → Merge Duplicate Servers](settings/database-maintenance.md#merge-duplicate-servers).
 
-### Notifications Not Working (Detailed) {#notifications-not-working-detailed}
+### Notifications Not Working (Detailed) {/* #notifications-not-working-detailed */}
 
 If notifications are not being sent or received:
 
@@ -57,13 +60,13 @@ If notifications are not being sent or received:
 - **Check Network Connectivity**: Verify that **duplistatus** can reach your NTFY server. Review firewall settings if applicable.
 - **Check Notification Settings**: Confirm that notifications are enabled for the relevant backups.
 
-### Available Versions Not Appearing {#available-versions-not-appearing}
+### Available Versions Not Appearing {/* #available-versions-not-appearing */}
 
 If backup versions are not shown on the dashboard or details page:
 
 - **Check Duplicati Configuration**: Ensure `send-http-log-level=Information` and `send-http-max-log-lines=500` are configured in Duplicati's advanced options. Duplicati keeps the first N log lines. If the version list is still missing, raise the cap or use `0` when you are not also sending reports to Duplicati Monitoring. The version **count** can still appear from the JSON statistics when the detailed list is missing. See [Log lines and available versions](../installation/duplicati-server-configuration.md#log-lines-and-available-versions).
 
-### Overdue Backup Alerts Not Working {#overdue-backup-alerts-not-working}
+### Overdue Backup Alerts Not Working {/* #overdue-backup-alerts-not-working */}
 
 If overdue backup notifications are not being sent:
 
@@ -71,7 +74,7 @@ If overdue backup notifications are not being sent:
 - **Check Notification Frequency**: If set to **One time**, alerts are only sent once per overdue event.
 - **Check Cron Service**: Ensure the cron service that monitors for overdue backups is running correctly. Check the application logs for errors. Verify the cron service is accessible at the configured port (default: `8667`).
 
-### Collect Backup Logs Not Working {#collect-backup-logs-not-working}
+### Collect Backup Logs Not Working {/* #collect-backup-logs-not-working */}
 
 If the manual backup log collection fails:
 
@@ -89,7 +92,7 @@ If the manual backup log collection fails:
 - On **Duplicati 2.4 and later**, `/api/v1/systeminfo` lists `machine-id` with an empty default. **duplistatus** reads the configured id from Duplicati server settings. If collection still cannot identify the server, set **Duplicati → Settings → Advanced Options → Machine-id** and retry.
 
 
-### Upgrade from an earlier version (before 0.9.x) and can't login {#upgrade-from-an-earlier-version-before-09x-and-cant-login}
+### Upgrade from an earlier version (before 0.9.x) and can't login {/* #upgrade-from-an-earlier-version-before-09x-and-cant-login */}
 
 **duplistatus** since version 0.9.x requires user authentication. A default `admin` account is created automatically when installing the application for the first time or upgrading from an earlier version: 
     - username: `admin`
@@ -98,7 +101,7 @@ If the manual backup log collection fails:
 You can create additional users accounts in [Settings > Users](settings/user-management-settings.md) after the first login.
 
 
-### Lost Admin Password or Locked Out {#lost-admin-password-or-locked-out}
+### Lost Admin Password or Locked Out {/* #lost-admin-password-or-locked-out */}
 
 If you've lost your administrator password or been locked out of your account (you can still open `/login`):
 
@@ -107,13 +110,19 @@ If you've lost your administrator password or been locked out of your account (y
 
 If the browser shows **Access denied** (HTTP 403) before login, that is an [IP allowlist lockout](#locked-out-by-ip-allowlist), not a forgotten password. The admin-recovery script cannot bypass it.
 
-### Locked Out by IP Allowlist {#locked-out-by-ip-allowlist}
+### Locked Out by IP Allowlist {/* #locked-out-by-ip-allowlist */}
 
 If Settings → [IP Allowlist](settings/ip-allowlist-settings.md) is enabled with a missing or wrong CIDR, the proxy rejects the request before authentication. Typical symptoms:
 
 - Pages (`/`, `/login`, `/settings`, …) return plain-text **Access denied** (HTTP 403).
 - Session and admin APIs return JSON `{ "errorCode": "IP_NOT_ALLOWED" }`.
-- `/api/health` and `/api/ping` still respond (they are exempt). Login cookies do not help.
+- `/api/health` and `/api/ping` also return 403 from an unlisted IP when either allowlist is enabled. They still respond from loopback. Login cookies do not help.
+
+To confirm the application is up during a lockout, run the probe from inside the container (loopback is always allowed):
+
+```bash
+docker exec duplistatus curl -sf http://127.0.0.1:9666/api/ping
+```
 
 The save path tries to prevent this: you cannot enable the **admin** list unless your current IP is already in the CIDRs (except when saving from loopback). You can still lock yourself out by using a CIDR that matches now but not later (VPN, DHCP, another network), by misconfiguring trusted proxies, or by enabling the list from `127.0.0.1` / `::1` without adding that address.
 
@@ -145,7 +154,7 @@ The **external API** allowlist (`/api/upload`, `/api/summary`, `/api/lastbackup*
 
 See [IP Allowlist](settings/ip-allowlist-settings.md#environment-overrides) and [Environment Variables](../installation/environment-variables.md).
 
-### Database Backup and Migration {#database-backup-and-migration}
+### Database Backup and Migration {/* #database-backup-and-migration */}
 
 When migrating from previous versions or creating a database backup:
 
@@ -170,7 +179,7 @@ If you still experience issues, try the following steps:
 <br/>
 
 
-# Additional Resources {#additional-resources}
+# Additional Resources {/* #additional-resources */}
 
 - **Installation Guide**: [Installation Guide](../installation/installation.md)
 - **Duplicati Documentation**: [docs.duplicati.com](https://docs.duplicati.com)
@@ -179,5 +188,5 @@ If you still experience issues, try the following steps:
 - **Development Guide**: [Development Guide](../development/setup.md)
 - **Database Schema**: [Database Documentation](../development/database)
 
-### Support {#support}
+### Support {/* #support */}
 - **GitHub Issues**: [Report bugs or request features](https://github.com/wsj-br/duplistatus/issues)

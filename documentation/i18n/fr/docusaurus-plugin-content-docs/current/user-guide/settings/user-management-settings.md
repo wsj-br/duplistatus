@@ -1,4 +1,4 @@
-# Utilisateurs {#users}
+# Utilisateurs {/* #users */}
 
 Gérez les comptes utilisateur, les autorisations et le contrôle d'accès pour **duplistatus**. Cette section permet aux administrateurs de créer, modifier et supprimer des comptes utilisateur.
 
@@ -10,7 +10,7 @@ Gérez les comptes utilisateur, les autorisations et le contrôle d'accès pour 
 >
 > Le mot de passe par défaut du compte `admin` est `Duplistatus09`. Vous serez tenu de le modifier lors de votre première connexion.
 
-## Gestion des utilisateurs {#accessing-user-management}
+## Accéder à la Gestion des utilisateurs {/* #accessing-user-management */}
 
 Vous pouvez accéder à la section Gestion des utilisateurs de deux façons :
 
@@ -18,7 +18,7 @@ Vous pouvez accéder à la section Gestion des utilisateurs de deux façons :
 
 2. **À partir des Paramètres** : Cliquez sur <IconButton icon="lucide:settings"/> et **Utilisateurs** dans la barre latérale des paramètres
 
-## Création d'un nouvel utilisateur {#creating-a-new-user}
+## Créer un nouvel Utilisateur {/* #creating-a-new-user */}
 
 1. Cliquez sur le bouton <IconButton icon="lucide:plus" label="Add User"/>
 2. Saisissez les détails de l'utilisateur :
@@ -30,7 +30,7 @@ Vous pouvez accéder à la section Gestion des utilisateurs de deux façons :
      - Option 2 : décochez et saisissez un mot de passe personnalisé
 3. Cliquez sur <IconButton icon="lucide:user-plus" label="Create User" />.
 
-## Modification d'un utilisateur {#editing-a-user}
+## Modifier un Utilisateur {/* #editing-a-user */}
 
 1. Cliquez sur l'icône d'édition <IconButton icon="lucide:edit" /> située à côté de l'utilisateur
 2. Modifiez l'un des éléments suivants :
@@ -39,26 +39,26 @@ Vous pouvez accéder à la section Gestion des utilisateurs de deux façons :
    - **Exiger un changement de mot de passe** : activez ou désactivez l'exigence de changement de mot de passe
 3. Cliquez sur <IconButton icon="lucide:check" label="Save Changes" />.
 
-## Réinitialisation du mot de passe d'un utilisateur {#resetting-a-user-password}
+## Réinitialiser le Mot de passe d'un Utilisateur {/* #resetting-a-user-password */}
 
 1. Cliquez sur l'icône <IconButton icon="lucide:key-round" /> clé à côté de l'utilisateur
 2. Confirmez la réinitialisation du mot de passe
 3. Un mot de passe temporaire sera généré et affiché
 4. Copiez le mot de passe et fournissez-le à l'utilisateur de manière sécurisée
 
-## Suppression d'un utilisateur {#deleting-a-user}
+## Supprimer un Utilisateur {/* #deleting-a-user */}
 
 1. Cliquez sur l'icône <IconButton icon="lucide:trash-2" /> de suppression à côté de l'utilisateur
 2. Confirmez la suppression dans la boîte de dialogue. **La suppression d'utilisateur est permanente et ne peut pas être annulée.**
 
-## Verrouillage de compte {#account-lockout}
+## Verrouillage de compte {/* #account-lockout */}
 
 Les comptes sont automatiquement verrouillés après plusieurs tentatives de connexion échouées :
 - **Seuil de verrouillage** : 5 tentatives échouées
 - **Durée de verrouillage** : 15 minutes
 - Les comptes verrouillés ne peuvent pas se connecter jusqu'à l'expiration de la période de verrouillage
 
-## Récupération de l'accès Admin {#recovering-admin-access}
+## Récupérer l'accès Admin {/* #recovering-admin-access */}
 
 Si vous avez perdu votre mot de passe admin ou êtes verrouillé de votre compte, vous pouvez récupérer l'accès en utilisant le script de récupération admin. Consultez le guide [Admin Account Recovery](../admin-recovery.md) pour des instructions détaillées sur la récupération de l'accès administrateur dans les environnements Docker.
 

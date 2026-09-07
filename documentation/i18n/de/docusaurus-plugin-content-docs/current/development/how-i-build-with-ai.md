@@ -1,6 +1,6 @@
-# Wie ich diese Anwendung mit KI-Tools erstellt habe {#how-i-build-this-application-using-ai-tools}
+# So erstelle ich diese Anwendung mit KI-Tools {/* #how-i-build-this-application-using-ai-tools */}
 
-# Motivation {#motivation}
+# Motivation {/* #motivation */}
 
 Ich begann, Duplicati als Sicherungstool für meine Home-Server zu verwenden. Ich habe das offizielle [Duplicati Dashboard](https://app.duplicati.com/) und [Duplicati Monitoring](https://www.duplicati-monitoring.com/) ausprobiert, hatte aber zwei Hauptanforderungen: (1) selbstgehostet; und (2) eine freiliegende API für die Integration mit [Homepage](https://gethomepage.dev/), da ich diese für die Homepage meines Home Labs verwende.
 
@@ -8,7 +8,7 @@ Ich habe auch versucht, mich direkt mit jedem Duplicati-Server im Netzwerk zu ve
 
 Da ich auch mit KI-Code-Tools experimentierte, beschloss ich, KI zum Erstellen dieses Tools zu nutzen. Hier ist der Prozess, den ich verwendet habe...
 
-# Verwendete Tools {#tools-used}
+# Verwendete Tools {/* #tools-used */}
 
 1. Für die UI: [Google's Firebase Studio](https://firebase.studio/)
 2. Für die Implementierung: Cursor (https://www.cursor.com/)
@@ -17,7 +17,7 @@ Da ich auch mit KI-Code-Tools experimentierte, beschloss ich, KI zum Erstellen d
 Ich habe Firebase für die Benutzeroberfläche verwendet, aber Sie können auch [v0.app](https://v0.app/) oder ein anderes Tool verwenden, um den Prototyp zu generieren. Ich habe Cursor zur Generierung der Implementierung verwendet, aber Sie können auch andere Tools wie VS Code/Copilot, Windsurf usw. verwenden.
 :::
 
-# Benutzeroberfläche {#ui}
+# Benutzeroberfläche {/* #ui */}
 
 Ich habe ein neues Projekt in [Firebase Studio](https://studio.firebase.google.com/) erstellt und diese Eingabeaufforderung in der Funktion „App mit KI prototypisieren" verwendet:
 
@@ -77,9 +77,9 @@ Ein interessanter Punkt war, dass Firebase Studio seit der ersten Interaktion zu
 
 Nach Abschluss des ersten Prototyps habe ich auf den Quellcode zugegriffen, indem ich die Schaltfläche `</>` in der Benutzeroberfläche angeklickt habe. Anschließend habe ich die Git-Erweiterung verwendet, um den Code zu exportieren und ihn in ein privates Repository auf [GitHub](https://www.github.com) zu übertragen.
 
-# Backend {#backend}
+# Backend {/* #backend */}
 
-## Einrichtung {#setup}
+## Einrichtung {/* #setup */}
 
 Ich habe den Code von GitHub (mit dem Befehl `git clone`) in einen lokalen Ordner heruntergeladen (in meinem Fall ein Raspberry Pi 5 mit Linux) und die Abhängigkeiten Node.js, npm und pnpm installiert. Weitere Details finden Sie in [DEVELOPMENT.md](../development/setup.md).
 
@@ -87,11 +87,11 @@ Ich habe Cursor so konfiguriert, dass es über eine SSH-Verbindung auf den Code-
 
 Ich habe ein Beispiel des von Duplicati gesendeten JSON in eine Datei kopiert (siehe das Dokument [Beispiel-Sicherungsbericht](../api-reference/database-values)), wobei ich einige unerwünschte Felder gelöscht habe.
 
-## Implementierung {#implementation}
+## Implementierung {/* #implementation */}
 
 Ich habe einen anfänglichen Prompt verwendet, um die Implementierung zu starten, wobei ich mich auf Persistenz, Fehlerbehebungen und neue Funktionen konzentrierte. Es war ein langer, aber sehr interessanter Prozess.
 
-### KI zur Generierung der Eingabeaufforderung verwenden {#using-ai-to-generate-the-prompt}
+### Verwendung von KI zur Generierung des Prompts {/* #using-ai-to-generate-the-prompt */}
 
 Ich habe eine detaillierte Eingabeaufforderung mit Cursor Chat (Modus `Manual`, Modell `Auto`) erstellt:
 
@@ -141,7 +141,7 @@ Die KI hat die folgende Eingabeaufforderung generiert:
 
 Ich habe die generierte Eingabeaufforderung in die Zwischenablage kopiert.
 
-### Starten Sie die Implementierungsreise {#start-the-implementation-journey}
+### Beginnen Sie die Implementierungsreise {/* #start-the-implementation-journey */}
 
 Ich habe einen neuen Chat erstellt, indem ich die Schaltfläche `+` angeklickt habe, zum `Agent`-Modus gewechselt bin und die Eingabeaufforderung mit Strg+Umschalt+V eingefügt habe (als Text).
 
@@ -151,7 +151,7 @@ Nachdem der Plan generiert wurde, gab ich `please, implement this plan` in den C
 Ich habe nur den Ausgangspunkt eingefügt, da ich nicht alle verwendeten Eingabeaufforderungen aufgezeichnet habe. Es gab viele davon.
 :::
 
-# Notizen {#notes}
+# Hinweise {/* #notes */}
 
 - Manche Modelle können beim Beheben von Fehlern stecken bleiben. "claude-3.5" und "claude-4" sind in der Regel besser, aber manchmal muss man ein anderes Modell versuchen (GPT, Gemini, etc.).
 Bei komplexen Fehlern oder Fehlermeldungen verwenden Sie einen Prompt, um mögliche Ursachen des Fehlers zu analysieren, anstatt einfach nur zu bitten, ihn zu beheben.

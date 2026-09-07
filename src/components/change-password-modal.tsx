@@ -15,6 +15,7 @@ import { Label } from '@/components/ui/label';
 import { TogglePasswordInput } from '@/components/ui/toggle-password-input';
 import { Check, X } from 'lucide-react';
 import { usePasswordPolicy } from '@/hooks/use-password-policy';
+import { useRefreshCurrentUser } from '@/hooks/use-current-user';
 
 interface ChangePasswordModalProps {
   open: boolean;
@@ -47,6 +48,7 @@ const RequirementItem = ({ met, label }: { met: boolean; label: string }) => (
 export function ChangePasswordModal({ open, onOpenChange, required = false }: ChangePasswordModalProps) {
   const router = useRouter();
   const { t } = useTranslation();
+  const refreshCurrentUser = useRefreshCurrentUser();
   const passwordPolicy = usePasswordPolicy();
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -205,16 +207,21 @@ export function ChangePasswordModal({ open, onOpenChange, required = false }: Ch
         return;
       }
 
-      // Password changed successfully
+      // Password changed successfully.
+      // Required (first-login) changes must fully load `/`: the user is already on the
+      // dashboard route, so router.push('/') is a no-op and the client auth cache would
+      // keep mustChangePassword=true, leaving "Please change your password to continue".
       setSuccess(true);
-      setTimeout(() => {
-        onOpenChange(false);
+      window.setTimeout(() => {
         if (required) {
-          // Force page reload to ensure all state is refreshed
-          router.push('/');
-        } else {
-          router.refresh();
+          window.location.replace('/');
+          return;
         }
+        void (async () => {
+          await refreshCurrentUser();
+          onOpenChange(false);
+          router.refresh();
+        })();
       }, 1500);
       
     } catch (error) {

@@ -1,4 +1,4 @@
-# Serveur {#server}
+# Serveur {/* #server */}
 
 Vous pouvez configurer un nom alternatif (alias) pour vos serveurs, une note pour décrire sa fonction et les adresses web de vos serveurs Duplicati ici.
 
@@ -23,7 +23,7 @@ sera désactivé sur toutes les pages et le serveur ne s'affichera pas dans la l
 
 <br/>
 
-## Actions disponibles pour chaque serveur {#available-actions-for-each-server}
+## Actions disponibles pour chaque serveur {/* #available-actions-for-each-server */}
 
 | Bouton                                                                                                      | Description                                                             |
 |:------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------|
@@ -45,7 +45,7 @@ Le mot de passe est stocké chiffré dans la base de données et n'est jamais af
 
 <br/>
 
-## Actions disponibles pour tous les serveurs {#available-actions-for-all-servers}
+## Actions disponibles pour tous les serveurs {/* #available-actions-for-all-servers */}
 
 | Bouton                                                     | Description                                     |
 |:-----------------------------------------------------------|:------------------------------------------------|

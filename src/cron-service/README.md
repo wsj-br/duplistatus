@@ -75,7 +75,8 @@ Default configuration:
   - overdue-backup-check: Runs every 5 minutes (`*/5 * * * *`)
   - audit-log-cleanup: Runs daily at 2 AM UTC (`0 2 * * *`)
   - duplicati-version-refresh: Updates cached Duplicati channel versions from GitHub. Default is daily at 3 AM UTC (`0 3 * * *`); the interval and start hour are configured in Settings → Duplicati Versions.
-  - daily-summary-dispatch: Evaluates Daily Summary due time every minute (`* * * * *`). Always registered; schedule changes do not require a cron reload. Generic `POST /trigger/daily-summary-dispatch` is rejected.
+  - database-compact: Weekly Sunday 04:00 UTC (`0 4 * * 0`). Removes leftover notification settings, backup rows without a server, servers with no backups, and vacuums SQLite.
+  - daily-summary-dispatch: Sends the Daily Summary email once per day at `daily_summary.utcTime` (`minute hour * * *` UTC). Default is 01:00 UTC (`0 1 * * *`). Changing the send time updates this expression and requires a cron reload. Generic `POST /trigger/daily-summary-dispatch` is rejected.
 
 ## API Endpoints
 

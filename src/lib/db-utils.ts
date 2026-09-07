@@ -1,12 +1,13 @@
 import { db, dbOps, waitForDatabaseReady } from './db';
 import { formatDurationFromSeconds } from "@/lib/db";
 import type { BackupStatus, NotificationEvent, BackupKey, OverdueTolerance, BackupNotificationConfig, OverdueNotifications, ChartDataPoint, SMTPConfig, SMTPConfigEncrypted, NotificationTemplate, NtfyConfig, SMTPConnectionType, SupportedTemplateLanguage, DuplicatiVersionCache, DuplicatiVersionCheckConfig, DuplicatiVersionStatus, DailySummaryConfig, StoredNotificationTemplates, DailySummaryTemplateSet } from "@/lib/types";
-import { DAILY_SUMMARY_CONFIG_KEY, DAILY_SUMMARY_DISPATCH_TASK } from '@/lib/types';
+import { DAILY_SUMMARY_CONFIG_KEY, DAILY_SUMMARY_DISPATCH_TASK, DATABASE_COMPACT_TASK, DATABASE_COMPACT_CRON_EXPRESSION } from '@/lib/types';
+import { parseConfigurationBackupKey, pruneConfigurationRecord } from '@/lib/orphaned-configuration';
 import { CronServiceConfig, CronInterval } from './types';
 import { cronIntervalMap } from './cron-interval-map';
 import type { NotificationFrequencyConfig } from "@/lib/types";
 import { defaultCronConfig, defaultNotificationFrequencyConfig, defaultOverdueTolerance, defaultCronInterval, defaultNtfyConfig, defaultNotificationTemplates, generateDefaultNtfyTopic, getDefaultNotificationTemplate, getDefaultDailySummaryTemplates, defaultDailySummaryConfig } from './default-config';
-import { previousTemplatesMessages } from './previous-defaults';
+import { previousTemplatesMessages, previousDailySummaryEmailMessages } from './previous-defaults';
 import { formatTimeElapsed } from './utils';
 import { migrateBackupSettings } from './migration-utils';
 import { getDefaultAllowedWeekDays } from './interval-utils';
@@ -14,7 +15,7 @@ import { GetNextBackupRunDate } from './server_intervals';
 import { defaultBackupNotificationConfig } from './default-config';
 import { encryptData, decryptData } from './secrets';
 import { SOURCE_LOCALE, parseLocaleTag } from './locales';
-import { isValidIanaTimeZone, isValidLocalTime, legacyLocalScheduleToUtcTime } from './daily-summary-schedule';
+import { isValidIanaTimeZone, isValidLocalTime, legacyLocalScheduleToUtcTime, buildDailySummaryDispatchCronExpression } from './daily-summary-schedule';
 import { isValidHttpPublicUrl, normalizePublicUrl } from '@/lib/public-url-utils';
 import { isNextProductionBuild } from './next-build-phase';
 import {
@@ -237,16 +238,53 @@ export function getCronConfig(): CronServiceConfig {
             ...config.tasks
           }
         };
-        return applyDailySummaryDispatchSchedule(applyDuplicatiVersionRefreshSchedule(merged));
+        return overlayAndPersistCronConfig(merged);
       } catch (parseError) {
         console.error('Failed to parse cron service config:', parseError);
-        return applyDailySummaryDispatchSchedule(applyDuplicatiVersionRefreshSchedule(defaultCronConfig));
+        return overlayAndPersistCronConfig(defaultCronConfig);
       }
     }
+
+    persistDefaultCronConfigIfAbsent();
   } catch (error) {
     console.error('Failed to load cron service configuration:', error instanceof Error ? error.message : String(error));
   }
-  return applyDailySummaryDispatchSchedule(applyDuplicatiVersionRefreshSchedule(defaultCronConfig));
+  return overlayAndPersistCronConfig(defaultCronConfig);
+}
+
+function overlayAndPersistCronConfig(config: CronServiceConfig): CronServiceConfig {
+  const overlaid = applyCronTaskOverlays(config);
+  persistStoredDailySummaryDispatchIfStale(overlaid);
+  return overlaid;
+}
+
+function persistDefaultCronConfigIfAbsent(): void {
+  if (isNextProductionBuild()) {
+    return;
+  }
+
+  try {
+    withDb(() => {
+      db.prepare(`
+        INSERT INTO configurations (key, value) VALUES (?, ?)
+        ON CONFLICT(key) DO UPDATE SET value = excluded.value
+        WHERE configurations.value IS NULL OR TRIM(configurations.value) = ''
+      `).run('cron_service', JSON.stringify(defaultCronConfig));
+    });
+  } catch (error) {
+    console.error(
+      'Failed to persist default cron service configuration:',
+      error instanceof Error ? error.message : String(error)
+    );
+  }
+}
+
+function applyCronTaskOverlays(config: CronServiceConfig): CronServiceConfig {
+  return applyDailySummaryDispatchSchedule(
+    applyDuplicatiVersionRefreshSchedule(
+      applyDatabaseCompactSchedule(config)
+    )
+  );
 }
 
 function applyDuplicatiVersionRefreshSchedule(config: CronServiceConfig): CronServiceConfig {
@@ -272,7 +310,55 @@ function applyDailySummaryDispatchSchedule(config: CronServiceConfig): CronServi
     tasks: {
       ...config.tasks,
       [DAILY_SUMMARY_DISPATCH_TASK]: {
-        cronExpression: '* * * * *',
+        cronExpression: buildDailySummaryDispatchCronExpression(getDailySummaryConfig().utcTime),
+        enabled: true,
+      },
+    },
+  };
+}
+
+function persistStoredDailySummaryDispatchIfStale(overlaid: CronServiceConfig): void {
+  if (isNextProductionBuild()) {
+    return;
+  }
+
+  const expected = overlaid.tasks[DAILY_SUMMARY_DISPATCH_TASK];
+  if (!expected) {
+    return;
+  }
+
+  try {
+    const configJson = getConfiguration('cron_service');
+    if (!configJson || configJson.trim() === '') {
+      return;
+    }
+    const stored = JSON.parse(configJson) as CronServiceConfig;
+    const current = stored.tasks?.[DAILY_SUMMARY_DISPATCH_TASK];
+    if (current?.cronExpression === expected.cronExpression && current?.enabled === expected.enabled) {
+      return;
+    }
+    setConfiguration('cron_service', JSON.stringify({
+      ...stored,
+      tasks: {
+        ...stored.tasks,
+        [DAILY_SUMMARY_DISPATCH_TASK]: expected,
+      },
+    }));
+  } catch (error) {
+    console.error(
+      'Failed to persist daily-summary-dispatch cron expression:',
+      error instanceof Error ? error.message : String(error)
+    );
+  }
+}
+
+function applyDatabaseCompactSchedule(config: CronServiceConfig): CronServiceConfig {
+  return {
+    ...config,
+    tasks: {
+      ...config.tasks,
+      [DATABASE_COMPACT_TASK]: {
+        cronExpression: DATABASE_COMPACT_CRON_EXPRESSION,
         enabled: true,
       },
     },
@@ -410,7 +496,25 @@ export function parseDailySummaryConfig(value: unknown): DailySummaryConfig {
   if (publicUrl.length > 0 && !isValidHttpPublicUrl(publicUrl)) {
     throw new Error('Invalid daily summary public URL');
   }
-  return { enabled, utcTime, timeZone, effectiveFromIso, publicUrl };
+  const smtpRecipient = normalizeDailySummarySmtpRecipient(value.smtpRecipient);
+  return { enabled, utcTime, timeZone, effectiveFromIso, publicUrl, smtpRecipient };
+}
+
+export function normalizeDailySummarySmtpRecipient(value: unknown): string {
+  if (value == null) {
+    return '';
+  }
+  if (typeof value !== 'string') {
+    throw new Error('Invalid daily summary SMTP recipient');
+  }
+  const trimmed = value.trim();
+  if (trimmed.length === 0) {
+    return '';
+  }
+  if (!trimmed.includes('@')) {
+    throw new Error('Invalid daily summary SMTP recipient');
+  }
+  return trimmed;
 }
 
 export function normalizeDailySummaryTemplateSet(
@@ -432,11 +536,13 @@ export function getDailySummaryConfig(): DailySummaryConfig {
     return defaultDailySummaryConfig();
   }
   try {
-    const rawObject = JSON.parse(raw) as { localTime?: string; utcTime?: string; sendNtfy?: boolean };
+    const rawObject = JSON.parse(raw) as { localTime?: string; utcTime?: string; sendNtfy?: boolean; smtpRecipient?: string };
     const parsed = parseDailySummaryConfig(rawObject);
     if (typeof rawObject.utcTime !== 'string' && typeof rawObject.localTime === 'string') {
       setDailySummaryConfig(parsed);
     } else if (rawObject.sendNtfy === true) {
+      setDailySummaryConfig(parsed);
+    } else if (typeof rawObject.smtpRecipient !== 'string') {
       setDailySummaryConfig(parsed);
     }
     return parsed;
@@ -447,7 +553,17 @@ export function getDailySummaryConfig(): DailySummaryConfig {
 }
 
 export function setDailySummaryConfig(config: DailySummaryConfig): void {
-  setConfiguration(DAILY_SUMMARY_CONFIG_KEY, JSON.stringify(parseDailySummaryConfig(config)));
+  const parsed = parseDailySummaryConfig(config);
+  setConfiguration(DAILY_SUMMARY_CONFIG_KEY, JSON.stringify(parsed));
+  persistStoredDailySummaryDispatchIfStale({
+    port: 0,
+    tasks: {
+      [DAILY_SUMMARY_DISPATCH_TASK]: {
+        cronExpression: buildDailySummaryDispatchCronExpression(parsed.utcTime),
+        enabled: true,
+      },
+    },
+  });
 }
 
 export function isDailySummaryEnabled(): boolean {
@@ -1644,15 +1760,14 @@ export function getDuplicateServers(): DuplicateServer[] {
 function updateConfigurationServerId(oldServerId: string, newServerId: string): void {
   try {
     // Update backup_settings
-    const backupSettings = getConfigBackupSettings();
+    const backupSettings = getRawBackupSettingsMap();
     if (Object.keys(backupSettings).length > 0) {
       const updatedBackupSettings: Record<BackupKey, BackupNotificationConfig> = {};
       
       for (const [backupKey, settings] of Object.entries(backupSettings)) {
-        const [keyServerId, backupName] = backupKey.split(':');
-        if (keyServerId === oldServerId) {
-          // Update the key to use the new server ID
-          const newBackupKey = `${newServerId}:${backupName}` as BackupKey;
+        const parsed = parseConfigurationBackupKey(backupKey);
+        if (parsed?.serverId === oldServerId) {
+          const newBackupKey = `${newServerId}:${parsed.backupName}` as BackupKey;
           updatedBackupSettings[newBackupKey] = settings;
         } else {
           updatedBackupSettings[backupKey] = settings;
@@ -1668,10 +1783,9 @@ function updateConfigurationServerId(oldServerId: string, newServerId: string): 
       const updatedOverdueNotifications: OverdueNotifications = {};
       
       for (const [backupKey, notification] of Object.entries(overdueNotifications)) {
-        const [keyServerId, backupName] = backupKey.split(':');
-        if (keyServerId === oldServerId) {
-          // Update the key to use the new server ID
-          const newBackupKey = `${newServerId}:${backupName}`;
+        const parsed = parseConfigurationBackupKey(backupKey);
+        if (parsed?.serverId === oldServerId) {
+          const newBackupKey = `${newServerId}:${parsed.backupName}`;
           updatedOverdueNotifications[newBackupKey] = notification;
         } else {
           updatedOverdueNotifications[backupKey] = notification;
@@ -1883,14 +1997,14 @@ export async function mergeServers(
 function cleanupServerConfiguration(serverId: string): void {
   try {
     // Clean up backup_settings
-    const backupSettings = getConfigBackupSettings();
+    const backupSettings = getRawBackupSettingsMap();
     if (Object.keys(backupSettings).length > 0) {
       const updatedBackupSettings: Record<BackupKey, BackupNotificationConfig> = {};
       
       // Keep only entries that don't match the server ID
       for (const [backupKey, settings] of Object.entries(backupSettings)) {
-        const [keyServerId] = backupKey.split(':');
-        if (keyServerId !== serverId) {
+        const parsed = parseConfigurationBackupKey(backupKey);
+        if (parsed?.serverId !== serverId) {
           updatedBackupSettings[backupKey] = settings;
         }
       }
@@ -1906,8 +2020,8 @@ function cleanupServerConfiguration(serverId: string): void {
       
       // Keep only entries that don't match the server ID
       for (const [backupKey, notification] of Object.entries(overdueNotifications)) {
-        const [keyServerId] = backupKey.split(':');
-        if (keyServerId !== serverId) {
+        const parsed = parseConfigurationBackupKey(backupKey);
+        if (parsed?.serverId !== serverId) {
           updatedOverdueNotifications[backupKey] = notification;
         }
       }
@@ -1917,6 +2031,30 @@ function cleanupServerConfiguration(serverId: string): void {
     }
   } catch (error) {
     console.error(`Failed to cleanup configuration for server ${serverId}:`, error instanceof Error ? error.message : String(error));
+  }
+}
+
+export function cleanupBackupJobConfiguration(serverId: string, backupName: string): void {
+  const backupKey = `${serverId}:${backupName}`;
+  try {
+    const backupSettings = getRawBackupSettingsMap();
+    if (backupKey in backupSettings) {
+      const updatedBackupSettings = { ...backupSettings };
+      delete updatedBackupSettings[backupKey];
+      setConfigBackupSettings(updatedBackupSettings);
+    }
+
+    const overdueNotifications = getConfigOverdueNotifications();
+    if (backupKey in overdueNotifications) {
+      const updatedOverdueNotifications = { ...overdueNotifications };
+      delete updatedOverdueNotifications[backupKey];
+      setConfigOverdueNotifications(updatedOverdueNotifications);
+    }
+  } catch (error) {
+    console.error(
+      `Failed to cleanup configuration for backup job ${backupKey}:`,
+      error instanceof Error ? error.message : String(error)
+    );
   }
 }
 
@@ -2053,6 +2191,11 @@ export function getNotificationTemplates(): StoredNotificationTemplates {
         updatedTemplates.dailySummary = getDefaultDailySummaryTemplates(language);
         needsUpdate = true;
       } else if (hadLegacyNtfy) {
+        needsUpdate = true;
+      }
+
+      if (isOldDefaultMessage(normalizedDailySummary.email.message, previousDailySummaryEmailMessages)) {
+        updatedTemplates.dailySummary = getDefaultDailySummaryTemplates(language);
         needsUpdate = true;
       }
 
@@ -2455,12 +2598,20 @@ export async function getConfigBackupSettings(forceRecalculation: boolean = fals
       // This preserves the original schedule time-of-day even when manual backups arrive
       // For new servers without Duplicati sync: time = lastBackup + interval
     }
+
+    const allServers = safeDbOperation(() => dbOps.getAllServers.all(), 'getAllServers', []) as Array<{ id: string }>;
+    const liveServerIds = new Set(allServers.map((server) => server.id));
+    const { kept, removedKeys } = pruneConfigurationRecord(
+      updatedBackupSettings,
+      serverBackupCombinations,
+      liveServerIds
+    );
     
-    // Save updated settings if any were added or updated
-    if (addedSettings > 0 || updatedSettings > 0) {
-      setConfigBackupSettings(updatedBackupSettings);
+    // Save updated settings if any were added, updated, or orphaned keys were removed
+    if (addedSettings > 0 || updatedSettings > 0 || removedKeys.length > 0) {
+      setConfigBackupSettings(kept);
     }
-    return updatedBackupSettings;
+    return kept;
   } catch (error) {
     console.error('Failed to get backup settings configuration:', error instanceof Error ? error.message : String(error));
     return {};

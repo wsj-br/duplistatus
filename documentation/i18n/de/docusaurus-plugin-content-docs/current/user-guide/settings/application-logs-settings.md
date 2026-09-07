@@ -1,4 +1,4 @@
-# Anwendungsprotokolle {#application-logs}
+# Anwendungsprotokolle {/* #application-logs */}
 
 Der Anwendungsprotokoll-Viewer ermöglicht Administratoren, alle Anwendungsprotokolle an einem Ort zu überwachen, mit Filterung, Exportieren und Echtzeit-Updates direkt über die Weboberfläche.
 
@@ -6,7 +6,7 @@ Der Anwendungsprotokoll-Viewer ermöglicht Administratoren, alle Anwendungsproto
 
 <br/>
 
-## Verfügbare Aktionen {#available-actions}
+## Verfügbare Aktionen {/* #available-actions */}
 
 | Button                                                              | Beschreibung                                                                                         |
 |:--------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------|
@@ -18,7 +18,7 @@ Der Anwendungsprotokoll-Viewer ermöglicht Administratoren, alle Anwendungsproto
 
 <br/>
 
-## Steuerelemente und Filter {#controls-and-filters}
+## Steuerungen und Filter {/* #controls-and-filters */}
 
 | Steuerelement | Beschreibung |
 |:--------|:-----------|

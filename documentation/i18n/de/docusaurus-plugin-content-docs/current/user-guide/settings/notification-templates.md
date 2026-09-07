@@ -1,4 +1,4 @@
-# Vorlagen {#templates}
+# Vorlagen {/* #templates */}
 
 **duplistatus** verwendet vier Vorlagen für Benachrichtigungsnachrichten. E-Mail-Körper sind Markdown (Überschriften, Listen, Links und Tabellen). NTFY für Erfolg, Warnung/Fehler und Überfällig wird aus demselben Inhalt abgeleitet. Die Tägliche Zusammenfassung ist nur für E-Mails verfügbar.
 
@@ -15,13 +15,13 @@ Die Seite enthält einen **Vorlagensprache**-Auswahldialog, der die Sprache für
 
 <br/>
 
-## Vorlagen-Sprache {#template-language}
+## Vorlagensprache {/* #template-language */}
 
-Ein **Vorlagensprache**-Auswahlfeld oben auf der Seite ermöglicht es Ihnen, die Sprache für Standardvorlagen auszuwählen (Englisch, Deutsch, Französisch, Spanisch, Portugiesisch, Hindi (Lateinisch) und vereinfachtes Chinesisch). Das Ändern der Sprache aktualisiert das Gebietsschema für die Standardwerte, jedoch behalten vorhandene angepasste Vorlagen ihren aktuellen Text bei, bis Sie diese aktualisieren oder eine der Schaltflächen zum Zurücksetzen verwenden.
+Ein **Vorlagensprache** Auswahlfeld am oberen Rand der Seite ermöglicht es Ihnen, die Sprache für Standardvorlagen auszuwählen (Englisch, Deutsch, Französisch, Spanisch, Portugiesisch, Hindi und vereinfachtes Chinesisch). Das Ändern der Sprache aktualisiert die Gebietsschemaeinstellungen für die Standardeinstellungen, aber vorhandene angepasste Vorlagen behalten ihren aktuellen Text bei, bis Sie sie aktualisieren oder eine der Zurücksetzen-Schaltflächen verwenden.
 
 <br/>
 
-## Verfügbare Aktionen {#available-actions}
+## Verfügbare Aktionen {/* #available-actions */}
 
 | Schaltfläche                                                              | Beschreibung                                                                                         |
 |:--------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------|
@@ -32,7 +32,7 @@ Ein **Vorlagensprache**-Auswahlfeld oben auf der Seite ermöglicht es Ihnen, die
 
 <br/>
 
-## Variablen {#variables}
+## Variablen {/* #variables */}
 
 E-Mail-Körper sind Markdown. Überschriften, Listen, Links und Tabellen werden unterstützt. Platzhalterwerte werden als escapierter Text eingefügt und können keine Markdown- oder HTML-Syntax einführen. Bisher eingebettetes rohes HTML in angepassten Vorlagen wird jetzt escapiert.
 
@@ -56,7 +56,7 @@ Alle Erfolg-, Warnung/Fehler- und Überfälligen-Vorlagen unterstützen Variable
 | `{messages_count}`     | Anzahl der Nachrichten.                             | Erfolg, Warnung |
 | `{warnings_count}`     | Anzahl der Warnungen.                             | Erfolg, Warnung |
 | `{errors_count}`       | Anzahl der Fehler.                               | Erfolg, Warnung |
-| `{log_text}`           | Protokollnachrichten (Warnungen und Fehler)              | Erfolg, Warnung |
+| `{log_text}`           | Warn- und Fehlermeldungsprotokollzeilen nur (nicht vollständige Informationsprotokolle). NTFY verwendet eine kurze Zusammenfassung und kann kürzen. | Erfolgreich, Warnung |
 | `{last_backup_date}`   | Datum der letzten Sicherung.                        | Überfällig          |
 | `{last_elapsed}`       | Seit der letzten Sicherung verstrichene Zeit.             | Überfällig          |
 | `{expected_date}`      | Erwartetes Sicherungsdatum.                           | Überfällig          |

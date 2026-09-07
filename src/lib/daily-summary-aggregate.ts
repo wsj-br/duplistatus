@@ -168,44 +168,6 @@ export function buildDailySummarySnapshot(input: {
     });
   }
 
-  for (const [key, settings] of Object.entries(input.backupSettings)) {
-    const separator = key.indexOf(':');
-    if (separator <= 0) {
-      continue;
-    }
-    const serverId = key.slice(0, separator);
-    const backupName = key.slice(separator + 1);
-    if (!backupName || backupName === '__default__') {
-      continue;
-    }
-    const server = serversById.get(serverId);
-    if (!server || jobs.has(key)) {
-      continue;
-    }
-    const overdue = computeOverdue(settings, null, input.generatedAt, input.overdueToleranceMinutes);
-    jobs.set(key, {
-      serverId,
-      serverName: server.name,
-      serverAlias: server.alias || '',
-      serverNote: server.note || '',
-      serverUrl: server.server_url || '',
-      backupName,
-      lastBackupId: null,
-      lastBackupDate: null,
-      lastBackupStatus: null,
-      durationSeconds: null,
-      uploadedSize: 0,
-      sourceSize: 0,
-      storageSize: 0,
-      examinedFiles: 0,
-      warnings: 0,
-      errors: 0,
-      isOverdue: overdue.isOverdue,
-      expectedBackupDate: overdue.expectedBackupDate,
-      hasReport: false,
-    });
-  }
-
   const sorted = [...jobs.values()].sort(compareSummaryJobs);
   const representedServers = new Set(sorted.map((job) => job.serverId));
 

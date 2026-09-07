@@ -1,6 +1,6 @@
-# Dashboard {#dashboard}
+# Dashboard {/* #dashboard */}
 
-## Dashboard-Zusammenfassung {#dashboard-summary}
+## Dashboard-Zusammenfassung {/* #dashboard-summary */}
 
 Dieser Abschnitt zeigt aggregierte Statistiken für alle Sicherungen an.
 
@@ -20,7 +20,7 @@ Dieser Abschnitt zeigt aggregierte Statistiken für alle Sicherungen an.
 Wenn derselbe Server mehr als einmal im Dashboard erscheint, verwenden Sie [Einstellungen → Datenbankverwaltung → Doppelte Server zusammenführen](settings/database-maintenance.md#merge-duplicate-servers), um diese zu konsolidieren. Duplikate können auftreten, wenn Sie Duplicati neu installieren oder aktualisieren, da sich die `machine_id` des Servers ändern kann und **duplistatus** diesen dann als neuen Server behandelt.
 :::
 
-## Server-Filterung {#server-filtering}
+## Serverfilterung {/* #server-filtering */}
 
 Sie können die auf dem Dashboard angezeigten Server und Backups mithilfe des Suchfelds in der Anwendungsleiste filtern. Klicken Sie auf das Filtersymbol <IconButton icon="lucide:search" />, um das Suchfeld einzublenden.
 
@@ -36,7 +36,7 @@ Sie können die auf dem Dashboard angezeigten Server und Backups mithilfe des Su
 
 Dies erleichtert das schnelle Auffinden bestimmter Server oder Backups unter vielen überwachten Systemen.
 
-## Kartenlayout {#cards-layout}
+## Kartenlayout {/* #cards-layout */}
 
 Das Kartenlayout zeigt den Status des zuletzt empfangenen Sicherungsprotokolls für jede Sicherung.
 
@@ -65,7 +65,7 @@ Die Panelansicht bietet zwei Informationsanzeigen, auf die durch Klicken auf die
 
 ![Diagrammpanel](../assets/screen-overview-side-charts.png)
 
-### Sicherungsdetails {#backup-details}
+### Sicherungsdetails {/* #backup-details */}
 
 Wenn Sie den Mauszeiger über eine Sicherung in der Liste bewegen, werden Details des zuletzt empfangenen Sicherungsprotokolls und alle überfälligen Informationen angezeigt.
 
@@ -85,7 +85,7 @@ Wenn diese Sicherung überfällig ist, zeigt der Tooltip auch:
 
 Sie können auch auf die Schaltflächen unten klicken, um [Einstellungen → Backup-Benachrichtigungen](settings/backup-notifications-settings.md) zu öffnen und die Überwachungseinstellungen zu konfigurieren oder die Weboberfläche des Duplicati-Servers zu öffnen.
 
-## Tabellenlayout {#table-layout}
+## Tabellenlayout {/* #table-layout */}
 
 Die Tabellenlayout listet die neuesten empfangenen Sicherungsprotokolle für alle Server und Sicherungen auf.
 
@@ -107,7 +107,7 @@ Die Tabellenlayout listet die neuesten empfangenen Sicherungsprotokolle für all
 
 Sie können die [Anzeigeeinstellungen](settings/display-settings.md) verwenden, um die Tabellengröße und andere Konfigurationen zu konfigurieren.
 
-### Benachrichtigungssymbole {#notifications-icons}
+### Benachrichtigungsikonen {/* #notifications-icons */}
 
 | Symbol                                                                                                                               | Benachrichtigungsoption | Beschreibung                                                                                         |
 |------------------------------------------------------------------------------------------------------------------------------------|---------------------|-----------------------------------------------------------------------------------------------------|
@@ -120,7 +120,7 @@ Sie können die [Anzeigeeinstellungen](settings/display-settings.md) verwenden, 
 Diese Benachrichtigungseinstellung gilt nur, wenn **duplistatus** ein neues Sicherungsprotokoll von einem Duplicati-Server erhält. Benachrichtigungen für überfällige Sicherungen werden separat konfiguriert und werden unabhängig von dieser Einstellung gesendet.
 :::
 
-### Überfälligkeitsdetails {#overdue-details}
+### Details zu überfälligen Sicherungen {/* #overdue-details */}
 
 Wenn Sie den Mauszeiger über das Symbol für die Überfällige-Sicherungs-Warnung bewegen, werden Details zur überfälligen Sicherung angezeigt.
 
@@ -131,7 +131,7 @@ Wenn Sie den Mauszeiger über das Symbol für die Überfällige-Sicherungs-Warnu
 - **Erwartete Sicherung**: Der Zeitpunkt, zu dem die Sicherung erwartet wurde, einschließlich der konfigurierten Kulanzfrist (zusätzliche Zeit, bevor sie als überfällig markiert wird).
 - **Letzte Benachrichtigung**: Wann die letzte überfällige Benachrichtigung gesendet wurde.
 
-## Duplicati Server Version {#duplicati-server-version}
+## Duplicati-Server-Version {/* #duplicati-server-version */}
 
 Das Dashboard zeigt die Duplicati-Version an, die im neuesten Backup-Protokoll für jeden Server (Kartenansicht) oder Backup-Job (Tabellenansicht) gemeldet wurde.
 
@@ -145,7 +145,7 @@ Das Dashboard zeigt die Duplicati-Version an, die im neuesten Backup-Protokoll f
 **duplistatus** fragt den Duplicati-Server nicht nach der aktuell laufenden Version ab. Es verwendet die in der letzten empfangenen oder [gesammelten](collect-backup-logs.md) Backup-Protokoll gespeicherte Version. Nachdem Sie Duplicati aktualisiert haben, zeigt das Dashboard weiterhin die vorherige Version an, bis ein neues Backup-Protokoll eintrifft.
 :::
 
-### Verfügbare Sicherungsversionen {#available-backup-versions}
+### Verfügbare Sicherungsversionen {/* #available-backup-versions */}
 
 Wenn Sie auf das blaue Uhrsymbol klicken, wird eine Liste der verfügbaren Sicherungsversionen zum Zeitpunkt der Sicherung angezeigt, wie vom Duplicati-Server gemeldet.
 

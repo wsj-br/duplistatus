@@ -1,9 +1,9 @@
-# 管理 {#administration}
+# 管理 {/* #administration */}
 
-## 收集备份 - `/api/backups/collect` {#collect-backups---apibackupscollect}
-- **端点**: `/api/backups/collect`
-- **方法**: POST
-- **描述**: 通过 Duplicati 服务器的 API 直接从 Duplicati 服务器收集备份数据。该端点自动检测最佳连接协议（HTTPS 与 SSL 验证、HTTPS 与自签名证书或 HTTP 作为回退）并连接到 Duplicati 服务器以检索备份信息并将其处理到本地数据库。
+## 收集备份 - `/api/backups/collect` {/* #collect-backups---apibackupscollect */}
+- **Endpoint**: `/api/backups/collect`
+- **Method**: POST
+- **Description**: 通过 API 直接从 Duplicati 服务器收集备份数据。此端点会自动检测最佳连接协议（带 SSL 验证的 HTTPS、带自签名证书的 HTTPS，或作为后备的 HTTP），并连接到 Duplicati 服务器以检索备份信息并将其处理到本地数据库中。
 - **身份验证**: 需要有效的会话和 CSRF 令牌
 - **请求体**:
 
@@ -50,10 +50,10 @@
   - 前端应使用 `serverAlias || serverName` 进行显示目的
   - 支持 JSON 下载和直接 API 收集方法
 
-## 清理备份 - `/api/backups/cleanup` {#cleanup-backups---apibackupscleanup}
-- **端点**: `/api/backups/cleanup`
-- **方法**: POST
-- **描述**: 根据保留期删除旧的备份数据。该端点通过删除过时的备份记录来帮助管理数据库大小，同时保留最近和重要的数据。
+## 清理备份 - `/api/backups/cleanup` {/* #cleanup-backups---apibackupscleanup */}
+- **Endpoint**: `/api/backups/cleanup`
+- **Method**: POST
+- **Description**: 根据保留期限删除旧的备份数据。此端点通过移除过期的备份记录同时保留近期和重要数据，来帮助管理数据库大小。
 - **身份验证**: 需要有效的会话和 CSRF 令牌
 - **请求体**:
 
@@ -94,10 +94,10 @@
   - 增强的错误报告包括开发模式下的详细信息和堆栈跟踪
   - 支持基于时间的保留和完整数据删除
 
-## 删除备份作业 - `/api/backups/delete-job` {#delete-backup-job---apibackupsdelete-job}
-- **端点**: `/api/backups/delete-job`
-- **方法**: DELETE
-- **描述**: 删除特定服务器-备份组合的所有备份记录。该端点仅在开发模式下可用。
+## 删除备份任务 - `/api/backups/delete-job` {/* #delete-backup-job---apibackupsdelete-job */}
+- **Endpoint**: `/api/backups/delete-job`
+- **Method**: DELETE
+- **Description**: 删除特定服务器与备份组合的所有备份记录。此端点仅在开发模式下可用。
 - **身份验证**: 需要有效的会话和 CSRF 令牌
 - **请求体**:
 
@@ -133,10 +133,10 @@
   - 返回删除的备份数量和服务器信息
   - 如果可用，使用服务器别名显示，否则回退到服务器名称
 
-## 同步备份计划 - `/api/backups/sync-schedule` {#sync-backup-schedules---apibackupssync-schedule}
-- **端点**: `/api/backups/sync-schedule`
-- **方法**: POST
-- **描述**: 从Duplicati服务器同步备份计划信息。此端点连接到服务器，检索所有备份的计划信息，并使用计划详细信息（包括重复间隔、允许的周几和计划时间）更新本地备份设置。
+## 同步备份计划 - `/api/backups/sync-schedule` {/* #sync-backup-schedules---apibackupssync-schedule */}
+- **Endpoint**: `/api/backups/sync-schedule`
+- **Method**: POST
+- **Description**: 从 Duplicati 服务器同步备份计划信息。此端点连接到服务器，检索所有备份的计划信息，并使用包括重复间隔、允许的星期几和计划时间在内的计划详情更新本地备份设置。
 - **身份验证**: 需要有效的会话和 CSRF 令牌
 - **请求体**:
 
@@ -216,10 +216,10 @@
   - 记录成功和失败的同步操作的审计事件
   - 如果未指定，则使用默认端口8200
 
-## 测试服务器连接 - `/api/servers/test-connection` {#test-server-connection---apiserverstest-connection}
-- **端点**: `/api/servers/test-connection`
-- **方法**: POST
-- **描述**: 测试连接到Duplicati服务器以验证其可访问性。
+## 测试服务器连接 - `/api/servers/test-connection` {/* #test-server-connection---apiserverstest-connection */}
+- **Endpoint**: `/api/servers/test-connection`
+- **Method**: POST
+- **Description**: 测试与 Duplicati 服务器的连接以验证其是否可访问。
 - **请求体**:
 
   ```json
@@ -247,10 +247,10 @@
   - 支持HTTP和HTTPS协议
   - 使用超时配置进行连接测试
 
-## 获取服务器URL - `/api/servers/:serverId/server-url` {#get-server-url---apiserversserveridserver-url}
-- **端点**: `/api/servers/:serverId/server-url`
-- **方法**: GET
-- **描述**: 为特定服务器检索服务器URL。
+## 获取服务器 URL - `/api/servers/:serverId/server-url` {/* #get-server-url---apiserversserveridserver-url */}
+- **Endpoint**: `/api/servers/:serverId/server-url`
+- **Method**: GET
+- **Description**: 检索特定服务器的服务器 URL。
 - **参数**:
   - `serverId`: 服务器标识符
 
@@ -271,10 +271,10 @@
   - 用于服务器连接管理
   - 如果没有设置服务器 URL，则返回空字符串
 
-## 更新服务器 URL - `/api/servers/:serverId/server-url` {#update-server-url---apiserversserveridserver-url}
-- **端点**: `/api/servers/:serverId/server-url`
-- **方法**: PATCH
-- **描述**: 更新特定服务器的服务器 URL。
+## 更新服务器 URL - `/api/servers/:serverId/server-url` {/* #update-server-url---apiserversserveridserver-url */}
+- **Endpoint**: `/api/servers/:serverId/server-url`
+- **Method**: PATCH
+- **Description**: 更新特定服务器的服务器 URL。
 - **身份验证**: 需要有效的会话和 CSRF 令牌
 - **参数**:
   - `serverId`: 服务器标识符
@@ -308,10 +308,10 @@
   - 支持 HTTP 和 HTTPS 协议
   - 返回更新的服务器信息
 
-## 获取服务器密码 - `/api/servers/:serverId/password` {#get-server-password---apiserversserveridpassword}
-- **端点**: `/api/servers/:serverId/password`
-- **方法**: GET
-- **描述**:检索服务器密码操作的 CSRF 令牌。
+## 获取服务器密码 - `/api/servers/:serverId/password` {/* #get-server-password---apiserversserveridpassword */}
+- **Endpoint**: `/api/servers/:serverId/password`
+- **Method**: GET
+- **Description**: 检索用于服务器密码操作的 CSRF 令牌。
 - **身份验证**: 需要有效的会话
 - **参数**:
   - `serverId`: 服务器标识符
@@ -331,10 +331,10 @@
   - 返回用于密码更新操作的 CSRF 令牌
   - 会话必须有效才能生成令牌
 
-## 更新服务器密码 - `/api/servers/:serverId/password` {#update-server-password---apiserversserveridpassword}
-- **端点**: `/api/servers/:serverId/password`
-- **方法**: PATCH
-- **描述**: 更新特定服务器的密码。
+## 更新服务器密码 - `/api/servers/:serverId/password` {/* #update-server-password---apiserversserveridpassword */}
+- **Endpoint**: `/api/servers/:serverId/password`
+- **Method**: PATCH
+- **Description**: 更新特定服务器的密码。
 - **身份验证**: 需要有效的会话和 CSRF 令牌
 - **参数**:
   - `serverId`: 服务器标识符
@@ -363,12 +363,12 @@
   - 密码可以是空字符串以清除密码
   - 密码使用密钥管理系统安全存储
 
-## 用户管理 {#user-management}
+## 用户管理 {/* #user-management */}
 
-### 列出用户 - `/api/users` {#list-users---apiusers}
-- **端点**: `/api/users`
-- **方法**: GET
-- **描述**: 列出所有用户，具有分页和可选的搜索过滤。返回用户信息，包括登录历史和帐户状态。
+### 列出用户 - `/api/users` {/* #list-users---apiusers */}
+- **Endpoint**: `/api/users`
+- **Method**: GET
+- **Description**: 列出所有用户，支持分页和可选的搜索过滤。返回包括登录历史和账户状态在内的用户信息。
 - **身份验证**: 需要管理员权限，有效的会话和 CSRF 令牌
 - **查询参数**:
   - `page` （可选）：页码（默认：1）
@@ -410,10 +410,10 @@
   - 支持分页和搜索筛选
   - 返回用户账户状态，包括锁定状态
 
-### 创建用户 - `/api/users` {#create-user---apiusers}
-- **端点**: `/api/users`
-- **方法**: POST
-- **描述**: 创建一个新的用户账户。可以生成一个临时密码或使用提供的密码。
+### 创建用户 - `/api/users` {/* #create-user---apiusers */}
+- **Endpoint**: `/api/users`
+- **Method**: POST
+- **Description**: 创建新用户账户。可以生成临时密码或使用提供的密码。
 - **身份验证**: 需要管理员权限、有效会话和 CSRF 令牌
 - **请求体**:
 
@@ -458,10 +458,10 @@
   - 生成的临时密码只在响应中返回一次
   - 用户创建被记录到审计日志
 
-### 更新用户 - `/api/users/:id` {#update-user---apiusersid}
-- **端点**: `/api/users/:id`
-- **方法**: PATCH
-- **描述**: 更新用户信息，包括用户名，管理员状态，密码更改要求和密码重置。
+### 更新用户 - `/api/users/:id` {/* #update-user---apiusersid */}
+- **Endpoint**: `/api/users/:id`
+- **Method**: PATCH
+- **Description**: 更新用户信息，包括用户名、管理员状态、密码更改要求和密码重置。
 - **身份验证**: 需要管理员权限，有效的会话和CSRF令牌
 - **参数**:
   - `id`: 要更新的用户ID
@@ -518,10 +518,10 @@
   - 密码重置生成一个安全的12个字符的临时密码
   - 所有的更改被记录到审计日志
 
-### 删除用户 - `/api/users/:id` {#delete-user---apiusersid}
-- **端点**: `/api/users/:id`
-- **方法**: DELETE
-- **描述**: 删除一个用户账户。防止删除自己或最后一个管理员账户。
+### 删除用户 - `/api/users/:id` {/* #delete-user---apiusersid */}
+- **Endpoint**: `/api/users/:id`
+- **Method**: DELETE
+- **Description**: 删除用户账户。防止删除自己或最后一个管理员账户。
 - **身份验证**: 需要管理员权限，有效的会话和CSRF令牌
 - **参数**:
   - `id`: 要删除的用户ID
@@ -547,12 +547,12 @@
   - 用户删除将被记录到审计日志
   - 关联的会话将被自动删除（级联）
 
-## 审计日志管理 {#audit-log-management}
+## 审计日志管理 {/* #audit-log-management */}
 
-### 列出审计日志 - `/api/audit-log` {#list-audit-logs---apiaudit-log}
-- **端点**: `/api/audit-log`
-- **方法**: GET
-- **描述**: 检索审计日志条目，具有过滤、分页和搜索功能。支持基于页和偏移的分页。
+### 列出审计日志 - `/api/audit-log` {/* #list-audit-logs---apiaudit-log */}
+- **Endpoint**: `/api/audit-log`
+- **Method**: GET
+- **Description**: 检索审计日志条目，具备过滤、分页和搜索功能。支持基于页面的分页和基于偏移量的分页。
 - **身份验证**: 需要有效的会话和 CSRF 令牌（需要登录用户）
 - **查询参数**:
   - `page` （可选）：基于页的分页的页码
@@ -605,10 +605,10 @@
   - `details` 字段包含带有附加上下文的解析 JSON
   - 所有审计日志查询都被记录
 
-### 获取审计日志筛选值 - `/api/audit-log/filters` {#get-audit-log-filter-values---apiaudit-logfilters}
-- **端点**: `/api/audit-log/filters`
-- **方法**: GET
-- **描述**: 检索用于筛选审计日志的唯一筛选值。返回审计日志数据库中存在的所有操作、类别和状态的所有不同值。用于填充 UI 中的筛选下拉菜单。
+### 获取审计日志过滤值 - `/api/audit-log/filters` {/* #get-audit-log-filter-values---apiaudit-logfilters */}
+- **Endpoint**: `/api/audit-log/filters`
+- **Method**: GET
+- **Description**: 检索可用于过滤审计日志的唯一过滤值。返回审计日志数据库中存在的所有不同的操作、类别和状态。可用于在 UI 中填充过滤下拉列表。
 - **身份验证**: 需要有效的会话和 CSRF 令牌（需要登录用户）
 - **响应**:
 
@@ -645,10 +645,10 @@
   - 如果没有数据或出错，返回空数组
   - 由审计日志查看器用于动态填充筛选下拉菜单
 
-### 下载审计日志 - `/api/audit-log/download` {#download-audit-logs---apiaudit-logdownload}
+### 下载审计日志 - `/api/audit-log/download` {/* #download-audit-logs---apiaudit-logdownload */}
 - **端点**: `/api/audit-log/download`
 - **方法**: GET
-- **描述**: 下载审计日志，以 CSV 或 JSON 格式，具有可选筛选功能。用于外部分析和报告。
+- **描述**: 下载 CSV 或 JSON 格式的审计日志，支持可选筛选。适用于外部分析和报告。
 - **身份验证**: 需要有效的会话和 CSRF 令牌（需要登录用户）
 - **查询参数**:
   - `format` （可选）：导出格式 - `csv` 或 `json` （默认：`csv`）
@@ -677,10 +677,10 @@
   - CSV 中的详细信息字段是 JSON 字符串化的
   - 文件名包含当前日期
 
-### 清理审计日志 - `/api/audit-log/cleanup` {#cleanup-audit-logs---apiaudit-logcleanup}
+### 清理审计日志 - `/api/audit-log/cleanup` {/* #cleanup-audit-logs---apiaudit-logcleanup */}
 - **端点**: `/api/audit-log/cleanup`
 - **方法**: POST
-- **描述**: 手动触发基于保留期的旧审计日志清理。支持 dry-run 模式以预览将要删除的内容。
+- **描述**: 根据保留期手动触发清理旧的审计日志。支持试运行模式以预览将要删除的内容。
 - **身份验证**: 需要管理员权限、有效会话和 CSRF 令牌
 - **请求体**:
 
@@ -727,10 +727,10 @@
   - 清理操作记录到审计日志
   - dry-run 模式用于预览清理影响
 
-### 获取审计日志保留期 - `/api/audit-log/retention` {#get-audit-log-retention---apiaudit-logretention}
+### 获取审计日志保留 - `/api/audit-log/retention` {/* #get-audit-log-retention---apiaudit-logretention */}
 - **端点**: `/api/audit-log/retention`
 - **方法**: GET
-- **描述**: 检索当前审计日志保留配置（天数）。
+- **描述**: 检索当前的审计日志保留配置（以天为单位）。
 - **身份验证**: 需要有效会话和 CSRF 令牌（无需登录用户）
 - **响应**:
 
@@ -746,10 +746,10 @@
   - 如果未配置，则默认保留期为 90 天
   - 可以在无需身份验证的情况下访问（只读）
 
-### 更新审计日志保留期 - `/api/audit-log/retention` {#update-audit-log-retention---apiaudit-logretention}
+### 更新审计日志保留 - `/api/audit-log/retention` {/* #update-audit-log-retention---apiaudit-logretention */}
 - **端点**: `/api/audit-log/retention`
 - **方法**: PATCH
-- **描述**: 更新审计日志保留期（天数）。此设置决定审计日志在自动清理之前保留多长时间。
+- **描述**: 更新审计日志保留期（以天为单位）。此设置决定在自动清理之前保留审计日志的时长。
 - **身份验证**: 需要管理员权限、有效会话和 CSRF 令牌
 - **请求体**:
 
@@ -779,22 +779,22 @@
   - 配置更改记录到审计日志
   - 保留期影响自动和手动清理操作
 
-## API 密钥 {#api-keys}
+## API 密钥 {/* #api-keys */}
 
-### 列出 API 密钥 - `/api/api-keys` {#list-api-keys---apiapi-keys}
+### 列出 API 密钥 - `/api/api-keys` {/* #list-api-keys---apiapi-keys */}
 - **端点**: `/api/api-keys`
 - **方法**: GET
-- **描述**: 列出所有 API 密钥。密钥不会返回；每个密钥包含一个指纹（`Qk7v…3xTa`）。
+- **描述**: 列出所有 API 密钥。永不返回密钥；每个密钥都包含一个指纹 (`Qk7v…3xTa`)。
 - **认证**: 需要管理员权限、有效的会话和 CSRF 令牌
 - **错误响应**:
   - `401`: 未授权 - 无效的会话或 CSRF 令牌
   - `403`: 禁止 - 需要管理员权限
   - `500`: 内部服务器错误
 
-### 创建 API 密钥 - `/api/api-keys` {#create-api-key---apiapi-keys}
+### 创建 API 密钥 - `/api/api-keys` {/* #create-api-key---apiapi-keys */}
 - **端点**: `/api/api-keys`
 - **方法**: POST
-- **描述**: 创建一个范围限定的 API 密钥。明文密钥仅在此响应中返回。
+- **描述**: 创建一个有作用域的 API 密钥。明文密钥仅在此响应中返回。
 - **身份验证**: 需要管理员权限、有效会话和 CSRF 令牌
 - **请求体**:
 
@@ -813,24 +813,24 @@
   - `403`: 禁止 - 需要管理员权限
   - `500`: 内部服务器错误
 
-### 更新 API 密钥 - `/api/api-keys/:id` {#update-api-key---apiapi-keysid}
+### 更新 API 密钥 - `/api/api-keys/:id` {/* #update-api-key---apiapi-keysid */}
 - **端点**: `/api/api-keys/:id`
 - **方法**: PATCH
 - **描述**: 启用或禁用密钥。
 - **认证**: 需要管理员权限、有效的会话和 CSRF 令牌
 
-### 删除 API 密钥 - `/api/api-keys/:id` {#delete-api-key---apiapi-keysid}
+### 删除API密钥 - `/api/api-keys/:id` {/* #delete-api-key---apiapi-keysid */}
 - **端点**: `/api/api-keys/:id`
 - **方法**: DELETE
-- **描述**: 删除密钥。使用该密钥的现有客户端立即失去访问权限。
+- **描述**: 删除密钥。使用该密钥的现有客户端将立即失去访问权限。
 - **认证**: 需要管理员权限、有效的会话和 CSRF 令牌
 
-## 数据库管理 {#database-management}
+## 数据库管理 {/* #database-management */}
 
-### 备份数据库 - `/api/database/backup` {#backup-database---apidatabasebackup}
+### 备份数据库 - `/api/database/backup` {/* #backup-database---apidatabasebackup */}
 - **端点**: `/api/database/backup`
 - **方法**: GET
-- **描述**: 创建数据库的备份，格式可以是二进制 (.db) 或 SQL (.sql)。备份文件将自动下载，文件名中包含时间戳。
+- **描述**: 以二进制 (.db) 或 SQL (.sql) 格式创建数据库备份。备份文件将自动下载，并带有时间戳的文件名。
 - **身份验证**: 需要管理员权限、有效的会话和 CSRF 令牌
 - **查询参数**:
   - `format` (可选): 备份格式 - `db` (二进制) 或 `sql` (SQL 导出)。默认: `db`
@@ -851,10 +851,10 @@
   - 备份操作记录在审计日志中
   - 下载后自动清除临时文件
 
-### 恢复数据库 - `/api/database/restore` {#restore-database---apidatabaserestore}
+### 恢复数据库 - `/api/database/restore` {/* #restore-database---apidatabaserestore */}
 - **端点**: `/api/database/restore`
 - **方法**: POST
-- **描述**: 从备份文件 (.db 或 .sql 格式) 恢复数据库。在恢复之前创建安全备份，并在恢复后清除所有会话以确保安全。
+- **描述**: 从备份文件（.db 或 .sql 格式）恢复数据库。在恢复前创建安全备份，并在恢复后清除所有会话以确保安全。
 - **身份验证**: 需要管理员权限、有效的会话和 CSRF 令牌
 - **请求体**: FormData，包含一个名为 `database` 的文件字段
   - 文件必须是 `.db`、`.sqlite`、`.sqlite3` (二进制格式) 或 `.sql` (SQL 格式)
@@ -888,12 +888,12 @@
   - 恢复后重新初始化数据库连接
   - 恢复后所有缓存都将失效
 
-## 备份时间戳 {#backup-timestamps}
+## 备份时间戳 {/* #backup-timestamps */}
 
-### 获取最后备份时间戳 - `/api/backups/last-timestamps` {#get-last-backup-timestamps---apibackupslast-timestamps}
+### 获取最后备份时间戳 - `/api/backups/last-timestamps` {/* #get-last-backup-timestamps---apibackupslast-timestamps */}
 - **端点**: `/api/backups/last-timestamps`
 - **方法**: GET
-- **描述**: 检索每个服务器-备份组合的最后备份时间戳。返回一个映射以便于查找。
+- **描述**: 检索每个服务器与备份组合的最后备份时间戳。返回一个映射以便于查找。
 - **身份验证**: 需要有效的会话和 CSRF 令牌
 - **响应**:
 
@@ -924,12 +924,12 @@
   - 有助于跟踪所有服务器-备份组合的最后备份时间
   - 时间戳采用 ISO 格式
 
-## 应用程序日志管理 {#application-logs-management}
+## 应用程序日志管理 {/* #application-logs-management */}
 
-### 获取应用程序日志 - `/api/application-logs` {#get-application-logs---apiapplication-logs}
+### 获取应用程序日志 - `/api/application-logs` {/* #get-application-logs---apiapplication-logs */}
 - **端点**: `/api/application-logs`
 - **方法**: GET
-- **描述**: 从日志文件中检索应用程序日志条目。支持读取当前和轮换日志文件，具有尾部功能。
+- **描述**: 从日志文件中检索应用程序日志条目。支持使用 tail 功能读取当前和轮转的日志文件。
 - **身份验证**: 需要管理员权限、有效会话和CSRF令牌
 - **查询参数**:
   - `file` （可选）: 要读取的日志文件名 - `application.log`、`application.log.1`、`application.log.2`等。如果未提供，则返回可用文件列表
@@ -975,10 +975,10 @@
   - 文件名经过验证以防止目录遍历攻击
   - 轮换文件按顺序编号（`.1`、`.2`等）
 
-### 导出应用程序日志 - `/api/application-logs/export` {#export-application-logs---apiapplication-logsexport}
+### 导出应用程序日志 - `/api/application-logs/export` {/* #export-application-logs---apiapplication-logsexport */}
 - **端点**: `/api/application-logs/export`
 - **方法**: GET
-- **描述**: 以过滤的文本格式导出应用程序日志条目。支持按日志级别和搜索字符串过滤。
+- **描述**: 以筛选后的文本格式导出应用程序日志条目。支持按日志级别和搜索字符串进行筛选。
 - **身份验证**: 需要管理员权限、有效会话和CSRF令牌
 - **查询参数**:
   - `file` （必填）: 要导出的日志文件名 - `application.log`、`application.log.1`、`application.log.2`等。

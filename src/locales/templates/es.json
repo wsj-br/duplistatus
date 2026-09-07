@@ -20,7 +20,7 @@
   "dailySummary": {
     "email": {
       "title": "📬 duplistatus — Resumen diario de copias de seguridad — {summary_date}",
-      "message": "## 📊 Resumen diario de copias de seguridad\n\n🕐 Generado: **{generated_at}** ({time_zone})\n\n### 📈 Vista general\n\n| Métrica | Conteo |\n| --- | ---: |\n| 🖥️ Servidores | {server_count} |\n| 💼 Trabajos de copia de seguridad | {job_count} |\n| ✅ Éxito | {success_count} |\n| ⚠️ Advertencias | {warning_count} |\n| 🛑 Errores | {error_count} |\n| 💀 Fatal | {fatal_count} |\n| ❓ Desconocido | {unknown_count} |\n| ❓ No se recibió informe | {no_report_count} |\n| 🕑 Vencida | {overdue_count} |\n\n### 🚨 Atención requerida\n\n{problem_table}\n\n### 📋 Todos los últimos resultados de copias de seguridad\n\n{all_jobs_table}\n\n{duplistatus_link}\n"
+      "message": "## 📊 Resumen diario de copias de seguridad\n\n🕐 Generado: **{generated_at}** ({time_zone})\n\n### 📈 Vista general\n\n| Métrica | Cantidad |\n| --- | ---: |\n| 🖥️ Servidores | {server_count} |\n| 💼 Trabajos de copia de seguridad / ✅ Éxito | {job_count} / {success_count} |\n| ⚠️ Advertencias / 🛑 Errores / 💀 Fatal / ❓ Desconocido | {warning_count} / {error_count} / {fatal_count} / {unknown_count} |\n| ❓ No se recibió informe | {no_report_count} |\n| 🕑 Vencida | {overdue_count} |\n\n### 🚨 Atención requerida\n\n{problem_table}\n\n### 📋 Todos los resultados de copia de seguridad más recientes\n\n{all_jobs_table}\n\n{duplistatus_link}\n"
     }
   }
 }

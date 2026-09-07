@@ -1,4 +1,4 @@
-# Notifications de sauvegarde {#backup-notifications}
+# Notifications de sauvegarde {/* #backup-notifications */}
 
 Utilisez ces paramètres pour envoyer des notifications quand un [nouveau journal de sauvegarde est reçu](../../installation/duplicati-server-configuration.md).
 
@@ -12,17 +12,17 @@ Le tableau des notifications de sauvegarde est organisé par serveur. Le format 
 
 Cette page dispose d'une fonction d'enregistrement automatique. Toutes les modifications que vous apportez seront enregistrées automatiquement.
 
-Quand **Résumé quotidien** est activé, les notifications de sauvegarde individuelles et supplémentaires sont supprimées. Les paramètres de cette page sont conservés et redeviendront actifs lorsque le Résumé quotidien est désactivé. Voir [Résumé quotidien](daily-summary-settings.md).
+Quand **Résumé quotidien** est activé, les e-mails à l'adresse e-mail par défaut sont supprimés. Les destinations e-mail supplémentaires sur cette page continuent de recevoir les événements correspondants. Les paramètres sur cette page sont conservés et deviennent à nouveau actifs lorsque le Résumé quotidien est désactivé. Voir [Résumé quotidien](daily-summary-settings.md).
 
 <br/>
 
-## Filtrer {#filter}
+## Filtrer {/* #filter */}
 
 Utilisez le champ **Filtrer par nom de serveur** en haut de la page pour trouver rapidement des sauvegardes spécifiques par nom de serveur ou alias. Le tableau se filtrera automatiquement pour afficher uniquement les entrées correspondantes.
 
 <br/>
 
-## Configurer les paramètres de notification par sauvegarde {#configure-per-backup-notification-settings}
+## Configurer les paramètres de notification par sauvegarde {/* #configure-per-backup-notification-settings */}
 
 | Paramètre                     | Description                                               | Valeur par défaut |
 | :---------------------------- | :-------------------------------------------------------- | :---------------- |
@@ -39,7 +39,7 @@ Utilisez le champ **Filtrer par nom de serveur** en haut de la page pour trouver
 
 <br/>
 
-## Destinations supplémentaires {#additional-destinations}
+## Destinations supplémentaires {/* #additional-destinations */}
 
 Les destinations de notification supplémentaires vous permettent d'envoyer des notifications à des adresses e-mail spécifiques ou à des sujets NTFY au-delà des paramètres globaux. Le système utilise un modèle d'héritage hiérarchique où les sauvegardes peuvent hériter des paramètres par défaut de leur serveur, ou les remplacer par des valeurs spécifiques à la sauvegarde.
 
@@ -55,7 +55,7 @@ Si aucune icône n'est affichée, le serveur ou la sauvegarde n'a pas de destina
 
 ![Destinations supplémentaires au niveau du serveur](../../assets/screen-settings-notifications-server.png)
 
-### Valeurs par défaut au niveau du serveur {#server-level-defaults}
+### Valeurs par défaut au niveau du serveur {/* #server-level-defaults */}
 
 Vous pouvez configurer des destinations supplémentaires par défaut au niveau du serveur que toutes les sauvegardes sur ce serveur hériteront automatiquement.
 
@@ -73,7 +73,7 @@ Vous pouvez configurer des destinations supplémentaires par défaut au niveau d
 - **Sync to All**: Efface tous les remplacements de sauvegarde, ce qui permet à toutes les sauvegardes d'hériter des paramètres par défaut du serveur.
 - **Clear All**: Efface toutes les destinations supplémentaires des paramètres par défaut du serveur et de toutes les sauvegardes tout en maintenant la structure d'héritage.
 
-### Configuration par sauvegarde {#per-backup-configuration}
+### Configuration par sauvegarde {/* #per-backup-configuration */}
 
 Les sauvegardes individuelles héritent automatiquement des paramètres par défaut du serveur, mais vous pouvez les remplacer pour des tâches de sauvegarde spécifiques.
 
@@ -90,14 +90,16 @@ Les sauvegardes individuelles héritent automatiquement des paramètres par déf
 
 **Comportement des Destinations supplémentaires :**
 
-- Les notifications sont envoyées aux paramètres globaux et aux destinations supplémentaires lorsqu'elles sont configurées.
+- Les notifications sont envoyées à la fois aux paramètres globaux et aux destinations supplémentaires lorsqu'elles sont configurées.
 - Le paramètre d'événement de notification pour les destinations supplémentaires est indépendant du paramètre d'événement de notification principal.
-- Si les destinations supplémentaires sont définies sur **désactivé**, aucune notification ne sera envoyée à ces destinations, mais les notifications principales fonctionneront toujours selon les paramètres principaux.
-- Quand une sauvegarde hérite des paramètres par défaut du serveur, toute modification des paramètres par défaut du serveur s'appliquera automatiquement à cette sauvegarde (sauf si elle a été remplacée).
+- Si les destinations supplémentaires sont définies sur **désactivé**, aucune notification ne sera envoyée à ces destinations, mais les notifications principales continueront de fonctionner selon les paramètres principaux.
+- Les alertes **en retard** comptent comme un **avertissement** pour le filtre d'événement de notification supplémentaire : elles sont envoyées lorsque l'événement est **tout** ou **avertissements**, et non lorsque c'est **erreurs** ou **désactivé**. Le même filtre s'applique aux sujets NTFY supplémentaires.
+- Lorsqu'une sauvegarde hérite des paramètres par défaut du serveur, les modifications apportées aux paramètres par défaut du serveur s'appliquent automatiquement à cette sauvegarde (sauf si elle a été remplacée).
+- Lorsque [Résumé quotidien](daily-summary-settings.md) est activé, les destinations e-mail supplémentaires continuent de recevoir les événements correspondants ; seule l'adresse e-mail par défaut est supprimée.
 
 <br/>
 
-## Modification en masse {#bulk-edit}
+## Édition groupée {/* #bulk-edit */}
 
 Vous pouvez modifier les paramètres de destinations supplémentaires pour plusieurs sauvegardes à la fois en utilisant la fonction de modification en masse. Ceci est particulièrement utile quand vous devez appliquer les mêmes destinations supplémentaires à de nombreuses tâches de sauvegarde.
 

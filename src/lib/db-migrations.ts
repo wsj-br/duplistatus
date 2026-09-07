@@ -964,7 +964,7 @@ const migrations: Migration[] = [
         'daily_summary',
         JSON.stringify({
           enabled: false,
-          localTime: '08:00',
+          localTime: '01:00',
           timeZone: 'UTC',
           effectiveFromIso: new Date().toISOString(),
         })

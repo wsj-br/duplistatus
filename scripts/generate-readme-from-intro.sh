@@ -92,8 +92,10 @@ $0 ~ /^[[:space:]]*:::[a-zA-Z]/ {
 }
 ' | \
 sed '/^>\[!IMPORTANT\]/,/^$/d' | \
-# Remove Docusaurus section ID tags {#xxxxx} - GitHub auto-generates IDs from heading text
+# Remove Docusaurus heading IDs — classic {#id} and MDX {/* #id */}.
+# GitHub auto-generates IDs from heading text.
 sed 's/ {#[^}]*}//g' | \
+sed -E 's/ \{\/\*[[:space:]]*#[^ ]+[[:space:]]*\*\/\}//g' | \
 # Convert relative markdown links to absolute GitHub docs URLs
 # Special case: Docusaurus routes files with same name as parent directory to just the directory
 # e.g., installation/installation.md -> /installation (not /installation/installation)

@@ -1,7 +1,7 @@
 import { withCSRF } from '@/lib/csrf-middleware';
 import { NextResponse, NextRequest } from 'next/server';
 import { db } from '@/lib/db';
-import { invalidateDataCache, clearRequestCache } from '@/lib/db-utils';
+import { invalidateDataCache, clearRequestCache, cleanupBackupJobConfiguration } from '@/lib/db-utils';
 import { requireAdmin } from '@/lib/auth-middleware';
 import { getClientIpAddress } from '@/lib/ip-utils';
 import { AuditLogger } from '@/lib/audit-logger';
@@ -49,6 +49,8 @@ export const DELETE = withCSRF(requireAdmin(async (request: NextRequest, authCon
 
     // Execute the transaction
     const { changes, serverName, serverAlias, backupName: deletedBackupName } = transaction();
+
+    cleanupBackupJobConfiguration(serverId, backupName);
 
     if (changes === 0) {
       return NextResponse.json(

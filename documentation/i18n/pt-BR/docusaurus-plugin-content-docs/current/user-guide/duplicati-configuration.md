@@ -1,4 +1,4 @@
-# Configuração do Duplicati {#duplicati-configuration}
+# Configuração do Duplicati {/* #duplicati-configuration */}
 
 O botão <SvgButton svgFilename="duplicati_logo.svg" /> na [Barra de Ferramentas do Aplicativo](overview.md#application-toolbar) abre a interface da web do servidor Duplicati em uma nova aba.
 
@@ -11,12 +11,12 @@ Você pode selecionar um servidor na lista suspensa. Se você já tiver selecion
 - A aplicação salva automaticamente a URL de um servidor quando você usa o recurso <IconButton icon="lucide:download" height="16" href="collect-backup-logs" /> [Coletar logs de backup](collect-backup-logs.md).
 - Os servidores não aparecerão na lista de servidores se seu endereço não tiver sido configurado.
 
-## Acessando a Interface Antiga do Duplicati {#accessing-the-old-duplicati-ui}
+## Acessando a Antiga Interface do Duplicati {/* #accessing-the-old-duplicati-ui */}
 
 Se você tiver problemas de login com a nova interface web do Duplicati (`/ngclient/`), você pode clicar com o botão direito no botão <SvgButton svgFilename="duplicati_logo.svg" /> ou em qualquer item de servidor no popover de seleção de servidor para abrir a interface antiga do Duplicati (`/ngax/`) em uma nova aba.
 
 <br/><br/>
 
 :::note
-Todos os nomes de produtos, logotipos e marcas registradas são de propriedade de seus respectivos proprietários. Ícones e nomes são usados apenas para fins de identificação e não implicam endosso.
+Todos os nomes de produtos, logotipos e marcas registradas são propriedade de seus respectivos proprietários. Ícones e nomes são usados apenas para fins de identificação e não implicam endosse.
 :::

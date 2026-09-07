@@ -1,9 +1,9 @@
-# Données du graphique {#chart-data}
+# Données du graphique {/* #chart-data */}
 
-## Obtenir les données agrégées du graphique - `/api/chart-data/aggregated` {#get-aggregated-chart-data---apichart-dataaggregated}
-- **Point de terminaison** : `/api/chart-data/aggregated`
-- **Méthode** : GET
-- **Description** : Récupère les données agrégées du graphique avec un filtre de plage horaire facultatif.
+## Obtenir des données de graphique agrégées - `/api/chart-data/aggregated` {/* #get-aggregated-chart-data---apichart-dataaggregated */}
+- **Point de terminaison**: `/api/chart-data/aggregated`
+- **Méthode**: GET
+- **Description**: Récupère des données de graphique agrégées avec un filtrage optionnel de la plage horaire.
 - **Paramètres de requête** :
   - `startDate` (facultatif) : Date de début pour le filtrage (format ISO)
   - `endDate` (facultatif) : Date de fin pour le filtrage (format ISO)
@@ -32,10 +32,10 @@
   - Valide le format de la date avant traitement
   - Renvoie les données agrégées provenant de tous les serveurs
 
-## Obtenir les données du graphique du serveur - `/api/chart-data/server/:serverId` {#get-server-chart-data---apichart-dataserverserverid}
-- **Point de terminaison** : `/api/chart-data/server/:serverId`
-- **Méthode** : GET
-- **Description** : Récupère les données du graphique pour un serveur spécifique avec un filtre de plage horaire facultatif.
+## Obtenir des données de graphique du serveur - `/api/chart-data/server/:serverId` {/* #get-server-chart-data---apichart-dataserverserverid */}
+- **Point de terminaison**: `/api/chart-data/server/:serverId`
+- **Méthode**: GET
+- **Description**: Récupère des données de graphique pour un serveur spécifique avec un filtrage optionnel de la plage horaire.
 - **Paramètres** :
   - `serverId` : l'identifiant du serveur
 - **Paramètres de requête** :
@@ -66,10 +66,10 @@
   - Valide le format de la date avant traitement
   - Renvoie les données du graphique pour un serveur spécifique
 
-## Obtenir les données du graphique de sauvegarde du serveur - `/api/chart-data/server/:serverId/backup/:backupName` {#get-server-backup-chart-data---apichart-dataserverserveridbackupbackupname}
-- **Point de terminaison** : `/api/chart-data/server/:serverId/backup/:backupName`
-- **Méthode** : GET
-- **Description** : Récupère les données du graphique pour un serveur et une sauvegarde spécifiques avec un filtre de plage horaire facultatif.
+## Obtenir des données de graphique de sauvegarde du serveur - `/api/chart-data/server/:serverId/backup/:backupName` {/* #get-server-backup-chart-data---apichart-dataserverserveridbackupbackupname */}
+- **Point de terminaison**: `/api/chart-data/server/:serverId/backup/:backupName`
+- **Méthode**: GET
+- **Description**: Récupère des données de graphique pour un serveur spécifique et une sauvegarde avec un filtrage optionnel de la plage horaire.
 - **Paramètres** :
   - `serverId` : l'identifiant du serveur
   - `backupName` : le nom de la sauvegarde (encodé en URL)

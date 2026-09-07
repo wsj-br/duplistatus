@@ -1,10 +1,10 @@
 
 
-# Overview {#overview}
+# Overview {/* #overview */}
 
 Welcome to the duplistatus user guide. This comprehensive document provides detailed instructions for using duplistatus to monitor and manage your Duplicati backup operations across multiple servers.
 
-## What is duplistatus? {#what-is-duplistatus}
+## What is duplistatus? {/* #what-is-duplistatus */}
 
 duplistatus is a powerful monitoring dashboard designed specifically for Duplicati backup systems. It provides:
 
@@ -13,15 +13,14 @@ duplistatus is a powerful monitoring dashboard designed specifically for Duplica
 - Automated overdue backup detection with configurable alerts
 - Comprehensive metrics and visualisation of backup performance
 - Flexible notification system via NTFY and email
-- Optional [API keys](settings/api-keys-settings.md) for Duplicati uploads and Homepage widgets, with upload size and rate limits
-- Optional [IP allowlists](settings/ip-allowlist-settings.md) for the admin interface and the external APIs
-- Multi-language support (English, French, German, Spanish, Brazilian Portuguese, Hindi (Roman) and Simplified Chinese).
+- Optional [security hardening](../installation/security-hardening.md) features
+- Multi-language support (English, French, German, Spanish, Brazilian Portuguese, Hindi and Simplified Chinese).
 
-## Installation {#installation}
+## Installation {/* #installation */}
 
 For prerequisites and detailed installation instructions, please refer to the [Installation Guide](../installation/installation.md).
 
-## Accessing the Dashboard {#accessing-the-dashboard}
+## Accessing the Dashboard {/* #accessing-the-dashboard */}
 
 After successful installation, access the duplistatus web interface by following these steps:
 
@@ -40,7 +39,7 @@ After successful installation, access the duplistatus web interface by following
 
 4. After login, the main dashboard will display automatically (with no data on first usage)
 
-## User Interface Overview {#user-interface-overview}
+## User Interface Overview {/* #user-interface-overview */}
 
 duplistatus provides an intuitive dashboard for monitoring Duplicati backup operations across your entire infrastructure.
 
@@ -58,7 +57,7 @@ The user interface is organised into several key sections to provide a clear and
 7. [Server Details](server-details.md): Comprehensive list of recorded backups for specific servers, including detailed statistics
 8. [Backup Details](server-details.md#backup-details): In-depth information for individual backups, including execution logs, warnings, and errors
 
-## Application Toolbar {#application-toolbar}
+## Application Toolbar {/* #application-toolbar */}
 
 The application toolbar provides convenient access to key functions and settings, organised for efficient workflow.
 
@@ -76,9 +75,9 @@ The application toolbar provides convenient access to key functions and settings
 | <IconButton icon="lucide:user" label="username" />                                                                                               | Show the connected user, user type (`Admin`, `User`), click for user menu (includes language selection). See more in [User Management](settings/user-management-settings.md)               |
 | <IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; User Guide                                                                    | Open the [User Guide](overview.md) to the section relevant to the page you are currently viewing. The tooltip shows "Help for [Page Name]" to indicate which documentation will be opened. |
 
-### User Menu {#user-menu}
+### User Menu {/* #user-menu */}
 
-Clicking the user button opens a dropdown menu with user-specific options. The menu options differ based on whether you're logged in as an administrator or a regular user. Both roles can change the interface language via the **Language** submenu. Supported languages: English, French, German, Spanish, Brazilian Portuguese, Hindi (Roman) and Simplified Chinese.
+Clicking the user button opens a dropdown menu with user-specific options. The menu options differ based on whether you're logged in as an administrator or a regular user. Both roles can change the interface language via the **Language** submenu. The selected language is saved per user on this browser (not as a system-wide setting), so different accounts can keep different languages. Supported languages: English, French, German, Spanish, Brazilian Portuguese, Hindi and Simplified Chinese.
 
 <table>
   <tr>
@@ -91,7 +90,7 @@ Clicking the user button opens a dropdown menu with user-specific options. The m
   </tr>
 </table>
 
-## Essential Configuration {#essential-configuration}
+## Essential Configuration {/* #essential-configuration */}
 
 1. Configure your [Duplicati servers](../installation/duplicati-server-configuration.md) to send backup log messages to duplistatus (required).
 2. Collect initial backup logs – use the [Collect Backup Logs](collect-backup-logs.md) feature to populate the database with historical backup data from all your Duplicati servers. This also automatically updates the backup monitoring intervals based on each server’s configuration.
@@ -112,3 +111,10 @@ Remember to configure the Duplicati servers to send backup logs to duplistatus, 
 :::note
 All product names, logos and trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
 :::
+
+
+<small>
+
+> **Note on UI and documentation translations:** All interface and documentation languages except English (UK) were translated with AI using [ai-i18n-tools](https://wsj-br.github.io/ai-i18n-tools/); the wording may be imprecise or contain errors.
+
+</small>

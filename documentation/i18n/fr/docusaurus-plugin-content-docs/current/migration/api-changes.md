@@ -1,8 +1,8 @@
-# Modifications incompatibles avec les versions antérieures de l'API {#api-breaking-changes}
+# Modifications d'API incompatibles avec les versions antérieures {/* #backward-incompatible-api-changes */}
 
 Ce document décrit les modifications majeures apportées aux points de terminaison d'API externes dans différentes versions de duplistatus. Les points de terminaison d'API externes sont ceux conçus pour être utilisés par d'autres applications et intégrations (par exemple, l'intégration Homepage).
 
-## Vue d'ensemble {#overview}
+## Aperçu {/* #overview */}
 
 Ce document couvre les modifications majeures apportées aux points de terminaison d'API externes qui affectent les intégrations, les scripts et les applications qui consomment ces points de terminaison. Pour les points de terminaison d'API interne utilisés par l'interface web, les modifications sont gérées automatiquement et ne nécessitent pas de mises à jour manuelles.
 
@@ -10,25 +10,25 @@ Ce document couvre les modifications majeures apportées aux points de terminais
 Les points de terminaison des API externes sont maintenus pour la compatibilité rétroactive dans la mesure du possible. Les modifications incompatibles ne sont introduites que lorsqu'elles sont nécessaires pour des améliorations de cohérence, de sécurité ou de fonctionnalité.
 :::
 
-## Modifications spécifiques à la version {#version-specific-changes}
+## Changements spécifiques à la version {/* #version-specific-changes */}
 
-### Version 1.3.0 {#version-130}
-
-**Non Aucune modification incompatible avec les points de terminaison API externes**
-
-### Version 1.2.1 {#version-121}
+### Version 1.3.0 {/* #version-130 */}
 
 **Non Aucune modification incompatible avec les points de terminaison API externes**
 
-### Version 1.1.x {#version-11x}
+### Version 1.2.1 {/* #version-121 */}
 
 **Non Aucune modification incompatible avec les points de terminaison API externes**
 
-### Version 1.0.x {#version-10x}
+### Version 1.1.x {/* #version-11x */}
 
 **Non Aucune modification incompatible avec les points de terminaison API externes**
 
-### Version 0.9.x {#version-09x}
+### Version 1.0.x {/* #version-10x */}
+
+**Non Aucune modification incompatible avec les points de terminaison API externes**
+
+### Version 0.9.x {/* #version-09x */}
 
 **Non Aucune modification incompatible avec les points de terminaison API externes**
 
@@ -41,7 +41,7 @@ La version 0.9.x introduit l'authentification et nécessite que tous les utilisa
 3. **Invalidation des sessions** : Toutes les sessions existantes sont invalidées
 4. **Accès à l'API externe** : Les points de terminaison d'API externes (`/api/summary`, `/api/lastbackup`, `/api/lastbackups`, `/api/upload`) restent non authentifiés pour assurer la compatibilité avec les intégrations et Duplicati
 
-### Version 0.8.x {#version-08x}
+### Version 0.8.x {/* #version-08x */}
 
 **Non Aucune modification incompatible avec les points de terminaison API externes**
 
@@ -52,7 +52,7 @@ La version 0.8.x n'introduit aucune modification incompatible avec les points de
 - `/api/lastbackups/{serverId}` - Structure de réponse inchangée
 - `/api/upload` - Format de requête/réponse inchangé
 
-#### Améliorations de sécurité {#security-enhancements}
+#### Améliorations de la sécurité {/* #security-enhancements */}
 
 Bien qu'aucune modification de rupture n'ait été apportée aux points de terminaison de l'API externe, la version 0.8.x inclut des améliorations de sécurité :
 
@@ -63,28 +63,28 @@ Bien qu'aucune modification de rupture n'ait été apportée aux points de termi
 Ces améliorations de sécurité n'affectent pas les points de terminaison API externes utilisés pour lire les données de sauvegarde. Si vous avez des scripts personnalisés utilisant des points de terminaison internes, ils peuvent nécessiter la gestion des jetons CSRF.
 :::
 
-### Version 0.7.x {#version-07x}
+### Version 0.7.x {/* #version-07x */}
 
 La version 0.7.x introduit plusieurs modifications incompatibles avec les versions antérieures des points de terminaison d'API externes qui nécessitent des mises à jour des intégrations externes.
 
-#### Modifications incompatibles {#breaking-changes}
+#### Changements majeurs {/* #breaking-changes */}
 
-##### Renommage de champs {#field-renaming}
+##### Renommage de champs {/* #field-renaming */}
 
 - `totalMachines` → `totalServers` dans le point de terminaison `/api/summary`
 - `machine` → `server` dans les objets de réponse de l'API
 - `backup_types_count` → `backup_jobs_count` dans le point de terminaison `/api/lastbackups/{serverId}`
 
-##### Modifications des chemins d'accès aux points de terminaison {#endpoint-path-changes}
+##### Changements de chemin d'endpoint {/* #endpoint-path-changes */}
 
 - Tous les points de terminaison API utilisant précédemment `/api/machines/...` utilisent maintenant `/api/serveurs/...`
 - Les noms de paramètres ont changé de `machine_id` à `server_id` (l'encodage URL fonctionne toujours avec les deux)
 
-#### Modifications de la structure de réponse {#response-structure-changes}
+#### Changements de structure de réponse {/* #response-structure-changes */}
 
 La structure de réponse pour plusieurs points de terminaison a été mise à jour pour plus de cohérence :
 
-##### `/api/summary` {#apisummary}
+##### `/api/summary` {/* #apisummary */}
 
 **Avant (0.6.x et antérieures) :**
 
@@ -116,7 +116,7 @@ La structure de réponse pour plusieurs points de terminaison a été mise à jo
 }
 ```
 
-##### `/api/lastbackup/{serverId}` {#apilastbackupserverid}
+##### `/api/lastbackup/{serverId}` {/* #apilastbackupserverid */}
 
 **Avant (0.6.x et antérieures) :**
 
@@ -154,7 +154,7 @@ La structure de réponse pour plusieurs points de terminaison a été mise à jo
 }
 ```
 
-##### `/api/lastbackups/{serverId}` {#apilastbackupsserverid}
+##### `/api/lastbackups/{serverId}` {/* #apilastbackupsserverid */}
 
 **Avant (0.6.x et antérieures) :**
 
@@ -196,7 +196,7 @@ La structure de réponse pour plusieurs points de terminaison a été mise à jo
 }
 ```
 
-## Étapes de migration {#migration-steps}
+## Étapes de migration {/* #migration-steps */}
 
 Si vous effectuez une mise à niveau à partir d'une version antérieure à 0.7.x, suivez ces étapes :
 
@@ -217,9 +217,9 @@ Si vous effectuez une mise à niveau à partir d'une version antérieure à 0.7.
 5. **Mettre à jour la documentation** : Mettre à jour toute documentation interne référençant l'ancienne API
    - Mettre à jour les exemples d'API et les références de noms de champs
 
-## Compatibilité {#compatibility}
+## Compatibilité {/* #compatibility */}
 
-### Compatibilité rétroactive {#backward-compatibility}
+### Compatibilité ascendante {/* #backward-compatibility */}
 
 - **Version 1.2.1** : Entièrement compatible avec la structure API 1.1.x
 - **Version 1.1.x** : Entièrement compatible avec la structure API 1.0.x
@@ -230,13 +230,13 @@ Si vous effectuez une mise à niveau à partir d'une version antérieure à 0.7.
   - Les anciens noms de champs ne fonctionneront pas
   - Les anciens chemins d'endpoint ne fonctionneront pas
 
-### Support Futur {#future-support}
+### Support futur {/* #future-support */}
 
 - Les anciens noms de champs des versions antérieures à 0.7.x ne sont pas pris en charge
 - Les anciens chemins de points de terminaison des versions antérieures à 0.7.x ne sont pas pris en charge
 - Les versions futures maintiendront la structure API actuelle sauf si des modifications majeures sont nécessaires
 
-## Résumé des points de terminaison d'API externes {#summary-of-external-api-endpoints}
+## Résumé des points de terminaison API externes {/* #summary-of-external-api-endpoints */}
 
 Les points de terminaison API externes suivants sont maintenus pour la compatibilité descendante et restent non authentifiés :
 
@@ -247,7 +247,7 @@ Les points de terminaison API externes suivants sont maintenus pour la compatibi
 | `/api/lastbackups/{serverId}` | GET | Dernières sauvegardes pour tous les travaux de sauvegarde | 0.7.x : `machine` → `server`, `backup_types_count` → `backup_jobs_count` |
 | `/api/upload` | POST | Télécharger les données de sauvegarde depuis Duplicati | Aucun changement majeur |
 
-## Besoin d'aide ? {#need-help}
+## Besoin d'Aide ? {/* #need-help */}
 
 Si vous avez besoin d'aide pour mettre à jour votre intégration :
 

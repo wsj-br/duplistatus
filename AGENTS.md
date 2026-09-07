@@ -34,11 +34,12 @@ This file documents essential information for AI agents working in the duplistat
 
 ### Cron Service
 - **Location**: `src/cron-service/`
-- **Purpose**: Background service for periodic tasks (overdue backup checks, audit-log cleanup, and cached Duplicati version refresh)
+- **Purpose**: Background service for periodic tasks (overdue backup checks, audit-log cleanup, weekly database compact, and cached Duplicati version refresh)
 - **Development**: Started with the Next.js app by `pnpm dev` (port 8667); use `pnpm cron:dev` alone when you only need the cron process
 - **Production**: Runs on port 9667
 - **API**: REST endpoints for task management (`/health`, `/trigger/:task`, `/stop/:task`, `/start/:task`, `/reload-config`)
 - **Version refresh**: The `duplicati-version-refresh` task runs in UTC; its schedule is overlaid from the `duplicati_version_check` configuration rather than persisted only in `cron_service`.
+- **Daily summary dispatch**: The `daily-summary-dispatch` task runs once per day in UTC at `daily_summary.utcTime` (`minute hour * * *`). Default send time is 01:00 UTC. Changing that time updates `cron_service` and reloads cron.
 
 ### Database
 - **Type**: SQLite via `better-sqlite3`
@@ -53,7 +54,7 @@ This file documents essential information for AI agents working in the duplistat
 - **Catalog / flat bundles**: `src/locales/strings.json`, `de.json`, `fr.json`, `es.json`, `pt-BR.json`, `hi.json`, `zh-Hans.json` (updated via `pnpm i18n:extract` and translate commands).
 - **Default notification templates**: `src/locales/templates/en-GB.json` (source) and per-locale `{locale}.json` outputs (updated via `pnpm i18n:translate:json`); loaded by `src/lib/default-notification-templates.ts`.
 - **Config**: `ai-i18n-tools.config.json` at repo root (`sourceLocale`: `en-GB`, `targetLocales`, UI roots, Docusaurus paths, glossary, `cacheDir`).
-- **URLs**: No locale prefix in app routes; language is stored (e.g. `NEXT_LOCALE` cookie) and applied with `loadLocale` + `i18n.changeLanguage`. Legacy `/{locale}/…` URLs are redirected at the edge (see `src/proxy.ts`).
+- **URLs**: No locale prefix in app routes; language is applied with `loadLocale` + `i18n.changeLanguage`. The active locale uses the `NEXT_LOCALE` cookie for SSR; the durable preference is per authenticated user in `localStorage` (`ui-locale:user-*`, see `src/lib/ui-locale-client.ts` and `UserLocaleSync`). Legacy `/{locale}/…` URLs are redirected at the edge (see `src/proxy.ts`).
 
 ## Essential Commands
 
@@ -204,6 +205,8 @@ ai-i18n-tools.config.json   # i18n tooling (UI + docs + SVG)
 - Runs as separate process, not within Next.js
 - Communicates via REST API on dedicated port
 - Base configuration is stored under `cron_service`; the Duplicati version task is always enabled and receives its schedule from `duplicati_version_check`
+- Daily summary dispatch is always enabled and receives its cron expression from `daily_summary.utcTime` (`minute hour * * *` UTC; default 01:00). Reload the service with `POST /reload-config` after changing the Daily Summary send time
+- The `database-compact` task is always enabled weekly (Sunday 04:00 UTC). It removes backup rows whose server is missing, server rows with no backups, leftover notification settings, and vacuums SQLite
 - Reload the service with `POST /reload-config` after changing the Duplicati version schedule
 
 ### 5. CSRF Protection
@@ -225,7 +228,7 @@ ai-i18n-tools.config.json   # i18n tooling (UI + docs + SVG)
 - Include detailed descriptions with file references
 
 ### 8. External API keys
-- API keys are optional by default (`external_api_require_api_key=false`) and have strict `upload` or `read` scopes. Upload keys authenticate `POST /api/upload`; read keys authenticate `/api/summary`, `/api/lastbackup*`, and `/api/lastbackups*`.
+- API keys are optional by default (`external_api_require_api_key=false`) and have strict `upload` or `read` scopes. Upload keys authenticate `POST /api/upload`; read keys authenticate `/api/summary`, `/api/lastbackup*`, and `/api/lastbackups*`. While keys are optional, a supplied valid matching-scope key is accepted and tracked; an invalid, disabled, expired, or wrong-scope key is ignored and the request still proceeds. When required, missing or bad keys are rejected.
 - Secrets are generated as random URL-safe values, stored only as SHA-256 hashes, and shown only when created. Use fingerprints in UI/audit data; never log, return, or persist plaintext secrets. Updating a key cannot rotate its scope or secret; create a replacement key.
 - Accepted secret locations are query `api_key`, `X-Api-Key`, `Authorization: Bearer`, and upload-body `Extra.api_key` (Duplicati commonly uses the query form).
 - API-key management routes are admin/session routes protected by CSRF. API keys do not authenticate the dashboard or admin routes, and session cookies do not satisfy external API authentication.
@@ -235,7 +238,7 @@ ai-i18n-tools.config.json   # i18n tooling (UI + docs + SVG)
 - There are independent `admin_ip_allowlist` and `external_api_ip_allowlist` CIDR lists, both disabled by default, plus `ip_trusted_proxies`. When a list is enabled, an empty list or missing peer-IP header denies access.
 - Enforcement happens in `src/proxy.ts` using `resolveAllowlistIp()` and `isIpAllowed()`. Do not use `getClientIpAddress()` for access control; it is for audit/rate-limit information. Forwarded headers are trusted only when the TCP peer is in the configured trusted-proxy list.
 - `scripts/peer-ip.cjs` must be loaded by development, standalone, and Docker startup commands. It strips client-supplied peer headers before adding the real TCP peer address; do not remove that protection.
-- Allowlist-exempt paths are `/_next/`, `/favicon.ico`, `/api/health`, and `/api/ping`. External paths cover upload and read integrations; other matched paths use the admin list. Environment variables override database settings for recovery: `IP_TRUSTED_PROXIES`, `ADMIN_IP_ALLOWLIST_ENABLED`, `ADMIN_IP_ALLOWLIST`, `EXTERNAL_API_IP_ALLOWLIST_ENABLED`, and `EXTERNAL_API_IP_ALLOWLIST`.
+- Allowlist-exempt paths are `/_next/` and `/favicon.ico`. Probe paths `/api/health` and `/api/ping` stay public when both lists are off; when either list is enabled they accept loopback plus CIDRs from the admin **or** external list (not the external list alone). Non-loopback probe requests are per-IP rate-limited (`PROBE_RATE_LIMITED`). External paths cover upload and read integrations; other matched paths use the admin list. Environment variables override database settings for recovery: `IP_TRUSTED_PROXIES`, `ADMIN_IP_ALLOWLIST_ENABLED`, `ADMIN_IP_ALLOWLIST`, `EXTERNAL_API_IP_ALLOWLIST_ENABLED`, and `EXTERNAL_API_IP_ALLOWLIST`.
 - Call `invalidateIpAllowlistCache()` after configuration changes. When enabling the admin list through the UI, preserve the current-IP safety check and the trusted-proxy header rules.
 
 ### 10. Duplicati version tracking
@@ -244,6 +247,7 @@ ai-i18n-tools.config.json   # i18n tooling (UI + docs + SVG)
 - Startup refreshes stale caches, the cron task refreshes on schedule, and the admin refresh route supports a forced manual refresh. Failed GitHub refreshes retain the previous cache. The refresh service uses `data/.duplicati-version-refresh.lock` to prevent concurrent updates.
 - GET settings access is authenticated; schedule changes and forced refreshes require admin access plus CSRF. After saving the schedule, reload the cron service configuration. Do not live-query Duplicati servers for release comparisons.
 - `showDashboardVersion` is a per-user browser setting in `localStorage`; it does not control the always-visible dashboard table Version column.
+- UI language is a per-user browser setting in `localStorage` (`ui-locale`); the `NEXT_LOCALE` cookie mirrors the active locale for SSR and the login page.
 
 ## Testing Approach
 
@@ -279,7 +283,7 @@ export async function POST(request: NextRequest) {
 ### Error Codes
 - APIs return `errorCode` strings for i18n (not hardcoded messages)
 - Map codes to user-facing strings via the same translation pipeline as the UI
-- Examples: `INVALID_CREDENTIALS`, `DATABASE_NOT_READY`, `INTERNAL_ERROR`, `API_KEY_REQUIRED`, `API_KEY_INVALID`, `API_KEY_WRONG_SCOPE`, `IP_NOT_ALLOWED`, `CIDR_INVALID`, `VERSION_REFRESH_FAILED`
+- Examples: `INVALID_CREDENTIALS`, `DATABASE_NOT_READY`, `INTERNAL_ERROR`, `API_KEY_REQUIRED`, `API_KEY_INVALID`, `API_KEY_WRONG_SCOPE`, `IP_NOT_ALLOWED`, `PROBE_RATE_LIMITED`, `CIDR_INVALID`, `VERSION_REFRESH_FAILED`
 
 ## Git Commit Guidelines
 
@@ -320,7 +324,8 @@ export async function POST(request: NextRequest) {
 | `src/lib/ip-utils.ts`       | TCP peer-IP and audit-IP resolution                 |
 | `src/lib/duplicati-version.ts` | Version parsing, comparison, and scheduling       |
 | `src/lib/duplicati-version-service.ts` | GitHub release fetching and cache refresh |
-| `src/lib/notifications.ts`  | NTFY and email notifications                        |
+| `src/lib/daily-summary.ts` | Daily Summary snapshot, render, and send |
+| `src/lib/database-compact.ts` | Weekly orphan-settings prune and SQLite VACUUM |
 | `src/lib/cron-client.ts`    | Cron service client                                 |
 | `src/cron-service/service.ts` | Cron task execution and `/reload-config`          |
 | `src/app/api/api-keys/route.ts` | Admin API-key management                        |

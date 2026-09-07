@@ -1,4 +1,4 @@
-# Logs de aplicación {#application-logs}
+# Registros de la Aplicación {/* #application-logs */}
 
 El Visor de Logs de aplicación permite a los administradores monitorear todos los Logs de aplicación en un solo lugar, con filtrado, Exportar y actualizaciones en tiempo real directamente desde la interfaz web.
 
@@ -6,7 +6,7 @@ El Visor de Logs de aplicación permite a los administradores monitorear todos l
 
 <br/>
 
-## Acciones disponibles {#available-actions}
+## Acciones disponibles {/* #available-actions */}
 
 | Botón                                                               | Descripción                                                                                         |
 |:--------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------|
@@ -18,7 +18,7 @@ El Visor de Logs de aplicación permite a los administradores monitorear todos l
 
 <br/>
 
-## Controles y Filtros {#controls-and-filters}
+## Controles y filtros {/* #controls-and-filters */}
 
 | Control | Descripción |
 |:--------|:-----------|

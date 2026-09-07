@@ -1,4 +1,4 @@
-# Application Log Viewer {#application-logs}
+# Application logs {/* #application-logs */}
 
 Application Log Viewer lets administrators monitor all application logs in one place, with filtering, export, and real-time updates directly from the web interface.
 
@@ -6,7 +6,7 @@ Application Log Viewer lets administrators monitor all application logs in one p
 
 <br/>
 
-## Available Actions {#available-actions}
+## उपलब्ध क्रियाएं {/* #available-actions */}
 
 | Button                                                              | Description                                                                                         |
 |:--------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------|
@@ -18,7 +18,7 @@ Application Log Viewer lets administrators monitor all application logs in one p
 
 <br/>
 
-## Controls and Filters {#controls-and-filters}
+## नियंत्रण और फ़िल्टर {/* #controls-and-filters */}
 
 | Control | Description |
 |:--------|:-----------|

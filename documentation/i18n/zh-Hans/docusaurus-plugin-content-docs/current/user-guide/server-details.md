@@ -1,10 +1,10 @@
-# 服务器详细信息 {#server-details}
+# 服务器详情 {/* #server-details */}
 
 从仪表板中点击一个服务器，将打开一个页面，显示该服务器的备份列表。您可以查看所有备份，或选择一个特定的备份，如果服务器有多个备份配置。
 
 ![服务器详细信息](../assets/screen-server-backup-list.png)
 
-## 服务器/备份统计信息 {#serverbackup-statistics}
+## 服务器/备份统计 {/* #serverbackup-statistics */}
 
 此部分显示服务器上所有备份或单个选定备份的统计信息。
 
@@ -24,7 +24,7 @@
 
 <br/>
 
-## 备份历史记录 {#backup-history}
+## 备份历史 {/* #backup-history */}
 
 此表格列出选定服务器的备份日志。
 
@@ -52,7 +52,7 @@
 
 <br/>
 
-## 备份详细信息 {#backup-details}
+## 备份详情 {/* #backup-details */}
 
 在仪表板（表格视图）中点击状态徽章或备份历史记录表格中的任何行将显示详细的备份信息。
 

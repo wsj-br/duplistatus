@@ -3,10 +3,11 @@ import * as cron from 'node-cron';
 import { checkOverdueBackups } from '@/lib/overdue-backup-checker';
 import { AuditLogger } from '@/lib/audit-logger';
 import { getConfiguration, clearRequestCache } from '@/lib/db-utils';
-import { CronServiceStatus, TaskExecutionResult, CronServiceConfig, DAILY_SUMMARY_DISPATCH_TASK } from '@/lib/types';
+import { CronServiceStatus, TaskExecutionResult, CronServiceConfig, DAILY_SUMMARY_DISPATCH_TASK, DATABASE_COMPACT_TASK } from '@/lib/types';
 import { getCronConfig } from '@/lib/db-utils';
 import { refreshDuplicatiVersions } from '@/lib/duplicati-version-service';
 import { dispatchScheduledDailySummary } from '@/lib/daily-summary';
+import { compactDatabase } from '@/lib/database-compact';
 
 const timestamp = () => new Date().toLocaleString(undefined, { hour12: false, timeZoneName: 'short' }).replace(',', '');
 
@@ -14,6 +15,7 @@ const KNOWN_TASKS = [
   'overdue-backup-check',
   'audit-log-cleanup',
   'duplicati-version-refresh',
+  DATABASE_COMPACT_TASK,
   DAILY_SUMMARY_DISPATCH_TASK,
 ] as const;
 
@@ -202,6 +204,25 @@ class CronService {
         this.lastRunTimes[taskName] = new Date().toISOString();
         delete this.errors[taskName];
         return { taskName, success: true, message: refreshResult.message };
+      }
+      case DATABASE_COMPACT_TASK: {
+        const compactResult = await compactDatabase();
+        const message =
+          `Compacted database (removed settings:${compactResult.backupSettingsRemoved}, ` +
+          `overdue:${compactResult.overdueNotificationsRemoved}, ` +
+          `backups:${compactResult.orphanedBackupsRemoved}, ` +
+          `servers:${compactResult.orphanedServersRemoved}, ` +
+          `summary deliveries:${compactResult.dailySummaryDeliveriesRemoved}; ` +
+          `pages ${compactResult.pageCountBefore ?? '?'}→${compactResult.pageCountAfter ?? '?'})`;
+        console.log(`[CronService] ${timestamp()}: Task ${taskName} executed successfully: ${message}`);
+        this.lastRunTimes[taskName] = new Date().toISOString();
+        delete this.errors[taskName];
+        return {
+          taskName,
+          success: true,
+          message,
+          statistics: { ...compactResult },
+        };
       }
       case 'daily-summary-dispatch': {
         const result = await dispatchScheduledDailySummary();

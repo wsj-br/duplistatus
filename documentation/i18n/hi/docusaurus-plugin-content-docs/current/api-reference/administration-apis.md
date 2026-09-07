@@ -1,9 +1,9 @@
-# प्रशासन {#administration}
+# प्रशासन {/* #administration */}
 
-## Backups Ikattha Karein - `/api/backups/collect` {#collect-backups---apibackupscollect}
+## Backups Ikattha Karein - `/api/backups/collect` {/* #collect-backups---apibackupscollect */}
 - **Endpoint**: `/api/backups/collect`
 - **Method**: POST
-- **Description**: Duplicati server ke API ke zariye backup data ko directly collect karta hai. Ye endpoint automatically sabse achchha sambandh protocol detect karta hai (HTTPS with SSL validation, HTTPS with self-signed certificates, ya HTTP as fallback) aur Duplicati server se sambandh karte hue backup information ko retrieve karta hai aur use local database mein process karta hai.
+- **विवरण**: Duplicati सर्वर से उसके API के माध्यम से सीधे backup data एकत्र करता है। यह endpoint स्वचालित रूप से सर्वोत्तम कनेक्शन प्रोटोकॉल का पता लगाता है (SSL validation के साथ HTTPS, self-signed certificates के साथ HTTPS, या HTTP as fallback) और backup information प्राप्त करने और इसे स्थानीय database में संसाधित करने के लिए Duplicati सर्वर से कनेक्ट होता है।
 - **Authentication**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
 - **Request Body**:
 
@@ -50,10 +50,10 @@
   - Frontend display purposes ke liye `serverAlias || serverName` ka use karna chahiye
   - Both JSON download aur direct API collection methods ko support karta hai
 
-## Cleanup Backups - `/api/backups/cleanup` {#cleanup-backups---apibackupscleanup}
+## Backups Saaf Karen - `/api/backups/cleanup` {/* #cleanup-backups---apibackupscleanup */}
 - **Endpoint**: `/api/backups/cleanup`
 - **Method**: POST
-- **Description**: Retention period ke hisaab se purane backup data ko delete karta hai. Ye endpoint database size ko manage karne mein madad karta hai aur outdated backup records ko remove karke recent aur important data ko preserve karta hai.
+- **विवरण**: Retention period के आधार पर पुराने backup data को delete करता है। यह endpoint outdated backup records को हटाकर और recent तथा important data को संरक्षित करके database size को manage करने में मदद करता है।
 - **Authentication**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
 - **Request Body**:
 
@@ -94,10 +94,10 @@ For "Delete all data" option:
   - Enhanced error reporting details aur stack trace development mode mein include hota hai
   - Both time-based retention aur complete data deletion ko support karta hai
 
-## Backup job delete karein - `/api/backups/delete-job` {#delete-backup-job---apibackupsdelete-job}
+## Backup job delete karein - `/api/backups/delete-job` {/* #delete-backup-job---apibackupsdelete-job */}
 - **Endpoint**: `/api/backups/delete-job`
 - **Method**: DELETE
-- **Description**: Specific server-backup combination ke liye sabhi backup records ko delete karta hai. Ye endpoint sirf development mode mein available hai.
+- **विवरण**: किसी विशिष्ट server-backup combination के लिए सभी backup records को delete करता है। यह endpoint केवल development mode में उपलब्ध है।
 - **Authentication**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
 - **Request Body**:
 
@@ -133,10 +133,10 @@ For "Delete all data" option:
   - हटाए गए बैकअपों की गिनती और सर्वर की जानकारी लौटाता है
   - प्रदर्शन के लिए सर्वर उपनाम का उपयोग करता है यदि उपलब्ध है, अन्यथा सर्वर नाम पर वापस आ जाता है
 
-## Sync Backup Schedules - `/api/backups/sync-schedule` {#sync-backup-schedules---apibackupssync-schedule}
+## Backup Schedules ko Sync karein - `/api/backups/sync-schedule` {/* #sync-backup-schedules---apibackupssync-schedule */}
 - **Endpoint**: `/api/backups/sync-schedule`
 - **Method**: POST
-- **Description**: एक डुप्लिकेट सर्वर से बैकअप अनुसूची जानकारी को सिंक करता है। यह एंडपॉइंट सर्वर से कनेक्ट होता है, सभी बैकअपों के लिए अनुसूची जानकारी प्राप्त करता है, और स्थानीय बैकअप सेटिंग्स को अनुसूची विवरणों के साथ अपडेट करता है जिसमें रिपीट अंतराल, अनुमत हफ्ते के दिन, और अनुसूची समय शामिल हैं।
+- **विवरण**: Duplicati server से backup schedule information को synchronize करता है। यह endpoint server से कनेक्ट होता है, सभी backups के लिए schedule information प्राप्त करता है, और repeat intervals, allowed week days, और schedule times सहित schedule details के साथ स्थानीय backup settings को update करता है।
 - **Authentication**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
 - **Request Body**:
 
@@ -216,10 +216,10 @@ For "Delete all data" option:
   - सफल और असफल सिंक ऑपरेशन के लिए ऑडिट इवेंट्स लॉग करता है
   - निर्दिष्ट नहीं होने पर डिफ़ॉल्ट पोर्ट 8200 का उपयोग करता है
 
-## Test Server Connection - `/api/servers/test-connection` {#test-server-connection---apiserverstest-connection}
+## सर्वर कनेक्शन का Parikshan करें - `/api/servers/test-connection` {/* #test-server-connection---apiserverstest-connection */}
 - **Endpoint**: `/api/servers/test-connection`
 - **Method**: POST
-- **Description**: एक डुप्लिकेट सर्वर से कनेक्शन का परीक्षण करता है ताकि यह सत्यापित किया जा सके कि यह पहुंच योग्य है।
+- **विवरण**: यह सत्यापित करने के लिए कि Duplicati server accessible है या नहीं, उससे कनेक्शन का परीक्षण करता है।
 - **Request Body**:
 
   ```json
@@ -247,10 +247,10 @@ For "Delete all data" option:
   - दोनों HTTP और HTTPS प्रोटोकॉल का समर्थन करता है
   - कनेक्शन परीक्षण के लिए टाइमआउट कॉन्फ़िगरेशन का उपयोग करता है
 
-## Get Server URL - `/api/servers/:serverId/server-url` {#get-server-url---apiserversserveridserver-url}
+## सर्वर URL प्राप्त करें - `/api/servers/:serverId/server-url` {/* #get-server-url---apiserversserveridserver-url */}
 - **Endpoint**: `/api/servers/:serverId/server-url`
 - **Method**: GET
-- **Description**: किसी विशिष्ट सर्वर के लिए सर्वर URL प्राप्त करता है।
+- **विवरण**: किसी विशिष्ट सर्वर के लिए server URL प्राप्त करता है।
 - **Parameters**:
   - `serverId`: सर्वर पहचानकर्ता
 
@@ -271,10 +271,10 @@ For "Delete all data" option:
   - Server connection management ke liye istemal hota hai
   - Agar koi server URL set nahi hai to khali string return karta hai
 
-## Update Server URL - `/api/servers/:serverId/server-url` {#update-server-url---apiserversserveridserver-url}
+## सर्वर URL को Update karein - `/api/servers/:serverId/server-url` {/* #update-server-url---apiserversserveridserver-url */}
 - **Endpoint**: `/api/servers/:serverId/server-url`
 - **Method**: PATCH
-- **Description**: Specific server ke liye server URL update karta hai.
+- **विवरण**: किसी विशिष्ट सर्वर के लिए server URL को update करता है।
 - **Authentication**: Valid session aur CSRF token ki zaroorat hoti hai
 - **Parameters**:
   - `serverId`: the server identifier
@@ -308,10 +308,10 @@ For "Delete all data" option:
   - HTTP aur HTTPS protocols dono ko support karta hai
   - Updated server information return karta hai
 
-## Get Server Password - `/api/servers/:serverId/password` {#get-server-password---apiserversserveridpassword}
+## सर्वर Password प्राप्त करें - `/api/servers/:serverId/password` {/* #get-server-password---apiserversserveridpassword */}
 - **Endpoint**: `/api/servers/:serverId/password`
 - **Method**: GET
-- **Description**: Server password operations ke liye CSRF token retrieve karta hai.
+- **विवरण**: server password operations के लिए एक CSRF token प्राप्त करता है।
 - **Authentication**: Valid session ki zaroorat hoti hai
 - **Parameters**:
   - `serverId`: the server identifier
@@ -331,10 +331,10 @@ For "Delete all data" option:
   - Password update operations ke liye CSRF token return karta hai
   - Token generate karne ke liye session valid hona chahiye
 
-## Update Server Password - `/api/servers/:serverId/password` {#update-server-password---apiserversserveridpassword}
+## सर्वर Password ko Update karein - `/api/servers/:serverId/password` {/* #update-server-password---apiserversserveridpassword */}
 - **Endpoint**: `/api/servers/:serverId/password`
 - **Method**: PATCH
-- **Description**: Specific server ke liye password update karta hai.
+- **विवरण**: किसी विशिष्ट सर्वर के लिए password को update करता है।
 - **Authentication**: Valid session aur CSRF token ki zaroorat hoti hai
 - **Parameters**:
   - `serverId`: the server identifier
@@ -363,12 +363,12 @@ For "Delete all data" option:
   - Password clear karne ke liye empty string istemal ki ja sakti hai
   - Password secrets management system ke through securely stored hota hai
 
-## User Management {#user-management}
+## Upyogkarta prabandhan {/* #user-management */}
 
-### List Users - `/api/users` {#list-users---apiusers}
+### Upyogkarta ki Soochi - `/api/users` {/* #list-users---apiusers */}
 - **Endpoint**: `/api/users`
 - **Method**: GET
-- **Description**: Pagination aur optional search filtering ke sath sabhi users ki list return karta hai. User information, login history aur account status ke sath.
+- **विवरण**: Pagination के साथ सभी Upyogkarta की सूची देता है और वैकल्पिक खोज फ़िल्टरिंग। Login history और account status सहित Upyogkarta information लौटाता है।
 - **Authentication**: Admin privileges, valid session aur CSRF token ki zaroorat hoti hai
 - **Query Parameters**:
   - `page` (optional): Page number (default: 1)
@@ -410,10 +410,10 @@ For "Delete all data" option:
   - Supports pagination and search filtering
   - Returns user account status including lock status
 
-### Create User - `/api/users` {#create-user---apiusers}
+### Upyogkarta Banayein - `/api/users` {/* #create-user---apiusers */}
 - **Endpoint**: `/api/users`
 - **Method**: POST
-- **Description**: Creates a new user account. Can generate a temporary password or use a provided password.
+- **विवरण**: एक नया Upyogkarta account बनाता है। Temporary password generate कर सकता है या provided password use कर सकता है।
 - **Authentication**: Requires admin privileges, valid session and CSRF token
 - **Request Body**:
 
@@ -458,10 +458,10 @@ For "Delete all data" option:
   - Generated temporary passwords are only returned once in the response
   - User creation is logged to audit log
 
-### Update User - `/api/users/:id` {#update-user---apiusersid}
+### Upyogkarta ko Update karein - `/api/users/:id` {/* #update-user---apiusersid */}
 - **Endpoint**: `/api/users/:id`
 - **Method**: PATCH
-- **Description**: Updates user information including username, admin status, password change requirement, and password reset.
+- **विवरण**: Username, admin status, password change requirement, और password reset सहित Upyogkarta information को update करता है।
 - **Authentication**: Requires admin privileges, valid session and CSRF token
 - **Parameters**:
   - `id`: User ID to update
@@ -518,10 +518,10 @@ For "Delete all data" option:
   - Password reset generates a secure 12-character temporary password
   - All changes are logged to audit log
 
-### Delete User - `/api/users/:id` {#delete-user---apiusersid}
+### Upyogkarta ko delete karein - `/api/users/:id` {/* #delete-user---apiusersid */}
 - **Endpoint**: `/api/users/:id`
 - **Method**: DELETE
-- **Description**: Deletes a user account. Prevents deleting yourself or the last admin account.
+- **विवरण**: एक Upyogkarta account को delete करता है। खुद को या last admin account को delete करने से रोकता है।
 - **Authentication**: Requires admin privileges, valid session and CSRF token
 - **Parameters**:
   - `id`: User ID to delete
@@ -547,12 +547,12 @@ For "Delete all data" option:
   - User deletion ko audit log mein log kiya jata hai
   - Associated sessions ko automatically delete kiya jata hai (cascade)
 
-## Audit Log Management {#audit-log-management}
+## Audit Log Prabandhan {/* #audit-log-management */}
 
-### List Audit Logs - `/api/audit-log` {#list-audit-logs---apiaudit-log}
+### Audit Logs ki Soochi - `/api/audit-log` {/* #list-audit-logs---apiaudit-log */}
 - **Endpoint**: `/api/audit-log`
 - **Method**: GET
-- **Description**: Audit log entries ko filtering, pagination, aur search capabilities ke saath retrieve karta hai. Page-based aur offset-based pagination ko support karta hai.
+- **विवरण**: Filtering, pagination, और search capabilities के साथ audit log entries प्राप्त करता है। Page-based और offset-based pagination दोनों को support करता है।
 - **Authentication**: Valid session aur CSRF token chahiye (logged-in user required)
 - **Query Parameters**:
   - `page` (optional): Page number for page-based pagination
@@ -605,10 +605,10 @@ For "Delete all data" option:
   - `details` field mein parsed JSON hota hai with additional context
   - Sabhi audit log queries ko log kiya jata hai
 
-### Get Audit Log Filter Values - `/api/audit-log/filters` {#get-audit-log-filter-values---apiaudit-logfilters}
+### Audit Log Filter Values प्राप्त करें - `/api/audit-log/filters` {/* #get-audit-log-filter-values---apiaudit-logfilters */}
 - **Endpoint**: `/api/audit-log/filters`
 - **Method**: GET
-- **Description**: Audit logs ke liye filtering ke liye available unique filter values ko retrieve karta hai. Returns all distinct actions, categories, aur statuses that exist in the audit log database. Useful for populating filter dropdowns in the UI.
+- **विवरण**: Audit logs को filter करने के लिए उपलब्ध unique filter values प्राप्त करता है। Audit log database में मौजूद सभी distinct actions, categories, और statuses लौटाता है। UI में filter dropdowns को populate करने के लिए useful।
 - **Authentication**: Valid session aur CSRF token chahiye (logged-in user required)
 - **Response**:
 
@@ -645,10 +645,10 @@ For "Delete all data" option:
   - Agar koi data nahin hai ya error hai toh empty arrays return hoti hai
   - Audit log viewer ke liye filter dropdowns ko dynamically populate karne ke liye use kiya jata hai
 
-### Download Audit Logs - `/api/audit-log/download` {#download-audit-logs---apiaudit-logdownload}
+### Audit Logs Download करें - `/api/audit-log/download` {/* #download-audit-logs---apiaudit-logdownload */}
 - **Endpoint**: `/api/audit-log/download`
 - **Method**: GET
-- **Description**: Audit logs ko CSV ya JSON format mein download karta hai with optional filtering. Useful for external analysis and reporting.
+- **विवरण**: वैकल्पिक filtering के साथ CSV या JSON format में audit logs download करता है। External analysis और reporting के लिए useful।
 - **Authentication**: Valid session aur CSRF token chahiye (logged-in user required)
 - **Query Parameters**:
   - `format` (optional): Export format - `csv` or `json` (default: `csv`)
@@ -677,10 +677,10 @@ For "Delete all data" option:
   - Details field in CSV is JSON-stringified
   - File name includes the current date
 
-### Cleanup Audit Logs - `/api/audit-log/cleanup` {#cleanup-audit-logs---apiaudit-logcleanup}
+### Audit Logs Saaf Karen - `/api/audit-log/cleanup` {/* #cleanup-audit-logs---apiaudit-logcleanup */}
 - **Endpoint**: `/api/audit-log/cleanup`
 - **Method**: POST
-- **Description**: Manually triggers cleanup of old audit logs based on retention period. Supports dry-run mode to preview what would be deleted.
+- **विवरण**: Retention period के आधार पर पुराने audit logs की सफाई को मैन्युअल रूप से trigger करता है। Preview करने के लिए dry-run mode को support करता है कि क्या delete किया जाएगा।
 - **Authentication**: Requires admin privileges, valid session and CSRF token
 - **Request Body**:
 
@@ -727,10 +727,10 @@ For "Delete all data" option:
   - Cleanup operation is logged to audit log
   - Dry-run mode is useful for previewing cleanup impact
 
-### Get Audit Log Retention - `/api/audit-log/retention` {#get-audit-log-retention---apiaudit-logretention}
+### Audit Log Retention प्राप्त करें - `/api/audit-log/retention` {/* #get-audit-log-retention---apiaudit-logretention */}
 - **Endpoint**: `/api/audit-log/retention`
 - **Method**: GET
-- **Description**: Retrieves the current audit log retention configuration in days.
+- **विवरण**: दिनों में वर्तमान audit log retention कॉन्फ़िगरेशन प्राप्त करता है।
 - **Authentication**: Requires valid session and CSRF token (no logged-in user required)
 - **Response**:
 
@@ -746,10 +746,10 @@ For "Delete all data" option:
   - Default retention is 90 days if not configured
   - Can be accessed without authentication (read-only)
 
-### Update Audit Log Retention - `/api/audit-log/retention` {#update-audit-log-retention---apiaudit-logretention}
+### Audit Log Retention अपडेट करें - `/api/audit-log/retention` {/* #update-audit-log-retention---apiaudit-logretention */}
 - **Endpoint**: `/api/audit-log/retention`
 - **Method**: PATCH
-- **Description**: Updates the audit log retention period in days. This setting determines how long audit logs are kept before automatic cleanup.
+- **विवरण**: दिनों में audit log retention अवधि को अपडेट करता है। यह सेटिंग यह निर्धारित करती है कि स्वचालित सफाई से पहले audit logs कितनी देर तक रखी जाती हैं।
 - **Authentication**: Requires admin privileges, valid session and CSRF token
 - **Request Body**:
 
@@ -779,22 +779,22 @@ For "Delete all data" option:
   - Configuration change is logged to audit log
   - Retention period affects automatic and manual cleanup operations
 
-## एपीआई कुंजियाँ {#api-keys}
+## एपीआई कुंजियाँ {/* #api-keys */}
 
-### एपीआई कुंजियाँ की सूची - `/api/api-keys` {#list-api-keys---apiapi-keys}
+### एपीआई कुंजियाँ सूचीबद्ध करें - `/api/api-keys` {/* #list-api-keys---apiapi-keys */}
 - **Endpoint**: `/api/api-keys`
 - **Method**: GET
-- **Description**: सभी एपीआई कुंजियों की सूची बनाता है। सीक्रेट्स कभी नहीं लौटाए जाते; प्रत्येक कुंजी में एक फिंगरप्रिंट शामिल होता है (`Qk7v…3xTa`).
+- **विवरण**: सभी एपीआई कुंजियों की सूची बनाता है। Secrets कभी वापस नहीं किए जाते; प्रत्येक कुंजी में एक फिंगरप्रिंट शामिल होता है (`Qk7v…3xTa`)।
 - **Authentication**: एडमिन प्राइविलेज, वैध सेशन और CSRF टोकन की आवश्यकता होती है
 - **Error Responses**:
   - `401`: Unauthorized - Invalid session or CSRF token
   - `403`: Forbidden - Admin privileges required
   - `500`: Internal server error
 
-### एपीआई कुंजी बनाएँ - `/api/api-keys` {#create-api-key---apiapi-keys}
+### एपीआई कुंजी बनाएँ - `/api/api-keys` {/* #create-api-key---apiapi-keys */}
 - **Endpoint**: `/api/api-keys`
 - **Method**: POST
-- **Description**: एक स्कोप्ड एपीआई कुंजी बनाता है। प्लेनटेक्स्ट सीक्रेट केवल इस प्रतिक्रिया में लौटाया जाता है।
+- **विवरण**: एक scoped एपीआई कुंजी बनाता है। plaintext secret केवल इस प्रतिक्रिया में वापस किया जाता है।
 - **Authentication**: Requires admin privileges, valid session and CSRF token
 - **Request Body**:
 
@@ -813,24 +813,24 @@ For "Delete all data" option:
   - `403`: Forbidden - Admin privileges required
   - `500`: Internal server error
 
-### एपीआई कुंजी अपडेट करें - `/api/api-keys/:id` {#update-api-key---apiapi-keysid}
+### एपीआई कुंजी अपडेट करें - `/api/api-keys/:id` {/* #update-api-key---apiapi-keysid */}
 - **Endpoint**: `/api/api-keys/:id`
 - **Method**: PATCH
-- **Description**: एक कुंजी को सक्षम या अक्षम करता है।
+- **विवरण**: एक कुंजी को सक्षम या अक्षम करता है।
 - **Authentication**: एडमिन प्राइविलेज, वैध सेशन और CSRF टोकन की आवश्यकता होती है
 
-### एपीआई कुंजी डिलीट करें - `/api/api-keys/:id` {#delete-api-key---apiapi-keysid}
+### एपीआई कुंजी हटाएँ - `/api/api-keys/:id` {/* #delete-api-key---apiapi-keysid */}
 - **Endpoint**: `/api/api-keys/:id`
 - **Method**: DELETE
-- **Description**: एक कुंजी को डिलीट करता है। उस सीक्रेट का उपयोग करने वाले मौजूदा क्लाइंट्स तुरंत पहुंच खो देते हैं।
+- **विवरण**: एक कुंजी को हटाता है। उस secret का उपयोग करने वाले मौजूदा क्लाइंट तुरंत पहुँच खो देते हैं।
 - **Authentication**: एडमिन प्राइविलेज, वैध सेशन और CSRF टोकन की आवश्यकता होती है
 
-## डेटाबेस प्रबंधन {#database-management}
+## डेटाबेस प्रबंधन {/* #database-management */}
 
-### डेटाबेस बैकअप - `/api/database/backup` {#backup-database---apidatabasebackup}
+### डेटाबेस का बैकअप लें - `/api/database/backup` {/* #backup-database---apidatabasebackup */}
 - **Endpoint**: `/api/database/backup`
 - **Method**: GET
-- **Description**: डेटाबेस का बैकअप बनाता है, या तो बाइनरी (.db) या SQL (.sql) फॉर्मेट में। बैकअप फ़ाइल स्वचालित रूप से डाउनलोड की जाती है, जिसमें टाइमस्टैम्प वाला फ़ाइलनाम होता है।
+- **विवरण**: डेटाबेस का बैकअप बाइनरी (.db) या SQL (.sql) फॉर्मेट में बनाता है। बैकअप फ़ाइल स्वचालित रूप से timestamped फ़ाइलनाम के साथ डाउनलोड होती है।
 - **Authentication**: एडमिन प्राधिकृत, वैध सत्र और CSRF टोकन की आवश्यकता होती है
 - **Query Parameters**:
   - `format` (optional): बैकअप फॉर्मेट - `db` (बाइनरी) या `sql` (SQL डंप)। डिफ़ॉल्ट: `db`
@@ -851,10 +851,10 @@ For "Delete all data" option:
   - बैकअप ऑपरेशन ऑडिट लॉग में लॉग किया जाता है
   - डाउनलोड के बाद अस्थायी फ़ाइलें स्वचालित रूप से साफ़ की जाती हैं
 
-### डेटाबेस रिस्टोर - `/api/database/restore` {#restore-database---apidatabaserestore}
+### डेटाबेस पुनर्स्थापित करें - `/api/database/restore` {/* #restore-database---apidatabaserestore */}
 - **Endpoint**: `/api/database/restore`
 - **Method**: POST
-- **Description**: बैकअप फ़ाइल (.db या .sql फॉर्मेट) से डेटाबेस को रिस्टोर करता है। रिस्टोर से पहले एक सुरक्षा बैकअप बनाता है और रिस्टोर के बाद सभी सत्रों को साफ़ करता है, सुरक्षा के लिए।
+- **विवरण**: बैकअप फ़ाइल (.db या .sql फॉर्मेट) से डेटाबेस को पुनर्स्थापित करता है। सुरक्षा के लिए पुनर्स्थापना से पहले एक सुरक्षा बैकअप बनाता है और पुनर्स्थापना के बाद सभी सत्रों को साफ़ करता है।
 - **Authentication**: एडमिन प्राधिकृत, वैध सत्र और CSRF टोकन की आवश्यकता होती है
 - **Request Body**: FormData जिसमें एक फ़ाइल फ़ील्ड होता है, जिसका नाम `database` होता है
   - फ़ाइल या तो `.db`, `.sqlite`, `.sqlite3` (बाइनरी फॉर्मेट) या `.sql` (SQL फॉर्मेट) होनी चाहिए
@@ -888,12 +888,12 @@ For "Delete all data" option:
   - रिस्टोर के बाद डेटाबेस कनेक्शन को फिर से प्रारंभ किया जाता है
   - रिस्टोर के बाद सभी कैशे अमान्य हो जाते हैं
 
-## बैकअप टाइमस्टैम्प {#backup-timestamps}
+## बैकअप टाइमस्टैम्प {/* #backup-timestamps */}
 
-### अंतिम बैकअप टाइमस्टैम्प प्राप्त करें - `/api/backups/last-timestamps` {#get-last-backup-timestamps---apibackupslast-timestamps}
+### अंतिम बैकअप टाइमस्टैम्प प्राप्त करें - `/api/backups/last-timestamps` {/* #get-last-backup-timestamps---apibackupslast-timestamps */}
 - **Endpoint**: `/api/backups/last-timestamps`
 - **Method**: GET
-- **Description**: प्रत्येक सर्वर-बैकअप संयोजन के लिए अंतिम बैकअप टाइमस्टैम्प प्राप्त करता है। आसान लुकअप के लिए एक मैप लौटाता है।
+- **विवरण**: प्रत्येक सर्वर-बैकअप संयोजन के लिए अंतिम बैकअप टाइमस्टैम्प प्राप्त करता है। आसान खोज के लिए एक map लौटाता है।
 - **Authentication**: वैध सत्र और CSRF टोकन की आवश्यकता होती है
 - **Response**:
 
@@ -924,12 +924,12 @@ For "Delete all data" option:
   - सभी सर्वर-बैकअप संयोजन के अंतिम बैकअप समयों को ट्रैक करने के लिए उपयोगी
   - टाइमस्टैम्प ISO फॉर्मेट में होते हैं
 
-## Application Logs Management {#application-logs-management}
+## एप्लिकेशन लॉग प्रबंधन {/* #application-logs-management */}
 
-### Get Application Logs - `/api/application-logs` {#get-application-logs---apiapplication-logs}
+### एप्लिकेशन लॉग प्राप्त करें - `/api/application-logs` {/* #get-application-logs---apiapplication-logs */}
 - **Endpoint**: `/api/application-logs`
 - **Method**: GET
-- **Description**: Log file se application log entries ko retrieve karta hai. Current aur rotated log files ko tail functionality ke saath padhne ka support karta hai.
+- **विवरण**: लॉग फ़ाइलों से एप्लिकेशन लॉग प्रविष्टियाँ प्राप्त करता है। tail कार्यक्षमता के साथ वर्तमान और घुमाई गई लॉग फ़ाइलों को पढ़ने का समर्थन करता है।
 - **Authentication**: Admin privileges, valid session aur CSRF token ki zarurat hoti hai
 - **Query Parameters**:
   - `file` (optional): Padhne ke liye log file ka naam - `application.log`, `application.log.1`, `application.log.2`, etc. Agar nahi diya gaya hai, to available files list return karta hai
@@ -975,10 +975,10 @@ For "Delete all data" option:
   - File names ko directory traversal attacks se bachane ke liye validate kiya jata hai
   - Rotated files sequentially numbered hoti hain (`.1`, `.2`, etc.)
 
-### Export Application Logs - `/api/application-logs/export` {#export-application-logs---apiapplication-logsexport}
+### एप्लिकेशन लॉग निर्यात करें - `/api/application-logs/export` {/* #export-application-logs---apiapplication-logsexport */}
 - **Endpoint**: `/api/application-logs/export`
 - **Method**: GET
-- **Description**: Filtered text format mein application log entries ko export karta hai. Log level aur search string ke basis par filtering ka support karta hai.
+- **विवरण**: फ़िल्टर किए गए टेक्स्ट फॉर्मेट में एप्लिकेशन लॉग प्रविष्टियाँ निर्यात करता है। log level और search string द्वारा फ़िल्टर करने का समर्थन करता है।
 - **Authentication**: Admin privileges, valid session aur CSRF token ki zarurat hoti hai
 - **Query Parameters**:
   - `file` (required): Export karne ke liye log file ka naam - `application.log`, `application.log.1`, `application.log.2`, etc.

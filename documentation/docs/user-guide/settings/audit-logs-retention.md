@@ -1,5 +1,5 @@
 
-# Audit Log Retention {#audit-log-retention}
+# Audit Log Retention {/* #audit-log-retention */}
 
 Configure how long audit logs are retained before automatic cleanup.
 
@@ -9,7 +9,7 @@ Configure how long audit logs are retained before automatic cleanup.
 |:-------|:-----------|:-------------|
 | **Retention (days)** | Number of days to retain audit logs before automatic deletion | **90 days** |
 
-## Retention Settings {#retention-settings}
+## Retention Settings {/* #retention-settings */}
 
 - **Range**: 30 to 365 days
 - **Automatic Cleanup**: Runs daily at 02:00 UTC (not configurable)

@@ -3,11 +3,12 @@
  */
 import { SOURCE_LOCALE } from './locales';
 
-// the URL has to end in a trailing slash (/)
+// Base URL must end with a trailing slash and include the Docusaurus `baseUrl`
+// (`/duplistatus/` by default — same path in local serve and GitHub Pages).
 const DOCS_BASE_URL =
   process.env.NODE_ENV === 'production'
     ? 'https://wsj-br.github.io/duplistatus/'
-    : 'http://localhost:3000/';
+    : 'http://localhost:3000/duplistatus/';
 
 interface HelpMapping {
   url: string;

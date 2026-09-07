@@ -1,6 +1,6 @@
-# सर्वाधिक उपयोग किए जाने वाले कमांड {#most-used-commands}
+# सबसे अधिक उपयोग किए जाने वाले कमांड {/* #most-used-commands */}
 
-## डेवलपमेंट मोड में चलाएँ {#run-in-dev-mode}
+## देव मोड में चलाएँ {/* #run-in-dev-mode */}
 
 ```bash
 pnpm dev
@@ -16,7 +16,7 @@ pnpm dev
 
 - **बैकअप डिलीट**: सर्वर विवरण पृष्ठ पर, बैकअप तालिका में एक डिलीट बटन दिखाई देता है जो आपको व्यक्तिगत बैकअप को डिलीट करने की अनुमति देता है। यह सुविधा परीक्षण और डीबगिंग के लिए विशेष रूप से उपयोगी है।
 
-## प्रोडक्शन सर्वर स्टार्ट करें (डेवलपमेंट पर्यावरण में) {#start-the-production-server-in-development-environment}
+## प्रोडक्शन सर्वर प्रारंभ करें (विकास परिवेश में) {/* #start-the-production-server-in-development-environment */}
 
 पहले, स्थानीय प्रोडक्शन के लिए एप्लिकेशन बिल्ड करें:
 
@@ -30,7 +30,7 @@ pnpm build-local
 pnpm start-local
 ```
 
-## एक डॉकर स्टैक स्टार्ट करें (डॉकर कॉम्पोज) {#start-a-docker-stack-docker-compose}
+## डॉकर स्टैक प्रारंभ करें (Docker Compose) {/* #start-a-docker-stack-docker-compose */}
 
 ```bash
 pnpm docker:up
@@ -42,7 +42,7 @@ pnpm docker:up
 docker compose up --build -d
 ```
 
-## एक डॉकर स्टैक स्टॉप करें (डॉकर कॉम्पोज) {#stop-a-docker-stack-docker-compose}
+## डॉकर स्टैक रोकें (Docker Compose) {/* #stop-a-docker-stack-docker-compose */}
 
 ```bash
 pnpm docker:down
@@ -54,7 +54,7 @@ pnpm docker:down
 docker compose down
 ```
 
-## डॉकर पर्यावरण साफ करें {#clean-docker-environment}
+## डॉकर परिवेश साफ़ करें {/* #clean-docker-environment */}
 
 ```bash
 pnpm docker:clean
@@ -72,7 +72,7 @@ pnpm docker:clean
 - डेवलपमेंट या परीक्षण सत्रों के बाद साफ़-अप करना
 - एक साफ डॉकर पर्यावरण बनाए रखना
 
-## एक डेवलपमेंट इमेज बनाएँ (स्थानीय परीक्षण या पॉडमैन के साथ) {#create-a-development-image-to-test-locally-or-with-podman}
+## विकास इमेज बनाएँ (स्थानीय रूप से Parikshan करने या Podman के साथ) {/* #create-a-development-image-to-test-locally-or-with-podman */}
 
 ```bash
 export $(grep -v '^#' .env | xargs) && docker build . -t wsj-br/duplistatus:devel-$VERSION

@@ -1,8 +1,8 @@
-# API Overview {#api-overview}
+# API Overview {/* #api-overview */}
 
 Yeh pratilipi duplistatus application ke sabhi available API endpoints ka vishleshan deti hai. API RESTful principles par chalta hai aur comprehensive backup monitoring, notification management, aur system administration capabilities provide karta hai.
 
-## API Structure {#api-structure}
+## API संरचना {/* #api-structure */}
 
 Sabhi endpoints ke liye ek jaldarpan ke liye, [API Endpoint List](api-endpoint-list) dekhein.
 
@@ -20,13 +20,13 @@ API logical groups mein vishleshit hai:
 
 Sabhi endpoints ke liye ek jaldarpan ke liye, [API Endpoint List](api-endpoint-list) dekhein.
 
-## Response Format {#response-format}
+## प्रतिक्रिया प्रारूप {/* #response-format */}
 
 Sabhi API responses JSON format mein return hote hain consistent error handling patterns ke saath. Successful responses typically include a `status` field, while error responses include `error` aur `message` fields.
 
 ---
 
-## Error Handling {#error-handling}
+## Truti प्रबंधन {/* #error-handling */}
 
 Sabhi endpoints consistent error handling pattern follow karte hain:
 
@@ -46,21 +46,21 @@ Error responses include:
 - `stack`: Error stack trace (development mode mein)
 - `timestamp`: Jab error hua tha
 
-## Data Type Notes {#data-type-notes}
+## डेटा प्रकार नोट्स {/* #data-type-notes */}
 
-### Message Arrays {#message-arrays}
-The `messages_array`, `warnings_array`, aur `errors_array` fields JSON strings ke roop mein database mein stored hote hain aur API responses mein arrays ke roop mein return hote hain. Ye actual log messages, warnings, aur errors Duplicati backup operations se contain karte hain.
+### Sandesh Arrays {/* #message-arrays */}
+`messages_array`, `warnings_array`, और `errors_array` फ़ील्ड डेटाबेस में JSON strings के रूप में संग्रहीत हैं और API प्रतिक्रियाओं में arrays के रूप में लौटाए जाते हैं। ये Duplicati बैकअप संचालनों से वास्तविक log Sandesh, Chetaavaniyaan, और Trutiyon शामिल करते हैं।
 
-### Available Backups {#available-backups}
-The `available_backups` field backup version timestamps (ISO format mein) ke array ko contain karta hai jo restoration ke liye available hain. Ye backup log messages se extract kiya gaya hai.
+### उपलब्ध बैकअप {/* #available-backups */}
+`available_backups` फ़ील्ड में बैकअप Sanskaran टाइमस्टैम्प्स (ISO प्रारूप में) ka एक array है जो पुनर्स्थापना के लिए उपलब्ध हैं। यह बैकअप log Sandesh से निकाला जाता है।
 
-### Duration Fields {#duration-fields}
-- `duration`: Human-readable format (e.g., "00:38:31")
-- `duration_seconds`: Raw duration seconds mein
-- `durationInMinutes`: Charting ke liye minutes mein convert kiya gaya duration
+### Avadhi फ़ील्ड {/* #duration-fields */}
+- `duration`: मानव-पठनीय प्रारूप (जैसे, "00:38:31")
+- `duration_seconds`: सेकंड में कच्ची Avadhi
+- `durationInMinutes`: चार्टिंग उद्देश्यों के लिए मिनटों में परिवर्तित Avadhi
 
-### File Size Fields {#file-size-fields}
-Sabhi file size fields bytes mein numbers ke roop mein return hote hain, na ki formatted strings. Frontend inko human-readable formats (KB, MB, GB, etc.) mein convert karne ka kaam karta hai.
+### File Aakar फ़ील्ड {/* #file-size-fields */}
+Sabhi File Aakar फ़ील्ड संख्याओं के रूप में बाइट्स में लौटाए जाते हैं, प्रारूपित strings के रूप में नहीं। फ्रंटएंड इन्हें मानव-पठनीय प्रारूपों (KB, MB, GB, आदि) में बदलने के लिए जिम्मेदार है।
 
 <br/>
 

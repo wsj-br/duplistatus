@@ -1,4 +1,4 @@
-# Plantillas {#templates}
+# Plantillas {/* #templates */}
 
 **duplistatus** utiliza cuatro plantillas para los mensajes de notificación. Los cuerpos de los correos electrónicos son Markdown (encabezados, listas, enlaces y tablas). NTFY para Éxito, Advertencia/Error y Vencida se derivan del mismo contenido. El Resumen Diario es solo para correo electrónico.
 
@@ -15,13 +15,13 @@ La página incluye un selector de **Idioma de la plantilla** que establece la co
 
 <br/>
 
-## Idioma de Plantilla {#template-language}
+## Idioma de la plantilla {/* #template-language */}
 
-Un selector de **Idioma de la plantilla** en la parte superior de la página le permite elegir el idioma de las plantillas predeterminadas (inglés, alemán, francés, español, portugués, hindi (romano) y chino simplificado). Cambiar el idioma actualiza la configuración regional de los valores predeterminados, pero las plantillas personalizadas existentes mantienen su texto actual hasta que las actualice o utilice uno de los botones de restablecimiento.
+Un selector de **Idioma de la plantilla** en la parte superior de la página le permite elegir el idioma para las plantillas predeterminadas (inglés, alemán, francés, español, portugués, hindi y chino simplificado). Cambiar el idioma actualiza la configuración regional para los valores predeterminados, pero las plantillas personalizadas existentes conservan su texto actual hasta que las actualice o utilice uno de los botones de restablecimiento.
 
 <br/>
 
-## Acciones disponibles {#available-actions}
+## Acciones disponibles {/* #available-actions */}
 
 | Botón                                                              | Descripción                                                                                         |
 |:--------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------|
@@ -32,7 +32,7 @@ Un selector de **Idioma de la plantilla** en la parte superior de la página le 
 
 <br/>
 
-## Variables {#variables}
+## Variables {/* #variables */}
 
 Los cuerpos de los correos electrónicos son Markdown. Se admiten encabezados, listas, enlaces y tablas. Los valores de los marcadores de posición se insertan como texto escapado y no pueden introducir Markdown o HTML. El HTML sin procesar incrustado anteriormente en las plantillas personalizadas ahora está escapado.
 
@@ -56,7 +56,7 @@ Todas las plantillas de Éxito, Advertencia/Error y Vencida admiten variables qu
 | `{messages_count}`     | Número de mensajes.                             | Éxito, Advertencia |
 | `{warnings_count}`     | Número de advertencias.                             | Éxito, Advertencia |
 | `{errors_count}`       | Número de errores.                               | Éxito, Advertencia |
-| `{log_text}`           | Mensajes de registro (advertencias y errores)              | Éxito, Advertencia |
+| `{log_text}`           | Advertencia y líneas de registro de error solamente (no registros de Información completos). NTFY utiliza un resumen corto y puede truncar. | Éxito, Advertencia |
 | `{last_backup_date}`   | Fecha de la última copia de seguridad.                        | Retrasado          |
 | `{last_elapsed}`       | Tiempo transcurrido desde la última copia de seguridad.             | Retrasado          |
 | `{expected_date}`      | Fecha esperada de la copia de seguridad.                           | Retrasado          |

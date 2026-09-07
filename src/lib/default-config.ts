@@ -1,5 +1,5 @@
-import { CronServiceConfig, CronInterval, BackupNotificationConfig, StartOfWeek, FormatLocaleOverride, UploadLimitsConfig, CidrAllowlistConfig, TrustedProxiesConfig, DAILY_SUMMARY_DISPATCH_TASK } from './types';
-import { defaultDailySummaryConfig as defaultDailySummaryScheduleConfig } from './daily-summary-schedule';
+import { CronServiceConfig, CronInterval, BackupNotificationConfig, StartOfWeek, FormatLocaleOverride, UploadLimitsConfig, CidrAllowlistConfig, TrustedProxiesConfig, DAILY_SUMMARY_DISPATCH_TASK, DATABASE_COMPACT_TASK, DATABASE_COMPACT_CRON_EXPRESSION } from './types';
+import { defaultDailySummaryConfig as defaultDailySummaryScheduleConfig, buildDailySummaryDispatchCronExpression, DEFAULT_DAILY_SUMMARY_UTC_TIME } from './daily-summary-schedule';
 
 export {
   defaultNotificationTemplates,
@@ -43,8 +43,12 @@ export const defaultCronConfig: CronServiceConfig = {
       cronExpression: '0 3 * * *', // Daily at 3 AM UTC
       enabled: true
     },
+    [DATABASE_COMPACT_TASK]: {
+      cronExpression: DATABASE_COMPACT_CRON_EXPRESSION, // Weekly Sunday 04:00 UTC
+      enabled: true
+    },
     [DAILY_SUMMARY_DISPATCH_TASK]: {
-      cronExpression: '* * * * *',
+      cronExpression: buildDailySummaryDispatchCronExpression(DEFAULT_DAILY_SUMMARY_UTC_TIME),
       enabled: true
     }
   }
@@ -136,6 +140,10 @@ export const AUTH_FAILURE_PER_MINUTE = 5;
 export const AUTH_FAILURE_PER_HOUR = 30;
 export const READ_API_PER_MINUTE = 60;
 export const READ_API_PER_HOUR = 600;
+export const PING_PROBE_PER_MINUTE = 60;
+export const PING_PROBE_PER_HOUR = 600;
+export const HEALTH_PROBE_PER_MINUTE = 30;
+export const HEALTH_PROBE_PER_HOUR = 120;
 
 
 // Note: Legacy createDefaultNotificationConfig was removed in favor of split keys

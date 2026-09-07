@@ -16,25 +16,47 @@ hit an ambiguous decision that you cannot resolve from the repo itself.
   the same value with dots removed (e.g. `1.4.2` → `142`) for use in Markdown heading
   anchors.
 
-## 2. Collect the user-facing changes
+## 2. Select the highlights (do not copy the changelog)
 
 - Read [`dev/CHANGELOG.md`](./CHANGELOG.md) and use the entries under the
   **`## Unreleased`** section as the source of truth.
-- Select only the **user-facing** changes: new features, security fixes, backend fixes
-  that affect behaviour, and notable changes. Skip purely internal/dev-tooling churn
-  that has no user impact (use judgement — e.g. "dev request logs timestamp" is minor;
-  a Docker startup crash fix is user-facing and important).
-- Group what you find by the same buckets used in the changelog: **Security**,
-  **Fixed**, **Changed**, **Added**, **Removed**, **Deprecated** (only the ones that
-  actually have entries).
+- **Do not** copy, paraphrase, or re-bucket every Unreleased line into the release
+  notes. `dev/CHANGELOG.md` remains the complete item-by-item record. The release
+  notes are a **highlights document** for operators and end users.
+- From Unreleased, select only **highlights**: user-facing or structural changes that
+  someone upgrading would need to know, or that define the character of the release.
+  Group related changelog bullets into **one** highlight (for example several Daily
+  Summary template/UI follow-ups become a single Daily Summary item).
+
+**Treat as a highlight (include):**
+
+- New features and settings that users can see or configure
+- Security fixes or behaviour that operators must know about
+- Structural changes: schema/migrations, API or auth behaviour, env vars, Docker /
+  install / upgrade steps, default ports, breaking changes
+- Important bug fixes that affect real workflows (backups, notifications, login,
+  Docker startup, data loss, lockouts)
+
+**Do not treat as a highlight (leave in `dev/CHANGELOG.md` only):**
+
+- Minor UI polish (padding, colours, alignment, spinner styling)
+- Docs-only editorial passes, filename/title tweaks, glossary or screenshot tooling
+- Dev-only / agent-guidance / test-data / lint-config churn
+- Incremental follow-ups that only refine a feature already called out as a highlight
+- Dependency bumps unless they are security-relevant or change operator behaviour
+
+Use judgement: a Docker startup crash is a highlight; a 1px card-height tweak is not.
+If Unreleased is large, prefer a short overview plus a **small** set of headline
+items over exhaustive coverage.
 
 ## 3. Create the release notes file
 
 - Create `documentation/docs/release-notes/<VERSION>.md`.
 - **Only edit the English docs** under `documentation/docs/`. Do **not** touch translated
   files under `documentation/i18n/` — those are produced by the i18n tooling.
-- Base the structure on these existing examples (read them first to match tone, heading
-  style, and anchor format):
+- Base tone, heading style, and anchor format on these existing examples (read them
+  first). **Do not** copy their bottom `## Changelog` dump of every change — that
+  pattern is deprecated by this prompt:
   - [`documentation/docs/release-notes/1.4.1.md`](../documentation/docs/release-notes/1.4.1.md)
     (full feature release)
   - [`documentation/docs/release-notes/1.3.2.md`](../documentation/docs/release-notes/1.3.2.md)
@@ -44,53 +66,56 @@ hit an ambiguous decision that you cannot resolve from the repo itself.
 
 ### Required structure
 
-Every heading uses an explicit anchor in the form `{#anchor-id}`. Use this skeleton,
-including only the sections that have content (e.g. omit **New features** for a pure
-maintenance release, omit **API Endpoints** if no endpoints changed):
+Every heading uses an explicit MDX comment anchor `{/* #anchor-id */}` (not `{#id}`,
+which Docusaurus can leak into sidebar labels). Use this skeleton, including only the
+narrative sections that have **highlights** (e.g. omit **New features** for a pure
+maintenance release, omit **API Endpoints** if no endpoints changed). Always include
+**Overview**, **Detailed changelog**, **Support**, and **License**.
 
 ```markdown
-# Version <VERSION> {#version-<VER-DASH>}
+# Version <VERSION> {/* #version-<VER-DASH> */}
 
-## Overview {#overview}
+## Overview {/* #overview */}
 
 <One short paragraph summarising the release: what kind of release it is
-(feature / maintenance / security) and the headline changes.>
+(feature / maintenance / security) and the headline changes. Do not list
+every changelog bullet.>
 
 ---
 
-## New features {#new-features}
+## New features {/* #new-features */}
 
-### <Feature group> {#feature-group-anchor}
+### <Feature group> {/* #feature-group-anchor */}
 
 - **<Feature name>**: <user-facing description>. (reference issue #NN if applicable)
 
 ---
 
-## Improvements {#improvements}
+## Improvements {/* #improvements */}
 
-### <Improvement group> {#improvement-group-anchor}
+### <Improvement group> {/* #improvement-group-anchor */}
 
 - **<Item>**: <description>.
 
 ---
 
-## Bug fixes {#bug-fixes}
+## Bug fixes {/* #bug-fixes */}
 
 - **<Bug>**: <what was broken and how it is fixed>. (issue #NN if applicable)
 
 ---
 
-## Security {#security}
+## Security {/* #security */}
 
-### Dependency vulnerability fixes {#dependency-vulnerability-fixes}
+### <Security group> {/* #security-group-anchor */}
 
 - **<Item>**: <description>.
 
 ---
 
-## Migration notes {#migration-notes}
+## Migration notes {/* #migration-notes */}
 
-### From version <PREVIOUS_VERSION> {#from-version-<prev-ver-dash>}
+### From version <PREVIOUS_VERSION> {/* #from-version-<prev-ver-dash> */}
 
 When upgrading to version <VERSION>:
 
@@ -100,9 +125,9 @@ When upgrading to version <VERSION>:
 
 ---
 
-## Support {#support}
+## Support {/* #support */}
 
-### Getting help {#getting-help}
+### Getting help {/* #getting-help */}
 
 - **Documentation**: [User Guide](../user-guide/overview.md)
 - **Email settings**: [Email configuration guide](../user-guide/settings/email-settings.md)
@@ -111,31 +136,28 @@ When upgrading to version <VERSION>:
 - **Community**: [GitHub Discussions](https://github.com/wsj-br/duplistatus/discussions)
 - **Issues**: [GitHub Issues](https://github.com/wsj-br/duplistatus/issues)
 
-### Reporting bugs {#reporting-bugs}
+### Reporting bugs {/* #reporting-bugs */}
 
 When reporting bugs, please include:
 
 - Version: <VERSION>
 - Operating system and version
 - Docker/podman version
-- Container type (Docker or podman/Pod)
+- Container type (Docker or podman)
 - Error messages and logs
 - Steps to reproduce
 
 ---
 
-## Changelog {#changelog}
+## Detailed changelog {/* #detailed-changelog */}
 
-### Version <VERSION> changes {#version-<VER-DASH>-changes}
-
-- **Added**: <one line per change, mirroring the changelog buckets>
-- **Changed**: ...
-- **Fixed**: ...
-- **Security**: ...
+The sections above are the highlights of this release. The complete list of
+changes is in [`dev/CHANGELOG.md`](https://github.com/wsj-br/duplistatus/blob/main/dev/CHANGELOG.md)
+under **[<VERSION>]**.
 
 ---
 
-## License {#license}
+## License {/* #license */}
 
 This project is licensed under the [Apache License 2.0](https://github.com/wsj-br/duplistatus/blob/main/LICENSE).
 
@@ -144,10 +166,16 @@ This project is licensed under the [Apache License 2.0](https://github.com/wsj-b
 
 ### Content rules for the release notes
 
-- Write for **end users**, not developers: describe the effect of each change, not the
-  implementation detail. (The terse changelog lines can be expanded into readable prose.)
-- Keep the `## Changelog` section at the bottom as a concise bulleted summary that
-  mirrors the changelog buckets.
+- Write for **end users** and operators: describe the effect of each **highlight**,
+  not implementation detail. Expand a terse changelog line into readable prose only
+  for items you selected as highlights.
+- **Never** add a `## Changelog` (or similar) section that restates every Unreleased
+  bullet, even as a “concise” Added/Changed/Fixed/Security list. That duplicates
+  `dev/CHANGELOG.md`.
+- Keep **Detailed changelog** as a pointer only: one or two sentences plus the GitHub
+  link to [`dev/CHANGELOG.md`](https://github.com/wsj-br/duplistatus/blob/main/dev/CHANGELOG.md).
+  Do not paste changelog entries there. After step 5, the version heading in that
+  file is `## [<VERSION>] - <YYYY-MM-DD>`; name that section in the pointer.
 - Set the previous version in **Migration notes** to the most recent existing release
   notes file (the highest version currently in `documentation/docs/release-notes/`).
 - Use British/repo-consistent spelling to match existing notes (e.g. "internationalisation").
@@ -170,6 +198,8 @@ This project is licensed under the [Apache License 2.0](https://github.com/wsj-b
     "**Instructions:**" note intact.
 - Follow the Keep a Changelog format and Semantic Versioning conventions already used in
   the file. Be concise; only record user-facing changes.
+- After this conversion, confirm the release-notes **Detailed changelog** pointer names
+  the new `## [<VERSION>]` section (do not copy its bullets into the notes).
 
 ## 6. Verify the build (run these in order, fix failures before continuing)
 
@@ -194,10 +224,15 @@ If any command fails:
 Before finishing, confirm:
 
 - [ ] `documentation/docs/release-notes/<VERSION>.md` exists, follows the structure, and
-      reads cleanly for end users.
+      reads cleanly for end users as **highlights**, not a changelog dump.
+- [ ] The notes do **not** restate every `dev/CHANGELOG.md` Unreleased/version bullet
+      (no mirroring Added/Changed/Fixed/Security list).
+- [ ] **Detailed changelog** points at
+      [`dev/CHANGELOG.md`](https://github.com/wsj-br/duplistatus/blob/main/dev/CHANGELOG.md)
+      for the `[<VERSION>]` section.
 - [ ] The new file is listed in `documentation/sidebars.ts` (newest first).
 - [ ] `dev/CHANGELOG.md` has the new `## [<VERSION>] - <date>` section and a fresh empty
       `## Unreleased` section.
-- [ ] `pnpm install`, `pnpm lint`, and `pnpm build` all succeed.
+- [ ] `pnpm install`, `pnpm lint`, `pnpm build` and `cd documentation && pnpm build` all succeed.
 
 Then summarise what you changed and the result of each verification command.

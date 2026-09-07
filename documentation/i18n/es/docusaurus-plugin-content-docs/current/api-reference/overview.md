@@ -1,8 +1,8 @@
-# Resumen de la API {#api-overview}
+# Vista general de la API {/* #api-overview */}
 
 Este documento describe todos los puntos finales de la API disponibles para la aplicación duplistatus. La API sigue principios RESTful y proporciona capacidades completas de monitoreo de copias de seguridad, gestión de notificaciones y administración del sistema.
 
-## Estructura de la API {#api-structure}
+## Estructura de la API {/* #api-structure */}
 
 Para una referencia rápida de todos los puntos finales, consulte la [Lista de puntos finales de la API](api-endpoint-list).
 
@@ -20,13 +20,13 @@ La API está organizada en grupos lógicos:
 
 Para una referencia rápida de todos los puntos finales, consulte la [Lista de puntos finales de la API](api-endpoint-list).
 
-## Formato de respuesta {#response-format}
+## Formato de Respuesta {/* #response-format */}
 
 Todas las respuestas de la API se devuelven en formato JSON con patrones consistentes de manejo de errores. Las respuestas exitosas incluyen típicamente un campo `status`, mientras que las respuestas de error incluyen los campos `error` y `message`.
 
 ---
 
-## Manejo de errores {#error-handling}
+## Manejo de Errores {/* #error-handling */}
 
 Todos los puntos finales siguen un patrón consistente de manejo de errores:
 
@@ -46,21 +46,21 @@ Las respuestas de error incluyen:
 - `stack`: Traza del error (en modo desarrollo)
 - `timestamp`: Cuándo ocurrió el error
 
-## Notas sobre tipos de datos {#data-type-notes}
+## Notas sobre Tipos de Datos {/* #data-type-notes */}
 
-### Arrays de mensajes {#message-arrays}
-Los campos `messages_array`, `warnings_array` y `errors_array` se almacenan como cadenas JSON en la base de datos y se devuelven como arrays en las respuestas de la API. Estos contienen los mensajes reales de registro, advertencias y errores de las operaciones de copia de seguridad de Duplicati.
+### Arreglos de Mensajes {/* #message-arrays */}
+Los campos `messages_array`, `warnings_array` y `errors_array` se almacenan como cadenas JSON en la base de datos y se devuelven como arreglos en las respuestas de la API. Estos contienen los mensajes de registro reales, advertencias y errores de las operaciones de copia de seguridad de duplicati.
 
-### Copias de seguridad disponibles {#available-backups}
-El campo `available_backups` contiene un array de marcas de tiempo de versiones de copia de seguridad (en formato ISO) disponibles para restauración. Esto se extrae de los mensajes de registro de la copia de seguridad.
+### Copias de Seguridad Disponibles {/* #available-backups */}
+El campo `available_backups` contiene un arreglo de marcas de tiempo de versiones de copia de seguridad (en formato ISO) que están disponibles para restauración. Esto se extrae de los mensajes de registro de copia de seguridad.
 
-### Campos de duración {#duration-fields}
-- `duration`: Formato legible para humanos (por ejemplo, "00:38:31")
-- `duration_seconds`: Duración bruta en segundos
-- `durationInMinutes`: Duración convertida a minutos con fines de representación gráfica
+### Campos de Duración {/* #duration-fields */}
+- `duration`: Formato legible por humanos (por ejemplo, "00:38:31")
+- `duration_seconds`: Duración en bruto en segundos
+- `durationInMinutes`: Duración convertida a minutos para fines de gráficos
 
-### Campos de tamaño de archivo {#file-size-fields}
-Todos los campos de tamaño de archivo se devuelven en bytes como números, no como cadenas formateadas. La interfaz es responsable de convertir estos valores a formatos legibles (KB, MB, GB, etc.).
+### Campos de Tamaño de Archivo {/* #file-size-fields */}
+Todos los campos de tamaño de archivo se devuelven en bytes como números, no como cadenas formateadas. El frontend es responsable de convertir estos a formatos legibles por humanos (KB, MB, GB, etc.).
 
 <br/>
 

@@ -1,8 +1,8 @@
-# Homepage-Integration (Optional) {#homepage-integration-optional}
+# Homepage-Integration (optional) {/* #homepage-integration-optional */}
 
 [Homepage](https://gethomepage.dev/) ist eine anpassbare Dashboard-Anwendung. Um **duplistatus** mit Homepage zu integrieren, fügen Sie ein Widget zu Ihrer `services.yaml`-Datei hinzu, indem Sie den [Benutzerdefinierten API-Widget-Typ](https://gethomepage.dev/widgets/services/customapi/) verwenden.
 
-## Zusammenfassungs-Widget {#summary-widget}
+## Zusammenfassungs-Widget {/* #summary-widget */}
 
 Dieses Widget zeigt die Gesamtsicherungsstatistiken auf Ihrem Homepage-Dashboard an.
 
@@ -44,7 +44,7 @@ Dieses Widget zeigt die Gesamtsicherungsstatistiken auf Ihrem Homepage-Dashboard
 
 ![Startseiten-Zusammenfassungs-Widget](/img/homepage-summary.png)
 
-## Letzte Sicherungsinformationen Widget {#last-backup-information-widget}
+## Letzte Backup-Informationen-Widget {/* #last-backup-information-widget */}
 
 Dieses Widget zeigt die neuesten Sicherungsinformationen für einen bestimmten Computer an.
 
@@ -79,7 +79,7 @@ Dieses Widget zeigt die neuesten Sicherungsinformationen für einen bestimmten C
 
 ![Startseiten-Letzte-Sicherung-Widget](/img/homepage-lastbackup.png)
 
-## Konfigurationshinweise {#configuration-notes}
+## Konfigurationshinweise {/* #configuration-notes */}
 
 - Ersetzen Sie `your-server` durch die IP-Adresse oder den Hostname Ihres Servers.
 - Passen Sie das `refreshInterval` nach Bedarf an (in Millisekunden).

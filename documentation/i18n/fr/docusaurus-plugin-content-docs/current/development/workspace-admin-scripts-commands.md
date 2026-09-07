@@ -1,6 +1,6 @@
-# Scripts et Commandes Admin de l'Espace de Travail {#workspace-admin-scripts-commands}
+# Scripts et commandes d'administration de l'espace de travail {/* #workspace-admin-scripts--commands */}
 
-## Nettoyer la base de données {#clean-database}
+## Nettoyer la base de données {/* #clean-database */}
 
 ```bash
 ./scripts/clean-db.sh
@@ -11,7 +11,7 @@ Nettoie la base de données en supprimant toutes les données tout en préservan
 >[!CAUTION]
 > À utiliser avec prudence car cela supprimera toutes les données existantes.
 
-## Nettoyer les artefacts de compilation et les dépendances {#clean-build-artefacts-and-dependencies}
+## Nettoyer les artefacts de construction et les dépendances {/* #clean-build-artefacts-and-dependencies */}
 
 ```bash
 scripts/clean-workspace.sh
@@ -32,7 +32,7 @@ Supprime tous les artefacts de construction, le répertoire node_modules et d'au
 - cache du magasin pnpm (via `pnpm store prune`)
 - cache de construction Docker et nettoyage système (images, réseaux, volumes)
 
-## Nettoyer Docker Compose et l'environnement Docker {#clean-docker-compose-and-docker-environment}
+## Nettoyer Docker Compose et l'environnement Docker {/* #clean-docker-compose-and-docker-environment */}
 
 ```bash
 scripts/clean-docker.sh
@@ -44,7 +44,7 @@ Effectue un nettoyage complet de Docker, ce qui est utile pour :
 - Nettoyer après des sessions de développement ou de test
 - Maintenir un environnement Docker propre
 
-## Mettre à jour les packages vers la dernière version {#update-the-packages-to-the-latest-version}
+## Mettre à jour les paquets vers la dernière version {/* #update-the-packages-to-the-latest-version */}
 
 Vous pouvez mettre à jour les packages manuellement en utilisant :
 
@@ -70,13 +70,13 @@ Le script `upgrade-dependencies.sh` automatise l'intégralité du processus de m
 
 Ce script fournit un flux de travail complet pour maintenir les dépendances à jour et sécurisées.
 
-## Vérifier les packages inutilisés {#check-for-unused-packages}
+## Vérifier les paquets inutilisés {/* #check-for-unused-packages */}
 
 ```bash
 pnpm depcheck
 ```
 
-## Mettre à jour les informations de version {#update-version-information}
+## Mettre à jour les informations de version {/* #update-version-information */}
 
 ```bash
 ./scripts/update-version.sh
@@ -90,7 +90,7 @@ Ce script met automatiquement à jour les informations de version dans plusieurs
 - Met à jour uniquement si la version a changé
 - Fournit un retour sur chaque opération
 
-## Script de pré-vérifications {#pre-checks-script}
+## Script de pré-vérifications {/* #pre-checks-script */}
 
 ```bash
 ./scripts/pre-checks.sh
@@ -102,7 +102,7 @@ Ce script exécute des vérifications préalables avant de démarrer le serveur 
 
 Ce script est automatiquement appelé par `pnpm dev`, `pnpm build` et `pnpm start-local`.
 
-## Assurer l'existence du fichier clé {#ensure-key-file-exists}
+## S'assurer que le fichier clé existe {/* #ensure-key-file-exists */}
 
 ```bash
 ./scripts/ensure-key-file.sh
@@ -116,7 +116,7 @@ Ce script s'assure que le fichier `.duplistatus.key` existe dans le répertoire 
 
 Le fichier de clé est utilisé pour les opérations cryptographiques dans l'application.
 
-## Récupération du compte Admin {#admin-account-recovery}
+## Récupération du compte Admin {/* #admin-account-recovery */}
 
 ```bash
 ./admin-recovery <username> <new-password>
@@ -139,7 +139,7 @@ Ce script permet de récupérer les comptes administrateurs en cas de verrouilla
 >[!CAUTION]
 > Ce script modifie directement la base de données. À utiliser uniquement si nécessaire pour la récupération de compte.
 
-## Copier des images {#copy-images}
+## Copier les images {/* #copy-images */}
 
 ```bash
 ./scripts/copy-images.sh
@@ -152,7 +152,7 @@ Copie les fichiers image de `documentation/static/img` vers leurs emplacements a
 
 Utile pour maintenir les images d'application synchronisées avec les images de documentation.
 
-## Comparer les versions entre le développement et Docker {#compare-versions-between-development-and-docker}
+## Comparer les versions entre le développement et Docker {/* #compare-versions-between-development-and-docker */}
 
 ```bash
 ./scripts/compare-versions.sh
@@ -184,7 +184,7 @@ Ce script compare les versions entre votre environnement de développement et un
 
 **Note :** Les versions de SQLite sont comparées par version majeure uniquement, car les différentes versions de correctif au sein de la même version majeure sont généralement compatibles. Le script indiquera si les versions de SQLite correspondent au niveau majeur mais diffèrent dans les versions de correctif.
 
-## Affichage des configurations dans la base de données {#viewing-the-configurations-in-the-database}
+## Afficher les configurations dans la base de données {/* #viewing-the-configurations-in-the-database */}
 
 ```bash
 sqlite3 data/backups.db "SELECT key, value FROM configurations;" | awk -F'|' '
@@ -200,7 +200,7 @@ sqlite3 /var/lib/docker/volumes/duplistatus_data/_data/backups.db "SELECT key, v
    else {print $2;}}' | less -R
 ```
 
-## Afficher les paramètres de sauvegarde {#show-backup-settings}
+## Afficher les paramètres de sauvegarde {/* #show-backup-settings */}
 
 ```bash
 ./scripts/show-backup-settings.sh [database_path]

@@ -1,8 +1,8 @@
-# Integración de la Página de Inicio (Opcional) {#homepage-integration-optional}
+# Integración de la página de inicio (Opcional) {/* #homepage-integration-optional */}
 
 [Homepage](https://gethomepage.dev/) es una aplicación de panel de control personalizable. Para integrar **duplistatus** con Homepage, añada un widget a su archivo `services.yaml` utilizando el [tipo de widget Custom API](https://gethomepage.dev/widgets/services/customapi/).
 
-## Widget de Resumen {#summary-widget}
+## Resumen del Widget {/* #summary-widget */}
 
 Este widget muestra las estadísticas generales del backup en tu panel de control de la página de inicio.
 
@@ -44,7 +44,7 @@ Este widget muestra las estadísticas generales del backup en tu panel de contro
 
 ![Widget de Resumen de la Página de Inicio](/img/homepage-summary.png)
 
-## Widget de Información de Última Copia de Seguridad {#last-backup-information-widget}
+## Información de Copia de Seguridad del Último Widget {/* #last-backup-information-widget */}
 
 Este widget muestra la información del backup más reciente para una máquina específica.
 
@@ -79,7 +79,7 @@ Este widget muestra la información del backup más reciente para una máquina e
 
 ![Widget de Última Copia de Seguridad de la Página de Inicio](/img/homepage-lastbackup.png)
 
-## Notas de Configuración {#configuration-notes}
+## Notas de Configuración {/* #configuration-notes */}
 
 - Reemplace `your-server` con la dirección IP o nombre de host de su servidor.
 - Ajuste el `refreshInterval` según sea necesario (en milisegundos).

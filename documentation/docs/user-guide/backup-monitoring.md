@@ -1,12 +1,12 @@
 import { ZoomMermaid } from '@site/src/components/ZoomMermaid';
 
-# Backup Monitoring {#backup-monitoring}
+# Backup Monitoring {/* #backup-monitoring */}
 
 The backup monitoring feature allows you to track and alert on backups that are overdue. The notifications can be via NTFY or Email.
 
 In the user interface, the overdue backups are displayed with a warning icon . Hovering over the icon displays the details of the overdue backup, including the last backup time, the expected backup time, the tolerance period and the expected next backup time.
 
-## Overdue Check Process {#overdue-check-process}
+## Overdue Check Process {/* #overdue-check-process */}
 
 **How it works:**
 
@@ -48,11 +48,11 @@ gantt
 - At `2024-01-02 08:30` (🔹Check 2), the backup is **on time**, as it is still within the tolerance period.
 - At `2024-01-02 10:00` (🔹Check 3), the backup is **overdue**, as this is after the `Expected Next Backup` time.
 
-## Periodic Checks {#periodic-checks}
+## Periodic Checks {/* #periodic-checks */}
 
 **duplistatus** performs periodic checks for overdue backups at configurable intervals. The default interval is 20 minutes, but you can configure it in [Settings → Backup Monitoring](settings/backup-monitoring-settings.md).
 
-## Automatic Configuration {#automatic-configuration}
+## Automatic Configuration {/* #automatic-configuration */}
 
 When you collect backup logs from a Duplicati server, **duplistatus** automatically:
 

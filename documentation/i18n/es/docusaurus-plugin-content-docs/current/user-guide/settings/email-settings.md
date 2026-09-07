@@ -1,4 +1,4 @@
-# Correo electrónico {#email}
+# Correo electrónico {/* #email */}
 
 **duplistatus** admite el envío de notificaciones por correo electrónico a través de SMTP como alternativa o complemento a las notificaciones NTFY. La configuración de correo electrónico ahora se gestiona a través de la interfaz web con almacenamiento cifrado en la base de datos para mayor seguridad.
 
@@ -24,7 +24,7 @@ Cuando la configuración no está completamente configurada, se muestra un cuadr
 
 <br/>
 
-## Acciones disponibles {#available-actions}
+## Acciones disponibles {/* #available-actions */}
 
 | Botón                                                           | Descripción                                              |
 |:-----------------------------------------------------------------|:---------------------------------------------------------|
@@ -44,7 +44,7 @@ Cuando la configuración no está completamente configurada, se muestra un cuadr
 
 <br/>
 
-## Proveedores SMTP comunes {#common-smtp-providers}
+## Proveedores SMTP Comunes {/* #common-smtp-providers */}
 
 **Gmail:**
 
@@ -73,7 +73,7 @@ Cuando la configuración no está completamente configurada, se muestra un cuadr
 - Contraseña: Usa una contraseña de aplicación
 - Autenticación: Requerida
 
-### Prácticas Recomendadas de Seguridad {#security-best-practices}
+### Mejores Prácticas de Seguridad {/* #security-best-practices */}
 
 - Considere usar una cuenta de correo electrónico dedicada para las notificaciones
  - Pruebe su configuración usando el botón "Enviar correo de prueba"

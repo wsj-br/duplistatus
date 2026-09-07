@@ -1,4 +1,4 @@
-# NTFY {#ntfy}
+# NTFY {/* #ntfy */}
 
 [NTFY](https://github.com/binwiederhier/ntfy) ek aasaan suchnaa sewaa hai jo aapake phone ya desktop par push notifications bhejne ke liye use kiya ja sakta hai. Is section mein, aap apake notification server connection aur authentication ko sanrachit kar sakte hain.
 
@@ -15,7 +15,7 @@
 A <IIcon2 icon="lucide:message-square" color="green"/> green icon next to **NTFY** in the sidebar means your settings are valid. If the icon is <IIcon2 icon="lucide:message-square" color="yellow"/> yellow, your settings are not valid.
 When the configuration is not valid, the NTFY checkboxes in the [`Backup Notifications`](backup-notifications-settings.md) tab will also be greyed out.
 
-## Available Actions {#available-actions}
+## उपलब्ध क्रियाएं {/* #available-actions */}
 
 | Button                                                                | Vivaaran                                                                                                  |
 |:----------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------|
@@ -23,7 +23,7 @@ When the configuration is not valid, the NTFY checkboxes in the [`Backup Notific
 | <IconButton icon="lucide:send-horizontal" label="Test Message Bhejein"/> | Aapake NTFY server par ek test message bhejein apake configuration ko check karne ke liye.                                         |
 | <IconButton icon="lucide:qr-code" label="Device Sanrachit karein"/>          | Ek QR code dikhaye jo aapake mobile device ya desktop ko NTFY notifications ke liye quickly configure karne mein madad karega. |
 
-## Device Sanrachit karein {#device-configuration}
+## डिवाइस कॉन्फ़िगरेशन {/* #device-configuration */}
 
 Aapake device par NTFY application install karne ke baad, usko configure karne se pehle ([see here](https://ntfy.sh/)). <IconButton icon="lucide:qr-code" label="Device Sanrachit karein"/> button par click karne par, ya application toolbar mein <SvgButton svgFilename="ntfy.svg" /> icon par right-click karne par, ek QR code dikhayi jayegi. Is QR code ko scan karne se aapake device ko notifications ke liye sahi NTFY topic ke saath automatically configure ho jayega.
 

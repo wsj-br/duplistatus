@@ -1,4 +1,4 @@
-# Lista de Pontos de Extensão da API {#api-endpoint-list}
+# Lista de Pontos de Extremidade da API {/* #api-endpoint-list */}
 
 Este documento fornece uma tabela de referência rápida de todos os pontos de extensão da API disponíveis (em ordem alfabética de ponto de extensão).
 
@@ -62,6 +62,7 @@ Este documento fornece uma tabela de referência rápida de todos os pontos de e
 | [`/api/dashboard`](core-operations#get-dashboard-data-consolidated---apidashboard)                                                                  | GET    | Obter Dados do Painel (Consolidado) | Operações Principais           |
 | [`/api/detail/:serverId`](core-operations#get-server-data-with-overdue-info---apidetailserverid)                                                    | GET    | Obter Dados do Servidor com Informações de Atraso | Operações Principais           |
 | [`/api/health`](monitoring-apis#health-check---apihealth)                                                                                           | GET    | Verificação de Saúde                      | Monitoramento e Saúde       |
+| [`/api/ping`](monitoring-apis#connectivity-probe---apiping)                                                                                         | GET    | Sonda de Conectividade              | Monitoramento e Saúde    |
 | [`/api/lastbackup/:serverId`](external-apis#get-latest-backup---apilastbackupserverid)                                                              | GET    | Obter Último Backup                 | APIs Externas             |
 | [`/api/lastbackups/:serverId`](external-apis#get-latest-backups---apilastbackupsserverid)                                                           | GET    | Obter Últimos Backups                | APIs Externas             |
 | [`/api/notifications/check-overdue`](notification-apis#check-overdue-backups---apinotificationscheck-overdue)                                       | POST   | Verificar Backups Atrasados             | Sistema de Notificação       |

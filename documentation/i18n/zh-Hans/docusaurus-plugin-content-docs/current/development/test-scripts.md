@@ -1,11 +1,11 @@
-# 测试脚本 {#test-scripts}
+# 测试脚本 {/* #test-scripts */}
 
 该项目包括几个测试脚本，以帮助开发和测试：
 
 > [!NOTE]
 > 已删除遗留的仓库根 `pnpm` 辅助工具，用于过期调试、SMTP 矩阵测试和 cron 端口检查。请使用应用程序 UI (**设置 → 备份监控**)、经过身份验证的 HTTP API 和 `curl` 对 cron 服务，如下所述。
 
-## 生成测试数据 {#generate-test-data}
+## 生成测试数据 {/* #generate-test-data */}
 
 ```bash
 pnpm generate-test-data --servers=N
@@ -49,26 +49,26 @@ pnpm generate-test-data --servers=30
 > 此脚本将删除数据库中的所有以前数据，并用测试数据替换它。
 > 在运行此脚本之前，请备份您的数据库。
 
-## 过期检查和 cron 连接性（开发） {#overdue-checks-and-cron-connectivity-development}
+## 过期检查和 cron 连接性（开发） {/* #overdue-checks-and-cron-connectivity-development */}
 
-### 运行过期备份检查 {#run-an-overdue-backup-check}
+### 运行过期备份检查 {/* #run-an-overdue-backup-check */}
 
 在应用程序运行时：
 
 - **UI（推荐）：** 打开 **设置 → 备份监控** 并使用 **测试过期备份**。这将运行与通过身份验证的 `POST /api/notifications/check-overdue` 调度作业相同的逻辑。
 
-### Cron 服务健康状况 {#cron-service-health}
+### Cron 服务健康状态 {/* #cron-service-health */}
 
 ```bash
 curl http://localhost:8667/health
 curl http://localhost:8666/api/cron/health
 ```
 
-### 模拟特定日期或时间 {#simulating-a-specific-date-or-time}
+### 模拟特定日期或时间 {/* #simulating-a-specific-date-or-time */}
 
 没有捆绑的 CLI 用于注入模拟的“当前”时间。有关算法和手动测试想法，请参阅存储库文件 `dev/OVERDUE_DETECTION_ALGORITHM.md` 和 `src/lib/overdue-backup-checker.ts` 中的实现。
 
-## 验证 CSV 导出 {#validate-csv-export}
+## 验证 CSV 导出 {/* #validate-csv-export */}
 
 ```bash
 pnpm validate-csv-export
@@ -81,7 +81,7 @@ pnpm validate-csv-export
 
 在发布前确保 CSV 导出正确工作很有用。
 
-## 暂时阻止 NTFY 服务器（用于测试） {#temporarily-block-ntfy-server-for-testing}
+## 临时阻止 NTFY 服务器（用于测试） {/* #temporarily-block-ntfy-server-for-testing */}
 
 ```bash
 sudo ./scripts/temporary_ntfy.sh_block.sh
@@ -97,11 +97,11 @@ sudo ./scripts/temporary_ntfy.sh_block.sh
 >[!CAUTION]
 > 此脚本修改 iptables 规则，需要 root 权限。仅用于测试通知重试机制。
 
-## 数据库迁移测试 {#database-migration-testing}
+## 数据库迁移测试 {/* #database-migration-testing */}
 
 该项目包括用于测试从旧版本到当前版本的数据库迁移的脚本。这些脚本确保数据库迁移正确工作并保留数据完整性。
 
-### 生成迁移测试数据 {#generate-migration-test-data}
+### 生成迁移测试数据 {/* #generate-migration-test-data */}
 
 ```bash
 ./scripts/generate-migration-test-data.sh
@@ -143,7 +143,7 @@ sudo ./scripts/temporary_ntfy.sh_block.sh
 >[!IMPORTANT]
 > 此脚本只需运行一次，因为新版本的开发人员可以直接将数据库文件和屏幕截图复制到 `scripts/migration_test_data/` 目录。在开发过程中，只需运行 `./scripts/test-migrations.sh` 脚本来测试迁移。
 
-### 测试数据库迁移 {#test-database-migrations}
+### 测试数据库迁移 {/* #test-database-migrations */}
 
 ```bash
 ./scripts/test-migrations.sh
@@ -220,11 +220,11 @@ echo $?  # 0 = all passed, 1 = some failed
 >[!NOTE]
 > 此脚本在内部使用 TypeScript 迁移测试脚本（`test-migration.ts`）。测试脚本在迁移后验证数据库结构并确保数据完整性。
 
-## SMTP 和电子邮件（开发） {#smtp-and-email-development}
+## SMTP 和电子邮件（开发） {/* #smtp-and-email-development */}
 
 在 **设置 → 电子邮件** 下配置 SMTP，并使用应用程序内的电子邮件测试和通知流程。以前的 `pnpm set-smtp-test-config` 和 `pnpm test-smtp-connections` 帮助脚本已从存储库中删除。
 
-## 测试 Docker 入口点脚本 {#test-docker-entrypoint-script}
+## 测试 Docker 入口点脚本 {/* #test-docker-entrypoint-script */}
 
 ```bash
 pnpm test-entrypoint
@@ -267,10 +267,10 @@ pnpm test-entrypoint
 - 测试正常关闭和信号处理
 - 在本地环境中调试入口脚本行为
 
-## 每日摘要验证 {#daily-summary-validation}
+## 每日摘要验证 {/* #daily-summary-validation */}
 
 ```bash
 pnpm validate-daily-summary
 ```
 
-运行确定性检查以验证每日摘要的调度（包括夏令时）、快照聚合、Markdown 消毒、交付账本索赔以及使用自定义模板进行架构 4.1 → 4.2 迁移。不会发送电子邮件或 NTFY。
+运行确定性检查以确保每日摘要调度（包括夏令时）、快照聚合（仅限最新备份作业）、清理剩余的通知设置、孤立的备份/服务器行、Markdown 净化、交付账本索赔以及使用自定义模板进行架构 4.1 → 4.2 迁移。不会发送电子邮件或 NTFY。

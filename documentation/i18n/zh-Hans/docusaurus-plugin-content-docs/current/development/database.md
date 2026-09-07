@@ -1,19 +1,19 @@
-# 数据库模式 {#database-schema}
+# 数据库架构 {/* #database-schema */}
 
 本文档描述了 duplistatus 使用的 SQLite 数据库模式，以存储备份操作数据。
 
-## 数据库位置 {#database-location}
+## 数据库位置 {/* #database-location */}
 
 数据库存储在应用程序数据目录中：
 - **默认位置**: `/app/data/backups.db`
 - **Docker 卷**: `duplistatus_data:/app/data`
 - **文件名**: `backups.db`
 
-## 数据库迁移系统 {#database-migration-system}
+## 数据库迁移系统 {/* #database-migration-system */}
 
 duplistatus 使用自动化迁移系统来处理不同版本之间的数据库模式更改。
 
-### 迁移版本历史 {#migration-version-history}
+### 迁移版本历史 {/* #migration-version-history */}
 
 以下是历史上的迁移版本，它们使数据库达到当前状态:
 
@@ -27,20 +27,20 @@ duplistatus 使用自动化迁移系统来处理不同版本之间的数据库�
 
 当前应用程序版本（v1.5.x）使用**Schema v4.2**作为最新的数据库架构版本。
 
-### 迁移过程 {#migration-process}
+### 迁移过程 {/* #migration-process */}
 
 1. **自动备份**: 创建备份之前的迁移
 2. **模式更新**: 更新数据库结构
 3. **数据迁移**: 保留现有数据
 4. **验证**: 确认成功迁移
 
-## 表格 {#tables}
+## 表 {/* #tables */}
 
-### 服务器表 {#servers-table}
+### 服务器表 {/* #servers-table */}
 
 存储有关被监控的 Duplicati 服务器的信息。
 
-#### 字段 {#fields}
+#### 字段 {/* #fields */}
 
 | 字段             | 类型             | 描述                        |
 |-------------------|------------------|------------------------------------|
@@ -52,11 +52,11 @@ duplistatus 使用自动化迁移系统来处理不同版本之间的数据库�
 | `server_password` | TEXT             | 服务器密码用于认证 |
 | `created_at`      | DATETIME         | 服务器创建时间戳          |
 
-### 备份表 {#backups-table}
+### 备份表 {/* #backups-table */}
 
 存储从Duplicati服务器接收的备份操作数据。
 
-#### 关键字段 {#key-fields}
+#### 关键字段 {/* #key-fields */}
 
 | 字段              | 类型              | 描述                                    |
 |--------------------|-------------------|------------------------------------------------|
@@ -74,7 +74,7 @@ duplistatus 使用自动化迁移系统来处理不同版本之间的数据库�
 | `errors`           | INTEGER           | 错误数量                               |
 | `created_at`       | DATETIME          | 记录创建时间戳                      |
 
-#### 消息数组（JSON 存储） {#message-arrays-json-storage}
+#### 消息数组（JSON 存储） {/* #message-arrays-json-storage */}
 
 | 字段               | 类型 | 描述                             |
 |---------------------|------|-----------------------------------------|
@@ -83,7 +83,7 @@ duplistatus 使用自动化迁移系统来处理不同版本之间的数据库�
 | `errors_array`      | TEXT | JSON 数组的错误消息            |
 | `available_backups` | TEXT | JSON 数组的可用备份版本 |
 
-#### 文件操作字段 {#file-operation-fields}
+#### 文件操作字段 {/* #file-operation-fields */}
 
 | 字段                 | 类型    | 描述                  |
 |-----------------------|---------|------------------------------|
@@ -102,7 +102,7 @@ duplistatus 使用自动化迁移系统来处理不同版本之间的数据库�
 | `modified_symlinks`   | INTEGER | 修改的符号链接      |
 | `deleted_symlinks`    | INTEGER | 删除的符号链接       |
 
-#### 文件大小字段 {#file-size-fields}
+#### 文件大小字段 {/* #file-size-fields */}
 
 | 字段                    | 类型    | 描述                          |
 |--------------------------|---------|--------------------------------------|
@@ -111,7 +111,7 @@ duplistatus 使用自动化迁移系统来处理不同版本之间的数据库�
 | `size_of_added_files`    | INTEGER | 添加到备份的新文件大小    |
 | `size_of_modified_files` | INTEGER | 备份期间修改的文件大小     |
 
-#### 操作状态字段 {#operation-status-fields}
+#### 操作状态字段 {/* #operation-status-fields */}
 
 | 字段                    | 类型              | 描述                    |
 |--------------------------|-------------------|--------------------------------|
@@ -127,7 +127,7 @@ duplistatus 使用自动化迁移系统来处理不同版本之间的数据库�
 | `errors_actual_length`   | INTEGER           | 实际错误数            |
 | `messages_actual_length` | INTEGER           | 实际消息数          |
 
-#### 后端统计信息字段 {#backend-statistics-fields}
+#### 后端统计字段 {/* #backend-statistics-fields */}
 
 | 字段                            | 类型     | 描述                       |
 |----------------------------------|----------|-----------------------------------|
@@ -146,43 +146,43 @@ duplistatus 使用自动化迁移系统来处理不同版本之间的数据库�
 | `backend_warnings_actual_length` | INTEGER  | 后端警告数量                     |
 | `backend_errors_actual_length`   | INTEGER  | 后端错误数量                       |
 
-### 配置表 {#configurations-table}
+### 配置表 {/* #configurations-table */}
 
 存储应用程序配置设置。
 
-#### 字段 {#fields-1}
+#### 字段 {/* #fields-1 */}
 
 | 字段   | 类型                      | 描述                |
 |---------|---------------------------|----------------------------|
 | `key`   | TEXT PRIMARY KEY NOT NULL | 配置键          |
 | `value` | TEXT                      | 配置值 (JSON) |
 
-#### 常见配置键 {#common-configuration-keys}
+#### 常用配置键 {/* #common-configuration-keys */}
 
 - `email_config`: 电子邮件通知设置
 - `ntfy_config`: NTFY 通知设置
 - `overdue_tolerance`: 逾期备份容忍度设置
 - `notification_templates`: 通知消息模板
-- `daily_summary`：每日摘要模式、计划和时区
-- `cron_service`：Cron 任务计划，包括 `daily-summary-dispatch`
-- `audit_retention_days`：审计日志保留期（默认：90 天）
+- `daily_summary`：每日摘要模式、计划、时区、可选的公共仪表板 URL 和可选的 SMTP 收件人覆盖（`smtpRecipient`；为空时使用电子邮件设置）
+- `cron_service`：Cron 任务计划，包括 `daily-summary-dispatch`（`minute hour * * *` 从 `daily_summary.utcTime`）
+- `audit_retention_days`：审计日志保留期限（默认：90 天）
 
-### 数据库版本表 {#database-version-table}
+### 数据库版本表 {/* #database-version-table */}
 
 用于迁移目的的数据库模式版本跟踪。
 
-#### 字段 {#fields-2}
+#### 字段 {/* #fields-2 */}
 
 | 字段        | 类型             | 描述                |
 |--------------|------------------|----------------------------|
 | `version`    | TEXT PRIMARY KEY | 数据库版本           |
 | `applied_at` | DATETIME         | 何时应用迁移 |
 
-### 用户表 {#users-table}
+### 用户表 {/* #users-table */}
 
 存储用户账户信息用于身份验证和访问控制。
 
-#### 字段 {#fields-3}
+#### 字段 {/* #fields-3 */}
 
 | 字段                   | 类型                 | 描述                         |
 |-------------------------|----------------------|-------------------------------------|
@@ -198,11 +198,11 @@ duplistatus 使用自动化迁移系统来处理不同版本之间的数据库�
 | `failed_login_attempts` | INTEGER              | 登录失败尝试次数      |
 | `locked_until`          | DATETIME             | 账户锁定过期时间（如果已锁定） |
 
-### 会话表 {#sessions-table}
+### 会话表 {/* #sessions-table */}
 
 存储用户会话数据用于认证和安全。
 
-#### 字段 {#fields-4}
+#### 字段 {/* #fields-4 */}
 
 | 字段             | 类型              | 描述                                                      |
 |-------------------|-------------------|------------------------------------------------------------------|
@@ -216,11 +216,11 @@ duplistatus 使用自动化迁移系统来处理不同版本之间的数据库�
 | `csrf_token`      | TEXT              | 会话的CSRF令牌                                       |
 | `csrf_expires_at` | DATETIME          | CSRF令牌过期时间                                            |
 
-### 审计日志表 {#audit-log-table}
+### 审计日志表 {/* #audit-log-table */}
 
 存储用户操作和系统事件的审计跟踪。
 
-#### 字段 {#fields-5}
+#### 字段 {/* #fields-5 */}
 
 | 字段           | 类型                              | 描述                                                       |
 |-----------------|-----------------------------------|-------------------------------------------------------------------|
@@ -238,11 +238,11 @@ duplistatus 使用自动化迁移系统来处理不同版本之间的数据库�
 | `status`        | 文本 NOT NULL                     | 操作状态（'成功'，'失败'，'错误'）                  |
 | `error_message` | 文本                              | 如果操作失败，显示错误消息                                    |
 
-### API 密钥表 {#api-keys-table}
+### API 密钥表 {/* #api-keys-table */}
 
 存储外部 HTTP API 的哈希 API 密钥。明文密钥仅在创建时显示一次，永远不会存储。
 
-#### 字段 {#fields-6}
+#### 字段 {/* #fields-6 */}
 
 | 字段           | 类型             | 描述                                              |
 |----------------|------------------|----------------------------------------------------------|
@@ -262,18 +262,18 @@ duplistatus 使用自动化迁移系统来处理不同版本之间的数据库�
 
 在 `configurations` 表中的相关配置密钥: `external_api_require_api_key`, `ip_trusted_proxies`, `admin_ip_allowlist`, `external_api_ip_allowlist`, `upload_limits`。
 
-### 每日摘要传递表 {#daily-summary-deliveries-table}
+### 每日摘要投递表 {/* #daily-summary-deliveries-table */}
 
 每个频道的每日摘要电子邮件发送分类账。遗留行可能包含来自早期版本的 `ntfy` 频道。每个计划发生（或唯一手动发送）每个频道最多有一行。渲染的有效载荷在发送前存储，以便重试保持相同的快照。超过 30 天的行将被修剪。
 
 如果进程在提供者接受消息后但在记录成功之前死亡，该频道可能会被重试（至少一次）。
 
-#### 字段 {#fields-7}
+#### 字段 {/* #fields-7 */}
 
 | 字段               | 类型             | 描述                                                                 |
 |--------------------|------------------|-----------------------------------------------------------------------------|
 | `id`               | TEXT PRIMARY KEY | 唯一的传递标识符                                                  |
-| `occurrence_key`   | TEXT NOT NULL    | 计划的本地日期键或`manual:{uuid}`                                 |
+| `occurrence_key`   | TEXT NOT NULL    | 计划的关键 `scheduled:UTC:{date}:{HH:mm}` 或 `manual:{uuid}`             |
 | `channel`          | TEXT NOT NULL    | `email`或`ntfy`                                                           |
 | `trigger`          | TEXT NOT NULL    | `scheduled`、`manual`或`retry`                                           |
 | `summary_date`     | TEXT NOT NULL    | 快照的本地日历日期                                        |
@@ -290,9 +290,9 @@ duplistatus 使用自动化迁移系统来处理不同版本之间的数据库�
 
 对`(occurrence_key, channel)`的唯一索引可防止在同一频道上重复发送相同的事件。
 
-## 会话管理 {#session-management}
+## 会话管理 {/* #session-management */}
 
-### 数据库支持的会话存储 {#database-backed-session-storage}
+### 数据库支持的会话存储 {/* #database-backed-session-storage */}
 
 会话存储在数据库中，具有内存回退：
 - **主存储**：数据库支持的会话表
@@ -302,14 +302,14 @@ duplistatus 使用自动化迁移系统来处理不同版本之间的数据库�
 - **CSRF保护**：跨站点请求伪造保护
 - **自动清理**：过期会话将自动删除
 
-### 会话API端点 {#session-api-endpoints}
+### 会话 API 端点 {/* #session-api-endpoints */}
 
 - `POST /api/session`：创建新会话
 - `GET /api/session`：验证现有会话
 - `DELETE /api/session`：销毁会话
 - `GET /api/csrf`：获取CSRF令牌
 
-## 索引 {#indexes}
+## 索引 {/* #indexes */}
 
 数据库包括几个索引以实现最佳查询性能：
 
@@ -322,7 +322,7 @@ duplistatus 使用自动化迁移系统来处理不同版本之间的数据库�
 - **审计索引**: 时间戳、用户 ID、操作、类别和状态索引，用于审计查询
 - **API 密钥索引**: 唯一哈希，以及启用/范围查找，用于认证
 
-## 关系 {#relationships}
+## 关系 {/* #relationships */}
 
 - **服务器 → 备份**：一对多关系
 - **用户 → 会话**：一对多关系（会话可以在没有用户的情况下存在）
@@ -331,7 +331,7 @@ duplistatus 使用自动化迁移系统来处理不同版本之间的数据库�
 - **备份 → 消息**：嵌入式 JSON 数组
 - **配置**：键值存储
 
-## 数据类型 {#data-types}
+## 数据类型 {/* #data-types */}
 
 - **TEXT**: 字符串数据，JSON 数组
 - **INTEGER**: 数值数据，文件计数，大小
@@ -339,16 +339,16 @@ duplistatus 使用自动化迁移系统来处理不同版本之间的数据库�
 - **DATETIME**: 时间戳数据
 - **BOOLEAN**: 真/假值
 
-## 备份状态值 {#backup-status-values}
+## 备份状态值 {/* #backup-status-values */}
 
 - **成功**: 备份完成成功
 - **警告**: 备份完成时有警告
 - **错误**: 备份完成时有错误
 - **严重错误**: 备份失败
 
-## 常见查询 {#common-queries}
+## 常见查询 {/* #common-queries */}
 
-### 获取服务器的最新备份 {#get-latest-backup-for-a-server}
+### 获取服务器的最新备份 {/* #get-latest-backup-for-a-server */}
 
 ```sql
 SELECT * FROM backups 
@@ -357,7 +357,7 @@ ORDER BY date DESC
 LIMIT 1;
 ```
 
-### 获取服务器的所有备份 {#get-all-backups-for-a-server}
+### 获取服务器的所有备份 {/* #get-all-backups-for-a-server */}
 
 ```sql
 SELECT * FROM backups 
@@ -365,7 +365,7 @@ WHERE server_id = ?
 ORDER BY date DESC;
 ```
 
-### 获取服务器摘要 {#get-server-summary}
+### 获取服务器摘要 {/* #get-server-summary */}
 
 ```sql
 SELECT 
@@ -379,7 +379,7 @@ LEFT JOIN backups b ON s.id = b.server_id
 GROUP BY s.id;
 ```
 
-### 获取总体摘要 {#get-overall-summary}
+### 获取总体摘要 {/* #get-overall-summary */}
 
 ```sql
 SELECT 
@@ -409,7 +409,7 @@ FROM servers s
 LEFT JOIN backups b ON b.server_id = s.id;
 ```
 
-### 数据库清理 {#database-cleanup}
+### 数据库清理 {/* #database-cleanup */}
 
 ```sql
 -- Delete old backups (older than 30 days)
@@ -421,9 +421,9 @@ DELETE FROM servers
 WHERE id NOT IN (SELECT DISTINCT server_id FROM backups);
 ```
 
-## JSON 到数据库映射 {#json-to-database-mapping}
+## JSON 到数据库映射 {/* #json-to-database-mapping */}
 
-### API 请求体到数据库列映射 {#api-request-body-to-database-columns-mapping}
+### API 请求正文到数据库列映射 {/* #api-request-body-to-database-columns-mapping */}
 
 何时 Duplicati 通过 HTTP POST 发送备份数据，JSON 结构被映射到数据库列：
 

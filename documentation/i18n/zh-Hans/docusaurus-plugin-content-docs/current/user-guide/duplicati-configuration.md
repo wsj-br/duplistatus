@@ -1,4 +1,4 @@
-# Duplicati 配置 {#duplicati-configuration}
+# Duplicati 配置 {/* #duplicati-configuration */}
 
 <SvgButton svgFilename="duplicati_logo.svg" /> 按钮位于 [应用程序工具栏](overview.md#application-toolbar) 上，打开 Duplicati 服务器的 web 界面在一个新标签页中。
 
@@ -11,7 +11,7 @@
 - 当您使用 <IconButton icon="lucide:download" height="16" href="collect-backup-logs" /> [收集备份日志](collect-backup-logs.md) 功能时，应用程序会自动保存服务器的 URL。
 - 如果服务器地址未配置，服务器将不会出现在服务器列表中。
 
-## 访问旧的 Duplicati UI {#accessing-the-old-duplicati-ui}
+## 访问旧版 Duplicati UI {/* #accessing-the-old-duplicati-ui */}
 
 如果您遇到新的 Duplicati Web 界面（`/ngclient/`）登录问题，您可以右键单击应用程序工具栏上的 <SvgButton svgFilename="duplicati_logo.svg" /> 按钮或服务器选择弹出窗口中的任何服务器项，以在新标签页中打开旧的 Duplicati UI（`/ngax/`）。
 

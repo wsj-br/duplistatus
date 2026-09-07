@@ -29,15 +29,18 @@ import { ServerFilterInput } from '@/components/ui/server-filter-input';
 import { getHelpUrl } from '@/lib/helpMapper';
 import { useLocale } from '@/contexts/locale-context';
 import { useDashboardServerFilter } from '@/contexts/dashboard-server-filter-context';
-import i18n, { loadLocale } from '@/i18n';
 import {
   getLocaleLabel,
   isSupportedLocale,
   LOCALE_CODE_LIST,
-  LOCALE_COOKIE_NAME,
   SOURCE_LOCALE,
   type LocaleCode,
 } from '@/lib/locales';
+import {
+  UI_LOCALE_STORAGE_KEY,
+  applyUiLocale,
+} from '@/lib/ui-locale-client';
+import { setUserLocalStorageItem } from '@/lib/user-local-storage';
 //import the logo image
 import DupliLogo from '../../public/images/duplistatus_logo.png';
 
@@ -73,9 +76,10 @@ export function AppHeader() {
   const handleLocaleChange = async (newLocale: string) => {
     if (newLocale === locale) return;
     if (!isSupportedLocale(newLocale)) return;
-    document.cookie = `${LOCALE_COOKIE_NAME}=${encodeURIComponent(newLocale)}; path=/; max-age=${365 * 24 * 60 * 60}; SameSite=Lax`;
-    await loadLocale(newLocale);
-    await i18n.changeLanguage(newLocale);
+    await applyUiLocale(newLocale);
+    if (user) {
+      setUserLocalStorageItem(UI_LOCALE_STORAGE_KEY, user.id, newLocale);
+    }
     router.refresh();
   };
 

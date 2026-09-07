@@ -1,8 +1,8 @@
-# 主页集成（可选） {#homepage-integration-optional}
+# 主页集成（可选）{/* #homepage-integration-optional */}
 
 [主页](https://gethomepage.dev/) 是一个可定制的仪表盘应用程序。要将 **duplistatus** 与主页集成，请使用 [自定义 API 小部件类型](https://gethomepage.dev/widgets/services/customapi/) 将小部件添加到您的 `services.yaml` 文件中。
 
-## 总结小部件 {#summary-widget}
+## 摘要小组件 {/* #summary-widget */}
 
 此小部件在主页仪表盘上显示整体备份统计信息。
 
@@ -44,7 +44,7 @@
 
 ![主页摘要小部件](/img/homepage-summary.png)
 
-## 上次备份信息小部件 {#last-backup-information-widget}
+## 最近备份信息小组件 {/* #last-backup-information-widget */}
 
 此小部件显示特定机器的最新备份信息。
 
@@ -79,7 +79,7 @@
 
 ![主页最后备份小部件](/img/homepage-lastbackup.png)
 
-## 配置说明 {#configuration-notes}
+## 配置说明 {/* #configuration-notes */}
 
 - 将 `your-server` 替换为您的服务器的 IP 地址或主机名。
 - 根据需要调整 `refreshInterval`（以毫秒为单位）。

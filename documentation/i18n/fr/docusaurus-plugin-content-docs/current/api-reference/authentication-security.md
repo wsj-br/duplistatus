@@ -1,23 +1,23 @@
-# Authentification et sécurité {#authentication-security}
+# Authentification et sécurité {/* #authentication--security */}
 
 L'API utilise une combinaison d'authentification basée sur les sessions et de protection CSRF pour toutes les opérations d'écriture dans la base de données afin d'empêcher l'accès non autorisé et les attaques de type déni de service. Les API externes utilisées par Duplicati et Homepage restent exemptes de CSRF. Elles peuvent éventuellement nécessiter une clé API à portée limitée et/ou une liste d'adresses IP autorisées (toutes deux désactivées par défaut). `/api/upload` dispose également d'une limite configurable de taille de corps et d'un taux de limitation.
 
-## Authentification basée sur les sessions {#session-based-authentication}
+## Authentification basée sur les sessions {/* #session-based-authentication */}
 
 Les points de terminaison protégés nécessitent un cookie de session valide et un jeton CSRF. Le système de session assure une authentification sécurisée pour toutes les opérations protégées.
 
-### Gestion des sessions {#session-management}
-1. **Créer une session** : POST vers `/api/session` pour créer une nouvelle session
+### Gestion des sessions {/* #session-management */}
+1. **Créer une session** : POST à `/api/session` pour créer une nouvelle session
 2. **Obtenir le jeton CSRF** : GET `/api/csrf` pour obtenir un jeton CSRF pour la session
 3. **Inclure dans les requêtes** : Envoyer le cookie de session et le jeton CSRF avec les requêtes protégées
 4. **Valider la session** : GET `/api/session` pour vérifier si la session est toujours valide
 5. **Supprimer la session** : DELETE `/api/session` pour se déconnecter et effacer la session
 
-### Protection CSRF {#csrf-protection}
-Toutes les opérations modifiant l'état nécessitent un jeton CSRF valide correspondant à la session en cours. Le jeton CSRF doit être inclus dans l'en-tête `X-CSRF-Token` pour les points de terminaison protégés.
+### Protection CSRF {/* #csrf-protection */}
+Toutes les opérations modifiant l'état nécessitent un jeton CSRF valide qui correspond à la session actuelle. Le jeton CSRF doit être inclus dans l'en-tête `X-CSRF-Token` pour les points de terminaison protégés.
 
-### Points de terminaison protégés {#protected-endpoints}
-Tous les points de terminaison qui modifient les données de la base nécessitent une authentification de session et un jeton CSRF :
+### Points de terminaison protégés {/* #protected-endpoints */}
+Tous les points de terminaison qui modifient les données de la base de données nécessitent une authentification de session et un jeton CSRF :
 
 - **Gestion des serveurs** : `/api/servers/:id` (PATCH, DELETE), `/api/servers/:id/server-url` (PATCH), `/api/servers/:id/password` (PATCH, GET)
 - **Gestion de la configuration** : `/api/configuration/email` (GET, POST, DELETE), `/api/configuration/unified` (GET), `/api/configuration/ntfy` (GET), `/api/configuration/notifications` (GET, POST), `/api/configuration/backup-settings` (POST), `/api/configuration/templates` (POST), `/api/configuration/overdue-tolerance` (GET, POST), `/api/configuration/daily-summary` (GET, POST), `/api/configuration/daily-summary/send` (POST), `/api/configuration/daily-summary/retry` (POST), `/api/configuration/daily-summary/preview` (POST)
@@ -37,19 +37,19 @@ Tous les points de terminaison qui modifient les données de la base nécessiten
 - **Vérification en retard** : `/api/notifications/check-overdue` (POST) - nécessite une session et un jeton CSRF
 - **Effacer les horodatages en retard** : `/api/notifications/clear-overdue-timestamps` (POST) - nécessite une session et un jeton CSRF
 
-### Points de terminaison externes {#external-endpoints}
-Ces routes n'utilisent pas de cookies de session ou de CSRF. L'authentification est facultative et configurée dans Paramètres :
+### Points de terminaison externes {/* #external-endpoints */}
+Ces routes n'utilisent pas de cookies de session ni de CSRF. L'authentification est facultative et configurée dans les Paramètres :
 
 - `/api/upload` - Téléchargements de données de sauvegarde depuis Duplicati (clé à portée de téléchargement, limites de taille et de taux)
 - `/api/lastbackup/:serverId` - Dernier état de sauvegarde (clé à portée de lecture)
 - `/api/lastbackups/:serverId` - Derniers états de sauvegarde (clé à portée de lecture)
 - `/api/summary` - Données de résumé globales (clé à portée de lecture)
-- `/api/health` - Point de terminaison de vérification de santé (jamais avec clé)
-- `/api/ping` - Sonde de connectivité (jamais avec clé)
+- `/api/health` - Point de contrôle de santé (sans clé ; sonde SQLite peu coûteuse ; limitation de débit par IP)
+- `/api/ping` - Sonde de connectivité (sans clé ; limitation de débit par IP)
 
-Quand **Exiger des clés API** est sur, les quatre premières routes renvoient `401` sans une clé valide et `403` quand la portée de la clé ne correspond pas. Voir [Clés API](../user-guide/settings/api-keys-settings.md) et [Liste d'adresses IP autorisées](../user-guide/settings/ip-allowlist-settings.md).
+Quand **Exiger des clés API** est désactivé, les quatre premières routes acceptent les requêtes avec ou sans clé : une clé valide avec une portée correspondante est enregistrée ; une mauvaise clé est ignorée. Quand le commutateur est sur, elles retournent `401` sans une clé valide et `403` quand la portée de la clé ne correspond pas. `/api/health` et `/api/ping` n'utilisent jamais de clés. Voir [Clés API](../user-guide/settings/api-keys-settings.md) et [Liste d'adresses IP autorisées](../user-guide/settings/ip-allowlist-settings.md).
 
-### Exemple d'utilisation (Session + CSRF) {#usage-example-session--csrf}
+### Exemple d'utilisation (Session + CSRF) {/* #usage-example-session--csrf */}
 
 ```typescript
 // 1. Create session
@@ -77,12 +77,12 @@ const response = await fetch('/api/servers/server-id', {
 });
 ```
 
-## Points de terminaison d'authentification {#authentication-endpoints}
+## Points de terminaison d'authentification {/* #authentication-endpoints */}
 
-### Connexion - `/api/auth/login` {#login---apiauthlogin}
+### Connexion - `/api/auth/login` {/* #login---apiauthlogin */}
 - **Point de terminaison** : `/api/auth/login`
 - **Méthode** : POST
-- **Description** : Authentifie un utilisateur et crée une session. Prend en charge le verrouillage du compte après des tentatives infructueuses et les exigences de changement de mot de passe.
+- **Description** : Authentifie un utilisateur et crée une session. Prend en charge le verrouillage de compte après des tentatives échouées et les exigences de changement de mot de passe.
 - **Authentification** : Nécessite une session valide et un jeton CSRF (mais aucun utilisateur connecté)
 - **Corps de la requête** :
 
@@ -121,7 +121,7 @@ const response = await fetch('/api/servers/server-id', {
   - Si l'utilisateur a le drapeau `mustChangePassword` activé, il doit être redirigé vers la page de changement de mot de passe
   - Toutes les tentatives de connexion (réussies et échouées) sont enregistrées dans le journal d'audit
 
-### Déconnexion - `/api/auth/logout` {#logout---apiauthlogout}
+### Déconnexion - `/api/auth/logout` {/* #logout---apiauthlogout */}
 - **Point de terminaison** : `/api/auth/logout`
 - **Méthode** : POST
 - **Description** : Déconnecte l'utilisateur actuel et détruit sa session.
@@ -144,10 +144,10 @@ const response = await fetch('/api/servers/server-id', {
   - La déconnexion est enregistrée dans le journal d'audit
   - La session est immédiatement invalidée
 
-### Obtenir l'utilisateur actuel - `/api/auth/me` {#get-current-user---apiauthme}
+### Obtenir l'utilisateur actuel - `/api/auth/me` {/* #get-current-user---apiauthme */}
 - **Point de terminaison** : `/api/auth/me`
 - **Méthode** : GET
-- **Description** : Renvoie les informations de l'utilisateur authentifié actuel, ou indique s'il n'y a aucun utilisateur connecté.
+- **Description** : Renvoie les informations de l'utilisateur authentifié actuel, ou indique si aucun utilisateur n'est connecté.
 - **Authentification** : Nécessite une session valide (mais aucun utilisateur connecté n'est requis)
 - **Réponse** (authentifié) :
 
@@ -178,10 +178,10 @@ const response = await fetch('/api/servers/server-id', {
   - Peut être appelé sans utilisateur connecté (renvoie `authenticated: false`)
   - Utile pour vérifier l'état d'authentification au chargement de la page
 
-### Changer le mot de passe - `/api/auth/change-password` {#change-password---apiauthchange-password}
+### Changer de mot de passe - `/api/auth/change-password` {/* #change-password---apiauthchange-password */}
 - **Point de terminaison** : `/api/auth/change-password`
 - **Méthode** : POST
-- **Description** : Change le mot de passe pour l'utilisateur authentifié actuel. Si `mustChangePassword` est défini, la vérification du mot de passe actuel est ignorée.
+- **Description** : Change le mot de passe de l'utilisateur authentifié actuel. Si `mustChangePassword` est défini, la vérification du mot de passe actuel est ignorée.
 - **Authentification** : Nécessite une session valide et un jeton CSRF (utilisateur connecté requis)
 - **Corps de la requête** :
 
@@ -218,10 +218,10 @@ const response = await fetch('/api/servers/server-id', {
   - Les modifications de mot de passe sont enregistrées dans le journal d'audit
   - Le nouveau mot de passe doit être différent du mot de passe actuel
 
-### Vérifier si l'administrateur doit changer le mot de passe - `/api/auth/admin-must-change-password` {#check-admin-must-change-password---apiauthadmin-must-change-password}
+### Vérifier si l'utilisateur administrateur doit changer de mot de passe - `/api/auth/admin-must-change-password` {/* #check-admin-must-change-password---apiauthadmin-must-change-password */}
 - **Point de terminaison** : `/api/auth/admin-must-change-password`
 - **Méthode** : GET
-- **Description** : Vérifie si l'utilisateur administrateur doit changer son mot de passe. Ce point de terminaison est public (aucune authentification requise), car il renvoie uniquement un indicateur booléen.
+- **Description** : Vérifie si l'utilisateur administrateur doit changer son mot de passe. Ce point de terminaison est public (aucune authentification requise) car il ne renvoie qu'un indicateur booléen.
 - **Réponse** :
 
   ```json
@@ -238,10 +238,10 @@ const response = await fetch('/api/servers/server-id', {
   - Utilisé pour déterminer si l'indication de changement de mot de passe doit être affichée
   - En cas d'erreur, renvoie `false` pour éviter d'afficher l'indication en cas de problème de base de données
 
-### Obtenir la politique de mot de passe - `/api/auth/password-policy` {#get-password-policy---apiauthpassword-policy}
+### Obtenir la politique de mot de passe - `/api/auth/password-policy` {/* #get-password-policy---apiauthpassword-policy */}
 - **Point de terminaison** : `/api/auth/password-policy`
 - **Méthode** : GET
-- **Description** : Renvoie la configuration actuelle de la politique de mot de passe. Ce point de terminaison est public (aucune authentification requise), car il est nécessaire pour la validation côté interface.
+- **Description** : Renvoie la configuration actuelle de la politique de mot de passe. Ce point de terminaison est public (aucune authentification requise) car il est nécessaire pour la validation côté frontend.
 - **Réponse** :
 
   ```json
@@ -262,7 +262,7 @@ const response = await fetch('/api/servers/server-id', {
   - La politique est configurée via des variables d'environnement (`PWD_ENFORCE`, `PWD_MIN_LEN`)
   - La vérification du mot de passe par défaut (empêchant l'utilisation du mot de passe administrateur par défaut) est toujours appliquée, indépendamment des paramètres de politique
 
-### Codes d'erreur et de succès de l'API Auth (i18n) {#auth-api-error-and-success-codes-i18n}
+### Codes d'erreur et de succès de l'API d'authentification (i18n) {/* #auth-api-error-and-success-codes-i18n */}
 
 Les points de terminaison d'authentification renvoient un `errorCode` stable (et, en cas de succès, un `successCode`) en plus du champ lisible par l'humain `error` ou `message`. Les valeurs `error` et `message` sont en anglais. Les clients doivent utiliser les codes pour rechercher les chaînes localisées afin que l'interface affiche les messages dans la langue sélectionnée par l'utilisateur.
 
@@ -274,7 +274,7 @@ Les points de terminaison d'authentification renvoient un `errorCode` stable (et
 | `/api/auth/change-password` | `PASSWORD_CHANGED` | `NEW_PASSWORD_REQUIRED`, `POLICY_NOT_MET`, `USER_NOT_FOUND`, `CURRENT_PASSWORD_INCORRECT`, `NEW_PASSWORD_SAME_AS_CURRENT`, `INTERNAL_ERROR` |
 | `/api/auth/password-policy` | — | `POLICY_RETRIEVE_FAILED` |
 
-### Réponses d'erreur {#error-responses}
+### Réponses d'erreur {/* #error-responses */}
 - `401 Unauthorized` : Session invalide ou manquante, session expirée, ou échec de la validation du jeton CSRF
 - `403 Forbidden` : Échec de la validation du jeton CSRF ou opération non autorisée
 

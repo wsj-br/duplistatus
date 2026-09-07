@@ -218,26 +218,39 @@ export function getDeliveriesForOccurrence(
   return rows.map(mapRow);
 }
 
+function latestRowForChannel(
+  database: Database.Database,
+  channel: DailySummaryChannel
+): DailySummaryDeliveryRecord | null {
+  const row = database.prepare(`
+    SELECT * FROM daily_summary_deliveries
+    WHERE channel = ?
+    ORDER BY created_at DESC
+    LIMIT 1
+  `).get(channel) as DeliveryRow | undefined;
+  return row ? mapRow(row) : null;
+}
+
 export function getLatestDeliveriesByChannel(
   database: Database.Database
 ): Record<DailySummaryChannel, DailySummaryDeliveryRecord | null> {
-  const rows = database.prepare(`
-    SELECT * FROM daily_summary_deliveries
-    WHERE id IN (
-      SELECT id FROM daily_summary_deliveries d1
-      WHERE d1.created_at = (
-        SELECT MAX(d2.created_at) FROM daily_summary_deliveries d2 WHERE d2.channel = d1.channel
-      )
-    )
-  `).all() as DeliveryRow[];
-  const result: Record<DailySummaryChannel, DailySummaryDeliveryRecord | null> = {
-    email: null,
-    ntfy: null,
+  return {
+    email: latestRowForChannel(database, 'email'),
+    ntfy: latestRowForChannel(database, 'ntfy'),
   };
-  for (const row of rows) {
-    result[row.channel] = mapRow(row);
-  }
-  return result;
+}
+
+export function getLatestSuccessAt(
+  database: Database.Database,
+  channel: DailySummaryChannel
+): string | null {
+  const row = database.prepare(`
+    SELECT sent_at FROM daily_summary_deliveries
+    WHERE channel = ? AND state = 'sent' AND sent_at IS NOT NULL
+    ORDER BY sent_at DESC
+    LIMIT 1
+  `).get(channel) as { sent_at: string } | undefined;
+  return row?.sent_at ?? null;
 }
 
 export function getFailedRetryableDeliveries(

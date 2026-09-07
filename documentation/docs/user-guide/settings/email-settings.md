@@ -1,6 +1,6 @@
 
 
-# Email {#email}
+# Email {/* #email */}
 
 **duplistatus** supports sending email notifications via SMTP as an alternative or complement to NTFY notifications. Email configuration is now managed through the web interface with encrypted storage in the database for enhanced security.
 
@@ -30,7 +30,7 @@
 <br/>
 
 
-## Available Actions {#available-actions}
+## Available Actions {/* #available-actions */}
 
 | Button                                                           | Description                                              |
 |:-----------------------------------------------------------------|:---------------------------------------------------------|
@@ -52,7 +52,7 @@
 
 <br/>
 
-## Common SMTP Providers {#common-smtp-providers}
+## Common SMTP Providers {/* #common-smtp-providers */}
 
 **Gmail:**
 
@@ -81,7 +81,7 @@
 - Password: Use an App Password
 - Authentication: Required
 
-### Security Best Practices {#security-best-practices}
+### Security Best Practices {/* #security-best-practices */}
 
  - Consider using a dedicated email account for notifications
  - Test your configuration using the "Send Test Email" button

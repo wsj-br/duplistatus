@@ -1,4 +1,4 @@
-# Servidor {#server}
+# Servidor {/* #server */}
 
 Você pode configurar um nome alternativo (alias) para seus servidores, uma nota para descrever sua função e os endereços web de seus Servidores Duplicati aqui.
 
@@ -23,7 +23,7 @@ será desabilitado em todas as páginas e o servidor não será exibido na lista
 
 <br/>
 
-## Ações disponíveis para cada servidor {#available-actions-for-each-server}
+## Ações Disponíveis para cada servidor {/* #available-actions-for-each-server */}
 
 | Botão                                                                                                      | Descrição                                                             |
 |:------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------|
@@ -45,7 +45,7 @@ A senha é armazenada criptografada no banco de dados e nunca é exibida na inte
 
 <br/>
 
-## Ações disponíveis para todos os servidores {#available-actions-for-all-servers}
+## Ações Disponíveis para todos os servidores {/* #available-actions-for-all-servers */}
 
 | Botão                                                     | Descrição                                     |
 |:-----------------------------------------------------------|:------------------------------------------------|

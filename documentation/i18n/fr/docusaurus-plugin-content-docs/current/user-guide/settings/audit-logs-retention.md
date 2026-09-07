@@ -1,4 +1,4 @@
-# Rétention du journal d'audit {#audit-log-retention}
+# Conservation des journaux d'audit {/* #audit-log-retention */}
 
 Configurer la durée de conservation des journaux d'audit avant le nettoyage automatique.
 
@@ -8,7 +8,7 @@ Configurer la durée de conservation des journaux d'audit avant le nettoyage aut
 |:-------|:-----------|:-------------|
 | **Rétention (jours)** | Nombre de jours de conservation des journaux d'audit avant suppression automatique | **90 jours** |
 
-## Paramètres de rétention {#retention-settings}
+## Paramètres de conservation {/* #retention-settings */}
 
 - **Plage** : 30 à 365 jours
 - **Nettoyage automatique** : S'exécute quotidiennement à 02:00 UTC (non configurable)

@@ -1,8 +1,8 @@
-# 文档工具 {#documentation-tools}
+# 文档工具 {/* #documentation-tools */}
 
 文档使用 [Docusaurus](https://docusaurus.io/) 构建，并位于 `documentation` 文件夹中。文档托管在 [GitHub Pages](https://wsj-br.github.io/duplistatus/) 上，不再包含在 Docker 容器镜像中。
 
-## 文件夹结构 {#folder-structure}
+## 文件夹结构 {/* #folder-structure */}
 
 ```
 documentation/
@@ -17,7 +17,7 @@ documentation/
 │   ├── de/            # German
 │   ├── es/            # Spanish
 │   ├── fr/            # French
-│   ├── hi/            # Hindi (Roman)
+│   ├── hi/            # Hindi
 │   ├── pt-BR/         # Brazilian Portuguese
 │   └── zh-Hans/       # Simplified Chinese
 ├── src/               # React components and pages
@@ -30,7 +30,7 @@ documentation/
 └── package.json       # Dependencies and scripts
 ```
 
-### 国际化 (i18n) {#internationalization-i18n}
+### 国际化 (i18n) {/* #internationalization-i18n */}
 
 文档使用 Docusaurus 的内置 i18n 系统，英语为默认语言。翻译内容位于 `i18n/{locale}/docusaurus-plugin-content-docs/current/`，镜像 `docs/` 文件夹的结构。
 
@@ -45,7 +45,7 @@ documentation/
 仅编辑 `docs/` 文件和 `i18n/en/` 中的源 JSON 文件。`i18n/{other-locales}/` 中的翻译 markdown 文件是自动生成的，不应手动编辑。
 :::
 
-### 支持的语言 {#supported-locales}
+### 支持的区域设置 {/* #supported-locales */}
 
 | 区域设置  | 语言             | 目录                                            |
 |---------|----------------------|------------------------------------------------------|
@@ -53,21 +53,21 @@ documentation/
 | `de`    | 德语               | `i18n/de/docusaurus-plugin-content-docs/current/`    |
 | `es`    | 西班牙语              | `i18n/es/docusaurus-plugin-content-docs/current/`    |
 | `fr`    | 法语               | `i18n/fr/docusaurus-plugin-content-docs/current/`    |
-| `hi`     | 印地语 (罗马化)        | `i18n/hi/docusaurus-plugin-content-docs/current/`     |
+| `hi`     | 印地语        | `i18n/hi/docusaurus-plugin-content-docs/current/`     |
 | `pt-BR` | 巴西葡萄牙语 | `i18n/pt-BR/docusaurus-plugin-content-docs/current/` |
 | `zh-Hans`| 简体中文   | `i18n/zh-Hans/docusaurus-plugin-content-docs/current/`|
 
-## 翻译文档 {#translate-the-documentation}
+## 翻译文档 {/* #translate-the-documentation */}
 
-本文档使用 AI 驱动的翻译系统来翻译内容（Markdown 文件）和 UI 字符串（来自 Docusaurus 和自定义组件）。源内容为英语（`docs/`），并为德语、法语、西班牙语、巴西葡萄牙语、印地语（罗马音）和简体中文生成了翻译。
+该文档使用基于AI的翻译系统来翻译内容（markdown文件）和UI字符串（来自Docusaurus和自定义组件）。源内容为英语（`docs/`），并生成德语、法语、西班牙语、巴西葡萄牙语、印地语和简体中文的翻译。
 
-### 翻译工作原理 {#how-translation-works}
+### 翻译的工作原理 {/* #how-translation-works */}
 
 1. **Docusaurus UI 字符串**: `pnpm write-translations` 将主题/自定义字符串提取到 `i18n/en/*.json`。
 2. **AI 翻译** (OpenRouter; 在仓库根目录的 `ai-i18n-tools.config.json` 中配置): 从 `documentation/`，`pnpm translate` 运行根目录的 `i18n:translate` 脚本 (UI 字符串、SVG、Docusaurus markdown/JSON 和默认通知模板) 到 `documentation/i18n/`、`src/locales/` 和 `src/locales/templates/`，如配置。
 3. **构建**: `pnpm build` 为所有语言环境在 `documentation/build/` 下生成静态 HTML。
 
-### 运行翻译 {#running-translation}
+### 运行翻译 {/* #running-translation */}
 
 ```bash
 cd documentation
@@ -81,15 +81,15 @@ pnpm translate:status
 
 CLI 标志由 **ai-i18n-tools** 定义；从仓库根目录运行 `pnpm exec ai-i18n-tools --help` 或参阅 [Translation Workflow](translation-workflow.md)。
 
-### 手动翻译覆盖 {#manual-translation-overrides}
+### 手动翻译覆盖 {/* #manual-translation-overrides */}
 
 编辑 `documentation/glossary-user.csv`（并可选地清除仓库根目录下 `.translation-cache/` 中的过期条目），然后重新运行相关的 `pnpm translate:*` 命令。
 
-## 常用命令 {#common-commands}
+## 常用命令 {/* #common-commands */}
 
 所有命令都应从 `documentation` 目录运行:
 
-### 开发 {#development}
+### 开发 {/* #development */}
 
 使用热重载为特定语言启动开发服务器:
 
@@ -102,9 +102,9 @@ pnpm start:es    # Spanish
 pnpm start:pt-br # Brazilian Portuguese
 ```
 
-该网站将在 `http://localhost:3000`（或下一个可用端口）上可用。
+站点将可通过 `http://localhost:3000/duplistatus/`（或下一个可用端口）访问。`/duplistatus/` 路径与 GitHub Pages 的 `baseUrl` 和应用内帮助按钮的链接相匹配。
 
-### 构建 {#build}
+### 构建 {/* #build */}
 
 为生产环境构建文档网站:
 
@@ -115,7 +115,7 @@ pnpm build
 
 这会在 `documentation/build` 目录中生成静态 HTML 文件。
 
-### 预览生产环境构建 {#serve-production-build}
+### 提供生产构建 {/* #serve-production-build */}
 
 本地预览生产环境构建:
 
@@ -126,13 +126,13 @@ pnpm serve
 
 这会从 `documentation/build` 目录提供构建的网站。
 
-### 其他有用命令 {#other-useful-commands}
+### 其他实用命令 {/* #other-useful-commands */}
 
 - `pnpm clear` - 清除 Docusaurus 缓存
 - `pnpm typecheck` - 运行 TypeScript 类型检查
-- `pnpm write-heading-ids` - 使用 Docusaurus 规则将显式 `{#id}` 标题锚点写入 markdown（从 `documentation/` 运行以实现跨翻译的稳定链接）
+- `pnpm write-heading-ids` - 使用 Docusaurus MDX 注释语法将显式 `{/* #id */}` 标题锚点写入 Markdown（从 `documentation/` 运行以确保跨翻译的稳定链接）。CLI 会跳过 `h1` 标题，这些标题由 Docusaurus 用作侧边栏标签。
 
-## 生成 README.md {#generating-readmemd}
+## 生成 README.md {/* #generating-readmemd */}
 
 项目的 `README.md` 文件会自动从 `documentation/docs/intro.md` 生成，以保持 GitHub 仓库 README 与 Docusaurus 文档同步。
 
@@ -153,7 +153,7 @@ pnpm serve
 - 生成 `README_dockerhub.md`，具有 Docker Hub 兼容的格式（将图像和链接转换为绝对 URLs，将 GitHub 警报转换为基于 emoji 的格式）
 - 生成 GitHub 发布说明（`RELEASE_NOTES_github_VERSION.md`）从 `documentation/docs/release-notes/VERSION.md`（将链接和图像转换为绝对 URLs）
 
-## 更新 README 以适应 Docker Hub {#update-readme-for-docker-hub}
+## 更新 Docker Hub 的 README {/* #update-readme-for-docker-hub */}
 
 `generate-readme-from-intro.sh` 脚本自动生成 `README_dockerhub.md`，具有 Docker Hub 兼容的格式。它:
 - 将 `README.md` 复制到 `README_dockerhub.md`
@@ -162,7 +162,7 @@ pnpm serve
 - 将 GitHub 风格的警报（`[!NOTE]`、`[!WARNING]` 等）转换为基于 emoji 的格式，以适应 Docker Hub 的兼容性
 - 确保所有图像和链接在 Docker Hub 上正常工作
 
-## 生成 GitHub 发布说明 {#generate-github-release-notes}
+## 生成 GitHub 发行说明 {/* #generate-github-release-notes */}
 
 `generate-readme-from-intro.sh` 脚本自动生成 GitHub 发布说明。当运行时，它:
 - 从 `documentation/docs/release-notes/VERSION.md` 读取发布说明（其中 VERSION 从 `package.json` 中提取）
@@ -182,7 +182,7 @@ pnpm serve
 
 生成的发布说明文件可以直接复制并粘贴到 GitHub 发布描述中。全部 链接和图像将在 GitHub 发布上下文中正确工作。
 
-## 为文档截取屏幕 {#take-screenshots-for-documentation}
+## 为文档截取屏幕截图 {/* #take-screenshots-for-documentation */}
 
 ```bash
 pnpm take-screenshots
@@ -190,19 +190,19 @@ pnpm take-screenshots
 
 或者直接运行：`pnpm take-screenshots`（如果需要环境变量，请使用 `--env-file=.env`）。
 
-此脚本会自动为应用程序截屏以用于文档目的。它将：
+此脚本会自动为文档目的拍摄应用程序的屏幕截图。它：
+- 在环境和健康检查后运行 `pnpm exec playwright install` 以确保 Playwright 浏览器存在
 - 启动一个无头浏览器（Playwright Chromium）
 - 以管理员和普通用户身份登录
-- 浏览各种页面（仪表板、服务器详细信息、设置等）
-- 在不同的视口大小下截取屏幕截图
-- 将屏幕截图保存到 `documentation/static/assets/`（英语）或 `documentation/i18n/{locale}/docusaurus-plugin-content-docs/current/assets`（其他语言）
+- 导航至各种页面（仪表板、服务器详情、设置等）
+- 在不同视口大小下拍摄屏幕截图
+- 将屏幕截图保存至 `documentation/static/assets/`（英语）或 `documentation/i18n/{locale}/docusaurus-plugin-content-docs/current/assets`（其他语言环境）
 
-**要求:**
+**要求：**
 - 开发服务器必须在 `http://localhost:8666` 上运行
-- 必须安装 Playwright Chromium 浏览器（运行一次 `pnpm take-screenshots:install`，它会运行 `playwright install chromium`）
-- 必须设置环境变量，将它们添加到您的 `.env` 文件或导出它们：
-  - `ADMIN_PASSWORD`: 管理员账户的密码
-  - `USER_PASSWORD`: 普通用户账户的密码
+- 必须设置环境变量，将这些添加到您的 `.env` 文件或导出它们：
+  - `ADMIN_PASSWORD`：管理员账户的密码
+  - `USER_PASSWORD`：普通用户账户的密码
 
 **选项：** `--locale` 将屏幕截图限制为一个或多个语言区域（以逗号分隔）。如果省略，则捕获所有语言区域。有效的语言区域：`en-GB`, `de`, `fr`, `es`, `pt-BR`, `hi`, `zh-Hans`。使用 `-h` 或 `--help` 打印用法说明。
 
@@ -220,7 +220,7 @@ pnpm take-screenshots --locale en-GB
 pnpm take-screenshots --locale en-GB,de,pt-BR
 ```
 
-## 部署文档 {#deploying-the-documentation}
+## 部署文档 {/* #deploying-the-documentation */}
 
 要将文档部署到 GitHub Pages，您需要生成一个 GitHub 个人访问令牌。请前往 [GitHub 个人访问令牌](https://github.com/settings/tokens) 并创建一个具有 `repo` 范围的新令牌。
 
@@ -234,11 +234,11 @@ pnpm run deploy
 
 这将构建文档并将其推送到存储库的 `gh-pages` 分支，并且文档将在 [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/) 中可用。
 
-## 与文档合作 {#working-with-documentation}
+## 处理文档 {/* #working-with-documentation */}
 
 有关完整的翻译工作流程（词汇管理、AI 翻译、缓存管理），请参阅 [Translation Workflow](translation-workflow.md)。
 
-### 源文件 {#source-files}
+### 源文件 {/* #source-files */}
 
 - **文档内容**：`documentation/docs/` 中的英文 markdown 文件
 - **UI 翻译**：`documentation/i18n/en/` 中的英文 JSON 文件（由 `pnpm write-translations` 自动生成）
@@ -248,14 +248,14 @@ pnpm run deploy
 - **静态资产**：`documentation/static/`
 - **主页**：`documentation/docs/intro.md` （用于生成 `README.md`）
 
-### 添加新组件 {#adding-new-components}
+### 添加新组件 {/* #adding-new-components */}
 
 1. 在 `documentation/src/components/` 中创建您的 React 组件
 2. 从 `documentation/src/theme/MDXComponents.js` 导出它以使其在 MDX 中可用
 3. 如果组件包含可翻译的 UI 字符串，请运行 `pnpm write-translations` 以提取它们
 4. 运行 `pnpm translate` 以将新字符串翻译为所有语言
 
-### 添加新文档页面 {#adding-new-documentation-pages}
+### 添加新文档页面 {/* #adding-new-documentation-pages */}
 
 1. 在 `documentation/docs/` 中（或子目录中）创建一个新 `.md` 文件
 2. 在 `documentation/sidebars.ts` 中将其添加到侧边栏
@@ -264,13 +264,13 @@ pnpm run deploy
 5. 运行 `pnpm translate` 以将新页面翻译为所有语言
 6. 构建和测试：`pnpm build`
 
-### 静态资产 {#static-assets}
+### 静态资源 {/* #static-assets */}
 
 - **图像**：将其放在 `documentation/static/img/` 中，并在 markdown 中使用 `/img/filename.png` 引用
 - **下载/PDF**：将其放在 `documentation/static/` 中，并使用 `/filename.pdf` 引用
 - **每个语言的资产**：如果资产需要为特定语言（例如，截图），请将其放在 `documentation/i18n/{locale}/docusaurus-plugin-content-docs/current/assets/` 中
 
-### 构建和测试 {#build--test}
+### 构建与测试 {/* #build--test */}
 
 ```bash
 cd documentation

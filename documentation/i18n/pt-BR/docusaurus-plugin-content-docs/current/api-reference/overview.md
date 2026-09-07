@@ -1,8 +1,8 @@
-# Visão Geral da API {#api-overview}
+# Visão geral da API {/* #api-overview */}
 
 Este documento descreve todos os endpoints da API disponíveis para o aplicativo duplistatus. A API segue princípios RESTful e fornece recursos abrangentes de monitoramento de backup, gerenciamento de notificações e administração do sistema.
 
-## Estrutura da API {#api-structure}
+## Estrutura da API {/* #api-structure */}
 
 Para uma referência rápida de todos os endpoints, consulte a [Lista de Endpoints da API](api-endpoint-list).
 
@@ -20,13 +20,13 @@ A API é organizada em grupos lógicos:
 
 Para uma referência rápida de todos os endpoints, consulte a [Lista de Endpoints da API](api-endpoint-list).
 
-## Formato de Resposta {#response-format}
+## Formato de Resposta {/* #response-format */}
 
 Todas as respostas da API são retornadas no formato JSON com padrões consistentes de tratamento de erros. Respostas bem-sucedidas normalmente incluem um campo `status`, enquanto respostas de erro incluem os campos `error` e `message`.
 
 ---
 
-## Tratamento de Erros {#error-handling}
+## Tratamento de Erros {/* #error-handling */}
 
 Todos os endpoints seguem um padrão consistente de tratamento de erros:
 
@@ -46,21 +46,21 @@ As respostas de erro incluem:
 - `stack`: Rastreamento do erro (em modo de desenvolvimento)
 - `timestamp`: Quando o erro ocorreu
 
-## Notas sobre Tipos de Dados {#data-type-notes}
+## Notas sobre Tipos de Dados {/* #data-type-notes */}
 
-### Arrays de Mensagens {#message-arrays}
-Os campos `messages_array`, `warnings_array` e `errors_array` são armazenados como strings JSON no banco de dados e retornados como arrays nas respostas da API. Eles contêm as mensagens de log, avisos e erros reais das operações de backup do Duplicati.
+### Arrays de Mensagens {/* #message-arrays */}
+Os campos `messages_array`, `warnings_array` e `errors_array` são armazenados como strings JSON no banco de dados e retornados como arrays nas respostas da API. Estes contêm as mensagens de log reais, avisos e erros das operações de backup do duplicati.
 
-### Backups Disponíveis {#available-backups}
-O campo `available_backups` contém um array de carimbos de data/hora das versões de backup (no formato ISO) disponíveis para restauração. Isso é extraído das mensagens de log do backup.
+### Backups Disponíveis {/* #available-backups */}
+O campo `available_backups` contém um array de timestamps de versões de backup (no formato ISO) que estão disponíveis para restauração. Isso é extraído das mensagens de log de backup.
 
-### Campos de Duração {#duration-fields}
-- `duration`: Formato legível (por exemplo, "00:38:31")
+### Campos de Duração {/* #duration-fields */}
+- `duration`: Formato legível por humanos (por exemplo, "00:38:31")
 - `duration_seconds`: Duração bruta em segundos
-- `durationInMinutes`: Duração convertida em minutos para fins de gráficos
+- `durationInMinutes`: Duração convertida em minutos para fins de gráfico
 
-### Campos de Tamanho de Arquivo {#file-size-fields}
-Todos os campos de tamanho de arquivo são retornados em bytes como números, não como strings formatadas. A interface é responsável por converter esses valores em formatos legíveis (KB, MB, GB, etc.).
+### Campos de Tamanho do Arquivo {/* #file-size-fields */}
+Todos os campos de tamanho de arquivo são retornados em bytes como números, não como strings formatadas. O frontend é responsável por converter esses em formatos legíveis por humanos (KB, MB, GB, etc.).
 
 <br/>
 

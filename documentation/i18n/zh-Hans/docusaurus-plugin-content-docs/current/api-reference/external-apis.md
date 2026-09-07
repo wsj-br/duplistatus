@@ -1,15 +1,15 @@
-# 外部API {#external-apis}
+# 外部API {/* #external-apis */}
 
 这些端点旨在供其他应用程序和集成使用，例如 [主页](../user-guide/homepage-integration.md)。它们不受CSRF保护，也不使用会话cookie。
 
-身份验证是可选的，默认情况下处于关闭状态。当在 [API密钥](../user-guide/settings/api-keys-settings.md) 中启用 **需要API密钥** 时，将密钥作为 `?api_key=`、`X-Api-Key` 或 `Authorization: Bearer` 发送。上传密钥仅适用于 `POST /api/upload`。读取密钥仅适用于 `/api/summary` 和 `/api/lastbackup*`。查询字符串密钥会出现在反向代理访问日志中。
+身份验证是可选的，默认情况下为关闭。虽然密钥是可选的，但客户端可以省略密钥或发送一个：有效的匹配范围密钥会被接受并记录；无效密钥会被忽略，请求仍然会继续。当 **要求 API 密钥** 在 [API 密钥](../user-guide/settings/api-keys-settings.md) 中启用时，请将密钥作为 `?api_key=`、`X-Api-Key` 或 `Authorization: Bearer` 发送。上传密钥仅在 `POST /api/upload` 上有效。读取密钥仅在 `/api/summary` 和 `/api/lastbackup*` 上有效。查询字符串密钥出现在反向代理访问日志中。
 
-还可以通过 [IP白名单](../user-guide/settings/ip-allowlist-settings.md) 限制这些路由。`/api/health` 和 `/api/ping` 保持开放。
+一个[IP白名单](../user-guide/settings/ip-allowlist-settings.md)也可以限制这些路由。`/api/health`和`/api/ping`在两个列表都关闭时保持公开；当任一列表启用时，它们接受来自管理员或外部列表的回环和CIDR，而非回环客户端会被限流。
 
-## 获取总体摘要 - `/api/summary` {#get-overall-summary---apisummary}
+## 获取总体摘要 - `/api/summary` {/* #get-overall-summary---apisummary */}
 - **端点**: `/api/summary`
 - **方法**: GET
-- **描述**: 检索所有服务器上的所有备份操作的摘要。
+- **描述**: 检索所有服务器上所有备份操作的摘要。
 - **响应**:
 
   ```json
@@ -38,7 +38,7 @@
   - 如果数据获取失败，则返回包含零的后备响应
   - **注释**：对于内部仪表板使用，请考虑使用 `/api/dashboard`，它包含此数据以及其他信息
 
-## 获取最新备份 - `/api/lastbackup/:serverId` {#get-latest-backup---apilastbackupserverid}
+## 获取最新备份 - `/api/lastbackup/:serverId` {/* #get-latest-backup---apilastbackupserverid */}
 - **端点**: `/api/lastbackup/:serverId`
 - **方法**: GET
 - **描述**: 检索特定服务器的最新备份信息。
@@ -98,10 +98,10 @@
   - 如果不存在备份，则返回null作为最新备份
   - 包含缓存控制标头以防止缓存
 
-## 获取最新备份 - `/api/lastbackups/:serverId` {#get-latest-backups---apilastbackupsserverid}
+## 获取最新备份 - `/api/lastbackups/:serverId` {/* #get-latest-backups---apilastbackupsserverid */}
 - **端点**: `/api/lastbackups/:serverId`
 - **方法**: GET
-- **描述**: 检索特定服务器上所有配置的备份（例如“文件”，“数据库”）的最新备份信息。
+- **描述**: 检索特定服务器上所有已配置备份（例如“文件”、“数据库”）的最新备份信息。
 - **参数**:
   - `serverId`: 服务器标识符（ID 或名称）
 
@@ -185,10 +185,10 @@
   - 与 `/api/lastbackup/:serverId` 不同，后者仅返回服务器的单个最新备份（与备份作业无关）
   - 包含缓存控制标头以防止缓存
 
-## 上传备份数据 - `/api/upload` {#upload-backup-data---apiupload}
+## 上传备份数据 - `/api/upload` {/* #upload-backup-data---apiupload */}
 - **端点**: `/api/upload`
 - **方法**: POST
-- **描述**: 上传服务器的备份操作数据。支持检测重复备份运行并发送通知。
+- **描述**: 上传服务器的备份操作数据。支持重复备份运行检测并发送通知。
 - **请求体**: Duplicati 发送的 JSON，包含以下选项:
 
   ```bash

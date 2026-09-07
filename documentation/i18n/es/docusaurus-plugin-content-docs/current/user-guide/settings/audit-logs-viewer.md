@@ -1,10 +1,10 @@
-# Logs de Auditoría {#audit-logs}
+# Registros de auditoría {/* #audit-logs */}
 
 El log de auditoría proporciona un registro completo de todos los cambios del sistema y las acciones del usuario en **duplistatus**. Esto ayuda a rastrear cambios de configuración, actividades del usuario y operaciones del sistema para propósitos de seguridad y solución de problemas.
 
 ![Registro de auditoría](../../assets/screen-settings-audit.png)
 
-## Visor de log de auditoría {#audit-log-viewer}
+## Visor de Registro de Auditoría {/* #audit-log-viewer */}
 
 El visor de log de auditoría muestra una lista cronológica de todos los eventos registrados con la siguiente información:
 
@@ -16,7 +16,7 @@ El visor de log de auditoría muestra una lista cronológica de todos los evento
 - **Destino**: El objeto que se vio afectado (si corresponde)
 - **Detalles**: Información adicional sobre la acción
 
-### Ver Detalles del Registro {#viewing-log-details}
+### Visualización de Detalles del Registro {/* #viewing-log-details */}
 
 Haga clic en el icono de <IconButton icon="lucide:eye" /> ojo junto a cualquier entrada del registro para ver información detallada, incluyendo:
 - Marca de tiempo completa
@@ -25,7 +25,7 @@ Haga clic en el icono de <IconButton icon="lucide:eye" /> ojo junto a cualquier 
 - Dirección IP y agente de usuario
 - Mensajes de error (si la acción falló)
 
-### Exportación de Logs de Auditoría {#exporting-audit-logs}
+### Exportación de Registros de Auditoría {/* #exporting-audit-logs */}
 
 Puede exportar logs de auditoría filtrados en dos formatos:
 

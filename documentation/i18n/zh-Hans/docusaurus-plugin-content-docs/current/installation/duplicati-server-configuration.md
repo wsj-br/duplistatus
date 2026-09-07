@@ -1,4 +1,4 @@
-# Duplicati 服务器配置（必填） {#duplicati-server-configuration-required}
+# Duplicati 服务器配置（必需） {/* #duplicati-server-configuration-required */}
 
 为了使此应用程序正常工作，每个 Duplicati 服务器需要配置为向 **duplistatus** 服务器发送每个备份运行的 HTTP 报告。
 
@@ -12,7 +12,7 @@
 
 有关选项参考，请参阅 Duplicati 的 [HTTP 通知](https://docs.duplicati.com/monitoring-and-notifications/sending-reports-via-email/sending-http-notifications) 文档。
 
-### 推荐选项（Duplicati 2.0.9.106 及更高版本）{#recommended-options-duplicati-209106-and-later}
+### 推荐选项（Duplicati 2.0.9.106 和更高版本） {/* #recommended-options-duplicati-209106-and-later */}
 
 `--send-http-json-urls` 已经发送 JSON，因此 `--send-http-result-output-format=Json` 不是必需的（对于这些 URL，它将被忽略）。
 
@@ -40,7 +40,7 @@ Duplicati 无法设置自定义 HTTP 标头。查询参数是发送密钥的支�
 
 `--send-http-max-log-lines=500` 使 JSON 报告保持在默认 5 MB 上传大小限制以下。`--send-http-max-log-lines=0`（无限制）可以超过该限制并返回 HTTP 413。如果需要更大的报告，请在设置 → API 密钥中增加限制。
 
-### 较旧的 Duplicati 版本 {#older-duplicati-versions}
+### 较旧的 Duplicati 版本 {/* #older-duplicati-versions */}
 
 如果您的 Duplicati 服务器早于 2.0.9.106，请使用旧版 URL 选项并将结果格式设置为 JSON：
 
@@ -58,7 +58,7 @@ Duplicati 无法设置自定义 HTTP 标头。查询参数是发送密钥的支�
 --send-http-max-log-lines=500
 ```
 
-### 日志行和可用版本 {#log-lines-and-available-versions}
+### 日志行和可用版本 {/* #log-lines-and-available-versions */}
 
 **Duplicati 发送的消息的重要说明：**
 
@@ -71,7 +71,7 @@ Duplicati 无法设置自定义 HTTP 标头。查询参数是发送密钥的支�
 配置 **duplistatus** 服务器后，使用 [收集备份日志](../user-guide/collect-backup-logs.md) 收集所有 Duplicati 服务器的备份日志。
 :::
 
-### 向 duplistatus 和 Duplicati 监控报告 {#reporting-to-duplistatus-and-duplicati-monitoring}
+### 向 duplistatus 和 Duplicati Monitoring 报告 {/* #reporting-to-duplistatus-and-duplicati-monitoring */}
 
 您可以从 **同一** Duplicati 服务器同时向 **duplistatus** 和 [Duplicati 监控](https://www.duplicati-monitoring.com/) 发送报告。**duplistatus** 必须接收 JSON。Duplicati 监控期望表单编码的报告。不要将 `--send-http-form-urls` 指向 `/api/upload`。
 
@@ -96,13 +96,13 @@ Duplicati 无法设置自定义 HTTP 标头。查询参数是发送密钥的支�
 
 [收集备份日志](../user-guide/collect-backup-logs.md) 不依赖于 HTTP 报告。使用它来补全未收到的运行。
 
-### Duplicati 和 duplistatus 在同一主机上 {#duplicati-and-duplistatus-on-the-same-host}
+### 同一主机上的 Duplicati 和 duplistatus {/* #duplicati-and-duplistatus-on-the-same-host */}
 
 上传 URL 必须能够被 Duplicati 进程**访问**，而不是从您的浏览器访问。
 
-- **主机上的 Duplicati，Docker 中的 duplistatus 使用端口 `9666` 发布：** `http://127.0.0.1:9666/api/upload`（或主机局域网 IP）。
-- **两者都在 Docker 中共享网络：** `http://duplistatus:9666/api/upload`（Compose 服务或容器名称）。 `localhost` 在 Duplicati 容器内是该容器，而不是 **duplistatus**。
-- **同一主机上的 HTTPS 反向代理：** 使用 [HTTPS 设置](https-setup.md) 中的公共 HTTPS URL。
+- **主机上的 Duplicati，Docker 中的 duplistatus 并发布端口 `9666`：** `http://127.0.0.1:9666/api/upload`（或主机局域网 IP）。
+- **Docker 中的两者共享网络：** `http://duplistatus:9666/api/upload`（Compose 服务或容器名称）。 `localhost` 在 Duplicati 容器内是该容器，而不是 **duplistatus**。
+- **同一主机上的 HTTPS 反向代理：** 使用 [安全加固](security-hardening.md) 中的公共 HTTPS URL。
 
 收集备份日志是反向方向：从 **duplistatus** 容器，`localhost:8200` 不是主机上的 Duplicati。使用主机 IP，`host.docker.internal`（Docker Desktop 或您配置的额外主机），或 Duplicati 容器名称。
 

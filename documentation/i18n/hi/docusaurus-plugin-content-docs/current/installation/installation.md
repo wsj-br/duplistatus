@@ -1,8 +1,8 @@
-# Installation Guide {#installation-guide}
+# गाइड स्थापना {/* #installation-guide */}
 
 The application can be deployed using Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks), or Podman. After the installation, you may want to configure the TIMEZONE, as described in the [Configure Timezone](./configure-tz.md) and need to configure the Duplicati servers to send backup logs to **duplistatus**, as outlined in the [Duplicati Configuration](./duplicati-server-configuration.md) section.
 
-## पूर्वापेक्षाएँ {#prerequisites}
+## आवश्यक शर्तें {/* #prerequisites */}
 
 Ensure you have the following installed:
 
@@ -11,7 +11,7 @@ Ensure you have the following installed:
 - Portainer (optional) - [Docker installation guide](https://docs.portainer.io/start/install-ce/server/docker/linux)
 - Podman (optional) - [Installation guide](http://podman.io/docs/installation#debian)
 
-## Authentication {#authentication}
+## प्रमाणीकरण {/* #authentication */}
 
 **duplistatus** since version 0.9.x requires user authentication. A default `admin` account is created automatically when installing the application for the first time or upgrading from an earlier version: 
     - username: `admin`
@@ -25,14 +25,14 @@ You can create additional users accounts in [Settings > Users](../user-guide/set
 The system enforces a minimum password length and complexity. These requirements can be adjusted using the `PWD_ENFORCE` and `PWD_MIN_LEN` [environment variables](environment-variables.md). Using a password without sufficient complexity or with a short length can compromise security. Please use these settings carefully.
 ::::
 
-### Container Images {#container-images}
+### कंटेनर इमेज {/* #container-images */}
 
 You can use the images from:
 
 - **Docker Hub**: `docker.io/wsjbr/duplistatus:latest`
 - **GitHub Container Registry**: `ghcr.io/wsj-br/duplistatus:latest`
 
-### Option 1: Using Docker Compose {#option-1-using-docker-compose}
+### विकल्प 1: Docker Compose का उपयोग करके {/* #option-1-using-docker-compose */}
 
 This is the recommended method for local deployments or when you want to customise the configuration. It uses a `docker compose` file to define and run the container with all its settings.
 
@@ -45,7 +45,7 @@ docker compose -f duplistatus.yml up -d
 
 Check [Timezone](./configure-tz.md) section to more details on how to adjust timezone and number/date/time format.
 
-### Option 2: Using Portainer Stacks (Docker Compose) {#option-2-using-portainer-stacks-docker-compose}
+### विकल्प 2: Portainer Stacks का उपयोग करके (Docker Compose) {/* #option-2-using-portainer-stacks-docker-compose */}
 
 1. Go to "Stacks" in your [Portainer](https://docs.portainer.io/user/docker/stacks) server and click "Add stack".
 2. Name your stack (e.g., "duplistatus").
@@ -82,7 +82,7 @@ volumes:
 5. Check the [Timezone](./configure-tz.md) section to more details on how to adjust the timezone and number/date/time format.
 6. Click "Deploy the stack".
 
-### Option 3: Using Portainer Stacks (GitHub Repository) {#option-3-using-portainer-stacks-github-repository}
+### विकल्प 3: Portainer Stacks का उपयोग करके (GitHub रिपॉज़िटरी) {/* #option-3-using-portainer-stacks-github-repository */}
 
 1. In [Portainer](https://docs.portainer.io/user/docker/stacks), go to "Stacks" and click "Add stack".
 2. Name your stack (e.g., "duplistatus").
@@ -92,7 +92,7 @@ volumes:
 6. (optional) Set the `TZ`, `LANG`, `PWD_ENFORCE` and `PWD_MIN_LEN` environment variables in the "Environment variables" section. Check the [Timezone](./configure-tz.md) section to more details on how to adjust the timezone and number/date/time format. 
 6. Click "Deploy the stack".
 
-### विकल्प 4: Docker CLI का उपयोग करके {#option-4-using-docker-cli}
+### विकल्प 4: Docker CLI का उपयोग करके {/* #option-4-using-docker-cli */}
 
 ```bash
 # Create the volume
@@ -110,7 +110,7 @@ docker run -d \
 
 - `duplistatus_data` वॉल्यूम स्थायी संचयन के लिए उपयोग की जाती है। कंटेनर छवि डिफ़ॉल्ट के रूप में `Europe/London` का उपयोग करती है समय क्षेत्र और `en_GB` का उपयोग करती है डिफ़ॉल्ट लोकल (भाषा) के रूप में।
 
-### विकल्प 5: Podman (CLI) का उपयोग करके `rootless` {#option-5-using-podman-cli-rootless}
+### विकल्प 5: Podman का उपयोग करके (CLI) `rootless` {/* #option-5-using-podman-cli-rootless */}
 
 बुनियादी सेटअप के लिए, आप DNS कॉन्फ़िगरेशन के बिना कंटेनर शुरू कर सकते हैं:
 
@@ -127,7 +127,7 @@ podman run -d \
   ghcr.io/wsj-br/duplistatus:latest
 ```
 
-#### Podman कंटेनर के लिए DNS कॉन्फ़िगरेशन {#configuring-dns-for-podman-containers}
+#### Podman कंटेनर के लिए DNS कॉन्फ़िगर करना {/* #configuring-dns-for-podman-containers */}
 
 यदि आपको कस्टम DNS कॉन्फ़िगरेशन की आवश्यकता है (जैसे Tailscale MagicDNS, कॉर्पोरेट नेटवर्क, या कस्टम DNS सेटअप के लिए), तो आप DNS सर्वर और खोज डोमेन को मैन्युअल रूप से कॉन्फ़िगर कर सकते हैं।
 
@@ -184,7 +184,7 @@ podman run -d \
 
 [समय क्षेत्र](./configure-tz.md) अनुभाग में अधिक विवरण के लिए देखें कि कैसे समय क्षेत्र और संख्या/तारीख/समय प्रारूप को समायोजित किया जाए।
 
-### विकल्प 6: Podman पॉड का उपयोग करके {#option-6-using-podman-pods}
+### विकल्प 6: Podman Pods का उपयोग करके {/* #option-6-using-podman-pods */}
 
 Podman पॉड आपको एक साझा नेटवर्क नेमस्पेस में कई कंटेनर चलाने की अनुमति देते हैं। यह परीक्षण के लिए उपयोगी है या जब आपको duplistatus के साथ अन्य कंटेनर चलाने की आवश्यकता होती है।
 
@@ -209,7 +209,7 @@ podman create --name duplistatus \
 podman pod start duplistatus-pod
 ```
 
-#### Podman पॉड के लिए DNS कॉन्फ़िगरेशन {#configuring-dns-for-podman-pods}
+#### Podman Pods के लिए DNS कॉन्फ़िगर करना {/* #configuring-dns-for-podman-pods */}
 
 जब पॉड का उपयोग करते हैं, तो DNS कॉन्फ़िगरेशन को पॉड स्तर पर सेट किया जाना चाहिए, न कि कंटेनर स्तर पर।
 विकल्प 5 में वर्णित समान तरीकों का उपयोग करें अपने DNS सर्वर और खोज डोमेन खोजने के लिए।
@@ -251,7 +251,7 @@ podman pod start duplistatus-pod
 podman pod rm -f duplistatus-pod
 ```
 
-## Anivarya Sammaan {#essential-configuration}
+## आवश्यक कॉन्फ़िगरेशन {/* #essential-configuration */}
 
 1. Apne [Duplicati servers](duplicati-server-configuration.md) ko (anivarya) duplistatus ko backup log messages bhejne ke liye Configure karein. Duplicati 2.0.9.106 aur uske baad ke versions mein, us guide mein vishesh kiye gaye `--send-http-json-urls` ka istemal karein.
 2. duplistatus mein Pravesh karein – [User Guide](../user-guide/overview.md#accessing-the-dashboard) mein vishesh kiye gaye instructions dekhein.
@@ -261,4 +261,4 @@ podman pod rm -f duplistatus-pod
 6. Email settings ko configure karein – [Settings → Email](../user-guide/settings/email-settings.md) mein email notifications set up karein.
 7. Backup notifications ko configure karein – [Settings → Backup Notifications](../user-guide/settings/backup-notifications-settings.md) mein per-backup ya per-server notifications set up karein.
 
-Vikalpik settings jaise ki timezone, sankhya format, aur HTTPS ke liye, neeche diye gaye sections dekhien.
+अपने समय क्षेत्र, संख्या प्रारूप और [सुरक्षा मजबूत करने](security-hardening.md) जैसे वैकल्पिक सेटिंग्स को कॉन्फ़िगर करने के लिए निम्न अनुभाग देखें।

@@ -1,4 +1,4 @@
-# Notificaciones de backup {#backup-notifications}
+# Notificaciones de Copia de Seguridad {/* #backup-notifications */}
 
 Utilice esta configuración para enviar notificaciones cuando se [reciba un nuevo registro de backup](../../installation/duplicati-server-configuration.md).
 
@@ -12,17 +12,17 @@ La tabla de notificaciones de copia de seguridad está organizada por servidor. 
 
 Esta página tiene una función de guardado automático. Cualquier cambio que realice se guardará automáticamente.
 
-Cuando **Resumen Diario** está habilitado, las notificaciones individuales y adicionales de copia de seguridad se suprimen. La configuración de esta página se conserva y vuelve a estar activa cuando se desactiva el Resumen Diario. Consulte [Resumen Diario](daily-summary-settings.md).
+Cuando **Resumen Diario** está habilitado, los correos electrónicos al destinatario de correo electrónico predeterminado se suprimen. Los destinos adicionales de correo electrónico en esta página continúan recibiendo eventos coincidentes. La configuración de esta página se mantiene y se activa nuevamente cuando Resumen Diario se desactiva. Consulte [Resumen Diario](daily-summary-settings.md).
 
 <br/>
 
-## Filtro {#filter}
+## Filtrar {/* #filter */}
 
 Utilice el campo **Filtrar por nombre del servidor** en la parte superior de la página para encontrar rápidamente backups específicos por nombre del servidor o alias. La tabla se filtrará automáticamente para mostrar solo las entradas coincidentes.
 
 <br/>
 
-## Configurar la configuración de notificaciones por backup {#configure-per-backup-notification-settings}
+## Configurar la Configuración de Notificaciones por Copia de Seguridad {/* #configure-per-backup-notification-settings */}
 
 | Configuración                   | Descripción                                               | Valor predeterminado |
 | :------------------------------ | :-------------------------------------------------------- | :------------------- |
@@ -39,7 +39,7 @@ Utilice el campo **Filtrar por nombre del servidor** en la parte superior de la 
 
 <br/>
 
-## Destinos adicionales {#additional-destinations}
+## Destinos Adicionales {/* #additional-destinations */}
 
 Los destinos de notificación adicionales le permiten enviar notificaciones a direcciones de correo electrónico específicas o temas de NTFY más allá de la configuración global. El sistema utiliza un modelo de herencia jerárquica donde los backups pueden heredar la configuración por defecto de su servidor, o anularla con valores específicos del backup.
 
@@ -55,7 +55,7 @@ Si no se muestra ningún icono, el servidor o backup no tiene destinos adicional
 
 ![Destinos adicionales a nivel de servidor](../../assets/screen-settings-notifications-server.png)
 
-### Valores Predeterminados a Nivel de Servidor {#server-level-defaults}
+### Valores Predeterminados a Nivel de Servidor {/* #server-level-defaults */}
 
 Puede configurar destinos adicionales por defecto a nivel de servidor que todas las copias de seguridad en ese servidor heredarán automáticamente.
 
@@ -73,7 +73,7 @@ Puede configurar destinos adicionales por defecto a nivel de servidor que todas 
 - **Sincronizar con todos**: Limpia todas las anulaciones de backup, haciendo que todos los backups hereden de los valores predeterminados del servidor.
 - **Limpiar todos**: Limpia todos los destinos adicionales tanto de los valores predeterminados del servidor como de todos los backups mientras se mantiene la estructura de herencia.
 
-### Configuración por Backup {#per-backup-configuration}
+### Configuración por Copia de Seguridad {/* #per-backup-configuration */}
 
 Las copias de seguridad individuales heredan automáticamente los valores predeterminados del servidor, pero puede anularlos para trabajos de backup específicos.
 
@@ -91,13 +91,15 @@ Las copias de seguridad individuales heredan automáticamente los valores predet
 **Comportamiento de Destinos adicionales:**
 
 - Las notificaciones se envían tanto a la configuración global como a los destinos adicionales cuando están configurados.
-- La configuración del evento de notificación para destinos adicionales es independiente de la configuración del evento de notificación principal.
-- Si los destinos adicionales están configurados en **desactivado**, no se enviarán notificaciones a esos destinos, pero las notificaciones principales seguirán funcionando de acuerdo con la configuración principal.
-- Cuando un backup hereda de los valores por defecto del servidor, cualquier cambio en los valores por defecto del servidor se aplicará automáticamente a ese backup (a menos que haya sido anulado).
+- La configuración del evento de notificación para los destinos adicionales es independiente de la configuración principal del evento de notificación.
+- Si los destinos adicionales están configurados en **desactivado**, no se enviarán notificaciones a esos destinos, pero las notificaciones principales seguirán funcionando según la configuración principal.
+- Las alertas **vencidas** se cuentan como una **advertencia** para el filtro de eventos de notificación adicional: se envían cuando el evento es **todos** o **advertencias**, y no cuando es **errores** o **desactivado**. El mismo filtro se aplica a los temas adicionales de NTFY.
+- Cuando una copia de seguridad hereda de los valores predeterminados del servidor, cualquier cambio en los valores predeterminados del servidor se aplicará automáticamente a esa copia de seguridad (a menos que se haya anulado).
+- Mientras [Resumen Diario](daily-summary-settings.md) está habilitado, los destinos adicionales de correo electrónico siguen recibiendo eventos coincidentes; solo el destinatario de correo electrónico predeterminado se suprime.
 
 <br/>
 
-## Edición masiva {#bulk-edit}
+## Edición masiva {/* #bulk-edit */}
 
 Puede editar la configuración de destinos adicionales para múltiples backups a la vez utilizando la función de edición masiva. Esto es particularmente útil cuando necesita aplicar los mismos destinos adicionales a muchos trabajos de backup.
 

@@ -1,8 +1,8 @@
 
 
-# Dashboard {#dashboard}
+# Dashboard {/* #dashboard */}
 
-## Dashboard Summary {#dashboard-summary}
+## Dashboard Summary {/* #dashboard-summary */}
 
 This section displays aggregated statistics for all backups.
 
@@ -22,7 +22,7 @@ This section displays aggregated statistics for all backups.
 If the same server appears more than once on the dashboard, use [Settings → Database Maintenance → Merge Duplicate Servers](settings/database-maintenance.md#merge-duplicate-servers) to consolidate them. Duplicates can occur when you reinstall or upgrade Duplicati, because the server's `machine_id` may change and **duplistatus** then treats it as a new server.
 :::
 
-## Server Filtering {#server-filtering}
+## Server Filtering {/* #server-filtering */}
 
 You can filter the servers and backups displayed on the dashboard using the search field in the application toolbar. Click the filter icon <IconButton icon="lucide:search" /> to reveal the search field.
 
@@ -38,7 +38,7 @@ You can filter the servers and backups displayed on the dashboard using the sear
 
 This makes it easy to quickly locate specific servers or backups among many monitored systems.
 
-## Cards Layout {#cards-layout}
+## Cards Layout {/* #cards-layout */}
 
 The cards layout shows the status of the most recent backup log received for each backup.
 
@@ -67,7 +67,7 @@ The panel view offers two informational displays, accessible by clicking the top
 
 ![charts panel](../assets/screen-overview-side-charts.png)
 
-### Backup Details {#backup-details}
+### Backup Details {/* #backup-details */}
 
 Hovering over a backup in the list displays details of the last backup log received and any overdue information.
 
@@ -87,7 +87,7 @@ If this backup is overdue, the tooltip also shows:
 
 You can also click the buttons at the bottom to open [Settings → Backup Notifications](settings/backup-notifications-settings.md) to configure monitoring settings or open the Duplicati server's web interface.
 
-## Table Layout {#table-layout}
+## Table Layout {/* #table-layout */}
 
 The table layout lists the most recent backup logs received for all servers and backups.
 
@@ -110,7 +110,7 @@ The table layout lists the most recent backup logs received for all servers and 
 You can use the [Display Settings](settings/display-settings.md) to configure the table size and other configurations.
 
 
-### Notifications Icons {#notifications-icons}
+### Notifications Icons {/* #notifications-icons */}
 
 | Icon                                                                                                                               | Notification Option | Description                                                                                         |
 |------------------------------------------------------------------------------------------------------------------------------------|---------------------|-----------------------------------------------------------------------------------------------------|
@@ -123,7 +123,7 @@ You can use the [Display Settings](settings/display-settings.md) to configure th
 This notification setting only applies when **duplistatus** receives a new backup log from a Duplicati server. Overdue notifications are configured separately and will be sent regardless of this setting.
 :::
 
-### Overdue Details {#overdue-details}
+### Overdue Details {/* #overdue-details */}
 
 Hovering over the overdue warning icon displays details about the overdue backup.
 
@@ -134,7 +134,7 @@ Hovering over the overdue warning icon displays details about the overdue backup
 - **Expected Backup**: The time the backup was expected, including the configured grace period (extra time allowed before marking as overdue).
 - **Last Notification**: When the last overdue notification was sent.
 
-## Duplicati Server Version {#duplicati-server-version}
+## Duplicati Server Version {/* #duplicati-server-version */}
 
 The dashboard shows the Duplicati version reported in the latest backup log for each server (card view) or backup job (table view).
 
@@ -148,7 +148,7 @@ The dashboard shows the Duplicati version reported in the latest backup log for 
 **duplistatus** does not query the Duplicati server for the version that is currently running. It uses the version stored in the last backup log that was received or [collected](collect-backup-logs.md). After you upgrade Duplicati, the dashboard keeps showing the previous version until a new backup log arrives.
 :::
 
-### Available Backup Versions {#available-backup-versions}
+### Available Backup Versions {/* #available-backup-versions */}
 
 Clicking the blue clock icon opens a list of available backup versions at the time of the backup, as reported by the Duplicati server.
 

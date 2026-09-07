@@ -1,4 +1,4 @@
-# Maintenance de la base de données {#database-maintenance}
+# Maintenance de la base de données {/* #database-maintenance */}
 
 Gérez vos données de sauvegarde et optimisez les performances grâce aux opérations de maintenance de la base de données.
 
@@ -6,7 +6,7 @@ Gérez vos données de sauvegarde et optimisez les performances grâce aux opér
 
 <br/>
 
-## Sauvegarde de la base de données {#database-backup}
+## Sauvegarde de la base de données {/* #database-backup */}
 
 Créez une sauvegarde de l'intégralité de votre base de données à titre de précaution ou pour des besoins de migration.
 
@@ -30,7 +30,7 @@ Créez une sauvegarde de l'intégralité de votre base de données à titre de p
 
 <br/>
 
-## Restauration de la base de données {#database-restore}
+## Restauration de la base de données {/* #database-restore */}
 
 Restaurez votre base de données à partir d'un fichier de sauvegarde créé précédemment.
 
@@ -79,9 +79,11 @@ Ceci s'applique à toutes les fonctions de maintenance ci-dessous : toutes les s
 Si vous supprimez accidentellement des données, vous pouvez les restaurer à l'aide de la fonctionnalité [Collecter les journaux de sauvegarde](../collect-backup-logs.md).
 :::
 
+Le service cron **compacte** également la base de données chaque dimanche à 04:00 UTC. Cette opération supprime les lignes de sauvegarde dont le serveur n'existe plus, les lignes de serveur sans rapports de sauvegarde restants, les paramètres de surveillance des sauvegardes et de notification en retard, les anciennes lignes de livraison du résumé quotidien, et exécute SQLite `VACUUM` pour récupérer de l'espace disque. La suppression d'un serveur ou d'une tâche de sauvegarde supprime immédiatement les paramètres correspondants.
+
 <br/>
 
-## Période de nettoyage des données {#data-cleanup-period}
+## Période de nettoyage des données {/* #data-cleanup-period */}
 
 Supprimez les enregistrements de sauvegarde obsolètes pour libérer de l'espace de stockage et améliorer les performances du système.
 
@@ -109,7 +111,7 @@ Il est fortement recommandé de créer une sauvegarde de la base de données ava
 
 <br/>
 
-## Supprimer le travail de sauvegarde {#delete-backup-job-data}
+## Supprimer la tâche de sauvegarde {/* #delete-backup-job-data */}
 
 Supprimer les données d'une tâche de sauvegarde spécifique (type).
 
@@ -127,7 +129,7 @@ Supprimer les données d'une tâche de sauvegarde spécifique (type).
 
 <br/>
 
-## Supprimer les données du serveur {#delete-server-data}
+## Supprimer les données du serveur {/* #delete-server-data */}
 
 Supprimer un Serveur spécifique et toutes ses données de sauvegarde associées.
 
@@ -144,7 +146,7 @@ Supprimer un Serveur spécifique et toutes ses données de sauvegarde associées
 
 <br/>
 
-## Fusionner les serveurs en double {#merge-duplicate-servers}
+## Fusionner les serveurs en double {/* #merge-duplicate-servers */}
 
 Détecter et fusionner les serveurs en double qui ont le même nom mais des ID différents. Utilisez cette fonctionnalité pour les consolider en une seule entrée de serveur.
 

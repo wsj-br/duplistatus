@@ -1,19 +1,19 @@
-# डेटाबेस स्कीमा {#database-schema}
+# डेटाबेस स्कीमा {/* #database-schema */}
 
 यह दस्तावेज़ duplistatus द्वारा बैकअप ऑपरेशन डेटा संग्रहीत करने के लिए उपयोग किए जाने वाले SQLite डेटाबेस स्कीमा का वर्णन करता है।
 
-## डेटाबेस स्थान {#database-location}
+## डेटाबेस स्थान {/* #database-location */}
 
 डेटाबेस एप्लिकेशन डेटा निर्देशिका में संग्रहीत किया जाता है:
 - **Default Location**: `/app/data/backups.db`
 - **Docker Volume**: `duplistatus_data:/app/data`
 - **File Name**: `backups.db`
 
-## डेटाबेस माइग्रेशन प्रणाली {#database-migration-system}
+## डेटाबेस माइग्रेशन Pranali {/* #database-migration-system */}
 
 duplistatus संस्करणों के बीच डेटाबेस स्कीमा परिवर्तनों को संभालने के लिए एक स्वचालित माइग्रेशन प्रणाली का उपयोग करता है।
 
-### माइग्रेशन संस्करण इतिहास {#migration-version-history}
+### माइग्रेशन Sanskaran इतिहास {/* #migration-version-history */}
 
 निम्नलिखित ऐतिहासिक माइग्रेशन संस्करण हैं जो डेटाबेस को इसकी वर्तमान स्थिति में लाए गए हैं:
 
@@ -27,20 +27,20 @@ duplistatus संस्करणों के बीच डेटाबेस �
 
 Vartaman application version (v1.5.x) uses **Schema v4.2** as the latest database schema version.
 
-### माइग्रेशन प्रक्रिया {#migration-process}
+### माइग्रेशन प्रक्रिया {/* #migration-process */}
 
 1. **स्वचालित बैकअप**: माइग्रेशन से पहले बैकअप बनाता है
 2. **स्कीमा अपडेट**: डेटाबेस संरचना को अपडेट करता है
 3. **डेटा माइग्रेशन**: मौजूदा डेटा को संरक्षित करता है
 4. **सत्यापन**: सफल माइग्रेशन की पुष्टि करता है
 
-## तालिकाएँ {#tables}
+## तालिकाएँ {/* #tables */}
 
-### सर्वर तालिका {#servers-table}
+### Server तालिका {/* #servers-table */}
 
 निगरानी के लिए डुप्लिकेट सर्वर के बारे में जानकारी संग्रहीत करता है।
 
-#### फ़ील्ड {#fields}
+#### फ़ील्ड्स {/* #fields */}
 
 | फ़ील्ड             | प्रकार             | विवरण                        |
 |-------------------|------------------|------------------------------------|
@@ -52,11 +52,11 @@ Vartaman application version (v1.5.x) uses **Schema v4.2** as the latest databas
 | `server_password` | TEXT             | प्रमाणीकरण के लिए सर्वर पासवर्ड |
 | `created_at`      | DATETIME         | सर्वर निर्माण समय चिन्ह          |
 
-### बैकअप तालिका {#backups-table}
+### बैकअप तालिका {/* #backups-table */}
 
 डुप्लिकेट सर्वरों से प्राप्त बैकअप ऑपरेशन डेटा संग्रहीत करता है।
 
-#### मुख्य क्षेत्र {#key-fields}
+#### प्रमुख फ़ील्ड्स {/* #key-fields */}
 
 | क्षेत्र              | प्रकार              | विवरण                                    |
 |--------------------|-------------------|------------------------------------------------|
@@ -74,7 +74,7 @@ Vartaman application version (v1.5.x) uses **Schema v4.2** as the latest databas
 | `errors`           | INTEGER           | त्रुटियों की संख्या                               |
 | `created_at`       | DATETIME          | रिकॉर्ड निर्माण समय चिन्ह                      |
 
-#### संदेश सरणियाँ (JSON संचयन) {#message-arrays-json-storage}
+#### संदेश ऐरे (JSON Sanchayan) {/* #message-arrays-json-storage */}
 
 | क्षेत्र                | प्रकार | विवरण                                   |
 |---------------------|------|-----------------------------------------|
@@ -83,7 +83,7 @@ Vartaman application version (v1.5.x) uses **Schema v4.2** as the latest databas
 | `errors_array`      | पाठ | त्रुटि संदेशों का JSON सरणी            |
 | `available_backups` | पाठ | उपलब्ध बैकअप संस्करणों का JSON सरणी |
 
-#### फ़ाइल ऑपरेशन फ़ील्ड {#file-operation-fields}
+#### फ़ाइल ऑपरेशन फ़ील्ड्स {/* #file-operation-fields */}
 
 | क्षेत्र                 | प्रकार    | विवरण                  |
 |-----------------------|---------|------------------------------|
@@ -102,7 +102,7 @@ Vartaman application version (v1.5.x) uses **Schema v4.2** as the latest databas
 | `modified_symlinks`   | पूर्णांक | संशोधित सिंबोलिक लिंक      |
 | `deleted_symlinks`    | पूर्णांक | हटाई गई सिंबोलिक लिंक       |
 
-#### File Aakar Fields {#file-size-fields}
+#### File Aakar फ़ील्ड्स {/* #file-size-fields */}
 
 | Field                    | Type    | Description                          |
 |--------------------------|---------|--------------------------------------|
@@ -111,7 +111,7 @@ Vartaman application version (v1.5.x) uses **Schema v4.2** as the latest databas
 | `size_of_added_files`    | INTEGER | Backup mein jodne ke liye naye file ka Aakar    |
 | `size_of_modified_files` | INTEGER | Backup mein badal gaye file ka Aakar     |
 
-#### Operation Stithi Fields {#operation-status-fields}
+#### ऑपरेशन Stithi फ़ील्ड्स {/* #operation-status-fields */}
 
 | Field                    | Type              | Description                    |
 |--------------------------|-------------------|--------------------------------|
@@ -127,7 +127,7 @@ Vartaman application version (v1.5.x) uses **Schema v4.2** as the latest databas
 | `errors_actual_length`   | INTEGER           | Actual errors count            |
 | `messages_actual_length` | INTEGER           | Actual messages count          |
 
-#### Backend Aankde Fields {#backend-statistics-fields}
+#### बैकएंड Aankde फ़ील्ड्स {/* #backend-statistics-fields */}
 
 | Field                            | Type     | Description                       |
 |----------------------------------|----------|-----------------------------------|
@@ -146,43 +146,43 @@ Vartaman application version (v1.5.x) uses **Schema v4.2** as the latest databas
 | `backend_warnings_actual_length` | INTEGER  | Backend Chetaavaniyaan ka Sankhya            |
 | `backend_errors_actual_length`   | INTEGER  | Backend Trutiyon ka Sankhya              |
 
-### Sammaan Ka Table {#configurations-table}
+### कॉन्फ़िगरेशन तालिका {/* #configurations-table */}
 
 Application ka Sammaan Sammaan ka Sammaan rakhta hai.
 
-#### Fields {#fields-1}
+#### फ़ील्ड्स {/* #fields-1 */}
 
 | Field   | Type                      | Description                |
 |---------|---------------------------|----------------------------|
 | `key`   | TEXT PRIMARY KEY NOT NULL | Sammaan ka Key          |
 | `value` | TEXT                      | Sammaan ka Maan (JSON) |
 
-#### Common Sammaan Keys {#common-configuration-keys}
+#### सामान्य कॉन्फ़िगरेशन कुंजी {/* #common-configuration-keys */}
 
 - `email_config`: Email Notification Sammaan
 - `ntfy_config`: NTFY Notification Sammaan
 - `overdue_tolerance`: Vilambit Backup Samman Sammaan
 - `notification_templates`: Notification Message Templates
-- `daily_summary`: दैनिक सारांश मोड, अनुसूची, और समय क्षेत्र
-- `cron_service`: क्रॉन कार्य अनुसूचियां, जिसमें `daily-summary-dispatch` शामिल है
+- `daily_summary`: दैनिक सारांश मोड, अनुसूची, समय क्षेत्र, वैकल्पिक सार्वजनिक डैशबोर्ड यूआरएल, और वैकल्पिक SMTP प्राप्तकर्ता ओवरराइड (`smtpRecipient`; खाली उपयोग Email Settings)
+- `cron_service`: क्रॉन कार्य अनुसूचियां, जिसमें `daily-summary-dispatch` शामिल है (`minute hour * * *` से `daily_summary.utcTime`)
 - `audit_retention_days`: ऑडिट लॉग रिटेंशन अवधि (डिफ़ॉल्ट: 90 दिन)
 
-### डेटाबेस संस्करण तालिका {#database-version-table}
+### डेटाबेस Sanskaran तालिका {/* #database-version-table */}
 
 माइग्रेशन उद्देश्यों के लिए डेटाबेस स्कीमा संस्करण को ट्रैक करता है।
 
-#### फ़ील्ड {#fields-2}
+#### फ़ील्ड्स {/* #fields-2 */}
 
 | फ़ील्ड        | प्रकार             | विवरण                |
 |--------------|------------------|----------------------------|
 | `version`    | TEXT PRIMARY KEY | डेटाबेस संस्करण           |
 | `applied_at` | DATETIME         | कब माइग्रेशन लागू किया गया |
 
-### उपयोक्ता तालिका {#users-table}
+### Upyogkarta तालिका {/* #users-table */}
 
 प्रमाणीकरण और एक्सेस कंट्रोल के लिए उपयोक्ता खाता जानकारी को संग्रहीत करता है।
 
-#### फ़ील्ड {#fields-3}
+#### फ़ील्ड्स {/* #fields-3 */}
 
 | फ़ील्ड                   | प्रकार                 | विवरण                         |
 |-------------------------|----------------------|-------------------------------------|
@@ -198,11 +198,11 @@ Application ka Sammaan Sammaan ka Sammaan rakhta hai.
 | `failed_login_attempts` | INTEGER              | असफल लॉगिन प्रयासों की गिनती      |
 | `locked_until`          | DATETIME             | खाता लॉक समाप्ति (यदि लॉक किया गया है) |
 
-### सत्र तालिका {#sessions-table}
+### सत्र तालिका {/* #sessions-table */}
 
 उपयोगकर्ता सत्र डेटा प्रमाणीकरण और सुरक्षा के लिए संग्रहीत करता है।
 
-#### फ़ील्ड {#fields-4}
+#### फ़ील्ड्स {/* #fields-4 */}
 
 | फ़ील्ड             | प्रकार              | विवरण                                                      |
 |-------------------|-------------------|------------------------------------------------------------------|
@@ -216,11 +216,11 @@ Application ka Sammaan Sammaan ka Sammaan rakhta hai.
 | `csrf_token`      | TEXT              | सत्र के लिए CSRF टोकन                                       |
 | `csrf_expires_at` | DATETIME          | CSRF टोकन समाप्ति                                            |
 
-### ऑडिट लॉग तालिका {#audit-log-table}
+### Audit log तालिका {/* #audit-log-table */}
 
 उपयोगकर्ता क्रियाओं और प्रणाली घटनाओं की ऑडिट ट्रेल संग्रहीत करता है।
 
-#### फ़ील्ड {#fields-5}
+#### फ़ील्ड्स {/* #fields-5 */}
 
 | फ़ील्ड           | प्रकार                              | विवरण                                                       |
 |-----------------|-----------------------------------|-------------------------------------------------------------------|
@@ -238,11 +238,11 @@ Application ka Sammaan Sammaan ka Sammaan rakhta hai.
 | `status`        | TEXT NOT NULL                     | क्रिया की स्थिति ('सफलता', 'असफलता', 'त्रुटि')                  |
 | `error_message` | TEXT                              | त्रुटि संदेश यदि क्रिया असफल हुई                                    |
 
-### एपीआई कुंजियाँ तालिका {#api-keys-table}
+### एपीआई कुंजियाँ तालिका {/* #api-keys-table */}
 
 बाहरी एचटीटीपी एपीआई के लिए हैश्ड एपीआई कुंजियाँ संग्रहीत करता है। प्लेनटेक्स्ट सीक्रेट को बनाए जाने पर एक बार ही दिखाया जाता है और कभी भी संग्रहीत नहीं किया जाता।
 
-#### फ़ील्ड {#fields-6}
+#### फ़ील्ड्स {/* #fields-6 */}
 
 | फ़ील्ड          | प्रकार             | विवरण                                              |
 |----------------|------------------|----------------------------------------------------------|
@@ -262,18 +262,18 @@ Application ka Sammaan Sammaan ka Sammaan rakhta hai.
 
 संबंधित कॉन्फ़िगरेशन कुंजियाँ `configurations` तालिका में: `external_api_require_api_key`, `ip_trusted_proxies`, `admin_ip_allowlist`, `external_api_ip_allowlist`, `upload_limits`।
 
-### Daily Summary Deliveries Table {#daily-summary-deliveries-table}
+### दैनिक सारांश वितरण तालिका {/* #daily-summary-deliveries-table */}
 
 दैनिक सारांश ईमेल डिलीवरी के लिए चैनल-विशिष्ट लेजर। पुराने पंक्तियाँ में एक `ntfy` चैनल शामिल हो सकता है जो पिछले रिलीज़ से है। प्रत्येक अनुसूचित घटना (या अद्वितीय मैनुअल भेजा) प्रति चैनल अधिकतम एक पंक्ति होती है। रेंडर किए गए पेलोड भेजने से पहले संग्रहीत किए जाते हैं ताकि पुन: प्रयासों में वही स्नैपशॉट हो। 30 दिन से पुराने पंक्तियाँ हटा दी जाती हैं।
 
 If the process dies after a provider accepts a message but before success is recorded, that channel may be retried (at-least-once).
 
-#### Fields {#fields-7}
+#### फ़ील्ड्स {/* #fields-7 */}
 
 | Field              | Type             | Description                                                                 |
 |--------------------|------------------|-----------------------------------------------------------------------------|
 | `id`               | TEXT PRIMARY KEY | Unique delivery identifier                                                  |
-| `occurrence_key`   | TEXT NOT NULL    | Scheduled local date key or `manual:{uuid}`                                 |
+| `occurrence_key`   | TEXT NOT NULL    | अनुसूचित कुंजी `scheduled:UTC:{date}:{HH:mm}` या `manual:{uuid}`             |
 | `channel`          | TEXT NOT NULL    | `email` or `ntfy`                                                           |
 | `trigger`          | TEXT NOT NULL    | `scheduled`, `manual`, or `retry`                                           |
 | `summary_date`     | TEXT NOT NULL    | Local calendar date for the snapshot                                        |
@@ -290,9 +290,9 @@ If the process dies after a provider accepts a message but before success is rec
 
 एक अद्वितीय सूचकांक `(occurrence_key, channel)` पर एक ही घटना के समान चैनल पर दोहराव से बचाता है।
 
-## सत्र प्रबंधन {#session-management}
+## सत्र प्रबंधन {/* #session-management */}
 
-### डेटाबेस-सहायता सत्र संचयन {#database-backed-session-storage}
+### डेटाबेस-समर्थित सत्र Sanchayan {/* #database-backed-session-storage */}
 
 सत्र डेटाबेस में संग्रहीत होते हैं, साथ ही स्मृति में पिछड़ा हुआ:
 - **प्राथमिक संग्रहण**: डेटाबेस-सहायता सत्र तालिका
@@ -302,14 +302,14 @@ If the process dies after a provider accepts a message but before success is rec
 - **CSRF रक्षा**: क्रॉस-साइट अनुरोध फर्जी रक्षा
 - **स्वचालित सफाई**: समाप्त हुए सत्र स्वचालित रूप से हटाए जाते हैं
 
-### सत्र API एंडपॉइंट्स {#session-api-endpoints}
+### सत्र एपीआई एंडपॉइंट्स {/* #session-api-endpoints */}
 
 - `POST /api/session`: नया सत्र बनाएँ
 - `GET /api/session`: मौजूदा सत्र को सत्यापित करें
 - `DELETE /api/session`: सत्र को नष्ट करें
 - `GET /api/csrf`: CSRF टोकन प्राप्त करें
 
-## सूचकांक {#indexes}
+## अनुक्रमणिकाएँ {/* #indexes */}
 
 डेटाबेस में अनुप्रयोग के लिए अनुकूलित क्वेरी प्रदर्शन के लिए कई सूचकांक शामिल हैं:
 
@@ -322,7 +322,7 @@ If the process dies after a provider accepts a message but before success is rec
 - **ऑडिट इंडेक्स**: ऑडिट क्वेरी के लिए समय चिन्ह, उपयोगकर्ता_आईडी, क्रिया, श्रेणी, और स्थिति इंडेक्स
 - **एपीआई कुंजी इंडेक्स**: अद्वितीय हैश, साथ ही सक्रिय/स्कोप लुकअप के लिए प्रमाणीकरण
 
-## संबंध {#relationships}
+## संबंध {/* #relationships */}
 
 - **Server → Backups**: एक-से-एक से अधिक संबंध
 - **Upyogkarta → Sessions**: एक-से-एक से अधिक संबंध (sessions उप्योगकर्ता के बिना भी मौजूद हो सकते हैं)
@@ -331,7 +331,7 @@ If the process dies after a provider accepts a message but before success is rec
 - **Backups → Sandesh**: Embedded JSON arrays
 - **Configurations**: Key-value storage
 
-## डेटा प्रकार {#data-types}
+## डेटा प्रकार {/* #data-types */}
 
 - **TEXT**: स्ट्रिंग डेटा, JSON एरे
 - **INTEGER**: संख्यात्मक डेटा, फ़ाइल गिनती, आकार
@@ -339,16 +339,16 @@ If the process dies after a provider accepts a message but before success is rec
 - **DATETIME**: टाइमस्टैम्प डेटा
 - **BOOLEAN**: सत्य/असत्य मान
 
-## बैकअप स्थिति मान {#backup-status-values}
+## बैकअप Stithi मान {/* #backup-status-values */}
 
 - **सफलता**: बैकअप सफलतापूर्वक पूरा हुआ
 - **चेतावनी**: चेतावनियों के साथ बैकअप पूरा हुआ
 - **त्रुटि**: त्रुटियों के साथ बैकअप पूरा हुआ
 - **गंभीर**: बैकअप गंभीर रूप से असफल हुआ
 
-## सामान्य क्वेरीज़ {#common-queries}
+## सामान्य प्रश्न {/* #common-queries */}
 
-### सर्वर के लिए नवीनतम बैकअप प्राप्त करें {#get-latest-backup-for-a-server}
+### सर्वर के लिए नवीनतम बैकअप प्राप्त करें {/* #get-latest-backup-for-a-server */}
 
 ```sql
 SELECT * FROM backups 
@@ -357,7 +357,7 @@ ORDER BY date DESC
 LIMIT 1;
 ```
 
-### सर्वर के लिए सभी बैकअप प्राप्त करें {#get-all-backups-for-a-server}
+### सर्वर के लिए sabhi backups ke liye प्राप्त करें {/* #get-all-backups-for-a-server */}
 
 ```sql
 SELECT * FROM backups 
@@ -365,7 +365,7 @@ WHERE server_id = ?
 ORDER BY date DESC;
 ```
 
-### सर्वर सारांश प्राप्त करें {#get-server-summary}
+### सर्वर सारांश प्राप्त करें {/* #get-server-summary */}
 
 ```sql
 SELECT 
@@ -379,7 +379,7 @@ LEFT JOIN backups b ON s.id = b.server_id
 GROUP BY s.id;
 ```
 
-### कुल सारांश प्राप्त करें {#get-overall-summary}
+### समग्र सारांश प्राप्त करें {/* #get-overall-summary */}
 
 ```sql
 SELECT 
@@ -409,7 +409,7 @@ FROM servers s
 LEFT JOIN backups b ON b.server_id = s.id;
 ```
 
-### डेटाबेस साफ़-चौकी {#database-cleanup}
+### डेटाबेस सफाई {/* #database-cleanup */}
 
 ```sql
 -- Delete old backups (older than 30 days)
@@ -421,9 +421,9 @@ DELETE FROM servers
 WHERE id NOT IN (SELECT DISTINCT server_id FROM backups);
 ```
 
-## JSON से डेटाबेस मैपिंग {#json-to-database-mapping}
+## JSON से डेटाबेस मैपिंग {/* #json-to-database-mapping */}
 
-### API अनुरोध बॉडी से डेटाबेस कॉलम मैपिंग {#api-request-body-to-database-columns-mapping}
+### API अनुरोध बॉडी से डेटाबेस कॉलम मैपिंग {/* #api-request-body-to-database-columns-mapping */}
 
 जब डुप्लिकेटी HTTP POST के माध्यम से बैकअप डेटा भेजता है, तो JSON संरचना डेटाबेस कॉलम में मैप की जाती है:
 

@@ -1,9 +1,9 @@
-# Administration {#administration}
+# Administration {/* #administration */}
 
-## Collecter les sauvegardes - `/api/backups/collect` {#collect-backups---apibackupscollect}
-- **Endpoint** : `/api/backups/collect`
+## Collecter les sauvegardes - `/api/backups/collect` {/* #collect-backups---apibackupscollect */}
+- **Point de terminaison** : `/api/backups/collect`
 - **Méthode** : POST
-- **Description** : Récupère les données de sauvegarde directement depuis un serveur Duplicati via son API. Cet endpoint détecte automatiquement le meilleur protocole de connexion (HTTPS avec validation SSL, HTTPS avec certificats auto-signés, ou HTTP en secours) et se connecte au serveur Duplicati pour récupérer les informations de sauvegarde et les intégrer dans la base de données locale.
+- **Description** : Collecte les données de sauvegarde directement depuis un serveur Duplicati via son API. Ce point de terminaison détecte automatiquement le meilleur protocole de connexion (HTTPS avec validation SSL, HTTPS avec certificats auto-signés, ou HTTP en tant que solution de secours) et se connecte au serveur Duplicati pour récupérer les informations de sauvegarde et les traiter dans la base de données locale.
 - **Authentification** : Nécessite une session valide et un jeton CSRF
 - **Corps de la requête** :
 
@@ -50,10 +50,10 @@
   - L'interface doit utiliser `serverAlias || serverName` à des fins d'affichage
   - Prend en charge à la fois le téléchargement au format JSON et la collecte directe via API
 
-## Nettoyer les sauvegardes - `/api/backups/cleanup` {#cleanup-backups---apibackupscleanup}
-- **Endpoint** : `/api/backups/cleanup`
+## Nettoyer les sauvegardes - `/api/backups/cleanup` {/* #cleanup-backups---apibackupscleanup */}
+- **Point de terminaison** : `/api/backups/cleanup`
 - **Méthode** : POST
-- **Description** : Supprime les anciennes données de sauvegarde en fonction de la période de rétention. Cet endpoint permet de gérer la taille de la base de données en supprimant les enregistrements de sauvegarde obsolètes tout en préservant les données récentes et importantes.
+- **Description** : Supprime les anciennes données de sauvegarde en fonction de la période de conservation. Ce point de terminaison aide à gérer la taille de la base de données en supprimant les enregistrements de sauvegarde obsolètes tout en préservant les données récentes et importantes.
 - **Authentification** : Nécessite une session valide et un jeton CSRF
 - **Corps de la requête** :
 
@@ -94,10 +94,10 @@ Pour l'option « Supprimer toutes les données » :
   - Un reporting d'erreur amélioré inclut les détails et la trace de la pile en mode développement
   - Prend en charge à la fois la rétention basée sur le temps et la suppression complète des données
 
-## Supprimer le travail de sauvegarde - `/api/backups/delete-job` {#delete-backup-job---apibackupsdelete-job}
-- **Endpoint** : `/api/backups/delete-job`
+## Supprimer la tâche de sauvegarde - `/api/backups/delete-job` {/* #delete-backup-job---apibackupsdelete-job */}
+- **Point de terminaison** : `/api/backups/delete-job`
 - **Méthode** : DELETE
-- **Description** : Supprime tous les enregistrements de sauvegarde pour une combinaison spécifique serveur-sauvegarde. Cet endpoint n'est disponible que en mode développement.
+- **Description** : Supprime tous les enregistrements de sauvegarde pour une combinaison serveur-sauvegarde spécifique. Ce point de terminaison n'est disponible qu'en mode développement.
 - **Authentification** : Nécessite une session valide et un jeton CSRF
 - **Corps de la requête** :
 
@@ -133,10 +133,10 @@ Pour l'option « Supprimer toutes les données » :
   - Renvoie le nombre de sauvegardes supprimées et les informations du serveur
   - Utilise l'alias du serveur pour l'affichage s'il est disponible, sinon utilise le nom du serveur
 
-## Synchroniser les plannings de sauvegarde - `/api/backups/sync-schedule` {#sync-backup-schedules---apibackupssync-schedule}
-- **Endpoint** : `/api/backups/sync-schedule`
+## Synchroniser les horaires de sauvegarde - `/api/backups/sync-schedule` {/* #sync-backup-schedules---apibackupssync-schedule */}
+- **Point de terminaison** : `/api/backups/sync-schedule`
 - **Méthode** : POST
-- **Description** : Synchronise les informations de planning de sauvegarde depuis un serveur Duplicati. Cet endpoint se connecte au serveur, récupère les informations de planning pour toutes les sauvegardes, et met à jour les paramètres locaux de sauvegarde avec les détails du planning, notamment les intervalles de répétition, les jours de la semaine autorisés et les horaires.
+- **Description** : Synchronise les informations d'horaire de sauvegarde depuis un serveur Duplicati. Ce point de terminaison se connecte au serveur, récupère les informations d'horaire pour toutes les sauvegardes et met à jour les paramètres de sauvegarde locaux avec les détails de l'horaire, y compris les intervalles de répétition, les jours de la semaine autorisés et les heures de l'horaire.
 - **Authentification** : Nécessite une session valide et un jeton CSRF
 - **Corps de la requête** :
 
@@ -216,10 +216,10 @@ Avec erreurs :
   - Enregistre des événements d'audit pour les opérations de synchronisation réussies et échouées
   - Utilise le port par défaut 8200 s'il n'est pas spécifié
 
-## Tester la connexion au serveur - `/api/servers/test-connection` {#test-server-connection---apiserverstest-connection}
-- **Endpoint** : `/api/servers/test-connection`
+## Tester la connexion au serveur - `/api/servers/test-connection` {/* #test-server-connection---apiserverstest-connection */}
+- **Point de terminaison** : `/api/servers/test-connection`
 - **Méthode** : POST
-- **Description** : Teste la connexion à un serveur Duplicati afin de vérifier qu'il est accessible.
+- **Description** : Teste la connexion à un serveur Duplicati pour vérifier qu'il est accessible.
 - **Corps de la requête** :
 
   ```json
@@ -247,8 +247,8 @@ Avec erreurs :
   - Prend en charge les protocoles HTTP et HTTPS
   - Utilise la configuration de délai d'attente pour le test de connexion
 
-## Obtenir l'URL du serveur - `/api/servers/:serverId/server-url` {#get-server-url---apiserversserveridserver-url}
-- **Endpoint** : `/api/servers/:serverId/server-url`
+## Obtenir l'URL du serveur - `/api/servers/:serverId/server-url` {/* #get-server-url---apiserversserveridserver-url */}
+- **Point de terminaison** : `/api/servers/:serverId/server-url`
 - **Méthode** : GET
 - **Description** : Récupère l'URL du serveur pour un serveur spécifique.
 - **Paramètres** :
@@ -271,8 +271,8 @@ Avec erreurs :
   - Utilisé pour la gestion de la connexion au serveur
   - Renvoie une chaîne vide si aucune URL de serveur n'est définie
 
-## Mettre à jour l'URL du serveur - `/api/servers/:serverId/server-url` {#update-server-url---apiserversserveridserver-url}
-- **Endpoint** : `/api/servers/:serverId/server-url`
+## Mettre à jour l'URL du serveur - `/api/servers/:serverId/server-url` {/* #update-server-url---apiserversserveridserver-url */}
+- **Point de terminaison** : `/api/servers/:serverId/server-url`
 - **Méthode** : PATCH
 - **Description** : Met à jour l'URL du serveur pour un serveur spécifique.
 - **Authentification** : Nécessite une session valide et un jeton CSRF
@@ -308,10 +308,10 @@ Avec erreurs :
   - Prend en charge les protocoles HTTP et HTTPS
   - Renvoie les informations mises à jour du serveur
 
-## Obtenir le mot de passe du serveur - `/api/servers/:serverId/password` {#get-server-password---apiserversserveridpassword}
-- **Endpoint** : `/api/servers/:serverId/password`
+## Obtenir le mot de passe du serveur - `/api/servers/:serverId/password` {/* #get-server-password---apiserversserveridpassword */}
+- **Point de terminaison** : `/api/servers/:serverId/password`
 - **Méthode** : GET
-- **Description** : Récupère un jeton CSRF pour les opérations liées au mot de passe du serveur.
+- **Description** : Récupère un jeton CSRF pour les opérations de mot de passe du serveur.
 - **Authentification** : Nécessite une session valide
 - **Paramètres** :
   - `serverId` : l'identifiant du serveur
@@ -331,8 +331,8 @@ Avec erreurs :
   - Renvoie un jeton CSRF à utiliser avec les opérations de mise à jour du mot de passe
   - La session doit être valide pour générer le jeton
 
-## Mettre à jour le mot de passe du serveur - `/api/servers/:serverId/password` {#update-server-password---apiserversserveridpassword}
-- **Endpoint** : `/api/servers/:serverId/password`
+## Mettre à jour le mot de passe du serveur - `/api/servers/:serverId/password` {/* #update-server-password---apiserversserveridpassword */}
+- **Point de terminaison** : `/api/servers/:serverId/password`
 - **Méthode** : PATCH
 - **Description** : Met à jour le mot de passe pour un serveur spécifique.
 - **Authentification** : Nécessite une session valide et un jeton CSRF
@@ -363,12 +363,12 @@ Avec erreurs :
   - Le mot de passe peut être une chaîne vide pour le supprimer
   - Le mot de passe est stocké de manière sécurisée à l'aide du système de gestion des secrets
 
-## Gestion des utilisateurs {#user-management}
+## Gestion des utilisateurs {/* #user-management */}
 
-### Lister les utilisateurs - `/api/users` {#list-users---apiusers}
-- **Endpoint** : `/api/users`
+### Lister les utilisateurs - `/api/users` {/* #list-users---apiusers */}
+- **Point de terminaison** : `/api/users`
 - **Méthode** : GET
-- **Description** : Liste tous les utilisateurs avec pagination et filtre de recherche optionnel. Renvoie les informations utilisateur, notamment l'historique de connexion et le statut du compte.
+- **Description** : Liste tous les utilisateurs avec pagination et filtrage de recherche optionnel. Renvoie des informations sur les utilisateurs, y compris l'historique de connexion et l'état du compte.
 - **Authentification** : Nécessite des privilèges d'administrateur, une session valide et un jeton CSRF
 - **Paramètres de requête** :
   - `page` (facultatif) : Numéro de page (par défaut : 1)
@@ -410,8 +410,8 @@ Avec erreurs :
   - Prend en charge la pagination et le filtrage par recherche
   - Renvoie le statut du compte utilisateur, y compris le statut de verrouillage
 
-### Créer l'utilisateur - `/api/users` {#create-user---apiusers}
-- **Endpoint** : `/api/users`
+### Créer un utilisateur - `/api/users` {/* #create-user---apiusers */}
+- **Point de terminaison** : `/api/users`
 - **Méthode** : POST
 - **Description** : Crée un nouveau compte utilisateur. Peut générer un mot de passe temporaire ou utiliser un mot de passe fourni.
 - **Authentification**: Nécessite des privilèges d'administrateur, une session valide et un jeton CSRF
@@ -458,10 +458,10 @@ Avec erreurs :
   - Les mots de passe temporaires générés ne sont renvoyés qu'une seule fois dans la réponse
   - La création d'utilisateur est enregistrée dans le journal d'audit
 
-### Mettre à jour l'utilisateur - `/api/users/:id` {#update-user---apiusersid}
-- **Endpoint** : `/api/users/:id`
+### Mettre à jour un utilisateur - `/api/users/:id` {/* #update-user---apiusersid */}
+- **Point de terminaison** : `/api/users/:id`
 - **Méthode** : PATCH
-- **Description** : Met à jour les informations utilisateur, notamment le nom d'utilisateur, le statut d'administrateur, l'exigence de changement de mot de passe et la réinitialisation du mot de passe.
+- **Description** : Met à jour les informations de l'utilisateur, y compris le nom d'utilisateur, le statut d'admin, l'exigence de changement de mot de passe et la réinitialisation du mot de passe.
 - **Authentification** : Nécessite des privilèges d'administrateur, une session valide et un jeton CSRF
 - **Paramètres** :
   - `id` : ID de l'utilisateur à mettre à jour
@@ -518,10 +518,10 @@ Avec erreurs :
   - La réinitialisation du mot de passe génère un mot de passe temporaire sécurisé de 12 caractères
   - Toutes les modifications sont enregistrées dans le journal d'audit
 
-### Supprimer l'utilisateur - `/api/users/:id` {#delete-user---apiusersid}
-- **Endpoint** : `/api/users/:id`
+### Supprimer un utilisateur - `/api/users/:id` {/* #delete-user---apiusersid */}
+- **Point de terminaison** : `/api/users/:id`
 - **Méthode** : DELETE
-- **Description** : Supprime un compte utilisateur. Empêche la suppression de son propre compte ou du dernier compte administrateur.
+- **Description** : Supprime un compte utilisateur. Empêche la suppression de soi-même ou du dernier compte admin.
 - **Authentification** : Nécessite des privilèges d'administrateur, une session valide et un jeton CSRF
 - **Paramètres** :
   - `id` : ID de l'utilisateur à supprimer
@@ -547,12 +547,12 @@ Avec erreurs :
   - La suppression d'un utilisateur est enregistrée dans le journal d'audit
   - Les sessions associées sont automatiquement supprimées (suppression en cascade)
 
-## Gestion du journal d'audit {#audit-log-management}
+## Gestion du journal d'audit {/* #audit-log-management */}
 
-### Lister les journaux d'audit - `/api/audit-log` {#list-audit-logs---apiaudit-log}
-- **Endpoint** : `/api/audit-log`
+### Lister les journaux d'audit - `/api/audit-log` {/* #list-audit-logs---apiaudit-log */}
+- **Point de terminaison** : `/api/audit-log`
 - **Méthode** : GET
-- **Description** : Récupère les entrées du journal d'audit avec filtrage, pagination et fonctionnalités de recherche. Prend en charge la pagination basée sur les pages et celle basée sur les décalages.
+- **Description** : Récupère les entrées du journal d'audit avec filtrage, pagination et capacités de recherche. Prend en charge la pagination basée sur les pages et celle basée sur les décalages.
 - **Authentification** : Nécessite une session valide et un jeton CSRF (connexion requise)
 - **Paramètres de requête** :
   - `page` (facultatif) : Numéro de page pour la pagination par page
@@ -605,10 +605,10 @@ Avec erreurs :
   - Le champ `details` contient du JSON analysé avec un contexte supplémentaire
   - Toutes les requêtes sur le journal d'audit sont enregistrées
 
-### Obtenir les valeurs de filtre du journal d'audit - `/api/audit-log/filters` {#get-audit-log-filter-values---apiaudit-logfilters}
-- **Endpoint** : `/api/audit-log/filters`
+### Obtenir les valeurs de filtre du journal d'audit - `/api/audit-log/filters` {/* #get-audit-log-filter-values---apiaudit-logfilters */}
+- **Point de terminaison** : `/api/audit-log/filters`
 - **Méthode** : GET
-- **Description** : Récupère les valeurs de filtre uniques disponibles pour le filtrage des journaux d'audit. Renvoie toutes les actions, catégories et statuts distincts présents dans la base de données du journal d'audit. Utile pour remplir les menus déroulants de filtres dans l'interface utilisateur.
+- **Description** : Récupère les valeurs de filtre uniques disponibles pour filtrer les journaux d'audit. Renvoie toutes les actions, catégories et statuts distincts qui existent dans la base de données des journaux d'audit. Utile pour remplir les menus déroulants de filtre dans l'interface utilisateur.
 - **Authentification** : Nécessite une session valide et un jeton CSRF (connexion requise)
 - **Réponse** :
 
@@ -645,10 +645,10 @@ Avec erreurs :
   - Des tableaux vides sont renvoyés s'il n'y a pas de données ou en cas d'erreur
   - Utilisé par la visionneuse des journaux d'audit pour remplir dynamiquement les menus déroulants de filtres
 
-### Télécharger les journaux d'audit - `/api/audit-log/download` {#download-audit-logs---apiaudit-logdownload}
-- **Endpoint** : `/api/audit-log/download`
+### Télécharger les journaux d'audit - `/api/audit-log/download` {/* #download-audit-logs---apiaudit-logdownload */}
+- **Point de terminaison** : `/api/audit-log/download`
 - **Méthode** : GET
-- **Description** : Télécharge les journaux d'audit au format CSV ou JSON avec un filtre optionnel. Utile pour l'analyse externe et la génération de rapports.
+- **Description** : Télécharge les journaux d'audit au format CSV ou JSON avec filtrage optionnel. Utile pour l'analyse externe et les rapports.
 - **Authentification**: Nécessite une session valide et un jeton CSRF (connexion utilisateur requise)
 - **Paramètres de requête**:
   - `format` (facultatif): Format d'exportation - `csv` ou `json` (par défaut : `csv`)
@@ -677,10 +677,10 @@ Avec erreurs :
   - Le champ Détails dans le CSV est sérialisé en JSON
   - Le nom du fichier inclut la date actuelle
 
-### Nettoyer les journaux d'audit - `/api/audit-log/cleanup` {#cleanup-audit-logs---apiaudit-logcleanup}
-- **Endpoint** : `/api/audit-log/cleanup`
+### Nettoyer les journaux d'audit - `/api/audit-log/cleanup` {/* #cleanup-audit-logs---apiaudit-logcleanup */}
+- **Point de terminaison** : `/api/audit-log/cleanup`
 - **Méthode** : POST
-- **Description** : Déclenche manuellement le nettoyage des anciens journaux d'audit en fonction de la période de rétention. Prend en charge le mode d'essai (dry-run) pour prévisualiser les éléments qui seraient supprimés.
+- **Description** : Déclenche manuellement le nettoyage des anciens journaux d'audit en fonction de la période de conservation. Prend en charge le mode de simulation pour prévisualiser ce qui serait supprimé.
 - **Authentification**: Nécessite des privilèges d'administrateur, une session valide et un jeton CSRF
 - **Corps de la requête**:
 
@@ -727,10 +727,10 @@ Avec erreurs :
   - L'opération de nettoyage est enregistrée dans le journal d'audit
   - Le mode test est utile pour prévisualiser l'impact du nettoyage
 
-### Obtenir la rétention du journal d'audit - `/api/audit-log/retention` {#get-audit-log-retention---apiaudit-logretention}
-- **Point de terminaison** : `/api/audit-log/retention`
-- **Méthode** : GET
-- **Description** : Récupère la configuration actuelle de rétention du journal d'audit en jours.
+### Obtenir la conservation des journaux d'audit - `/api/audit-log/retention` {/* #get-audit-log-retention---apiaudit-logretention */}
+- **Point de terminaison**: `/api/audit-log/retention`
+- **Méthode**: GET
+- **Description**: Récupère la configuration actuelle de conservation des journaux d'audit en jours.
 - **Authentification**: Nécessite une session valide et un jeton CSRF (aucun utilisateur connecté requis)
 - **Réponse**:
 
@@ -746,10 +746,10 @@ Avec erreurs :
   - La rétention par défaut est de 90 jours si non configurée
   - Peut être consultée sans authentification (lecture seule)
 
-### Mettre à jour la rétention du journal d'audit - `/api/audit-log/retention` {#update-audit-log-retention---apiaudit-logretention}
-- **Point de terminaison** : `/api/audit-log/retention`
-- **Méthode** : PATCH
-- **Description** : Met à jour la période de rétention du journal d'audit en jours. Ce paramètre détermine la durée pendant laquelle les journaux d'audit sont conservés avant leur suppression automatique.
+### Mettre à jour la conservation des journaux d'audit - `/api/audit-log/retention` {/* #update-audit-log-retention---apiaudit-logretention */}
+- **Point de terminaison**: `/api/audit-log/retention`
+- **Méthode**: PATCH
+- **Description**: Met à jour la période de conservation des journaux d'audit en jours. Ce paramètre détermine combien de temps les journaux d'audit sont conservés avant le nettoyage automatique.
 - **Authentification**: Nécessite des privilèges d'administrateur, une session valide et un jeton CSRF
 - **Corps de la requête**:
 
@@ -779,9 +779,9 @@ Avec erreurs :
   - La modification de la configuration est enregistrée dans le journal d'audit
   - La période de rétention affecte les opérations de nettoyage automatique et manuel
 
-## Clés API {#api-keys}
+## Clés API {/* #api-keys */}
 
-### Lister les clés API - `/api/api-keys` {#list-api-keys---apiapi-keys}
+### Lister les clés API - `/api/api-keys` {/* #list-api-keys---apiapi-keys */}
 - **Point de terminaison**: `/api/api-keys`
 - **Méthode**: GET
 - **Description**: Liste toutes les clés API. Les secrets ne sont jamais retournés ; chaque clé inclut une empreinte digitale (`Qk7v…3xTa`).
@@ -791,10 +791,10 @@ Avec erreurs :
   - `403`: Interdit - Privilèges d'administrateur requis
   - `500`: Erreur interne du serveur
 
-### Créer une clé API - `/api/api-keys` {#create-api-key---apiapi-keys}
+### Créer une clé API - `/api/api-keys` {/* #create-api-key---apiapi-keys */}
 - **Point de terminaison**: `/api/api-keys`
 - **Méthode**: POST
-- **Description**: Crée une clé API avec une portée définie. Le secret en clair n'est retourné que dans cette réponse.
+- **Description**: Crée une clé API avec portée. Le secret en texte clair est retourné uniquement dans cette réponse.
 - **Authentification**: Nécessite des privilèges d'administrateur, une session valide et un jeton CSRF
 - **Corps de la requête**:
 
@@ -813,24 +813,24 @@ Avec erreurs :
   - `403`: Interdit - Privilèges d'administrateur requis
   - `500`: Erreur interne du serveur
 
-### Mettre à jour une clé API - `/api/api-keys/:id` {#update-api-key---apiapi-keysid}
+### Mettre à jour la clé API - `/api/api-keys/:id` {/* #update-api-key---apiapi-keysid */}
 - **Point de terminaison**: `/api/api-keys/:id`
 - **Méthode**: PATCH
 - **Description**: Active ou désactive une clé.
 - **Authentification**: Nécessite des privilèges d'administrateur, une session valide et un jeton CSRF
 
-### Supprimer une clé API - `/api/api-keys/:id` {#delete-api-key---apiapi-keysid}
+### Supprimer la clé API - `/api/api-keys/:id` {/* #delete-api-key---apiapi-keysid */}
 - **Point de terminaison**: `/api/api-keys/:id`
 - **Méthode**: DELETE
 - **Description**: Supprime une clé. Les clients existants utilisant ce secret perdent immédiatement l'accès.
 - **Authentification**: Nécessite des privilèges d'administrateur, une session valide et un jeton CSRF
 
-## Gestion de la base de données {#database-management}
+## Gestion de la base de données {/* #database-management */}
 
-### Sauvegarder la base de données - `/api/database/backup` {#backup-database---apidatabasebackup}
-- **Point de terminaison** : `/api/database/backup`
-- **Méthode** : GET
-- **Description** : Crée une sauvegarde de la base de données au format binaire (.db) ou SQL (.sql). Le fichier de sauvegarde est automatiquement téléchargé avec un nom de fichier horodaté.
+### Sauvegarder la base de données - `/api/database/backup` {/* #backup-database---apidatabasebackup */}
+- **Point de terminaison**: `/api/database/backup`
+- **Méthode**: GET
+- **Description**: Crée une sauvegarde de la base de données au format binaire (.db) ou SQL (.sql). Le fichier de sauvegarde est automatiquement téléchargé avec un nom de fichier horodaté.
 - **Authentification** : Nécessite des privilèges d'administrateur, une session valide et un jeton CSRF
 - **Paramètres de requête** :
   - `format` (facultatif) : Format de sauvegarde - `db` (binaire) ou `sql` (export SQL). Par défaut : `db`
@@ -851,10 +851,10 @@ Avec erreurs :
   - L'opération de sauvegarde est enregistrée dans le journal d'audit
   - Les fichiers temporaires sont automatiquement supprimés après le téléchargement
 
-### Restaurer la base de données - `/api/database/restore` {#restore-database---apidatabaserestore}
-- **Point de terminaison** : `/api/database/restore`
-- **Méthode** : POST
-- **Description** : Restaure la base de données à partir d'un fichier de sauvegarde (format .db ou .sql). Crée une sauvegarde de sécurité avant la restauration et supprime toutes les sessions après la restauration pour des raisons de sécurité.
+### Restaurer la base de données - `/api/database/restore` {/* #restore-database---apidatabaserestore */}
+- **Point de terminaison**: `/api/database/restore`
+- **Méthode**: POST
+- **Description**: Restaure la base de données à partir d'un fichier de sauvegarde (.db ou .sql). Crée une sauvegarde de sécurité avant la restauration et efface toutes les sessions après la restauration pour des raisons de sécurité.
 - **Authentification** : Nécessite des privilèges d'administrateur, une session valide et un jeton CSRF
 - **Corps de la requête** : FormData avec un champ fichier nommé `database`
   - Le fichier doit être au format `.db`, `.sqlite`, `.sqlite3` (format binaire) ou `.sql` (format SQL)
@@ -888,12 +888,12 @@ Avec erreurs :
   - La connexion à la base de données est réinitialisée après la restauration
   - Tous les caches sont invalidés après la restauration
 
-## Horodatages des sauvegardes {#backup-timestamps}
+## Horodatages de sauvegarde {/* #backup-timestamps */}
 
-### Obtenir les horodatages de la dernière sauvegarde - `/api/backups/last-timestamps` {#get-last-backup-timestamps---apibackupslast-timestamps}
-- **Point de terminaison** : `/api/backups/last-timestamps`
-- **Méthode** : GET
-- **Description** : Récupère l'horodatage de la dernière sauvegarde pour chaque combinaison serveur-sauvegarde. Renvoie une carte pour une recherche facile.
+### Obtenir les horodatages de la dernière sauvegarde - `/api/backups/last-timestamps` {/* #get-last-backup-timestamps---apibackupslast-timestamps */}
+- **Point de terminaison**: `/api/backups/last-timestamps`
+- **Méthode**: GET
+- **Description**: Récupère l'horodatage de la dernière sauvegarde pour chaque combinaison serveur-sauvegarde. Retourne une carte pour une recherche facile.
 - **Authentification** : Nécessite une session valide et un jeton CSRF
 - **Réponse** :
 
@@ -924,12 +924,12 @@ Avec erreurs :
   - Utile pour suivre les derniers horodatages de sauvegarde pour toutes les combinaisons serveur-sauvegarde
   - Les horodatages sont au format ISO
 
-## Gestion des journaux de l'application {#application-logs-management}
+## Gestion des journaux de l'application {/* #application-logs-management */}
 
-### Obtenir les journaux de l'application - `/api/application-logs` {#get-application-logs---apiapplication-logs}
-- **Point de terminaison** : `/api/application-logs`
-- **Méthode** : GET
-- **Description** : Récupère les entrées de journal depuis les fichiers journaux. Prend en charge la lecture des fichiers journaux actuels et archivés avec une fonctionnalité de suivi (tail).
+### Obtenir les journaux de l'application - `/api/application-logs` {/* #get-application-logs---apiapplication-logs */}
+- **Point de terminaison**: `/api/application-logs`
+- **Méthode**: GET
+- **Description**: Récupère les entrées de journaux d'application à partir des fichiers journaux. Prend en charge la lecture des fichiers journaux actuels et tournés avec la fonctionnalité de suivi.
 - **Authentification** : Nécessite des privilèges d'administrateur, une session valide et un jeton CSRF
 - **Paramètres de requête** :
   - `file` (facultatif) : Nom du fichier journal à lire - `application.log`, `application.log.1`, `application.log.2`, etc. Si non fourni, renvoie la liste des fichiers disponibles
@@ -975,10 +975,10 @@ Avec erreurs :
   - Les noms de fichiers sont validés pour empêcher les attaques par traversée de répertoire
   - Les fichiers archivés sont numérotés séquentiellement (`.1`, `.2`, etc.)
 
-### Exporter les journaux de l'application - `/api/application-logs/export` {#export-application-logs---apiapplication-logsexport}
-- **Point de terminaison** : `/api/application-logs/export`
-- **Méthode** : GET
-- **Description** : Exporte les entrées de journal de l'application dans un format texte filtré. Prend en charge le filtrage par niveau de journal et par chaîne de recherche.
+### Exporter les journaux de l'application - `/api/application-logs/export` {/* #export-application-logs---apiapplication-logsexport */}
+- **Point de terminaison**: `/api/application-logs/export`
+- **Méthode**: GET
+- **Description**: Exporte les entrées de journaux d'application au format texte filtré. Prend en charge le filtrage par niveau de journal et chaîne de recherche.
 - **Authentification** : Nécessite des privilèges d'administrateur, une session valide et un jeton CSRF
 - **Paramètres de requête** :
   - `file` (requis) : Nom du fichier journal à exporter - `application.log`, `application.log.1`, `application.log.2`, etc.

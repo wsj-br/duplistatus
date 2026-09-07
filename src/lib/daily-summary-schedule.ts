@@ -8,6 +8,14 @@ import type { DailySummaryConfig } from '@/lib/types';
 const LOCAL_TIME_RE = /^([01]\d|2[0-3]):([0-5]\d)$/;
 const MINUTE_MS = 60 * 1000;
 export const DAILY_SUMMARY_SCHEDULE_TIME_ZONE = 'UTC';
+/** Default Daily Summary send time (HH:mm UTC) and matching cron expression. */
+export const DEFAULT_DAILY_SUMMARY_UTC_TIME = '01:00';
+
+export function buildDailySummaryDispatchCronExpression(utcTime: string): string {
+  const time = isValidLocalTime(utcTime) ? utcTime : DEFAULT_DAILY_SUMMARY_UTC_TIME;
+  const { hour, minute } = parseLocalTime(time);
+  return `${minute} ${hour} * * *`;
+}
 
 export function isValidLocalTime(value: string): boolean {
   return typeof value === 'string' && LOCAL_TIME_RE.test(value);
@@ -101,6 +109,18 @@ export function formatUtcCalendarDate(date: Date): string {
   return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}-${String(date.getUTCDate()).padStart(2, '0')}`;
 }
 
+function truncateToUtcMinuteMs(date: Date): number {
+  return Date.UTC(
+    date.getUTCFullYear(),
+    date.getUTCMonth(),
+    date.getUTCDate(),
+    date.getUTCHours(),
+    date.getUTCMinutes(),
+    0,
+    0
+  );
+}
+
 function addCalendarDays(year: number, month: number, day: number, days: number): { year: number; month: number; day: number } {
   const utc = new Date(Date.UTC(year, month - 1, day + days));
   return {
@@ -174,20 +194,12 @@ export function legacyLocalScheduleToUtcTime(
   return formatTimeLabel(instant.getUTCHours(), instant.getUTCMinutes());
 }
 
-export function scheduledOccurrenceKey(summaryDate: string): string {
-  return `scheduled:${DAILY_SUMMARY_SCHEDULE_TIME_ZONE}:${summaryDate}`;
+export function scheduledOccurrenceKey(summaryDate: string, utcTime: string): string {
+  return `scheduled:${DAILY_SUMMARY_SCHEDULE_TIME_ZONE}:${summaryDate}:${utcTime}`;
 }
 
 export function manualOccurrenceKey(runId: string): string {
   return `manual:${runId}`;
-}
-
-export interface DueEvaluation {
-  due: boolean;
-  summaryDate: string;
-  occurrenceKey: string;
-  scheduledAt: Date;
-  reason?: string;
 }
 
 function parseCalendarDate(summaryDate: string): { year: number; month: number; day: number } {
@@ -204,36 +216,6 @@ export function getScheduledInstantForUtcDate(
   return new Date(Date.UTC(year, month - 1, day, hour, minute, 0, 0));
 }
 
-export function evaluateScheduledOccurrence(
-  config: DailySummaryConfig,
-  now: Date = new Date()
-): DueEvaluation {
-  const summaryDate = formatUtcCalendarDate(now);
-  const scheduledAt = getScheduledInstantForUtcDate(config, summaryDate);
-  const occurrenceKey = scheduledOccurrenceKey(summaryDate);
-
-  if (!config.enabled) {
-    return {
-      due: false,
-      summaryDate,
-      occurrenceKey,
-      scheduledAt,
-      reason: 'disabled',
-    };
-  }
-
-  const effectiveFrom = new Date(config.effectiveFromIso);
-  const effectiveFromMs = Number.isNaN(effectiveFrom.getTime()) ? 0 : effectiveFrom.getTime();
-
-  if (now.getTime() < scheduledAt.getTime()) {
-    return { due: false, summaryDate, occurrenceKey, scheduledAt, reason: 'not_yet' };
-  }
-  if (scheduledAt.getTime() < effectiveFromMs) {
-    return { due: false, summaryDate, occurrenceKey, scheduledAt, reason: 'before_effective_from' };
-  }
-  return { due: true, summaryDate, occurrenceKey, scheduledAt };
-}
-
 export function findNextOccurrence(
   config: DailySummaryConfig,
   now: Date = new Date()
@@ -242,13 +224,16 @@ export function findNextOccurrence(
     return null;
   }
   const effectiveFrom = new Date(config.effectiveFromIso);
-  const floor = Number.isNaN(effectiveFrom.getTime()) ? now : new Date(Math.max(now.getTime(), effectiveFrom.getTime()));
+  const effectiveFromMinuteMs = Number.isNaN(effectiveFrom.getTime()) ? 0 : truncateToUtcMinuteMs(effectiveFrom);
 
   for (let offset = 0; offset < 4; offset += 1) {
-    const probe = new Date(floor.getTime() + offset * 24 * 60 * MINUTE_MS);
+    const probe = new Date(now.getTime() + offset * 24 * 60 * MINUTE_MS);
     const summaryDate = formatUtcCalendarDate(probe);
     const scheduledAt = getScheduledInstantForUtcDate(config, summaryDate);
-    if (scheduledAt.getTime() >= floor.getTime()) {
+    if (scheduledAt.getTime() < effectiveFromMinuteMs) {
+      continue;
+    }
+    if (scheduledAt.getTime() + MINUTE_MS > now.getTime()) {
       return scheduledAt;
     }
   }
@@ -258,9 +243,10 @@ export function findNextOccurrence(
 export function defaultDailySummaryConfig(now: Date = new Date()): DailySummaryConfig {
   return {
     enabled: false,
-    utcTime: '08:00',
+    utcTime: DEFAULT_DAILY_SUMMARY_UTC_TIME,
     timeZone: 'UTC',
     effectiveFromIso: now.toISOString(),
     publicUrl: '',
+    smtpRecipient: '',
   };
 }

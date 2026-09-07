@@ -1,15 +1,15 @@
-# Übersicht {#overview}
+# Übersicht {/* #overview */}
 
-Die Einstellungsseite bietet eine einheitliche Schnittstelle zur Konfiguration aller Aspekte von **duplistatus**. Sie können darauf zugreifen, indem Sie auf die <IconButton icon="lucide:settings" /> **Einstellungen**-Schaltfläche in der [Anwendungsleiste](../overview.md#application-toolbar) klicken. Hinweis: Normale Benutzer sehen ein vereinfachtes Menü mit weniger Optionen im Vergleich zu Administratoren.
+Die Seite Einstellungen bietet eine einheitliche Benutzeroberfläche zur Konfiguration aller Aspekte von **duplistatus**. Sie können darauf zugreifen, indem Sie auf die <IconButton icon="lucide:settings" /> **Einstellungen**-Schaltfläche in der [Anwendungstoolleiste](../overview.md#application-toolbar) klicken. Beachten Sie, dass reguläre Benutzer ein vereinfachtes Menü mit weniger Optionen im Vergleich zu Administratoren sehen.
 
-## Administrator-Ansicht {#administrator-view}
+## Administratoransicht {/* #administrator-view */}
 
 Administratoren sehen alle verfügbaren Einstellungen.
 
 <table>
   <tr>
     <td>
-      ![Einstellungen-Seitenleiste - Admin-Ansicht](../../assets/screen-settings-left-panel-admin.png)
+      ![Einstellungen Seitenleiste - Admin-Ansicht](../../assets/screen-settings-left-panel-admin.png)
     </td>
     <td>
       <ul>
@@ -18,30 +18,30 @@ Administratoren sehen alle verfügbaren Einstellungen.
           <ul>
             <li><a href="backup-notifications-settings.md">Backup-Benachrichtigungen</a>: Konfigurieren Sie die Benachrichtigungseinstellungen pro Sicherung</li>
             <li><a href="backup-monitoring-settings.md">Backup-Überwachung</a>: Konfigurieren Sie die Erkennung überfälliger Sicherungen und Warnungen</li>
-            <li><a href="daily-summary-settings.md">Tägliche Zusammenfassung</a>: Optionale tägliche Snapshot-Ersetzung für einzelne Sicherungs- und Überfälligkeitsbenachrichtigungen</li>
-            <li><a href="notification-templates.md">Vorlagen</a>: Benutzerdefinierte Benachrichtigungsnachrichtenvorlagen</li>
+            <li><a href="daily-summary-settings.md">Tägliche Zusammenfassung</a>: Optionale tägliche Momentaufnahme, die E-Mails an den Standardempfänger ersetzt (zusätzliche Ziele bleiben erhalten)</li>
+            <li><a href="notification-templates.md">Vorlagen</a>: Benutzerdefinierte Benachrichtigungsnachrichtenvorlagen anpassen</li>
           </ul>
         </li><br/>
         <li>
           <strong>Integrationen</strong>
           <ul>
-            <li><a href="ntfy-settings.md">NTFY</a>: Konfigurieren Sie den NTFY-Push-Benachrichtigungsdienst</li>
+            <li><a href="ntfy-settings.md">NTFY</a>: Konfigurieren Sie den NTFY Push-Benachrichtigungsdienst</li>
             <li><a href="email-settings.md">E-Mail</a>: Konfigurieren Sie SMTP-E-Mail-Benachrichtigungen</li>
           </ul>
         </li><br/>
         <li>
           <strong id="system">System</strong>
           <ul>
-            <li><a href="server-settings.md">Server</a>: Verwalten Sie Duplicati-Server-Konfigurationen</li>
-            <li><a href="display-settings.md">Anzeigeeinstellungen</li>: Konfigurieren Sie Design, Diagramm-Zeitbereich, Diagrammstil, Gebietsschema-Format, automatisches Aktualisierungsintervall, Karten-Sortierreihenfolge und Wochenstart</li>
-            <li><a href="duplicati-versions.md">Duplicati-Versionen</a>: Anzeigen Sie zwischengespeicherte Duplicati-Release-Versionen und konfigurieren Sie den Versionsprüfplan</li>
-            <li><a href="database-maintenance.md">Datenbankverwaltung</a>: Führen Sie Datenbankreinigungen durch (nur Admin)</li>
+            <li><a href="server-settings.md">Server</a>: Verwalten Sie die Duplicati-Serverkonfigurationen</li>
+            <li><a href="display-settings.md">Anzeigeeinstellungen</a>: Konfigurieren Sie Design, Diagramm-Zeitbereich, Diagrammstil, Gebietsschema-Format, automatisches Aktualisierungsintervall, Karten-Sortierreihenfolge und Wochenstart</li>
+            <li><a href="duplicati-versions.md">Duplicati-Versionen</a>: Anzeigen der zwischengespeicherten Duplicati-Release-Versionen und Konfigurieren des Versionsprüfungszeitplans</li>
+            <li><a href="database-maintenance.md">Datenbankverwaltung</a>: Datenbankbereinigung durchführen (nur Admin)</li>
             <li><a href="api-keys-settings.md">API-Schlüssel</a>: Verwalten Sie bereichsspezifische Schlüssel und externen API-Schutz (nur Admin)</li>
-            <li><a href="ip-allowlist-settings.md">IP-Zulassungsliste</a>: Beschränken Sie die Administrationsinterface und externen APIs (nur Admin)</li>
-            <li><a href="user-management-settings.md">Benutzer</a>: Verwalten Sie Benutzerkonten (nur Admin)</li>
-            <li><a href="audit-logs-viewer.md">Audit-Protokoll</a>: Anzeigen von System-Audit-Protokollen</li>
-            <li><a href="audit-logs-retention.md">Prüfprotokoll-Aufbewahrung</a>: Konfigurieren Sie die Prüfprotokoll-Aufbewahrung (nur Admin)</li>
-            <li><a href="application-logs-settings.md">Anwendungsprotokolle</a>: Anzeigen und Exportieren von Anwendungsprotokollen (nur Admin)</li>
+            <li><a href="ip-allowlist-settings.md">IP-Zulassungsliste</a>: Beschränken Sie den Administrationsinterface und externe APIs (nur Admin)</li>
+            <li><a href="user-management-settings.md">Benutzer</a>: Benutzerkonten verwalten (nur Admin)</li>
+            <li><a href="audit-logs-viewer.md">Audit-Protokoll</a>: System-Audit-Protokolle anzeigen</li>
+            <li><a href="audit-logs-retention.md">Prüfprotokoll-Aufbewahrung</a>: Konfigurieren Sie die Aufbewahrung des Prüfprotokolls (nur Admin)</li>
+            <li><a href="application-logs-settings.md">Anwendungsprotokolle</a>: Anwendungsprotokolle anzeigen und exportieren (nur Admin)</li>
           </ul>
         </li>
       </ul>
@@ -49,40 +49,40 @@ Administratoren sehen alle verfügbaren Einstellungen.
   </tr>
 </table>
 
-## Nicht-Administrator-Ansicht {#non-administrator-view}
+## Nicht-Administratoransicht {/* #non-administrator-view */}
 
-Normale Benutzer sehen einen begrenzten Satz von Einstellungen.
+Reguläre Benutzer sehen eine eingeschränkte Auswahl an Einstellungen.
 
 <table>
   <tr>
     <td>
-      ![Einstellungen-Seitenleiste - Nicht-Admin-Ansicht](../../assets/screen-settings-left-panel-non-admin.png)
+      ![Einstellungen Sidebar - Nicht-Admin Ansicht](../../assets/screen-settings-left-panel-non-admin.png)
     </td>
     <td>
       <ul>
         <li>
           <strong>Benachrichtigungen</strong>
           <ul>
-            <li><a href="backup-notifications-settings.md">Backup-Benachrichtigungen</a>: Backup-spezifische Benachrichtigungseinstellungen anzeigen (schreibgeschützt)</li>
-            <li><a href="backup-monitoring-settings.md">Backup-Überwachung</a>: Überfällige Backup-Einstellungen anzeigen (schreibgeschützt)</li>
-            <li><a href="daily-summary-settings.md">Tägliche Zusammenfassung</a>: Tägliche Zusammenfassungseinstellungen anzeigen (schreibgeschützt)</li>
-            <li><a href="notification-templates.md">Vorlagen</a>: Benachrichtigungsvorlagen anzeigen (schreibgeschützt)</li>
+            <li><a href="backup-notifications-settings.md">Backup-Benachrichtigungen</a>: Ansicht der Benachrichtigungseinstellungen pro Sicherung (nur lesen)</li>
+            <li><a href="backup-monitoring-settings.md">Backup-Überwachung</a>: Ansicht der überfälligen Sicherungseinstellungen (nur lesen)</li>
+            <li><a href="daily-summary-settings.md">Tägliche Zusammenfassung</a>: Ansicht der täglichen Zusammenfassungseinstellungen (nur lesen)</li>
+            <li><a href="notification-templates.md">Vorlagen</a>: Ansicht der Benachrichtigungsvorlagen (nur lesen)</li>
           </ul>
         </li><br/>
         <li>
           <strong>Integrationen</strong>
           <ul>
-            <li><a href="ntfy-settings.md">NTFY</a>: NTFY-Einstellungen anzeigen (schreibgeschützt)</li>
-            <li><a href="email-settings.md">E-Mail</a>: E-Mail-Einstellungen anzeigen (schreibgeschützt)</li>
+            <li><a href="ntfy-settings.md">NTFY</a>: Ansicht der NTFY-Einstellungen (nur lesen)</li>
+            <li><a href="email-settings.md">E-Mail</a>: Ansicht der E-Mail-Einstellungen (nur lesen)</li>
           </ul>
         </li><br/>
         <li>
           <strong id="system">System</strong>
           <ul>
-            <li><a href="server-settings.md">Server</a>: Server-Konfigurationen anzeigen (schreibgeschützt)</li>
-            <li><a href="display-settings.md">Anzeige</a>: Design, Diagramm-Zeitbereich, Diagrammstil, Gebietsschema-Format, automatisches Aktualisierungsintervall, Karten-Sortierreihenfolge und Wochenstart konfigurieren</li>
-            <li><a href="duplicati-versions.md">Duplicati-Versionen</a>: Zwischengespeicherte Duplicati-Release-Versionen anzeigen (Änderungen des Zeitplans sind nur für Administratoren möglich)</li>
-            <li><a href="audit-logs-viewer.md">Audit-Protokoll</a>: System-Audit-Protokolle anzeigen (schreibgeschützt)</li>
+            <li><a href="server-settings.md">Server</a>: Ansicht der Serverkonfigurationen (nur lesen)</li>
+            <li><a href="display-settings.md">Anzeige</a>: Konfigurieren von Design, Diagramm-Zeitbereich, Diagrammstil, Gebietsschema-Format, automatisches Aktualisierungsintervall, Kartenreihenfolge und Wochenbeginn</li>
+            <li><a href="duplicati-versions.md">Duplicati-Versionen</a>: Ansicht der zwischengespeicherten Duplicati-Versionen (Änderungen im Zeitplan sind nur für Administratoren)</li>
+            <li><a href="audit-logs-viewer.md">Audit-Protokoll</a>: Ansicht der System-Audit-Protokolle (nur lesen)</li>
           </ul>
         </li>
       </ul>
@@ -90,18 +90,18 @@ Normale Benutzer sehen einen begrenzten Satz von Einstellungen.
   </tr>
 </table>
 
-## Statussymbole {#status-icons}
+## Statussymbole {/* #status-icons */}
 
-In der Seitenleiste werden Statussymbole neben den **NTFY**- und **E-Mail**-Integrationseinstellungen angezeigt:
+Die Sidebar zeigt Statussymbole neben den **NTFY**- und **E-Mail**-Integrationseinstellungen an:
 - <IIcon2 icon="lucide:message-square" color="green"/> <IIcon2 icon="lucide:mail" color="green"/> **Grünes Symbol**: Ihre Einstellungen sind gültig und korrekt konfiguriert
-- <IIcon2 icon="lucide:message-square" color="yellow"/> <IIcon2 icon="lucide:mail" color="yellow"/> **Gelbes Symbol**: Ihre Einstellungen sind nicht gültig oder nicht konfiguriert
+- <IIcon2 icon="lucide:message-square" color="yellow"/> <IIcon2 icon="lucide:mail" color="yellow"/> **Gelbes Symbol**: Ihre Einstellungen sind ungültig oder nicht konfiguriert
 
-Wenn die Konfiguration ungültig ist, werden die entsprechenden Kontrollkästchen auf der Registerkarte [Backup-Benachrichtigungen](backup-notifications-settings.md) ausgegraut und deaktiviert. Weitere Details finden Sie auf den Seiten [NTFY-Einstellungen](ntfy-settings.md) und [E-Mail-Einstellungen](email-settings.md).
+Wenn die Konfiguration ungültig ist, werden die entsprechenden Kontrollkästchen im [Backup-Benachrichtigungen](backup-notifications-settings.md) Tab ausgegraut und deaktiviert. Für weitere Details siehe die Seiten [NTFY-Einstellungen](ntfy-settings.md) und [E-Mail-Einstellungen](email-settings.md).
 
 <br/>
 
 :::important
-Ein grünes Symbol bedeutet nicht zwangsläufig, dass Benachrichtigungen korrekt funktionieren. Verwenden Sie immer die verfügbaren Testfunktionen, um zu bestätigen, dass Ihre Benachrichtigungen funktionieren, bevor Sie sich darauf verlassen.
+Ein grünes Symbol bedeutet nicht unbedingt, dass die Benachrichtigungen korrekt funktionieren. Verwenden Sie immer die verfügbaren Testfunktionen, um zu bestätigen, dass Ihre Benachrichtigungen funktionieren, bevor Sie sich auf sie verlassen. 
 :::
 
 <br/>

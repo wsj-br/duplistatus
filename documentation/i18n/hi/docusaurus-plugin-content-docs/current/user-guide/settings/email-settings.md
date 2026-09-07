@@ -1,4 +1,4 @@
-# Email {#email}
+# Email {/* #email */}
 
 **duplistatus** SMTP के माध्यम से ईमेल सूचनाएं भेजने का समर्थन करता है, NTFY सूचनाओं के लिए एक विकल्प या पूरक के रूप में। ईमेल कॉन्फ़िगरेशन अब डेटाबेस में एन्क्रिप्टेड स्टोरेज के साथ वेब इंटरफ़ेस के माध्यम से प्रबंधित किया जाता है, जो सुरक्षा को बढ़ाने के लिए है।
 
@@ -24,7 +24,7 @@
 
 <br/>
 
-## Available Actions {#available-actions}
+## उपलब्ध क्रियाएं {/* #available-actions */}
 
 | बटन                                                           | विवरण                                              |
 |:-----------------------------------------------------------------|:---------------------------------------------------------|
@@ -44,7 +44,7 @@
 
 <br/>
 
-## सामान्य SMTP प्रदाता {#common-smtp-providers}
+## सामान्य SMTP प्रदाता {/* #common-smtp-providers */}
 
 **Gmail:**
 
@@ -73,7 +73,7 @@
 - Password: Use an App Password
 - Authentication: Required
 
-### Security Best Practices {#security-best-practices}
+### सुरक्षा सर्वोत्तम अभ्यास {/* #security-best-practices */}
 
 - Consider using a dedicated email account for notifications
  - Test your configuration using the "Test Email Bhejein" button

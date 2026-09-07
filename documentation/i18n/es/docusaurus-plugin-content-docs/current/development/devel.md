@@ -1,6 +1,6 @@
-# Comandos más utilizados {#most-used-commands}
+# Comandos más utilizados {/* #most-used-commands */}
 
-## Ejecutar en modo de desarrollo {#run-in-dev-mode}
+## Ejecutar en modo de desarrollo {/* #run-in-dev-mode */}
 
 ```bash
 pnpm dev
@@ -16,7 +16,7 @@ Esto inicia tanto la aplicación de Next.js (puerto 8666) como el servicio cron 
 
 - **Eliminación de Backup**: En la página de detalle del servidor, aparece un botón de eliminación en la tabla de backups que le permite eliminar backups individuales. Esta función es especialmente útil para probar y depurar la funcionalidad de backups retrasados.
 
-## Iniciar el servidor de producción (en entorno de desarrollo) {#start-the-production-server-in-development-environment}
+## Iniciar el servidor de producción (en entorno de desarrollo) {/* #start-the-production-server-in-development-environment */}
 
 En primer lugar, cree la aplicación para producción local:
 
@@ -30,7 +30,7 @@ Luego inicia el servidor de producción:
 pnpm start-local
 ```
 
-## Iniciar una pila de Docker (Docker Compose) {#start-a-docker-stack-docker-compose}
+## Iniciar un stack de Docker (Docker Compose) {/* #start-a-docker-stack-docker-compose */}
 
 ```bash
 pnpm docker:up
@@ -42,7 +42,7 @@ O manualmente:
 docker compose up --build -d
 ```
 
-## Detener una pila de Docker (Docker Compose) {#stop-a-docker-stack-docker-compose}
+## Detener un stack de Docker (Docker Compose) {/* #stop-a-docker-stack-docker-compose */}
 
 ```bash
 pnpm docker:down
@@ -54,7 +54,7 @@ O manualmente:
 docker compose down
 ```
 
-## Limpiar el entorno de Docker {#clean-docker-environment}
+## Limpiar el entorno de Docker {/* #clean-docker-environment */}
 
 ```bash
 pnpm docker:clean
@@ -72,7 +72,7 @@ Este script realiza una limpieza completa de Docker, lo cual es útil para:
 - Limpiar después de sesiones de desarrollo o pruebas
 - Mantener un entorno de Docker limpio
 
-## Crear una imagen de desarrollo (para probar localmente o con Podman) {#create-a-development-image-to-test-locally-or-with-podman}
+## Crear una imagen de desarrollo (para probar localmente o con Podman) {/* #create-a-development-image-to-test-locally-or-with-podman */}
 
 ```bash
 export $(grep -v '^#' .env | xargs) && docker build . -t wsj-br/duplistatus:devel-$VERSION

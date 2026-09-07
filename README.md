@@ -1,9 +1,9 @@
 
 ![duplistatus](documentation/static/img/duplistatus_banner.png)
 
-# duplistatus -  Monitor Multiple [Duplicati's](https://github.com/duplicati/duplicati) Servers 
+# duplistatus -  Monitor Multiple [Duplicati's](https://github.com/duplicati/duplicati) Servers {/* #duplistatus----monitor-multiple-duplicatishttpsgithubcomduplicatiduplicati-servers */}
 
-![version](https://img.shields.io/badge/version-1.4.2-blue) 
+![version](https://img.shields.io/badge/version-1.5.0-blue) 
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?logo=github)](https://github.com/wsj-br/duplistatus)
 
 <br/>
@@ -11,7 +11,7 @@
 This web application monitors and visualises backup operations from [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** provides a comprehensive dashboard to track backup statuses, notify overdue backups, job history,
 metrics, and performance across multiple servers.
 
-Easy to deploy with Docker, Podman, or Portainer and available in 7 languages (English, German, French, Spanish, Portuguese, Hindi (Roman), and Simplified Chinese), with full documentation in each language.
+Easy to deploy with Docker, Podman, or Portainer and available in 7 languages (English, German, French, Spanish, Portuguese, Hindi, and Simplified Chinese), with full documentation in each language.
 
 [More information](https://wsj-br.github.io/duplistatus)        |
 [Mehr informationen](https://wsj-br.github.io/duplistatus/de/)  | 
@@ -58,16 +58,15 @@ Easy to deploy with Docker, Podman, or Portainer and available in 7 languages (E
 ## Features
 
 - **Quick Setup**: Simple containerised deployment, with images available on Docker Hub and GitHub.
-- **Unified Dashboard**: View backup status, history, and details for all servers in one place.
+- **Unified Dashboard**: View backup status, history, Duplicati version, and details for all servers in one place.
 - **Backup Monitoring**: Automated checking and alerting for overdue scheduled backups.
 - **Data Visualisation & Logs**: Interactive charts and automatic log collection from Duplicati servers.
 - **Notifications & Alerts**: Integrated NTFY and SMTP email support for backup alerts, including overdue backup notifications.
-- **User Access Control & Security**: Secure authentication system with role-based access control (Admin/User roles), configurable password policies, account lockout protection, and comprehensive user management.
-- **API Keys**: Optional scoped keys for Duplicati uploads and Homepage widgets, plus configurable upload size and rate limits.
-- **IP Allowlists**: Separate CIDR lists for the admin interface and the external APIs (`/api/upload`, `/api/summary`, `/api/lastbackup*`).
+- **User Management**: Login with Admin and User roles, configurable password policies, account lockout, and user administration.
+- **Security Hardening**: Optional extra protection, API keys for Duplicati uploads and Homepage widgets (with upload size and rate limits), independent IP allowlists for the admin interface and the external APIs, anti-spoofing protection, and HTTPS reverse-proxy guidance.
 - **Audit Logging**: Complete audit trail of all system changes and user actions with advanced filtering, export capabilities, and configurable retention periods.
 - **Application Logs Viewer**: Admin-only interface to view, search, and export application logs directly from the web interface with real-time monitoring capabilities.
-- **Multi-language Support**: Interface and documentation available in English, French, German, Spanish, Brazilian Portuguese, Hindi (Roman) and Simplified Chinese.
+- **Multi-language Support**: Interface and documentation available in English, French, German, Spanish, Brazilian Portuguese, Hindi and Simplified Chinese.
 
 
 ## Installation
@@ -131,6 +130,7 @@ This project was mainly built with AI help. To learn how, see [How I Build this 
 
   💙 If you find [Duplicati](https://www.duplicati.com) useful, please consider supporting the developer. More details are available on their website or GitHub page.
 
+- API Keys and IP Allowlists idea/implementation by `henmohr`  in issue [#79](https://github.com/wsj-br/duplistatus/issues/79)
 - Duplicati SVG icon from https://dashboardicons.com/icons/duplicati
 - ntfy SVG icon from https://dashboardicons.com/icons/ntfy
 - GitHub SVG icon from https://github.com/logos

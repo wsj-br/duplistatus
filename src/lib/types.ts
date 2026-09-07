@@ -222,6 +222,8 @@ export interface StoredNotificationTemplates {
 
 export const DAILY_SUMMARY_CONFIG_KEY = 'daily_summary';
 export const DAILY_SUMMARY_DISPATCH_TASK = 'daily-summary-dispatch';
+export const DATABASE_COMPACT_TASK = 'database-compact';
+export const DATABASE_COMPACT_CRON_EXPRESSION = '0 4 * * 0';
 
 export interface DailySummaryConfig {
   enabled: boolean;
@@ -232,6 +234,8 @@ export interface DailySummaryConfig {
   effectiveFromIso: string;
   /** Public dashboard URL for `{duplistatus_link}` (no trailing slash). Empty omits the link unless env overrides. */
   publicUrl: string;
+  /** Optional Daily Summary email recipient. Empty uses the SMTP `mailto` from Email settings. */
+  smtpRecipient: string;
 }
 
 export type DailySummaryChannel = 'email' | 'ntfy';
@@ -262,6 +266,7 @@ export interface DailySummaryPublicStatus {
   publicUrl: string;
   publicUrlEffective: string | null;
   publicUrlEnvOverride: boolean;
+  smtpRecipient: string;
   nextOccurrenceIso: string | null;
   dispatcherHealthy: boolean;
   emailConfigured: boolean;

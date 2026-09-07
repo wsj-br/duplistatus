@@ -1,12 +1,12 @@
 
 
-# Server Details {#server-details}
+# Server Details {/* #server-details */}
 
 Clicking on a server from the dashboard opens a page with a list of backups for that server. You can view all backups or select a specific one if the server has multiple backups configured.
 
 ![Server Details](../assets/screen-server-backup-list.png)
 
-## Server/Backup Statistics {#serverbackup-statistics}
+## Server/Backup Statistics {/* #serverbackup-statistics */}
 
 This section shows statistics for either all backups on the server or a single selected backup.
 
@@ -27,7 +27,7 @@ Click the <IconButton icon="lucide:settings" href="settings/backup-monitoring-se
 
 <br/>
 
-## Backup History {#backup-history}
+## Backup History {/* #backup-history */}
 
 This table lists the backup logs for the selected server.
 
@@ -55,7 +55,7 @@ When **All Backups** is selected, the list shows all backups ordered from newest
 
 <br/>
 
-## Backup Details {#backup-details}
+## Backup Details {/* #backup-details */}
 
 Clicking on a status badge in the dashboard (table view) or any row in the backup history table displays the detailed backup information.
 

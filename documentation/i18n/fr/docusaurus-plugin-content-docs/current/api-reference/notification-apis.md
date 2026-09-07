@@ -1,9 +1,9 @@
-# Système de notifications {#notification-system}
+# Système de notifications {/* #notification-system */}
 
-## Tester la notification - `/api/notifications/test` {#test-notification---apinotificationstest}
-- **Endpoint** : `/api/notifications/test`
-- **Méthode** : POST
-- **Description** : Envoyer des notifications de test (simples, basées sur un modèle ou par courrier électronique) pour vérifier la configuration des notifications.
+## Notification de test - `/api/notifications/test` {/* #test-notification---apinotificationstest */}
+- **Point de terminaison**: `/api/notifications/test`
+- **Méthode**: POST
+- **Description**: Envoyer des notifications de test (simples, basées sur des modèles ou par E-mail) pour vérifier la configuration des notifications.
 - **Authentification** : Nécessite une session d'administrateur et un jeton CSRF
 - **Corps de la requête** :
   Pour un test simple :
@@ -96,16 +96,16 @@ Le contenu du courrier de test affiche :
   - Le point de terminaison de l'e-mail de test efface le cache de la requête avant de lire la configuration SMTP, garantissant que les scripts externes peuvent mettre à jour la configuration et que celle-ci soit immédiatement reflétée dans les e-mails de test
   - Les tests de modèle et l'envoi immédiat du Résumé quotidien contournent la suppression par sauvegarde
 
-## Aperçu du modèle de notification - `/api/notifications/preview` {#preview-notification-template---apinotificationspreview}
-- **Point de terminaison** : `/api/notifications/preview`
-- **Méthode** : POST
-- **Description** : Génère un modèle de notification avec le rendu Markdown de production sans envoi. Le corps inclut `kind` (`success`, `warning`, `overdueBackup`, ou `dailySummaryEmail`) et le modèle en cours d'édition. Les aperçus des résumés quotidiens utilisent l'instantané réel actuel ; les autres types utilisent des valeurs d'échantillon déterministes. Le HTML de l'email est destiné à une iframe sandboxée.
+## Aperçu du modèle de notification - `/api/notifications/preview` {/* #preview-notification-template---apinotificationspreview */}
+- **Point de terminaison**: `/api/notifications/preview`
+- **Méthode**: POST
+- **Description**: Rendu d'un modèle de notification avec le moteur de rendu Markdown de production sans envoi. Le corps inclut `kind` (`success`, `warning`, `overdueBackup` ou `dailySummaryEmail`) et le modèle en cours d'édition. Les aperçus de résumé quotidien utilisent l'instantané réel actuel ; d'autres types utilisent des valeurs d'échantillon déterministes. Email HTML est destiné à un iframe sandboxé.
 - **Authentication**: Requiert une session valide et un jeton CSRF
 
-## Vérifier les sauvegardes en retard - `/api/notifications/check-overdue` {#check-overdue-backups---apinotificationscheck-overdue}
-- **Endpoint** : `/api/notifications/check-overdue`
-- **Méthode** : POST
-- **Description** : Déclenche manuellement la vérification des sauvegardes en retard et envoie les notifications.
+## Vérifier les sauvegardes en retard - `/api/notifications/check-overdue` {/* #check-overdue-backups---apinotificationscheck-overdue */}
+- **Point de terminaison**: `/api/notifications/check-overdue`
+- **Méthode**: POST
+- **Description**: Déclenche manuellement la vérification des sauvegardes en retard et envoie des notifications.
 - **Authentification** : Nécessite une session valide et un jeton CSRF
 - **Réponse** :
 
@@ -128,10 +128,10 @@ Le contenu du courrier de test affiche :
   - Renvoie des statistiques sur le processus de vérification
   - Envoie des notifications pour les sauvegardes en retard détectées
 
-## Effacer les horodatages des sauvegardes en retard - `/api/notifications/clear-overdue-timestamps` {#clear-overdue-timestamps---apinotificationsclear-overdue-timestamps}
-- **Endpoint** : `/api/notifications/clear-overdue-timestamps`
-- **Méthode** : POST
-- **Description** : Efface tous les horodatages des notifications de sauvegarde en retard, permettant ainsi d'envoyer à nouveau les notifications.
+## Effacer les horodatages en retard - `/api/notifications/clear-overdue-timestamps` {/* #clear-overdue-timestamps---apinotificationsclear-overdue-timestamps */}
+- **Point de terminaison**: `/api/notifications/clear-overdue-timestamps`
+- **Méthode**: POST
+- **Description**: Efface tous les horodatages de notification de sauvegarde en retard, permettant aux notifications d'être envoyées à nouveau.
 - **Authentification** : Nécessite une session valide et un jeton CSRF
 - **Réponse** :
 

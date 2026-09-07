@@ -9,11 +9,18 @@ import {
 import {
   classifyAllowlistPath,
   isIpAllowed,
+  isProbePath,
   resolveAllowlistIp,
   type AllowlistSurface,
 } from "@/lib/ip-allowlist";
-import { getPeerIp } from "@/lib/ip-utils";
+import { getPeerIp, isLoopbackIp } from "@/lib/ip-utils";
 import { checkRateLimit } from "@/lib/rate-limit";
+import {
+  HEALTH_PROBE_PER_HOUR,
+  HEALTH_PROBE_PER_MINUTE,
+  PING_PROBE_PER_HOUR,
+  PING_PROBE_PER_MINUTE,
+} from "@/lib/default-config";
 
 const LOCALE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
@@ -94,6 +101,20 @@ function denyByAllowlist(pathname: string): NextResponse {
   });
 }
 
+function denyProbeRateLimited(retryAfterSeconds: number): NextResponse {
+  return NextResponse.json(
+    {
+      error: "Too many requests",
+      errorCode: "PROBE_RATE_LIMITED",
+      retryAfter: retryAfterSeconds,
+    },
+    {
+      status: 429,
+      headers: { "Retry-After": String(retryAfterSeconds) },
+    }
+  );
+}
+
 function enforceAllowlist(request: NextRequest, pathname: string): NextResponse | null {
   const surface = classifyAllowlistPath(pathname);
   const peer = getPeerIp(request);
@@ -101,6 +122,30 @@ function enforceAllowlist(request: NextRequest, pathname: string): NextResponse 
   if (!isIpAllowed(surface, clientIp, peer)) {
     logAllowlistDenial(surface, clientIp, peer, pathname);
     return denyByAllowlist(pathname);
+  }
+  return null;
+}
+
+function enforceProbeRateLimit(request: NextRequest, pathname: string): NextResponse | null {
+  if (!isProbePath(pathname)) {
+    return null;
+  }
+
+  const peer = getPeerIp(request);
+  if (isLoopbackIp(peer)) {
+    return null;
+  }
+
+  const clientIp = resolveAllowlistIp(request) || peer || "unknown";
+  const isHealth = pathname === "/api/health";
+  const key = isHealth ? `probe-health:${clientIp}` : `probe-ping:${clientIp}`;
+  const { allowed, retryAfterSeconds } = checkRateLimit(
+    key,
+    isHealth ? HEALTH_PROBE_PER_MINUTE : PING_PROBE_PER_MINUTE,
+    isHealth ? HEALTH_PROBE_PER_HOUR : PING_PROBE_PER_HOUR,
+  );
+  if (!allowed) {
+    return denyProbeRateLimited(retryAfterSeconds);
   }
   return null;
 }
@@ -118,6 +163,10 @@ export function proxy(request: NextRequest) {
     const denied = enforceAllowlist(request, pathname);
     if (denied) {
       return denied;
+    }
+    const limited = enforceProbeRateLimit(request, pathname);
+    if (limited) {
+      return limited;
     }
     const response = NextResponse.next();
     response.headers.set("x-pathname", pathname);

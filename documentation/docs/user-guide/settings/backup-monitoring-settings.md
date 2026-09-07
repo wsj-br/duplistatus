@@ -1,14 +1,14 @@
 
 
-# Backup Monitoring {#backup-monitoring}
+# Backup Monitoring {/* #backup-monitoring */}
 
 ![Backup alerts](../../assets/screen-settings-monitoring.png)
 
-## Server Filtering {#server-filtering}
+## Server Filtering {/* #server-filtering */}
 
 The server list on this page can be filtered using filter field.
 
-When **Daily Summary** is enabled, overdue detection continues but individual overdue notifications are suppressed. See [Daily Summary](daily-summary-settings.md).
+When **Daily Summary** is enabled, overdue detection continues but overdue email to the default Email recipient is suppressed. Additional email destinations continue for matching events (overdue counts as a Warning). See [Daily Summary](daily-summary-settings.md).
 
 **Filter Matches:**
 - Server ID
@@ -18,7 +18,7 @@ When **Daily Summary** is enabled, overdue detection continues but individual ov
 This makes it easy to quickly locate specific servers or backups in the monitoring settings when managing many systems.
 
 
-## Configure Per-Backup Monitoring Settings {#configure-per-backup-monitoring-settings}
+## Configure Per-Backup Monitoring Settings {/* #configure-per-backup-monitoring-settings */}
 
 -  **Server Name**: The name of the server to monitor for overdue backups. 
    - Click <SvgIcon svgFilename="duplicati_logo.svg" height="18"/> to open the Duplicati server's web interface
@@ -40,7 +40,7 @@ When you collect backup logs from a Duplicati server, **duplistatus** automatica
 For best results, collect backup logs after changing backup job intervals configuration in your Duplicati server. This ensures **duplistatus** stays synchronised with your current configuration.
 :::
 
-## Global Configurations {#global-configurations}
+## Global Configurations {/* #global-configurations */}
 
 These settings apply to all backups:
 
@@ -50,7 +50,7 @@ These settings apply to all backups:
 | **Backup Monitoring Interval** | How often the system checks for overdue backups. The default is **5 minutes**.                                                                                                                                                                                                                                                            |
 | **Notification Frequency**      | How often to send overdue notifications: <br/> **One time`: Send **just one** notification when the backup becomes overdue. <br/> `Every day`: Send **daily** notifications while overdue (default). <br/> `Every week`: Send **weekly** notifications while overdue. <br/> `Every month**: Send **monthly** notifications while overdue. |
 
-## Available Actions {#available-actions}
+## Available Actions {/* #available-actions */}
 
 | Button                                                              | Description                                                                                                                           |
 |:--------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------|

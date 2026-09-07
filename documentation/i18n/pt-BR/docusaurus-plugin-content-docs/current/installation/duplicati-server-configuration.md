@@ -1,4 +1,4 @@
-# Configuração do Servidor Duplicati (Obrigatório) {#duplicati-server-configuration-required}
+# Configuração do Servidor Duplicati (Obrigatório) {/* #duplicati-server-configuration-required */}
 
 Para que este aplicativo funcione corretamente, cada um de seus servidores Duplicati precisa ser configurado para enviar relatórios HTTP para cada execução de backup para o servidor **duplistatus**.
 
@@ -12,7 +12,7 @@ Substitua `my.local.server` pelo nome do host ou endereço IP que o servidor Dup
 
 Veja a documentação de [notificações HTTP](https://docs.duplicati.com/monitoring-and-notifications/sending-reports-via-email/sending-http-notifications) do Duplicati para a referência de opções.
 
-### Opções recomendadas (Duplicati 2.0.9.106 e posterior) {#recommended-options-duplicati-209106-and-later}
+### Opções recomendadas (Duplicati 2.0.9.106 e posteriores) {/* #recommended-options-duplicati-209106-and-later */}
 
 `--send-http-json-urls` já envia JSON, então `--send-http-result-output-format=Json` não é necessário (e é ignorado para essas URLs).
 
@@ -40,7 +40,7 @@ O Duplicati não pode definir cabeçalhos HTTP personalizados. O parâmetro de c
 
 `--send-http-max-log-lines=500` mantém o relatório JSON bem abaixo do limite padrão de 5 MB para o tamanho de carregamento. `--send-http-max-log-lines=0` (ilimitado) pode exceder esse limite e retornar HTTP 413. Aumente o limite em Configurações → Chaves de API se você precisar de relatórios maiores.
 
-### Versões mais antigas do Duplicati {#older-duplicati-versions}
+### Versões mais antigas do Duplicati {/* #older-duplicati-versions */}
 
 Se o servidor Duplicati for mais antigo que 2.0.9.106, use a opção de URL legado e defina o formato do resultado como JSON:
 
@@ -58,7 +58,7 @@ Se o servidor Duplicati for mais antigo que 2.0.9.106, use a opção de URL lega
 --send-http-max-log-lines=500
 ```
 
-### Linhas de log e versões disponíveis {#log-lines-and-available-versions}
+### Linhas de log e versões disponíveis {/* #log-lines-and-available-versions */}
 
 **Notas importantes sobre mensagens enviadas pelo Duplicati:**
 
@@ -71,7 +71,7 @@ Se o servidor Duplicati for mais antigo que 2.0.9.106, use a opção de URL lega
 Após configurar o servidor **duplistatus**, colete os logs de backup para todos os seus servidores Duplicati usando [Coletar logs de backup](../user-guide/collect-backup-logs.md).
 :::
 
-### Relatando para duplistatus e Monitoramento do Duplicati {#reporting-to-duplistatus-and-duplicati-monitoring}
+### Relatando para duplistatus e Monitoramento do Duplicati {/* #reporting-to-duplistatus-and-duplicati-monitoring */}
 
 Você pode enviar relatórios do **mesmo** servidor Duplicati para **duplistatus** e [Monitoramento do Duplicati](https://www.duplicati-monitoring.com/) ao mesmo tempo. **duplistatus** deve receber JSON. O Monitoramento do Duplicati espera relatórios codificados em formulário. Não aponte `--send-http-form-urls` para `/api/upload`.
 
@@ -96,13 +96,13 @@ Se um destino HTTP falhar (indisponibilidade ou HTTP 500), o Duplicati pode não
 
 [Coletar Logs de Backup](../user-guide/collect-backup-logs.md) não depende do relatório HTTP. Use-o para preencher um trabalho que não foi recebido.
 
-### Duplicati e duplistatus no mesmo host {#duplicati-and-duplistatus-on-the-same-host}
+### Duplicati e duplistatus no mesmo host {/* #duplicati-and-duplistatus-on-the-same-host */}
 
 A URL de upload deve ser acessível **a partir do processo Duplicati**, não do seu navegador.
 
-- **Duplicati no host, duplistatus no Docker com porta `9666` publicada:** `http://127.0.0.1:9666/api/upload` (ou o IP LAN do host).
-- **Ambos no Docker em uma rede compartilhada:** `http://duplistatus:9666/api/upload` (o nome do serviço Compose ou do contêiner). `localhost` dentro do contêiner Duplicati é esse contêiner, não **duplistatus**.
-- **Proxy reverso HTTPS no mesmo host:** use a URL HTTPS pública conforme em [Configuração HTTPS](https-setup.md).
+- **Duplicati no host, duplistatus no Docker com a porta `9666` publicada:** `http://127.0.0.1:9666/api/upload` (ou o IP LAN do host).
+- **Ambos no Docker em uma rede compartilhada:** `http://duplistatus:9666/api/upload` (o nome do serviço ou do contêiner Compose). `localhost` dentro do contêiner Duplicati é esse contêiner, não o **duplistatus**.
+- **Proxy reverso HTTPS no mesmo host:** use a URL HTTPS pública conforme em [Hardening de Segurança](security-hardening.md).
 
 Coletar Logs de Backup é na direção oposta: a partir do contêiner **duplistatus**, `localhost:8200` não é o Duplicati no host. Use o IP do host, `host.docker.internal` (Docker Desktop, ou um host extra que você configurou), ou o nome do contêiner Duplicati.
 

@@ -1,4 +1,4 @@
-# 示例备份报告（数据库值） {#database-values}
+# 示例备份报告（数据库值）{/* #sample-backup-report-database-values */}
 
 本文档包含 Duplicati 使用 `--send-http-json-urls`（或旧版 `--send-http-url` 选项和 `--send-http-result-output-format=Json`）时发送的 JSON 有效负载示例。它说明了 duplistatus 接收和持久化的结构和字段。本示例中某些字段可能被清除或编辑。
 

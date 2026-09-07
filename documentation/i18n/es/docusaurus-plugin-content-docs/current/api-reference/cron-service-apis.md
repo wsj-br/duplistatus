@@ -1,9 +1,9 @@
-# Gestión del servicio Cron {#cron-service-management}
+# Gestión del Servicio Cron {/* #cron-service-management */}
 
-## Obtener configuración de Cron - `/api/cron-config` {#get-cron-configuration---apicron-config}
+## Obtener Configuración de Cron - `/api/cron-config` {/* #get-cron-configuration---apicron-config */}
 - **Endpoint**: `/api/cron-config`
-- **Method**: GET
-- **Description**: Recupera la configuración actual del servicio cron.
+- **Método**: GET
+- **Descripción**: Recupera la configuración actual del servicio cron.
 - **Autenticación**: Requiere sesión válida y token CSRF
 - **Respuesta**:
 
@@ -21,10 +21,10 @@
   - Incluye la expresión cron y el estado habilitado
   - Utilizado para la gestión del servicio cron
 
-## Actualizar configuración de Cron - `/api/cron-config` {#update-cron-configuration---apicron-config}
+## Actualizar Configuración de Cron - `/api/cron-config` {/* #update-cron-configuration---apicron-config */}
 - **Endpoint**: `/api/cron-config`
-- **Method**: POST
-- **Description**: Actualiza la configuración del servicio cron.
+- **Método**: POST
+- **Descripción**: Actualiza la configuración del servicio cron.
 - **Autenticación**: Requiere sesión válida y token CSRF
 - **Cuerpo de la solicitud**:
 
@@ -51,10 +51,10 @@
   - Valida el intervalo contra las opciones permitidas
   - Afecta la frecuencia de verificación de copias de seguridad retrasadas
 
-## Proxy del servicio Cron - `/api/cron/*` {#cron-service-proxy---apicron}
+## Proxy del Servicio Cron - `/api/cron/*` {/* #cron-service-proxy---apicron */}
 - **Endpoint**: `/api/cron/*`
-- **Method**: GET, POST
-- **Description**: Proxifica solicitudes al servicio cron. Este punto final reenvía todas las solicitudes al servicio cron que se ejecuta en un puerto diferente.
+- **Método**: GET, POST
+- **Descripción**: Proxy de solicitudes al servicio cron. Este endpoint reenvía todas las solicitudes al servicio cron que se ejecuta en un puerto separado.
 - **Autenticación**: Requiere una sesión válida y un token CSRF. GET está permitido para usuarios autenticados; POST (iniciar/detener/activar/recargar) requiere un administrador.
 - **Parámetros**:
   - `*`: Cualquier ruta que se reenviará al servicio cron
@@ -72,6 +72,7 @@
   - Proxy de solicitudes al servicio cron en `127.0.0.1`
   - Reenvía `CRON_SERVICE_SECRET` como `X-Cron-Service-Secret` cuando está configurado
   - Devuelve 503 si el servicio cron no está disponible
-  - Soporta ambos métodos GET y POST
-  - Usado para la gestión del servicio cron desde la interfaz web
+  - Soporta los métodos GET y POST
+  - Se utiliza para la gestión del servicio cron desde la interfaz web
   - `POST /trigger/daily-summary-dispatch` es rechazado por el servicio cron; use `/api/configuration/daily-summary/send` en su lugar
+  - `POST /trigger/database-compact` ejecuta la compactación semanal inmediatamente (copias de seguridad huérfanas/servidores y configuración de notificaciones, además de SQLite `VACUUM`)

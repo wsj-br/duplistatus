@@ -1,4 +1,4 @@
-# नमूना बैकअप रिपोर्ट (डेटाबेस मान) {#database-values}
+# नमूना बैकअप रिपोर्ट (डेटाबेस मान) {/* #sample-backup-report-database-values */}
 
 इस दस्तावेज़ में, Duplicati द्वारा `--send-http-json-urls` (या `--send-http-url` विकल्प के साथ `--send-http-result-output-format=Json`) उपयोग करते समय भेजा गया JSON पेलोड का एक नमूना शामिल है। यह duplistatus द्वारा प्राप्त और संग्रहीत संरचना और फ़ील्ड को दर्शाता है। कुछ फ़ील्ड इस उदाहरण में साफ़ या रद्द किए जा सकते हैं।
 

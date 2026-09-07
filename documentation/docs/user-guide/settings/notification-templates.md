@@ -1,4 +1,4 @@
-# Templates {#templates}
+# Templates {/* #templates */}
 
 **duplistatus** uses four templates for notification messages. Email bodies are Markdown (headings, lists, links, and tables). NTFY for Success, Warning/Error, and Overdue is derived from the same content. Daily Summary is email-only.
 
@@ -15,13 +15,13 @@ The page includes a **Template Language** selector that sets the locale for defa
 
 <br/>
 
-## Template Language {#template-language}
+## Template Language {/* #template-language */}
 
-A **Template Language** selector at the top of the page lets you choose the language for default templates (English, German, French, Spanish, Portuguese, Hindi (Roman), and Simplified Chinese). Changing the language updates the locale for defaults, but existing customized templates keep their current text until you update them or use one of the reset buttons.
+A **Template Language** selector at the top of the page lets you choose the language for default templates (English, German, French, Spanish, Portuguese, Hindi, and Simplified Chinese). Changing the language updates the locale for defaults, but existing customized templates keep their current text until you update them or use one of the reset buttons.
 
 <br/>
 
-## Available Actions {#available-actions}
+## Available Actions {/* #available-actions */}
 
 | Button                                                              | Description                                                                                         |
 |:--------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------|
@@ -32,7 +32,7 @@ A **Template Language** selector at the top of the page lets you choose the lang
 
 <br/>
 
-## Variables {#variables}
+## Variables {/* #variables */}
 
 
 Email bodies are Markdown. Headings, lists, links, and tables are supported. Placeholder values are inserted as escaped text and cannot introduce Markdown or HTML. Previously embedded raw HTML in customized templates is now escaped.
@@ -57,7 +57,7 @@ All Success, Warning/Error, and Overdue templates support variables that will be
 | `{messages_count}`     | Number of messages.                             | Success, Warning |
 | `{warnings_count}`     | Number of warnings.                             | Success, Warning |
 | `{errors_count}`       | Number of errors.                               | Success, Warning |
-| `{log_text}`           | Log messages (warnings and errors)              | Success, Warning |
+| `{log_text}`           | Warning and error log lines only (not full Information logs). NTFY uses a short summary and may truncate. | Success, Warning |
 | `{last_backup_date}`   | Date of the last backup.                        | Overdue          |
 | `{last_elapsed}`       | Time elapsed since the last backup.             | Overdue          |
 | `{expected_date}`      | Expected backup date.                           | Overdue          |

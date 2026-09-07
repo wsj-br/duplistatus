@@ -1,12 +1,12 @@
 
 
-# Overview {#overview}
+# Overview {/* #overview */}
 
 The Settings page offers a unified interface for configuring all aspects of **duplistatus**. You can access it by clicking the <IconButton icon="lucide:settings" /> **Settings** button in the [Application Toolbar](../overview.md#application-toolbar). Note that regular users will see a simplified menu with fewer options compared to administrators.
 
 
 
-## Administrator View {#administrator-view}
+## Administrator View {/* #administrator-view */}
 
 Administrators see all available settings.
 
@@ -22,7 +22,7 @@ Administrators see all available settings.
           <ul>
             <li><a href="backup-notifications-settings.md">Backup Notifications</a>: Configure per-backup notification settings</li>
             <li><a href="backup-monitoring-settings.md">Backup Monitoring</a>: Configure overdue backup detection and alerts</li>
-            <li><a href="daily-summary-settings.md">Daily Summary</a>: Optional daily snapshot that replaces individual backup and overdue notifications</li>
+            <li><a href="daily-summary-settings.md">Daily Summary</a>: Optional daily snapshot that replaces emails to the default recipient (additional destinations continue)</li>
             <li><a href="notification-templates.md">Templates</a>: Customise notification message templates</li>
           </ul>
         </li><br/>
@@ -53,7 +53,7 @@ Administrators see all available settings.
   </tr>
 </table>
 
-## Non-Administrator View {#non-administrator-view}
+## Non-Administrator View {/* #non-administrator-view */}
 
 Regular users see a limited set of settings.
 
@@ -94,7 +94,7 @@ Regular users see a limited set of settings.
   </tr>
 </table>
 
-## Status Icons {#status-icons}
+## Status Icons {/* #status-icons */}
 
 The sidebar displays status icons next to the **NTFY** and **Email** integration settings:
 - <IIcon2 icon="lucide:message-square" color="green"/> <IIcon2 icon="lucide:mail" color="green"/> **Green icon**: Your settings are valid and configured correctly

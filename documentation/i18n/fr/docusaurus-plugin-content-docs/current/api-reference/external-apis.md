@@ -1,15 +1,15 @@
-# API externes {#external-apis}
+# API externes {/* #external-apis */}
 
 Ces points de terminaison sont conçus pour être utilisés par d'autres applications et intégrations, par exemple [Page d'accueil](../user-guide/homepage-integration.md). Ils sont exempts de CSRF et n'utilisent pas de cookies de session.
 
-L'authentification est facultative et désactivée par défaut. Quand **Exiger des clés API** est activé dans [Clés API](../user-guide/settings/api-keys-settings.md), envoyez la clé en tant que `?api_key=`, `X-Api-Key`, ou `Authorization: Bearer`. Les clés de téléchargement ne fonctionnent que sur `POST /api/upload`. Les clés de lecture ne fonctionnent que sur `/api/summary` et `/api/lastbackup*`. Les clés de chaîne de requête apparaissent dans les journaux d'accès des proxies inverses.
+L'authentification est facultative et désactivée par défaut. Bien que les clés soient facultatives, les clients peuvent omettre la clé ou en envoyer une : une clé valide avec la portée correspondante est acceptée et enregistrée ; une mauvaise clé est ignorée et la demande se poursuit. Quand **Exiger des clés API** est activé dans [Clés API](../user-guide/settings/api-keys-settings.md), envoyez la clé sous la forme `?api_key=`, `X-Api-Key`, ou `Authorization: Bearer`. Les clés de téléchargement fonctionnent uniquement sur `POST /api/upload`. Les clés de lecture fonctionnent uniquement sur `/api/summary` et `/api/lastbackup*`. Les clés de chaîne de requête apparaissent dans les journaux d'accès du proxy inverse.
 
-Une [liste d'adresses IP autorisées](../user-guide/settings/ip-allowlist-settings.md) peut également restreindre ces routes. `/api/health` et `/api/ping` restent ouverts.
+Une [liste d'adresses IP autorisées](../user-guide/settings/ip-allowlist-settings.md) peut également restreindre ces routes. `/api/health` et `/api/ping` restent publiques tant que les deux listes sont désactivées ; quand l'une des listes est activée, elles acceptent les boucles locales et les CIDR de la liste admin ou externe, et les clients non locaux sont limités en taux.
 
-## Obtenir un résumé général - `/api/summary` {#get-overall-summary---apisummary}
-- **Point de terminaison** : `/api/summary`
-- **Méthode** : GET
-- **Description** : Récupère un résumé de toutes les opérations de sauvegarde sur l'ensemble des serveurs.
+## Obtenir un résumé global - `/api/summary` {/* #get-overall-summary---apisummary */}
+- **Point de terminaison**: `/api/summary`
+- **Méthode**: GET
+- **Description**: Récupère un résumé de toutes les opérations de sauvegarde sur tous les serveurs.
 - **Réponse** :
 
   ```json
@@ -38,10 +38,10 @@ Une [liste d'adresses IP autorisées](../user-guide/settings/ip-allowlist-settin
   - Retourne une réponse de secours avec des zéros si la récupération des données échoue
   - **Note**: Pour une utilisation interne du tableau de bord, envisagez d'utiliser `/api/dashboard` qui inclut ces données ainsi que des informations supplémentaires
 
-## Obtenir la dernière sauvegarde - `/api/lastbackup/:serverId` {#get-latest-backup---apilastbackupserverid}
-- **Point de terminaison** : `/api/lastbackup/:serverId`
-- **Méthode** : GET
-- **Description** : Récupère les informations sur la dernière sauvegarde pour un serveur spécifique.
+## Obtenir la dernière sauvegarde - `/api/lastbackup/:serverId` {/* #get-latest-backup---apilastbackupserverid */}
+- **Point de terminaison**: `/api/lastbackup/:serverId`
+- **Méthode**: GET
+- **Description**: Récupère les informations de sauvegarde les plus récentes pour un serveur spécifique.
 - **Paramètres** :
   - `serverId` : l'identifiant du serveur (ID ou nom)
 
@@ -98,10 +98,10 @@ L'identifiant du serveur doit être encodé en URL.
   - Retourne null pour latest_backup si aucune sauvegarde n'existe
   - Inclut des en-têtes de contrôle de cache pour empêcher le cache
 
-## Obtenir les dernières sauvegardes - `/api/lastbackups/:serverId` {#get-latest-backups---apilastbackupsserverid}
-- **Point de terminaison** : `/api/lastbackups/:serverId`
-- **Méthode** : GET
-- **Description** : Récupère les informations sur la dernière sauvegarde pour toutes les sauvegardes configurées (par exemple 'Fichiers', 'Bases de données') sur un serveur spécifique.
+## Obtenir les dernières sauvegardes - `/api/lastbackups/:serverId` {/* #get-latest-backups---apilastbackupsserverid */}
+- **Point de terminaison**: `/api/lastbackups/:serverId`
+- **Méthode**: GET
+- **Description**: Récupère les informations de sauvegarde les plus récentes pour toutes les sauvegardes configurées (par exemple, 'Fichiers', 'Bases de données') sur un serveur spécifique.
 - **Paramètres** :
   - `serverId` : l'identifiant du serveur (ID ou nom)
 
@@ -185,10 +185,10 @@ L'identifiant du serveur doit être encodé en URL.
   - Contrairement à `/api/lastbackup/:serverId` qui retourne uniquement la sauvegarde la plus récente du serveur (indépendamment de la tâche de sauvegarde)
   - Inclut des en-têtes de contrôle de cache pour empêcher le cache
 
-## Téléverser les données de sauvegarde - `/api/upload` {#upload-backup-data---apiupload}
-- **Point de terminaison** : `/api/upload`
-- **Méthode** : POST
-- **Description** : Téléverse les données d'opération de sauvegarde pour un serveur. Prend en charge la détection des exécutions de sauvegarde en double et envoie des notifications.
+## Télécharger les données de sauvegarde - `/api/upload` {/* #upload-backup-data---apiupload */}
+- **Point de terminaison**: `/api/upload`
+- **Méthode**: POST
+- **Description**: Télécharge les données d'opération de sauvegarde pour un serveur. Prend en charge la détection de doublons de sauvegarde et envoie des notifications.
 - **Corps de la requête** : JSON envoyé par Duplicati avec les options suivantes :
 
   ```bash

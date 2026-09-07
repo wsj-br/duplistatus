@@ -1,6 +1,6 @@
-# 最常用命令 {#most-used-commands}
+# 最常用的命令 {/* #most-used-commands */}
 
-## 以开发模式运行 {#run-in-dev-mode}
+## 在开发模式下运行 {/* #run-in-dev-mode */}
 
 ```bash
 pnpm dev
@@ -16,7 +16,7 @@ pnpm dev
 
 - **备份删除**: 在服务器详细信息页面上，备份表中会出现一个删除按钮，允许您删除个别备份。此功能对于测试和调试逾期备份功能尤其有用。
 
-## 启动生产服务器（在开发环境中） {#start-the-production-server-in-development-environment}
+## 启动生产服务器（在开发环境中） {/* #start-the-production-server-in-development-environment */}
 
 首先，构建应用程序以进行本地生产:
 
@@ -30,7 +30,7 @@ pnpm build-local
 pnpm start-local
 ```
 
-## 启动 Docker 栈（Docker Compose） {#start-a-docker-stack-docker-compose}
+## 启动 Docker 栈（Docker Compose） {/* #start-a-docker-stack-docker-compose */}
 
 ```bash
 pnpm docker:up
@@ -42,7 +42,7 @@ pnpm docker:up
 docker compose up --build -d
 ```
 
-## 停止 Docker 栈（Docker Compose） {#stop-a-docker-stack-docker-compose}
+## 停止 Docker 栈（Docker Compose） {/* #stop-a-docker-stack-docker-compose */}
 
 ```bash
 pnpm docker:down
@@ -54,7 +54,7 @@ pnpm docker:down
 docker compose down
 ```
 
-## 清理 Docker 环境 {#clean-docker-environment}
+## 清理 Docker 环境 {/* #clean-docker-environment */}
 
 ```bash
 pnpm docker:clean
@@ -72,7 +72,7 @@ pnpm docker:clean
 - 清理开发或测试会话后
 - 维护清洁的 Docker 环境
 
-## 创建开发镜像（用于本地测试或使用 Podman） {#create-a-development-image-to-test-locally-or-with-podman}
+## 创建开发镜像（用于本地测试或使用 Podman） {/* #create-a-development-image-to-test-locally-or-with-podman */}
 
 ```bash
 export $(grep -v '^#' .env | xargs) && docker build . -t wsj-br/duplistatus:devel-$VERSION
