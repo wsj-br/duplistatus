@@ -92,19 +92,46 @@ const nextConfig: NextConfig = {
   devIndicators: false,
   turbopack: {},
   experimental: {
-    optimizePackageImports: ["@radix-ui/react-icons", "lucide-react"],
-    cpus: 6
+    optimizePackageImports: ["@radix-ui/react-icons", "lucide-react"]
   },
   pageExtensions: ["ts", "tsx", "js", "jsx", "md", "mdx"],
   distDir: ".next",
-  // Keep runtime-only paths out of the standalone trace. Excluding the
-  // `.next/standalone` output itself stops Turbopack's tracer from pulling
-  // `.next/standalone/server.js` into route traces and then failing to copy it
-  // into a nested `.next/standalone` path (ENOENT). Do NOT exclude all of
-  // `.next` — that drops the Turbopack SSR runtime chunks the standalone server
-  // needs (`chunks/ssr/[turbopack]_runtime.js`). `data` is runtime state.
+  // Keep runtime-only paths out of the standalone trace. The glob key `*` is
+  // intentional: Next applies these patterns to `next-server` only when the
+  // key matches that name (`/*` does not). Excluding `.next/standalone` stops
+  // the tracer from pulling `server.js` into a nested copy (ENOENT). Do NOT
+  // exclude all of `.next` — that drops SSR runtime chunks. `data` is runtime
+  // state. The node_modules globs drop build-only packages that NFT follows
+  // through `next/dist/server/next` (webpack, SWC compiler natives, esbuild,
+  // CSS minifiers). Keep `@swc/helpers`, `sharp`/`@img` (`next/image`),
+  // `better-sqlite3` linux prebuilds (amd64 + arm64, gnu + musl), and PostCSS
+  // (email inlining). Route traces did not include `@types`, ESLint, docs, or
+  // Playwright, so those are not excluded here.
   outputFileTracingExcludes: {
-    "*": ["**/data/**", "**/.next/standalone/**"],
+    "*": [
+      "**/data/**",
+      "**/.next/standalone/**",
+      "**/node_modules/webpack/**",
+      "**/node_modules/webpack-sources/**",
+      "**/node_modules/minimizer-webpack-plugin/**",
+      "**/node_modules/@swc/core/**",
+      "**/node_modules/@swc/core-*/**",
+      "**/node_modules/@swc/html/**",
+      "**/node_modules/@swc/html-*/**",
+      "**/node_modules/@esbuild/**",
+      "**/node_modules/esbuild/**",
+      "**/node_modules/terser/**",
+      "**/node_modules/html-minifier-terser/**",
+      "**/node_modules/svgo/**",
+      "**/node_modules/csso/**",
+      "**/node_modules/clean-css/**",
+      "**/node_modules/css-tree/**",
+      "**/node_modules/mdn-data/**",
+      "**/node_modules/better-sqlite3/prebuilds/darwin-*",
+      "**/node_modules/better-sqlite3/prebuilds/win32-*",
+      "**/node_modules/@swc/helpers/src/**",
+      "**/node_modules/@swc/helpers/scripts/**",
+    ],
   },
   // Force the full `@swc/helpers` package (including its `esm/` build) into the
   // standalone output. Next's file tracing otherwise copies only the `cjs/`

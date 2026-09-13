@@ -62,7 +62,7 @@ For exact versions, see [`package.json`](https://github.com/wsj-br/duplistatus/b
 - webpack
 
 ### Build & Deployment {/* #build--deployment */}
-- Next.js standalone output (`output: 'standalone'`) with container entrypoint starting `server.js`
+- Next.js standalone output (`output: 'standalone'`) with container entrypoint starting `server.js`. File tracing still runs for the Docker runtime image; `outputFileTracingExcludes` in `next.config.ts` drops build-only packages (webpack, SWC compiler natives, esbuild, CSS minifiers) and non-Linux `better-sqlite3` prebuilds. Do not exclude `@swc/helpers`, `sharp`, or Linux sqlite prebuilds.
 - Docker (node:alpine base) with multi-architecture builds (AMD64, ARM64). The image builds the Next.js app only (not the Docusaurus site); the pnpm version is taken from `packageManager` in `package.json`
 - GitHub Actions workflows for CI/CD
 - Inkscape for logos and pictures
