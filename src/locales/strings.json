@@ -196,7 +196,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 458
+        "line": 456
       }
     ]
   },
@@ -281,7 +281,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 890
+        "line": 888
       }
     ]
   },
@@ -360,7 +360,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 321
+        "line": 319
       }
     ]
   },
@@ -412,7 +412,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 77
+        "line": 70
       }
     ]
   },
@@ -584,11 +584,11 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 56
+        "line": 49
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 100
+        "line": 93
       }
     ]
   },
@@ -1641,7 +1641,7 @@
       },
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 189
+        "line": 173
       }
     ]
   },
@@ -1728,7 +1728,7 @@
       },
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 188
+        "line": 172
       }
     ]
   },
@@ -2911,23 +2911,23 @@
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 614
+        "line": 607
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 699
+        "line": 697
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 736
+        "line": 734
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 799
+        "line": 797
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 852
+        "line": 850
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
@@ -4064,19 +4064,19 @@
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 602
+        "line": 595
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 691
+        "line": 689
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 726
+        "line": 724
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 867
+        "line": 865
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
@@ -4131,7 +4131,7 @@
       },
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 309
+        "line": 307
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
@@ -5307,11 +5307,11 @@
       },
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 571
+        "line": 562
       },
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 588
+        "line": 579
       },
       {
         "file": "src/components/settings/database-maintenance-form.tsx",
@@ -5343,11 +5343,11 @@
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 1086
+        "line": 1059
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 1106
+        "line": 1079
       },
       {
         "file": "src/components/settings/server-settings-form.tsx",
@@ -6990,7 +6990,7 @@
       },
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 187
+        "line": 171
       }
     ]
   },
@@ -10213,7 +10213,7 @@
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 872
+        "line": 870
       },
       {
         "file": "src/components/status-badge.tsx",
@@ -10811,7 +10811,7 @@
       },
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 431
+        "line": 429
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
@@ -12333,7 +12333,7 @@
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 959
+        "line": 957
       },
       {
         "file": "src/components/settings/ntfy-form.tsx",
@@ -12704,7 +12704,7 @@
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 989
+        "line": 987
       }
     ]
   },
@@ -17235,7 +17235,7 @@
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 733
+        "line": 731
       },
       {
         "file": "src/components/settings/ntfy-form.tsx",
@@ -20789,15 +20789,15 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 134
+        "line": 128
       },
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 135
+        "line": 129
       },
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 142
+        "line": 136
       }
     ]
   },
@@ -20822,7 +20822,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 141
+        "line": 135
       }
     ]
   },
@@ -20847,23 +20847,23 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 240
+        "line": 238
       },
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 247
+        "line": 245
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 665
+        "line": 658
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 666
+        "line": 659
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 677
+        "line": 675
       }
     ]
   },
@@ -20888,11 +20888,11 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 246
+        "line": 244
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 676
+        "line": 674
       }
     ]
   },
@@ -20917,11 +20917,11 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 264
+        "line": 262
       },
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 271
+        "line": 269
       }
     ]
   },
@@ -20946,7 +20946,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 267
+        "line": 265
       }
     ]
   },
@@ -20971,7 +20971,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 267
+        "line": 265
       }
     ]
   },
@@ -20996,7 +20996,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 270
+        "line": 268
       }
     ]
   },
@@ -21021,11 +21021,11 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 289
+        "line": 287
       },
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 296
+        "line": 294
       }
     ]
   },
@@ -21050,7 +21050,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 292
+        "line": 290
       }
     ]
   },
@@ -21075,7 +21075,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 292
+        "line": 290
       }
     ]
   },
@@ -21100,7 +21100,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 295
+        "line": 293
       }
     ]
   },
@@ -21125,7 +21125,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 307
+        "line": 305
       }
     ]
   },
@@ -21150,7 +21150,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 311
+        "line": 309
       }
     ]
   },
@@ -21175,7 +21175,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 313
+        "line": 311
       }
     ]
   },
@@ -21200,11 +21200,11 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 315
+        "line": 313
       },
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 428
+        "line": 426
       }
     ]
   },
@@ -21229,19 +21229,19 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 329
+        "line": 327
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 406
+        "line": 399
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 763
+        "line": 761
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 881
+        "line": 879
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
@@ -21274,7 +21274,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 332
+        "line": 330
       }
     ]
   },
@@ -21299,7 +21299,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 341
+        "line": 339
       }
     ]
   },
@@ -21324,7 +21324,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 352
+        "line": 350
       }
     ]
   },
@@ -21349,7 +21349,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 360
+        "line": 358
       }
     ]
   },
@@ -21374,7 +21374,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 370
+        "line": 368
       }
     ]
   },
@@ -21399,7 +21399,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 370
+        "line": 368
       }
     ]
   },
@@ -21424,7 +21424,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 376
+        "line": 374
       }
     ]
   },
@@ -21451,7 +21451,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 382
+        "line": 380
       },
       {
         "file": "src/components/settings/email-configuration-form.tsx",
@@ -21480,7 +21480,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 388
+        "line": 386
       }
     ]
   },
@@ -21505,7 +21505,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 392
+        "line": 390
       }
     ]
   },
@@ -21530,11 +21530,11 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 404
+        "line": 402
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 968
+        "line": 966
       }
     ]
   },
@@ -21559,19 +21559,15 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 404
+        "line": 402
       },
       {
-        "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 535
-      },
-      {
-        "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 968
+        "file": "src/components/settings/email-preview-dialog.tsx",
+        "line": 88
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 1039
+        "line": 966
       }
     ]
   },
@@ -21596,7 +21592,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 411
+        "line": 409
       }
     ]
   },
@@ -21621,7 +21617,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 421
+        "line": 419
       }
     ]
   },
@@ -21648,7 +21644,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 427
+        "line": 425
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
@@ -21681,7 +21677,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 431
+        "line": 429
       }
     ]
   },
@@ -21708,7 +21704,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 441
+        "line": 439
       },
       {
         "file": "src/components/settings/email-configuration-form.tsx",
@@ -21716,11 +21712,11 @@
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 978
+        "line": 976
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 979
+        "line": 977
       },
       {
         "file": "src/components/settings/ntfy-form.tsx",
@@ -21749,7 +21745,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 441
+        "line": 439
       }
     ]
   },
@@ -21776,7 +21772,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 445
+        "line": 443
       },
       {
         "file": "src/components/ui/connectivity-error-modal.tsx",
@@ -21805,7 +21801,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 445
+        "line": 443
       }
     ]
   },
@@ -21830,7 +21826,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 461
+        "line": 459
       }
     ]
   },
@@ -21855,7 +21851,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 466
+        "line": 464
       }
     ]
   },
@@ -21880,7 +21876,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 481
+        "line": 479
       }
     ]
   },
@@ -21905,7 +21901,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 487
+        "line": 485
       }
     ]
   },
@@ -21930,7 +21926,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 497
+        "line": 495
       }
     ]
   },
@@ -21955,7 +21951,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 500
+        "line": 498
       }
     ]
   },
@@ -21980,7 +21976,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 506
+        "line": 504
       }
     ]
   },
@@ -22005,7 +22001,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 517
+        "line": 515
       }
     ]
   },
@@ -22030,7 +22026,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 524
+        "line": 522
       }
     ]
   },
@@ -22055,7 +22051,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 537
+        "line": 533
       }
     ]
   },
@@ -22080,7 +22076,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 543
+        "line": 540
       }
     ]
   },
@@ -22107,15 +22103,15 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 543
+        "line": 540
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 877
+        "line": 875
       },
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 184
+        "line": 168
       }
     ]
   },
@@ -22140,15 +22136,15 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 543
+        "line": 540
       },
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 149
+        "line": 133
       },
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 198
+        "line": 182
       }
     ]
   },
@@ -22173,36 +22169,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 548
-      }
-    ]
-  },
-  "a2b047e8": {
-    "source": "Email HTML preview",
-    "translated": {
-      "es": "Vista previa HTML del correo electrónico",
-      "pt-BR": "Visualização de HTML do e-mail",
-      "fr": "Aperçu HTML de l'email",
-      "de": "E-Mail-HTML-Vorschau",
-      "zh-Hans": "电子邮件 HTML 预览",
-      "hi": "ईमेल एचटीएमएल पूर्वावलोकन"
-    },
-    "models": {
-      "es": "mistralai/codestral-2508",
-      "pt-BR": "mistralai/codestral-2508",
-      "fr": "mistralai/codestral-2508",
-      "de": "mistralai/codestral-2508",
-      "zh-Hans": "mistralai/codestral-2508",
-      "hi": "mistralai/codestral-2508"
-    },
-    "locations": [
-      {
-        "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 553
-      },
-      {
-        "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 1057
+        "line": 545
       }
     ]
   },
@@ -22227,7 +22194,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 565
+        "line": 556
       }
     ]
   },
@@ -22252,7 +22219,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 567
+        "line": 558
       }
     ]
   },
@@ -22277,7 +22244,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 573
+        "line": 564
       }
     ]
   },
@@ -22302,7 +22269,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 582
+        "line": 573
       }
     ]
   },
@@ -22327,7 +22294,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 584
+        "line": 575
       }
     ]
   },
@@ -22352,7 +22319,7 @@
     "locations": [
       {
         "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 589
+        "line": 580
       }
     ]
   },
@@ -28396,6 +28363,145 @@
       }
     ]
   },
+  "c7892ebb": {
+    "source": "Subject",
+    "translated": {
+      "de": "Betreff",
+      "fr": "Sujet",
+      "es": "Asunto",
+      "pt-BR": "Assunto",
+      "zh-Hans": "主题",
+      "hi": "विषय"
+    },
+    "models": {
+      "de": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "es": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/email-html-preview-iframe.tsx",
+        "line": 19
+      },
+      {
+        "file": "src/components/settings/notification-templates-form.tsx",
+        "line": 345
+      }
+    ]
+  },
+  "a2b047e8": {
+    "source": "Email HTML preview",
+    "translated": {
+      "es": "Vista previa HTML del correo electrónico",
+      "pt-BR": "Visualização de HTML do e-mail",
+      "fr": "Aperçu HTML de l'email",
+      "de": "E-Mail-HTML-Vorschau",
+      "zh-Hans": "电子邮件 HTML 预览",
+      "hi": "ईमेल एचटीएमएल पूर्वावलोकन"
+    },
+    "models": {
+      "es": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "de": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/email-preview-dialog.tsx",
+        "line": 62
+      }
+    ]
+  },
+  "870078cd": {
+    "source": "Email HTML",
+    "translated": {
+      "de": "E-Mail HTML",
+      "fr": "Email HTML",
+      "es": "HTML del correo electrónico",
+      "pt-BR": "E-mail HTML",
+      "zh-Hans": "电子邮件HTML",
+      "hi": "ईमेल HTML"
+    },
+    "models": {
+      "de": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "es": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/email-preview-dialog.tsx",
+        "line": 95
+      }
+    ]
+  },
+  "f39a0720": {
+    "source": "Plain text",
+    "translated": {
+      "de": "Klartext",
+      "fr": "Texte brut",
+      "es": "Texto plano",
+      "pt-BR": "Texto simples",
+      "zh-Hans": "纯文本",
+      "hi": "सादा पाठ"
+    },
+    "models": {
+      "de": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "es": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/email-preview-dialog.tsx",
+        "line": 98
+      }
+    ]
+  },
+  "948bed37": {
+    "source": "NTFY",
+    "translated": {
+      "pt-BR": "NTFY",
+      "es": "NTFY",
+      "de": "NTFY",
+      "fr": "NTFY",
+      "zh-CN": "NTFY",
+      "zh-Hans": "NTFY",
+      "hi": "NTFY"
+    },
+    "models": {
+      "pt-BR": "anthropic/claude-3.5-haiku",
+      "es": "anthropic/claude-3.5-haiku",
+      "de": "anthropic/claude-3.5-haiku",
+      "fr": "anthropic/claude-3.5-haiku",
+      "zh-CN": "manual",
+      "zh-Hans": "meta-llama/llama-3.3-70b-instruct",
+      "hi": "meta-llama/llama-3.3-70b-instruct"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/email-preview-dialog.tsx",
+        "line": 102
+      },
+      {
+        "file": "src/components/settings/settings-page-client.tsx",
+        "line": 426
+      },
+      {
+        "file": "src/components/settings/settings-page-client.tsx",
+        "line": 429
+      }
+    ]
+  },
   "d86b3ca1": {
     "source": "Failed to load IP allowlist settings",
     "translated": {
@@ -29035,11 +29141,11 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 52
+        "line": 45
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 96
+        "line": 89
       }
     ]
   },
@@ -29066,11 +29172,11 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 53
+        "line": 46
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 97
+        "line": 90
       }
     ]
   },
@@ -29097,11 +29203,11 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 54
+        "line": 47
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 98
+        "line": 91
       }
     ]
   },
@@ -29128,11 +29234,11 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 55
+        "line": 48
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 99
+        "line": 92
       }
     ]
   },
@@ -29159,7 +29265,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 57
+        "line": 50
       }
     ]
   },
@@ -29186,7 +29292,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 58
+        "line": 51
       }
     ]
   },
@@ -29213,7 +29319,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 59
+        "line": 52
       }
     ]
   },
@@ -29240,7 +29346,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 60
+        "line": 53
       }
     ]
   },
@@ -29267,7 +29373,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 61
+        "line": 54
       }
     ]
   },
@@ -29294,7 +29400,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 62
+        "line": 55
       }
     ]
   },
@@ -29321,7 +29427,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 63
+        "line": 56
       }
     ]
   },
@@ -29348,7 +29454,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 64
+        "line": 57
       }
     ]
   },
@@ -29375,7 +29481,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 65
+        "line": 58
       }
     ]
   },
@@ -29402,7 +29508,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 66
+        "line": 59
       }
     ]
   },
@@ -29429,7 +29535,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 67
+        "line": 60
       }
     ]
   },
@@ -29456,7 +29562,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 68
+        "line": 61
       }
     ]
   },
@@ -29481,7 +29587,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 72
+        "line": 65
       }
     ]
   },
@@ -29506,7 +29612,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 73
+        "line": 66
       }
     ]
   },
@@ -29531,7 +29637,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 74
+        "line": 67
       }
     ]
   },
@@ -29556,7 +29662,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 75
+        "line": 68
       }
     ]
   },
@@ -29581,7 +29687,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 76
+        "line": 69
       }
     ]
   },
@@ -29606,7 +29712,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 78
+        "line": 71
       }
     ]
   },
@@ -29631,7 +29737,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 79
+        "line": 72
       }
     ]
   },
@@ -29656,7 +29762,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 80
+        "line": 73
       }
     ]
   },
@@ -29681,7 +29787,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 81
+        "line": 74
       }
     ]
   },
@@ -29706,7 +29812,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 82
+        "line": 75
       }
     ]
   },
@@ -29731,7 +29837,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 83
+        "line": 76
       }
     ]
   },
@@ -29756,7 +29862,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 84
+        "line": 77
       }
     ]
   },
@@ -29781,7 +29887,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 85
+        "line": 78
       }
     ]
   },
@@ -29806,7 +29912,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 86
+        "line": 79
       }
     ]
   },
@@ -29831,7 +29937,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 87
+        "line": 80
       }
     ]
   },
@@ -29856,7 +29962,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 88
+        "line": 81
       }
     ]
   },
@@ -29881,7 +29987,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 89
+        "line": 82
       }
     ]
   },
@@ -29906,7 +30012,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 90
+        "line": 83
       }
     ]
   },
@@ -29931,7 +30037,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 91
+        "line": 84
       }
     ]
   },
@@ -29956,7 +30062,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 92
+        "line": 85
       }
     ]
   },
@@ -29981,7 +30087,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 93
+        "line": 86
       }
     ]
   },
@@ -30008,7 +30114,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 101
+        "line": 94
       }
     ]
   },
@@ -30035,7 +30141,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 102
+        "line": 95
       }
     ]
   },
@@ -30062,7 +30168,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 103
+        "line": 96
       }
     ]
   },
@@ -30089,7 +30195,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 104
+        "line": 97
       }
     ]
   },
@@ -30116,7 +30222,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 105
+        "line": 98
       }
     ]
   },
@@ -30143,7 +30249,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 106
+        "line": 99
       }
     ]
   },
@@ -30170,11 +30276,11 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 177
+        "line": 170
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 322
+        "line": 315
       }
     ]
   },
@@ -30201,11 +30307,11 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 198
+        "line": 191
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 343
+        "line": 336
       }
     ]
   },
@@ -30232,7 +30338,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 208
+        "line": 201
       }
     ]
   },
@@ -30259,7 +30365,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 214
+        "line": 207
       }
     ]
   },
@@ -30286,7 +30392,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 223
+        "line": 216
       }
     ]
   },
@@ -30313,7 +30419,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 233
+        "line": 226
       }
     ]
   },
@@ -30340,7 +30446,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 234
+        "line": 227
       }
     ]
   },
@@ -30367,7 +30473,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 235
+        "line": 228
       }
     ]
   },
@@ -30394,7 +30500,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 236
+        "line": 229
       }
     ]
   },
@@ -30421,7 +30527,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 237
+        "line": 230
       }
     ]
   },
@@ -30448,7 +30554,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 245
+        "line": 238
       }
     ]
   },
@@ -30475,36 +30581,32 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 261
+        "line": 254
       }
     ]
   },
-  "22397e3b": {
-    "source": "Email body is Markdown. Headings, lists, links, and tables are supported. Titles, priority, and tags stay plain text.",
+  "3a9a9fbc": {
+    "source": "Message body is Markdown for email and NTFY. Headings, lists, links, and tables are supported. NTFY converts tables to plain text. Titles, priority, and tags stay plain text.",
     "translated": {
-      "de": "E-Mail-Body ist Markdown. Überschriften, Listen, Links und Tabellen werden unterstützt. Titel, Priorität und Tags bleiben als Klartext.",
-      "fr": "Le corps de l'e-mail est en Markdown. Les titres, les listes, les liens et les tableaux sont pris en charge. Les titres, la priorité et les balises restent en texte brut.",
-      "es": "El cuerpo del correo electrónico es Markdown. Se admiten encabezados, listas, enlaces y tablas. Los títulos, prioridades y etiquetas se mantienen en texto plano.",
-      "pt-BR": "Corpo do e-mail é Markdown. Títulos, listas, links e tabelas são suportados. Títulos, prioridade e tags ficam em texto simples.",
-      "zh-Hans": "电子邮件正文是Markdown。支持标题、列表、链接和表格。标题、优先级和标签保持纯文本。",
-      "hi": "ईमेल बॉडी मार्कडाउन है। हेडिंग्स, सूचियाँ, लिंक, और तालिकाएँ समर्थित हैं। शीर्षक, प्राथमिकता, और टैग प्लेन टेक्स्ट रहते हैं।"
+      "fr": "Le corps du message est en Markdown pour l'e-mail et NTFY. Les titres, listes, liens et tableaux sont pris en charge. NTFY convertit les tableaux en texte brut. Les titres, la priorité et les tags restent en texte brut.",
+      "de": "Der Nachrichtentext ist Markdown für E-Mail und NTFY. Überschriften, Listen, Links und Tabellen werden unterstützt. NTFY wandelt Tabellen in Klartext um. Titel, Priorität und Tags bleiben Klartext.",
+      "es": "El cuerpo del mensaje es Markdown para correo electrónico y NTFY. Se admiten encabezados, listas, enlaces y tablas. NTFY convierte las tablas a texto sin formato. Los títulos, la prioridad y las etiquetas permanecen como texto sin formato.",
+      "pt-BR": "O corpo da mensagem é Markdown para email e NTFY. Títulos, listas, links e tabelas são compatíveis. O NTFY converte tabelas em texto simples. Títulos, prioridade e tags permanecem em texto simples.",
+      "zh-Hans": "消息正文对邮件和 NTFY 使用 Markdown 格式。支持标题、列表、链接和表格。NTFY 会将表格转换为纯文本。标题、优先级和标签保持纯文本。",
+      "hi": "ईमेल और NTFY के लिए मैसेज बॉडी Markdown में होती है। हेडिंग, लिस्ट, लिंक और टेबल सपोर्ट किए जाते हैं। NTFY टेबल को प्लेन टेक्स्ट में बदल देता है। टाइटल, प्रायोरिटी और टैग प्लेन टेक्स्ट में ही रहते हैं।"
     },
     "models": {
-      "de": "mistralai/codestral-2508",
-      "fr": "mistralai/codestral-2508",
-      "es": "mistralai/codestral-2508",
-      "pt-BR": "mistralai/codestral-2508",
-      "zh-Hans": "mistralai/codestral-2508",
-      "hi": "mistralai/codestral-2508"
+      "fr": "~anthropic/claude-sonnet-latest",
+      "de": "~anthropic/claude-sonnet-latest",
+      "es": "~anthropic/claude-sonnet-latest",
+      "pt-BR": "~anthropic/claude-sonnet-latest",
+      "zh-Hans": "~anthropic/claude-sonnet-latest",
+      "hi": "~anthropic/claude-sonnet-latest"
     },
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 264
-      },
-      {
-        "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 370
+        "line": 257
       }
     ]
   },
@@ -30531,7 +30633,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 271
+        "line": 264
       }
     ]
   },
@@ -30558,36 +30660,11 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 276
+        "line": 269
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 382
-      }
-    ]
-  },
-  "c7892ebb": {
-    "source": "Subject",
-    "translated": {
-      "de": "Betreff",
-      "fr": "Sujet",
-      "es": "Asunto",
-      "pt-BR": "Assunto",
-      "zh-Hans": "主题",
-      "hi": "विषय"
-    },
-    "models": {
-      "de": "mistralai/codestral-2508",
-      "fr": "mistralai/codestral-2508",
-      "es": "mistralai/codestral-2508",
-      "pt-BR": "mistralai/codestral-2508",
-      "zh-Hans": "mistralai/codestral-2508",
-      "hi": "mistralai/codestral-2508"
-    },
-    "locations": [
-      {
-        "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 352
+        "line": 375
       }
     ]
   },
@@ -30612,7 +30689,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 358
+        "line": 351
       }
     ]
   },
@@ -30637,7 +30714,32 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 367
+        "line": 360
+      }
+    ]
+  },
+  "22397e3b": {
+    "source": "Email body is Markdown. Headings, lists, links, and tables are supported. Titles, priority, and tags stay plain text.",
+    "translated": {
+      "de": "E-Mail-Body ist Markdown. Überschriften, Listen, Links und Tabellen werden unterstützt. Titel, Priorität und Tags bleiben als Klartext.",
+      "fr": "Le corps de l'e-mail est en Markdown. Les titres, les listes, les liens et les tableaux sont pris en charge. Les titres, la priorité et les balises restent en texte brut.",
+      "es": "El cuerpo del correo electrónico es Markdown. Se admiten encabezados, listas, enlaces y tablas. Los títulos, prioridades y etiquetas se mantienen en texto plano.",
+      "pt-BR": "Corpo do e-mail é Markdown. Títulos, listas, links e tabelas são suportados. Títulos, prioridade e tags ficam em texto simples.",
+      "zh-Hans": "电子邮件正文是Markdown。支持标题、列表、链接和表格。标题、优先级和标签保持纯文本。",
+      "hi": "ईमेल बॉडी मार्कडाउन है। हेडिंग्स, सूचियाँ, लिंक, और तालिकाएँ समर्थित हैं। शीर्षक, प्राथमिकता, और टैग प्लेन टेक्स्ट रहते हैं।"
+    },
+    "models": {
+      "de": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "es": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "mistralai/codestral-2508"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/notification-templates-form.tsx",
+        "line": 363
       }
     ]
   },
@@ -30662,7 +30764,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 377
+        "line": 370
       }
     ]
   },
@@ -30689,11 +30791,11 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 400
+        "line": 393
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 889
+        "line": 887
       }
     ]
   },
@@ -30720,11 +30822,11 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 402
+        "line": 395
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 907
+        "line": 905
       }
     ]
   },
@@ -30751,11 +30853,11 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 404
+        "line": 397
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 925
+        "line": 923
       }
     ]
   },
@@ -30782,11 +30884,11 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 603
+        "line": 596
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 692
+        "line": 690
       }
     ]
   },
@@ -30813,11 +30915,11 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 615
+        "line": 608
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 696
+        "line": 694
       }
     ]
   },
@@ -30844,7 +30946,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 727
+        "line": 725
       }
     ]
   },
@@ -30869,7 +30971,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 761
+        "line": 759
       }
     ]
   },
@@ -30894,7 +30996,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 762
+        "line": 760
       }
     ]
   },
@@ -30921,19 +31023,19 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 790
+        "line": 788
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 988
+        "line": 986
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 1078
+        "line": 1051
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 1088
+        "line": 1061
       }
     ]
   },
@@ -30960,7 +31062,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 791
+        "line": 789
       }
     ]
   },
@@ -30987,7 +31089,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 800
+        "line": 798
       }
     ]
   },
@@ -31014,19 +31116,19 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 845
+        "line": 843
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 997
+        "line": 995
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 1098
+        "line": 1071
       },
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 1108
+        "line": 1081
       }
     ]
   },
@@ -31053,7 +31155,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 846
+        "line": 844
       }
     ]
   },
@@ -31080,7 +31182,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 853
+        "line": 851
       }
     ]
   },
@@ -31107,7 +31209,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 871
+        "line": 869
       }
     ]
   },
@@ -31134,7 +31236,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 876
+        "line": 874
       }
     ]
   },
@@ -31161,7 +31263,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 908
+        "line": 906
       }
     ]
   },
@@ -31188,7 +31290,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 926
+        "line": 924
       }
     ]
   },
@@ -31213,7 +31315,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 942
+        "line": 940
       }
     ]
   },
@@ -31238,7 +31340,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 943
+        "line": 941
       }
     ]
   },
@@ -31265,7 +31367,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 959
+        "line": 957
       }
     ]
   },
@@ -31292,7 +31394,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 978
+        "line": 976
       }
     ]
   },
@@ -31319,7 +31421,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 979
+        "line": 977
       }
     ]
   },
@@ -31346,7 +31448,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 1004
+        "line": 1002
       }
     ]
   },
@@ -31373,7 +31475,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 1011
+        "line": 1009
       }
     ]
   },
@@ -31398,117 +31500,32 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 1042
+        "line": 1038
       }
     ]
   },
-  "46b88b30": {
-    "source": "Email HTML, plain text, and NTFY rendered from the current template without sending.",
+  "9bd7de36": {
+    "source": "Email HTML, plain text, and NTFY Markdown rendered from the current template without sending.",
     "translated": {
-      "pt-BR": "E-mail HTML, texto simples e NTFY renderizados do modelo atual sem enviar.",
-      "es": "Correo electrónico HTML, texto plano y NTFY renderizados desde la plantilla actual sin enviar.",
-      "fr": "Email HTML, texte brut et NTFY rendus à partir du modèle actuel sans envoi.",
-      "de": "E-Mail HTML, Plain Text und NTFY aus der aktuellen Vorlage gerendert, ohne zu senden.",
-      "hi": "ईमेल एचटीएमएल, सादा पाठ, और एनटीएफवर्तमान टेम्पलेट से रेंडर किया गया है, बिना भेजे।",
-      "zh-Hans": "从当前模板渲染的电子邮件 HTML、纯文本和 NTFY，未发送。"
+      "fr": "HTML de l'e-mail, texte brut et Markdown NTFY générés à partir du modèle actuel sans envoi.",
+      "es": "HTML de email, texto sin formato y Markdown de NTFY generados a partir de la plantilla actual sin enviarla.",
+      "pt-BR": "HTML de e-mail, texto simples e Markdown do NTFY renderizados a partir do modelo atual sem enviar.",
+      "de": "E-Mail-HTML, Klartext und NTFY-Markdown, gerendert aus der aktuellen Vorlage, ohne zu senden.",
+      "zh-Hans": "根据当前模板渲染电子邮件 HTML、纯文本和 NTFY Markdown，但不发送。",
+      "hi": "मौजूदा टेम्पलेट से बिना भेजे रेंडर किए गए ईमेल HTML, प्लेन टेक्स्ट और NTFY Markdown।"
     },
     "models": {
-      "pt-BR": "mistralai/codestral-2508",
-      "es": "mistralai/codestral-2508",
-      "fr": "mistralai/codestral-2508",
-      "de": "mistralai/codestral-2508",
-      "hi": "mistralai/codestral-2508",
-      "zh-Hans": "mistralai/codestral-2508"
+      "fr": "~anthropic/claude-sonnet-latest",
+      "es": "~anthropic/claude-sonnet-latest",
+      "pt-BR": "~anthropic/claude-sonnet-latest",
+      "de": "~anthropic/claude-sonnet-latest",
+      "zh-Hans": "~anthropic/claude-sonnet-latest",
+      "hi": "~anthropic/claude-sonnet-latest"
     },
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 1043
-      }
-    ]
-  },
-  "870078cd": {
-    "source": "Email HTML",
-    "translated": {
-      "de": "E-Mail HTML",
-      "fr": "Email HTML",
-      "es": "HTML del correo electrónico",
-      "pt-BR": "E-mail HTML",
-      "zh-Hans": "电子邮件HTML",
-      "hi": "ईमेल HTML"
-    },
-    "models": {
-      "de": "mistralai/codestral-2508",
-      "fr": "mistralai/codestral-2508",
-      "es": "mistralai/codestral-2508",
-      "pt-BR": "mistralai/codestral-2508",
-      "zh-Hans": "mistralai/codestral-2508",
-      "hi": "mistralai/codestral-2508"
-    },
-    "locations": [
-      {
-        "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 1048
-      }
-    ]
-  },
-  "f39a0720": {
-    "source": "Plain text",
-    "translated": {
-      "de": "Klartext",
-      "fr": "Texte brut",
-      "es": "Texto plano",
-      "pt-BR": "Texto simples",
-      "zh-Hans": "纯文本",
-      "hi": "सादा पाठ"
-    },
-    "models": {
-      "de": "mistralai/codestral-2508",
-      "fr": "mistralai/codestral-2508",
-      "es": "mistralai/codestral-2508",
-      "pt-BR": "mistralai/codestral-2508",
-      "zh-Hans": "mistralai/codestral-2508",
-      "hi": "mistralai/codestral-2508"
-    },
-    "locations": [
-      {
-        "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 1049
-      }
-    ]
-  },
-  "948bed37": {
-    "source": "NTFY",
-    "translated": {
-      "pt-BR": "NTFY",
-      "es": "NTFY",
-      "de": "NTFY",
-      "fr": "NTFY",
-      "zh-CN": "NTFY",
-      "zh-Hans": "NTFY",
-      "hi": "NTFY"
-    },
-    "models": {
-      "pt-BR": "anthropic/claude-3.5-haiku",
-      "es": "anthropic/claude-3.5-haiku",
-      "de": "anthropic/claude-3.5-haiku",
-      "fr": "anthropic/claude-3.5-haiku",
-      "zh-CN": "manual",
-      "zh-Hans": "meta-llama/llama-3.3-70b-instruct",
-      "hi": "meta-llama/llama-3.3-70b-instruct"
-    },
-    "locations": [
-      {
-        "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 1051
-      },
-      {
-        "file": "src/components/settings/settings-page-client.tsx",
-        "line": 426
-      },
-      {
-        "file": "src/components/settings/settings-page-client.tsx",
-        "line": 429
+        "line": 1039
       }
     ]
   },
@@ -31535,7 +31552,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 1080
+        "line": 1053
       }
     ]
   },
@@ -31562,7 +31579,7 @@
     "locations": [
       {
         "file": "src/components/settings/notification-templates-form.tsx",
-        "line": 1100
+        "line": 1073
       }
     ]
   },
@@ -36409,7 +36426,7 @@
     "locations": [
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 164
+        "line": 148
       }
     ]
   },
@@ -36434,7 +36451,7 @@
     "locations": [
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 182
+        "line": 166
       }
     ]
   },
@@ -36459,7 +36476,7 @@
     "locations": [
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 183
+        "line": 167
       }
     ]
   },
@@ -36484,7 +36501,7 @@
     "locations": [
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 185
+        "line": 169
       }
     ]
   },
@@ -36509,7 +36526,7 @@
     "locations": [
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 186
+        "line": 170
       }
     ]
   },
@@ -36534,7 +36551,7 @@
     "locations": [
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 190
+        "line": 174
       }
     ]
   },
@@ -36559,19 +36576,19 @@
     "locations": [
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 217
+        "line": 201
       },
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 218
+        "line": 202
       },
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 246
+        "line": 230
       },
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 250
+        "line": 234
       }
     ]
   },
@@ -36596,11 +36613,11 @@
     "locations": [
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 220
+        "line": 204
       },
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 221
+        "line": 205
       }
     ]
   },
@@ -36625,7 +36642,7 @@
     "locations": [
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 253
+        "line": 237
       }
     ]
   }

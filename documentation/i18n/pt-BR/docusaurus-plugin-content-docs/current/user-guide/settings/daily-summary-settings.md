@@ -51,6 +51,6 @@ Entregas agendadas, **Enviar resumo agora** e novas tentativas são registradas 
 
 ## Modelos {/* #templates */}
 
-Edite o modelo de e-mail de resumo diário (Markdown) em [Configurações → Modelos](/user-guide/settings/notification-templates). Os corpos dos e-mails para Sucesso, Aviso/Erro, Atrasado e Resumo Diário usam Markdown. O modelo padrão inclui `{duplistatus_link}` no final quando uma URL do painel público está configurada nesta página ou via `DUPLISTATUS_PUBLIC_URL`.
+Edite o modelo de e-mail de resumo diário (Markdown) em [Configurações → Modelos](/user-guide/settings/notification-templates). O assunto padrão inclui `{summary_date}` mais as contagens de Sucesso, Aviso, Atrasado, Erro e Fatal para que a linha da caixa de entrada resuma o instantâneo. Atrasado pode se sobrepor às contagens de status. Os corpos de e-mail para Sucesso, Aviso/Erro, Atrasado e Resumo Diário todos usam Markdown. O modelo padrão inclui `{duplistatus_link}` no final quando uma URL de painel público é configurada nesta página ou via `DUPLISTATUS_PUBLIC_URL`.
 
-**Gerar visualização** nesta página abre uma caixa de diálogo com a captura atual. O E-mail HTML segue o tema claro ou escuro atual.
+**Gerar visualização** nesta página abre o mesmo diálogo de visualização que [Configurações → Modelos](/user-guide/settings/notification-templates): assunto do e-mail mais E-mail HTML e texto simples. O E-mail HTML segue o tema claro ou escuro atual.

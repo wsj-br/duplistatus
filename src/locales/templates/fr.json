@@ -1,25 +1,25 @@
 {
   "success": {
     "title": "✅ {status} - {backup_name} @ {server_alias}",
-    "message": "La sauvegarde {backup_name} sur {server_alias} a été complétée avec l'état '{status}' à {backup_date} en {duration}.\n\n🔍 Remarque : {server_note}\n☁️ Téléchargé : {uploaded_size}\n💾 Utilisation du stockage : {storage_size}\n🔃 Versions disponibles : {available_versions}\n",
+    "message": "## ✅ Sauvegarde terminée\n\n**{backup_name}** sur **{server_alias}** terminée avec l'état **{status}**.\n\n🕐 Date : **{backup_date}**\n⏰ Durée : **{duration}**\n🔍 Remarque : **{server_note}**\n\n### 📈 Aperçu\n\n| Métrique | Valeur |\n| --- | ---: |\n| ☁️ Téléchargé | {uploaded_size} |\n| 💾 Utilisation du stockage | {storage_size} |\n| 🔃 Versions disponibles | {available_versions} |\n",
     "priority": "default",
     "tags": "duplicati, duplistatus, success"
   },
   "warning": {
     "title": "⚠️ {status} - {backup_name} @ {server_alias}",
-    "message": "La sauvegarde {backup_name} sur {server_alias} a été complétée avec l'état '{status}' à {backup_date}.\n\n🔍 Remarque : {server_note}\n⏰ Durée : {duration}\n☁️ Téléchargé : {uploaded_size}\n\n🚨 {warnings_count} avertissements\n🛑 {errors_count} erreurs.\n\n📄 Messages du journal :\n{log_text}\n\n⚠️ Vérifiez immédiatement le serveur duplicati {server_url}\n",
+    "message": "## ⚠️ Sauvegarde nécessite une attention\n\n**{backup_name}** sur **{server_alias}** terminée avec le statut **{status}**.\n\n🕐 Date : **{backup_date}**\n⏰ Durée : **{duration}**\n🔍 Remarque : **{server_note}**\n\n### 📈 Aperçu\n\n| Métrique | Valeur |\n| --- | ---: |\n| ☁️ Téléchargé | {uploaded_size} |\n| 🚨 Avertissements | {warnings_count} |\n| 🛑 Erreurs | {errors_count} |\n\n### 📄 Messages de journal\n\n{log_text}\n\n⚠️ Vérifier le serveur Duplicati immédiatement : {server_url}\n",
     "priority": "high",
     "tags": "duplicati, duplistatus, warning, error"
   },
   "overdueBackup": {
     "title": "🕑 En retard - {backup_name} @ {server_alias}",
-    "message": "La sauvegarde {backup_name} est en retard sur {server_alias}.\n\n🔍 Remarque : {server_note}\n🚨 Dernière sauvegarde reçue : {last_backup_date} ({last_elapsed})\n⏰ Heure de sauvegarde attendue : {expected_date} ({expected_elapsed})\n\nIntervalle attendu : {backup_interval} / Tolérance : {overdue_tolerance}\n\n⚠️ Vérifiez immédiatement le serveur duplicati {server_url}\n",
+    "message": "## 🕑 Sauvegarde en retard\n\n**{backup_name}** sur **{server_alias}** est en retard.\n\n🔍 Remarque : **{server_note}**\n\n### 📈 Aperçu\n\n| Métrique | Valeur |\n| --- | ---: |\n| 🚨 Dernière sauvegarde reçue | {last_backup_date} ({last_elapsed}) |\n| ⏰ Heure de sauvegarde attendue | {expected_date} ({expected_elapsed}) |\n| 📅 Intervalle attendu | {backup_interval} |\n| ⏳ Tolérance | {overdue_tolerance} |\n\n⚠️ Vérifier le serveur Duplicati immédiatement : {server_url}\n",
     "priority": "default",
     "tags": "duplicati, duplistatus, overdue"
   },
   "dailySummary": {
     "email": {
-      "title": "📬 duplistatus — Résumé quotidien de la sauvegarde — {summary_date}",
+      "title": "Résumé de la sauvegarde quotidienne — {summary_date} — ✅ {success_count} Succès, ⚠️ {warning_count} Avertissement, 🕑 {overdue_count} En retard, 🛑 {error_count} Erreur, ❌ {fatal_count} Fatal",
       "message": "## 📊 Résumé quotidien des sauvegardes\n\n🕐 Généré : **{generated_at}** ({time_zone})\n\n### 📈 Aperçu\n\n| Métrique | Nombre |\n| --- | ---: |\n| 🖥️ Serveurs | {server_count} |\n| 💼 Tâches de sauvegarde / ✅ Succès | {job_count} / {success_count} |\n| ⚠️ Avertissements / 🛑 Erreurs / 💀 Fatal / ❓ Inconnu | {warning_count} / {error_count} / {fatal_count} / {unknown_count} |\n| ❓ Aucun rapport reçu | {no_report_count} |\n| 🕑 En retard | {overdue_count} |\n\n### 🚨 Attention requise\n\n{problem_table}\n\n### 📋 Tous les résultats des dernières sauvegardes\n\n{all_jobs_table}\n\n{duplistatus_link}\n"
     }
   }

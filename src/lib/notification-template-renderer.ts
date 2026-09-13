@@ -164,9 +164,92 @@ export function renderMarkdownEmail(
   return { subject, html, text };
 }
 
+function escapeMarkdownValue(value: string): string {
+  return value.replace(/([\\`*_[\]#])/g, '\\$1');
+}
+
+const MARKDOWN_TABLE_LINE = /^\s*\|.*\|\s*$/;
+const MARKDOWN_TABLE_SEPARATOR_CELL = /^\s*:?-+:?\s*$/;
+
+function parseMarkdownTableRow(line: string): string[] {
+  const trimmed = line.trim();
+  const inner = trimmed.replace(/^\|/, '').replace(/\|$/, '');
+  return inner.split('|').map((cell) => cell.trim());
+}
+
+function isMarkdownTableSeparator(cells: string[]): boolean {
+  return cells.length > 0 && cells.every((cell) => MARKDOWN_TABLE_SEPARATOR_CELL.test(cell));
+}
+
+function formatNtfyTableDataRows(rows: string[][]): string {
+  return rows
+    .map((row) => {
+      const cells = row.filter((cell) => cell.length > 0);
+      if (cells.length === 0) {
+        return '';
+      }
+      if (cells.length === 1) {
+        return cells[0];
+      }
+      if (cells.length === 2) {
+        return `${cells[0]}: ${cells[1]}`;
+      }
+      return cells.join(' · ');
+    })
+    .filter((line) => line.length > 0)
+    .join('\n');
+}
+
+/**
+ * Convert GFM tables to plain text for ntfy.
+ * Any header row (the row above the `| --- |` separator) is omitted; body rows of any width are kept.
+ * Pipe lines without a separator are left unchanged.
+ */
+function replaceMarkdownTablesWithPlainText(source: string): string {
+  const lines = source.split('\n');
+  const output: string[] = [];
+  let index = 0;
+  while (index < lines.length) {
+    if (!MARKDOWN_TABLE_LINE.test(lines[index])) {
+      output.push(lines[index]);
+      index += 1;
+      continue;
+    }
+    const tableLines: string[] = [];
+    while (index < lines.length && MARKDOWN_TABLE_LINE.test(lines[index])) {
+      tableLines.push(lines[index]);
+      index += 1;
+    }
+    const parsed = tableLines.map(parseMarkdownTableRow);
+    const separatorIndex = parsed.findIndex(isMarkdownTableSeparator);
+    if (separatorIndex === -1) {
+      output.push(...tableLines);
+      continue;
+    }
+    output.push(formatNtfyTableDataRows(parsed.slice(separatorIndex + 1)));
+  }
+  return output.join('\n');
+}
+
+/**
+ * Substitute placeholders into a Markdown template for NTFY.
+ * Template markup is preserved except GFM tables: the header row is omitted and
+ * body rows become plain text, because ntfy Markdown does not render tables.
+ * Placeholder values are escaped so they cannot inject Markdown.
+ * HTML block placeholders (tables, lists, dashboard link) are omitted.
+ */
 export function renderMarkdownNtfyText(bodyTemplate: string, values: PlaceholderValues): string {
-  const rendered = renderMarkdownEmail('unused', bodyTemplate, values);
-  return rendered.text;
+  const tokenized = tokenizeKnownPlaceholders(bodyTemplate, values);
+  const withPlainTables = replaceMarkdownTablesWithPlainText(tokenized);
+  let result = withPlainTables;
+  const names = new Set([...Object.keys(values), ...BLOCK_PLACEHOLDERS]);
+  for (const name of names) {
+    const token = tokenFor(name);
+    const raw = values[name] ?? '';
+    const replacement = BLOCK_PLACEHOLDERS.has(name) ? '' : escapeMarkdownValue(raw);
+    result = result.split(token).join(replacement);
+  }
+  return result;
 }
 
 export function substitutePlainTemplate(template: string, values: PlaceholderValues): string {

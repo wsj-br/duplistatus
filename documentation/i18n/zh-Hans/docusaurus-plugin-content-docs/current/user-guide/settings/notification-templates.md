@@ -1,6 +1,6 @@
 # 模板 {/* #templates */}
 
-**duplistatus** 使用四个模板来生成通知消息。电子邮件正文是Markdown（标题、列表、链接和表格）。NTFY的成功、警告/错误和过期通知是从相同的内容派生出来的。每日摘要仅限电子邮件。
+**duplistatus** 使用四个模板来生成通知消息。电子邮件正文是 Markdown（标题、列表、链接和表格）。NTFY 用于成功、警告/错误和逾期，使用相同的 Markdown 正文，通过 `Markdown: yes` 发送，以便 ntfy 客户端可以渲染它。任何 GFM 表格省略其标题行，并将正文作为纯文本发送，因为 ntfy 不渲染表格。每日摘要仅限电子邮件。
 
 该页包含一个 **模板语言**选择器，用于设置默认模板的区域设置。更改语言会更新新默认值的区域设置，但**不会**更改现有模板的文本。要将新语言应用于您的模板，请手动编辑模板，或使用 **将此模板重置为默认值**（针对当前标签页）或 **全部重置为默认值**（针对所有模板）。
 
@@ -34,7 +34,9 @@
 
 ## 变量 {/* #variables */}
 
-电子邮件正文是 Markdown。支持标题、列表、链接和表格。占位符值作为转义文本插入，不能引入 Markdown 或 HTML。自定义模板中先前嵌入的原始 HTML 现在已被转义。
+电子邮件正文是 Markdown。支持标题、列表、链接和表格。占位符值作为转义文本插入，不能引入 Markdown 或 HTML。先前在自定义模板中嵌入的原始 HTML 现在被转义。NTFY 接收相同的 Markdown，除了 GFM 表格：省略标题行，并将正文行作为纯文本发送，适用于任何列布局。
+
+默认的成功、警告/错误和过期的正文使用与每日摘要相同的Markdown样式：标题、粗体值和概述表。未修改的存储默认值在加载时升级；自定义模板保持不变。
 
 所有成功、警告/错误和过期备份模板都支持变量，这些变量将被实际值替换。以下表格显示了可用的变量：
 
@@ -73,10 +75,18 @@
 | `{time_zone}` | 已保存的IANA时区 |
 | `{server_count}` / `{job_count}` | 服务器和已知作业 |
 | `{success_count}` / `{warning_count}` / `{error_count}` / `{fatal_count}` / `{unknown_count}` / `{no_report_count}` | 互斥状态桶 |
-| `{overdue_count}` | 过期作业（与状态正交） |
+| `{overdue_count}` | 逾期作业（与状态正交；可以与上述桶重叠）|
 | `{problem_table}` / `{all_jobs_table}` | 生成了需要注意的和所有作业的表格。列：服务器、备份、过期、上次状态、最后结果、持续时间、警告、错误、已上传。 |
 | `{duplistatus_link}` | 链接到 duplistatus 仪表板（当未配置公共 URL 时省略）。优先使用此链接而不是手动构建的 Markdown 链接。 |
 | `{duplistatus_url}` | 与纯文本相同的 URL（当未配置公共 URL 时为空）。 |
 | `{latest_uploaded_size}` / `{latest_source_size}` / `{latest_storage_size}` / `{latest_file_count}` / `{total_warnings}` / `{total_errors}` | 最新结果总计 |
 
-使用**预览**在不发送的情况下渲染电子邮件HTML和纯文本。成功、警告/错误和过期预览还包括NTFY。预览在对话框中打开。电子邮件HTML遵循当前的浅色或深色主题。
+默认每日摘要电子邮件主题为：
+
+```text
+Daily Backup Summary — {summary_date} — ✅ {success_count} Success, ⚠️ {warning_count} Warning, 🕑 {overdue_count} Overdue, 🛑 {error_count} Error, ❌ {fatal_count} Fatal
+```
+
+未修改的存储默认主题将升级为此格式。自定义主题保持不变。`{unknown_count}` 和 `{no_report_count}` 保留在电子邮件正文中，而不是默认主题中。
+
+使用**预览**来渲染电子邮件主题、HTML和纯文本，而无需发送。成功、警告/错误和过期预览还包括NTFY Markdown有效负载。预览在对话框中打开。电子邮件HTML/纯文本/NTFY按钮位于主题上方。电子邮件HTML遵循当前的浅色或深色主题。

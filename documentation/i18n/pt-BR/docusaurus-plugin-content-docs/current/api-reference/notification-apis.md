@@ -96,10 +96,10 @@ O conteúdo do e-mail de teste exibe:
   - O endpoint de teste de e-mail limpa o cache da requisição antes de ler a configuração SMTP, garantindo que scripts externos possam atualizar a configuração e ela seja imediatamente refletida nos e-mails de teste
   - Testes de modelo e Envio Imediato do Resumo Diário ignoram a supressão por backup
 
-## Visualização do Template de Notificação - `/api/notifications/preview` {/* #preview-notification-template---apinotificationspreview */}
+## Visualização do Modelo de Notificação - `/api/notifications/preview` {/* #preview-notification-template---apinotificationspreview */}
 - **Endpoint**: `/api/notifications/preview`
 - **Método**: POST
-- **Descrição**: Renderiza um template de notificação com o renderizador Markdown de produção sem enviar. O corpo inclui `kind` (`success`, `warning`, `overdueBackup` ou `dailySummaryEmail`) e o template que está sendo editado. As visualizações do Resumo Diário usam a captura de snapshot real atual; outros tipos usam valores de amostra determinísticos. O E-mail HTML é destinado a um iframe isolado.
+- **Descrição**: Renderiza um modelo de notificação com o renderizador de Markdown de produção sem enviar. O corpo inclui `kind` (`success`, `warning`, `overdueBackup`, ou `dailySummaryEmail`) e o modelo sendo editado. Visualizações de Resumo Diário usam o snapshot real atual; outros tipos usam valores de amostra determinísticos. E-mail HTML é destinado a um iframe sandboxed. Sucesso, Aviso/Erro e Atrasado também retornam o payload NTFY (`ntfyMessage`); qualquer cabeçalho de tabela GFM é omitido e as linhas do corpo são texto simples.
 - **Autenticação**: Requer sessão válida e token CSRF
 
 ## Verificar Backups Atrasados - `/api/notifications/check-overdue` {/* #check-overdue-backups---apinotificationscheck-overdue */}

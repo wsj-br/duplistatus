@@ -51,6 +51,6 @@
 
 ## Templates {/* #templates */}
 
-दैनिक सारांश ईमेल टेम्पलेट (Markdown) को [Sammaan → Templates](/user-guide/settings/notification-templates) के तहत संपादित करें। Safalta, Chetavani/Trik, Vilambit, और दैनिक सारांश के लिए ईमेल सामग्री सभी Markdown का उपयोग करती हैं। डिफ़ॉल्ट टेम्पलेट में इस पृष्ठ पर या `DUPLISTATUS_PUBLIC_URL` के माध्यम से कॉन्फ़िगर किए गए सार्वजनिक डैशबोर्ड यूआरएल के अंत में `{duplistatus_link}` शामिल है।
+दैनिक सारांश ईमेल टेम्पलेट (Markdown) को [Sammaan → Templates](/user-guide/settings/notification-templates) में संपादित करें। डिफ़ॉल्ट विषय में `{summary_date}` शामिल है, साथ ही Safalta, Chetavani/Trik, Vilambit, Truti, और Gambhir गिनती भी शामिल है, ताकि इनबॉक्स लाइन स्नैपशॉट का सारांश दर्शाए। Vilambit स्थिति गिनती से ओवरलैप हो सकता है। Safalta, Chetavani/Trik, Vilambit, और दैनिक सारांश के लिए ईमेल बॉडी सभी Markdown का उपयोग करते हैं। डिफ़ॉल्ट टेम्पलेट में सार्वजनिक डैशबोर्ड यूआरएल कॉन्फ़िगर होने पर `{duplistatus_link}` अंत में शामिल है, जो इस पृष्ठ या `DUPLISTATUS_PUBLIC_URL` के माध्यम से किया जाता है।
 
-**पूर्वावलोकन उत्पन्न करें** इस पृष्ठ पर चालू स्नैपशॉट के साथ एक संवाद खोलता है। ईमेल HTML वर्तमान उज्ज्वल या अंधकार वसतु शैली का पालन करता है।
+**पूर्वावलोकन उत्पन्न करें** इस पृष्ठ पर [सेटिंग्स → टेम्पलेट्स](/user-guide/settings/notification-templates) के समान पूर्वावलोकन डायलॉग खुलता है: ईमेल विषय के साथ ईमेल HTML और सादा पाठ। ईमेल HTML वर्तमान में उज्ज्वल या अंधकार विषय शैली का पालन करता है।

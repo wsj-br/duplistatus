@@ -10,6 +10,181 @@ interface PreviousTemplateMessages {
 
 export const previousTemplatesMessages: PreviousTemplateMessages[] = [
   {
+    version: "1.5.0-en-GB",
+    sucess:
+      "Backup {backup_name} on {server_alias} completed with status '{status}' at {backup_date} in {duration}.\n\n" +
+      "🔍 Note: {server_note}\n" +
+      "☁️ Uploaded: {uploaded_size}\n" +
+      "💾 Store usage: {storage_size}\n" +
+      "🔃 Available versions: {available_versions}\n",
+    warning:
+      "Backup {backup_name} on {server_alias} completed with status '{status}' at {backup_date}.\n\n" +
+      "🔍 Note: {server_note}\n" +
+      "⏰ Duration: {duration}\n" +
+      "☁️ Uploaded: {uploaded_size}\n\n" +
+      "🚨 {warnings_count} warnings\n" +
+      "🛑 {errors_count} errors.\n\n" +
+      "📄 Log Messages:\n{log_text}\n\n" +
+      "⚠️ Check the duplicati server immediately {server_url}\n",
+    overdueBackup:
+      "The backup {backup_name} is overdue on {server_alias}.\n\n" +
+      "🔍 Note: {server_note}\n" +
+      "🚨 Last backup received: {last_backup_date} ({last_elapsed})\n" +
+      "⏰ Expected backup time: {expected_date} ({expected_elapsed})\n\n" +
+      "Expected interval: {backup_interval} / Tolerance: {overdue_tolerance}\n\n" +
+      "⚠️ Check the duplicati server immediately {server_url}\n",
+  },
+  {
+    version: "1.5.0-de",
+    sucess:
+      "Die Sicherung {backup_name} auf {server_alias} wurde mit dem Status '{status}' am {backup_date} in {duration} abgeschlossen.\n\n" +
+      "🔍 Hinweis: {server_note}\n" +
+      "☁️ Hochgeladen: {uploaded_size}\n" +
+      "💾 Speicherverbrauch: {storage_size}\n" +
+      "🔃 Verfügbare Versionen: {available_versions}\n",
+    warning:
+      "Die Sicherung {backup_name} auf {server_alias} wurde mit dem Status '{status}' am {backup_date} abgeschlossen.\n\n" +
+      "🔍 Hinweis: {server_note}\n" +
+      "⏰ Dauer: {duration}\n" +
+      "☁️ Hochgeladen: {uploaded_size}\n\n" +
+      "🚨 {warnings_count} Warnungen\n" +
+      "🛑 {errors_count} Fehler.\n\n" +
+      "📄 Protokollnachrichten:\n{log_text}\n\n" +
+      "⚠️ Prüfen Sie den duplicati-Server sofort {server_url}\n",
+    overdueBackup:
+      "Die Sicherung {backup_name} ist überfällig auf {server_alias}.\n\n" +
+      "🔍 Hinweis: {server_note}\n" +
+      "🚨 Letzte Sicherung empfangen: {last_backup_date} ({last_elapsed})\n" +
+      "⏰ Erwartete Sicherungszeit: {expected_date} ({expected_elapsed})\n\n" +
+      "Erwartetes Intervall: {backup_interval} / Toleranz: {overdue_tolerance}\n\n" +
+      "⚠️ Prüfen Sie den duplicati-Server sofort {server_url}\n",
+  },
+  {
+    version: "1.5.0-es",
+    sucess:
+      "La copia de seguridad {backup_name} en {server_alias} se completó con el estado '{status}' el {backup_date} en {duration}.\n\n" +
+      "🔍 Nota: {server_note}\n" +
+      "☁️ Subido: {uploaded_size}\n" +
+      "💾 Uso de almacenamiento: {storage_size}\n" +
+      "🔃 Versiones disponibles: {available_versions}\n",
+    warning:
+      "La copia de seguridad {backup_name} en {server_alias} se completó con el estado '{status}' el {backup_date}.\n\n" +
+      "🔍 Nota: {server_note}\n" +
+      "⏰ Duración: {duration}\n" +
+      "☁️ Subido: {uploaded_size}\n\n" +
+      "🚨 {warnings_count} advertencias\n" +
+      "🛑 {errors_count} errores.\n\n" +
+      "📄 Mensajes del registro:\n{log_text}\n\n" +
+      "⚠️ Comprobar el servidor duplicati inmediatamente {server_url}\n",
+    overdueBackup:
+      "La copia de seguridad {backup_name} está vencida en {server_alias}.\n\n" +
+      "🔍 Nota: {server_note}\n" +
+      "🚨 Última copia de seguridad recibida: {last_backup_date} ({last_elapsed})\n" +
+      "⏰ Hora de copia de seguridad esperada: {expected_date} ({expected_elapsed})\n\n" +
+      "Intervalo esperado: {backup_interval} / Tolerancia: {overdue_tolerance}\n\n" +
+      "⚠️ Comprobar el servidor duplicati inmediatamente {server_url}\n",
+  },
+  {
+    version: "1.5.0-fr",
+    sucess:
+      "La sauvegarde {backup_name} sur {server_alias} a été complétée avec l'état '{status}' à {backup_date} en {duration}.\n\n" +
+      "🔍 Remarque : {server_note}\n" +
+      "☁️ Téléchargé : {uploaded_size}\n" +
+      "💾 Utilisation du stockage : {storage_size}\n" +
+      "🔃 Versions disponibles : {available_versions}\n",
+    warning:
+      "La sauvegarde {backup_name} sur {server_alias} a été complétée avec l'état '{status}' à {backup_date}.\n\n" +
+      "🔍 Remarque : {server_note}\n" +
+      "⏰ Durée : {duration}\n" +
+      "☁️ Téléchargé : {uploaded_size}\n\n" +
+      "🚨 {warnings_count} avertissements\n" +
+      "🛑 {errors_count} erreurs.\n\n" +
+      "📄 Messages du journal :\n{log_text}\n\n" +
+      "⚠️ Vérifiez immédiatement le serveur duplicati {server_url}\n",
+    overdueBackup:
+      "La sauvegarde {backup_name} est en retard sur {server_alias}.\n\n" +
+      "🔍 Remarque : {server_note}\n" +
+      "🚨 Dernière sauvegarde reçue : {last_backup_date} ({last_elapsed})\n" +
+      "⏰ Heure de sauvegarde attendue : {expected_date} ({expected_elapsed})\n\n" +
+      "Intervalle attendu : {backup_interval} / Tolérance : {overdue_tolerance}\n\n" +
+      "⚠️ Vérifiez immédiatement le serveur duplicati {server_url}\n",
+  },
+  {
+    version: "1.5.0-pt-BR",
+    sucess:
+      "Backup {backup_name} no {server_alias} concluído com status '{status}' em {backup_date} na {duration}.\n\n" +
+      "🔍 Nota: {server_note}\n" +
+      "☁️ Carregado: {uploaded_size}\n" +
+      "💾 Uso de armazenamento: {storage_size}\n" +
+      "🔃 Versões disponíveis: {available_versions}\n",
+    warning:
+      "Backup {backup_name} no {server_alias} concluído com status '{status}' em {backup_date}.\n\n" +
+      "🔍 Nota: {server_note}\n" +
+      "⏰ Duração: {duration}\n" +
+      "☁️ Carregado: {uploaded_size}\n\n" +
+      "🚨 {warnings_count} avisos\n" +
+      "🛑 {errors_count} erros.\n\n" +
+      "📄 Mensagens do log:\n{log_text}\n\n" +
+      "⚠️ Verifique o servidor duplicati imediatamente {server_url}\n",
+    overdueBackup:
+      "O backup {backup_name} está atrasado no {server_alias}.\n\n" +
+      "🔍 Nota: {server_note}\n" +
+      "🚨 Último backup recebido: {last_backup_date} ({last_elapsed})\n" +
+      "⏰ Tempo esperado para o backup: {expected_date} ({expected_elapsed})\n\n" +
+      "Intervalo esperado: {backup_interval} / Tolerância: {overdue_tolerance}\n\n" +
+      "⚠️ Verifique o servidor duplicati imediatamente {server_url}\n",
+  },
+  {
+    version: "1.5.0-hi",
+    sucess:
+      "Backup {backup_name} on {server_alias} completed with status '{status}' at {backup_date} in {duration}.\n\n" +
+      "🔍 Note: {server_note}\n" +
+      "☁️ Uploaded: {uploaded_size}\n" +
+      "💾 Store usage: {storage_size}\n" +
+      "🔃 Upalabdh versions: {available_versions}\n",
+    warning:
+      "Backup {backup_name} on {server_alias} completed with status '{status}' at {backup_date}.\n\n" +
+      "🔍 Note: {server_note}\n" +
+      "⏰ Avadhi: {duration}\n" +
+      "☁️ Uploaded: {uploaded_size}\n\n" +
+      "🚨 {warnings_count} Chetaavaniyaan\n" +
+      "🛑 {errors_count} Trutiyon.\n\n" +
+      "📄 Log Sandesh:\n{log_text}\n\n" +
+      "⚠️ Janch karein the duplicati server immediately {server_url}\n",
+    overdueBackup:
+      "The backup {backup_name} is vilambit on {server_alias}.\n\n" +
+      "🔍 Note: {server_note}\n" +
+      "🚨 Antim backup received: {last_backup_date} ({last_elapsed})\n" +
+      "⏰ Apekshit backup time: {expected_date} ({expected_elapsed})\n\n" +
+      "Apekshit antaraal: {backup_interval} / Sahansheelta: {overdue_tolerance}\n\n" +
+      "⚠️ Janch karein the duplicati server immediately {server_url}\n",
+  },
+  {
+    version: "1.5.0-zh-Hans",
+    sucess:
+      "备份 {backup_name} 在 {server_alias} 的状态为 '{status}'，完成时间为 {backup_date}，持续时间为 {duration}。\n\n" +
+      "🔍 注释: {server_note}\n" +
+      "☁️ 已上传: {uploaded_size}\n" +
+      "💾 存储使用: {storage_size}\n" +
+      "🔃 可用版本: {available_versions}\n",
+    warning:
+      "备份 {backup_name} 在 {server_alias} 的状态为 '{status}'，完成时间为 {backup_date}。\n\n" +
+      "🔍 注释: {server_note}\n" +
+      "⏰ 持续时间: {duration}\n" +
+      "☁️ 已上传: {uploaded_size}\n\n" +
+      "🚨 {warnings_count} 个警告\n" +
+      "🛑 {errors_count} 个错误。\n\n" +
+      "📄 日志消息:\n{log_text}\n\n" +
+      "⚠️ 请立即检查 duplicati 服务器 {server_url}\n",
+    overdueBackup:
+      "备份 {backup_name} 在 {server_alias} 已过期。\n\n" +
+      "🔍 注释: {server_note}\n" +
+      "🚨 最近备份时间: {last_backup_date} ({last_elapsed})\n" +
+      "⏰ 预期备份时间: {expected_date} ({expected_elapsed})\n\n" +
+      "预期间隔: {backup_interval} / 容差: {overdue_tolerance}\n\n" +
+      "⚠️ 请立即检查 duplicati 服务器 {server_url}\n",
+  },
+  {
     version: "1.1.0",
     sucess:
       "Backup {backup_name} on {server_alias} completed with status '{status}' at {backup_date} in {duration}.\n\n" +
@@ -78,6 +253,17 @@ export const previousTemplatesMessages: PreviousTemplateMessages[] = [
       "Expected interval:  {backup_interval_value} {backup_interval_type} / Tolerance:  {overdue_tolerance}\n\n" +
       "🔍 Please check the duplicati server.\n",
   },
+];
+
+/** Previous default Daily Summary email subjects. Unmodified stored titles are replaced; customized bodies are kept. */
+export const previousDailySummaryEmailTitles: string[] = [
+  '📬 duplistatus — Daily backup summary — {summary_date}',
+  '📬 duplistatus — Tägliche Sicherungszusammenfassung — {summary_date}',
+  '📬 duplistatus — Resumen diario de copias de seguridad — {summary_date}',
+  '📬 duplistatus — Résumé quotidien de la sauvegarde — {summary_date}',
+  '📬 duplistatus — Resumo diário do backup — {summary_date}',
+  '📬 duplistatus — 每日备份摘要 — {summary_date}',
+  'duplistatus — Daily backup summary — {summary_date}',
 ];
 
 /** Previous default Daily Summary email bodies (long overview table). Unmodified stored defaults are replaced. */

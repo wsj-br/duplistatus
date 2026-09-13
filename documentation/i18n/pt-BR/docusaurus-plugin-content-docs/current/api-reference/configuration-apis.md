@@ -200,7 +200,7 @@
       },
       "dailySummary": {
         "email": {
-          "title": "duplistatus — Daily backup summary — {summary_date}",
+          "title": "Daily Backup Summary — {summary_date} — ✅ {success_count} Success, ⚠️ {warning_count} Warning, 🕑 {overdue_count} Overdue, 🛑 {error_count} Error, ❌ {fatal_count} Fatal",
           "message": "## Daily backup summary"
         }
       }

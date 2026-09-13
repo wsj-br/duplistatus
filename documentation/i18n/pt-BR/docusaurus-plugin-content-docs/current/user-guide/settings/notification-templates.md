@@ -1,6 +1,6 @@
 # Modelos {/* #templates */}
 
-**duplistatus** usa quatro modelos para mensagens de notificação. Os corpos de e-mail são Markdown (títulos, listas, links e tabelas). NTFY para Sucesso, Aviso/Erro e Atrasado é derivado do mesmo conteúdo. Resumo Diário é apenas para e-mail.
+**duplistatus** usa quatro modelos para mensagens de notificação. Os corpos de e-mail são Markdown (títulos, listas, links e tabelas). NTFY para Sucesso, Aviso/Erro e Atrasado usa o mesmo corpo Markdown, enviado com `Markdown: yes` para que os clientes ntfy possam renderizá-lo. Qualquer tabela GFM omite sua linha de cabeçalho e envia o corpo como texto simples, porque o ntfy não renderiza tabelas. Resumo Diário é apenas por e-mail.
 
 A página inclui um seletor de **Idioma do Modelo** que define a localidade para os modelos padrão. Alterar o idioma atualiza a localidade para novos padrões, mas **não** altera o texto dos modelos existentes. Para aplicar um novo idioma aos seus modelos, edite-os manualmente ou use **Redefinir este modelo para o padrão** (para a guia atual) ou **Redefinir tudo para padrão** (para todos os modelos).
 
@@ -34,7 +34,9 @@ Um seletor **Idioma do Modelo** na parte superior da página permite que você e
 
 ## Variáveis {/* #variables */}
 
-Os corpos de e-mail são Markdown. Títulos, listas, links e tabelas são suportados. Valores de espaço reservado são inseridos como texto escapado e não podem introduzir Markdown ou HTML. HTML bruto incorporado anteriormente em modelos personalizados agora é escapado.
+Os corpos de e-mail são Markdown. Títulos, listas, links e tabelas são suportados. Valores de espaço reservado são inseridos como texto escapado e não podem introduzir Markdown ou HTML. HTML bruto incorporado anteriormente em modelos personalizados agora está escapado. NTFY recebe o mesmo Markdown, exceto tabelas GFM: a linha de cabeçalho é omitida e as linhas do corpo são enviadas como texto simples, para qualquer layout de coluna.
+
+Os modelos padrão de Sucesso, Aviso/Erro e Atrasado usam o mesmo estilo Markdown que o Resumo Diário: um título, valores em negrito e uma tabela de visão geral. Padrões armazenados não modificados são atualizados no carregamento; modelos personalizados são mantidos.
 
 Todos os modelos de Sucesso, Aviso/Erro e Atrasado suportam variáveis que serão substituídas por valores reais. A tabela a seguir mostra as variáveis disponíveis:
 
@@ -73,10 +75,18 @@ Os modelos de Resumo Diário usam um conjunto diferente de variáveis para o ins
 | `{time_zone}` | Fuso horário IANA salvo |
 | `{server_count}` / `{job_count}` | Servidores e trabalhos conhecidos |
 | `{success_count}` / `{warning_count}` / `{error_count}` / `{fatal_count}` / `{unknown_count}` / `{no_report_count}` | Baldes de status mutuamente exclusivos |
-| `{overdue_count}` | Trabalhos atrasados (ortogonais ao status) |
+| `{overdue_count}` | Trabalhos atrasados (ortogonal ao status; pode se sobrepor aos baldes acima) |
 | `{problem_table}` / `{all_jobs_table}` | Tabelas geradas de trabalhos que requerem atenção e todos os trabalhos. Colunas: Servidor, Backup, Atrasado, Últ. status, Últ. resultado, Duração, Avisos, Erros, Enviado. |
 | `{duplistatus_link}` | Link para o painel duplistatus (omitido quando nenhuma URL pública está configurada). Prefira isso em vez de links Markdown construídos manualmente. |
 | `{duplistatus_url}` | Mesma URL como texto simples (vazia quando nenhuma URL pública está configurada). |
 | `{latest_uploaded_size}` / `{latest_source_size}` / `{latest_storage_size}` / `{latest_file_count}` / `{total_warnings}` / `{total_errors}` | Totais do último resultado |
 
-Use **Visualização** para renderizar E-mail HTML e texto simples sem enviar. As visualizações de Sucesso, Aviso/Erro e Atrasado também incluem NTFY. A visualização abre em uma caixa de diálogo. O E-mail HTML segue o tema claro ou escuro atual.
+O assunto padrão do E-mail de Resumo Diário é:
+
+```text
+Daily Backup Summary — {summary_date} — ✅ {success_count} Success, ⚠️ {warning_count} Warning, 🕑 {overdue_count} Overdue, 🛑 {error_count} Error, ❌ {fatal_count} Fatal
+```
+
+Assuntos padrão armazenados não modificados são atualizados para este formato. Assuntos personalizados são deixados inalterados. `{unknown_count}` e `{no_report_count}` permanecem no corpo do e-mail, não no assunto padrão.
+
+Use **Visualização** para renderizar o assunto do e-mail, HTML e texto simples sem enviar. As visualizações de Sucesso, Aviso/Erro e Atrasado também incluem o payload Markdown do NTFY. A visualização abre em uma caixa de diálogo. Os botões de E-mail HTML / texto simples / NTFY ficam acima do assunto. O E-mail HTML segue o tema claro ou escuro atual.

@@ -97,9 +97,9 @@ Le contenu du courrier de test affiche :
   - Les tests de modèle et l'envoi immédiat du Résumé quotidien contournent la suppression par sauvegarde
 
 ## Aperçu du modèle de notification - `/api/notifications/preview` {/* #preview-notification-template---apinotificationspreview */}
-- **Point de terminaison**: `/api/notifications/preview`
-- **Méthode**: POST
-- **Description**: Rendu d'un modèle de notification avec le moteur de rendu Markdown de production sans envoi. Le corps inclut `kind` (`success`, `warning`, `overdueBackup` ou `dailySummaryEmail`) et le modèle en cours d'édition. Les aperçus de résumé quotidien utilisent l'instantané réel actuel ; d'autres types utilisent des valeurs d'échantillon déterministes. Email HTML est destiné à un iframe sandboxé.
+- **Point de terminaison** : `/api/notifications/preview`
+- **Méthode** : POST
+- **Description** : Rendu d'un modèle de notification avec le moteur de rendu Markdown de production sans envoi. Le corps inclut `kind` (`success`, `warning`, `overdueBackup`, ou `dailySummaryEmail`) et le modèle en cours d'édition. Les aperçus de Résumé quotidien utilisent le snapshot réel actuel ; les autres utilisent des valeurs échantillon déterministes. Le HTML de l'email est destiné à une iframe sandboxée. Succès, Avertissement/Erreur et En retard retournent également le payload NTFY (`ntfyMessage`) ; tout en-tête de tableau GFM est omis et les lignes du corps sont en texte brut.
 - **Authentication**: Requiert une session valide et un jeton CSRF
 
 ## Vérifier les sauvegardes en retard - `/api/notifications/check-overdue` {/* #check-overdue-backups---apinotificationscheck-overdue */}

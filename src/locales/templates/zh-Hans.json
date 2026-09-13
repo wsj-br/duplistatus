@@ -1,25 +1,25 @@
 {
   "success": {
     "title": "✅ {status} - {backup_name} @ {server_alias}",
-    "message": "备份 {backup_name} 在 {server_alias} 的状态为 '{status}'，完成时间为 {backup_date}，持续时间为 {duration}。\n\n🔍 注释: {server_note}\n☁️ 已上传: {uploaded_size}\n💾 存储使用: {storage_size}\n🔃 可用版本: {available_versions}\n",
+    "message": "## ✅ 备份已完成\n\n**{backup_name}** 在 **{server_alias}** 上已完成，状态为 **{status}**.\n\n🕐 日期: **{backup_date}**\n⏰ 持续时间: **{duration}**\n🔍 注释: **{server_note}**\n\n### 📈 概览\n\n| 指标 | 值 |\n| --- | ---: |\n| ☁️ 已上传 | {uploaded_size} |\n| 💾 存储使用量 | {storage_size} |\n| 🔃 可用版本 | {available_versions} |\n",
     "priority": "default",
     "tags": "duplicati, duplistatus, success"
   },
   "warning": {
     "title": "⚠️ {status} - {backup_name} @ {server_alias}",
-    "message": "备份 {backup_name} 在 {server_alias} 的状态为 '{status}'，完成时间为 {backup_date}。\n\n🔍 注释: {server_note}\n⏰ 持续时间: {duration}\n☁️ 已上传: {uploaded_size}\n\n🚨 {warnings_count} 个警告\n🛑 {errors_count} 个错误。\n\n📄 日志消息:\n{log_text}\n\n⚠️ 请立即检查 duplicati 服务器 {server_url}\n",
+    "message": "## ⚠️ 备份需要关注\n\n**{backup_name}** 在 **{server_alias}** 上完成，状态为 **{status}**.\n\n🕐 日期: **{backup_date}**\n⏰ 持续时间: **{duration}**\n🔍 注意: **{server_note}**\n\n### 📈 概览\n\n| 指标 | 值 |\n| --- | ---: |\n| ☁️ 已上传 | {uploaded_size} |\n| 🚨 警告 | {warnings_count} |\n| 🛑 错误 | {errors_count} |\n\n### 📄 日志消息\n\n{log_text}\n\n⚠️ 立即检查 Duplicati 服务器: {server_url}\n",
     "priority": "high",
     "tags": "duplicati, duplistatus, warning, error"
   },
   "overdueBackup": {
     "title": "🕑 过期 - {backup_name} @ {server_alias}",
-    "message": "备份 {backup_name} 在 {server_alias} 已过期。\n\n🔍 注释: {server_note}\n🚨 最近备份时间: {last_backup_date} ({last_elapsed})\n⏰ 预期备份时间: {expected_date} ({expected_elapsed})\n\n预期间隔: {backup_interval} / 容差: {overdue_tolerance}\n\n⚠️ 请立即检查 duplicati 服务器 {server_url}\n",
+    "message": "## 🕑 过期备份\n\n**{backup_name}** 在 **{server_alias}** 上已过期.\n\n🔍 注意: **{server_note}**\n\n### 📈 概览\n\n| 指标 | 值 |\n| --- | ---: |\n| 🚨 最后备份接收时间 | {last_backup_date} ({last_elapsed}) |\n| ⏰ 预期备份时间 | {expected_date} ({expected_elapsed}) |\n| 📅 预期间隔 | {backup_interval} |\n| ⏳ 容忍度 | {overdue_tolerance} |\n\n⚠️ 立即检查 Duplicati 服务器: {server_url}\n",
     "priority": "default",
     "tags": "duplicati, duplistatus, overdue"
   },
   "dailySummary": {
     "email": {
-      "title": "📬 duplistatus — 每日备份摘要 — {summary_date}",
+      "title": "每日备份摘要 — {summary_date} — ✅ {success_count} 成功, ⚠️ {warning_count} 警告, 🕑 {overdue_count} 过期, 🛑 {error_count} 错误, ❌ {fatal_count} 致命",
       "message": "## 📊 每日备份摘要\n\n🕐 生成时间: **{generated_at}** ({time_zone})\n\n### 📈 概览\n\n| 指标 | 数量 |\n| --- | ---: |\n| 🖥️ 服务器 | {server_count} |\n| 💼 备份任务 / ✅ 成功 | {job_count} / {success_count} |\n| ⚠️ 警告 / 🛑 错误 / 💀 致命 / ❓ 未知 | {warning_count} / {error_count} / {fatal_count} / {unknown_count} |\n| ❓ 未收到报告 | {no_report_count} |\n| 🕑 超时 | {overdue_count} |\n\n### 🚨 需要注意\n\n{problem_table}\n\n### 📋 所有最新备份结果\n\n{all_jobs_table}\n\n{duplistatus_link}\n"
     }
   }

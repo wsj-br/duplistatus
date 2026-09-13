@@ -51,6 +51,6 @@ Las entregas programadas, **Enviar resumen ahora** y los reintentos se registran
 
 ## Plantillas {/* #templates */}
 
-Edita la plantilla de correo electrónico de Resumen Diario (Markdown) en [Configuración → Plantillas](/user-guide/settings/notification-templates). Los cuerpos de correo electrónico para Éxito, Advertencia/Error, Vencida y Resumen Diario utilizan Markdown. La plantilla predeterminada incluye `{duplistatus_link}` al final cuando se configura una URL del panel público en esta página o a través de `DUPLISTATUS_PUBLIC_URL`.
+Edita la plantilla de correo electrónico de resumen diario (Markdown) en [Configuración → Plantillas](/user-guide/settings/notification-templates). El asunto predeterminado incluye `{summary_date}` más los recuentos de Éxito, Advertencia, Vencida, Error y Fatal para que la línea de la bandeja de entrada resuma la instantánea. Vencida puede solaparse con los recuentos de estado. Los cuerpos de correo electrónico para Éxito, Advertencia/Error, Vencida y Resumen Diario todos usan Markdown. La plantilla predeterminada incluye `{duplistatus_link}` al final cuando se configura una URL de panel público en esta página o mediante `DUPLISTATUS_PUBLIC_URL`.
 
-**Generar vista previa** en esta página abre un diálogo con la instantánea actual. El HTML del correo electrónico sigue el tema claro u oscuro actual.
+**Generar vista previa** en esta página abre el mismo cuadro de diálogo de vista previa que [Configuración → Plantillas](/user-guide/settings/notification-templates): asunto del correo electrónico más HTML del correo electrónico y texto plano. El HTML del correo electrónico sigue el tema claro u oscuro actual.

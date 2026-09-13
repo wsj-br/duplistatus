@@ -1,6 +1,6 @@
 # Modèles {/* #templates */}
 
-**duplistatus** utilise quatre modèles pour les messages de notification. Les corps des emails sont en Markdown (titres, listes, liens et tableaux). NTFY pour Succès, Avertissement/Erreur et En retard est dérivé du même contenu. Le Résumé quotidien est uniquement pour les emails.
+**duplistatus** utilise quatre modèles pour les messages de notification. Les corps d'E-mail sont en Markdown (titres, listes, liens et tableaux). NTFY pour Succès, Avertissement/Erreur et En retard utilise le même corps Markdown, envoyé avec `Markdown: yes` afin que les clients ntfy puissent le rendre. Tout tableau GFM omets sa ligne d'en-tête et envoie le corps en texte brut, car ntfy ne rend pas les tableaux. Le Résumé quotidien est uniquement par E-mail.
 
 La page comprend un sélecteur de **Langue du modèle** qui définit la locale pour les modèles par défaut. Changer la langue met à jour la locale pour les nouveaux paramètres par défaut, mais cela ne modifie **pas** le texte des modèles existants. Pour appliquer une nouvelle langue à vos modèles, modifiez-les manuellement ou utilisez **Réinitialiser ce modèle à la valeur par défaut** (pour l'onglet actuel) ou **Réinitialiser tout par défaut** (pour tous les modèles).
 
@@ -34,7 +34,9 @@ Un sélecteur **Langue du modèle** en haut de la page vous permet de choisir la
 
 ## Variables {/* #variables */}
 
-Les corps des e-mails sont en Markdown. Les titres, listes, liens et tableaux sont pris en charge. Les valeurs des variables sont insérées comme texte échappé et ne peuvent pas introduire de Markdown ou de HTML. Les balises HTML brutes intégrées précédemment dans les modèles personnalisés sont maintenant échappées.
+Les corps d'E-mail sont en Markdown. Les titres, listes, liens et tableaux sont pris en charge. Les valeurs de substitution sont insérées comme texte échappé et ne peuvent pas introduire de Markdown ou de HTML. Les HTML bruts intégrés précédemment dans les modèles personnalisés sont maintenant échappés. NTFY reçoit le même Markdown, sauf les tableaux GFM : la ligne d'en-tête est omise et les lignes du corps sont envoyées en texte brut, pour toute disposition de colonnes.
+
+Les corps par défaut de Succès, Avertissement/Erreur et En retard utilisent le même style Markdown que le Résumé quotidien : un titre, des valeurs en gras et un tableau d'aperçu. Les valeurs par défaut non modifiées sont mises à jour au chargement ; les modèles personnalisés sont conservés.
 
 Tous les modèles Succès, Avertissement/Erreur et En retard prennent en charge des variables qui seront remplacées par des valeurs réelles. Le tableau suivant montre les variables disponibles :
 
@@ -73,10 +75,18 @@ Les modèles de Résumé quotidien utilisent un ensemble différent de variables
 | `{time_zone}` | Fuseau horaire IANA enregistré |
 | `{server_count}` / `{job_count}` | Serveurs et tâches connues |
 | `{success_count}` / `{warning_count}` / `{error_count}` / `{fatal_count}` / `{unknown_count}` / `{no_report_count}` | Paniers d'état mutuellement exclusifs |
-| `{overdue_count}` | Tâches en retard (orthogonales à l'état) |
+| `{overdue_count}` | Tâches en retard (orthogonales à l'état ; peuvent chevaucher les catégories ci-dessus) |
 | `{problem_table}` / `{all_jobs_table}` | Tables générées des tâches nécessitant une attention et de toutes les tâches. Colonnes : Serveur, Sauvegarde, En retard, Dernier statut, Dernier résultat, Durée, Avertissements, Erreurs, Téléchargé. |
 | `{duplistatus_link}` | Lien vers le tableau de bord du duplistatus (omise lorsqu'aucune URL publique n'est configurée). Préférez ceci aux liens Markdown construits à la main. |
 | `{duplistatus_url}` | Même URL que le texte brut (vide lorsqu'aucune URL publique n'est configurée). |
 | `{latest_uploaded_size}` / `{latest_source_size}` / `{latest_storage_size}` / `{latest_file_count}` / `{total_warnings}` / `{total_errors}` | Totaux des derniers résultats |
 
-Utilisez **Aperçu** pour rendre l'email HTML et le texte brut sans envoi. Les aperçus de Succès, Avertissement/Erreur et En retard incluent également NTFY. L'aperçu s'ouvre dans une boîte de dialogue. L'email HTML suit le thème clair ou sombre actuel.
+L'objet par défaut de l'e-mail de Résumé quotidien est :
+
+```text
+Daily Backup Summary — {summary_date} — ✅ {success_count} Success, ⚠️ {warning_count} Warning, 🕑 {overdue_count} Overdue, 🛑 {error_count} Error, ❌ {fatal_count} Fatal
+```
+
+Les objets par défaut non modifiés sont mis à jour vers ce format. Les objets personnalisés restent inchangés. `{unknown_count}` et `{no_report_count}` restent dans le corps de l'e-mail, pas dans l'objet par défaut.
+
+Utilisez **Aperçu** pour rendre l'objet de l'e-mail, le HTML et le texte brut sans envoi. Les aperçus de Succès, Avertissement/Erreur et En retard incluent également la charge utile Markdown NTFY. L'aperçu s'ouvre dans une boîte de dialogue. Les boutons E-mail HTML / texte brut / NTFY se trouvent au-dessus de l'objet. L'E-mail HTML suit le thème clair ou sombre actuel.

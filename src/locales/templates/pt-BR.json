@@ -1,25 +1,25 @@
 {
   "success": {
     "title": "✅ {status} - {backup_name} @ {server_alias}",
-    "message": "Backup {backup_name} no {server_alias} concluído com status '{status}' em {backup_date} na {duration}.\n\n🔍 Nota: {server_note}\n☁️ Carregado: {uploaded_size}\n💾 Uso de armazenamento: {storage_size}\n🔃 Versões disponíveis: {available_versions}\n",
+    "message": "## ✅ Backup concluído\n\n**{backup_name}** em **{server_alias}** concluído com status **{status}**.\n\n🕐 Data: **{backup_date}**\n⏰ Duração: **{duration}**\n🔍 Nota: **{server_note}**\n\n### 📈 Visão Geral\n\n| Métrica | Valor |\n| --- | ---: |\n| ☁️ Enviado | {uploaded_size} |\n| 💾 Uso de armazenamento | {storage_size} |\n| 🔃 Versões disponíveis | {available_versions} |\n",
     "priority": "default",
     "tags": "duplicati, duplistatus, success"
   },
   "warning": {
     "title": "⚠️ {status} - {backup_name} @ {server_alias}",
-    "message": "Backup {backup_name} no {server_alias} concluído com status '{status}' em {backup_date}.\n\n🔍 Nota: {server_note}\n⏰ Duração: {duration}\n☁️ Carregado: {uploaded_size}\n\n🚨 {warnings_count} avisos\n🛑 {errors_count} erros.\n\n📄 Mensagens do log:\n{log_text}\n\n⚠️ Verifique o servidor duplicati imediatamente {server_url}\n",
+    "message": "## ⚠️ Backup precisa de atenção\n\n**{backup_name}** em **{server_alias}** foi concluído com status **{status}**.\n\n🕐 Data: **{backup_date}**\n⏰ Duração: **{duration}**\n🔍 Nota: **{server_note}**\n\n### 📈 Visão Geral\n\n| Métrica | Valor |\n| --- | ---: |\n| ☁️ Enviado | {uploaded_size} |\n| 🚨 Avisos | {warnings_count} |\n| 🛑 Erros | {errors_count} |\n\n### 📄 Mensagens de Log\n\n{log_text}\n\n⚠️ Verifique o servidor Duplicati imediatamente: {server_url}\n",
     "priority": "high",
     "tags": "duplicati, duplistatus, warning, error"
   },
   "overdueBackup": {
     "title": "🕑 Atrasado - {backup_name} @ {server_alias}",
-    "message": "O backup {backup_name} está atrasado no {server_alias}.\n\n🔍 Nota: {server_note}\n🚨 Último backup recebido: {last_backup_date} ({last_elapsed})\n⏰ Tempo esperado para o backup: {expected_date} ({expected_elapsed})\n\nIntervalo esperado: {backup_interval} / Tolerância: {overdue_tolerance}\n\n⚠️ Verifique o servidor duplicati imediatamente {server_url}\n",
+    "message": "## 🕑 Backup atrasado\n\n**{backup_name}** em **{server_alias}** está atrasado.\n\n🔍 Nota: **{server_note}**\n\n### 📈 Visão Geral\n\n| Métrica | Valor |\n| --- | ---: |\n| 🚨 Último backup recebido | {last_backup_date} ({last_elapsed}) |\n| ⏰ Hora esperada para backup | {expected_date} ({expected_elapsed}) |\n| 📅 Intervalo esperado | {backup_interval} |\n| ⏳ Tolerância | {overdue_tolerance} |\n\n⚠️ Verifique o servidor Duplicati imediatamente: {server_url}\n",
     "priority": "default",
     "tags": "duplicati, duplistatus, overdue"
   },
   "dailySummary": {
     "email": {
-      "title": "📬 duplistatus — Resumo diário do backup — {summary_date}",
+      "title": "Resumo Diário de Backup — {summary_date} — ✅ {success_count} Sucesso, ⚠️ {warning_count} Aviso, 🕑 {overdue_count} Atrasado, 🛑 {error_count} Erro, ❌ {fatal_count} Fatal",
       "message": "## 📊 Resumo diário de backup\n\n🕐 Gerado: **{generated_at}** ({time_zone})\n\n### 📈 Visão geral\n\n| Métrica | Contagem |\n| --- | ---: |\n| 🖥️ Servidores | {server_count} |\n| 💼 Trabalhos de backup / ✅ Sucesso | {job_count} / {success_count} |\n| ⚠️ Avisos / 🛑 Erros / 💀 Fatal / ❓ Desconhecido | {warning_count} / {error_count} / {fatal_count} / {unknown_count} |\n| ❓ Nenhum relatório recebido | {no_report_count} |\n| 🕑 Atrasado | {overdue_count} |\n\n### 🚨 Atenção necessária\n\n{problem_table}\n\n### 📋 Todos os resultados mais recentes de backup\n\n{all_jobs_table}\n\n{duplistatus_link}\n"
     }
   }

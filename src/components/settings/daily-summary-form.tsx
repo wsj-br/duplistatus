@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { EmailHtmlPreviewIframe } from '@/components/settings/email-html-preview-iframe';
+import { EmailPreviewDialog } from '@/components/settings/email-preview-dialog';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,13 +23,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 import { useToast } from '@/components/ui/use-toast';
 import { useConfiguration } from '@/contexts/configuration-context';
 import { useCurrentUser } from '@/hooks/use-current-user';
@@ -56,7 +49,8 @@ function browserTimeZone(): string {
 }
 
 const AUTO_SAVE_DEBOUNCE_MS = 800;
-const DELIVERY_STATUS_POLL_MS = 5000;
+const DELIVERY_STATUS_POLL_MS = 30_000;
+const DELIVERY_IN_FLIGHT_POLL_MS = 5_000;
 
 export function DailySummaryForm() {
   const { t } = useTranslation();
@@ -185,6 +179,10 @@ export function DailySummaryForm() {
 
   useEffect(() => {
     let cancelled = false;
+    const channelState = status?.channel.state;
+    const pollMs = channelState === 'sending' || channelState === 'pending'
+      ? DELIVERY_IN_FLIGHT_POLL_MS
+      : DELIVERY_STATUS_POLL_MS;
 
     const refreshDeliveryStatus = async () => {
       try {
@@ -206,7 +204,7 @@ export function DailySummaryForm() {
       if (document.visibilityState === 'visible') {
         void refreshDeliveryStatus();
       }
-    }, DELIVERY_STATUS_POLL_MS);
+    }, pollMs);
 
     const onVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
@@ -220,7 +218,7 @@ export function DailySummaryForm() {
       window.clearInterval(intervalId);
       document.removeEventListener('visibilitychange', onVisibilityChange);
     };
-  }, [updateConfig]);
+  }, [updateConfig, status?.channel.state]);
 
   const handleEnabledChange = (checked: boolean) => {
     setEnabled(checked);
@@ -529,35 +527,28 @@ export function DailySummaryForm() {
         </CardContent>
       </Card>
 
-      <Dialog open={preview !== null} onOpenChange={(open) => { if (!open) setPreview(null); }}>
-        <DialogContent className="flex max-h-[92vh] w-[min(100vw-2rem,72rem)] max-w-none flex-col overflow-hidden sm:max-w-none">
-          <DialogHeader>
-            <DialogTitle>{t('Preview')}</DialogTitle>
-            <DialogDescription>
-              {t('Current snapshot rendered without sending a notification.')}
-            </DialogDescription>
-          </DialogHeader>
-          {preview && (
-            <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-auto">
-              <p className="text-sm">
-                {t('Jobs')}: {preview.snapshot.jobCount} · {t('Overdue')}: {preview.snapshot.overdueCount} · {t('No report received')}: {preview.snapshot.noReportCount}
-              </p>
-              {preview.snapshot.omittedJobCount > 0 && (
-                <Alert>
-                  <AlertDescription>
-                    {t('Some jobs were omitted from the email because the message reached the size limit.')}
-                  </AlertDescription>
-                </Alert>
-              )}
-              <EmailHtmlPreviewIframe
-                title={t('Email HTML preview')}
-                html={preview.payload.emailHtml}
-                className="min-h-[62vh]"
-              />
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+      <EmailPreviewDialog
+        open={preview !== null}
+        onOpenChange={(open) => { if (!open) setPreview(null); }}
+        description={t('Current snapshot rendered without sending a notification.')}
+        subject={preview?.payload.subject ?? ''}
+        html={preview?.payload.emailHtml ?? ''}
+        text={preview?.payload.emailText ?? ''}
+        extra={preview ? (
+          <>
+            <p className="text-sm">
+              {t('Jobs')}: {preview.snapshot.jobCount} · {t('Overdue')}: {preview.snapshot.overdueCount} · {t('No report received')}: {preview.snapshot.noReportCount}
+            </p>
+            {preview.snapshot.omittedJobCount > 0 && (
+              <Alert>
+                <AlertDescription>
+                  {t('Some jobs were omitted from the email because the message reached the size limit.')}
+                </AlertDescription>
+              </Alert>
+            )}
+          </>
+        ) : null}
+      />
 
       <AlertDialog open={enableDialogOpen} onOpenChange={setEnableDialogOpen}>
         <AlertDialogContent>

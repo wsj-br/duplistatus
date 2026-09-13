@@ -7,6 +7,8 @@ import { requireAdmin } from '@/lib/auth-middleware';
 import { getClientIpAddress } from '@/lib/ip-utils';
 import { AuditLogger } from '@/lib/audit-logger';
 import { isDevelopmentMode } from '@/lib/utils';
+import { renderMarkdownEmail, renderMarkdownNtfyText } from '@/lib/notification-template-renderer';
+import { NTFY_MESSAGE_MAX_BYTES, truncateNtfyAtLineBoundary } from '@/lib/notification-template-validation';
 
 async function sendNtfyNotificationDirect(config: NtfyConfig, message: string, title: string, priority: string, tags: string) {
   const { url, topic, accessToken } = config;
@@ -37,7 +39,8 @@ async function sendNtfyNotificationDirect(config: NtfyConfig, message: string, t
 
   // Prepare headers
   const headers: Record<string, string> = {
-    'Content-Type': 'text/plain; charset=utf-8',
+    'Content-Type': 'text/markdown; charset=utf-8',
+    Markdown: 'yes',
   };
 
   // Add authorization header if access token is provided
@@ -241,8 +244,7 @@ Email Configuration Details:
         return NextResponse.json({ error: 'Template is required for template type' }, { status: 400 });
       }
 
-      // Create sample data for testing
-      const sampleData = {
+      const sampleData: Record<string, string> = {
         server_name: 'server_name',
         server_alias: 'server_alias',
         server_note: 'server_note',
@@ -260,19 +262,27 @@ Email Configuration Details:
         storage_size: 'storage_size',
         available_versions: 'available_versions',
         log_text: 'Sample warning 1\nSample error 1\nSample message 1',
+        last_backup_date: 'last_backup_date',
+        last_elapsed: 'last_elapsed',
+        expected_date: 'expected_date',
+        expected_elapsed: 'expected_elapsed',
+        backup_interval: 'backup_interval',
+        overdue_tolerance: 'overdue_tolerance',
       };
 
-      // Process the template with sample data
-      const processedTitle = template.title?.replace(/\{(\w+)\}/g, (match, key) => {
-        return sampleData[key as keyof typeof sampleData] || match;
-      }) || 'Test Notification';
-
-      const processedMessage = template.message?.replace(/\{(\w+)\}/g, (match, key) => {
-        return sampleData[key as keyof typeof sampleData] || match;
-      }) || 'Test message';
-
       const testTimestamp = new Date().toLocaleString(undefined, { hour12: false, timeZoneName: 'short' });
-      const finalMessage = processedMessage + '\n(test sent at ' + testTimestamp + ')';
+      const timestampNote = `\n(test sent at ${testTimestamp})`;
+      const emailRendered = renderMarkdownEmail(
+        template.title || 'Test Notification',
+        `${template.message || 'Test message'}\n${timestampNote}\n`,
+        sampleData
+      );
+      const processedTitle = emailRendered.subject;
+      const ntfyMessage = truncateNtfyAtLineBoundary(
+        `${renderMarkdownNtfyText(template.message || 'Test message', sampleData)}${timestampNote}`,
+        NTFY_MESSAGE_MAX_BYTES,
+        '… (message truncated)'
+      );
 
       // Send notifications to both NTFY and email (if configured)
       const notifications: Promise<void>[] = [];
@@ -284,7 +294,7 @@ Email Configuration Details:
       notifications.push(
         sendNtfyNotificationDirect(
           ntfyConfig,
-          finalMessage,
+          ntfyMessage,
           processedTitle,
           template.priority || 'default',
           template.tags || ''
@@ -341,13 +351,13 @@ Email Configuration Details:
 
       // Send email notification if configured
       if (getSMTPConfig()) {
-        const htmlContent = convertTextToHtml(finalMessage);
+        const htmlContent = emailRendered.html;
         const smtpConfig = getSMTPConfig();
         notifications.push(
           sendEmailNotification(
             processedTitle,
             htmlContent,
-            finalMessage
+            emailRendered.text
           ).then(async () => {
             notificationTypes.push('Email');
             // Log audit event for successful email notification

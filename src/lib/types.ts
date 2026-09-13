@@ -268,7 +268,6 @@ export interface DailySummaryPublicStatus {
   publicUrlEnvOverride: boolean;
   smtpRecipient: string;
   nextOccurrenceIso: string | null;
-  dispatcherHealthy: boolean;
   emailConfigured: boolean;
   channel: DailySummaryChannelPublicStatus;
 }

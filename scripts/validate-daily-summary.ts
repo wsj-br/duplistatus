@@ -22,8 +22,10 @@ import {
   finalizeDeliverySuccess,
   getLatestSuccessAt,
 } from '../src/lib/daily-summary-ledger';
-import { renderMarkdownEmail, substitutePlainTemplate } from '../src/lib/notification-template-renderer';
+import { renderMarkdownEmail, renderMarkdownNtfyText, substitutePlainTemplate } from '../src/lib/notification-template-renderer';
 import { truncateNtfyAtLineBoundary, utf8ByteLength } from '../src/lib/notification-template-validation';
+import { defaultNotificationTemplatesEn } from '../src/lib/default-notification-templates';
+import { previousDailySummaryEmailTitles } from '../src/lib/previous-defaults';
 import type { BackupNotificationConfig, DailySummaryConfig, DailySummaryRenderedPayload } from '../src/lib/types';
 
 function pass(name: string): void {
@@ -136,6 +138,7 @@ function testSnapshot(): void {
   });
   assert.equal(snapshot.jobCount, 1);
   assert.equal(snapshot.warningCount, 1);
+  assert.equal(snapshot.overdueCount, 1);
   assert.equal(snapshot.noReportCount, 0);
   assert.equal(snapshot.jobs[0]?.backupName, 'Documents');
   assert.equal(snapshot.successCount + snapshot.warningCount + snapshot.errorCount + snapshot.fatalCount + snapshot.unknownCount + snapshot.noReportCount, snapshot.jobCount);
@@ -172,7 +175,44 @@ function testRenderer(): void {
   assert.ok(utf8ByteLength(ntfy) <= 20 + utf8ByteLength('\nomitted'));
   const plain = substitutePlainTemplate('Hello {name}', { name: '*not markdown*' });
   assert.equal(plain, 'Hello *not markdown*');
+  const ntfyMarkdown = renderMarkdownNtfyText(
+    '## ✅ Backup completed\n\n**{backup_name}**\n\n| Metric | Value |\n| --- | ---: |\n| ☁️ Uploaded | {uploaded_size} |\n',
+    { backup_name: 'Docs **notbold** | pipe', uploaded_size: '120 MB' }
+  );
+  assert.ok(ntfyMarkdown.startsWith('## ✅ Backup completed'));
+  assert.ok(ntfyMarkdown.includes('**Docs \\*\\*notbold\\*\\* | pipe**'));
+  assert.equal(ntfyMarkdown.includes('| Metric | Value |'), false);
+  assert.equal(ntfyMarkdown.includes('Metric'), false);
+  assert.ok(ntfyMarkdown.includes('☁️ Uploaded: 120 MB'));
+  const customTable = renderMarkdownNtfyText(
+    '| Server | Job | Status |\n| --- | --- | --- |\n| {server} | {job} | {status} |\n\n| not a table |\n',
+    { server: 'NAS', job: 'Docs', status: 'Warning' }
+  );
+  assert.equal(customTable.includes('Server'), false);
+  assert.ok(customTable.includes('NAS · Docs · Warning'));
+  assert.ok(customTable.includes('| not a table |'));
+  assert.equal(ntfyMarkdown.includes('\uE000'), false);
   pass('markdown, sanitizer, subject, truncation');
+
+  const defaultTitle = defaultNotificationTemplatesEn.dailySummary.email.title;
+  assert.ok(!previousDailySummaryEmailTitles.includes(defaultTitle));
+  const summarySubject = renderMarkdownEmail(
+    defaultTitle,
+    'body',
+    {
+      summary_date: '2026-04-01',
+      success_count: '12',
+      warning_count: '3',
+      overdue_count: '2',
+      error_count: '1',
+      fatal_count: '4',
+    }
+  );
+  assert.equal(
+    summarySubject.subject,
+    'Daily Backup Summary — 2026-04-01 — ✅ 12 Success, ⚠️ 3 Warning, 🕑 2 Overdue, 🛑 1 Error, ❌ 4 Fatal'
+  );
+  pass('default subject counts, overdue independent of status');
 }
 
 function testLedger(): void {

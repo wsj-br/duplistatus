@@ -20,7 +20,7 @@ import type { DailySummaryConfig } from '@/lib/types';
 
 export const GET = withCSRF(requireAuth(async () => {
   try {
-    const status = await getDailySummaryPublicStatus();
+    const status = getDailySummaryPublicStatus();
     return NextResponse.json(status, {
       headers: { 'Cache-Control': 'no-store' },
     });
@@ -109,7 +109,7 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
       );
     }
 
-    const status = await getDailySummaryPublicStatus();
+    const status = getDailySummaryPublicStatus();
     return NextResponse.json(status);
   } catch (error) {
     console.error('Failed to update daily summary:', error instanceof Error ? error.message : String(error));

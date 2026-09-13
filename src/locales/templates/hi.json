@@ -1,25 +1,25 @@
 {
   "success": {
     "title": "✅ {status} - {backup_name} @ {server_alias}",
-    "message": "Backup {backup_name} on {server_alias} completed with status '{status}' at {backup_date} in {duration}.\n\n🔍 Note: {server_note}\n☁️ Uploaded: {uploaded_size}\n💾 Store usage: {storage_size}\n🔃 Upalabdh versions: {available_versions}\n",
+    "message": "## ✅ Backup completed\n\n**{backup_name}** on **{server_alias}** completed with status **{status}**.\n\n🕐 Taareekh: **{backup_date}**\n⏰ Avadhi: **{duration}**\n🔍 Note: **{server_note}**\n\n### 📈 Overview\n\n| Metric | Value |\n| --- | ---: |\n| ☁️ अपलोड किया गया | {uploaded_size} |\n| 💾 Store usage | {storage_size} |\n| 🔃 Upalabdh Versions | {available_versions} |\n",
     "priority": "default",
     "tags": "duplicati, duplistatus, success"
   },
   "warning": {
     "title": "⚠️ {status} - {backup_name} @ {server_alias}",
-    "message": "Backup {backup_name} on {server_alias} completed with status '{status}' at {backup_date}.\n\n🔍 Note: {server_note}\n⏰ Avadhi: {duration}\n☁️ Uploaded: {uploaded_size}\n\n🚨 {warnings_count} Chetaavaniyaan\n🛑 {errors_count} Trutiyon.\n\n📄 Log Sandesh:\n{log_text}\n\n⚠️ Janch karein the duplicati server immediately {server_url}\n",
+    "message": "## ⚠️ Backup Needs Attention\n\n**{backup_name}** on **{server_alias}** completed with status **{status}**.\n\n🕐 Date: **{backup_date}**\n⏰ Duration: **{duration}**\n🔍 Note: **{server_note}**\n\n### 📈 Overview\n\n| Metric | Value |\n| --- | ---: |\n| ☁️ Uploaded | {uploaded_size} |\n| 🚨 Warnings | {warnings_count} |\n| 🛑 Errors | {errors_count} |\n\n### 📄 Log messages\n\n{log_text}\n\n⚠️ Check the Duplicati server immediately: {server_url}\n",
     "priority": "high",
     "tags": "duplicati, duplistatus, warning, error"
   },
   "overdueBackup": {
     "title": "🕑 Vilambit - {backup_name} @ {server_alias}",
-    "message": "The backup {backup_name} is vilambit on {server_alias}.\n\n🔍 Note: {server_note}\n🚨 Antim backup received: {last_backup_date} ({last_elapsed})\n⏰ Apekshit backup time: {expected_date} ({expected_elapsed})\n\nApekshit antaraal: {backup_interval} / Sahansheelta: {overdue_tolerance}\n\n⚠️ Janch karein the duplicati server immediately {server_url}\n",
+    "message": "## 🕑 Overdue backup\n\n**{backup_name}** on **{server_alias}** is overdue.\n\n🔍 Note: **{server_note}**\n\n### 📈 Overview\n\n| Metric | Value |\n| --- | ---: |\n| 🚨 Last backup received | {last_backup_date} ({last_elapsed}) |\n| ⏰ Expected backup time | {expected_date} ({expected_elapsed}) |\n| 📅 Expected interval | {backup_interval} |\n| ⏳ Tolerance | {overdue_tolerance} |\n\n⚠️ Check the Duplicati server immediately: {server_url}\n",
     "priority": "default",
     "tags": "duplicati, duplistatus, overdue"
   },
   "dailySummary": {
     "email": {
-      "title": "📬 duplistatus — Daily backup summary — {summary_date}",
+      "title": "दैनिक बैकअप सारांश — {summary_date} — ✅ {success_count} सफलता, ⚠️ {warning_count} चेतावनी, 🕑 {overdue_count} विलंबित, 🛑 {error_count} त्रुटि, ❌ {fatal_count} गंभीर",
       "message": "## 📊 Daily backup summary\n\n🕐 Generated: **{generated_at}** ({time_zone})\n\n### 📈 Overview\n\n| Metric | Count |\n| --- | ---: |\n| 🖥️ Servers | {server_count} |\n| 💼 Backup jobs / ✅ Success | {job_count} / {success_count} |\n| ⚠️ Warnings / 🛑 Errors / 💀 Fatal / ❓ Unknown | {warning_count} / {error_count} / {fatal_count} / {unknown_count} |\n| ❓ No report received | {no_report_count} |\n| 🕑 Overdue | {overdue_count} |\n\n### 🚨 Attention required\n\n{problem_table}\n\n### 📋 All latest backup results\n\n{all_jobs_table}\n\n{duplistatus_link}\n"
     }
   }

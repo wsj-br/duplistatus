@@ -51,6 +51,6 @@ Geplante, **Zusammenfassung jetzt senden** und Wiederholungsversand werden im [A
 
 ## Vorlagen {/* #templates */}
 
-Bearbeiten Sie die E-Mail-Vorlage für die tägliche Zusammenfassung (Markdown) unter [Einstellungen → Vorlagen](/user-guide/settings/notification-templates). Die E-Mail-Inhalte für Erfolgreich, Warnung/Fehler, Überfällig und Tägliche Zusammenfassung verwenden alle Markdown. Die Standardvorlage enthält `{duplistatus_link}` am Ende, wenn eine öffentliche Dashboard-URL auf dieser Seite oder über `DUPLISTATUS_PUBLIC_URL` konfiguriert ist.
+Bearbeiten Sie die E-Mail-Vorlage für die tägliche Zusammenfassung (Markdown) unter [Einstellungen → Vorlagen](/user-guide/settings/notification-templates). Der Standardbetreff enthält `{summary_date}` plus die Anzahl der Erfolge, Warnungen, Überfälligen, Fehler und Fatalen, sodass die Zeile im Posteingang die Zusammenfassung des Snapshots zusammenfasst. Überfällig kann sich mit den Statuszahlen überschneiden. E-Mail-Inhalte für Erfolg, Warnung/Fehler, Überfällig und Tägliche Zusammenfassung verwenden alle Markdown. Die Standardvorlage enthält `{duplistatus_link}` am Ende, wenn eine öffentliche Dashboard-URL auf dieser Seite oder über `DUPLISTATUS_PUBLIC_URL` konfiguriert ist.
 
-**Vorschau generieren** auf dieser Seite öffnet einen Dialog mit dem aktuellen Snapshot. E-Mail HTML folgt dem aktuellen hellen oder dunklen Design.
+**Vorschau generieren** auf dieser Seite öffnet denselben Vorschau-Dialog wie [Einstellungen → Vorlagen](/user-guide/settings/notification-templates): E-Mail-Betreff plus E-Mail HTML und Klartext. E-Mail HTML folgt dem aktuellen hellen oder dunklen Design.

@@ -3,8 +3,10 @@ import { withCSRF } from '@/lib/csrf-middleware';
 import { requireAuth } from '@/lib/auth-middleware';
 import { getNotificationTemplates } from '@/lib/db-utils';
 import { collectDailySummarySnapshot, renderDailySummaryPayload } from '@/lib/daily-summary';
-import { renderMarkdownEmail } from '@/lib/notification-template-renderer';
+import { renderMarkdownEmail, renderMarkdownNtfyText } from '@/lib/notification-template-renderer';
 import {
+  NTFY_MESSAGE_MAX_BYTES,
+  truncateNtfyAtLineBoundary,
   validateDailySummaryEmailTemplate,
   validateNotificationTemplate,
 } from '@/lib/notification-template-validation';
@@ -67,12 +69,17 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest) => {
       validateNotificationTemplate(template, kind);
     }
     const rendered = renderMarkdownEmail(template.title, template.message, SAMPLE_BACKUP_VALUES);
+    const ntfyMessage = truncateNtfyAtLineBoundary(
+      renderMarkdownNtfyText(template.message, SAMPLE_BACKUP_VALUES),
+      NTFY_MESSAGE_MAX_BYTES,
+      '… (message truncated)'
+    );
     return NextResponse.json({
       subject: rendered.subject,
       emailHtml: rendered.html,
       emailText: rendered.text,
       ntfyTitle: rendered.subject,
-      ntfyMessage: rendered.text,
+      ntfyMessage,
       ntfyPriority: template.priority,
       ntfyTags: template.tags,
     });

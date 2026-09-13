@@ -6,8 +6,8 @@ import { parseConfigurationBackupKey, pruneConfigurationRecord } from '@/lib/orp
 import { CronServiceConfig, CronInterval } from './types';
 import { cronIntervalMap } from './cron-interval-map';
 import type { NotificationFrequencyConfig } from "@/lib/types";
-import { defaultCronConfig, defaultNotificationFrequencyConfig, defaultOverdueTolerance, defaultCronInterval, defaultNtfyConfig, defaultNotificationTemplates, generateDefaultNtfyTopic, getDefaultNotificationTemplate, getDefaultDailySummaryTemplates, defaultDailySummaryConfig } from './default-config';
-import { previousTemplatesMessages, previousDailySummaryEmailMessages } from './previous-defaults';
+import { defaultCronConfig, defaultNotificationFrequencyConfig, defaultOverdueTolerance, defaultCronInterval, defaultNtfyConfig, defaultNotificationTemplates, generateDefaultNtfyTopic, getDefaultNotificationTemplate, getDefaultNotificationTemplates, getDefaultDailySummaryTemplates, defaultDailySummaryConfig } from './default-config';
+import { previousTemplatesMessages, previousDailySummaryEmailMessages, previousDailySummaryEmailTitles } from './previous-defaults';
 import { formatTimeElapsed } from './utils';
 import { migrateBackupSettings } from './migration-utils';
 import { getDefaultAllowedWeekDays } from './interval-utils';
@@ -2178,10 +2178,23 @@ export function getNotificationTemplates(): StoredNotificationTemplates {
         dailySummary: normalizedDailySummary,
       };
       let needsUpdate = false;
+      const languageDefaults = getDefaultNotificationTemplates(language);
+
+      if (parsed.success && isOldDefaultMessage(parsed.success.message, getPreviousMessages('success'))) {
+        console.log('Lazy upgrade: Detected old success template, replacing with new default');
+        updatedTemplates.success = languageDefaults.success;
+        needsUpdate = true;
+      }
 
       if (parsed.warning && isOldDefaultMessage(parsed.warning.message, getPreviousMessages('warning'))) {
         console.log('Lazy upgrade: Detected old warning template, replacing with new default');
-        updatedTemplates.warning = defaultNotificationTemplates.warning;
+        updatedTemplates.warning = languageDefaults.warning;
+        needsUpdate = true;
+      }
+
+      if (parsed.overdueBackup && isOldDefaultMessage(parsed.overdueBackup.message, getPreviousMessages('overdueBackup'))) {
+        console.log('Lazy upgrade: Detected old overdueBackup template, replacing with new default');
+        updatedTemplates.overdueBackup = languageDefaults.overdueBackup;
         needsUpdate = true;
       }
 
@@ -2197,14 +2210,26 @@ export function getNotificationTemplates(): StoredNotificationTemplates {
       if (isOldDefaultMessage(normalizedDailySummary.email.message, previousDailySummaryEmailMessages)) {
         updatedTemplates.dailySummary = getDefaultDailySummaryTemplates(language);
         needsUpdate = true;
+      } else if (
+        parsed.dailySummary &&
+        isOldDefaultMessage(normalizedDailySummary.email.title, previousDailySummaryEmailTitles)
+      ) {
+        const currentDailySummary = updatedTemplates.dailySummary ?? normalizedDailySummary;
+        updatedTemplates.dailySummary = {
+          email: {
+            title: getDefaultDailySummaryTemplates(language).email.title,
+            message: currentDailySummary.email.message,
+          },
+        };
+        needsUpdate = true;
       }
 
       if (needsUpdate || !parsed.language || parsed.language !== language) {
         const templatesToSave: StoredNotificationTemplates = {
           language: updatedTemplates.language || SOURCE_LOCALE,
-          success: updatedTemplates.success || defaultNotificationTemplates.success,
-          warning: updatedTemplates.warning || defaultNotificationTemplates.warning,
-          overdueBackup: updatedTemplates.overdueBackup || defaultNotificationTemplates.overdueBackup,
+          success: updatedTemplates.success || languageDefaults.success,
+          warning: updatedTemplates.warning || languageDefaults.warning,
+          overdueBackup: updatedTemplates.overdueBackup || languageDefaults.overdueBackup,
           dailySummary: updatedTemplates.dailySummary || getDefaultDailySummaryTemplates(language),
         };
         setNotificationTemplates(templatesToSave);

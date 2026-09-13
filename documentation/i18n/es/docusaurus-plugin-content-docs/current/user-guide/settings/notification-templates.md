@@ -1,6 +1,6 @@
 # Plantillas {/* #templates */}
 
-**duplistatus** utiliza cuatro plantillas para los mensajes de notificación. Los cuerpos de los correos electrónicos son Markdown (encabezados, listas, enlaces y tablas). NTFY para Éxito, Advertencia/Error y Vencida se derivan del mismo contenido. El Resumen Diario es solo para correo electrónico.
+**duplistatus** utiliza cuatro plantillas para los mensajes de notificación. Los cuerpos de los correos electrónicos son Markdown (encabezados, listas, enlaces y tablas). NTFY para Éxito, Advertencia/Error y Vencida utiliza el mismo cuerpo Markdown, enviado con `Markdown: yes` para que los clientes de ntfy puedan renderizarlo. Cualquier tabla GFM omite su fila de encabezado y envía el cuerpo como texto plano, porque ntfy no renderiza tablas. Resumen Diario es solo para correo electrónico.
 
 La página incluye un selector de **Idioma de la plantilla** que establece la configuración regional para las plantillas predeterminadas. Cambiar el idioma actualiza la configuración regional para los nuevos valores predeterminados, pero **no** cambia el texto de las plantillas existentes. Para aplicar un nuevo idioma a sus plantillas, edítelas manualmente o utilice **Restablecer esta plantilla a valores predeterminados** (para la pestaña actual) o **Restablecer todo a valores predeterminados** (para todas las plantillas).
 
@@ -34,7 +34,9 @@ Un selector de **Idioma de la plantilla** en la parte superior de la página le 
 
 ## Variables {/* #variables */}
 
-Los cuerpos de los correos electrónicos son Markdown. Se admiten encabezados, listas, enlaces y tablas. Los valores de los marcadores de posición se insertan como texto escapado y no pueden introducir Markdown o HTML. El HTML sin procesar incrustado anteriormente en las plantillas personalizadas ahora está escapado.
+Los cuerpos de los correos electrónicos son Markdown. Se admiten encabezados, listas, enlaces y tablas. Los valores de los marcadores de posición se insertan como texto escapado y no pueden introducir Markdown o HTML. El HTML sin procesar incrustado anteriormente en plantillas personalizadas ahora está escapado. NTFY recibe el mismo Markdown, excepto las tablas GFM: la fila de encabezado se omite y las filas del cuerpo se envían como texto plano, para cualquier diseño de columna.
+
+Las plantillas predeterminadas de Éxito, Advertencia/Error y Vencida usan el mismo estilo Markdown que el Resumen Diario: un encabezado, valores en negrita y una tabla de vista general. Las plantillas predeterminadas sin modificar se actualizan al cargar; las plantillas personalizadas se mantienen.
 
 Todas las plantillas de Éxito, Advertencia/Error y Vencida admiten variables que se reemplazarán con valores reales. La siguiente tabla muestra las variables disponibles:
 
@@ -73,10 +75,18 @@ Las plantillas de Resumen Diario utilizan un conjunto diferente de variables par
 | `{time_zone}` | Zona horaria IANA guardada |
 | `{server_count}` / `{job_count}` | Servidores y trabajos conocidos |
 | `{success_count}` / `{warning_count}` / `{error_count}` / `{fatal_count}` / `{unknown_count}` / `{no_report_count}` | Cubetas de estado mutuamente excluyentes |
-| `{overdue_count}` | Trabajos vencidos (ortogonales al estado) |
+| `{overdue_count}` | Trabajos vencidos (ortogonales al estado; pueden superponerse a los grupos anteriores) |
 | `{problem_table}` / `{all_jobs_table}` | Tablas generadas de trabajos pendientes de atención y todos los trabajos. Columnas: Servidor, Copia de seguridad, Vencida, Últ. estado, Últ. resultado, Duración, Advertencias, Errores, Subido. |
 | `{duplistatus_link}` | Enlace al panel de duplistatus (omitido cuando no se configura una URL pública). Prefiere esto sobre enlaces Markdown construidos a mano. |
 | `{duplistatus_url}` | Mismo URL que texto plano (vacío cuando no se configura una URL pública). |
 | `{latest_uploaded_size}` / `{latest_source_size}` / `{latest_storage_size}` / `{latest_file_count}` / `{total_warnings}` / `{total_errors}` | Totales de resultados más recientes |
 
-Utilice **Vista previa** para renderizar HTML del correo electrónico y texto plano sin enviar. Las vistas previas de Éxito, Advertencia/Error y Vencida también incluyen NTFY. La vista previa se abre en un cuadro de diálogo. El HTML del correo electrónico sigue el tema claro u oscuro actual.
+El asunto predeterminado del correo electrónico de Resumen Diario es:
+
+```text
+Daily Backup Summary — {summary_date} — ✅ {success_count} Success, ⚠️ {warning_count} Warning, 🕑 {overdue_count} Overdue, 🛑 {error_count} Error, ❌ {fatal_count} Fatal
+```
+
+Los asuntos predeterminados almacenados sin modificar se actualizan a este formato. Los asuntos personalizados se dejan sin cambios. `{unknown_count}` y `{no_report_count}` permanecen en el cuerpo del correo electrónico, no en el asunto predeterminado.
+
+Utilice **Vista previa** para renderizar el asunto del correo electrónico, HTML y texto plano sin enviar. Las vistas previas de Éxito, Advertencia/Error y Vencida también incluyen la carga útil Markdown de NTFY. La vista previa se abre en un diálogo. Los botones de HTML del correo electrónico / texto plano / NTFY se sitúan encima del asunto. El HTML del correo electrónico sigue el tema claro u oscuro actual.

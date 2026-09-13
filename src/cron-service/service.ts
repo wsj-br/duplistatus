@@ -73,7 +73,6 @@ class CronService {
           return;
         }
       }
-      console.log(`[CronService] ${timestamp()}: Health check requested`);
       res.json(this.getStatus());
     });
 

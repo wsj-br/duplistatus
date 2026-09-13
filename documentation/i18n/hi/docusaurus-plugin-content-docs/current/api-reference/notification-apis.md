@@ -96,10 +96,10 @@ Test email content dikhata hai:
   - परीक्षण ईमेल एंडपॉइंट SMTP कॉन्फ़िगरेशन को पढ़ने से पहले अनुरोध कैश को साफ़ करता है, जिससे बाहरी स्क्रिप्ट कॉन्फ़िगरेशन को अपडेट कर सकते हैं और इसे परीक्षण ईमेल में तुरंत प्रतिबिंबित किया जा सके
   - टेम्पलेट परीक्षण और दैनिक सारांश भेजें-अब प्रति-बैकअप दबाव को बायपास करते हैं
 
-## Suchnaayi Template ka Poorvavalokan - `/api/notifications/preview` {/* #preview-notification-template---apinotificationspreview */}
-- **Endpoint**: `/api/notifications/preview`
-- **Method**: POST
-- **Description**: Suchnaayi template ko production Markdown renderer ke saath bheje bina render karta hai. Body mein `kind` (`success`, `warning`, `overdueBackup`, ya `dailySummaryEmail`) aur edited ho raha template shamil hai. Daily Summary poorvaavalokan vartaman real snapshot ka upayog karte hain; any prakar deterministic sample values ka upayog karte hain. Email HTML sandboxed iframe ke liye hai.
+## पूर्वावलोकन अधिसूचना टेम्पलेट - `/api/notifications/preview` {/* #preview-notification-template---apinotificationspreview */}
+- **एंडपॉइंट**: `/api/notifications/preview`
+- **विधि**: POST
+- **विवरण**: उत्पादन मार्कडाउन रेंडरर के साथ एक अधिसूचना टेम्पलेट को रेंडर करता है बिना भेजे। बॉडी में `kind` शामिल है (`success`, `warning`, `overdueBackup`, या `dailySummaryEmail`) और संपादित हो रहे टेम्पलेट। दैनिक सारांश पूर्वावलोकन वर्तमान वास्तविक स्नैपशॉट का उपयोग करते हैं; अन्य प्रकार निर्धारित नमूना मानों का उपयोग करते हैं। ईमेल HTML एक सैंडबॉक्स्ड iframe के लिए है। सफलता, चेतावनी/त्रुटि, और विलंबित भी NTFY पेलोड (`ntfyMessage`) लौटाते हैं; कोई भी GFM टेबल हेडर छोड़ा जाता है और बॉडी पंक्तियाँ सादा पाठ हैं।
 - **Authentication**: वैलिड सेशन और CSRF टोकन की आवश्यकता होती है
 
 ## Vilambit Backups ki Janch karein - `/api/notifications/check-overdue` {/* #check-overdue-backups---apinotificationscheck-overdue */}

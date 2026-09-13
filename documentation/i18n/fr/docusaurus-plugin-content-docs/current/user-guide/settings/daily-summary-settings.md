@@ -51,6 +51,6 @@ Les livraisons planifiées, **Envoyer le résumé maintenant** et les nouvelles 
 
 ## Modèles {/* #templates */}
 
-Modifiez le modèle d'e-mail de résumé quotidien (Markdown) sous [Paramètres → Modèles](/user-guide/settings/notification-templates). Les corps des e-mails pour Succès, Avertissement/Erreur, En retard, et Résumé quotidien utilisent tous Markdown. Le modèle par défaut inclut `{duplistatus_link}` à la fin lorsqu'une URL de tableau de bord public est configurée sur cette page ou via `DUPLISTATUS_PUBLIC_URL`.
+Modifiez le modèle d'e-mail de résumé quotidien (Markdown) sous [Paramètres → Modèles](/user-guide/settings/notification-templates). Le sujet par défaut inclut `{summary_date}` ainsi que les comptes de Succès, Avertissement, En retard, Erreur et Fatal afin que la ligne de l'inbox résume l'instantané. En retard peut chevaucher les comptes de statut. Les corps d'e-mail pour Succès, Avertissement/Erreur, En retard et Résumé quotidien utilisent tous Markdown. Le modèle par défaut inclut `{duplistatus_link}` à la fin lorsqu'une URL de tableau de bord public est configurée sur cette page ou via `DUPLISTATUS_PUBLIC_URL`.
 
-**Générer l'aperçu** sur cette page ouvre une boîte de dialogue avec l'instantané actuel. L'email HTML suit le thème clair ou sombre actuel.
+**Générer un aperçu** sur cette page ouvre la même boîte de dialogue d'aperçu que [Paramètres → Modèles](/user-guide/settings/notification-templates): sujet de l'e-mail plus Email HTML et texte brut. L'Email HTML suit le thème clair ou sombre actuel.

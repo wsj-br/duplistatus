@@ -7,7 +7,7 @@ import { formatDateTime } from './date-format';
 import { formatInteger, formatBytes as formatBytesLocale } from './number-format';
 import { SOURCE_LOCALE } from './locales';
 import { getServerI18nForLanguage } from './i18n-server';
-import { htmlList, renderMarkdownEmail } from './notification-template-renderer';
+import { htmlList, renderMarkdownEmail, renderMarkdownNtfyText } from './notification-template-renderer';
 import {
   NTFY_MESSAGE_MAX_BYTES,
   truncateNtfyAtLineBoundary,
@@ -292,7 +292,8 @@ export async function sendNtfyNotification(
 
   // Prepare headers
   const headers: Record<string, string> = {
-    'Content-Type': 'text/plain; charset=utf-8',
+    'Content-Type': 'text/markdown; charset=utf-8',
+    Markdown: 'yes',
   };
 
   // Add authorization header if access token is provided
@@ -638,6 +639,14 @@ export function convertTextToHtml(text: string): string {
   return renderMarkdownEmail('duplistatus', text, {}).html;
 }
 
+function ntfyMessageForSend(ntfyMessage: string): string {
+  return truncateNtfyAtLineBoundary(
+    ntfyMessage,
+    NTFY_MESSAGE_MAX_BYTES,
+    '… (message truncated)'
+  );
+}
+
 async function processTemplate(
   template: NotificationTemplate,
   context: NotificationContext | OverdueBackupContext,
@@ -645,6 +654,7 @@ async function processTemplate(
 ): Promise<{
   title: string;
   message: string;
+  ntfyMessage: string;
   emailHtml: string;
   emailText: string;
   priority: string;
@@ -716,6 +726,7 @@ async function processTemplate(
   return {
     title: rendered.subject,
     message: rendered.text,
+    ntfyMessage: renderMarkdownNtfyText(template.message, values),
     emailHtml: rendered.html,
     emailText: rendered.text,
     priority: template.priority,
@@ -825,11 +836,7 @@ export async function sendBackupNotification(
       ntfyProcessedTemplate = await processTemplate(template, ntfyContext, locale);
       ntfyProcessedTemplate = {
         ...ntfyProcessedTemplate,
-        message: truncateNtfyAtLineBoundary(
-          ntfyProcessedTemplate.message,
-          NTFY_MESSAGE_MAX_BYTES,
-          '… (message truncated)'
-        ),
+        ntfyMessage: ntfyMessageForSend(ntfyProcessedTemplate.ntfyMessage),
       };
     }
   } catch (error) {
@@ -849,7 +856,7 @@ export async function sendBackupNotification(
           config.ntfy.url,
           config.ntfy.topic,
           ntfyProcessedTemplate.title,
-          ntfyProcessedTemplate.message,
+          ntfyProcessedTemplate.ntfyMessage,
           ntfyProcessedTemplate.priority,
           ntfyProcessedTemplate.tags,
           config.ntfy.accessToken
@@ -1133,7 +1140,7 @@ export async function sendBackupNotification(
         config.ntfy.url,
         additionalTopic,
         ntfyProcessedTemplate.title,
-        ntfyProcessedTemplate.message,
+        ntfyProcessedTemplate.ntfyMessage,
         ntfyProcessedTemplate.priority,
         ntfyProcessedTemplate.tags,
         config.ntfy.accessToken
@@ -1236,6 +1243,7 @@ export async function sendOverdueBackupNotification(
   try {
     const locale = notificationConfig.templates?.language || SOURCE_LOCALE;
     const processedTemplate = await processTemplate(notificationConfig.templates?.overdueBackup || defaultNotificationTemplates.overdueBackup, context, locale);
+    const overdueNtfyMessage = ntfyMessageForSend(processedTemplate.ntfyMessage);
     
     // Send notifications based on backup configuration
     const notifications: Promise<void>[] = [];
@@ -1247,7 +1255,7 @@ export async function sendOverdueBackupNotification(
           notificationConfig.ntfy.url,
           notificationConfig.ntfy.topic,
           processedTemplate.title,
-          processedTemplate.message,
+          overdueNtfyMessage,
           processedTemplate.priority,
           processedTemplate.tags,
           notificationConfig.ntfy.accessToken
@@ -1533,7 +1541,7 @@ export async function sendOverdueBackupNotification(
             notificationConfig.ntfy.url,
             additionalTopic,
             processedTemplate.title,
-            processedTemplate.message,
+            overdueNtfyMessage,
             processedTemplate.priority,
             processedTemplate.tags,
             notificationConfig.ntfy.accessToken

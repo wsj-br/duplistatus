@@ -51,6 +51,6 @@
 
 ## 模板 {/* #templates */}
 
-在 [设置 → 模板](/user-guide/settings/notification-templates) 下编辑每日摘要电子邮件模板（Markdown）。成功、警告/错误、过期和每日摘要的电子邮件正文均使用 Markdown。默认模板在配置了公共仪表板 URL 时，在末尾包含 `{duplistatus_link}`，无论是在此页面上还是通过 `DUPLISTATUS_PUBLIC_URL`。
+编辑 [设置 → 模板](/user-guide/settings/notification-templates) 下的每日摘要电子邮件模板（Markdown）。默认主题包括 `{summary_date}` 加上成功、警告、过期、错误和致命的计数，以便收件箱行总结快照。过期可能与状态计数重叠。成功、警告/错误、过期和每日摘要的电子邮件正文都使用 Markdown。默认模板在公共仪表板 URL 配置在此页面或通过 `DUPLISTATUS_PUBLIC_URL` 时，在末尾包含 `{duplistatus_link}`。
 
-**生成预览** 此页打开一个对话框，其中包含当前快照。电子邮件HTML遵循当前的浅色或深色主题。
+**生成预览** 此页面上的预览对话框与 [设置 → 模板](/user-guide/settings/notification-templates) 中的预览对话框相同：电子邮件主题加上电子邮件HTML和纯文本。电子邮件HTML遵循当前的浅色或深色主题。

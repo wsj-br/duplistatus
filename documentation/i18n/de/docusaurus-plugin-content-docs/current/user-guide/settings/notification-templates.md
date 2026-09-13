@@ -1,6 +1,6 @@
 # Vorlagen {/* #templates */}
 
-**duplistatus** verwendet vier Vorlagen für Benachrichtigungsnachrichten. E-Mail-Körper sind Markdown (Überschriften, Listen, Links und Tabellen). NTFY für Erfolg, Warnung/Fehler und Überfällig wird aus demselben Inhalt abgeleitet. Die Tägliche Zusammenfassung ist nur für E-Mails verfügbar.
+**duplistatus** verwendet vier Vorlagen für Benachrichtigungsnachrichten. E-Mail-Körper sind Markdown (Überschriften, Listen, Links und Tabellen). NTFY für Erfolgreich, Warnung/Fehler und Überfällig verwendet denselben Markdown-Körper, der mit `Markdown: yes` gesendet wird, damit ntfy-Clients ihn rendern können. Jede GFM-Tabelle ohne ihre Kopfzeile und der Körper als Klartext gesendet, weil ntfy keine Tabellen rendert. Tägliche Zusammenfassung ist nur per E-Mail.
 
 Die Seite enthält einen **Vorlagensprache**-Auswahldialog, der die Sprache für die Standardvorlagen festlegt. Das Ändern der Sprache aktualisiert die Sprache für neue Standardeinstellungen, aber es ändert **nicht** den Text der vorhandenen Vorlagen. Um eine neue Sprache auf Ihre Vorlagen anzuwenden, bearbeiten Sie diese manuell oder verwenden Sie **Diese Vorlage auf Standardwerte zurücksetzen** (für die aktuelle Registerkarte) oder **Alle auf Standard zurücksetzen** (für alle Vorlagen).
 
@@ -34,7 +34,9 @@ Ein **Vorlagensprache** Auswahlfeld am oberen Rand der Seite ermöglicht es Ihne
 
 ## Variablen {/* #variables */}
 
-E-Mail-Körper sind Markdown. Überschriften, Listen, Links und Tabellen werden unterstützt. Platzhalterwerte werden als escapierter Text eingefügt und können keine Markdown- oder HTML-Syntax einführen. Bisher eingebettetes rohes HTML in angepassten Vorlagen wird jetzt escapiert.
+E-Mail-Körper sind Markdown. Überschriften, Listen, Links und Tabellen werden unterstützt. Platzhalterwerte werden als escapter Text eingefügt und können keine Markdown oder HTML einführen. Früher eingebettetes rohes HTML in angepassten Vorlagen wird jetzt escapet. NTFY erhält denselben Markdown, außer GFM-Tabellen: die Kopfzeile wird weggelassen und die Körperzeilen werden als Klartext für jede Spaltenanordnung gesendet.
+
+Die Standardvorlagen für Erfolgreich, Warnung/Fehler und Überfällig verwenden denselben Markdown-Stil wie die Tägliche Zusammenfassung: eine Überschrift, fettgedruckte Werte und eine Übersichtstabelle. Unveränderte Standardvorlagen werden beim Laden aktualisiert; angepasste Vorlagen bleiben erhalten.
 
 Alle Erfolg-, Warnung/Fehler- und Überfälligen-Vorlagen unterstützen Variablen, die durch tatsächliche Werte ersetzt werden. Die folgende Tabelle zeigt die verfügbaren Variablen:
 
@@ -73,10 +75,18 @@ Tägliche Zusammenfassungsvorlagen verwenden eine andere Gruppe von Variablen f�
 | `{time_zone}` | Gespeicherte IANA-Zeitzone |
 | `{server_count}` / `{job_count}` | Server und bekannte Jobs |
 | `{success_count}` / `{warning_count}` / `{error_count}` / `{fatal_count}` / `{unknown_count}` / `{no_report_count}` | gegenseitig ausschließende Status-Buckets |
-| `{overdue_count}` | Überfällige Jobs (orthogonal zum Status) |
+| `{overdue_count}` | Überfällige Jobs (orthogonal zum Status; kann sich mit den obigen Buckets überschneiden) |
 | `{problem_table}` / `{all_jobs_table}` | Generierte Tabellen mit aufmerksamkeitsbedürftigen und allen Jobs. Spalten: Server, Sicherung, Überfällig, Letzter Status, Letztes Ergebnis, Dauer, Warnungen, Fehler, Hochgeladen. |
 | `{duplistatus_link}` | Link zum duplistatus-Dashboard (weggelassen, wenn keine öffentliche URL konfiguriert ist). Bevorzugen Sie dies gegenüber manuell erstellten Markdown-Links. |
 | `{duplistatus_url}` | Dieselbe URL im Klartext (leer, wenn keine öffentliche URL konfiguriert ist). |
 | `{latest_uploaded_size}` / `{latest_source_size}` / `{latest_storage_size}` / `{latest_file_count}` / `{total_warnings}` / `{total_errors}` | Gesamtzahl der neuesten Ergebnisse |
 
-Verwenden Sie **Vorschau**, um die E-Mail HTML- und Klartext-Versionen ohne Senden zu rendern. Die Vorschau für Erfolg, Warnung/Fehler und Überfällig enthält auch NTFY. Die Vorschau öffnet sich in einem Dialogfeld. Die E-Mail HTML folgt dem aktuellen hellen oder dunklen Design.
+Der Standardbetreff der täglichen Zusammenfassung lautet:
+
+```text
+Daily Backup Summary — {summary_date} — ✅ {success_count} Success, ⚠️ {warning_count} Warning, 🕑 {overdue_count} Overdue, 🛑 {error_count} Error, ❌ {fatal_count} Fatal
+```
+
+Unveränderte gespeicherte Standardbetreffzeilen werden auf dieses Format aktualisiert. Angepasste Betreffzeilen bleiben unverändert. `{unknown_count}` und `{no_report_count}` bleiben im E-Mail-Text, nicht im Standardbetreff.
+
+Verwenden Sie **Vorschau**, um den E-Mail-Betreff, HTML und Klartext ohne Senden zu rendern. Erfolgreich, Warnung/Fehler und Überfällig-Vorschauen enthalten auch die NTFY-Markdown-Payload. Die Vorschau öffnet sich in einem Dialog. Die Schaltflächen für E-Mail HTML / Klartext / NTFY befinden sich über dem Betreff. E-Mail HTML folgt dem aktuellen hellen oder dunklen Design.

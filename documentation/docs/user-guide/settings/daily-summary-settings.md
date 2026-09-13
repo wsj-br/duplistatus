@@ -51,6 +51,6 @@ Scheduled, **Send summary now**, and retry deliveries are recorded in the [audit
 
 ## Templates {/* #templates */}
 
-Edit the Daily Summary email template (Markdown) under [Settings → Templates](/user-guide/settings/notification-templates). Email bodies for Success, Warning/Error, Overdue, and Daily Summary all use Markdown. The default template includes `{duplistatus_link}` at the end when a public dashboard URL is configured on this page or via `DUPLISTATUS_PUBLIC_URL`.
+Edit the Daily Summary email template (Markdown) under [Settings → Templates](/user-guide/settings/notification-templates). The default subject includes `{summary_date}` plus Success, Warning, Overdue, Error, and Fatal counts so the inbox line summarizes the snapshot. Overdue can overlap the status counts. Email bodies for Success, Warning/Error, Overdue, and Daily Summary all use Markdown. The default template includes `{duplistatus_link}` at the end when a public dashboard URL is configured on this page or via `DUPLISTATUS_PUBLIC_URL`.
 
-**Generate preview** on this page opens a dialog with the current snapshot. Email HTML follows the current light or dark theme.
+**Generate preview** on this page opens the same preview dialog as [Settings → Templates](/user-guide/settings/notification-templates): email subject plus Email HTML and plain text. Email HTML follows the current light or dark theme.

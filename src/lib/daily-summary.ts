@@ -12,7 +12,6 @@ import type {
   DailySummaryTrigger,
   SMTPConfig,
 } from '@/lib/types';
-import { DAILY_SUMMARY_DISPATCH_TASK } from '@/lib/types';
 import { db, dbOps, formatDurationFromSeconds } from '@/lib/db';
 import {
   getConfigOverdueTolerance,
@@ -111,21 +110,6 @@ export async function reloadCronServiceConfiguration(): Promise<void> {
   }
 }
 
-export async function isDailySummaryDispatcherHealthy(): Promise<boolean> {
-  try {
-    const response = await fetch(`${getCronServiceBaseUrl()}/health`, {
-      headers: cronServiceHeaders(),
-      signal: AbortSignal.timeout(3000),
-    });
-    if (!response.ok) {
-      return false;
-    }
-    const status = await response.json() as { isRunning?: boolean; activeTasks?: string[] };
-    return status.isRunning === true && Array.isArray(status.activeTasks) && status.activeTasks.includes(DAILY_SUMMARY_DISPATCH_TASK);
-  } catch {
-    return false;
-  }
-}
 
 function jobDisplayName(job: DailySummaryJobRow): string {
   const alias = job.serverAlias.trim();
@@ -534,7 +518,7 @@ function publicChannelStatus(
   };
 }
 
-export async function getDailySummaryPublicStatus(): Promise<DailySummaryPublicStatus> {
+export function getDailySummaryPublicStatus(): DailySummaryPublicStatus {
   const config = getDailySummaryConfig();
   const next = findNextOccurrence(config);
   const latest = getLatestDeliveriesByChannel(db);
@@ -548,7 +532,6 @@ export async function getDailySummaryPublicStatus(): Promise<DailySummaryPublicS
     publicUrlEnvOverride: isDuplistatusPublicUrlEnvOverrideActive(),
     smtpRecipient: config.smtpRecipient ?? '',
     nextOccurrenceIso: next ? next.toISOString() : null,
-    dispatcherHealthy: await isDailySummaryDispatcherHealthy(),
     emailConfigured: isSmtpConfiguredForSummary(getSMTPConfig()),
     channel: publicChannelStatus(true, latest.email, lastEmailSuccessAt),
   };

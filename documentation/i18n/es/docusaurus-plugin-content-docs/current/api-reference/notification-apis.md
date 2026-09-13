@@ -96,10 +96,10 @@ El contenido del correo de prueba muestra:
   - El punto final de correo electrónico de prueba borra la caché de la solicitud antes de leer la configuración SMTP, asegurando que los scripts externos puedan actualizar la configuración y reflejarla inmediatamente en los correos electrónicos de prueba
   - Las pruebas de plantillas y el envío inmediato del Resumen Diario omiten la supresión por copia de seguridad
 
-## Vista previa de la Plantilla de Notificación - `/api/notifications/preview` {/* #preview-notification-template---apinotificationspreview */}
-- **Endpoint**: `/api/notifications/preview`
-- **Method**: POST
-- **Descripción**: Renderiza una plantilla de notificación con el renderizador Markdown de producción sin enviar. El cuerpo incluye `kind` (`success`, `warning`, `overdueBackup` o `dailySummaryEmail`) y la plantilla que se está editando. Las vistas previas del Resumen Diario utilizan la instantánea real actual; otros tipos utilizan valores de muestra deterministas. El HTML del correo electrónico está destinado a un iframe aislado.
+## Vista previa de la plantilla de notificación - `/api/notifications/preview` {/* #preview-notification-template---apinotificationspreview */}
+- **Punto final**: `/api/notifications/preview`
+- **Método**: POST
+- **Descripción**: Representa una plantilla de notificación con el renderizador de Markdown de producción sin enviar. El cuerpo incluye `kind` (`success`, `warning`, `overdueBackup`, o `dailySummaryEmail`) y la plantilla que se está editando. Las vistas previas del Resumen Diario usan la instantánea real actual; otros tipos usan valores de muestra determinísticos. El HTML del correo electrónico está destinado a un iframe sandboxed. Éxito, Advertencia/Error y Vencida también devuelven la carga útil de NTFY (`ntfyMessage`); cualquier encabezado de tabla GFM se omite y las filas del cuerpo son texto plano.
 - **Autenticación**: Requiere una sesión válida y un token CSRF
 
 ## Comprobar Copias de Seguridad Vencidas - `/api/notifications/check-overdue` {/* #check-overdue-backups---apinotificationscheck-overdue */}

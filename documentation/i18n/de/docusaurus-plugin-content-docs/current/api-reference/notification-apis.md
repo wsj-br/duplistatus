@@ -96,10 +96,10 @@ Der Inhalt der Test-E-Mail zeigt Folgendes an:
   - Der Test-E-Mail-Endpunkt leert den Anfrage-Cache, bevor die SMTP-Konfiguration gelesen wird, sodass externe Skripte die Konfiguration aktualisieren und die Änderungen sofort in den Test-E-Mails widerspiegeln können
   - Vorlagen-Tests und die sofortige Senden-Funktion der Täglichen Zusammenfassung umgehen die pro-Sicherung-Unterdrückung
 
-## Vorschau der Benachrichtigungsvorlage - `/api/notifications/preview` {/* #preview-notification-template---apinotificationspreview */}
-- **Endpoint**: `/api/notifications/preview`
+## Vorschau der Benachrichtigung Vorlage - `/api/notifications/preview` {/* #preview-notification-template---apinotificationspreview */}
+- **Endpunkt**: `/api/notifications/preview`
 - **Methode**: POST
-- **Beschreibung**: Rendert eine Benachrichtigungsvorlage mit dem Produktions-Markdown-Renderer, ohne sie zu senden. Der Body enthält `kind` (`success`, `warning`, `overdueBackup` oder `dailySummaryEmail`) und die bearbeitete Vorlage. Tägliche Zusammenfassungen verwenden den aktuellen echten Snapshot; andere Arten verwenden deterministische Beispielwerte. E-Mail HTML ist für ein sandboxed iframe gedacht.
+- **Beschreibung**: Rendert eine Benachrichtigung Vorlage mit dem Produktions-Markdown-Renderer ohne Senden. Der Body enthält `kind` (`success`, `warning`, `overdueBackup`, oder `dailySummaryEmail`) und die bearbeitete Vorlage. Tägliche Zusammenfassungen verwenden die aktuelle reale Momentaufnahme; andere Arten verwenden deterministische Beispielwerte. E-Mail HTML ist für ein sandboxed iframe vorgesehen. Erfolgreich, Warnung/Fehler und Überfällig geben auch die NTFY-Payload (`ntfyMessage`) zurück; jeder GFM-Tabellenkopf wird weggelassen und die Körperzeilen sind Klartext.
 - **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
 
 ## Überfällige Backups prüfen - `/api/notifications/check-overdue` {/* #check-overdue-backups---apinotificationscheck-overdue */}

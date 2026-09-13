@@ -1,6 +1,6 @@
 # Templates {/* #templates */}
 
-**duplistatus** uses four templates for notification messages. Email bodies are Markdown (headings, lists, links, and tables). NTFY for Success, Warning/Error, and Overdue is derived from the same content. Daily Summary is email-only.
+**duplistatus** uses four templates for notification messages. Email bodies are Markdown (headings, lists, links, and tables). NTFY for Success, Warning/Error, and Overdue uses the same Markdown body, sent with `Markdown: yes` so ntfy clients can render it. Any GFM table omits its header row and sends the body as plain text, because ntfy does not render tables. Daily Summary is email-only.
 
 The page includes a **Template Language** selector that sets the locale for default templates. Changing the language updates the locale for new defaults, but it does **not** change the text of existing templates. To apply a new language to your templates, either edit them manually or use **Reset this template to default** (for the current tab) or **Reset all to default** (for all templates).
 
@@ -35,7 +35,9 @@ A **Template Language** selector at the top of the page lets you choose the lang
 ## Variables {/* #variables */}
 
 
-Email bodies are Markdown. Headings, lists, links, and tables are supported. Placeholder values are inserted as escaped text and cannot introduce Markdown or HTML. Previously embedded raw HTML in customized templates is now escaped.
+Email bodies are Markdown. Headings, lists, links, and tables are supported. Placeholder values are inserted as escaped text and cannot introduce Markdown or HTML. Previously embedded raw HTML in customized templates is now escaped. NTFY receives the same Markdown, except GFM tables: the header row is omitted and body rows are sent as plain text, for any column layout.
+
+The default Success, Warning/Error, and Overdue bodies use the same Markdown style as Daily Summary: a heading, bold values, and an overview table. Unmodified stored defaults are upgraded on load; customized templates are kept.
 
 All Success, Warning/Error, and Overdue templates support variables that will be replaced with actual values. The following table shows the available variables:
 
@@ -74,13 +76,21 @@ Daily Summary templates use a different set of variables for the current-status 
 | `{time_zone}` | Saved IANA timezone |
 | `{server_count}` / `{job_count}` | Servers and known jobs |
 | `{success_count}` / `{warning_count}` / `{error_count}` / `{fatal_count}` / `{unknown_count}` / `{no_report_count}` | Mutually exclusive status buckets |
-| `{overdue_count}` | Overdue jobs (orthogonal to status) |
+| `{overdue_count}` | Overdue jobs (orthogonal to status; can overlap the buckets above) |
 | `{problem_table}` / `{all_jobs_table}` | Generated tables of attention-required and all jobs. Columns: Server, Backup, Overdue, Last status, Last result, Duration, Warnings, Errors, Uploaded. |
 | `{duplistatus_link}` | Link to the duplistatus dashboard (omitted when no public URL is configured). Prefer this over hand-built Markdown links. |
 | `{duplistatus_url}` | Same URL as plain text (empty when no public URL is configured). |
 | `{latest_uploaded_size}` / `{latest_source_size}` / `{latest_storage_size}` / `{latest_file_count}` / `{total_warnings}` / `{total_errors}` | Latest-result totals |
 
-Use **Preview** to render Email HTML and plain text without sending. Success, Warning/Error, and Overdue previews also include NTFY. The preview opens in a dialog. Email HTML follows the current light or dark theme.
+The default Daily Summary email subject is:
+
+```text
+Daily Backup Summary — {summary_date} — ✅ {success_count} Success, ⚠️ {warning_count} Warning, 🕑 {overdue_count} Overdue, 🛑 {error_count} Error, ❌ {fatal_count} Fatal
+```
+
+Unmodified stored default subjects are upgraded to this format. Customized subjects are left unchanged. `{unknown_count}` and `{no_report_count}` stay in the email body, not the default subject.
+
+Use **Preview** to render the email subject, HTML, and plain text without sending. Success, Warning/Error, and Overdue previews also include the NTFY Markdown payload. The preview opens in a dialog. Email HTML / plain text / NTFY buttons sit above the subject. Email HTML follows the current light or dark theme.
 
 
 

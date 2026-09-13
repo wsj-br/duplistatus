@@ -20,7 +20,7 @@ export const GET = withCSRF(async () => {
       Promise.resolve(dbUtils.getServersBackupNames()),
       Promise.resolve(getSMTPConfig()),
       Promise.resolve(getNotificationTemplates()),
-      getDailySummaryPublicStatus(),
+      Promise.resolve(getDailySummaryPublicStatus()),
     ]);
 
     // Build base response fields

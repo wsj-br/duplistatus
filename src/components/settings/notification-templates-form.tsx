@@ -20,17 +20,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { ClipboardPaste, Send, RotateCcw, CheckCircle, AlertTriangle, Clock, Type, Star, Tag, MessageSquare, Info, CalendarClock, Eye } from 'lucide-react';
 import { ColoredIcon } from '@/components/ui/colored-icon';
-import { EmailHtmlPreviewIframe } from '@/components/settings/email-html-preview-iframe';
+import { EmailPreviewDialog } from '@/components/settings/email-preview-dialog';
 import { useToast } from '@/components/ui/use-toast';
 import { NotificationTemplate, SUPPORTED_TEMPLATE_LANGUAGES, type SupportedTemplateLanguage, type DailySummaryEmailTemplate, type DailySummaryTemplateSet } from '@/lib/types';
 import { getLocaleEnglishName, SOURCE_LOCALE } from '@/lib/locales';
@@ -261,7 +254,7 @@ const TemplateEditor = ({
             {t("Message Template")}
           </Label>
           <p className="text-sm text-muted-foreground">
-            {t('Email body is Markdown. Headings, lists, links, and tables are supported. Titles, priority, and tags stay plain text.')}
+            {t('Message body is Markdown for email and NTFY. Headings, lists, links, and tables are supported. NTFY converts tables to plain text. Titles, priority, and tags stay plain text.')}
           </p>
           <Textarea
             ref={createRefCallback(`${templateType}-message`)}
@@ -429,7 +422,7 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
   const [previewHtml, setPreviewHtml] = useState('');
   const [previewText, setPreviewText] = useState('');
   const [previewNtfy, setPreviewNtfy] = useState('');
-  const [previewView, setPreviewView] = useState<'html' | 'text' | 'ntfy'>('html');
+  const [previewSubject, setPreviewSubject] = useState('');
   const [selectedVariable, setSelectedVariable] = useState<string>('');
   const [dailySummaryFocusedField, setDailySummaryFocusedField] = useState<DailySummaryField>('message');
   const [templateLanguage, setTemplateLanguage] = useState<SupportedTemplateLanguage>(SOURCE_LOCALE);
@@ -665,11 +658,16 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
         const errorData = await response.json().catch(() => ({ error: t('Failed to generate preview') }));
         throw new Error(errorData.error || t('Failed to generate preview'));
       }
-      const data = await response.json() as { emailHtml?: string; emailText?: string; ntfyMessage?: string };
+      const data = await response.json() as {
+        subject?: string;
+        emailHtml?: string;
+        emailText?: string;
+        ntfyMessage?: string;
+      };
+      setPreviewSubject(data.subject || '');
       setPreviewHtml(data.emailHtml || '');
       setPreviewText(data.emailText || '');
       setPreviewNtfy(data.ntfyMessage || '');
-      setPreviewView('html');
       setIsPreviewOpen(true);
     } catch (error) {
       toast({
@@ -1032,44 +1030,19 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
         </div>
       </div>
 
-      {(previewHtml || previewText || previewNtfy) && (
-        <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
-          <DialogContent className="flex max-h-[92vh] w-[min(100vw-2rem,72rem)] max-w-none flex-col overflow-hidden sm:max-w-none">
-            <DialogHeader>
-              <DialogTitle>{t('Preview')}</DialogTitle>
-              <DialogDescription>
-                {activeTab === 'daily-summary'
-                  ? t('Email HTML and plain text rendered from the current template without sending.')
-                  : t('Email HTML, plain text, and NTFY rendered from the current template without sending.')}
-              </DialogDescription>
-            </DialogHeader>
-            <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden">
-              <div className="flex flex-wrap gap-2">
-                <Button type="button" size="sm" variant={previewView === 'html' ? 'default' : 'outline'} onClick={() => setPreviewView('html')}>{t('Email HTML')}</Button>
-                <Button type="button" size="sm" variant={previewView === 'text' ? 'default' : 'outline'} onClick={() => setPreviewView('text')}>{t('Plain text')}</Button>
-                {activeTab !== 'daily-summary' && previewNtfy && (
-                  <Button type="button" size="sm" variant={previewView === 'ntfy' ? 'default' : 'outline'} onClick={() => setPreviewView('ntfy')}>{t('NTFY')}</Button>
-                )}
-              </div>
-              <div className="min-h-0 flex-1 overflow-auto scrollbar-gutter-stable px-1">
-                {previewView === 'html' && (
-                  <EmailHtmlPreviewIframe
-                    title={t('Email HTML preview')}
-                    html={previewHtml}
-                    className="min-h-[62vh]"
-                  />
-                )}
-                {previewView === 'text' && (
-                  <pre className="whitespace-pre-wrap rounded-md border bg-muted/30 p-3 text-sm">{previewText}</pre>
-                )}
-                {previewView === 'ntfy' && (
-                  <pre className="whitespace-pre-wrap rounded-md border bg-muted/30 p-3 text-sm">{previewNtfy}</pre>
-                )}
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
+      <EmailPreviewDialog
+        open={isPreviewOpen && Boolean(previewHtml || previewText || previewNtfy || previewSubject)}
+        onOpenChange={setIsPreviewOpen}
+        description={
+          activeTab === 'daily-summary'
+            ? t('Email HTML and plain text rendered from the current template without sending.')
+            : t('Email HTML, plain text, and NTFY Markdown rendered from the current template without sending.')
+        }
+        subject={previewSubject}
+        html={previewHtml}
+        text={previewText}
+        ntfy={activeTab === 'daily-summary' ? undefined : previewNtfy}
+      />
 
       {/* Reset Single Template Confirmation Dialog */}
       <AlertDialog open={isResetSingleDialogOpen} onOpenChange={setIsResetSingleDialogOpen}>
