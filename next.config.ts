@@ -93,6 +93,7 @@ const nextConfig: NextConfig = {
   turbopack: {},
   experimental: {
     optimizePackageImports: ["@radix-ui/react-icons", "lucide-react"],
+    cpus: 6
   },
   pageExtensions: ["ts", "tsx", "js", "jsx", "md", "mdx"],
   distDir: ".next",

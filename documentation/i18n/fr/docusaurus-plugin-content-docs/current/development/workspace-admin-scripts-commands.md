@@ -67,6 +67,7 @@ Le script `upgrade-dependencies.sh` automatise l'intégralité du processus de m
 - Vérifie les vulnérabilités (`pnpm audit`) et applique des corrections non-bloquantes (`pnpm audit --fix`)
 - **Priorise la sécurité** : si une dépendance directe vulnérable ne peut être corrigée que par une mise à niveau cassant la construction, la version sûre est appliquée de force et les erreurs de construction sont signalées pour que le code puisse être mis à jour pour la compatibilité
 - Imprime un résumé (packages mis à niveau vs packages ignorés car cassant la construction, vulnérabilités corrigées/restantes, et un chemin d'instantané de manifeste pour une restauration manuelle)
+- Copie les `package.json` et les fichiers de verrouillage avec `/usr/bin/cp` afin qu'un alias `cp` interactif (par exemple `cp -i`) ne demande pas à écraser ces fichiers
 
 Ce script fournit un flux de travail complet pour maintenir les dépendances à jour et sécurisées.
 

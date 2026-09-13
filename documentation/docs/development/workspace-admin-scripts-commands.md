@@ -64,6 +64,7 @@ The `upgrade-dependencies.sh` script automates the entire dependency upgrade pro
 - Checks for vulnerabilities (`pnpm audit`) and applies non-breaking fixes (`pnpm audit --fix`)
 - **Prioritises security**: if a vulnerable direct dependency can only be fixed by a build-breaking upgrade, the safe version is force-applied and the build errors are reported so the code can be updated for compatibility
 - Prints a summary (upgraded vs. build-breaking packages skipped, vulnerabilities fixed/remaining, and a manifest snapshot path for manual rollback)
+- Copies `package.json` and lockfiles with `/usr/bin/cp` so a sourced interactive `cp` alias (for example `cp -i`) does not prompt to overwrite those files
 
 This script provides a complete workflow for keeping dependencies up to date and secure.
 

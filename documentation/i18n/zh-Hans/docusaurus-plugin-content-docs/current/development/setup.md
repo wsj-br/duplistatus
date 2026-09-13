@@ -25,6 +25,7 @@
     ```bash
     sudo apt update
     sudo apt install sqlite3 git inkscape bat -y
+    sudo apt install -y build-essential python3 python3-dev python3-setuptools make g++ gcc pkg-config 
     ```
 
 ### 3. 移除旧的 Node.js 安装（如果您已经安装了） {/* #3-remove-old-nodejs-installations-if-you-already-have-it-installed */}
@@ -52,6 +53,7 @@
     source ~/.bashrc
     nvm install --lts
     nvm use --lts
+    npm config set allow-scripts=pnpm --location=user
     npm install -g pnpm npm-check-updates doctoc
     ```
 

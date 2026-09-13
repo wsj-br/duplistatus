@@ -62,6 +62,9 @@ _run_tools_phase() {
 }
 
 # --- snapshot (safety net) ----------------------------------------------------
+# Copy files with /usr/bin/cp. This script is meant to be sourced, so a
+# shell alias such as `cp='cp -i'` would otherwise prompt on every overwrite
+# of package.json / lockfiles.
 _snapshot_manifests() {
   SNAPSHOT_DIR=$(mktemp -d 2>/dev/null || mktemp -d -t upgrade-deps)
   upgrade_log "🧷  Snapshotting manifests to ${SNAPSHOT_DIR} (restore manually if needed)..."
@@ -69,14 +72,14 @@ _snapshot_manifests() {
   : > "$SNAPSHOT_DIR/dirs.txt"
   for d in "${WORKSPACE_DIRS[@]}"; do
     if [ -f "$d/package.json" ]; then
-      cp "$d/package.json" "$SNAPSHOT_DIR/package.${i}.json"
+      /usr/bin/cp "$d/package.json" "$SNAPSHOT_DIR/package.${i}.json"
       printf '%s\n' "$d" >> "$SNAPSHOT_DIR/dirs.txt"
       i=$((i + 1))
     fi
   done
   local lf
   for lf in pnpm-lock.yaml package-lock.json npm-shrinkwrap.json yarn.lock bun.lockb bun.lock; do
-    [ -f "$REPO_ROOT/$lf" ] && cp "$REPO_ROOT/$lf" "$SNAPSHOT_DIR/$lf"
+    [ -f "$REPO_ROOT/$lf" ] && /usr/bin/cp "$REPO_ROOT/$lf" "$SNAPSHOT_DIR/$lf"
   done
 }
 
@@ -316,7 +319,7 @@ _copy_root_lockfiles_to() {
   mkdir -p "$dest"
   while IFS= read -r lf; do
     [ -z "$lf" ] && continue
-    [ -f "$REPO_ROOT/$lf" ] && cp -a "$REPO_ROOT/$lf" "$dest/$lf"
+    [ -f "$REPO_ROOT/$lf" ] && /usr/bin/cp -a "$REPO_ROOT/$lf" "$dest/$lf"
   done < <(lockfile_names)
 }
 
@@ -324,7 +327,7 @@ _restore_root_lockfiles_from() {
   local src=$1 lf
   while IFS= read -r lf; do
     [ -z "$lf" ] && continue
-    [ -f "$src/$lf" ] && cp -a "$src/$lf" "$REPO_ROOT/$lf"
+    [ -f "$src/$lf" ] && /usr/bin/cp -a "$src/$lf" "$REPO_ROOT/$lf"
   done < <(lockfile_names)
 }
 
@@ -408,7 +411,7 @@ _doctor_upgrade_dir() {
   work="$SNAPSHOT_DIR/work.${safe_label}"
   mkdir -p "$work"
   : > "$logf"
-  cp "$dir/package.json" "$work/package.orig.json"
+  /usr/bin/cp "$dir/package.json" "$work/package.orig.json"
   _copy_root_lockfiles_to "$work/lock.orig"
 
   upgrade_log "📦  [${label}] build-safe upgrade (verify: ${verify})"
@@ -427,7 +430,7 @@ _doctor_upgrade_dir() {
     return 0
   fi
 
-  cp "$dir/package.json" "$work/package.upgraded.json"
+  /usr/bin/cp "$dir/package.json" "$work/package.upgraded.json"
 
   upgrade_log "   ↳ installing all upgrades and re-running verify"
   local batch_ok=0
@@ -442,18 +445,18 @@ _doctor_upgrade_dir() {
   fi
 
   upgrade_warn "   ↳ [${label}] batch verify failed; identifying broken dependencies"
-  cp "$work/package.orig.json" "$dir/package.json"
+  /usr/bin/cp "$work/package.orig.json" "$dir/package.json"
   _restore_root_lockfiles_from "$work/lock.orig"
   _install_workspace "$logf" || upgrade_warn "   ↳ restore install returned non-zero."
 
-  cp "$work/package.orig.json" "$work/package.good.json"
+  /usr/bin/cp "$work/package.orig.json" "$work/package.good.json"
   _copy_root_lockfiles_to "$work/lock.good"
 
   local changes name oldv newv dir_reverted=""
   changes=$(_dep_changes "$work/package.orig.json" "$work/package.upgraded.json")
   while IFS=$'\t' read -r name oldv newv; do
     [ -n "$name" ] || continue
-    cp "$work/package.good.json" "$dir/package.json"
+    /usr/bin/cp "$work/package.good.json" "$dir/package.json"
     if ! _set_dep_version "$dir/package.json" "$name" "$newv"; then
       printf '  ✗ %s %s → %s (not found in package.json)\n' "$name" "$oldv" "$newv" | tee -a "$logf"
       dir_reverted="${dir_reverted}"$'\n'"${name}"
@@ -463,26 +466,26 @@ _doctor_upgrade_dir() {
     if ! _install_workspace "$logf"; then
       printf '  ✗ %s %s → %s (install failed)\n' "$name" "$oldv" "$newv" | tee -a "$logf"
       dir_reverted="${dir_reverted}"$'\n'"${name}"
-      cp "$work/package.good.json" "$dir/package.json"
+      /usr/bin/cp "$work/package.good.json" "$dir/package.json"
       _restore_root_lockfiles_from "$work/lock.good"
       _install_workspace "$logf" || true
       continue
     fi
     if _run_verify "$dir" "$verify" > "$work/verify.out" 2>&1; then
       printf '  ✓ %s %s → %s\n' "$name" "$oldv" "$newv" | tee -a "$logf"
-      cp "$dir/package.json" "$work/package.good.json"
+      /usr/bin/cp "$dir/package.json" "$work/package.good.json"
       _copy_root_lockfiles_to "$work/lock.good"
     else
       printf '  ✗ %s %s → %s\n' "$name" "$oldv" "$newv" | tee -a "$logf"
       tail -n 30 "$work/verify.out" | tee -a "$logf" | pr -o 4 -T || true
       dir_reverted="${dir_reverted}"$'\n'"${name}"
-      cp "$work/package.good.json" "$dir/package.json"
+      /usr/bin/cp "$work/package.good.json" "$dir/package.json"
       _restore_root_lockfiles_from "$work/lock.good"
       _install_workspace "$logf" || true
     fi
   done <<< "$changes"
 
-  cp "$work/package.good.json" "$dir/package.json"
+  /usr/bin/cp "$work/package.good.json" "$dir/package.json"
   _restore_root_lockfiles_from "$work/lock.good"
   _install_workspace "$logf" || upgrade_warn "   ↳ final install returned non-zero."
 

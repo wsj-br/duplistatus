@@ -67,6 +67,7 @@ El script `upgrade-dependencies.sh` automatiza todo el proceso de actualización
 - Busca vulnerabilidades (`pnpm audit`) y aplica correcciones no disruptivas (`pnpm audit --fix`)
 - **Prioriza la seguridad**: si una dependencia directa vulnerable solo puede corregirse con una actualización que rompe la compilación, se aplica forzosamente la versión segura y se informan los errores de compilación para que el código pueda actualizarse para garantizar la compatibilidad
 - Imprime un resumen (paquetes actualizados frente a paquetes omitidos por romper la compilación, vulnerabilidades corregidas/pendientes y una ruta de instantánea de manifiesto para reversión manual)
+- Copia `package.json` y archivos de bloqueo con `/usr/bin/cp` para que un alias interactivo `cp` (por ejemplo `cp -i`) no solicite sobrescribir esos archivos
 
 Este script proporciona un flujo de trabajo completo para mantener las dependencias actualizadas y seguras.
 

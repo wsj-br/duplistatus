@@ -67,6 +67,7 @@ Das `upgrade-dependencies.sh`-Skript automatisiert den gesamten Prozess der Abh�
 - Prüft auf Sicherheitslücken (`pnpm audit`) und wendet nicht-brechende Korrekturen an (`pnpm audit --fix`)
 - **Priorisiert Sicherheit**: Wenn eine anfällige direkte Abhängigkeit nur durch ein Build-unterbrechendes Upgrade behoben werden kann, wird die sichere Version erzwungen und die Build-Fehler werden gemeldet, damit der Code für Kompatibilität aktualisiert werden kann
 - Druckt eine Zusammenfassung (aktualisierte vs. übersprungene Build-brechende Pakete, behobene/verbleibende Sicherheitslücken und einen Manifest-Schnappschuss-Pfad für manuelles Rollback)
+- Kopiert `package.json` und Sperrdateien mit `/usr/bin/cp`, damit ein interaktiver `cp`-Alias (z. B. `cp -i`) nicht auffordert, diese Dateien zu überschreiben
 
 Dieses Skript bietet einen vollständigen Workflow zum Aktualisieren und Sichern von Abhängigkeiten.
 

@@ -118,5 +118,8 @@ minimumReleaseAgeExclude:
   - ai-i18n-tools
   - i18next@26.4.2
   - postcss@8.5.28
-  - '@ai-sdk/gateway@4.0.74'
+  - "@ai-sdk/gateway@4.0.74"
   - ai@7.0.92
+  - autoprefixer@10.6.0
+  - nodemailer@10.0.9
+  - tailwind-merge@3.7.0
