@@ -1,72 +1,72 @@
 # सर्वर विवरण {/* #server-details */}
 
-Dashboard se kisi server par click karne se us server ke liye backup ki ek list ke saath ek page khulega. Aap sabhi backups dekh sakte hain ya agar server par adhikatar backups configured hain to ek specific backup select kar sakte hain.
+डैशबोर्ड से किसी सर्वर पर क्लिक करने पर उस सर्वर के बैकअप की सूची वाला एक पृष्ठ खुलता है। आप सभी बैकअप देख सकते हैं या यदि सर्वर पर एकाधिक बैकअप कॉन्फ़िगर किए गए हैं तो किसी विशिष्ट बैकअप का चयन कर सकते हैं।
 
-![Server Details](../assets/screen-server-backup-list.png)
+![सर्वर विवरण](../assets/screen-server-backup-list.png)
 
-## सर्वर/बैकअप आंकड़े {/* #serverbackup-statistics */}
+## सर्वर/बैकअप सांख्यिकी {/* #serverbackup-statistics */}
 
-Yah section ya to server par sabhi backups ke liye ya ek selected backup ke liye statistics dikhata hai.
+यह अनुभाग या तो सर्वर पर सभी बैकअप या किसी एक चयनित बैकअप के लिए आँकड़े दिखाता है।
 
-- **KUL BACKUP JOBS**: Yah server par configured backup jobs ki sankhya.
-- **KUL BACKUP RUNS**: Execute hue backup runs ki sankhya (Duplicati server se reported).
-- **UPLABDH VERSIONS**: Uplabdh versions ki sankhya (Duplicati server se reported).
-- **AVG DURATION**: **duplistatus** database mein recorded backups ki average (mean) avadhi.
-- **ANTIM BACKUP SIZE**: Antim backup log received mein source files ka size.
-- **KUL STORAGE UPYOG**: Backup destination par storage upyog (Antim backup log mein reported).
-- **KUL UPLOAD KIYA GAYA**: **duplistatus** database mein recorded sari upload ki gayi data ka sum.
+- **कुल बैकअप जॉब**: इस सर्वर पर कॉन्फ़िगर किए गए बैकअप जॉब्स की कुल संख्या।
+- **कुल बैकअप रन**: निष्पादित किए गए बैकअप रन की कुल संख्या (जैसा कि Duplicati सर्वर द्वारा रिपोर्ट किया गया है)।
+- **उपलब्ध संस्करण**: उपलब्ध संस्करणों की संख्या (जैसा कि Duplicati सर्वर द्वारा रिपोर्ट किया गया है)।
+- **औसत अवधि**: **duplistatus** डेटाबेस में रिकॉर्ड किए गए बैकअप की औसत (माध्य) अवधि।
+- **अंतिम बैकअप आकार**: प्राप्त अंतिम बैकअप लॉग से स्रोत फ़ाइलों का आकार।
+- **कुल उपयोग किया गया संग्रहण**: बैकअप गंतव्य पर उपयोग किया गया संग्रहण, जैसा कि अंतिम बैकअप लॉग में रिपोर्ट किया गया है।
+- **कुल अपलोड किया गया**: **duplistatus** डेटाबेस में रिकॉर्ड किए गए कुल अपलोड किए गए डेटा का योग।
 
-Agar yah backup ya server par kisi bhi backup (jab **Sabhi Backups** selected hain) overdue hai, to ek message summary ke niche dikhayi jayegi.
+यदि यह बैकअप या सर्वर पर मौजूद कोई भी बैकअप (जब **सभी बैकअप** चयनित हो) अतिदेय है, तो सारांश के नीचे एक संदेश दिखाई देता है।
 
-![Server Details - Overdue Scheduled Backups](../assets/screen-server-overdue-message.png)
+![सर्वर विवरण - अतिदेय शेड्यूल्ड बैकअप](../assets/screen-server-overdue-message.png)
 
-Click the <IconButton icon="lucide:settings" href="settings/backup-monitoring-settings" label="Configure"/> to go to [Settings → Backup Monitoring](settings/backup-monitoring-settings.md). Or click the <SvgButton SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> on the toolbar to open the Duplicati server's web interface and check the logs.
+[सेटिंग्स → बैकअप निगरानी](settings/backup-monitoring-settings.md) पर जाने के लिए <IconButton icon="lucide:settings" href="settings/backup-monitoring-settings" label="कॉन्फ़िगर करें"/> पर क्लिक करें। या Duplicati सर्वर का वेब इंटरफ़ेस खोलने और लॉग जांचने के लिए टूलबार पर <SvgButton SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> पर क्लिक करें।
 
 <br/>
 
 ## बैकअप इतिहास {/* #backup-history */}
 
-Yah table selected server ke liye backup logs list karta hai.
+यह तालिका चयनित सर्वर के लिए बैकअप लॉग सूचीबद्ध करती है।
 
-![Backup History](../assets/screen-backup-history.png)
+![बैकअप इतिहास](../assets/screen-backup-history.png)
 
-- **Backup Name**: Duplicati server mein backup ka naam.
-- **Date**: Backup ka timestamp aur last screen refresh se elapsed time.
-- **Status**: Backup ki status (Success, Warning, Error, Fatal).
-- **Warnings/Errors**: Backup log mein reported warnings/errors ki sankhya.
-- **Available Versions**: Backup destination par uplabdh backup versions ki sankhya. Agar icon greyed out hai, to detailed information nahi received kiya gaya.
-- **File Count, File Size, Uploaded Size, Duration, Storage Size**: Duplicati server se reported values.
+- **बैकअप नाम**: Duplicati सर्वर में बैकअप का नाम।
+- **तिथि**: बैकअप का टाइमस्टैम्प और अंतिम स्क्रीन रीफ़्रेश के बाद से बीता हुआ समय।
+- **स्थिति**: बैकअप की स्थिति (Success, Warning, Error, Fatal)।
+- **चेतावनियाँ/त्रुटियाँ**: बैकअप लॉग में रिपोर्ट की गई चेतावनियों/त्रुटियों की संख्या।
+- **उपलब्ध संस्करण**: बैकअप गंतव्य पर उपलब्ध बैकअप वर्शन की संख्या। यदि आइकन धूसर है, तो विस्तृत जानकारी प्राप्त नहीं हुई थी।
+- **फ़ाइल गणना, फ़ाइल आकार, अपलोड किया गया आकार, अवधि, संग्रहण आकार**: Duplicati सर्वर द्वारा रिपोर्ट किए गए मान।
 
-:::tip Tips
-• **Backup History** section mein dropdown menu use karein **All Backups** ya yah server ke liye ek specific backup select karne ke liye.
+:::tip सुझाव
+• इस सर्वर के लिए **सभी बैकअप** या किसी विशिष्ट बैकअप का चयन करने के लिए **बैकअप इतिहास** अनुभाग में ड्रॉपडाउन मेनू का उपयोग करें।
 
-• Aap kisi bhi column ko sort kar sakte hain uske header par click karke, sort order reverse karne ke liye dobara click karein.
+• आप किसी भी कॉलम को उसके हेडर पर क्लिक करके सॉर्ट कर सकते हैं, सॉर्ट क्रम को उलटने के लिए फिर से क्लिक करें।
  
-• [Backup Details](#backup-details) dekhne ke liye kisi bhi row par click karein.
+• [बैकअप विवरण](#backup-details) देखने के लिए किसी पंक्ति पर कहीं भी क्लिक करें।
 
 :::
 
 :::note
-Jab **Sabhi Backups** selected hain, to list newest se oldest tak ordered dikhayi jati hai.
+जब **सभी बैकअप** चयनित होता है, तो सूची डिफ़ॉल्ट रूप से नवीनतम से सबसे पुराने क्रम में सभी बैकअप दिखाती है।
 :::
 
 <br/>
 
 ## बैकअप विवरण {/* #backup-details */}
 
-Dashboard (table view) mein kisi status badge par click karne se ya backup history table mein kisi bhi row par click karne se detailed backup information dikhayi jayegi.
+डैशबोर्ड (तालिका दृश्य) में स्थिति बैज पर या बैकअप इतिहास तालिका में किसी भी पंक्ति पर क्लिक करने से विस्तृत बैकअप जानकारी प्रदर्शित होती है।
 
-![Backup Details](../assets/screen-backup-detail.png)
+![बैकअप विवरण](../assets/screen-backup-detail.png)
 
-- **Server Vivaran**: server naam, upnaam aur note.
-- **Backup Jaankaaree**: backup ka samay chinh aur uska ID.
-- **Backup Aankade**: reported counters, sizes, aur avadhi ka sankshipt.
-- **Log Sankshipt**: reported sandesh ka sankhya.
-- **Upalabdh Versions**: upalabdh versions ka list (sirf tab dikhaya jata hai jab jaankaaree logs mein praapt hota hai).
-- **Sandesh/Chetaavaniyaan/Trutiyon**: pura execution logs. Subtitle batata hai ki log kya Duplicati server ne truncate kiya hai.
+- **सर्वर विवरण**: सर्वर नाम, उपनाम और नोट।
+- **बैकअप जानकारी**: बैकअप का टाइमस्टैम्प और उसकी ID।
+- **बैकअप सांख्यिकी**: रिपोर्ट किए गए काउंटरों, आकारों और अवधि का सारांश।
+- **लॉग सारांश**: रिपोर्ट किए गए संदेशों की संख्या।
+- **उपलब्ध संस्करण**: उपलब्ध संस्करणों की सूची (केवल तभी प्रदर्शित होती है जब लॉग में जानकारी प्राप्त हुई हो)।
+- **संदेश/चेतावनियाँ/त्रुटियाँ**: संपूर्ण निष्पादन लॉग। उपशीर्षक यह इंगित करता है कि क्या लॉग Duplicati सर्वर द्वारा ट्रंकेट किया गया था।
 
 <br/>
 
 :::note
-Duplicati server ko complete execution logs bhejne aur truncation se bachne ke liye [Duplicati Configuration instructions](../installation/duplicati-server-configuration.md) par jaake padhein.
+Duplicati सर्वर को संपूर्ण निष्पादन लॉग भेजने और ट्रंकेशन से बचने के लिए कैसे कॉन्फ़िगर करें, यह जानने के लिए [Duplicati कॉन्फ़िगरेशन निर्देश](../installation/duplicati-server-configuration.md) देखें।
 :::

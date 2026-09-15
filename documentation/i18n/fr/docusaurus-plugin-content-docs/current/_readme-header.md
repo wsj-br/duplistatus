@@ -7,25 +7,24 @@
 
 <br/>
 
-Cette application web surveille et visualise les opérations de sauvegarde depuis [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** fournit un tableau de bord complet pour suivre les états des sauvegardes, signaler les sauvegardes en retard, l'historique des tâches,
-les indicateurs et les performances sur plusieurs serveurs.
+Cette application web surveille et visualise les opérations de sauvegarde de [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** fournit un tableau de bord complet pour suivre les statuts des sauvegardes, notifier les sauvegardes en retard, l'historique des tâches, les métriques et les performances sur plusieurs serveurs.
 
-Facile à déployer avec Docker, Podman ou Portainer, disponible en 7 langues (anglais, allemand, français, espagnol, portugais, hindi et chinois simplifié), avec une documentation complète dans chaque langue.
+Facile à déployer avec Docker, Podman ou Portainer et disponible en 7 langues (anglais, allemand, français, espagnol, portugais, hindi et chinois simplifié), avec une documentation complète dans chaque langue.
 
 [Plus d'informations](https://wsj-br.github.io/duplistatus)        |
-[Mehr informationen](https://wsj-br.github.io/duplistatus/de/)  | 
-[Plus d'informations](https://wsj-br.github.io/duplistatus/fr/) | 
+[Mehr Informationen](https://wsj-br.github.io/duplistatus/de/)  | 
+[More information](https://wsj-br.github.io/duplistatus/fr/) | 
 [Más información](https://wsj-br.github.io/duplistatus/es/)     |
 [Mais informações](https://wsj-br.github.io/duplistatus/pt-BR/) |
-[Adhik jaankari](https://wsj-br.github.io/duplistatus/hi/) |
+[अधिक जानकारी](https://wsj-br.github.io/duplistatus/hi/) |
 [更多信息](https://wsj-br.github.io/duplistatus/zh-Hans/)
 
 [Guide d'installation](https://wsj-br.github.io/duplistatus/installation)        |
 [Installationsleitfaden](https://wsj-br.github.io/duplistatus/de/installation)  | 
-[Guide d'Installation](https://wsj-br.github.io/duplistatus/fr/installation) | 
+[Install guide](https://wsj-br.github.io/duplistatus/fr/installation) | 
 [Guía de Instalación](https://wsj-br.github.io/duplistatus/es/installation)     |
 [Guia de Instalação](https://wsj-br.github.io/duplistatus/pt-BR/installation) |
-[Sthaapana gaaid](https://wsj-br.github.io/duplistatus/hi/installation) |
+[स्थापना गाइड](https://wsj-br.github.io/duplistatus/hi/installation) |
 [安装指南](https://wsj-br.github.io/duplistatus/zh-Hans/installation)
 
 <br/>

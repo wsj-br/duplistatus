@@ -1,12 +1,12 @@
-# Prabandhak खाता पुनर्प्राप्ति {/* #admin-account-recovery */}
+# एडमिन खाता पुनर्प्राप्ति {/* #admin-account-recovery */}
 
-Prabandhak **duplistatus** ka prabandhak pratisthapan karne ke liye, jab aap apna password ghum gaye ho ya apne khate se bahar ho gaye ho. Yeh gaid Docker visheshak par prabandhak punyuhar script ka istemal karne ka vishleshan deti hai.
+जब आप अपना पासवर्ड भूल गए हों या अपने खाते से लॉक हो गए हों, तो **duplistatus** का एडमिनिस्ट्रेटर एक्सेस पुनर्प्राप्त करें। इस गाइड में Docker परिवेशों में एडमिन रिकवरी स्क्रिप्ट का उपयोग करने के बारे में बताया गया है।
 
-यदि ब्राउज़र लॉगिन फॉर्म से पहले **Access denied** (HTTP 403) दिखाता है, तो [Prabandhak आईपी अनुमति सूची](settings/ip-allowlist-settings.md) अनुरोध को ब्लॉक कर रहा है। इस स्क्रिप्ट के बजाय [Locked Out by IP Allowlist](troubleshooting.md#locked-out-by-ip-allowlist) का उपयोग करें।
+यदि ब्राउज़र लॉगिन फ़ॉर्म से पहले **Access denied** (HTTP 403) दिखाता है, तो [एडमिन IP अनुमति सूची](settings/ip-allowlist-settings.md) अनुरोध को ब्लॉक कर रही है। इस स्क्रिप्ट के बजाय [IP अनुमति सूची द्वारा लॉक किया गया](troubleshooting.md#locked-out-by-ip-allowlist) का उपयोग करें।
 
-## Docker में स्क्रिप्ट का उपयोग {/* #using-the-script-in-docker */}
+## Docker में स्क्रिप्ट का उपयोग करना {/* #using-the-script-in-docker */}
 
-Dockerfile mein `scripts` directory aur ek suvidha shell wrapper shamil hai.
+Dockerfile में `scripts` डायरेक्टरी और एक सुविधाजनक शेल रैपर शामिल है।
 
 ```bash
 # Execute inside the running container using the wrapper
@@ -19,14 +19,14 @@ docker exec -it duplistatus /app/admin-recovery <username> <new-password>
 docker exec -it duplistatus /app/admin-recovery admin NewPassword123
 ```
 
-## ट्रबलशूटिंग {/* #troubleshooting */}
+## समस्या निवारण {/* #troubleshooting */}
 
-Agar aap prabandhak punyuhar script ke saath masalayon ka samna karte hain:
+यदि आपको रिकवरी स्क्रिप्ट के साथ समस्याओं का सामना करना पड़ता है:
 
-1. **Verify Container is Running**: Check that the container is running with `docker ps`
-2. **Check Script Availability**: Verify the script exists in the container with `docker exec -it duplistatus ls -la /app/admin-recovery`
-3. **Review Container Logs**: Check for errors with `docker logs duplistatus`
-4. **Verify Username**: Ensure the username exists in the database
-5. **Check Password Format**: Ensure the new password meets all requirements
+1. **सत्यापित करें कि कंटेनर चल रहा है**: जांचें कि कंटेनर `docker ps` के साथ चल रहा है
+2. **स्क्रिप्ट की उपलब्धता जांचें**: `docker exec -it duplistatus ls -la /app/admin-recovery` के साथ सत्यापित करें कि स्क्रिप्ट कंटेनर में मौजूद है
+3. **कंटेनर लॉग की समीक्षा करें**: `docker logs duplistatus` के साथ त्रुटियाँ जांचें
+4. **उपयोगकर्ता नाम सत्यापित करें**: सुनिश्चित करें कि उपयोगकर्ता नाम डेटाबेस में मौजूद है
+5. **पासवर्ड फ़ॉर्मैट जांचें**: सुनिश्चित करें कि नया पासवर्ड सभी आवश्यकताओं को पूरा करता है
 
-Agar masalayon bharosayi rahenge, toh aur madad ke liye [Troubleshooting](troubleshooting.md) gaid dekhiye.
+यदि समस्याएँ बनी रहती हैं, तो अधिक सहायता के लिए [समस्या निवारण](troubleshooting.md) गाइड देखें।

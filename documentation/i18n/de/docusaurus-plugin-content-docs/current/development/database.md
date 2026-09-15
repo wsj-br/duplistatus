@@ -1,125 +1,125 @@
 # Datenbankschema {/* #database-schema */}
 
-Dieses Dokument beschreibt das SQLite-Datenbankschema, das von duplistatus zur Speicherung von Sicherungsvorgangsdaten verwendet wird.
+Dieses Dokument beschreibt das SQLite-Datenbankschema, das von duplistatus zur Speicherung von Sicherungsdaten verwendet wird.
 
 ## Datenbankstandort {/* #database-location */}
 
 Die Datenbank wird im Anwendungsdatenverzeichnis gespeichert:
-- **Standard-Speicherort**: `/app/data/backups.db`
-- **Docker-Volume**: `duplistatus_data:/app/data`
+- **Standardort**: `/app/data/backups.db`
+- **Docker-Volumen**: `duplistatus_data:/app/data`
 - **Dateiname**: `backups.db`
 
 ## Datenbankmigrationssystem {/* #database-migration-system */}
 
-duplistatus verwendet ein automatisiertes Migrationssystem, um Datenbankschemaänderungen zwischen Versionen zu verwalten.
+duplistatus verwendet ein automatisiertes Migrationssystem zur Handhabung von Datenbankschemaänderungen zwischen Versionen.
 
-### Migrationsversionshistorie {/* #migration-version-history */}
+### Migrationsversionsverlauf {/* #migration-version-history */}
 
-Die folgenden sind historische Migrationsversionenen, die die Datenbank in ihren aktuellen Zustand gebracht haben:
+Die folgenden historischen Migrationsversionen haben das Datenbankschema in seinen aktuellen Zustand gebracht:
 
-- **Schema v1.0** (Anwendung v0.6.x und früher): Erstes Datenbankschema mit Tabellen für machines und backups
-- **Schema v2.0** (Anwendung v0.7.x): Hinzufügen fehlender Spalten und Tabelle für Konfigurationen
-- **Schema v3.0** (Anwendung v0.7.x): Umbenennung der machines-Tabelle in servers, Hinzufügen der Spalte server_url
-- **Schema v3.1** (Anwendung v0.8.x): Verbesserung der Sicherungsdatenfelder, Hinzufügen der Spalte server_password
-- **Schema v4.0** (Anwendung v0.9.x / v1.0.x): Hinzugefügt Benutzerzugriffskontrolle (Benutzer, Sitzungen, audit_log-Tabellen)
-- **Schema v4.1** (Anwendung v1.5.x): Hinzugefügt `api_keys` und Standardkonfigurationsschlüssel für optionale API-Schlüssel-Authentifizierung, IP-Zulassungslisten und Upload-Limits
-- **Schema v4.2** (Anwendung v1.5.x): Hinzugefügt `daily_summary_deliveries`-Buchhaltung und Standard-`daily_summary`-Konfiguration für optionale tägliche Zusammenfassungsbenachrichtigungen
+- **Schema v1.0** (Anwendung v0.6.x und früher): Initiales Datenbankschema mit Maschinen- und Sicherungstabellen
+- **Schema v2.0** (Anwendung v0.7.x): Hinzufügen fehlender Spalten und Konfigurationstabelle
+- **Schema v3.0** (Anwendung v0.7.x): Umbenennung der Maschinentabelle in Server, Hinzufügen der server_url-Spalte
+- **Schema v3.1** (Anwendung v0.8.x): Verbesserung der Sicherungsdatenfelder, Hinzufügen der server_password-Spalte
+- **Schema v4.0** (Anwendung v0.9.x / v1.0.x): Hinzufügen der Benutzerzugriffskontrolle (Benutzer-, Sitzungs- und audit_log-Tabellen)
+- **Schema v4.1** (Anwendung v1.5.x): Hinzufügen von `api_keys` und Standardkonfigurationsschlüsseln für optionale API-Schlüsselauthentifizierung, IP-Zulassungslisten und Uploadlimits
+- **Schema v4.2** (Anwendung v1.5.x): Hinzufügen von `daily_summary_deliveries` Buchhaltung und Standard`daily_summary`-Konfiguration für optionale tägliche Zusammenfassungsbenachrichtigungen
 
-Aktuelle Anwendungsversion (v1.5.x) verwendet **Schema v4.2** als neueste Datenbankschema-Version.
+Die aktuelle Anwendungsversion (v1.5.x) verwendet **Schema v4.2** als neueste Datenbankschemaversion.
 
 ### Migrationsprozess {/* #migration-process */}
 
 1. **Automatische Sicherung**: Erstellt eine Sicherung vor der Migration
-2. **Schema-Update**: Aktualisiert die Datenbankstruktur
-3. **Datenmigration**: Bewahrt vorhandene Daten
+2. **Schemaaktualisierung**: Aktualisiert die Datenbankstruktur
+3. **Datenmigration**: Behält bestehende Daten bei
 4. **Überprüfung**: Bestätigt die erfolgreiche Migration
 
 ## Tabellen {/* #tables */}
 
-### Servertabelle {/* #servers-table */}
+### Server-Tabelle {/* #servers-table */}
 
-Speichert Informationen über überwachte Duplicati-Server.
+Speichert Informationen über die Duplicati-Server, die überwacht werden.
 
 #### Felder {/* #fields */}
 
-| Feld              | Typ               | Beschreibung                                   |
-|-------------------|-------------------|------------------------------------------------|
-| `id`              | TEXT PRIMARY KEY  | Eindeutige Serverkennung                       |
-| `name`            | TEXT NOT NULL     | Servername aus Duplicati                         |
-| `server_url`      | TEXT              | Duplicati-Server-URL                             |
-| `alias`           | TEXT              | Benutzerdefinierter Anzeigename                  |
-| `note`            | TEXT              | Benutzerdefinierte Notizen/Beschreibung          |
-| `server_password` | TEXT              | Serverpasswort für die Authentifizierung         |
-| `created_at`      | DATETIME          | Erstellungszeitstempel des Servers               |
+| Feld              | Typ              | Beschreibung                        |
+|-------------------|------------------|------------------------------------|
+| `id`              | TEXT PRIMARY KEY | Eindeutiger Serverkennzeichner           |
+| `name`            | TEXT NOT NULL    | Servername von Duplicati         |
+| `server_url`      | TEXT             | Duplicati-Server-URL               |
+| `alias`           | TEXT             | Benutzerdefinierter Anzeigename         |
+| `note`            | TEXT             | Benutzerdefinierte Notizen/Beschreibung     |
+| `server_password` | TEXT             | Server-Passwort für die Authentifizierung |
+| `created_at`      | DATETIME         | Server-Erstellungszeitstempel          |
 
-### Sicherungstabelle {/* #backups-table */}
+### Backups-Tabelle {/* #backups-table */}
 
-Speichert Sicherungsvorgangsdaten, die von Duplicati-Servern empfangen werden.
+Speichert Sicherungsdaten, die von Duplicati-Servern empfangen wurden.
 
-#### Schlüssel-Felder {/* #key-fields */}
+#### Wichtige Felder {/* #key-fields */}
 
-| Feld               | Typ                | Beschreibung                                     |
-|--------------------|--------------------|--------------------------------------------------|
-| `id`               | TEXT PRIMARY KEY   | Eindeutige Sicherungskennung                     |
-| `server_id`        | TEXT NOT NULL     | Verweis auf Servertabelle                     |
+| Feld              | Typ              | Beschreibung                                    |
+|--------------------|-------------------|------------------------------------------------|
+| `id`               | TEXT PRIMARY KEY  | Eindeutiger Sicherungsbezeichner                       |
+| `server_id`        | TEXT NOT NULL     | Verweis auf die Server-Tabelle                     |
 | `backup_name`      | TEXT NOT NULL     | Name des Sicherungsauftrags                                |
 | `backup_id`        | TEXT NOT NULL     | Sicherungs-ID von Duplicati                       |
-| `date`             | DATETIME NOT NULL | Ausführungszeitpunkt der Sicherung                          |
-| `status`           | TEXT NOT NULL     | Sicherungsstatus (Erfolg, Warnung, Fehler, Schwerwiegend) |
+| `date`             | DATETIME NOT NULL | Ausführungszeit der Sicherung                          |
+| `status`           | TEXT NOT NULL     | Sicherungsstatus (Erfolgreich, Warnung, Fehler, Fatal) |
 | `duration_seconds` | INTEGER NOT NULL  | Dauer in Sekunden                            |
 | `size`             | INTEGER           | Größe der Quelldateien                           |
 | `uploaded_size`    | INTEGER           | Größe der hochgeladenen Daten                          |
 | `examined_files`   | INTEGER           | Anzahl der untersuchten Dateien                       |
 | `warnings`         | INTEGER           | Anzahl der Warnungen                             |
 | `errors`           | INTEGER           | Anzahl der Fehler                               |
-| `created_at`       | DATETIME          | Zeitstempel der Datensatzerstellung                      |
+| `created_at`       | DATETIME          | Zeitstempel der Datensatz-Erstellung                      |
 
 #### Nachrichtenarrays (JSON-Speicher) {/* #message-arrays-json-storage */}
 
-| Feld               | Typ | Beschreibung                             |
+| Feld                | Typ  | Beschreibung                             |
 |---------------------|------|-----------------------------------------|
-| `messages_array`    | TEXT | JSON-Array mit Protokollnachrichten              |
-| `warnings_array`    | TEXT | JSON-Array mit Warnmeldungen          |
-| `errors_array`      | TEXT | JSON-Array mit Fehlermeldungen            |
-| `available_backups` | TEXT | JSON-Array mit verfügbaren Sicherungsversionen |
+| `messages_array`    | TEXT | JSON-Array von Protokollnachrichten              |
+| `warnings_array`    | TEXT | JSON-Array von Warnmeldungen          |
+| `errors_array`      | TEXT | JSON-Array von Fehlermeldungen            |
+| `available_backups` | TEXT | JSON-Array von verfügbaren Sicherungsversionen |
 
-#### Dateioperation-Felder {/* #file-operation-fields */}
+#### Dateioperationsfelder {/* #file-operation-fields */}
 
-| Feld                 | Typ    | Beschreibung                  |
+| Feld                 | Typ     | Beschreibung                  |
 |-----------------------|---------|------------------------------|
-| `examined_files`      | INTEGER | Bei der Sicherung untersuchte Dateien |
-| `opened_files`        | INTEGER | Zum Sichern geöffnete Dateien      |
-| `added_files`         | INTEGER | Neue Dateien zur Sicherung hinzugefügt    |
-| `modified_files`      | INTEGER | In der Sicherung geänderte Dateien     |
-| `deleted_files`       | INTEGER | Aus der Sicherung gelöschte Dateien    |
-| `deleted_folders`     | INTEGER | Aus der Sicherung gelöschte Ordner  |
-| `added_folders`       | INTEGER | Dem Backup hinzugefügte Ordner      |
-| `modified_folders`    | INTEGER | In der Sicherung geänderte Ordner   |
-| `not_processed_files` | INTEGER | Nicht verarbeitete Dateien          |
-| `too_large_files`     | INTEGER | Zu große Dateien zur Verarbeitung   |
+| `examined_files`      | INTEGER | Dateien, die während der Sicherung untersucht wurden |
+| `opened_files`        | INTEGER | Dateien, die für die Sicherung geöffnet wurden      |
+| `added_files`         | INTEGER | Neue Dateien, die zur Sicherung hinzugefügt wurden    |
+| `modified_files`      | INTEGER | Dateien, die in der Sicherung geändert wurden     |
+| `deleted_files`       | INTEGER | Dateien, die aus der Sicherung gelöscht wurden    |
+| `deleted_folders`     | INTEGER | Ordner, die aus der Sicherung gelöscht wurden  |
+| `added_folders`       | INTEGER | Ordner, die zur Sicherung hinzugefügt wurden      |
+| `modified_folders`    | INTEGER | Ordner, die in der Sicherung geändert wurden   |
+| `not_processed_files` | INTEGER | Dateien, die nicht verarbeitet wurden          |
+| `too_large_files`     | INTEGER | Dateien, die zu groß zum Verarbeiten sind   |
 | `files_with_error`    | INTEGER | Dateien mit Fehlern            |
-| `added_symlinks`      | INTEGER | Hinzugefügte symbolische Verknüpfungen         |
-| `modified_symlinks`   | INTEGER | Geänderte symbolische Verknüpfungen      |
-| `deleted_symlinks`    | INTEGER | Gelöschte symbolische Verknüpfungen       |
+| `added_symlinks`      | INTEGER | Symbolische Links hinzugefügt         |
+| `modified_symlinks`   | INTEGER | Symbolische Links geändert      |
+| `deleted_symlinks`    | INTEGER | Symbolische Links gelöscht       |
 
-#### Dateigröße-Felder {/* #file-size-fields */}
+#### Dateigrößenfelder {/* #file-size-fields */}
 
-| Feld                    | Typ    | Beschreibung                          |
+| Feld                     | Typ     | Beschreibung                          |
 |--------------------------|---------|--------------------------------------|
 | `size_of_examined_files` | INTEGER | Größe der während der Sicherung untersuchten Dateien |
-| `size_of_opened_files`   | INTEGER | Größe der zum Sichern geöffneten Dateien      |
+| `size_of_opened_files`   | INTEGER | Größe der für die Sicherung geöffneten Dateien      |
 | `size_of_added_files`    | INTEGER | Größe der neuen Dateien, die der Sicherung hinzugefügt wurden    |
 | `size_of_modified_files` | INTEGER | Größe der in der Sicherung geänderten Dateien     |
 
-#### Betriebsstatus-Felder {/* #operation-status-fields */}
+#### Betriebsstatusfelder {/* #operation-status-fields */}
 
-| Feld                    | Typ              | Beschreibung                    |
+| Feld                     | Typ              | Beschreibung                    |
 |--------------------------|-------------------|--------------------------------|
-| `parsed_result`          | TEXT NOT NULL     | Geparstes Operationsergebnis        |
-| `main_operation`         | TEXT NOT NULL     | Hauptoperationstyp            |
-| `interrupted`            | BOOLEAN           | Gibt an, ob die Sicherung unterbrochen wurde |
-| `partial_backup`         | BOOLEAN           | Gibt an, ob die Sicherung teilweise war     |
-| `dryrun`                 | BOOLEAN           | Gibt an, ob die Sicherung ein Trockenlauf war   |
+| `parsed_result`          | TEXT NOT NULL     | Ergebnis der analysierten Operation        |
+| `main_operation`         | TEXT NOT NULL     | Haupttyp der Operation            |
+| `interrupted`            | BOOLEAN           | Ob die Sicherung unterbrochen wurde |
+| `partial_backup`         | BOOLEAN           | Ob die Sicherung unvollständig war     |
+| `dryrun`                 | BOOLEAN           | Ob die Sicherung ein Trockenlauf war   |
 | `version`                | TEXT              | Verwendete Duplicati-Version         |
 | `begin_time`             | DATETIME NOT NULL | Startzeit der Sicherung              |
 | `end_time`               | DATETIME NOT NULL | Endzeit der Sicherung                |
@@ -127,18 +127,18 @@ Speichert Sicherungsvorgangsdaten, die von Duplicati-Servern empfangen werden.
 | `errors_actual_length`   | INTEGER           | Tatsächliche Anzahl der Fehler            |
 | `messages_actual_length` | INTEGER           | Tatsächliche Anzahl der Nachrichten          |
 
-#### Backend-Statistiken-Felder {/* #backend-statistics-fields */}
+#### Backend-Statistikfelder {/* #backend-statistics-fields */}
 
 | Feld                            | Typ     | Beschreibung                       |
 |----------------------------------|----------|-----------------------------------|
-| `bytes_downloaded`               | INTEGER  | Vom Zielort heruntergeladene Bytes |
-| `known_file_size`                | INTEGER  | Bekannte Dateigröße am Zielort    |
-| `last_backup_date`               | DATETIME | Datum der letzten Sicherung am Zielort   |
-| `backup_list_count`              | INTEGER  | Anzahl der Sicherungsversionen         |
+| `bytes_downloaded`               | INTEGER  | Vom Ziel heruntergeladene Bytes |
+| `known_file_size`                | INTEGER  | Bekannte Dateigröße am Ziel    |
+| `last_backup_date`               | DATETIME | Datum des letzten Backups auf dem Ziel   |
+| `backup_list_count`              | INTEGER  | Anzahl der Backup-Versionen         |
 | `reported_quota_error`           | BOOLEAN  | Quota-Fehler gemeldet              |
 | `reported_quota_warning`         | BOOLEAN  | Quota-Warnung gemeldet            |
 | `backend_main_operation`         | TEXT     | Hauptoperation des Backends            |
-| `backend_parsed_result`          | TEXT     | Geparstes Ergebnis des Backends             |
+| `backend_parsed_result`          | TEXT     | Ergebnis der Backend-Analyse             |
 | `backend_interrupted`            | BOOLEAN  | Backend-Operation unterbrochen     |
 | `backend_version`                | TEXT     | Backend-Version                   |
 | `backend_begin_time`             | DATETIME | Startzeit der Backend-Operation      |
@@ -148,7 +148,7 @@ Speichert Sicherungsvorgangsdaten, die von Duplicati-Servern empfangen werden.
 
 ### Konfigurationstabelle {/* #configurations-table */}
 
-Speichert Anwendungskonfigurationseinstellungen.
+Speichert die Anwendungskonfigurationseinstellungen.
 
 #### Felder {/* #fields-1 */}
 
@@ -161,10 +161,10 @@ Speichert Anwendungskonfigurationseinstellungen.
 
 - `email_config`: E-Mail-Benachrichtigungseinstellungen
 - `ntfy_config`: NTFY-Benachrichtigungseinstellungen
-- `overdue_tolerance`: Toleranzeinstellungen für verspätete Sicherungen
-- `notification_templates`: Vorlagen für Benachrichtigungsnachrichten
-- `daily_summary`: Tägliche Zusammenfassung, Zeitplan, Zeitzone, optionale öffentliche Dashboard-URL und optionaler SMTP-Empfänger-Override (`smtpRecipient`; leer verwendet E-Mail-Einstellungen)
-- `cron_service`: Cron-Aufgabenpläne, einschließlich `daily-summary-dispatch` (`minute hour * * *` von `daily_summary.utcTime`)
+- `overdue_tolerance`: Einstellungen für überfällige Backups
+- `notification_templates`: Benachrichtigungsnachrichtenvorlagen
+- `daily_summary`: Täglicher Zusammenfassungsmodus, Zeitplan, Zeitzone, optionale öffentliche Dashboard-URL und optionaler SMTP-Empfänger-Override (`smtpRecipient`; leer verwendet E-Mail-Einstellungen)
+- `cron_service`: Zeitplanaufgaben, einschließlich `daily-summary-dispatch` (`minute hour * * *` von `daily_summary.utcTime`)
 - `audit_retention_days`: Aufbewahrungsdauer des Prüfprotokolls (Standard: 90 Tage)
 
 ### Datenbankversionstabelle {/* #database-version-table */}
@@ -173,69 +173,69 @@ Verfolgt die Datenbankschema-Version für Migrationszwecke.
 
 #### Felder {/* #fields-2 */}
 
-| Feld        | Typ             | Beschreibung                |
+| Feld         | Typ              | Beschreibung                |
 |--------------|------------------|----------------------------|
 | `version`    | TEXT PRIMARY KEY | Datenbankversion           |
 | `applied_at` | DATETIME         | Wann die Migration angewendet wurde |
 
 ### Benutzertabelle {/* #users-table */}
 
-Speichert Benutzerkonteninformationen für Authentifizierung und Zugriffskontrolle.
+Speichert Benutzerkontoinformationen für Authentifizierung und Zugriffskontrolle.
 
 #### Felder {/* #fields-3 */}
 
 | Feld                   | Typ                 | Beschreibung                         |
 |-------------------------|----------------------|-------------------------------------|
-| `id`                    | TEXT PRIMARY KEY     | Eindeutige Benutzerkennung              |
+| `id`                    | TEXT PRIMARY KEY     | Eindeutige Benutzer-ID              |
 | `username`              | TEXT UNIQUE NOT NULL | Benutzername für die Anmeldung                  |
-| `password_hash`         | TEXT NOT NULL        | Mit Bcrypt gehashtes Passwort              |
-| `is_admin`              | BOOLEAN NOT NULL     | Gibt an, ob der Benutzer Administratorrechte hat   |
-| `must_change_password`  | BOOLEAN              | Gibt an, ob eine Passwortänderung erforderlich ist |
+| `password_hash`         | TEXT NOT NULL        | Bcrypt gehashtes Passwort              |
+| `is_admin`              | BOOLEAN NOT NULL     | Ob der Benutzer Admin-Rechte hat   |
+| `must_change_password`  | BOOLEAN              | Ob eine Passwortänderung erforderlich ist |
 | `created_at`            | DATETIME             | Zeitstempel der Kontoerstellung          |
-| `updated_at`            | DATETIME             | Zeitstempel der letzten Aktualisierung               |
+| `updated_at`       | DATETIME         | Zeitstempel der letzten Aktualisierung                                                       |
 | `last_login_at`         | DATETIME             | Zeitstempel der letzten erfolgreichen Anmeldung     |
 | `last_login_ip`         | TEXT                 | IP-Adresse der letzten Anmeldung            |
-| `failed_login_attempts` | INTEGER              | Anzahl fehlgeschlagener Anmeldeversuche      |
-| `locked_until`          | DATETIME             | Sperrfrist des Kontos (falls gesperrt) |
+| `failed_login_attempts` | INTEGER              | Anzahl der fehlgeschlagenen Anmeldeversuche      |
+| `locked_until`          | DATETIME             | Sperrungsende des Kontos (falls gesperrt) |
 
-### Sitzungenstabelle {/* #sessions-table */}
+### Sitzungstabelle {/* #sessions-table */}
 
-Speichert Benutzersitzungsdaten für Authentifizierung und Sicherheit.
+Speichert Benutzer-Sitzungsdaten für die Authentifizierung und Sicherheit.
 
 #### Felder {/* #fields-4 */}
 
-| Feld             | Typ              | Beschreibung                                                      |
+| Feld              | Typ               | Beschreibung                                                      |
 |-------------------|-------------------|------------------------------------------------------------------|
-| `id`              | TEXT PRIMARY KEY  | Sitzungskennung                                               |
-| `user_id`         | TEXT              | Verweis auf die Benutzertabelle (kann für nicht authentifizierte Sitzungen null sein) |
-| `created_at`      | DATETIME          | Zeitstempel der Sitzungserstellung                                       |
-| `last_accessed`   | DATETIME          | Zeitstempel des letzten Zugriffs                                            |
-| `expires_at`      | DATETIME NOT NULL | Zeitstempel des Sitzungsablaufs                                     |
-| `ip_address`      | TEXT              | IP-Adresse des Sitzungsherkunftsorts                                     |
-| `user_agent`    | TEXT                              | User-Agent-Zeichenfolge                                                 |
+| `id`              | TEXT PRIMARY KEY  | Sitzungs-ID                                                     |
+| `user_id`         | TEXT              | Verweis auf die Benutzer-Tabelle (kann NULL sein für nicht authentifizierte Sitzungen) |
+| `created_at`      | DATETIME          | Sitzungs-Erstellungszeitstempel                                       |
+| `last_accessed`   | DATETIME          | Letzter Zugriffszeitstempel                                            |
+| `expires_at`      | DATETIME NOT NULL | Sitzungs-Ablaufzeitstempel                                     |
+| `ip_address`      | TEXT              | IP-Adresse des Sitzungsursprungs                                     |
+| `user_agent`    | TEXT                              | Benutzer-Agent-String                                                 |
 | `csrf_token`      | TEXT              | CSRF-Token für die Sitzung                                       |
-| `csrf_expires_at` | DATETIME          | Ablauf des CSRF-Tokens |
+| `csrf_expires_at` | DATETIME          | CSRF-Token-Ablauf                                            |
 
-### Audit-Protokolltabelle {/* #audit-log-table */}
+### Audit-Protokoll-Tabelle {/* #audit-log-table */}
 
-Speichert ein Audit-Trail von Benutzeraktionen und Systemereignissen.
+Speichert den Audit-Trail von Benutzer-Aktionen und System-Ereignissen.
 
 #### Felder {/* #fields-5 */}
 
 | Feld           | Typ                              | Beschreibung                                                       |
 |-----------------|-----------------------------------|-------------------------------------------------------------------|
-| `id`            | INTEGER PRIMARY KEY AUTOINCREMENT | Eindeutige Kennung des Audit-Log-Eintrags                                 |
-| `timestamp`     | DATETIME                          | Zeitstempel des Ereignisses                                                   |
-| `user_id`       | TEXT                              | Verweis auf Benutzertabelle (kann null sein)                               |
+| `id`            | INTEGER PRIMARY KEY AUTOINCREMENT | Eindeutige Audit-Protokoll-Eintrags-ID                                 |
+| `timestamp`     | DATETIME                          | Ereigniszeitstempel                                                   |
+| `user_id`       | TEXT                              | Verweis auf die Benutzer-Tabelle (kann NULL sein)                               |
 | `username`      | TEXT                              | Benutzername zum Zeitpunkt der Aktion                                        |
-| `action`        | TEXT NOT NULL                     | Durchgeführte Aktion                                                  |
-| `category`      | TEXT NOT NULL                     | Kategorie der Aktion (z. B. 'authentication', 'settings', 'backup') |
-| `target_type`   | TEXT                              | Typ des Ziels (z. B. 'server', 'backup', 'user')                 |
+| `action`        | TEXT NOT NULL                     | Ausgeführte Aktion                                                  |
+| `category`      | TEXT NOT NULL                     | Kategorie der Aktion (z. B. 'Authentifizierung', 'Einstellungen', 'Sicherung') |
+| `target_type`   | TEXT                              | Typ des Ziels (z. B. 'Server', 'Sicherung', 'Benutzer')                 |
 | `target_id`     | TEXT                              | Kennung des Ziels                                              |
 | `details`       | TEXT                              | Zusätzliche Details (JSON)                                         |
-| `ip_address`    | TEXT                              | IP-Adresse des Anfragenden                                           |
-| `user_agent`    | TEXT                              | User-Agent-Zeichenfolge                                                 |
-| `status`        | TEXT NOT NULL                     | Status der Aktion ('success', 'failure', 'error')                  |
+| `ip_address`    | TEXT                              | IP-Adresse des Anforderers                                           |
+| `user_agent`    | TEXT                              | Benutzer-Agent-String                                                 |
+| `status`        | TEXT NOT NULL                     | Status der Aktion ('Erfolgreich', 'Fehler', 'Fehlermeldung')                  |
 | `error_message` | TEXT                              | Fehlermeldung, falls die Aktion fehlgeschlagen ist                                    |
 
 ### API-Schlüssel-Tabelle {/* #api-keys-table */}
@@ -244,9 +244,9 @@ Speichert gehaschte API-Schlüssel für die externen HTTP-APIs. Das Klartext-Geh
 
 #### Felder {/* #fields-6 */}
 
-| Feld           | Typ              | Beschreibung                                              |
+| Feld          | Typ             | Beschreibung                                              |
 |----------------|------------------|----------------------------------------------------------|
-| `id`           | TEXT PRIMARY KEY | Eindeutiger Schlüsselbezeichner                                    |
+| `id`           | TEXT PRIMARY KEY | Eindeutige Schlüsselkennung                                    |
 | `name`         | TEXT NOT NULL    | Anzeigename                                             |
 | `key_hash`     | TEXT UNIQUE      | SHA-256-Hash des Geheimnisses                               |
 | `key_prefix`   | TEXT             | Erste vier Zeichen des Geheimnisses (für Fingerabdrücke)   |
@@ -257,47 +257,47 @@ Speichert gehaschte API-Schlüssel für die externen HTTP-APIs. Das Klartext-Geh
 | `created_at`   | DATETIME         | Erstellungszeitstempel                                       |
 | `created_by`   | TEXT             | Benutzer-ID des Administrators, der den Schlüssel erstellt hat         |
 | `expires_at`   | DATETIME         | Optionales Ablaufdatum                                          |
-| `last_used_at` | DATETIME         | Letzte erfolgreiche Verwendung                                      |
-| `usage_count`  | INTEGER          | Anzahl der erfolgreichen Verwendungen                                     |
+| `last_used_at` | DATETIME         | Letzte erfolgreiche Nutzung                                      |
+| `usage_count`  | INTEGER          | Anzahl der erfolgreichen Nutzungen                                     |
 
 Verwandte Konfigurationsschlüssel in der `configurations`-Tabelle: `external_api_require_api_key`, `ip_trusted_proxies`, `admin_ip_allowlist`, `external_api_ip_allowlist`, `upload_limits`.
 
-### Tägliche Zusammenfassung der Lieferungen Tabelle {/* #daily-summary-deliveries-table */}
+### Tägliche Zusammenfassung der Lieferungen {/* #daily-summary-deliveries-table */}
 
-Kanalbasiertes Konto für die Zustellung der Täglichen Zusammenfassung per E-Mail. Veraltete Zeilen können einen `ntfy` Kanal aus früheren Versionen enthalten. Jeder geplante Vorgang (oder eindeutige manuelle Sendung) hat pro Kanal maximal eine Zeile. Gerenderte Nutzlasten werden vor dem Senden gespeichert, sodass Wiederholungen die gleiche Momentaufnahme verwenden. Zeilen älter als 30 Tage werden gelöscht.
+Kanalbasiertes Konto für die Lieferung der täglichen Zusammenfassung per E-Mail. Veraltete Zeilen können einen `ntfy`-Kanal aus früheren Versionen enthalten. Jede geplante Ausführung (oder eindeutige manuelle Sendung) hat pro Kanal maximal eine Zeile. Die gerenderten Nutzlasten werden vor dem Senden gespeichert, damit Wiederholungen die gleiche Momentaufnahme verwenden. Zeilen älter als 30 Tage werden gelöscht.
 
-Wenn der Prozess nach dem Akzeptieren einer Nachricht durch einen Anbieter stirbt, bevor der Erfolg aufgezeichnet wird, kann dieser Kanal erneut versucht werden (mindestens einmal).
+Wenn der Prozess nach der Annahme einer Nachricht durch einen Anbieter stirbt, bevor der Erfolg aufgezeichnet wird, kann dieser Kanal erneut versucht werden (mindestens einmal).
 
 #### Felder {/* #fields-7 */}
 
-| Feld               | Typ              | Beschreibung                                                                 |
+| Feld              | Typ             | Beschreibung                                                                 |
 |--------------------|------------------|-----------------------------------------------------------------------------|
 | `id`               | TEXT PRIMARY KEY | Eindeutiger Lieferungsbezeichner                                                  |
 | `occurrence_key`   | TEXT NOT NULL    | Geplanter Schlüssel `scheduled:UTC:{date}:{HH:mm}` oder `manual:{uuid}`             |
 | `channel`          | TEXT NOT NULL    | `email` oder `ntfy`                                                           |
-| `trigger`          | TEXT NOT NULL    | `scheduled`, `manual` oder `retry`                                           |
+| `trigger`          | TEXT NOT NULL    | `scheduled`, `manual`, oder `retry`                                           |
 | `summary_date`     | TEXT NOT NULL    | Lokales Kalenderdatum für die Momentaufnahme                                        |
 | `time_zone`        | TEXT NOT NULL    | Gespeicherte IANA-Zeitzone                                                         |
-| `payload_json`     | TEXT             | Gerendert Betreff, HTML, Text und NTFY-Felder                               |
-| `state`            | TEXT NOT NULL    | `pending`, `sending`, `sent` oder `failed`                                   |
+| `payload_json`     | TEXT             | Gerendertes Betreff, HTML, Text und NTFY-Felder                               |
+| `state`            | TEXT NOT NULL    | `pending`, `sending`, `sent`, oder `failed`                                   |
 | `attempt_count`    | INTEGER          | Lieferungsversuche                                                           |
 | `next_retry_at`    | DATETIME         | Wann ein fehlgeschlagener Kanal erneut versucht werden kann                                  |
-| `lease_expires_at` | DATETIME         | Anspruchsverpachtung; eine veraltete Verpachtung kann wiederhergestellt werden                                 |
+| `lease_expires_at` | DATETIME         | Claim-Lease; eine veraltete Lease kann wiederhergestellt werden                                 |
 | `error`            | TEXT             | Letzter Fehler, falls vorhanden                                                          |
 | `created_at`       | DATETIME         | Zeitstempel der Zeilen-Erstellung                                                      |
-| `updated_at`            | DATETIME             | Zeitstempel der letzten Aktualisierung               |
-| `sent_at`          | DATETIME         | Erfolgreich Zeitstempel                                                           |
+| `updated_at`       | DATETIME         | Zeitstempel der letzten Aktualisierung                                                       |
+| `sent_at`          | DATETIME         | Zeitstempel des Erfolgs                                                           |
 
 Ein eindeutiger Index auf `(occurrence_key, channel)` verhindert das doppelte Senden desselben Vorkommens auf demselben Kanal.
 
 ## Sitzungsverwaltung {/* #session-management */}
 
-### Datenbankgestützter Sitzungs-Speicher {/* #database-backed-session-storage */}
+### Sitzungs-Speicher mit Datenbank-Unterstützung {/* #database-backed-session-storage */}
 
-Sitzungen werden in der Datenbank mit einem In-Memory-Fallback gespeichert:
-- **Primärer Speicher**: Datenbankbasierte Sitzungstabelle
-- **Fallback**: In-Memory-Speicherung (Legacy-Unterstützung oder Fehlerfälle)
-- **Sitzungs-ID**: Kryptografisch sicherer Zufallsstring
+Sitzungen werden in der Datenbank mit einem Speicher-Fallback gespeichert:
+- **Primärer Speicher**: Sitzungen in der Datenbank
+- **Fallback**: Speicher im Arbeitsspeicher (Legacy-Unterstützung oder Fehlerfälle)
+- **Sitzungs-ID**: Kryptografisch sicherer zufälliger String
 - **Ablauf**: Konfigurierbare Sitzungszeitüberschreitung
 - **CSRF-Schutz**: Schutz vor Cross-Site-Request-Forgery
 - **Automatische Bereinigung**: Abgelaufene Sitzungen werden automatisch entfernt
@@ -305,7 +305,7 @@ Sitzungen werden in der Datenbank mit einem In-Memory-Fallback gespeichert:
 ### Sitzungs-API-Endpunkte {/* #session-api-endpoints */}
 
 - `POST /api/session`: Neue Sitzung erstellen
-- `GET /api/session`: Vorhandene Sitzung validieren
+- `GET /api/session`: Bestehende Sitzung validieren
 - `DELETE /api/session`: Sitzung beenden
 - `GET /api/csrf`: CSRF-Token abrufen
 
@@ -313,38 +313,38 @@ Sitzungen werden in der Datenbank mit einem In-Memory-Fallback gespeichert:
 
 Die Datenbank enthält mehrere Indizes für optimale Abfrageleistung:
 
-- **Primärschlüssel**: Alle Tabellen verfügen über Primärschlüsselindizes
-- **Fremdschlüssel**: Server-Referenzen in der Backups-Tabelle, Benutzer-Referenzen in den Tabellen sessions und audit_log
-- **Abfrageoptimierung**: Indizes für häufig abgefragte Felder
-- **Datumsindizes**: Indizes für Datumsfelder zur Unterstützung zeitbasierter Abfragen
-- **Benutzer-Indexe**: Benutzername-Index für schnelle Benutzerabfragen
-- **Sitzungs-Indexe**: Ablauf- und Benutzer-ID-Indexe für Sitzungsverwaltung
-- **Audit-Indexe**: Zeitstempel-, Benutzer-ID-, Aktions-, Kategorien- und Status-Indexe für Audit-Abfragen
-- **API-Schlüssel-Indexe**: Eindeutiger Hash, plus aktiviert/Bereichsabfragen für Authentifizierung
+- **Primärschlüssel**: Alle Tabellen haben Primärschlüssel-Indizes
+- **Fremdschlüssel**: Server-Referenzen in der Sicherungstabelle, Benutzer-Referenzen in Sitzungen und Audit-Protokoll
+- **Abfrageoptimierung**: Indizes auf häufig abgefragte Felder
+- **Datumsindizes**: Indizes auf Datumsfelder für zeitbasierte Abfragen
+- **Benutzerindizes**: Benutzername-Index für schnelle Benutzerabfragen
+- **Sitzungsindizes**: Ablauf- und Benutzer-ID-Indizes für Sitzungsverwaltung
+- **Audit-Indizes**: Zeitstempel-, Benutzer-ID-, Aktions-, Kategorien- und Statusindizes für Audit-Abfragen
+- **API-Schlüssel-Indizes**: Eindeutiger Hash, plus aktiviert/Bereich-Abfragen für Authentifizierung
 
 ## Beziehungen {/* #relationships */}
 
-- **Server → Backups**: Ein-zu-viele-Beziehung
-- **Benutzer → Sessions**: Ein-zu-viele-Beziehung (Sitzungen können ohne Benutzer existieren)
+- **Server → Sicherungen**: Ein-zu-viele-Beziehung
+- **Benutzer → Sitzungen**: Ein-zu-viele-Beziehung (Sitzungen können ohne Benutzer existieren)
 - **Benutzer → Audit-Protokoll**: Ein-zu-viele-Beziehung (Audit-Einträge können ohne Benutzer existieren)
-- **Benutzer → API-Schlüssel**: Ein-zu-viele-Beziehung über `created_by` (Schlüssel bleiben nach dem Löschen des Benutzers erhalten)
-- **Backups → Nachrichten**: Eingebettete JSON-Arrays
+- **Benutzer → API-Schlüssel**: Ein-zu-viele-Beziehung über `created_by` (Schlüssel bleiben nach dem Löschen des Benutzers bestehen)
+- **Sicherungen → Nachrichten**: Eingebettete JSON-Arrays
 - **Konfigurationen**: Schlüssel-Wert-Speicher
 
 ## Datentypen {/* #data-types */}
 
-- **TEXT**: Zeichenkettendaten, JSON-Arrays
-- **INTEGER**: Numerische Daten, Dateianzahlen, Größenangaben
-- **REAL**: Gleitkommazahlen, Dauerangaben
-- **DATETIME**: Zeitstempeldaten
+- **TEXT**: Zeichenketten-Daten, JSON-Arrays
+- **INTEGER**: Numerische Daten, Datei-Anzahlen, Größen
+- **REAL**: Gleitkommazahlen, Dauer
+- **DATETIME**: Zeitstempel-Daten
 - **BOOLEAN**: Wahr/Falsch-Werte
 
-## Sicherungsstatuswerte {/* #backup-status-values */}
+## Statuswerte der Sicherung {/* #backup-status-values */}
 
-- **Erfolg**: Sicherung erfolgreich abgeschlossen
-- **Warnung**: Sicherung abgeschlossen mit Warnungen
-- **Fehler**: Sicherung abgeschlossen mit Fehlern
-- **Kritisch**: Sicherung fehlgeschlagen kritisch
+- **Erfolgreich**: Sicherung erfolgreich abgeschlossen
+- **Warnung**: Sicherung mit Warnungen abgeschlossen
+- **Fehler**: Sicherung mit Fehlern abgeschlossen
+- **Fatal**: Sicherung fehlgeschlagen
 
 ## Häufige Abfragen {/* #common-queries */}
 
@@ -379,7 +379,7 @@ LEFT JOIN backups b ON s.id = b.server_id
 GROUP BY s.id;
 ```
 
-### Gesamte Zusammenfassung {/* #get-overall-summary */}
+### Gesamtzusammenfassung abrufen {/* #get-overall-summary */}
 
 ```sql
 SELECT 
@@ -421,9 +421,9 @@ DELETE FROM servers
 WHERE id NOT IN (SELECT DISTINCT server_id FROM backups);
 ```
 
-## JSON zu Datenbankzuordnung {/* #json-to-database-mapping */}
+## JSON-zu-Datenbank-Mapping {/* #json-to-database-mapping */}
 
-### API-Anforderungsinhalt zu Datenbankspaltenzuordnung {/* #api-request-body-to-database-columns-mapping */}
+### API-Anfragekörper zu Datenbankspalten-Mapping {/* #api-request-body-to-database-columns-mapping */}
 
 Wenn Duplicati Sicherungsdaten über HTTP POST sendet, wird die JSON-Struktur auf Datenbankspalten abgebildet:
 
@@ -452,4 +452,4 @@ Wenn Duplicati Sicherungsdaten über HTTP POST sendet, wird die JSON-Struktur au
 }
 ```
 
-**Hinweis**: Das Feld `size` in der Sicherungstabelle speichert `SizeOfExaminedFiles` und `uploaded_size` speichert die tatsächliche hochgeladene/übertragene Größe aus dem Sicherungsvorgang.
+**Notiz**: Das `size`-Feld in der Sicherungstabelle speichert `SizeOfExaminedFiles` und `uploaded_size` speichert die tatsächliche hochgeladene/übertragene Größe aus dem Sicherungsvorgang.

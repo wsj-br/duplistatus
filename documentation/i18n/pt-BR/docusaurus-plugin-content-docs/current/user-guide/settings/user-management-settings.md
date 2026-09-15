@@ -1,65 +1,65 @@
 # Usuários {/* #users */}
 
-Gerencie contas de usuários, permissões e controle de acesso para **duplistatus**. Esta seção permite que administradores criem, modifiquem e excluam contas de usuários.
+Gerencie contas de usuário, permissões e controle de acesso para **duplistatus**. Esta seção permite aos administradores criar, modificar e excluir contas de usuário.
 
 ![Gerenciamento de Usuários](../../assets/screen-settings-users.png)
 
 >[!TIP] 
->A conta `admin` padrão pode ser excluída. Para fazer isso, primeiro crie um novo usuário administrador, entre com essa conta 
-> e depois exclua a conta `admin`.
+> A conta padrão `admin` pode ser excluída. Para fazer isso, primeiro crie um novo usuário administrador, faça login com essa conta,
+> e então exclua a conta `admin`.
 >
 > A senha padrão para a conta `admin` é `Duplistatus09`. Você será obrigado a alterá-la no primeiro login.
 
 ## Acessando o Gerenciamento de Usuários {/* #accessing-user-management */}
 
-Você pode acessar a seção Gerenciamento de usuários de duas formas:
+Você pode acessar a seção de Gerenciamento de Usuários de duas maneiras:
 
-1. **No Menu do Usuário**: Clique no <IconButton icon="lucide:user" label="nome de usuário" />   na [Barra de Ferramentas da Aplicação](../overview.md#application-toolbar) e selecione "Usuários Admin".
+1. **Do Menu de Usuário**: Clique no <IconButton icon="lucide:user" label="nome de usuário" /> na [Barra de Ferramentas do Aplicativo](../overview.md#application-toolbar) e selecione "Usuários Admin".
 
-2. **A partir de Configurações**: Clique em <IconButton icon="lucide:settings"/> e **Usuários** na barra lateral de configurações
+2. **Das Configurações**: Clique em <IconButton icon="lucide:settings"/> e **Usuários** na barra lateral de configurações
 
 ## Criando um Novo Usuário {/* #creating-a-new-user */}
 
-1. Clique no botão <IconButton icon="lucide:plus" label="Add User"/>
+1. Clique no botão <IconButton icon="lucide:plus" label="Adicionar Usuário"/>
 2. Insira os detalhes do usuário:
-   - **Nome de usuário**: Deve ter entre 3 e 50 caracteres, ser único e sem diferenciar maiúsculas e minúsculas
+   - **Nome de usuário**: Deve ter 3-50 caracteres, ser único e não sensível a maiúsculas/minúsculas
    - **Administrador**: Marque para conceder privilégios de administrador
-   - **Exigir Alteração de Senha**: Marque para forçar a alteração da senha no primeiro login
-   - **Senha**:
+   - **Exigir Alteração de Senha**: Marque para forçar a alteração de senha no primeiro login
+   - **Senha**: 
      - Opção 1: Marque "Gerar senha automaticamente" para criar uma senha temporária segura
      - Opção 2: Desmarque e insira uma senha personalizada
-3. Clique em <IconButton icon="lucide:user-plus" label="Create User" />.
+3. Clique em <IconButton icon="lucide:user-plus" label="Criar Usuário" />.
 
 ## Editando um Usuário {/* #editing-a-user */}
 
 1. Clique no ícone de edição <IconButton icon="lucide:edit" /> ao lado do usuário
-2. Modifique qualquer um dos seguintes itens:
+2. Modifique qualquer um dos seguintes:
    - **Nome de usuário**: Altere o nome de usuário (deve ser único)
-   - **Administrador**: Alterne os privilégios de administrador
-   - **Exigir Alteração de Senha**: Alterne o requisito de alteração de senha
-3. Clique em <IconButton icon="lucide:check" label="Save Changes" />.
+   - **Administrador**: Ative/desative privilégios de administrador
+   - **Exigir Alteração de Senha**: Ative/desative a exigência de alteração de senha
+3. Clique em <IconButton icon="lucide:check" label="Salvar Alterações" />.
 
 ## Redefinindo a Senha de um Usuário {/* #resetting-a-user-password */}
 
-1. Clique no ícone <IconButton icon="lucide:key-round" /> de chave ao lado do usuário
-2. Confirmar a redefinição de senha
+1. Clique no ícone de chave <IconButton icon="lucide:key-round" /> ao lado do usuário
+2. Confirme a redefinição da senha
 3. Uma nova senha temporária será gerada e exibida
-4. Copie a senha e forneça-a ao usuário com segurança
+4. Copie a senha e forneça-a ao usuário de forma segura
 
 ## Excluindo um Usuário {/* #deleting-a-user */}
 
-1. Clique no ícone <IconButton icon="lucide:trash-2" /> de exclusão ao lado do usuário
-2. Confirmar a exclusão na caixa de diálogo. **A exclusão do usuário é permanente e não pode ser desfeita.**
+1. Clique no ícone de exclusão <IconButton icon="lucide:trash-2" /> ao lado do usuário
+2. Confirme a exclusão na caixa de diálogo. **A exclusão de usuário é permanente e não pode ser desfeita.**
 
 ## Bloqueio de Conta {/* #account-lockout */}
 
-As contas são automaticamente bloqueadas após múltiplas tentativas de login falhadas:
+Contas são bloqueadas automaticamente após várias tentativas de login falhadas:
 - **Limite de Bloqueio**: 5 tentativas falhadas
 - **Duração do Bloqueio**: 15 minutos
-- Contas bloqueadas não podem entrar até que o período de bloqueio expire
+- Contas bloqueadas não podem fazer login até que o período de bloqueio expire
 
-## Recuperando Acesso do Administrador {/* #recovering-admin-access */}
+## Recuperando o acesso do Administrador {/* #recovering-admin-access */}
 
-Se você perdeu sua senha de admin ou foi bloqueado de sua conta, você pode recuperar o acesso usando o script de recuperação de admin. Consulte o guia [Admin Account Recovery](../admin-recovery.md) para instruções detalhadas sobre como recuperar o acesso de administrador em ambientes Docker.
+Se você perdeu sua senha de administrador ou foi bloqueado da sua conta, você pode recuperar o acesso usando o script de recuperação de administrador. Consulte o guia [Recuperação de Conta de Administrador](../admin-recovery.md) para obter instruções detalhadas sobre como recuperar o acesso de administrador em ambientes Docker.
 
-Se o navegador exibir **Acesso negado** (HTTP 403) antes do formulário de login, recupere-se com [Bloqueado pela Lista de permissões de IP](../troubleshooting.md#locked-out-by-ip-allowlist) em vez disso.
+Se o navegador mostrar **Acesso negado** (HTTP 403) antes do formulário de login, recupere usando [Bloqueado pela Lista de Permissões de IP](../troubleshooting.md#locked-out-by-ip-allowlist) em vez disso.

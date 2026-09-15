@@ -1,43 +1,43 @@
-# {/* #migration-guide */} हिंदी में माइग्रेशन गाइड
+# माइग्रेशन गाइड {/* #migration-guide */}
 
-यह गाइड बताती है कि duplistatus ke sanskaranon ke beech upgrade kaise karein. Migrations automatic hote hain—jab aap naya sanskaran shuru karte hain toh database schema apne aap update ho jata hai.
+यह गाइड बताती है कि duplistatus के विभिन्न संस्करणों के बीच अपग्रेड कैसे करें। माइग्रेशन स्वचालित होते हैं—जब आप कोई नया संस्करण शुरू करते हैं, तो डेटाबेस स्कीमा अपने आप अपडेट हो जाता है।
 
-Manual steps ki avashyakta keval tab hoti hai jab aapne customized notification Templates banaye hon (sanskaran 0.8.x ne template variables badal diye hain) ya external API Integrations hon jinhe update karne ki avashyakta ho (sanskaran 0.7.x ne API field ke naam badal diye hain, sanskaran 0.9.x mein authentication ki avashyakta hoti hai).
+मैन्युअल चरणों की आवश्यकता केवल तभी होती है जब आपने कस्टमाइज़्ड नोटिफ़िकेशन टेम्पलेट बनाए हों (संस्करण 0.8.x ने टेम्पलेट वेरिएबल्स बदले हैं) या बाहरी API एकीकरण हों जिन्हें अपडेट करने की आवश्यकता है (संस्करण 0.7.x ने API फ़ील्ड नाम बदले हैं, संस्करण 0.9.x के लिए प्रमाणीकरण आवश्यक है)।
 
-## Overview {/* #overview */}
+## अवलोकन {/* #overview */}
 
-duplistatus upgrade karte samay aapke database schema ko automatic migrate kar deta hai. Pranali:
+अपग्रेड करते समय duplistatus आपके डेटाबेस स्कीमा को स्वचालित रूप से माइग्रेट करता है। सिस्टम:
 
-1. Badlav karne se pehle aapke database ka backup banati hai
-2. Database schema ko sabse naye sanskaran mein update karti hai
-3. Sabhi maujooda data (Server, backups, configuration) ko surakshit rakhti hai
-4. Verifies karti hai ki migration safaltapoorvak poora ho gaya hai
+1. परिवर्तन करने से पहले आपके डेटाबेस का एक बैकअप बनाता है
+2. डेटाबेस स्कीमा को नवीनतम संस्करण में अपडेट करता है
+3. सभी मौजूदा डेटा (सर्वर, बैकअप, कॉन्फ़िगरेशन) को सुरक्षित रखता है
+4. सत्यापित करता है कि माइग्रेशन सफलतापूर्वक पूरा हो गया है
 
 ## माइग्रेशन से पहले अपने डेटाबेस का बैकअप लेना {/* #backing-up-your-database-before-migration */}
 
-Naye sanskaran mein upgrade karne se pehle, apne database ka backup banana sifaarish kiya jata hai. Yeh sunishchit karta hai ki yadi migration prakriya ke dauran kuch galat hota hai toh aap apna data restore kar sakein.
+नए संस्करण में अपग्रेड करने से पहले, अपने डेटाबेस का बैकअप बनाने की अनुशंसा की जाती है। यह सुनिश्चित करता है कि माइग्रेशन प्रक्रिया के दौरान कुछ गलत होने पर आप अपना डेटा पुनर्स्थापित कर सकें।
 
-### यदि आप Sanskaran 1.2.1 या बाद का चला रहे हैं {/* #if-youre-running-version-121-or-later */}
+### यदि आप 1.2.1 या बाद का संस्करण चला रहे हैं {/* #if-youre-running-version-121-or-later */}
 
-Built-in database backup function ka upayog karein:
+इन-बिल्ट डेटाबेस बैकअप फ़ंक्शन का उपयोग करें:
 
-1. Web interface mein [Settings → Database Maintenance](../user-guide/settings/database-maintenance.md) par jaayein
-2. **Database Backup** section mein, ek backup format chunein:
-   - **Database File (.db)**: Binary format - sabse tez backup, sabhi database structure ko bilkul sahi tarike se surakshit rakhta hai
-   - **SQL Dump (.sql)**: Text format - human-readable SQL statements
-3. **Download Backup** par click karein
-4. Backup file ek timestamped filename ke saath aapke computer par download ho jayegi
+1. वेब इंटरफ़ेस में [सेटिंग्स → डेटाबेस रखरखाव](../user-guide/settings/database-maintenance.md) पर जाएं
+2. **डेटाबेस बैकअप** अनुभाग में, बैकअप फ़ॉर्मेट चुनें:
+   - **डेटाबेस फ़ाइल (.db)**: बाइनरी फ़ॉर्मेट - सबसे तेज़ बैकअप, सभी डेटाबेस संरचना को सटीक रूप से सुरक्षित रखता है
+   - **SQL डंप (.sql)**: टेक्स्ट फ़ॉर्मेट - पढ़ने योग्य SQL स्टेटमेंट
+3. **बैकअप डाउनलोड करें** पर क्लिक करें
+4. बैकअप फ़ाइल टाइमस्टैम्प वाले फ़ाइल नाम के साथ आपके कंप्यूटर पर डाउनलोड हो जाएगी
 
-Adhik Vivaran ke liye, [Database Maintenance](../user-guide/settings/database-maintenance.md#database-backup) dastavez par jaayein.
+अधिक विवरण के लिए, [डेटाबेस रखरखाव](../user-guide/settings/database-maintenance.md#database-backup) दस्तावेज़ीकरण देखें।
 
-### यदि आप 1.2.1 से पहले का Sanskaran चला रहे हैं {/* #if-youre-running-a-version-before-121 */}
+### यदि आप 1.2.1 से पहले का संस्करण चला रहे हैं {/* #if-youre-running-a-version-before-121 */}
 
 #### बैकअप {/* #backup */}
 
-Aage badhne se pehle aapko manually database ka backup lena hoga. Database File (.db) container ke andar `/app/data/backups.db` par sthit hai.
+आगे बढ़ने से पहले आपको मैन्युअल रूप से डेटाबेस का बैकअप लेना होगा। डेटाबेस फ़ाइल कंटेनर के अंदर `/app/data/backups.db` पर स्थित है।
 
-##### Linux Upyogkarta के लिए {/* #for-linux-users */}
-यदि आप Linux पर हैं, तो हेल्पर कंटेनर चालू करने की चिंता न करें। आप नेटिव `cp` कमांड का उपयोग करके चल रहे कंटेनर से सीधे अपने होस्ट पर डेटाबेस निकाल सकते हैं।
+##### Linux उपयोगकर्ताओं के लिए {/* #for-linux-users */}
+यदि आप Linux पर हैं, तो हेल्पर कंटेनर शुरू करने की चिंता न करें। आप सीधे चल रहे कंटेनर से अपने होस्ट पर डेटाबेस निकालने के लिए नेटिव `cp` कमांड का उपयोग कर सकते हैं।
 
 ###### Docker या Podman का उपयोग करना: {/* #using-docker-or-podman */}
 
@@ -46,39 +46,39 @@ Aage badhne se pehle aapko manually database ka backup lena hoga. Database File 
 docker cp duplistatus:/app/data/backups.db ./duplistatus-backup-$(date +%Y%m%d).db
 ```
 
-(Yadi Podman ka upayog kar rahe hain, toh upar diye gaye command mein `docker` ko `podman` se badal dein.)
+(यदि Podman का उपयोग कर रहे हैं, तो ऊपर दिए गए कमांड में बस `docker` को `podman` से बदलें।)
 
-##### Windows Upyogkarta के लिए {/* #for-windows-users */}
-यदि आप Windows पर Docker Desktop चला रहे हैं, तो आपके पास कमांड लाइन का उपयोग किए बिना इसे हैंडल करने के दो आसान तरीके हैं:
+##### Windows उपयोगकर्ताओं के लिए {/* #for-windows-users */}
+यदि आप Windows पर Docker Desktop चला रहे हैं, तो कमांड लाइन का उपयोग किए बिना इसे संभालने के आपके पास दो सरल तरीके हैं:
 
 ###### विकल्प A: Docker Desktop का उपयोग करें (सबसे आसान) {/* #option-a-use-docker-desktop-easiest */}
 1. Docker Desktop डैशबोर्ड खोलें।
-2. Containers टैब पर जाएं aur अपने duplistatus कंटेनर पर क्लिक करें।
-3. Files टैब पर क्लिक करें।
+2. Containers टैब पर जाएं और अपने duplistatus कंटेनर पर क्लिक करें।
+3. फ़ाइलें टैब पर क्लिक करें।
 4. `/app/data/` पर जाएं।
-5. `backups.db` पर राइट-क्लिक करें और **Save as...** चुनें इसे अपने Windows फ़ोल्डर में डाउनलोड करने के लिए।
+5. `backups.db` पर राइट-क्लिक करें और इसे अपने Windows फ़ोल्डर में डाउनलोड करने के लिए **Save as...** चुनें।
 
 ###### विकल्प B: PowerShell का उपयोग करें {/* #option-b-use-powershell */}
-यदि आपको टर्मिनल पसंद है, तो आप फ़ाइल को अपने डेस्कटॉप पर Copy करने के लिए PowerShell का उपयोग कर सकते हैं:
+यदि आप टर्मिनल पसंद करते हैं, तो आप फ़ाइल को अपने डेस्कटॉप पर कॉपी करने के लिए PowerShell का उपयोग कर सकते हैं:
 
 ```powershell
 docker cp duplistatus:/app/data/backups.db $HOME\Desktop\duplistatus-backup.db
 ```
 
-##### यदि आप Bind Mounts का उपयोग करते हैं {/* #if-you-use-bind-mounts */}
-यदि आपने मूल रूप से अपना कंटेनर बाइंड माउंट का उपयोग करके सेट किया था (जैसे, आपने `/opt/duplistatus` जैसे लोकल फ़ोल्डर को कंटेनर से मैप किया), तो आपको Docker कमांड की बिल्कुल आवश्यकता नहीं है। बस अपने फ़ाइल मैनेजर का उपयोग करके फ़ाइल Copy करें:
+##### यदि आप बाइंड माउंट का उपयोग करते हैं {/* #if-you-use-bind-mounts */}
+यदि आपने मूल रूप से बाइंड माउंट का उपयोग करके अपना कंटेनर सेटअप किया है (उदा., आपने कंटेनर में `/opt/duplistatus` जैसे स्थानीय फ़ोल्डर को मैप किया है), तो आपको Docker कमांड की बिल्कुल भी आवश्यकता नहीं है। बस अपने फ़ाइल मैनेजर का उपयोग करके फ़ाइल को कॉपी करें:
 - Linux: `cp /path/to/your/folder/backups.db ~/backups.db`
-- Windows: बस सेटअप के दौरान निर्दिष्ट फ़ोल्डर से **File Explorer** में फ़ाइल Copy करें।
+- Windows: सेटअप के दौरान आपके द्वारा निर्दिष्ट फ़ोल्डर से **File Explorer** में बस फ़ाइल कॉपी करें।
 
 #### अपना डेटा पुनर्स्थापित करना {/* #restoring-your-data */}
-यदि आपको अपने डेटाबेस को Pichla बैकअप से पुनर्स्थापित करने की आवश्यकता है, तो अपने ऑपरेटिंग Pranali के आधार पर नीचे दिए गए चरणों का पालन करें।
+यदि आपको अपने डेटाबेस को किसी पिछले बैकअप से पुनर्स्थापित करने की आवश्यकता है, तो अपने ऑपरेटिंग सिस्टम के आधार पर नीचे दिए गए चरणों का पालन करें।
 
 :::info[महत्वपूर्ण] 
-डेटाबेस पुनर्स्थापित करने से पहले कंटेनर को रोकें ताकि फ़ाइल कोरप्शन से बचा जा सके।
+फ़ाइल के दूषित होने से बचाने के लिए डेटाबेस को पुनर्स्थापित करने से पहले कंटेनर को रोकें।
 :::
 
-##### Linux Upyogkarta के लिए {/* #for-linux-users-1 */}
-पुनर्स्थापित करने का सबसे आसान तरीका बैकअप फ़ाइल को कंटेनर के आंतरिक Sanchayan पथ में वापस "पुश" करना है।
+##### Linux उपयोगकर्ताओं के लिए {/* #for-linux-users-1 */}
+पुनर्स्थापित करने का सबसे आसान तरीका बैकअप फ़ाइल को कंटेनर के आंतरिक संग्रहण पथ में वापस "पुश" करना है।
 
 ###### Docker या Podman का उपयोग करना: {/* #using-docker-or-podman-1 */}
 
@@ -93,19 +93,19 @@ docker cp ./duplistatus-backup.db duplistatus:/app/data/backups.db
 docker start duplistatus
 ```
 
-##### Windows Upyogkarta के लिए {/* #for-windows-users-1 */}
+##### Windows उपयोगकर्ताओं के लिए {/* #for-windows-users-1 */}
 यदि आप Docker Desktop का उपयोग कर रहे हैं, तो आप GUI या PowerShell के माध्यम से पुनर्स्थापना कर सकते हैं।
 
-###### विकल्प A: Docker Desktop का उपयोग करें (GUI) {/* #option-a-use-docker-desktop-gui */}
-1. सुनिश्चित करें कि duplistatus कंटेनर चल रहा है (Docker Desktop को GUI के माध्यम से फ़ाइलें अपलोड करें करने के लिए कंटेनर का सक्रिय होना आवश्यक है)।
-2. अपने कंटेनर Sammaan में Files टैब पर जाएं।
-3. `/app/data/` पर नेविगेट करें।
-4. मौजूदा backups.db पर राइट-क्लिक करें और Delete चुनें।
-5. Import बटन पर क्लिक करें (या फ़ोल्डर क्षेत्र में राइट-क्लिक करें) और अपनी कंप्यूटर से अपना बैकअप फ़ाइल चुनें।
+###### विकल्प A: Docker Desktop (GUI) का उपयोग करें {/* #option-a-use-docker-desktop-gui */}
+1. सुनिश्चित करें कि duplistatus कंटेनर चालू (Running) है (Docker Desktop को GUI के माध्यम से फ़ाइलें अपलोड करने के लिए कंटेनर के सक्रिय होने की आवश्यकता होती है)।
+2. अपनी कंटेनर सेटिंग्स में फ़ाइलें टैब पर जाएं।
+3. `/app/data/` पर जाएं।
+4. मौजूदा backups.db पर राइट-क्लिक करें और हटाएं चुनें।
+5. Import बटन पर क्लिक करें (या फ़ोल्डर क्षेत्र में राइट-क्लिक करें) और अपने कंप्यूटर से अपनी बैकअप फ़ाइल चुनें।
 
-अगर फ़ाइल का नाम में टाइमस्टैम्प है, तो इसे बिल्कुल backups.db के रूप में नाम दें।
+यदि आयातित फ़ाइल के नाम में टाइमस्टैम्प है, तो उसका नाम बदलकर ठीक backups.db कर दें।
 
-कंटेनर को पुनः आरंभ करें।
+कंटेनर को पुनरारंभ करें।
 
 ###### विकल्प B: PowerShell का उपयोग करें {/* #option-b-use-powershell-1 */}
 
@@ -117,202 +117,202 @@ docker cp $HOME\Desktop\duplistatus-backup.db duplistatus:/app/data/backups.db
 docker start duplistatus
 ```
 
-##### यदि आप Bind Mounts का उपयोग करते हैं {/* #if-you-use-bind-mounts-1 */}
-यदि आप कंटेनर से मैप किए गए लोकल फ़ोल्डर का उपयोग कर रहे हैं, तो आपको किसी विशेष कमांड की आवश्यकता नहीं है।
+##### यदि आप बाइंड माउंट का उपयोग करते हैं {/* #if-you-use-bind-mounts-1 */}
+यदि आप कंटेनर में मैप किए गए किसी स्थानीय फ़ोल्डर का उपयोग कर रहे हैं, तो आपको किसी विशेष कमांड की आवश्यकता नहीं है।
 
 1. कंटेनर को रोकें।
-2. अपने बैकअप फ़ाइल को अपने मैप किए गए फ़ोल्डर में मैन्युअल रूप से कॉपी करें (जैसे, `/opt/duplistatus` या `C:\duplistatus_data`)।
-3. सुनिश्चित करें कि फ़ाइल का नाम बिल्कुल `backups.db` है।
-4. कंटेनर को आरंभ करें।
+2. अपनी बैकअप फ़ाइल को अपने मैप किए गए फ़ोल्डर (उदा., `/opt/duplistatus` या `C:\duplistatus_data`) में मैन्युअल रूप से कॉपी करें।
+3. सुनिश्चित करें कि फ़ाइल का नाम ठीक `backups.db` है।
+4. कंटेनर प्रारंभ करें।
 
 :::note
-यदि आप डेटाबेस को मैन्युअल रूप से पुनर्स्थापित करते हैं, तो आपको अनुमति त्रुटियों का सामना करना पड़ सकता है।
+यदि आप डेटाबेस को मैन्युअल रूप से पुनर्स्थापित करते हैं, तो आपको अनुमति संबंधी त्रुटियाँ आ सकती हैं। 
 
-कंटेनर लॉग्स जांचें और आवश्यकतानुसार अनुमतियाँ समायोजित करें। अधिक जानकारी के लिए नीचे दिए गए [Troubleshooting](#troubleshooting-your-restore--rollback) अनुभाग देखें।
+कंटेनर लॉग जांचें और यदि आवश्यक हो तो अनुमतियाँ समायोजित करें। अधिक जानकारी के लिए नीचे दिया गया [समस्या निवारण](#troubleshooting-your-restore--rollback) अनुभाग देखें।
 :::
 
 ## स्वचालित माइग्रेशन प्रक्रिया {/* #automatic-migration-process */}
 
 जब आप एक नया संस्करण शुरू करते हैं, तो माइग्रेशन स्वचालित रूप से चलते हैं:
 
-1. **बैकअप निर्माण**: आपके डेटा निर्देशिका में टाइमस्टैम्प वाला बैकअप बनाया जाता है
-2. **स्कीमा अपडेट**: डेटाबेस टेबल और फ़ील्ड आवश्यकतानुसार अपडेट किए जाते हैं
-3. **डेटा माइग्रेशन**: सभी मौजूदा डेटा संरक्षित और माइग्रेट किए जाते हैं
-4. **सत्यापन**: माइग्रेशन सफलता लॉग किया जाता है
+1. **बैकअप निर्माण**: आपकी डेटा निर्देशिका में टाइमस्टैम्प वाला बैकअप बनाई गई है
+2. **स्कीमा अपडेट**: आवश्यकतानुसार डेटाबेस टेबल और फ़ील्ड अपडेट किए जाते हैं
+3. **डेटा माइग्रेशन**: सभी मौजूदा डेटा को संरक्षित और माइग्रेट किया जाता है
+4. **सत्यापन**: माइग्रेशन की सफलता को लॉग किया जाता है
 
 ### माइग्रेशन की निगरानी {/* #monitoring-migration */}
 
-Docker logs ko monitor karne ke liye migration progress ko check karein:
+माइग्रेशन की प्रगति पर नज़र रखने के लिए Docker लॉग जांचें:
 
 ```bash
 docker logs <container-name>
 ```
 
-Like messages ko dekhiye:
+इस तरह के संदेश देखें:
 - `"Found X pending migrations"`
 - `"Running consolidated migration X.0..."`
 - `"Migration X.0 completed successfully"`
 - `"Database backup created: /path/to/backups-copy-YYYY-MM-DDTHH-MM-SS.db"`
 - `"All migrations completed successfully"`
 
-## Sanskaran-विशिष्ट माइग्रेशन नोट्स {/* #version-specific-migration-notes */}
+## संस्करण-विशिष्ट माइग्रेशन नोट्स {/* #version-specific-migration-notes */}
 
-### संस्करण 0.9.x या बाद के संस्करण में अपग्रेड करना (Schema v4.0) {/* #upgrading-to-version-09x-or-later-schema-v40 */}
+### संस्करण 0.9.x या बाद के संस्करण (स्कीमा v4.0) पर अपग्रेड करना {/* #upgrading-to-version-09x-or-later-schema-v40 */}
 
 :::warning
-**Authentication abhi zaroori hai.** Upgrade ke baad sabhi users log in karne ke liye zaroori hai.
+**प्रमाणीकरण अब आवश्यक है।** अपग्रेड करने के बाद सभी उपयोगकर्ताओं को लॉग इन करना होगा।
 :::
 
-#### क्या स्वचालित रूप से बदलता है {/* #what-changes-automatically */}
+#### कौन-से बदलाव अपने आप होते हैं {/* #what-changes-automatically */}
 
-- Database schema v3.1 se v4.0 mein migrate hoti hai
-- Naye tables banaye jate hain: `users`, `sessions`, `audit_log`
-- Default admin account automatically banaya jata hai
-- Sabhi existing sessions invalid kiye jate hain
+- डेटाबेस स्कीमा v3.1 से v4.0 में माइग्रेट होता है
+- नई तालिकाएँ बनाई गईं: `users`, `sessions`, `audit_log`
+- डिफ़ॉल्ट एडमिन खाता अपने आप बनाया गया
+- सभी मौजूदा सत्र अमान्य कर दिए गए
 
 #### आपको क्या करना होगा {/* #what-you-must-do */}
 
-1. **Log in** default admin credentials ke saath:
-   - Username: `admin`
-   - Password: `Duplistatus09`
-2. **Change the password** jab prompt ho (pehli login par required hai)
-3. **Create user accounts** dusre users ke liye (Settings → Users)
-4. **Update external API integrations** authentication ko include karne ke liye (see [Backward-incompatible API changes](api-changes.md))
-5. **Configure audit log retention** agar zaroori ho (Settings → Audit Log)
+1. डिफ़ॉल्ट एडमिन क्रेडेंशियल के साथ **लॉग इन करें**:
+   - उपयोगकर्ता नाम: `admin`
+   - पासवर्ड: `Duplistatus09`
+2. संकेत दिए जाने पर **पासवर्ड बदलें** (पहले लॉगिन पर आवश्यक)
+3. अन्य उपयोगकर्ताओं के लिए **उपयोगकर्ता खाते बनाएं** (सेटिंग्स → उपयोगकर्ता)
+4. प्रमाणीकरण शामिल करने के लिए **बाहरी API एकीकरण अपडेट करें** ([बैकवर्ड-इनकंपैटिबल API बदलाव](api-changes.md) देखें)
+5. आवश्यकता पड़ने पर **ऑडिट लॉग प्रतिधारण कॉन्फ़िगर करें** (सेटिंग्स → ऑडिट लॉग)
 
-#### यदि आप बाहर लॉक किए गए हैं {/* #if-youre-locked-out */}
+#### यदि आप बाहर लॉक हो गए हैं {/* #if-youre-locked-out */}
 
-Admin recovery tool ka use karein:
+एडमिन रिकवरी टूल का उपयोग करें:
 
 ```bash
 docker exec -it duplistatus /app/admin-recovery admin NewPassword123
 ```
 
-Details ke liye [Admin Recovery Guide](../user-guide/admin-recovery.md) ko dekhiye.
+विवरण के लिए [एडमिन रिकवरी गाइड](../user-guide/admin-recovery.md) देखें।
 
-### संस्करण 0.8.x में अपग्रेड करना {/* #upgrading-to-version-08x */}
+### संस्करण 0.8.x पर अपग्रेड करना {/* #upgrading-to-version-08x */}
 
-#### क्या स्वचालित रूप से बदलता है {/* #what-changes-automatically-1 */}
+#### कौन-से बदलाव अपने आप होते हैं {/* #what-changes-automatically-1 */}
 
-- Database schema v3.1 mein update hoti hai
-- Master key encryption ke liye generate hoti hai (`.duplistatus.key` mein stored hoti hai)
-- Sessions invalid kiye jate hain (naye CSRF-protected sessions banaye jate hain)
-- Passwords naye system ke saath encrypt kiye jate hain
+- डेटाबेस स्कीमा v3.1 में अपडेट किया गया
+- एन्क्रिप्शन के लिए मास्टर कुंजी जनरेट की गई (`.duplistatus.key` में संग्रहीत)
+- सत्र अमान्य किए गए (नए CSRF-संरक्षित सत्र बनाए गए)
+- नए सिस्टम का उपयोग करके पासवर्ड एन्क्रिप्ट किए गए
 
 #### आपको क्या करना होगा {/* #what-you-must-do-1 */}
 
-1. **Update notification templates** agar aapne customise kiye hain:
-   - `{backup_interval_value}` aur `{backup_interval_type}` ko `{backup_interval}` se replace karein
-   - Default templates automatically update hoti hain
+1. यदि आपने सूचना टेम्पलेट कस्टमाइज़ किए हैं, तो **सूचना टेम्पलेट अपडेट करें**:
+   - `{backup_interval_value}` और `{backup_interval_type}` को `{backup_interval}` से बदलें
+   - डिफ़ॉल्ट टेम्पलेट अपने आप अपडेट हो जाते हैं
 
-#### सुरक्षा नोट्स {/* #security-notes */}
+#### सुरक्षा नोट {/* #security-notes */}
 
-- `.duplistatus.key` फ़ाइल का बैकअप सुनिश्चित करें (0400 अनुमतियाँ हैं)
-- सत्र 24 घंटे बाद समाप्त हो जाते हैं
+- सुनिश्चित करें कि `.duplistatus.key` फ़ाइल का बैकअप ले लिया गया है (0400 अनुमतियाँ हैं)
+- सत्र 24 घंटे के बाद समाप्त हो जाते हैं
 
 ### संस्करण 0.7.x में अपग्रेड करना {/* #upgrading-to-version-07x */}
 
 #### क्या स्वचालित रूप से बदलता है {/* #what-changes-automatically-2 */}
 
-- `machines` तालिका का नाम बदलकर `servers` कर दिया गया
-- `machine_id` फ़ील्ड का नाम बदलकर `server_id` कर दिया गया
+- `machines` तालिका का नाम बदलकर `servers` कर दिया गया है
+- `machine_id` फ़ील्ड का नाम बदलकर `server_id` कर दिया गया है
 - नए फ़ील्ड जोड़े गए: `alias`, `notes`, `created_at`, `updated_at`
 
 #### आपको क्या करना होगा {/* #what-you-must-do-2 */}
 
 1. **बाहरी API एकीकरण अपडेट करें**:
-   - `totalMachines` → `totalServers` बदलें `/api/summary` में
-   - `machine` → `server` बदलें API प्रतिक्रिया ऑब्जेक्ट में
-   - `backup_types_count` → `backup_jobs_count` बदलें `/api/lastbackups/{serverId}` में
-   - एंडपॉइंट पथ को `/api/machines/...` से `/api/servers/...` तक अपडेट करें
-2. **सूचना टेम्प्लेट अपडेट करें**:
+   - `/api/summary` में `totalMachines` → `totalServers` बदलें
+   - API प्रतिक्रिया ऑब्जेक्ट्स में `machine` → `server` बदलें
+   - `/api/lastbackups/{serverId}` में `backup_types_count` → `backup_jobs_count` बदलें
+   - एंडपॉइंट पाथ को `/api/machines/...` से `/api/servers/...` में अपडेट करें
+2. **सूचनाएं टेम्पलेट अपडेट करें**:
    - `{machine_name}` को `{server_name}` से बदलें
 
-विस्तृत API माइग्रेशन चरणों के लिए [Backward-incompatible API changes](api-changes.md) देखें।
+विस्तृत API माइग्रेशन चरणों के लिए [बैकवर्ड-असंगत API परिवर्तन](api-changes.md) देखें।
 
-## माइग्रेशन-पश्चात चेकलिस्ट {/* #post-migration-checklist */}
+## माइग्रेशन के बाद की चेकलिस्ट {/* #post-migration-checklist */}
 
-अपग्रेड के बाद, निम्नलिखित की जाँच करें:
+अपग्रेड करने के बाद, सत्यापित करें:
 
-- [ ] सभी सर्वर डैशबोर्ड में सही तरह से दिखाई देते हैं
-- [ ] बैकअप इतिहास पूर्ण और पहुँच योग्य है
-- [ ] सूचनाएं काम करती हैं (NTFY/ईमेल का परीक्षण करें)
+- [ ] सभी सर्वर डैशबोर्ड में सही ढंग से दिखाई दे रहे हैं
+- [ ] बैकअप इतिहास पूरा और सुलभ है
+- [ ] सूचनाएं काम करती हैं (NTFY/ईमेल जाँचें)
 - [ ] बाहरी API एकीकरण काम करते हैं (यदि लागू हो)
-- [ ] सेटिंग्स पहुँच योग्य और सही हैं
-- [ ] बैकअप मॉनिटरिंग सही तरह से काम करती है
+- [ ] सेटिंग्स सुलभ और सही हैं
+- [ ] बैकअप निगरानी सही ढंग से काम करती है
 - [ ] सफलतापूर्वक लॉग इन किया गया (0.9.x+)
-- [ ] डिफ़ॉल्ट एडमिन पासवर्ड बदल दिया गया (0.9.x+)
-- [ ] अन्य उपयोगकर्ताओं के लिए उपयोगकर्ता खाते बनाए गए (0.9.x+)
+- [ ] डिफ़ॉल्ट एडमिन पासवर्ड बदला गया (0.9.x+)
+- [ ] अन्य उपयोगकर्ताओं के लिए उपयोगकर्ता खाते बनाई गई (0.9.x+)
 - [ ] प्रमाणीकरण के साथ बाहरी API एकीकरण अपडेट किए गए (0.9.x+)
 
-## ट्रबलशूटिंग {/* #troubleshooting */}
+## समस्या निवारण {/* #troubleshooting */}
 
-### माइग्रेशन विफल होना {/* #migration-fails */}
+### माइग्रेशन विफलता {/* #migration-fails */}
 
-1. डिस्क स्पेस की जाँच करें (बैकअप के लिए जगह की आवश्यकता होती है)
-2. डेटा निर्देशिका पर लिखने की अनुमतियों की जाँच करें
-3. विशिष्ट त्रुटियों के लिए कंटेनर लॉग्स की समीक्षा करें
+1. डिस्क स्पेस जांचें (बैकअप के लिए स्पेस की आवश्यकता होती है)
+2. डेटा डायरेक्टरी पर राइट अनुमतियाँ सत्यापित करें
+3. विशिष्ट त्रुटियाँ के लिए कंटेनर लॉग की समीक्षा करें
 4. यदि आवश्यक हो तो बैकअप से पुनर्स्थापित करें (नीचे रोलबैक देखें)
 
-### माइग्रेशन के बाद डेटा गायब है {/* #data-missing-after-migration */}
+### माइग्रेशन के बाद डेटा गायब होना {/* #data-missing-after-migration */}
 
-1. बैकअप बनाया गया है (डेटा निर्देशिका की जाँच करें)
-2. बैकअप निर्माण संदेशों के लिए कंटेनर लॉग्स की समीक्षा करें
-3. डेटाबेस फ़ाइल की एकता की जाँच करें
+1. सत्यापित करें कि बैकअप बनाई गई (डेटा डायरेक्टरी जांचें)
+2. बैकअप निर्माण संदेश के लिए कंटेनर लॉग की समीक्षा करें
+3. डेटाबेस फ़ाइल अखंडता जांचें
 
-### प्रमाणीकरण समस्याएँ (0.9.x+) {/* #authentication-issues-09x */}
+### प्रमाणीकरण संबंधी समस्याएं (0.9.x+) {/* #authentication-issues-09x */}
 
-1. डिफ़ॉल्ट एडमिन खाता मौजूद है (लॉग्स की जाँच करें)
-2. डिफ़ॉल्ट क्रेडेंशियल्स का प्रयास करें: `admin` / `Duplistatus09`
-3. लॉक आउट होने पर एडमिन रिकवरी टूल का उपयोग करें
-4. `users` तालिका डेटाबेस में मौजूद है
+1. सत्यापित करें कि डिफ़ॉल्ट एडमिन खाता मौजूद है (लॉग जांचें)
+2. डिफ़ॉल्ट क्रेडेंशियल आज़माएँ: `admin` / `Duplistatus09`
+3. यदि लॉक किया गया हो तो एडमिन रिकवरी टूल का उपयोग करें
+4. सत्यापित करें कि डेटाबेस में `users` टेबल मौजूद है
 
-### API त्रुटियों {/* #api-errors */}
+### API त्रुटियाँ {/* #api-errors */}
 
-1. [Backward-incompatible API changes](api-changes.md) के लिए endpoint updates की जाँच करें
-2. नए फ़ील्ड नामों के साथ बाहरी integrations को अपडेट करें
-3. API requests में authentication जोड़ें (0.9.x+)
-4. migration के बाद API endpoints का परीक्षण करें
+1. एंडपॉइंट अपडेट के लिए [Backward-incompatible API changes](api-changes.md) की समीक्षा करें
+2. नए फ़ील्ड नामों के साथ बाहरी एकीकरण अपडेट करें
+3. API अनुरोधों में प्रमाणीकरण जोड़ें (0.9.x+)
+4. माइग्रेशन के बाद API एंडपॉइंट्स जाँचें
 
-### मास्टर की समस्याएँ (0.8.x+) {/* #master-key-issues-08x */}
+### मास्टर कुंजी संबंधी समस्याएँ (0.8.x+) {/* #master-key-issues-08x */}
 
-1. `.duplistatus.key` फ़ाइल को पहुँच योग्य सुनिश्चित करें
-2. फ़ाइल permissions को 0400 पर सेट करें
-3. key generation errors के लिए container logs की जाँच करें
+1. सुनिश्चित करें कि `.duplistatus.key` फ़ाइल सुलभ है
+2. सत्यापित करें कि फ़ाइल अनुमतियाँ 0400 हैं
+3. कुंजी जनरेशन त्रुटियों के लिए कंटेनर लॉग जांचें
 
 ### Podman DNS कॉन्फ़िगरेशन {/* #podman-dns-configuration */}
 
-यदि आप Podman का उपयोग कर रहे हैं और अपग्रेड के बाद नेटवर्क कनेक्टिविटी समस्याओं का सामना कर रहे हैं, तो आपको अपने container के लिए DNS सेटिंग्स को कॉन्फ़िगर करने की आवश्यकता हो सकती है। विवरण के लिए इंस्टॉलेशन गाइड में [DNS configuration section](../installation/installation.md#configuring-dns-for-podman-containers) देखें।
+यदि आप Podman का उपयोग कर रहे हैं और अपग्रेड करने के बाद नेटवर्क कनेक्टिविटी समस्याओं का सामना कर रहे हैं, तो आपको अपने कंटेनर के लिए DNS सेटिंग्स कॉन्फ़िगर करने की आवश्यकता हो सकती है। विवरण के लिए इंस्टॉलेशन गाइड में [DNS configuration section](../installation/installation.md#configuring-dns-for-podman-containers) देखें।
 
 ## रोलबैक प्रक्रिया {/* #rollback-procedure */}
 
-यदि आपको पिछले संस्करण पर वापस जाना है:
+यदि आपको किसी पिछले संस्करण पर रोलबैक करने की आवश्यकता है:
 
-1. **Stop the container**: `docker stop <container-name>` (or `podman stop <container-name>`)
-2. **Find your backup**: 
-   - यदि आपने वेब इंटरफ़ेस का उपयोग करके बैकअप बनाया है (संस्करण 1.2.1+), तो उस डाउनलोड किए गए बैकअप फ़ाइल का उपयोग करें
-   - यदि आपने मैनुअल वॉल्यूम बैकअप बनाया है, तो इसे पहले निकालें
-   - ऑटोमेटिक माइग्रेशन बैकअप डेटा डायरेक्टरी में स्थित हैं (timestamped `.db` फ़ाइलें)
-3. **Restore the database**: 
-   - **वेब इंटरफ़ेस बैकअप के लिए (संस्करण 1.2.1+)**: `Settings → Database Maintenance` में रिस्टोर फ़ंक्शन का उपयोग करें (देखें [Database Maintenance](../user-guide/settings/database-maintenance.md#database-restore))
-   - **मैनुअल बैकअप के लिए**: बैकअप फ़ाइल के साथ अपने डेटा डायरेक्टरी/वॉल्यूम में `backups.db` को बदलें
-4. **Use previous image version**: पिछले container image को पुल और चलाएं
-5. **Start the container**: पिछले संस्करण के साथ शुरू करें
+1. **कंटेनर बंद करें**: `docker stop <container-name>` (या `podman stop <container-name>`)
+2. **अपना बैकअप ढूंढें**: 
+   - यदि आपने वेब इंटरफ़ेस (संस्करण 1.2.1+) का उपयोग करके बैकअप बनाई गई है, तो उस डाउनलोड की गई बैकअप फ़ाइल का उपयोग करें
+   - यदि आपने मैनुअल वॉल्यूम बैकअप बनाया है, तो पहले इसे एक्सट्रैक्ट करें
+   - स्वचालित माइग्रेशन बैकअप डेटा डायरेक्टरी (टाइमस्टैम्प्ड `.db` फ़ाइलें) में स्थित होते हैं
+3. **डेटाबेस पुनर्स्थापित करें**: 
+   - **वेब इंटरफ़ेस बैकअप (संस्करण 1.2.1+) के लिए**: `Settings → Database Maintenance` में पुनर्स्थापना फ़ंक्शन का उपयोग करें ([डेटाबेस रखरखाव](../user-guide/settings/database-maintenance.md#database-restore) देखें)
+   - **मैनुअल बैकअप के लिए**: अपनी डेटा डायरेक्टरी/वॉल्यूम में `backups.db` को बैकअप फ़ाइल से बदलें
+4. **पिछला इमेज संस्करण उपयोग करें**: पिछला कंटेनर इमेज पुल करें और चलाएँ
+5. **कंटेनर प्रारंभ करें**: पिछले संस्करण के साथ प्रारंभ करें
 
 :::warning
-रोलबैक करने से नए स्कीमा के साथ पिछले संस्करण के असंगत होने की स्थिति में डेटा हानि हो सकती है। रोलबैक करने से पहले हमेशा सुनिश्चित करें कि आपके पास एक हालिया बैकअप है।
+यदि नया स्कीमा पुराने संस्करण के साथ असंगत है तो रोलबैक करने से डेटा हानि हो सकती है। रोलबैक का प्रयास करने से पहले हमेशा सुनिश्चित करें कि आपके पास हालिया बैकअप है।
 :::
 
-### अपने रिस्टोर / रोलबैक की समस्या निवारण {/* #troubleshooting-your-restore--rollback */}
+### अपने रिस्टोर / रोलबैक से जुड़ी समस्याओं का निवारण {/* #troubleshooting-your-restore--rollback */}
 
-यदि एप्लिकेशन रिस्टोर या रोलबैक के बाद शुरू नहीं होता है या आपका डेटा दिखाई नहीं देता है, तो निम्नलिखित सामान्य समस्याओं की जाँच करें:
+यदि रिस्टोर या रोलबैक के बाद एप्लिकेशन प्रारंभ नहीं होता है या आपका डेटा दिखाई नहीं दे रहा है, तो निम्नलिखित सामान्य समस्याओं की जांच करें:
 
 #### 1. डेटाबेस फ़ाइल अनुमतियाँ (Linux/Podman) {/* #1-database-file-permissions-linuxpodman */}
 
-यदि आपने फ़ाइल को `root` उपयोगकर्ता के रूप में रिस्टोर की है, तो container के अंदर एप्लिकेशन को इसे पढ़ने या लिखने की अनुमति नहीं हो सकती है।
+यदि आपने फ़ाइल को `root` उपयोगकर्ता के रूप में पुनर्स्थापित किया है, तो कंटेनर के अंदर एप्लिकेशन के पास इसे पढ़ने या लिखने की अनुमति नहीं हो सकती है।
 
-* **The Symptom:** लॉग "Permission Denied" या "Read-only database." दिखाते हैं
-* **The Fix:** container के अंदर फ़ाइल की permissions को रीसेट करें ताकि यह पहुँच योग्य हो।
+* **लक्षण:** लॉग "Permission Denied" या "Read-only database" दिखाते हैं।
+* **समाधान:** यह सुनिश्चित करने के लिए कि फ़ाइल सुलभ है, कंटेनर के अंदर फ़ाइल की अनुमतियाँ रीसेट करें।
 
 ```bash
 # Set ownership (usually UID 1000 or the app user)
@@ -323,45 +323,45 @@ docker exec -u 0 duplistatus chmod 664 /app/data/backups.db
 
 #### 2. गलत फ़ाइल नाम {/* #2-incorrect-filename */}
 
-एप्लिकेशन विशेष रूप से `backups.db` नाम की फ़ाइल के लिए खोजता है।
+एप्लिकेशन विशेष रूप से `backups.db` नाम वाली फ़ाइल की तलाश करता है।
 
-* **The Symptom:** एप्लिकेशन शुरू होता है लेकिन "खाली" लगता है (जैसे एक नया इंस्टॉलेशन)।
-* **The Fix:** `/app/data/` डायरेक्टरी की जाँच करें। यदि आपकी फ़ाइल का नाम `duplistatus-backup-2024.db` है या `.sqlite` एक्सटेंशन है, तो ऐप इसे अनदेखा करेगा। इसे `backups.db` के रूप में ठीक से नाम बदलने के लिए `mv` कमांड या Docker Desktop GUI का उपयोग करें।
+* **लक्षण:** एप्लिकेशन प्रारंभ होता है लेकिन "खाली" दिखाई देता है (जैसे कोई नया इंस्टॉलेशन हो)।
+* **समाधान:** `/app/data/` डायरेक्टरी जांचें। यदि आपकी फ़ाइल का नाम `duplistatus-backup-2024.db` है या उसका `.sqlite` एक्सटेंशन है, तो ऐप इसे अनदेखा कर देगा। इसे पूरी तरह से `backups.db` में बदलने के लिए `mv` कमांड या Docker Desktop GUI का उपयोग करें।
 
 #### 3. कंटेनर पुनरारंभ नहीं हुआ {/* #3-container-not-restarted */}
 
-कुछ सिस्टम पर, कंटेनर चलते समय `docker cp` का उपयोग करने से एप्लिकेशन का डेटाबेस से कनेक्शन ताज़ा नहीं हो सकता।
+कुछ सिस्टम पर, कंटेनर चलते समय `docker cp` का उपयोग करने से डेटाबेस से एप्लिकेशन का कनेक्शन तुरंत "रीफ्रेश" नहीं हो सकता है।
 
-* **सुलझाने का तरीका:** हमेशा एक रिस्टोर के बाद एक पूर्ण रीस्टार्ट करें:
+* **समाधान:** पुनर्स्थापना (रिस्टोर) के बाद हमेशा पूर्ण पुनरारंभ (रीस्टार्ट) करें:
 
 ```bash
 docker restart duplistatus
 ```
 
-#### 4. डेटाबेस Sanskaran असंगति {/* #4-database-version-mismatch */}
+#### 4. डेटाबेस संस्करण मेल न खाना {/* #4-database-version-mismatch */}
 
-यदि आप एक बहुत नए संस्करण के duplistatus से एक बैकअप रिस्टोर कर रहे हैं, तो ऐप का पुराना संस्करण डेटाबेस स्कीमा के साथ असंगत हो सकता है।
+यदि आप duplistatus के काफी नए संस्करण से बैकअप को ऐप के पुराने संस्करण में पुनर्स्थापित कर रहे हैं, तो डेटाबेस स्कीमा असंगत हो सकता है।
 
-* **सुलझाने का तरीका:** हमेशा सुनिश्चित करें कि आप बैकअप बनाने वाले संस्करण के समान (या नए) संस्करण का duplistatus इमेज चल रहे हैं। अपने संस्करण की जाँच करें:
+* **समाधान:** हमेशा सुनिश्चित करें कि आप duplistatus इमेज का वही (या नया) संस्करण चला रहे हैं जिसके द्वारा बैकअप बनाई गई थी। अपना संस्करण इससे जांचें:
 
 ```bash
 docker inspect duplistatus --format '{{.Config.Image}}'
 ```
 
-## डेटाबेस स्कीमा Sanskaran {/* #database-schema-versions */}
+## डेटाबेस स्कीमा संस्करण {/* #database-schema-versions */}
 
-| एप्लिकेशन संस्करण        | स्कीमा संस्करण | मुख्य बदलाव                                        |
+| एप्लिकेशन संस्करण | स्कीमा संस्करण | मुख्य परिवर्तन |
 |----------------------------|----------------|----------------------------------------------------|
-| 0.6.x और उससे पहले          | v1.0           | प्रारंभिक स्कीमा                                     |
-| 0.7.x                      | v2.0, v3.0     | कॉन्फ़िगरेशन जोड़े गए, मशीन को सर्वर में नाम बदल दिया   |
-| 0.8.x                      | v3.1           | बैकअप फ़ील्ड में सुधार, एन्क्रिप्शन समर्थन         |
-| 0.9.x, 1.0.x, 1.1.x, 1.2.x, 1.3.x | v4.0           | उपयोगकर्ता एक्सेस कंट्रोल, प्रमाणीकरण, ऑडिट लॉगिंग |
+| 0.6.x और इससे पूर्व | v1.0 | प्रारंभिक स्कीमा |
+| 0.7.x | v2.0, v3.0 | कॉन्फ़िगरेशन जोड़े गए, machines → servers नाम बदला गया |
+| 0.8.x | v3.1 | उन्नत बैकअप फ़ील्ड, एन्क्रिप्शन समर्थन |
+| 0.9.x, 1.0.x, 1.1.x, 1.2.x, 1.3.x | v4.0 | उपयोगकर्ता एक्सेस नियंत्रण, प्रमाणीकरण, ऑडिट लॉगिंग |
 
-## Sahayata प्राप्त करना {/* #getting-help */}
+## सहायता प्राप्त करना {/* #getting-help */}
 
-- **दस्तावेज़ीकरण**: [उपयोगकर्ता गाइड](../user-guide/overview.md)
+- **दस्तावेज़ीकरण**: [उपयोगकर्ता मार्गदर्शिका](../user-guide/overview.md)
 - **API संदर्भ**: [API दस्तावेज़ीकरण](../api-reference/overview.md)
-- **API बदलाव**: [पीछे के अनुकूल नहीं होने वाले API बदलाव](api-changes.md)
-- **रिलीज़ नोट्स**: वर्जन-विशिष्ट रिलीज़ नोट्स के लिए विस्तृत बदलाव की जाँच करें
-- **समुदाय**: [GitHub चर्चाएँ](https://github.com/wsj-br/duplistatus/discussions)
-- **समस्याएँ**: [GitHub समस्याएँ](https://github.com/wsj-br/duplistatus/issues)
+- **API परिवर्तन**: [बैकवर्ड-असंगत API परिवर्तन](api-changes.md)
+- **रिलीज़ नोट्स**: विस्तृत परिवर्तनों के लिए संस्करण-विशिष्ट रिलीज़ नोट्स जांचें
+- **समुदाय**: [GitHub Discussions](https://github.com/wsj-br/duplistatus/discussions)
+- **समस्याएँ**: [GitHub Issues](https://github.com/wsj-br/duplistatus/issues)

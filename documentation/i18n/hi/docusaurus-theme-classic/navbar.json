@@ -8,7 +8,7 @@
     "description": "The alt text of navbar logo"
   },
   "item.label.Documentation": {
-    "message": "प्रलेखन",
+    "message": "दस्तावेज़",
     "description": "Navbar item with label Documentation"
   }
 }

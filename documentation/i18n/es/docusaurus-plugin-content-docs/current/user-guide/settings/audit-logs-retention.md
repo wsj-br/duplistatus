@@ -1,15 +1,15 @@
 # Retención de Registro de Auditoría {/* #audit-log-retention */}
 
-Configurar cuánto tiempo se retienen los logs de auditoría antes de la limpieza automática.
+Configurar cuánto tiempo se conservan los registros de auditoría antes de la limpieza automática.
 
 ![Retención de Registro de Auditoría](../../assets/screen-settings-audit-retention.png)
 
-| Configuración | Descripción | Valor por defecto |
+| Configuración | Descripción | Valor Predeterminado |
 |:-------|:-----------|:-------------|
-| **Retención (días)** | Número de días para retener logs de auditoría antes de la eliminación automática | **90 días** |
+| **Retención (días)** | Número de días para conservar los registros de auditoría antes de la eliminación automática | **90 días** |
 
 ## Configuración de Retención {/* #retention-settings */}
 
-- **Rango**: de 30 a 365 días
-- **Limpieza automática**: Se ejecuta diariamente a las 02:00 UTC (no configurable)
-- **Limpieza manual**: Disponible mediante API para administradores (ver [Limpiar registros de auditoría](../../api-reference/administration-apis.md#cleanup-audit-logs---apiaudit-logcleanup))
+- **Rango**: 30 a 365 días
+- **Limpieza Automática**: Se ejecuta diariamente a las 02:00 UTC (no configurable)
+- **Limpieza Manual**: Disponible a través de la API para administradores (ver [Limpiar Registros de Auditoría](../../api-reference/administration-apis.md#cleanup-audit-logs---apiaudit-logcleanup))

@@ -1,10 +1,10 @@
 {
   "theme.ErrorPageContent.title": {
-    "message": "इस पृष्ठ को क्रैश हो गया।",
+    "message": "यह पृष्ठ क्रैश हो गया।",
     "description": "The title of the fallback page when the page crashed"
   },
   "theme.BackToTopButton.buttonAriaLabel": {
-    "message": "शीर्ष पर वापस स्क्रॉल करें",
+    "message": "वापस सबसे ऊपर स्क्रॉल करें",
     "description": "The ARIA label for the back to top button"
   },
   "theme.blog.archive.title": {
@@ -20,11 +20,11 @@
     "description": "The ARIA label for the blog pagination"
   },
   "theme.blog.paginator.newerEntries": {
-    "message": "नए प्रविष्टियाँ",
+    "message": "नई प्रविष्टियाँ",
     "description": "The label used to navigate to the newer blog posts page (previous page)"
   },
   "theme.blog.paginator.olderEntries": {
-    "message": "पुराने प्रविष्टियाँ",
+    "message": "पुरानी प्रविष्टियाँ",
     "description": "The label used to navigate to the older blog posts page (next page)"
   },
   "theme.blog.post.paginator.navAriaLabel": {
@@ -32,35 +32,35 @@
     "description": "The ARIA label for the blog posts pagination"
   },
   "theme.blog.post.paginator.newerPost": {
-    "message": "नया पोस्ट",
+    "message": "नई पोस्ट",
     "description": "The blog post button label to navigate to the newer/previous post"
   },
   "theme.blog.post.paginator.olderPost": {
-    "message": "पुराना पोस्ट",
+    "message": "पुरानी पोस्ट",
     "description": "The blog post button label to navigate to the older/next post"
   },
   "theme.tags.tagsPageLink": {
-    "message": "सभी टैग्स देखें",
+    "message": "सभी टैग देखें",
     "description": "The label of the link targeting the tag list page"
   },
   "theme.colorToggle.ariaLabel.mode.system": {
-    "message": "प्रणाली मोड",
+    "message": "सिस्टम मोड",
     "description": "The name for the system color mode"
   },
   "theme.colorToggle.ariaLabel.mode.light": {
-    "message": "उज्ज्वल मोड",
+    "message": "लाइट मोड",
     "description": "The name for the light color mode"
   },
   "theme.colorToggle.ariaLabel.mode.dark": {
-    "message": "अंधकार मोड",
+    "message": "डार्क मोड",
     "description": "The name for the dark color mode"
   },
   "theme.colorToggle.ariaLabel": {
-    "message": "अंधकार और उज्ज्वल मोड के बीच स्विच करें (वर्तमान में {mode})",
+    "message": "डार्क और लाइट मोड के बीच स्विच करें (वर्तमान में {mode})",
     "description": "The ARIA label for the color mode toggle"
   },
   "theme.docs.breadcrumbs.navAriaLabel": {
-    "message": "ब्रेडक्रम्ब्स",
+    "message": "ब्रेडक्रंब",
     "description": "The ARIA label for the breadcrumbs"
   },
   "theme.docs.DocCard.categoryDescription.plurals": {
@@ -68,7 +68,7 @@
     "description": "The default description for a category card in the generated index about how many items this category includes"
   },
   "theme.docs.paginator.navAriaLabel": {
-    "message": "डॉक्स पृष्ठ",
+    "message": "दस्तावेज़ पृष्ठ",
     "description": "The ARIA label for the docs pagination"
   },
   "theme.docs.paginator.previous": {
@@ -84,7 +84,7 @@
     "description": "Pluralized label for \"{count} docs tagged\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
   },
   "theme.docs.tagDocListPageTitle": {
-    "message": "{nDocsTagged} \"{tagName}\" के साथ",
+    "message": "\"{tagName}\" के साथ {nDocsTagged}",
     "description": "The title of the page for a docs tag"
   },
   "theme.docs.versionBadge.label": {
@@ -95,11 +95,11 @@
     "description": "The label used to tell the user that he's browsing an unreleased doc version"
   },
   "theme.docs.versions.unmaintainedVersionLabel": {
-    "message": "यह {siteTitle} {versionLabel} के लिए दस्तावेज़ है, जो अब सक्रिय रूप से रखरखाव नहीं किया जाता है।",
+    "message": "यह {siteTitle} {versionLabel} के लिए दस्तावेज़ है, जिसका अब सक्रिय रूप से रखरखाव नहीं किया जाता है।",
     "description": "The label used to tell the user that he's browsing an unmaintained doc version"
   },
   "theme.docs.versions.latestVersionSuggestionLabel": {
-    "message": "अद्यतन दस्तावेज़ के लिए, {latestVersionLink} देखें ({versionLabel})।",
+    "message": "अद्यतित दस्तावेज़ के लिए, {latestVersionLink} ({versionLabel}) देखें।",
     "description": "The label used to tell the user to check the latest version"
   },
   "theme.docs.versions.latestVersionLinkLabel": {
@@ -111,11 +111,11 @@
     "description": "The link label to edit the current page"
   },
   "theme.common.headingLinkTitle": {
-    "message": "{heading} के लिए सीधा लिंक",
+    "message": "{heading} का सीधा लिंक",
     "description": "Title for link to heading"
   },
   "theme.lastUpdated.atDate": {
-    "message": " {date} पर",
+    "message": " {date} को",
     "description": "The words used to describe on which date a page has been last updated"
   },
   "theme.lastUpdated.byUser": {
@@ -123,7 +123,7 @@
     "description": "The words used to describe by who the page has been last updated"
   },
   "theme.lastUpdated.lastUpdatedAtBy": {
-    "message": "अंतिम बार अद्यतन{atDate}{byUser}",
+    "message": "अंतिम बार अपडेट किया गया{atDate}{byUser}",
     "description": "The sentence used to display when a page has been last updated, and by who"
   },
   "theme.navbar.mobileVersionsDropdown.label": {
@@ -139,11 +139,11 @@
     "description": "The label alongside a tag list"
   },
   "theme.AnnouncementBar.closeButtonAriaLabel": {
-    "message": "Band kar",
+    "message": "बंद करें",
     "description": "The ARIA label for close button of announcement bar"
   },
   "theme.admonition.caution": {
-    "message": "सावधान",
+    "message": "सावधानी",
     "description": "The default label used for the Caution admonition (:::caution)"
   },
   "theme.admonition.danger": {
@@ -155,131 +155,131 @@
     "description": "The default label used for the Info admonition (:::info)"
   },
   "theme.admonition.note": {
-    "message": "Note",
+    "message": "नोट",
     "description": "The default label used for the Note admonition (:::note)"
   },
   "theme.admonition.tip": {
-    "message": "tip",
+    "message": "सुझाव",
     "description": "The default label used for the Tip admonition (:::tip)"
   },
   "theme.admonition.warning": {
-    "message": "warning",
+    "message": "चेतावनी",
     "description": "The default label used for the Warning admonition (:::warning)"
   },
   "theme.blog.sidebar.navAriaLabel": {
-    "message": "Blog recent posts navigation",
+    "message": "ब्लॉग हालिया पोस्ट नेविगेशन",
     "description": "The ARIA label for recent posts in the blog sidebar"
   },
   "theme.DocSidebarItem.expandCategoryAriaLabel": {
-    "message": "Expand sidebar category '{label}'",
+    "message": "साइडबार श्रेणी '{label}' विस्तृत करें",
     "description": "The ARIA label to expand the sidebar category"
   },
   "theme.DocSidebarItem.collapseCategoryAriaLabel": {
-    "message": "Collapse sidebar category '{label}'",
+    "message": "साइडबार श्रेणी '{label}' संक्षिप्त करें",
     "description": "The ARIA label to collapse the sidebar category"
   },
   "theme.IconExternalLink.ariaLabel": {
-    "message": "(opens in new tab)",
+    "message": "(नए टैब में खुलता है)",
     "description": "The ARIA label for the external link icon"
   },
   "theme.NavBar.navAriaLabel": {
-    "message": "Main",
+    "message": "मुख्य",
     "description": "The ARIA label for the main navigation"
   },
   "theme.NotFound.p1": {
-    "message": "We could not find what you were looking for.",
+    "message": "आप जो खोज रहे थे, वह हमें नहीं मिला।",
     "description": "The first paragraph of the 404 page"
   },
   "theme.NotFound.p2": {
-    "message": "Please contact the owner of the site that linked you to the original URL and let them know their link is broken.",
+    "message": "कृपया उस साइट के स्वामी से संपर्क करें जिसने आपको मूल URL से लिंक किया था और उन्हें बताएं कि उनका लिंक काम नहीं कर रहा है।",
     "description": "The 2nd paragraph of the 404 page"
   },
   "theme.navbar.mobileLanguageDropdown.label": {
-    "message": "Languages",
+    "message": "भाषाएँ",
     "description": "The label for the mobile language switcher dropdown"
   },
   "theme.TOCCollapsible.toggleButtonLabel": {
-    "message": "On this page",
+    "message": "इस पृष्ठ पर",
     "description": "The label used by the button on the collapsible TOC component"
   },
   "theme.blog.post.readMore": {
-    "message": "Read more",
+    "message": "और पढ़ें",
     "description": "The label used in blog post item excerpts to link to full blog posts"
   },
   "theme.blog.post.readMoreLabel": {
-    "message": "Read more about {title}",
+    "message": "{title} के बारे में और पढ़ें",
     "description": "The ARIA label for the link to full blog posts from excerpts"
   },
   "theme.blog.post.readingTime.plurals": {
-    "message": "One min read|{readingTime} min read",
+    "message": "एक मिनट का पठन|{readingTime} मिनट का पठन",
     "description": "Pluralized label for \"{readingTime} min read\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
   },
   "theme.CodeBlock.copy": {
-    "message": "Copy",
+    "message": "कॉपी करें",
     "description": "The copy button label on code blocks"
   },
   "theme.CodeBlock.copied": {
-    "message": "Copied",
+    "message": "कॉपी किया गया",
     "description": "The copied button label on code blocks"
   },
   "theme.CodeBlock.copyButtonAriaLabel": {
-    "message": "Copy code to clipboard",
+    "message": "कोड क्लिपबोर्ड पर कॉपी करें",
     "description": "The ARIA label for copy code blocks button"
   },
   "theme.CodeBlock.wordWrapToggle": {
-    "message": "Toggle word wrap",
+    "message": "वर्ड रैप टॉगल करें",
     "description": "The title attribute for toggle word wrapping button of code block lines"
   },
   "theme.docs.breadcrumbs.home": {
-    "message": "Home page",
+    "message": "होम पृष्ठ",
     "description": "The ARIA label for the home page in the breadcrumbs"
   },
   "theme.docs.sidebar.collapseButtonTitle": {
-    "message": "Sidebar dhansna",
+    "message": "साइडबार संक्षिप्त करें",
     "description": "The title attribute for collapse button of doc sidebar"
   },
   "theme.docs.sidebar.collapseButtonAriaLabel": {
-    "message": "Sidebar dhansna",
+    "message": "साइडबार संक्षिप्त करें",
     "description": "The title attribute for collapse button of doc sidebar"
   },
   "theme.docs.sidebar.navAriaLabel": {
-    "message": "Docs sidebar",
+    "message": "डॉक्स साइडबार",
     "description": "The ARIA label for the sidebar navigation"
   },
   "theme.docs.sidebar.closeSidebarButtonAriaLabel": {
-    "message": "Navigation bar band kar",
+    "message": "नेविगेशन बार बंद करें",
     "description": "The ARIA label for close button of mobile sidebar"
   },
   "theme.navbar.mobileSidebarSecondaryMenu.backButtonLabel": {
-    "message": "← Peechhe prushth par jao",
+    "message": "← मुख्य मेनू पर वापस",
     "description": "The label of the back button to return to main menu, inside the mobile navbar sidebar secondary menu (notably used to display the docs sidebar)"
   },
   "theme.docs.sidebar.toggleSidebarButtonAriaLabel": {
-    "message": "Navigation bar toggle kar",
+    "message": "नेविगेशन बार टॉगल करें",
     "description": "The ARIA label for hamburger menu button of mobile navigation"
   },
   "theme.navbar.mobileDropdown.collapseButton.expandAriaLabel": {
-    "message": "Dropdown phailana",
+    "message": "ड्रॉपडाउन विस्तृत करें",
     "description": "The ARIA label of the button to expand the mobile dropdown navbar item"
   },
   "theme.navbar.mobileDropdown.collapseButton.collapseAriaLabel": {
-    "message": "Dropdown dhansna",
+    "message": "ड्रॉपडाउन संक्षिप्त करें",
     "description": "The ARIA label of the button to collapse the mobile dropdown navbar item"
   },
   "theme.docs.sidebar.expandButtonTitle": {
-    "message": "Sidebar phailana",
+    "message": "साइडबार विस्तृत करें",
     "description": "The ARIA label and title attribute for expand button of doc sidebar"
   },
   "theme.docs.sidebar.expandButtonAriaLabel": {
-    "message": "Sidebar phailana",
+    "message": "साइडबार विस्तृत करें",
     "description": "The ARIA label and title attribute for expand button of doc sidebar"
   },
   "theme.blog.post.plurals": {
-    "message": "Ek prushth|{count} prushth",
+    "message": "एक पोस्ट|{count} पोस्ट",
     "description": "Pluralized label for \"{count} posts\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
   },
   "theme.blog.tagTitle": {
-    "message": "{nPosts} \"{tagName}\" se tag ki gayi hai",
+    "message": "\"{tagName}\" के साथ टैग किए गए {nPosts}",
     "description": "The title of the page for a blog tag"
   },
   "theme.blog.author.pageTitle": {
@@ -287,35 +287,35 @@
     "description": "The title of the page for a blog author"
   },
   "theme.blog.authorsList.pageTitle": {
-    "message": "Lekhak",
+    "message": "लेखक",
     "description": "The title of the authors page"
   },
   "theme.blog.authorsList.viewAll": {
-    "message": "Sabhi lekhak dekhana",
+    "message": "सभी लेखक देखें",
     "description": "The label of the link targeting the blog authors page"
   },
   "theme.blog.author.noPosts": {
-    "message": "Is lekhak ne abhi tak koi prushth likha hai nahi.",
+    "message": "इस लेखक ने अभी तक कोई पोस्ट नहीं लिखी है।",
     "description": "The text for authors with 0 blog post"
   },
   "theme.contentVisibility.unlistedBanner.title": {
-    "message": "Unlisted prushth",
+    "message": "असूचीबद्ध पृष्ठ",
     "description": "The unlisted content banner title"
   },
   "theme.contentVisibility.unlistedBanner.message": {
-    "message": "Is prushth ko unlisted rakha gaya hai. Search engines is prushth ko index nahi karenge, aur sirf unhi upyogkartao ko is prushth ko dekh sakte hain jinke paas is prushth ka direct link hai.",
+    "message": "यह पृष्ठ असूचीबद्ध है। सर्च इंजन इसे इंडेक्स नहीं करेंगे, और केवल सीधे लिंक वाले उपयोगकर्ता ही इसे एक्सेस कर सकते हैं।",
     "description": "The unlisted content banner message"
   },
   "theme.contentVisibility.draftBanner.title": {
-    "message": "Draft prushth",
+    "message": "ड्राफ़्ट पृष्ठ",
     "description": "The draft content banner title"
   },
   "theme.contentVisibility.draftBanner.message": {
-    "message": "Is prushth ko draft rakha gaya hai. Is prushth ko sirf dev mode mein dikhaya jayega aur production build se is prushth ko hata diya jayega.",
+    "message": "यह पृष्ठ एक ड्राफ़्ट है। यह केवल dev में दिखाई देगा और प्रोडक्शन बिल्ड से बाहर रखा जाएगा।",
     "description": "The draft content banner message"
   },
   "theme.ErrorPageContent.tryAgain": {
-    "message": "Purani koshish karo",
+    "message": "पुनः प्रयास करें",
     "description": "The label of the button to try again rendering when the React error boundary captures an error"
   },
   "theme.common.skipToMainContent": {
@@ -330,24 +330,24 @@
     "message": "कोई परिणाम नहीं"
   },
   "theme.SearchBar.seeAllOutsideContext": {
-    "message": "सभी परिणाम \"{context}\" के बाहर देखें"
+    "message": "\"{context}\" के बाहर के सभी परिणाम देखें"
   },
   "theme.SearchBar.searchInContext": {
-    "message": "सभी परिणाम \"{context}\" के भीतर देखें"
+    "message": "\"{context}\" में सभी परिणाम देखें"
   },
   "theme.SearchBar.seeAll": {
     "message": "सभी परिणाम देखें"
   },
   "theme.SearchBar.label": {
-    "message": "Khoj",
+    "message": "खोजें",
     "description": "The ARIA label and placeholder for search button"
   },
   "theme.SearchPage.existingResultsTitle": {
-    "message": "Khoj के लिए परिणाम \"{query}\"",
+    "message": "\"{query}\" के लिए खोज परिणाम",
     "description": "The search page title for non-empty query"
   },
   "theme.SearchPage.emptyResultsTitle": {
-    "message": "दस्तावेज़ खोजें",
+    "message": "दस्तावेज़ में खोजें",
     "description": "The search page title for empty query"
   },
   "theme.SearchPage.searchContext.everywhere": {

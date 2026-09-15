@@ -1,24 +1,24 @@
 # Servidor {/* #server */}
 
-Puede configurar un nombre alternativo (alias) para sus servidores, una nota para describir su función y las direcciones web de sus servidores Duplicati aquí.
+Puede configurar un nombre alternativo (alias) para sus servidores, una nota para describir su función y las direcciones web de sus Servidores Duplicati aquí.
 
 ![configuración del servidor](../../assets/screen-settings-server.png)
 
-| Configuración                         | Descripción                                                                                                                                                                                  |
+| Configuración                     | Descripción                                                                                                                                                                                  |
 |:--------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Nombre del servidor**                 | Nombre del servidor configurado en el servidor Duplicati. Aparecerá un <IIcon2 icon="lucide:key-round" color="#42A5F5"/> si se establece una contraseña para el servidor.                                         |
-| **Alias**                       | Un apodo o nombre legible para humanos de tu servidor. Al pasar el ratón sobre un alias, mostrará su nombre; en algunos casos, para mayor claridad, mostrará el alias y el nombre entre paréntesis. |
-| **Nota**                        | Texto libre para describir la funcionalidad del servidor, lugar de instalación o cualquier otra información. Cuando se configura, se mostrará junto al nombre o alias del servidor.                 |
-| **Versión**                     | La versión de Duplicati del registro de copia de seguridad más reciente, con el mismo color y sugerencia de herramientas que el [panel](../dashboard.md#duplicati-server-version). El texto atenuado es actual o no disponible; el amarillo de advertencia es obsoleto. |
-| **Dirección de interfaz web (URL)** | Configura la URL para acceder a la interfaz de usuario del servidor Duplicati. Se admiten URLs `HTTP` y `HTTPS`.                                                                                           |
-| **Estado**                      | Muestra los resultados de la prueba o de la recopilación de registros de copia de seguridad                                                                                                                                              |
-| **Acciones**                     | Puedes probar, abrir la interfaz de Duplicati, recopilar registros y establecer una contraseña; consulta a continuación para obtener más detalles.                                                                                         |
+| **Nombre del servidor**          | Nombre del servidor configurado en el servidor Duplicati. Aparecerá un <IIcon2 icon="lucide:key-round" color="#42A5F5"/> si se establece una contraseña para el servidor.                                         |
+| **Alias**                        | Un apodo o nombre legible para humanos de su servidor. Al pasar el ratón sobre un alias, mostrará su nombre; en algunos casos, para aclararlo, mostrará el alias y el nombre entre corchetes. |
+| **Nota**                         | Texto libre para describir la funcionalidad del servidor, el lugar de instalación o cualquier otra información. Cuando se configura, se mostrará junto al nombre o alias del servidor.                 |
+| **Versión**                      | La versión de Duplicati de los últimos registros de copia de seguridad, con el mismo color y tooltip que el [panel de control](../dashboard.md#duplicati-server-version). El texto atenuado es actual o no disponible; el amarillo de advertencia es obsoleto. |
+| **Dirección de Interfaz Web (URL)** | Configure la URL para acceder a la interfaz de usuario del Servidor Duplicati. Se admiten tanto URLs `HTTP` como `HTTPS`.                                                                                           |
+| **Estado**                       | Muestra los resultados de la prueba o la recopilación de registros de copia de seguridad                                                                                                                                              |
+| **Acciones**                     | Puede probar, abrir la interfaz de Duplicati, recopilar registros y establecer una contraseña, consulte a continuación para más detalles.                                                                                         |
 
 <br/>
 
 :::note
-Si la Dirección de interfaz web (URL) no está configurada, el botón <SvgIcon svgFilename="duplicati_logo.svg" /> 
-estará deshabilitado en todas las páginas y el servidor no se mostrará en la lista de [Configuración de Duplicati](../duplicati-configuration.md) <SvgButton svgFilename="duplicati_logo.svg" href="../duplicati-configuration"/>.
+Si la Dirección de Interfaz Web (URL) no está configurada, el botón <SvgIcon svgFilename="duplicati_logo.svg" /> 
+se desactivará en todas las páginas y el servidor no se mostrará en la lista [Configuración de Duplicati](../duplicati-configuration.md) <SvgButton svgFilename="duplicati_logo.svg" href="../duplicati-configuration"/>.
 :::
 
 <br/>
@@ -27,10 +27,10 @@ estará deshabilitado en todas las páginas y el servidor no se mostrará en la 
 
 | Botón                                                                                                      | Descripción                                                             |
 |:------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------|
-| <IconButton icon="lucide:play" label="Probar"/>                                                               | Probar la conexión con el servidor Duplicati.                            |
-| <SvgButton svgFilename="duplicati_logo.svg" />                                                              | Abrir la interfaz web del servidor Duplicati en una nueva pestaña del navegador.         |
-| <IconButton icon="lucide:download" />                                                                       | Recopilar registros de copia de seguridad del servidor Duplicati.                          |
-| <IconButton icon="lucide:rectangle-ellipsis" /> &nbsp; o <IIcon2 icon="lucide:key-round" color="#42A5F5"/> | Cambiar o establecer una contraseña para el servidor Duplicati para recopilar copias de seguridad. |
+| <IconButton icon="lucide:play" label="Probar"/>                                                               | Prueba la conexión con el servidor Duplicati.                            |
+| <SvgButton svgFilename="duplicati_logo.svg" />                                                              | Abre la interfaz web del servidor Duplicati en una nueva pestaña del navegador.         |
+| <IconButton icon="lucide:download" />                                                                       | Recopila registros de copia de seguridad del servidor Duplicati.                          |
+| <IconButton icon="lucide:rectangle-ellipsis" /> &nbsp; o <IIcon2 icon="lucide:key-round" color="#42A5F5"/> | Cambia o establece una contraseña para el servidor Duplicati para recopilar copias de seguridad. |
 
 <br/>
 
@@ -38,7 +38,7 @@ estará deshabilitado en todas las páginas y el servidor no se mostrará en la 
 
 Para proteger su seguridad, solo puede realizar las siguientes acciones:
 - Establecer una contraseña para el servidor
-- Eliminar (borrar) la contraseña completamente
+- Eliminar (eliminar) la contraseña por completo
  
 La contraseña se almacena cifrada en la base de datos y nunca se muestra en la interfaz de usuario.
 :::
@@ -49,8 +49,8 @@ La contraseña se almacena cifrada en la base de datos y nunca se muestra en la 
 
 | Botón                                                     | Descripción                                     |
 |:-----------------------------------------------------------|:------------------------------------------------|
-| <IconButton label="Guardar cambios" />                        | Guardar los cambios realizados en la configuración del servidor.   |
-| <IconButton icon="lucide:fast-forward" label="Probar todo"/>  | Probar la conexión con todos los servidores Duplicati.   |
-| <IconButton icon="lucide:import" label="Recopilar todo (#)"/> | Recopilar registros de copia de seguridad de todos los servidores Duplicati. |
+| <IconButton label="Guardar cambios" />                        | Guarda los cambios realizados en la configuración del servidor.   |
+| <IconButton icon="lucide:fast-forward" label="Probar todos"/>  | Probar la conexión a todos los servidores Duplicati.   |
+| <IconButton icon="lucide:import" label="Recopilar todo (#)"/> | Recopilar registros de copias de seguridad de todos los servidores Duplicati. |
 
 <br/>

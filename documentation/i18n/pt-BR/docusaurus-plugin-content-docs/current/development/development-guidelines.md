@@ -3,45 +3,45 @@
 ## Organização do Código {/* #code-organisation */}
 
 - **Componentes**: `src/components/` com subdiretórios:
-  - `ui/` - componentes shadcn/ui e elementos de interface reutilizáveis
+  - `ui/` - componentes shadcn/ui e elementos de UI reutilizáveis
   - `dashboard/` - componentes específicos do painel
   - `settings/` - componentes da página de configurações
   - `server-details/` - componentes da página de detalhes do servidor
-- **Rotas da API**: `src/app/api/` com estrutura de endpoints RESTful (veja [Referência da API](../api-reference/overview))
+- **Rotas de API**: `src/app/api/` com estrutura de endpoint RESTful (veja [Referência de API](../api-reference/overview))
 - **Banco de Dados**: SQLite com better-sqlite3, utilitários em `src/lib/db-utils.ts`, migrações em `src/lib/db-migrations.ts`
-- **Tipos**: interfaces TypeScript em `src/lib/types.ts`
-- **Configuração**: configurações padrão em `src/lib/default-config.ts`
-- **Serviço Cron**: `src/cron-service/` (executa na porta 8667 em desenvolvimento, 9667 em produção)
-- **Scripts**: scripts utilitários no diretório `scripts/`
-- **Segurança**: proteção CSRF em `src/lib/csrf-middleware.ts`, use o middleware `withCSRF` para endpoints protegidos
+- **Tipos**: Interfaces TypeScript em `src/lib/types.ts`
+- **Configuração**: Configurações padrão em `src/lib/default-config.ts`
+- **Serviço Cron**: `src/cron-service/` (executa na porta 8667 dev, 9667 prod)
+- **Scripts**: Scripts utilitários em diretório `scripts/`
+- **Segurança**: Proteção CSRF em `src/lib/csrf-middleware.ts`, use middleware `withCSRF` para endpoints protegidos
 
-## Testes & Depuração {/* #testing--debugging */}
+## Testes e Depuração {/* #testing--debugging */}
 
 - Geração de dados de teste: `pnpm generate-test-data --servers=N`
 - Teste de notificações: endpoint `/api/notifications/test`
-- Verificações de saúde do cron: `curl http://localhost:8667/health` ou `curl http://localhost:8666/api/cron/health`
-- Teste de backup atrasado: **Configurações → Monitoramento de Backup** (**Testar backups atrasados**), ou `POST /api/notifications/check-overdue` com autenticação
-- Modo de desenvolvimento: logs detalhados e armazenamento em arquivos JSON
+- Verificação de saúde do Cron: `curl http://localhost:8667/health` ou `curl http://localhost:8666/api/cron/health`
+- Teste de backups atrasados: **Configurações → Monitoramento de Backup** (**Testar backups atrasados**), ou `POST /api/notifications/check-overdue` com autenticação
+- Modo de desenvolvimento: registro detalhado e armazenamento em arquivo JSON
 - Manutenção do banco de dados: use o menu de manutenção para operações de limpeza
-- Pré-verificações: `scripts/pre-checks.sh` para solução de problemas na inicialização
+- Pré-verificações: `scripts/pre-checks.sh` para solucionar problemas de inicialização
 
 ## Referências de Desenvolvimento {/* #development-references */}
 
-- Endpoints de API: Consulte [Referência de API](../api-reference/overview)
-- Schema do banco de dados: Consulte [Schema do Banco de Dados](database)
+- Endpoints de API: Veja [Referência de API](../api-reference/overview)
+- Esquema do banco de dados: Veja [Esquema do Banco de Dados](database)
 - Siga os padrões em `src/lib/db-utils.ts` para operações de banco de dados
 
-## Frameworks & Bibliotecas {/* #frameworks--libraries */}
+## Frameworks e Bibliotecas {/* #frameworks--libraries */}
 
 :::info
-Para versões exatas, consulte [`package.json`](https://github.com/wsj-br/duplistatus/blob/master/package.json) (`dependencies`, `devDependencies`, `engines` e `packageManager`). A lista abaixo é intencionalmente simplificada em relação às versões para que permaneça precisa após atualizações de dependências.
+Para versões exatas, veja [`package.json`](https://github.com/wsj-br/duplistatus/blob/master/package.json) (`dependencies`, `devDependencies`, `engines`, e `packageManager`). A lista abaixo é propositalmente leve em versões para ficar precisa em atualizações de dependências.
 :::
 
-### Gerenciamento de Runtime & Pacotes {/* #runtime--package-management */}
+### Runtime e Gerenciamento de Pacotes {/* #runtime--package-management */}
 - Node.js (veja `engines.node`)
-- pnpm (aplicado via o script `preinstall`; veja `engines.pnpm` / `packageManager`)
+- pnpm (imposto via script `preinstall`; veja `engines.pnpm` / `packageManager`)
 
-### Frameworks & Bibliotecas Principais {/* #core-frameworks--libraries */}
+### Frameworks e Bibliotecas Principais {/* #core-frameworks--libraries */}
 - Next.js (App Router)
 - React & React-DOM
 - Radix UI (primitivas `@radix-ui/react-*`)
@@ -51,21 +51,21 @@ Para versões exatas, consulte [`package.json`](https://github.com/wsj-br/duplis
 - lucide-react, clsx, class-variance-authority
 - date-fns, uuid
 - bcrypt
-- express (serviço de cron), node-cron
+- express (serviço cron), node-cron
 - nodemailer, qrcode
-- ai-i18n-tools, i18next, react-i18next (pipeline de tradução de UI e docs)
+- ai-i18n-tools, i18next, react-i18next (pipeline de tradução de UI + docs)
 
-### Verificação de Tipos & Linting {/* #type-checking--linting */}
+### Verificação de Tipos e Linting {/* #type-checking--linting */}
 - TypeScript (modo estrito)
 - TSX (para executar scripts TypeScript)
-- ESLint (configuração plana `eslint.config.mjs` + `eslint-config-next`; execute via `pnpm lint` → `eslint .`)
+- ESLint (configuração flat `eslint.config.mjs` + `eslint-config-next`; execute via `pnpm lint` → `eslint .`)
 - webpack
 
-### Construção e Implantação {/* #build--deployment */}
-- Saída independente do Next.js (`output: 'standalone'`) com ponto de entrada do contêiner iniciando `server.js`
-- Docker (base node:alpine) com builds multi-arquitetura (AMD64, ARM64). A imagem constrói apenas o aplicativo Next.js (não o site Docusaurus); a versão do pnpm é obtida de `packageManager` em `package.json`
+### Build e Implantação {/* #build--deployment */}
+- Saída standalone do Next.js (`output: 'standalone'`) com entrypoint do container iniciando `server.js`. O rastreamento de arquivos ainda é executado para a imagem de runtime Docker; `outputFileTracingExcludes` em `next.config.ts` remove pacotes apenas de build (webpack, compiladores nativos SWC, esbuild, minificadores CSS) e prebuilds não-Linux `better-sqlite3`. Não exclua `@swc/helpers`, `sharp`, ou prebuilds Linux sqlite.
+- Docker (base node:alpine) com builds multi-arquitetura (AMD64, ARM64). A imagem constrói apenas o aplicativo Next.js (não o site Docusaurus); a versão do pnpm é tomada de `packageManager` em `package.json`
 - Fluxos de trabalho do GitHub Actions para CI/CD
-- Inkscape para logos e imagens
+- Inkscape para logotipos e imagens
 - Docusaurus para documentação
 - Greenfish Icon Editor para ícones
 
@@ -76,5 +76,5 @@ Para versões exatas, consulte [`package.json`](https://github.com/wsj-br/duplis
 ## Recursos do Sistema {/* #system-features */}
 
 - **Serviço Cron**: Serviço separado para tarefas agendadas, iniciado por `docker-entrypoint.sh` em implantações Docker
-- **Notificações**: Integração com ntfy.sh e E-mail SMTP (nodemailer), modelos configuráveis
-- **Atualização automática**: Atualização automática configurável para o painel e páginas de detalhes
+- **Notificações**: integração ntfy.sh e e-mail SMTP (nodemailer), modelos configuráveis
+- **Atualização automática**: atualização automática configurável para páginas de painel e detalhes

@@ -1,10 +1,10 @@
-# Integración de la página de inicio (Opcional) {/* #homepage-integration-optional */}
+# Integración de la Página de Inicio (Opcional) {/* #homepage-integration-optional */}
 
-[Homepage](https://gethomepage.dev/) es una aplicación de panel de control personalizable. Para integrar **duplistatus** con Homepage, añada un widget a su archivo `services.yaml` utilizando el [tipo de widget Custom API](https://gethomepage.dev/widgets/services/customapi/).
+[Homepage](https://gethomepage.dev/) es una aplicación de panel personalizable. Para integrar **duplistatus** con Homepage, añade un widget a tu archivo `services.yaml` usando el [tipo de widget de API personalizado](https://gethomepage.dev/widgets/services/customapi/).
 
-## Resumen del Widget {/* #summary-widget */}
+## Widget de Resumen {/* #summary-widget */}
 
-Este widget muestra las estadísticas generales del backup en tu panel de control de la página de inicio.
+Este widget muestra las estadísticas globales de copia de seguridad en tu panel de Homepage.
 
 ```yaml
 - Dashboard:
@@ -40,13 +40,13 @@ Este widget muestra las estadísticas generales del backup en tu panel de contro
           suffix: GB
 ```
 
-**Visualización de Widget:**
+**Visualización del Widget:**
 
-![Widget de Resumen de la Página de Inicio](/img/homepage-summary.png)
+![Widget de Resumen de Homepage](/img/homepage-summary.png)
 
-## Información de Copia de Seguridad del Último Widget {/* #last-backup-information-widget */}
+## Widget de Información de la Última Copia de Seguridad {/* #last-backup-information-widget */}
 
-Este widget muestra la información del backup más reciente para una máquina específica.
+Este widget muestra la información de la última copia de seguridad para una máquina específica.
 
 ```yaml
 - Test Machine 1:
@@ -75,15 +75,15 @@ Este widget muestra la información del backup más reciente para una máquina e
           label: Versions
 ```
 
-**Visualización de Widget:**
+**Visualización del Widget:**
 
-![Widget de Última Copia de Seguridad de la Página de Inicio](/img/homepage-lastbackup.png)
+![Widget de Última Copia de Seguridad de Homepage](/img/homepage-lastbackup.png)
 
 ## Notas de Configuración {/* #configuration-notes */}
 
-- Reemplace `your-server` con la dirección IP o nombre de host de su servidor.
-- Ajuste el `refreshInterval` según sea necesario (en milisegundos).
-- Reemplace espacios en nombres de máquinas con `%20` en la URL (por ejemplo, `Test Machine 1` se convierte en `Test%20Machine%201`).
-- Los valores de `scale` convierten bytes a unidades más legibles (GB, MB).
-- Utilice una clave de API con ámbito de **leer** cuando se requieran [claves de API](settings/api-keys-settings.md). Omita `?api_key=` cuando las claves sean opcionales.
-- Si la [lista de IPs permitidas de la API externa](settings/ip-allowlist-settings.md) está habilitada, incluya el host de la página de inicio.
+- Reemplaza `your-server` con la dirección IP o el nombre de host de tu servidor.
+- Ajusta el `refreshInterval` según sea necesario (en milisegundos).
+- Reemplaza los espacios en los nombres de las máquinas con `%20` en la URL (por ejemplo, `Test Machine 1` se convierte en `Test%20Machine%201`).
+- Los valores de `scale` convierten bytes en unidades más legibles (GB, MB).
+- Usa una clave de API con ámbito **leer** cuando [las claves de API](settings/api-keys-settings.md) sean necesarias. Omite `?api_key=` cuando las claves sean opcionales.
+- Si la [lista de IPs permitidas de la API externa](settings/ip-allowlist-settings.md) está habilitada, incluye el host de Homepage.

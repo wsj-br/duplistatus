@@ -9,7 +9,7 @@
 Bereinigt die Datenbank, indem alle Daten entfernt werden, während das Datenbankschema und die Struktur erhalten bleiben.
 
 >[!CAUTION]
-> Mit Vorsicht verwenden, da dies alle vorhandenen Daten löscht.
+> Verwenden Sie dies mit Vorsicht, da alle vorhandenen Daten gelöscht werden.
 
 ## Build-Artefakte und Abhängigkeiten bereinigen {/* #clean-build-artefacts-and-dependencies */}
 
@@ -17,20 +17,20 @@ Bereinigt die Datenbank, indem alle Daten entfernt werden, während das Datenban
 scripts/clean-workspace.sh
 ```
 
-Entfernt alle Build-Artefakte, das Verzeichnis node_modules und andere generierte Dateien, um einen sauberen Zustand sicherzustellen. Dies ist nützlich, wenn Sie eine Neuinstallation durchführen oder Abhängigkeitsprobleme beheben müssen. Der Befehl löscht:
+Entfernt alle Build-Artefakte, das node_modules-Verzeichnis und andere generierte Dateien, um einen sauberen Zustand sicherzustellen. Dies ist nützlich, wenn Sie eine frische Installation durchführen oder Abhängigkeitsprobleme beheben müssen. Der Befehl löscht:
 - `node_modules/`-Verzeichnis
 - `.next/`-Build-Verzeichnis
 - `dist/`-Verzeichnis
 - `out/`-Verzeichnis
 - `.turbo/`-Verzeichnis
-- `pnpm-lock.yaml`
+- `pnpm-lock.yaml`-Verzeichnis
 - `data/*.json` (Entwicklungs-JSON-Sicherungsdateien)
 - `public/documentation`
 - `documentation/.docusaurus`, `.cache`, `.cache-*`, `build`, `node_modules`, `pnpm-lock.yaml`
 - `.genkit/`-Verzeichnis
 - `*.tsbuildinfo`-Dateien
-- pnpm-Store-Cache (über `pnpm store prune`)
-- Docker-Build-Cache und Systempruning (Images, Netzwerke, Volumes)
+- pnpm-Speicher-Cache (via `pnpm store prune`)
+- Docker-Build-Cache und System-Bereinigung (Images, Netzwerke, Volumes)
 
 ## Docker Compose und Docker-Umgebung bereinigen {/* #clean-docker-compose-and-docker-environment */}
 
@@ -38,13 +38,13 @@ Entfernt alle Build-Artefakte, das Verzeichnis node_modules und andere generiert
 scripts/clean-docker.sh
 ```
 
-Führt eine vollständige Docker-Bereinigung durch, was nützlich ist für:
-- Freigabe von Speicherplatz
+Führt eine vollständige Docker-Bereinigung durch, die nützlich ist für:
+- Freigabe von Festplattenspeicherplatz
 - Entfernen alter/nicht verwendeter Docker-Artefakte
-- Bereinigung nach Entwicklungs- oder Testphasen
-- Beibehaltung einer sauberen Docker-Umgebung
+- Bereinigung nach Entwicklungs- oder Test-Sitzungen
+- Aufrechterhaltung einer sauberen Docker-Umgebung
 
-## Pakete auf die aktuelle Version aktualisieren {/* #update-the-packages-to-the-latest-version */}
+## Pakete auf die neueste Version aktualisieren {/* #update-the-packages-to-the-latest-version */}
 
 Sie können Pakete manuell aktualisieren mit:
 
@@ -53,25 +53,25 @@ ncu --upgrade
 pnpm update
 ```
 
-Oder verwenden Sie das automatisierte Skript (bevorzugen Sie `source`, damit **nvm** für Ihre aktuelle Shell gilt; für **CI** oder nicht-interaktive Ausführungen verwenden Sie `CI=1` oder `UPGRADE_ALLOW_EXEC=1`):
+Oder verwenden Sie das automatisierte Skript (`source` wird bevorzugt, damit **nvm** auf Ihre aktuelle Shell angewendet wird; für **CI** oder nicht-interaktive Ausführungen verwenden Sie `CI=1` oder `UPGRADE_ALLOW_EXEC=1`):
 
 ```bash
 source ./scripts/upgrade-dependencies.sh
 ```
 
-Das `upgrade-dependencies.sh`-Skript automatisiert den gesamten Prozess der Abhängigkeitsaktualisierung. Es ist projektunabhängig: Der Paketmanager, die Arbeitsbereichspakete und der Verifizierungsbefehl jedes Pakets werden automatisch erkannt (sodass sowohl das Root- als auch die `documentation/`-Pakete aktualisiert werden, ohne fest codierte Pfade). Es:
-- Bezieht die Tool-Einrichtung über `upgrade-tools.sh` (nvm / Node LTS, global `pnpm`, `npm-check-updates`, `doctoc`)
-- Führt **build-sichere** Aktualisierungen für jedes Paket durch: `npm-check-updates` ermittelt die neuesten Versionen, dann werden install und `typecheck`/`lint` vom Arbeitsbereichsroot ausgeführt. Aktualisierungen, die die Verifizierung nicht bestehen, werden durch Bearbeiten von `package.json` (nicht `pnpm add`, das pnpm am Arbeitsbereichsroot ablehnt) bis zur Fehlerursache eingegrenzt. Eingebettete Peer-Gates fixieren `eslint` und `typescript`, wenn `eslint-plugin-react` / `typescript-eslint` noch nicht die neueste Hauptversion zulassen.
-- Aktualisiert die pnpm-Lockdatei des Arbeitsbereichs und installiert Abhängigkeiten.
-- Aktualisiert die Browserslist-Datenbank
-- Prüft auf Sicherheitslücken (`pnpm audit`) und wendet nicht-brechende Korrekturen an (`pnpm audit --fix`)
-- **Priorisiert Sicherheit**: Wenn eine anfällige direkte Abhängigkeit nur durch ein Build-unterbrechendes Upgrade behoben werden kann, wird die sichere Version erzwungen und die Build-Fehler werden gemeldet, damit der Code für Kompatibilität aktualisiert werden kann
-- Druckt eine Zusammenfassung (aktualisierte vs. übersprungene Build-brechende Pakete, behobene/verbleibende Sicherheitslücken und einen Manifest-Schnappschuss-Pfad für manuelles Rollback)
-- Kopiert `package.json` und Sperrdateien mit `/usr/bin/cp`, damit ein interaktiver `cp`-Alias (z. B. `cp -i`) nicht auffordert, diese Dateien zu überschreiben
+Das `upgrade-dependencies.sh`-Skript automatisiert den gesamten Prozess der Abhängigkeitsaktualisierung. Es ist projektunabhängig: Der Paketmanager, die Workspace-Pakete und jeder Paketüberprüfungskommando werden automatisch erkannt (sodass sowohl das Root- als auch das `documentation/`-Paket aktualisiert werden, ohne dass festcodierte Pfade verwendet werden). Es:
+- Richtet die Tools über `upgrade-tools.sh` ein (nvm / Node LTS, globale `pnpm`, `npm-check-updates`, `doctoc`)
+- Führt **sichere** Upgrades für jedes Paket durch: `npm-check-updates` ermittelt die neuesten Versionen, installiert sie und führt `typecheck`/`lint` vom Workspace-Root aus. Upgrades, die die Überprüfung nicht bestehen, werden durch Bearbeiten von `package.json` (nicht `pnpm add`, was pnpm im Workspace-Root ablehnt) bisektiert. Eingebettete Peer-Gates pinnen `eslint` und `typescript`, wenn `eslint-plugin-react` / `typescript-eslint` die neueste Major-Version noch nicht zulassen.
+- Aktualisiert die pnpm-Lockdatei des Workspaces und installiert die Abhängigkeiten
+- Aktualisiert die browserslist-Datenbank
+- Prüft auf Sicherheitslücken (`pnpm audit`) und wendet nicht-kompatible Fixes an (`pnpm audit --fix`)
+- **Priorisiert Sicherheit**: wenn eine Sicherheitslücke einer direkten Abhängigkeit nur durch ein build-zerstörendes Upgrade behoben werden kann, wird die sichere Version erzwungen und die Build-Fehler werden gemeldet, damit der Code für Kompatibilität aktualisiert werden kann
+- Gibt eine Zusammenfassung aus (aktualisierte vs. build-zerstörende Pakete übersprungen, Sicherheitslücken behoben/verbleibend und einen Manifest-Snapshot-Pfad für manuelles Rollback)
+- Kopiert `package.json` und Lockdateien mit `/usr/bin/cp`, damit ein interaktives `cp`-Alias (z. B. `cp -i`) nicht auffordert, diese Dateien zu überschreiben
 
-Dieses Skript bietet einen vollständigen Workflow zum Aktualisieren und Sichern von Abhängigkeiten.
+Dieses Skript bietet einen vollständigen Workflow zum Halten der Abhängigkeiten auf dem neuesten Stand und sicher.
 
-## Nach ungenutzten Paketen prüfen {/* #check-for-unused-packages */}
+## Auf nicht verwendete Pakete prüfen {/* #check-for-unused-packages */}
 
 ```bash
 pnpm depcheck
@@ -85,51 +85,51 @@ pnpm depcheck
 
 Dieses Skript aktualisiert automatisch Versionsinformationen in mehreren Dateien, um sie synchron zu halten. Es:
 - Extrahiert die Version aus `package.json`
-- Aktualisiert die `.env`-Datei mit der `VERSION`-Variable (erstellt sie, falls nicht vorhanden)
+- Aktualisiert die `.env`-Datei mit der `VERSION`-Variable (wird erstellt, falls sie nicht existiert)
 - Aktualisiert die `Dockerfile` mit der `VERSION`-Variable (falls vorhanden)
-- Aktualisiert das Versionsfeld in `documentation/package.json` (falls vorhanden)
+- Aktualisiert das `documentation/package.json`-Versionsfeld (falls vorhanden)
 - Aktualisiert nur, wenn sich die Version geändert hat
-- Gibt Rückmeldung zu jeder Aktion
+- Gibt Feedback zu jeder Operation
 
-## Pre-Checks-Skript {/* #pre-checks-script */}
+## Vorabprüfungen-Skript {/* #pre-checks-script */}
 
 ```bash
 ./scripts/pre-checks.sh
 ```
 
-Dieses Skript führt Vorprüfungen durch, bevor der Entwicklungsserver gestartet, erstellt oder der Produktionsserver gestartet wird. Es:
-- Stellt sicher, dass die Datei `.duplistatus.key` vorhanden ist (über `ensure-key-file.sh`)
+Dieses Skript führt Vorabprüfungen durch, bevor der Entwicklungsserver, das Bauen oder der Produktionsserver gestartet wird. Es:
+- Stellt sicher, dass die `.duplistatus.key`-Datei existiert (über `ensure-key-file.sh`)
 - Aktualisiert die Versionsinformationen (über `update-version.sh`)
 
-Dieses Skript wird automatisch durch `pnpm dev`, `pnpm build` und `pnpm start-local` aufgerufen.
+Dieses Skript wird automatisch von `pnpm dev`, `pnpm build` und `pnpm start-local` aufgerufen.
 
-## Sicherstellen, dass die Schlüsseldatei existiert {/* #ensure-key-file-exists */}
+## Sicherstellen, dass die Schlüsseldatiene existiert {/* #ensure-key-file-exists */}
 
 ```bash
 ./scripts/ensure-key-file.sh
 ```
 
-Dieses Skript stellt sicher, dass die `.duplistatus.key`-Datei im `data`-Verzeichnis vorhanden ist. Es:
+Dieses Skript stellt sicher, dass die `.duplistatus.key`-Datei im `data`-Verzeichnis existiert. Es:
 - Erstellt das `data`-Verzeichnis, falls es nicht existiert
-- Generiert eine neue 32-Byte-Zufallsschlüsseldatei, falls nicht vorhanden
+- Generiert eine neue 32-Byte-Zufallsdatei, falls sie fehlt
 - Setzt die Dateiberechtigungen auf 0400 (nur Lesen für den Besitzer)
-- Behebt Berechtigungen, falls diese falsch sind
+- Behebt Berechtigungen, falls sie falsch sind
 
-Die Schlüsseldatei wird für kryptografische Operationen in der Anwendung verwendet.
+Die Schlüsseldatiene wird für kryptographische Operationen in der Anwendung verwendet.
 
-## Wiederherstellung des Admin-Kontos {/* #admin-account-recovery */}
+## Admin-Konto-Wiederherstellung {/* #admin-account-recovery */}
 
 ```bash
 ./admin-recovery <username> <new-password>
 ```
 
-Dieses Skript ermöglicht die Wiederherstellung von Administrator-Konten, falls der Zugriff gesperrt ist oder das Passwort vergessen wurde. Es:
+Dieses Skript ermöglicht die Wiederherstellung von Admin-Konten, falls sie gesperrt sind oder das Passwort vergessen wurde. Es:
 - Setzt das Passwort für den angegebenen Benutzer zurück
-- Entsperrt das Konto, falls es gesperrt war
+- Schaltet das Konto freigabe, falls es gesperrt war
 - Setzt den Zähler für fehlgeschlagene Anmeldeversuche zurück
-- Entfernt die Kennung „Passwort muss geändert werden“
-- Überprüft, ob das Passwort die Sicherheitsanforderungen erfüllt
-- Protokolliert die Aktion im Audit-Log
+- Löscht das "Passwort muss geändert werden"-Flag
+- Überprüft, ob das Passwort den Sicherheitsanforderungen entspricht
+- Protokolliert die Aktion im Audit-Protokoll
 
 **Beispiel:**
 
@@ -138,7 +138,7 @@ Dieses Skript ermöglicht die Wiederherstellung von Administrator-Konten, falls 
 ```
 
 >[!CAUTION]
-> Dieses Skript modifiziert die Datenbank direkt. Verwenden Sie es nur bei Bedarf zur Kontowiederherstellung.
+> Dieses Skript ändert die Datenbank direkt. Verwenden Sie es nur bei Bedarf für die Konto-Wiederherstellung.
 
 ## Bilder kopieren {/* #copy-images */}
 
@@ -146,12 +146,12 @@ Dieses Skript ermöglicht die Wiederherstellung von Administrator-Konten, falls 
 ./scripts/copy-images.sh
 ```
 
-Kopiert Bilddateien von `documentation/static/img` an ihre entsprechenden Speicherorte in der Anwendung:
+Kopiert Bilddateien von `documentation/static/img` an die entsprechenden Stellen in der Anwendung:
 - Kopiert `favicon.ico` nach `src/app/`
 - Kopiert `duplistatus_logo.png` nach `public/images/`
 - Kopiert `duplistatus_banner.png` nach `public/images/`
 
-Nützlich zum Synchronisieren von Anwendungsbildern mit Dokumentationsbildern.
+Nützlich, um die Bilder der Anwendung mit den Dokumentationsbildern synchron zu halten.
 
 ## Versionen zwischen Entwicklung und Docker vergleichen {/* #compare-versions-between-development-and-docker */}
 
@@ -160,14 +160,14 @@ Nützlich zum Synchronisieren von Anwendungsbildern mit Dokumentationsbildern.
 ```
 
 Dieses Skript vergleicht die Versionen zwischen Ihrer Entwicklungsumgebung und einem laufenden Docker-Container. Es:
-- Vergleicht SQLite-Versionen nur nach Hauptversion (z. B. werden 3.45.1 und 3.51.1 als kompatibel betrachtet und als „✅ (major)“ angezeigt)
-- Vergleicht Node-, npm- und Duplistatus-Versionen exakt (müssen genau übereinstimmen)
+- Vergleicht die SQLite-Versionen nur nach der Hauptversion (z. B. 3.45.1 vs 3.51.1 werden als kompatibel betrachtet, angezeigt als "✅ (major)")
+- Vergleicht die Node-, npm- und Duplistatus-Versionen exakt (müssen genau übereinstimmen)
 - Zeigt eine formatierte Tabelle mit allen Versionsvergleichen an
-- Gibt eine Zusammenfassung mit farbcodierten Ergebnissen aus (✅ für Übereinstimmungen, ❌ für Abweichungen)
-- Beendet sich mit Exit-Code 0, wenn alle Versionen übereinstimmen, andernfalls mit Code 1
+- Bietet eine Zusammenfassung mit farbcodierten Ergebnissen (✅ für Übereinstimmungen, ❌ für Unterschiede)
+- Beendet mit Code 0, wenn alle Versionen übereinstimmen, 1 bei Unterschieden
 
 **Anforderungen:**
-- Docker-Container mit dem Namen `duplistatus` muss ausgeführt werden
+- Der Docker-Container mit dem Namen `duplistatus` muss laufen
 - Das Skript liest Versionsinformationen aus den Docker-Container-Protokollen
 
 **Beispielausgabe:**
@@ -183,9 +183,9 @@ Dieses Skript vergleicht die Versionen zwischen Ihrer Entwicklungsumgebung und e
 └─────────────────────────┴──────────────────────────────┴──────────────────────────────┴──────────────┘
 ```
 
-**Hinweis:** SQLite-Versionen werden nur nach der Hauptversion verglichen, da verschiedene Patch-Versionen innerhalb derselben Hauptversion in der Regel kompatibel sind. Das Skript zeigt an, wenn SQLite-Versionen auf der Hauptebene übereinstimmen, aber in den Patch-Versionen unterschiedlich sind.
+**Hinweis:** SQLite-Versionen werden nur nach der Hauptversion verglichen, da verschiedene Patch-Versionen innerhalb derselben Hauptversion im Allgemeinen kompatibel sind. Das Skript gibt an, wenn die SQLite-Versionen auf der Hauptversion übereinstimmen, aber in den Patch-Versionen unterscheiden.
 
-## Die Konfigurationen in der Datenbank anzeigen {/* #viewing-the-configurations-in-the-database */}
+## Anzeigen der Konfigurationen in der Datenbank {/* #viewing-the-configurations-in-the-database */}
 
 ```bash
 sqlite3 data/backups.db "SELECT key, value FROM configurations;" | awk -F'|' '
@@ -201,10 +201,10 @@ sqlite3 /var/lib/docker/volumes/duplistatus_data/_data/backups.db "SELECT key, v
    else {print $2;}}' | less -R
 ```
 
-## Sicherungseinstellungen anzeigen {/* #show-backup-settings */}
+## Anzeigen der Sicherungseinstellungen {/* #show-backup-settings */}
 
 ```bash
 ./scripts/show-backup-settings.sh [database_path]
 ```
 
-Zeigt den Inhalt des `backup_settings`-Wertes in der Konfigurationstabelle in einer formatierten Tabelle an. Nützlich zum Debuggen von Benachrichtigungskonfigurationen. Standard-Datenbankpfad: `data/backups.db`.
+Zeigt den Inhalt des `backup_settings` Werts in der Konfigurationstabelle in einer formatierten Tabelle an. Nützlich für die Fehlersuche bei Benachrichtigungskonfigurationen. Standard-Datenbankpfad: `data/backups.db`.

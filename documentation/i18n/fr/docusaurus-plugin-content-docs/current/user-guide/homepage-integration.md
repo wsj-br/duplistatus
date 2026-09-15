@@ -1,10 +1,10 @@
 # Intégration de la page d'accueil (facultatif) {/* #homepage-integration-optional */}
 
-[Homepage](https://gethomepage.dev/) est une application de tableau de bord personnalisable. Pour intégrer **duplistatus** avec Homepage, ajoutez un widget à votre fichier `services.yaml` en utilisant le [type de widget Custom API](https://gethomepage.dev/widgets/services/customapi/).
+[Homepage](https://gethomepage.dev/) est une application de tableau de bord personnalisable. Pour intégrer **duplistatus** avec Homepage, ajoutez un widget à votre fichier `services.yaml` en utilisant le [type de widget API personnalisé](https://gethomepage.dev/widgets/services/customapi/).
 
-## Résumé du widget {/* #summary-widget */}
+## Widget de résumé {/* #summary-widget */}
 
-Ce widget affiche les statistiques de sauvegarde globales sur votre tableau de bord Homepage.
+Ce widget affiche les statistiques globales de sauvegarde sur votre tableau de bord Homepage.
 
 ```yaml
 - Dashboard:
@@ -40,13 +40,13 @@ Ce widget affiche les statistiques de sauvegarde globales sur votre tableau de b
           suffix: GB
 ```
 
-**Affichage du widget :**
+**Affichage du widget:**
 
-![Widget de résumé de la page d'accueil](/img/homepage-summary.png)
+![Widget de résumé Homepage](/img/homepage-summary.png)
 
-## Informations de sauvegarde Dernier du widget {/* #last-backup-information-widget */}
+## Widget d'informations sur la dernière sauvegarde {/* #last-backup-information-widget */}
 
-Ce widget affiche les dernières informations de sauvegarde pour une machine spécifique.
+Ce widget affiche les informations de la dernière sauvegarde pour une machine spécifique.
 
 ```yaml
 - Test Machine 1:
@@ -75,15 +75,15 @@ Ce widget affiche les dernières informations de sauvegarde pour une machine sp�
           label: Versions
 ```
 
-**Affichage du widget :**
+**Affichage du widget:**
 
-![Widget Dernière sauvegarde de la page d'accueil](/img/homepage-lastbackup.png)
+![Widget de dernière sauvegarde Homepage](/img/homepage-lastbackup.png)
 
 ## Notes de configuration {/* #configuration-notes */}
 
 - Remplacez `your-server` par l'adresse IP ou le nom d'hôte de votre serveur.
-- Ajustez l'intervalle `refreshInterval` selon vos besoins (en millisecondes).
+- Ajustez le `refreshInterval` selon vos besoins (en millisecondes).
 - Remplacez les espaces dans les noms de machines par `%20` dans l'URL (par exemple, `Test Machine 1` devient `Test%20Machine%201`).
 - Les valeurs `scale` convertissent les octets en unités plus lisibles (Go, Mo).
-- Utilisez une clé API avec une portée **lecture** lorsque les [clés API](settings/api-keys-settings.md) sont requises. Supprimez `?api_key=` lorsque les clés sont optionnelles.
-- Si la [liste d'adresses IP autorisées de l'API externe](settings/ip-allowlist-settings.md) est activée, incluez l'hôte de la page d'accueil.
+- Utilisez une clé API avec une portée **lire** lorsque les [clés API](settings/api-keys-settings.md) sont requises. Supprimez `?api_key=` lorsque les clés sont facultatives.
+- Si la [liste d'adresses IP autorisées de l'API externe](settings/ip-allowlist-settings.md) est activée, incluez l'hôte Homepage.

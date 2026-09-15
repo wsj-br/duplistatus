@@ -3,7 +3,7 @@
 El proyecto incluye varios scripts de prueba para ayudar con el desarrollo y las pruebas:
 
 > [!NOTE]
-> Se eliminaron los ayudantes heredados en la raíz del repositorio `pnpm` para depuración de respaldos atrasados, pruebas de matriz SMTP y verificaciones de puerto cron. Utilice la interfaz de usuario de la aplicación (**Configuración → Monitoreo de Copias de Seguridad**), las API HTTP autenticadas y `curl` contra el servicio cron como se documenta a continuación.
+> Los ayudantes `pnpm` para la depuración de tareas vencidas, pruebas de matriz SMTP y comprobaciones de puerto cron se eliminaron del repositorio raíz. Utilice la interfaz de usuario de la aplicación (**Configuración → Monitoreo de copias de seguridad**), las API HTTP autenticadas y `curl` contra el servicio cron, tal como se documenta a continuación.
 
 ## Generar datos de prueba {/* #generate-test-data */}
 
@@ -11,18 +11,18 @@ El proyecto incluye varios scripts de prueba para ayudar con el desarrollo y las
 pnpm generate-test-data --servers=N
 ```
 
-Este script genera datos de backup de prueba para múltiples servidores y backups.
+Este script genera datos de copia de seguridad de prueba para múltiples servidores y copias de seguridad.
 
-El parámetro `--servers=N` es **obligatorio** y especifica la cantidad de servidores a generar (1-30).
+El parámetro `--servers=N` es **obligatorio** y especifica el número de servidores a generar (1-30).
 
-Utilice la opción `--upload` para enviar los datos generados a `/api/upload`
+Use la opción `--upload` para enviar los datos generados a `/api/upload`
 
 ```bash
 pnpm generate-test-data --servers=N --upload
 pnpm generate-test-data --servers=N --upload --api-key=YOUR_UPLOAD_KEY
 ```
 
-`--api-key` es obligatorio cuando la Configuración → Claves de API está configurada para requerir claves. El script reintenta una vez en HTTP 429 para que una ejecución grande de `--upload` se mantenga dentro de los límites de velocidad predeterminados.
+`--api-key` es obligatorio cuando Configuración → Claves de API está configurado para requerir claves. El script reintenta una vez en HTTP 429 para que una ejecución grande de `--upload` se mantenga dentro de los límites de velocidad predeterminados.
 
 **Ejemplos:**
 
@@ -39,34 +39,34 @@ pnpm generate-test-data --servers=30
 
 El script asigna versiones de Duplicati **por servidor** (la misma cadena de informe se escribe en cada copia de seguridad para ese servidor):
 
-- **70–80% actual**: utiliza la última versión estable en caché disponible de `configurations.duplicati_versions`, de lo contrario, una versión de respaldo fija (`2.1.0.5_stable`).
-- **Restante más antigua**: una versión estable anterior para que la insignia del panel de control se compare como obsoleta (amarilla).
+- **70–80% actual**: usa la última versión estable en caché de `configurations.duplicati_versions` cuando está disponible, de lo contrario, una versión de respaldo fija (`2.1.0.5_stable`).
+- **Resto más antiguas**: una versión estable anterior para que la insignia del panel de control se compare como obsoleta (amarilla).
 - El modo Direct-DB borra `configurations` primero, luego restaura o semilla la caché de versiones para que la comparación actual/obsoleta funcione inmediatamente.
-- Pequeñas cantidades no siempre pueden caer en el 70–80%: `--servers=1` es 100% actual; `--servers=2` o `3` mantiene al menos un servidor más antiguo; `--servers=6` es 5 actuales (83%). `--servers=12` (utilizado por `pnpm take-screenshots`) es **9 actuales / 3 más antiguas**.
+- Las cantidades pequeñas no siempre pueden caer en el 70–80%: `--servers=1` es 100% actual; `--servers=2` o `3` mantiene al menos un servidor más antiguo; `--servers=6` es 5 actuales (83%). `--servers=12` (usado por `pnpm take-screenshots`) es **9 actuales / 3 más antiguas**.
 - Cuando `pnpm take-screenshots` reduce más tarde el conjunto de datos a tres servidores, mantiene el servidor vencido protegido y **al menos un servidor de versión anterior**.
 
 >[!CAUTION]
 > Este script elimina todos los datos anteriores en la base de datos y los reemplaza con datos de prueba.
 > Realice una copia de seguridad de su base de datos antes de ejecutar este script.
 
-## Comprobaciones vencidas y conectividad de cron (desarrollo) {/* #overdue-checks-and-cron-connectivity-development */}
+## Comprobaciones de vencimiento y conectividad de cron (desarrollo) {/* #overdue-checks-and-cron-connectivity-development */}
 
 ### Ejecutar una comprobación de copia de seguridad vencida {/* #run-an-overdue-backup-check */}
 
 Mientras la aplicación está en ejecución:
 
-- **IU (recomendado):** abra **Configuración → Monitoreo de Copias de Seguridad** y use **Probar copias de seguridad retrasadas**. Esto ejecuta la misma lógica que el trabajo programado mediante `POST /api/notifications/check-overdue` autenticado.
+- **Interfaz de usuario (recomendado):** abra **Configuración → Monitoreo de copias de seguridad** y use **Probar copias de seguridad vencidas**. Esto ejecuta la misma lógica que el trabajo programado a través de `POST /api/notifications/check-overdue` autenticado.
 
-### Estado del servicio cron {/* #cron-service-health */}
+### Salud del servicio cron {/* #cron-service-health */}
 
 ```bash
 curl http://localhost:8667/health
 curl http://localhost:8666/api/cron/health
 ```
 
-### Simulando una fecha u hora específica {/* #simulating-a-specific-date-or-time */}
+### Simular una fecha o hora específica {/* #simulating-a-specific-date-or-time */}
 
-No hay una CLI incluida para inyectar una hora "actual" simulada. Para el algoritmo y sugerencias de pruebas manuales, consulte el archivo del repositorio `dev/OVERDUE_DETECTION_ALGORITHM.md` y la implementación en `src/lib/overdue-backup-checker.ts`.
+No hay una CLI empaquetada para inyectar una hora “actual” simulada. Para el algoritmo y las ideas de pruebas manuales, consulte el archivo del repositorio `dev/OVERDUE_DETECTION_ALGORITHM.md` y la implementación en `src/lib/overdue-backup-checker.ts`.
 
 ## Validar exportación CSV {/* #validate-csv-export */}
 
@@ -74,12 +74,12 @@ No hay una CLI incluida para inyectar una hora "actual" simulada. Para el algori
 pnpm validate-csv-export
 ```
 
-Este script valida la funcionalidad de exportación CSV. Realiza lo siguiente:
-- Prueba la generación de exportación CSV
-- Verifica el formato y la estructura de los datos
+Este script valida la funcionalidad de exportación CSV. Realiza:
+- Pruebas de generación de exportación CSV
+- Verifica el formato y estructura de los datos
 - Comprueba la integridad de los datos en los archivos exportados
 
-Útil para garantizar que las exportaciones de CSV funcionen correctamente antes de los lanzamientos.
+Útil para asegurarse de que las exportaciones CSV funcionan correctamente antes de los lanzamientos.
 
 ## Bloquear temporalmente el servidor NTFY (para pruebas) {/* #temporarily-block-ntfy-server-for-testing */}
 
@@ -87,7 +87,7 @@ Este script valida la funcionalidad de exportación CSV. Realiza lo siguiente:
 sudo ./scripts/temporary_ntfy.sh_block.sh
 ```
 
-Este script bloquea temporalmente el acceso de red saliente al servidor NTFY (`ntfy.sh`) para probar el mecanismo de reintento de notificaciones. Realiza lo siguiente:
+Este script bloquea temporalmente el acceso de red saliente al servidor NTFY (`ntfy.sh`) para probar el mecanismo de reintento de notificaciones. Realiza:
 - Resuelve la dirección IP del servidor NTFY
 - Añade una regla de iptables para bloquear el tráfico saliente
 - Bloquea durante 10 segundos (configurable)
@@ -95,11 +95,11 @@ Este script bloquea temporalmente el acceso de red saliente al servidor NTFY (`n
 - Requiere privilegios de root (sudo)
 
 >[!CAUTION]
-> Este script modifica las reglas de iptables y requiere privilegios de root. Úselo solo para probar mecanismos de reintento de notificaciones.
+> Este script modifica las reglas de iptables y requiere privilegios de root. Úsalo solo para probar los mecanismos de reintento de notificaciones.
 
 ## Pruebas de migración de base de datos {/* #database-migration-testing */}
 
-El proyecto incluye scripts para probar migraciones de base de datos desde versiones anteriores a la versión actual. Estos scripts garantizan que las migraciones de base de datos funcionen correctamente y preserven la integridad de los datos.
+El proyecto incluye scripts para probar las migraciones de base de datos desde versiones antiguas a la versión actual. Estos scripts aseguran que las migraciones de base de datos funcionen correctamente y preserven la integridad de los datos.
 
 ### Generar datos de prueba de migración {/* #generate-migration-test-data */}
 
@@ -107,7 +107,7 @@ El proyecto incluye scripts para probar migraciones de base de datos desde versi
 ./scripts/generate-migration-test-data.sh
 ```
 
-Este script genera bases de datos de prueba para múltiples versiones históricas de la aplicación. Lo siguiente:
+Este script genera bases de datos de prueba para múltiples versiones históricas de la aplicación. Realiza:
 
 1. **Detiene y elimina** cualquier contenedor Docker existente
 2. **Para cada versión** (v0.4.0, v0.5.0, v0.6.1, 0.7.27, 0.8.21):
@@ -116,16 +116,16 @@ Este script genera bases de datos de prueba para múltiples versiones histórica
    - Inicia un contenedor Docker con la versión específica
    - Espera a que el contenedor esté listo
    - Genera datos de prueba usando `pnpm generate-test-data`
-   - Toma una captura de pantalla de la interfaz con los datos de prueba
+   - Captura una captura de pantalla de la interfaz de usuario con datos de prueba
    - Detiene y elimina el contenedor
-   - Descarga los archivos WAL y guarda el esquema de la base de datos
+   - Vacía los archivos WAL y guarda el esquema de la base de datos
    - Copia el archivo de base de datos a `scripts/migration_test_data/`
 
 **Requisitos:**
 - Docker debe estar instalado y configurado
 - Chromium (a través de Playwright) debe estar instalado
 - Acceso root/sudo para operaciones de Docker
-- El volumen de Docker `duplistatus_data` debe existir
+- El volumen Docker `duplistatus_data` debe existir
 
 **Salida:**
 - Archivos de base de datos: `scripts/migration_test_data/backups_<VERSION>.db`
@@ -133,49 +133,49 @@ Este script genera bases de datos de prueba para múltiples versiones histórica
 - Capturas de pantalla: `scripts/migration_test_data/duplistatus_test_data_<VERSION>.png`
 
 **Configuración:**
-- Número de servidores: Se establece mediante la variable `SERVERS` (por defecto: 3)
+- Número de servidores: Establecido mediante la variable `SERVERS` (predeterminada: 3)
 - Directorio de datos: `/var/lib/docker/volumes/duplistatus_data/_data`
 - Puerto: 9666 (puerto del contenedor Docker)
 
 >[!CAUTION]
-> Este script requiere Docker y detendrá/eliminará los contenedores existentes. También requiere acceso sudo para operaciones de Docker y acceso al sistema de archivos. Ejecute `pnpm take-screenshots:install` primero para instalar el navegador Chromium de Playwright si aún no lo ha hecho.
+> Este script requiere Docker y detendrá/eliminará contenedores existentes. También requiere acceso sudo para operaciones de Docker y acceso al sistema de archivos. Ejecuta `pnpm take-screenshots:install` primero para instalar el navegador Chromium de Playwright si aún no lo has hecho.
 
 >[!IMPORTANT]
-> Este script estaba destinado a ejecutarse una sola vez; en nuevas versiones, el desarrollador puede copiar el archivo de base de datos y las capturas de pantalla directamente al directorio `scripts/migration_test_data/`. Durante el desarrollo, simplemente ejecute el script `./scripts/test-migrations.sh` para probar las migraciones.
+> Este script estaba destinado a ejecutarse solo una vez, ya que en nuevas versiones el desarrollador puede copiar directamente el archivo de base de datos y las capturas de pantalla al directorio `scripts/migration_test_data/`. Durante el desarrollo, solo ejecuta el script `./scripts/test-migrations.sh` para probar las migraciones.
 
-### Probar migraciones de base de datos {/* #test-database-migrations */}
+### Probar migraciones de bases de datos {/* #test-database-migrations */}
 
 ```bash
 ./scripts/test-migrations.sh
 ```
 
-Este script prueba migraciones de base de datos desde versiones antiguas a la versión actual (4.0). Lo siguiente:
+Este script prueba las migraciones de bases de datos desde versiones antiguas hasta la versión actual (4.0). Hace lo siguiente:
 
 1. **Para cada versión** (v0.4.0, v0.5.0, v0.6.1, 0.7.27, 0.8.21):
    - Crea una copia temporal de la base de datos de prueba
    - Ejecuta el proceso de migración usando `test-migration.ts`
    - Valida la estructura de la base de datos migrada
-   - Verifica la existencia de tablas y columnas requeridas
-   - Confirma que la versión de la base de datos sea 4.0
+   - Comprueba las tablas y columnas requeridas
+   - Verifica que la versión de la base de datos sea 4.0
    - Limpia los archivos temporales
 
 **Requisitos:**
 - Las bases de datos de prueba deben existir en `scripts/migration_test_data/`
-- Generadas ejecutando primero `generate-migration-test-data.sh`
+- Generadas ejecutando `generate-migration-test-data.sh` primero
 
 **Salida:**
-- Resultados de pruebas con codificación por colores (verde para aprobado, rojo para fallido)
-- Resumen de versiones aprobadas y fallidas
-- Mensajes detallados de error para migraciones fallidas
+- Resultados de prueba con colores (verde para pasar, rojo para fallar)
+- Resumen de versiones pasadas y fallidas
+- Mensajes de error detallados para migraciones fallidas
 - Código de salida 0 si todas las pruebas pasan, 1 si alguna falla
 
-**Lo que valida:**
+**Qué valida:**
 - La versión de la base de datos es 4.0 después de la migración
 - Todas las tablas requeridas existen: `servers`, `backups`, `configurations`, `users`, `sessions`, `audit_log`, `db_version`
 - Las columnas requeridas existen en cada tabla
 - La estructura de la base de datos es correcta
 
-**Salida de ejemplo:**
+**Ejemplo de salida:**
 
 ```
 ==========================================
@@ -218,25 +218,25 @@ echo $?  # 0 = all passed, 1 = some failed
 ```
 
 >[!NOTE]
-> Este script utiliza internamente el script de prueba de migración de TypeScript (`test-migration.ts`). El script de prueba valida la estructura de la base de datos después de la migración y garantiza la integridad de los datos.
+> Este script usa el script de prueba de migración de TypeScript (`test-migration.ts`) internamente. El script de prueba valida la estructura de la base de datos después de la migración y asegura la integridad de los datos.
 
 ## SMTP y correo electrónico (desarrollo) {/* #smtp-and-email-development */}
 
-Configure SMTP en **Configuración → Correo electrónico** y use las funciones integradas de prueba de correo y notificaciones. Los scripts auxiliares anteriores `pnpm set-smtp-test-config` y `pnpm test-smtp-connections` fueron eliminados del repositorio.
+Configura SMTP en **Configuración → Correo electrónico** y usa las pruebas y flujos de notificación de correo electrónico en la aplicación. Los scripts de ayuda `pnpm set-smtp-test-config` y `pnpm test-smtp-connections` eliminados del repositorio.
 
-## Probar el script de entrada de Docker {/* #test-docker-entrypoint-script */}
+## Probar script de entrada de Docker {/* #test-docker-entrypoint-script */}
 
 ```bash
 pnpm test-entrypoint
 ```
 
-Este script proporciona un contenedor de prueba para `docker-entrypoint.sh` en desarrollo local. Configura el entorno para probar la funcionalidad de registro de logs y garantiza que los logs se escriban en `data/logs/` para que la aplicación pueda acceder a ellos.
+Este script proporciona un contenedor de prueba para `docker-entrypoint.sh` en el desarrollo local. Configura el entorno para probar la funcionalidad de registro de la entrada y asegura que los registros se escriban en `data/logs/` para que la aplicación pueda acceder a ellos.
 
 **Qué hace:**
 
-1. **Construye siempre una versión nueva**: Ejecuta automáticamente `pnpm build-local` para crear una compilación nueva antes de probar (no es necesario compilar manualmente primero)
-2. **Construye el servicio cron**: Asegura que el servicio cron se compile (`dist/cron-service.cjs`)
-3. **Configura una estructura tipo Docker**: Crea los enlaces simbólicos y la estructura de directorios necesarios para imitar el entorno de Docker
+1. **Siempre construye una versión nueva**: Ejecuta automáticamente `pnpm build-local` para crear una nueva compilación antes de probar (no es necesario compilar manualmente primero)
+2. **Construye el servicio cron**: Asegura que el servicio cron se construya (`dist/cron-service.cjs`)
+3. **Configura la estructura de Docker**: Crea los enlaces simbólicos y la estructura de directorios necesarios para simular el entorno de Docker
 4. **Ejecuta el script de entrada**: Ejecuta `docker-entrypoint.sh` con las variables de entorno adecuadas
 5. **Limpieza**: Elimina automáticamente los archivos temporales al salir
 
@@ -247,25 +247,25 @@ Este script proporciona un contenedor de prueba para `docker-entrypoint.sh` en d
 pnpm test-entrypoint
 ```
 
-**Variables de Entorno:**
+**Variables de entorno:**
 - `PORT=8666` - Puerto para el servidor Next.js (coincide con `start-local`)
 - `CRON_PORT=8667` - Puerto para el servicio cron
 - `VERSION` - Se establece automáticamente en formato `test-YYYYMMDD-HHMMSS`
 
 **Salida:**
-- Los logs se escriben en `data/logs/application.log` (accesible por la aplicación)
-- La salida de consola muestra la ejecución del script de punto de entrada
-- Presione Ctrl+C para detener y probar el vaciado de logs
+- Los registros se escriben en `data/logs/application.log` (accesibles por la aplicación)
+- La salida de la consola muestra la ejecución del script de entrada
+- Presione Ctrl+C para detener y probar el vaciado de registros
 
 **Requisitos:**
-- El script debe ejecutarse desde el directorio raíz del repositorio (pnpm lo maneja automáticamente)
-- El script maneja automáticamente todos los requisitos previos (compilación, servicio cron, etc.)
+- El script debe ejecutarse desde el directorio raíz del repositorio (pnpm maneja esto automáticamente)
+- El script maneja automáticamente todos los prerrequisitos (compilación, servicio cron, etc.)
 
 **Casos de uso:**
 - Probar cambios en el script de entrada localmente antes del despliegue en Docker
 - Verificar la rotación de registros y la funcionalidad de registro
-- Probar el apagado ordenado y el manejo de señales
-- Depuración del comportamiento del script de entrada en un entorno local
+- Probar el apagado elegante y el manejo de señales
+- Depurar el comportamiento del script de entrada en un entorno local
 
 ## Validación del Resumen Diario {/* #daily-summary-validation */}
 
@@ -273,4 +273,4 @@ pnpm test-entrypoint
 pnpm validate-daily-summary
 ```
 
-Ejecuta comprobaciones deterministas para la programación del Resumen Diario (incluyendo DST), la agregación de instantáneas (solo los últimos trabajos de copia de seguridad), la poda de la configuración de notificaciones residuales, las filas de copia de seguridad/servidor huérfanas, la saneación de Markdown, las reclamaciones del registro de entrega y la migración del esquema 4.1 → 4.2 con plantillas personalizadas. No envía correo electrónico ni NTFY.
+Ejecuta comprobaciones deterministas para la programación del Resumen Diario (incluyendo DST), la agregación de instantáneas (solo los últimos trabajos de copia de seguridad), la poda de la configuración de notificaciones residuales, las filas de copia de seguridad/servidor huérfanas, la sanitización de Markdown, las reclamaciones del registro de entrega y la migración del esquema 4.1 → 4.2 con plantillas personalizadas. No envía correo electrónico ni NTFY.

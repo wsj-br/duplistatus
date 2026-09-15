@@ -1,8 +1,8 @@
 # Recuperação de Conta de Administrador {/* #admin-account-recovery */}
 
-Recupere o acesso de administrador ao **duplistatus** quando você tiver perdido sua senha ou sido bloqueado de sua conta. Este guia aborda o uso do script de recuperação de admin em ambientes Docker.
+Recupere o acesso de administrador ao **duplistatus** quando você perder sua senha ou for bloqueado da sua conta. Este guia abrange o uso do script de recuperação de administrador em ambientes Docker.
 
-Se o navegador mostrar **Acesso negado** (HTTP 403) antes do formulário de login, a [lista de permissões de IP do administrador](settings/ip-allowlist-settings.md) está bloqueando a solicitação. Use [Bloqueado por Lista de Permissões de IP](troubleshooting.md#locked-out-by-ip-allowlist) em vez deste script.
+Se o navegador mostrar **Acesso negado** (HTTP 403) antes do formulário de login, a [Lista de permissões de IP do administrador](settings/ip-allowlist-settings.md) está bloqueando a solicitação. Use [Bloqueado pela Lista de permissões de IP](troubleshooting.md#locked-out-by-ip-allowlist) em vez deste script.
 
 ## Usando o Script no Docker {/* #using-the-script-in-docker */}
 
@@ -23,10 +23,10 @@ docker exec -it duplistatus /app/admin-recovery admin NewPassword123
 
 Se você encontrar problemas com o script de recuperação:
 
-1. **Verificar se o Contêiner está em Execução**: Verifique se o contêiner está em execução com `docker ps`
-2. **Verificar Disponibilidade do Script**: Confirme se o script existe no contêiner com `docker exec -it duplistatus ls -la /app/admin-recovery`
-3. **Revisar os Logs do Contêiner**: Verifique a presença de erros com `docker logs duplistatus`
-4. **Verificar Nome de Usuário**: Certifique-se de que o nome de usuário exista no banco de dados
-5. **Verificar Formato da Senha**: Certifique-se de que a nova senha atenda a todos os requisitos
+1. **Verificar se o Container está em Execução**: Verifique se o container está em execução com `docker ps`
+2. **Verificar Disponibilidade do Script**: Verifique se o script existe no container com `docker exec -it duplistatus ls -la /app/admin-recovery`
+3. **Revisar Logs do Container**: Verifique por erros com `docker logs duplistatus`
+4. **Verificar Nome de usuário**: Certifique-se de que o nome de usuário existe no banco de dados
+5. **Verificar Formato da Senha**: Certifique-se de que a nova senha atende a todos os requisitos
 
-Se os problemas persistirem, consulte o guia [Troubleshooting](troubleshooting.md) para obter mais ajuda.
+Se os problemas persistirem, consulte o guia [Solução de Problemas](troubleshooting.md) para obter mais ajuda.

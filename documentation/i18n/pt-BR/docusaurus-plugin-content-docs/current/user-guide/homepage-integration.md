@@ -1,10 +1,10 @@
-# Integração da Página Inicial (Opcional) {/* #homepage-integration-optional */}
+# Integração com a Página Inicial (Opcional) {/* #homepage-integration-optional */}
 
-[Homepage](https://gethomepage.dev/) é um aplicativo de painel personalizável. Para integrar **duplistatus** com Homepage, adicione um widget ao seu arquivo `services.yaml` usando o [tipo de widget Custom API](https://gethomepage.dev/widgets/services/customapi/).
+[Página Inicial](https://gethomepage.dev/) é um aplicativo de painel personalizável. Para integrar o **duplistatus** com a Página Inicial, adicione um widget ao seu arquivo `services.yaml` usando o [tipo de widget de API personalizado](https://gethomepage.dev/widgets/services/customapi/).
 
-## Resumo do Widget {/* #summary-widget */}
+## Widget de Resumo {/* #summary-widget */}
 
-Este widget exibe as estatísticas gerais do backup no painel da sua página inicial.
+Este widget exibe as estatísticas gerais de backup no painel da Página Inicial.
 
 ```yaml
 - Dashboard:
@@ -44,9 +44,9 @@ Este widget exibe as estatísticas gerais do backup no painel da sua página ini
 
 ![Widget de Resumo da Página Inicial](/img/homepage-summary.png)
 
-## Informações do Backup Último Widget {/* #last-backup-information-widget */}
+## Widget de Informações do Último Backup {/* #last-backup-information-widget */}
 
-Este widget exibe as informações de backup mais recentes para uma máquina específica.
+Este widget exibe as informações do último backup para uma máquina específica.
 
 ```yaml
 - Test Machine 1:
@@ -83,7 +83,7 @@ Este widget exibe as informações de backup mais recentes para uma máquina esp
 
 - Substitua `your-server` pelo endereço IP ou nome do host do seu servidor.
 - Ajuste o `refreshInterval` conforme necessário (em milissegundos).
-- Substitua espaços em nomes de máquinas por `%20` na URL (por exemplo, `Test Machine 1` torna-se `Test%20Machine%201`).
-- Os valores de `scale` convertem bytes para unidades mais legíveis (GB, MB).
+- Substitua espaços nos nomes das máquinas por `%20` na URL (por exemplo, `Test Machine 1` torna-se `Test%20Machine%201`).
+- Os valores `scale` convertem bytes em unidades mais legíveis (GB, MB).
 - Use uma chave de API com escopo de **leitura** quando [chaves de API](settings/api-keys-settings.md) forem necessárias. Remova `?api_key=` quando as chaves forem opcionais.
 - Se a [lista de permissões de IP da API externa](settings/ip-allowlist-settings.md) estiver habilitada, inclua o host da Página Inicial.

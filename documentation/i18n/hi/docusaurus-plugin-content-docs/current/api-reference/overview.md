@@ -1,73 +1,73 @@
-# API Overview {/* #api-overview */}
+# API अवलोकन {/* #api-overview */}
 
-Yeh pratilipi duplistatus application ke sabhi available API endpoints ka vishleshan deti hai. API RESTful principles par chalta hai aur comprehensive backup monitoring, notification management, aur system administration capabilities provide karta hai.
+यह दस्तावेज़ duplistatus एप्लिकेशन के लिए सभी उपलब्ध API एंडपॉइंट्स का वर्णन करता है। API RESTful सिद्धांतों का पालन करता है और व्यापक बैकअप निगरानी, सूचना प्रबंधन, और सिस्टम प्रशासन क्षमताएं प्रदान करता है।
 
 ## API संरचना {/* #api-structure */}
 
-Sabhi endpoints ke liye ek jaldarpan ke liye, [API Endpoint List](api-endpoint-list) dekhein.
+सभी एंडपॉइंट्स का त्वरित संदर्भ के लिए, [API एंडपॉइंट सूची](api-endpoint-list) देखें।
 
-API logical groups mein vishleshit hai:
-- [**External APIs**](external-apis): Summary data, latest backup status, aur Duplicati se backup data uploads
-- [**Core Operations**](core-operations): Dashboard data, server management, aur detailed backup information
-- [**Chart Data**](chart-data-apis): Aggregated aur server-specific time-series data visualisation aur analytics ke liye
-- [**Configuration Management**](configuration-apis): Email, notification, backup settings, aur system configuration
-- [**Notification System**](notification-apis): Notification testing, overdue backup checks, aur notification management
-- [**Cron services**](cron-service-apis): Cron service management
-- [**Monitoring & Health**](monitoring-apis): Health checks aur status monitoring
-- [**Administration**](administration-apis): Database maintenance, cleanup operations, aur system management
-- [**Session Management**](session-management-apis): Session management aur session creation
-- [**Authentication & Security**](authentication-security): Authentication aur security
+API को तार्किक समूहों में संगठित किया गया है:
+- [**बाहरी API**](external-apis): सारांश डेटा, नवीनतम बैकअप स्थिति, और Duplicati से बैकअप डेटा अपलोड
+- [**मुख्य संचालन**](core-operations): डैशबोर्ड डेटा, सर्वर प्रबंधन, और विस्तृत बैकअप जानकारी
+- [**चार्ट डेटा**](chart-data-apis): दृश्य और विश्लेषण के लिए एकत्रित और सर्वर-विशिष्ट समय-श्रृंखला डेटा
+- [**कॉन्फ़िगरेशन प्रबंधन**](configuration-apis): ईमेल, सूचना, बैकअप सेटिंग्स, और सिस्टम कॉन्फ़िगरेशन
+- [**सूचना प्रणाली**](notification-apis): सूचना परीक्षण, अतिदेय बैकअप जांच, और सूचना प्रबंधन
+- [**Cron सेवाएं**](cron-service-apis): Cron सेवा प्रबंधन
+- [**निगरानी और स्वास्थ्य**](monitoring-apis): स्वास्थ्य जांच और स्थिति निगरानी
+- [**प्रशासन**](administration-apis): डेटाबेस रखरखाव, सफाई संचालन, और सिस्टम प्रबंधन
+- [**सत्र प्रबंधन**](session-management-apis): सत्र प्रबंधन और सत्र निर्माण
+- [**प्रमाणीकरण और सुरक्षा**](authentication-security): प्रमाणीकरण और सुरक्षा
 
-Sabhi endpoints ke liye ek jaldarpan ke liye, [API Endpoint List](api-endpoint-list) dekhein.
+सभी एंडपॉइंट्स का त्वरित संदर्भ के लिए, [API एंडपॉइंट सूची](api-endpoint-list) देखें।
 
 ## प्रतिक्रिया प्रारूप {/* #response-format */}
 
-Sabhi API responses JSON format mein return hote hain consistent error handling patterns ke saath. Successful responses typically include a `status` field, while error responses include `error` aur `message` fields.
+सभी API प्रतिक्रियाएं सुसंगत त्रुटि हैंडलिंग पैटर्न के साथ JSON प्रारूप में लौटाई जाती हैं। सफल प्रतिक्रियाओं में आमतौर पर एक `status` फ़ील्ड शामिल होता है, जबकि त्रुटि प्रतिक्रियाओं में `error` और `message` फ़ील्ड शामिल होते हैं।
 
 ---
 
-## Truti प्रबंधन {/* #error-handling */}
+## त्रुटि हैंडलिंग {/* #error-handling */}
 
-Sabhi endpoints consistent error handling pattern follow karte hain:
+सभी एंडपॉइंट्स एक सुसंगत त्रुटि हैंडलिंग पैटर्न का पालन करते हैं:
 
-- **400 Bad Request**: Invalid request data ya missing required fields
-- **401 Unauthorized**: Invalid ya missing session, expired session, ya CSRF token validation failed
-- **403 Forbidden**: Operation not allowed (e.g., backup deletion in production) ya CSRF token validation failed
-- **404 Not Found**: Resource not found
-- **409 Conflict**: डुप्लिकेट डेटा (अपलोड एंडपॉइंट्स के लिए)
-- **413 Payload Too Large**: `/api/upload` बॉडी कॉन्फ़िगर्ड साइज़ लिमिट से अधिक है
-- **429 Too Many Requests**: अपलोड, रीड-एपीआई, या ऑथेंटिकेशन-फेल्योर रेट लिमिट पार किया गया है
-- **500 Internal Server Error**: सर्वर-साइड त्रुटियाँ व विस्तृत त्रुटि संदेशों के साथ
-- **503 Service Unavailable**: हेल्थ चेक फेल्योर, डेटाबेस कनेक्शन समस्याएँ, या क्रॉन सेवा अनुपलब्ध
+- **400 अमान्य अनुरोध**: अमान्य अनुरोध डेटा या अनुपलब्ध आवश्यक फ़ील्ड
+- **401 अनुपलब्ध**: अमान्य या अनुपलब्ध सत्र, समाप्त सत्र, या CSRF टोकन सत्यापन विफल
+- **403 निषिद्ध**: संचालन की अनुमति नहीं (उदाहरण के लिए, उत्पादन में बैकअप हटाना) या CSRF टोकन सत्यापन विफल
+- **404 नहीं मिला**: संसाधन नहीं मिला
+- **409 संघर्ष**: डुप्लिकेट डेटा (अपलोड एंडपॉइंट्स के लिए)
+- **413 पेलोड बहुत बड़ा**: `/api/upload` बॉडी कॉन्फ़िगर की गई आकार सीमा से अधिक है
+- **429 बहुत अधिक अनुरोध**: अपलोड, पढ़ने-API, या प्रमाणीकरण-विफलता दर सीमा अधिक है
+- **500 आंतरिक सर्वर त्रुटि**: विस्तृत त्रुटि संदेशों के साथ सर्वर-पक्ष त्रुटियाँ
+- **503 सेवा अनुपलब्ध**: स्वास्थ्य जांच विफलताएं, डेटाबेस कनेक्शन समस्याएं, या cron सेवा अनुपलब्ध
 
-Error responses include:
-- `error`: Human-readable error message
-- `message`: Technical error details (development mode mein)
-- `stack`: Error stack trace (development mode mein)
-- `timestamp`: Jab error hua tha
+त्रुटि प्रतिक्रियाओं में शामिल हैं:
+- `error`: मानव-पठनीय त्रुटि संदेश
+- `message`: तकनीकी त्रुटि विवरण (विकास मोड में)
+- `stack`: त्रुटि स्टैक ट्रेस (विकास मोड में)
+- `timestamp`: जब त्रुटि हुई
 
 ## डेटा प्रकार नोट्स {/* #data-type-notes */}
 
-### Sandesh Arrays {/* #message-arrays */}
-`messages_array`, `warnings_array`, और `errors_array` फ़ील्ड डेटाबेस में JSON strings के रूप में संग्रहीत हैं और API प्रतिक्रियाओं में arrays के रूप में लौटाए जाते हैं। ये Duplicati बैकअप संचालनों से वास्तविक log Sandesh, Chetaavaniyaan, और Trutiyon शामिल करते हैं।
+### संदेश सरणियाँ {/* #message-arrays */}
+`messages_array`, `warnings_array`, और `errors_array` फ़ील्ड डेटाबेस में JSON स्ट्रिंग्स के रूप में संग्रहीत होते हैं और API प्रतिक्रियाओं में सरणियों के रूप में लौटाए जाते हैं। इनमें Duplicati बैकअप संचालन से वास्तविक लॉग संदेश, चेतावनियाँ, और त्रुटियाँ शामिल होती हैं।
 
 ### उपलब्ध बैकअप {/* #available-backups */}
-`available_backups` फ़ील्ड में बैकअप Sanskaran टाइमस्टैम्प्स (ISO प्रारूप में) ka एक array है जो पुनर्स्थापना के लिए उपलब्ध हैं। यह बैकअप log Sandesh से निकाला जाता है।
+`available_backups` फ़ील्ड में बैकअप संस्करण टाइमस्टैम्प्स (ISO प्रारूप में) की एक सरणी होती है जो पुनर्स्थापन के लिए उपलब्ध होते हैं। यह बैकअप लॉग संदेशों से निकाला जाता है।
 
-### Avadhi फ़ील्ड {/* #duration-fields */}
-- `duration`: मानव-पठनीय प्रारूप (जैसे, "00:38:31")
-- `duration_seconds`: सेकंड में कच्ची Avadhi
-- `durationInMinutes`: चार्टिंग उद्देश्यों के लिए मिनटों में परिवर्तित Avadhi
+### अवधि फ़ील्ड {/* #duration-fields */}
+- `duration`: मानव-पठनीय प्रारूप (उदा. "00:38:31")
+- `duration_seconds`: सेकंड में रॉ अवधि
+- `durationInMinutes`: चार्टिंग उद्देश्यों के लिए मिनटों में परिवर्तित अवधि
 
-### File Aakar फ़ील्ड {/* #file-size-fields */}
-Sabhi File Aakar फ़ील्ड संख्याओं के रूप में बाइट्स में लौटाए जाते हैं, प्रारूपित strings के रूप में नहीं। फ्रंटएंड इन्हें मानव-पठनीय प्रारूपों (KB, MB, GB, आदि) में बदलने के लिए जिम्मेदार है।
+### फ़ाइल आकार फ़ील्ड {/* #file-size-fields */}
+फ़ाइल आकार के सभी फ़ील्ड फ़ॉर्मेट किए गए स्ट्रिंग्स के रूप में नहीं, बल्कि संख्याओं के रूप में बाइट्स में लौटाए जाते हैं। इन्हें मानव-पठनीय प्रारूपों (KB, MB, GB, आदि) में बदलने के लिए फ़्रंटएंड ज़िम्मेदार है।
 
 <br/>
 
 :::caution
- Don't expose the **duplistatus** server to the public internet. Use it in a secure network 
-(e.g., local LAN protected by a firewall).
+ **duplistatus** सर्वर को सार्वजनिक इंटरनेट पर एक्सपोज़ न करें। इसे किसी सुरक्षित नेटवर्क 
+(उदा. फ़ायरवॉल द्वारा सुरक्षित स्थानीय LAN) में उपयोग करें।
 
-Exposing the **duplistatus** interface to the public
- internet without proper security measures could lead to unauthorized access.
+उचित सुरक्षा उपायों के बिना **duplistatus** इंटरफ़ेस को सार्वजनिक
+ इंटरनेट पर एक्सपोज़ करने से अनधिकृत एक्सेस हो सकता है।
 :::

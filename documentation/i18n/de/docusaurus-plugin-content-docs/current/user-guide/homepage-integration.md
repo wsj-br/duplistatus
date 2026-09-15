@@ -1,10 +1,10 @@
 # Homepage-Integration (optional) {/* #homepage-integration-optional */}
 
-[Homepage](https://gethomepage.dev/) ist eine anpassbare Dashboard-Anwendung. Um **duplistatus** mit Homepage zu integrieren, fügen Sie ein Widget zu Ihrer `services.yaml`-Datei hinzu, indem Sie den [Benutzerdefinierten API-Widget-Typ](https://gethomepage.dev/widgets/services/customapi/) verwenden.
+[Homepage](https://gethomepage.dev/) ist eine anpassbare Dashboard-Anwendung. Fügen Sie **duplistatus** mit Homepage zusammen, indem Sie ein Widget zu Ihrer `services.yaml`-Datei hinzufügen, indem Sie den [Benutzerdefinierten API-Widget-Typ](https://gethomepage.dev/widgets/services/customapi/) verwenden.
 
-## Zusammenfassungs-Widget {/* #summary-widget */}
+## Zusammenfassung-Widget {/* #summary-widget */}
 
-Dieses Widget zeigt die Gesamtsicherungsstatistiken auf Ihrem Homepage-Dashboard an.
+Dieses Widget zeigt die gesamten Backup-Statistiken auf Ihrem Homepage-Dashboard an.
 
 ```yaml
 - Dashboard:
@@ -42,11 +42,11 @@ Dieses Widget zeigt die Gesamtsicherungsstatistiken auf Ihrem Homepage-Dashboard
 
 **Widget-Anzeige:**
 
-![Startseiten-Zusammenfassungs-Widget](/img/homepage-summary.png)
+![Homepage-Zusammenfassung-Widget](/img/homepage-summary.png)
 
 ## Letzte Backup-Informationen-Widget {/* #last-backup-information-widget */}
 
-Dieses Widget zeigt die neuesten Sicherungsinformationen für einen bestimmten Computer an.
+Dieses Widget zeigt die neuesten Backup-Informationen für einen bestimmten Server an.
 
 ```yaml
 - Test Machine 1:
@@ -77,13 +77,13 @@ Dieses Widget zeigt die neuesten Sicherungsinformationen für einen bestimmten C
 
 **Widget-Anzeige:**
 
-![Startseiten-Letzte-Sicherung-Widget](/img/homepage-lastbackup.png)
+![Homepage-Letzte-Backup-Widget](/img/homepage-lastbackup.png)
 
 ## Konfigurationshinweise {/* #configuration-notes */}
 
-- Ersetzen Sie `your-server` durch die IP-Adresse oder den Hostname Ihres Servers.
-- Passen Sie das `refreshInterval` nach Bedarf an (in Millisekunden).
-- Ersetzen Sie Leerzeichen in Maschinennamen durch `%20` in der URL (z. B. wird `Test Machine 1` zu `Test%20Machine%201`).
-- Die `scale`-Werte konvertieren Bytes in besser lesbare Einheiten (GB, MB).
-- Verwenden Sie einen API-Schlüssel mit **Lesen**-Bereich, wenn [API-Schlüssel](settings/api-keys-settings.md) erforderlich sind. Entfernen Sie `?api_key=`, wenn Schlüssel optional sind.
+- Ersetzen Sie `your-server` durch die IP-Adresse oder den Hostnamen Ihres Servers.
+- Passen Sie den `refreshInterval` nach Bedarf an (in Millisekunden).
+- Ersetzen Sie Leerzeichen in Maschinennamen durch `%20` in der URL (z. B. `Test Machine 1` wird zu `Test%20Machine%201`).
+- Die `scale`-Werte wandeln Bytes in lesbarere Einheiten (GB, MB) um.
+- Verwenden Sie einen **Lesen**-Bereichs-API-Schlüssel, wenn [API-Schlüssel](settings/api-keys-settings.md) erforderlich sind. Lassen Sie `?api_key=` weg, wenn Schlüssel optional sind.
 - Wenn die [externe API-IP-Zulassungsliste](settings/ip-allowlist-settings.md) aktiviert ist, fügen Sie den Homepage-Host hinzu.

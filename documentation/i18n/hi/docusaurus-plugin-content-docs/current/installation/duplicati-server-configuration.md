@@ -1,28 +1,28 @@
-# Duplicati सर्वर विन्यास (anivarya) {/* #duplicati-server-configuration-required */}
+# Duplicati सर्वर कॉन्फ़िगरेशन (आवश्यक) {/* #duplicati-server-configuration-required */}
 
-Is application ka sahi kaam karne ke liye, har ek apke Duplicati server ko HTTP reports bhejne ke liye configure kiya jana chahiye har backup run ke liye **duplistatus** server par.
+इस एप्लिकेशन के ठीक से काम करने के लिए, आपके प्रत्येक Duplicati सर्वर को प्रत्येक बैकअप रन के लिए HTTP रिपोर्ट **duplistatus** सर्वर पर भेजने के लिए कॉन्फ़िगर किया जाना आवश्यक है।
 
-Apne sabhi Duplicati servers par is configuration ko apply karein:
+यह कॉन्फ़िगरेशन अपने प्रत्येक Duplicati सर्वर पर लागू करें:
 
-1. **Backup result reporting configure karein:** Duplicati configuration page par, `Settings` select karein aur `Default Options` section mein, following options shamil karein.
+1. **बैकअप परिणाम रिपोर्टिंग कॉन्फ़िगर करें:** Duplicati कॉन्फ़िगरेशन पृष्ठ पर, `Settings` चुनें और `Default Options` अनुभाग में निम्नलिखित विकल्प शामिल करें।
 
-![Duplicati configuration](/img/duplicati-options.png)
+![Duplicati कॉन्फ़िगरेशन](/img/duplicati-options.png)
 
-Replace `my.local.server` with the hostname or IP address that the Duplicati server uses to reach **duplistatus**. See [Duplicati and duplistatus on the same host](#duplicati-and-duplistatus-on-the-same-host) if both run on one machine.
+`my.local.server` को उस होस्टनाम या आईपी पता से बदलें जिसका उपयोग Duplicati सर्वर **duplistatus** तक पहुँचने के लिए करता है। यदि दोनों एक ही मशीन पर चलते हैं, तो [एक ही होस्ट पर Duplicati और duplistatus](#duplicati-and-duplistatus-on-the-same-host) देखें।
 
-See Duplicati's [HTTP notifications](https://docs.duplicati.com/monitoring-and-notifications/sending-reports-via-email/sending-http-notifications) documentation for the option reference.
+विकल्प संदर्भ के लिए Duplicati का [HTTP सूचनाएं](https://docs.duplicati.com/monitoring-and-notifications/sending-reports-via-email/sending-http-notifications) दस्तावेज़ देखें।
 
 ### अनुशंसित विकल्प (Duplicati 2.0.9.106 और बाद के) {/* #recommended-options-duplicati-209106-and-later */}
 
-`--send-http-json-urls` already sends JSON, so `--send-http-result-output-format=Json` is not required (and is ignored for these URLs).
+`--send-http-json-urls` पहले से ही JSON भेजता है, इसलिए `--send-http-result-output-format=Json` आवश्यक नहीं है (और इन URL के लिए इसे अनदेखा कर दिया जाता है)।
 
 | उन्नत विकल्प           | मान                                    |
     | ------------------------- | ---------------------------------------- |
-    | `send-http-json-urls`     | `http://my.local.server:9666/api/upload` (API कुंजियाँ आवश्यक होने पर `?api_key=` जोड़ें) |
+    | `send-http-json-urls`     | `http://my.local.server:9666/api/upload` (जब API कुंजियाँ आवश्यक हों, तो `?api_key=` जोड़ें) |
     | `send-http-log-level`            | `Information`                            |
     | `send-http-max-log-lines`        | `500`                                    |
 
-Alternatively, you can click on `Edit as text` and copy the lines below, replacing `my.local.server` with your actual server address.
+वैकल्पिक रूप से, आप `Edit as text` पर क्लिक कर सकते हैं और `my.local.server` को अपने वास्तविक सर्वर पता से बदलते हुए नीचे दी गई पंक्तियों को कॉपी कर सकते हैं।
 
 ```bash
 --send-http-json-urls=http://my.local.server:9666/api/upload
@@ -30,21 +30,21 @@ Alternatively, you can click on `Edit as text` and copy the lines below, replaci
 --send-http-max-log-lines=500
 ```
 
-जब [API कुंजियाँ](../user-guide/settings/api-keys-settings.md) आवश्यक होती हैं, तो URL में अपलोड-स्कोप कुंजी जोड़ें:
+जब [API कुंजियाँ](../user-guide/settings/api-keys-settings.md) आवश्यक हों, तो URL में अपलोड-स्कोप कुंजी जोड़ें:
 
 ```bash
 --send-http-json-urls=http://my.local.server:9666/api/upload?api_key=YOUR_UPLOAD_KEY
 ```
 
-डुप्लिकेटी कस्टम HTTP हेडर सेट नहीं कर सकती। क्वेरी पैरामीटर कुंजी भेजने का समर्थित तरीका है। रिवर्स-प्रॉक्सी एक्सेस लॉग में सीक्रेट होगा, इसलिए उन लॉग्स को पढ़ने वाले लोगों को सीमित करें।
+Duplicati कस्टम HTTP हेडर सेट नहीं कर सकता है। कुंजी भेजने के लिए क्वेरी पैरामीटर ही समर्थित तरीका है। रिवर्स-प्रॉक्सी एक्सेस लॉग में सीक्रेट शामिल होगा, इसलिए इसे सीमित करें कि उन लॉग को कौन पढ़ सकता है।
 
-`--send-http-max-log-lines=500` JSON रिपोर्ट को डिफ़ॉल्ट 5 एमबी अपलोड साइज़ कैप के नीचे रखता है। `--send-http-max-log-lines=0` (असीमित) उस कैप को पार कर सकता है और HTTP 413 लौट सकता है। अगर आपको बड़े रिपोर्ट की आवश्यकता है, तो सेटिंग्स → API कुंजियाँ में लिमिट बढ़ाएं।
+`--send-http-max-log-lines=500` JSON रिपोर्ट को डिफ़ॉल्ट 5 MB अपलोड आकार सीमा से काफी कम रखता है। `--send-http-max-log-lines=0` (असीमित) उस सीमा को पार कर सकता है और HTTP 413 लौटा सकता है। यदि आपको बड़ी रिपोर्ट की आवश्यकता है, तो सेटिंग्स → API कुंजियाँ में सीमा बढ़ाएँ।
 
-### पुराने डुप्लिकेटी संस्करण {/* #older-duplicati-versions */}
+### पुराने Duplicati संस्करण {/* #older-duplicati-versions */}
 
-If your Duplicati server is older than 2.0.9.106, use the legacy URL option and set the result format to JSON:
+यदि आपका Duplicati सर्वर 2.0.9.106 से पुराना है, तो लेगेसी URL विकल्प का उपयोग करें और परिणाम प्रारूप को JSON पर सेट करें:
 
-| Advanced option                  | Value                                    |
+| उन्नत विकल्प                  | मान                                    |
     | -------------------------------- | ---------------------------------------- |
     | `send-http-url`                  | `http://my.local.server:9666/api/upload` |
     | `send-http-result-output-format` | `Json`                                   |
@@ -58,24 +58,24 @@ If your Duplicati server is older than 2.0.9.106, use the legacy URL option and 
 --send-http-max-log-lines=500
 ```
 
-### लॉग पंक्तियाँ और उपलब्ध संस्करण {/* #log-lines-and-available-versions */}
+### लॉग लाइनें और उपलब्ध संस्करण {/* #log-lines-and-available-versions */}
 
-**Important notes on messages sent by Duplicati:**
+**Duplicati द्वारा भेजे गए संदेशों पर महत्वपूर्ण नोट्स:**
 
-- If you omit `--send-http-log-level=Information`, no log messages will be sent to **duplistatus**, only statistics. This will prevent the available versions **list** from working.
-- Duplicati's default is `--send-http-max-log-lines=100`. The recommended value is `500`. Duplicati keeps the **first** N log lines. The lines used for the available versions list (`Backups to consider`) are usually in those first hundreds of lines; `100` is often too few.
-- `--send-http-max-log-lines=0` means unlimited. Use that only if the version list is still missing and you are **not** also sending reports to [Duplicati Monitoring](https://www.duplicati-monitoring.com/). Unlimited logs can make that service return HTTP 500 on large jobs.
-- The **count** of available versions still comes from the JSON statistics (`BackupListCount`) even when the detailed timestamp list is missing. If the list icon is greyed out, raise the cap (or use `0` when reporting only to **duplistatus**).
+- यदि आप `--send-http-log-level=Information` छोड़ देते हैं, तो **duplistatus** को कोई लॉग संदेश नहीं भेजा जाएगा, केवल आँकड़े भेजे जाएँगे। इससे उपलब्ध संस्करण **सूची** काम नहीं करेगी।
+- Duplicati का डिफ़ॉल्ट `--send-http-max-log-lines=100` है। अनुशंसित मान `500` है। Duplicati **पहली** N लॉग लाइनें रखता है। उपलब्ध संस्करण सूची (`Backups to consider`) के लिए उपयोग की जाने वाली लाइनें आमतौर पर उन शुरुआती सैकड़ों लाइनों में होती हैं; `100` अक्सर बहुत कम होती हैं।
+- `--send-http-max-log-lines=0` का अर्थ असीमित है। इसका उपयोग केवल तभी करें जब संस्करण सूची अभी भी अनुपलब्ध हो और आप [Duplicati Monitoring](https://www.duplicati-monitoring.com/) को भी रिपोर्ट **नहीं** भेज रहे हों। असीमित लॉग के कारण बड़े जॉब्स पर वह सेवा HTTP 500 लौटा सकती है।
+- उपलब्ध संस्करणों की **गिनती** विस्तृत टाइमस्टैम्प सूची अनुपलब्ध होने पर भी JSON आँकड़ों (`BackupListCount`) से ही आती है। यदि सूची का आइकन धूसर (ग्रे) है, तो सीमा बढ़ाएँ (या केवल **duplistatus** को रिपोर्ट करते समय `0` का उपयोग करें)।
 
 :::tip
-**Duplistatus** server configure karne ke baad, [Collect Backup Logs](../user-guide/collect-backup-logs.md) ka use karke apne sabhi Duplicati servers ke liye backup logs ikattha karein.
+**duplistatus** सर्वर को कॉन्फ़िगर करने के बाद, [बैकअप लॉग एकत्र करें](../user-guide/collect-backup-logs.md) का उपयोग करके अपने सभी Duplicati सर्वर के बैकअप लॉग एकत्र करें।
 :::
 
 ### duplistatus और Duplicati Monitoring को रिपोर्ट करना {/* #reporting-to-duplistatus-and-duplicati-monitoring */}
 
-You can send reports from the **same** Duplicati server to **duplistatus** and [Duplicati Monitoring](https://www.duplicati-monitoring.com/) at the same time. **duplistatus** must receive JSON. Duplicati Monitoring expects form-encoded reports. Do not point `--send-http-form-urls` at `/api/upload`.
+आप **उसी** Duplicati सर्वर से एक ही समय में **duplistatus** और [Duplicati Monitoring](https://www.duplicati-monitoring.com/) दोनों को रिपोर्ट भेज सकते हैं। **duplistatus** को JSON प्राप्त होना चाहिए। Duplicati Monitoring फ़ॉर्म-एन्कोडेड रिपोर्ट की अपेक्षा करता है। `--send-http-form-urls` को `/api/upload` पर इंगित न करें।
 
-On that Duplicati server, set Default Options to:
+उस Duplicati सर्वर पर, डिफ़ॉल्ट विकल्प (Default Options) को इस पर सेट करें:
 
 ```bash
 --send-http-json-urls=http://my.local.server:9666/api/upload
@@ -84,38 +84,40 @@ On that Duplicati server, set Default Options to:
 --send-http-max-log-lines=500
 ```
 
-Replace `<your-endpoint>` with the URL from your Duplicati Monitoring account.
+`<your-endpoint>` को अपने Duplicati Monitoring खाते के URL से बदलें।
 
-- Prefer these dedicated options. Do not also keep `--send-http-url` pointing at the same destinations unless you still need the legacy option.
-- `--send-http-log-level` and `--send-http-max-log-lines` apply to **every** HTTP target. You cannot send a full log to **duplistatus** and a short report to Duplicati Monitoring.
-- Use `500`, not `0`. If Duplicati Monitoring still returns HTTP 500 on large jobs, lower the cap further (or omit `Information`) knowing the version **list** may be missing. If the list is missing but Monitoring is fine, raise the cap. Alternatively, report only to **duplistatus** for those jobs.
+- इन समर्पित विकल्पों को प्राथमिकता दें। जब तक आपको लीगेसी विकल्प की आवश्यकता न हो, तब तक `--send-http-url` को भी उन्हीं गंतव्यों पर इंगित न रखें।
+- `--send-http-log-level` और `--send-http-max-log-lines` **प्रत्येक** HTTP लक्ष्य पर लागू होते हैं। आप **duplistatus** को पूरा लॉग और Duplicati Monitoring को संक्षिप्त रिपोर्ट नहीं भेज सकते।
+- `500` का उपयोग करें, `0` का नहीं। यदि Duplicati Monitoring बड़े जॉब्स पर अभी भी HTTP 500 लौटाता है, तो यह ध्यान में रखते हुए सीमा को और कम करें (या `Information` को हटा दें) कि संस्करण **सूची** अनुपलब्ध हो सकती है। यदि सूची अनुपलब्ध है लेकिन Monitoring ठीक चल रहा है, तो सीमा बढ़ाएँ। वैकल्पिक रूप से, उन जॉब्स के लिए केवल **duplistatus** को रिपोर्ट करें।
 
 :::caution
-If one HTTP target fails (outage or HTTP 500), Duplicati may not send the remaining reports. Form URLs are sent first, then JSON URLs. An outage or 500 from Duplicati Monitoring can therefore block the JSON report to **duplistatus**.
+यदि कोई एक HTTP लक्ष्य विफल हो जाता है (आउटेज या HTTP 500), तो हो सकता है कि Duplicati शेष रिपोर्ट न भेजे। फ़ॉर्म URL पहले भेजे जाते हैं, फिर JSON URL। इसलिए Duplicati Monitoring से आउटेज या 500 त्रुटि **duplistatus** को जाने वाली JSON रिपोर्ट को अवरुद्ध कर सकती है।
 :::
 
-[Backup Logs Ikattha Karein](../user-guide/collect-backup-logs.md) does not depend on HTTP reporting. Use it to backfill a run that was not received.
+[बैकअप लॉग एकत्र करें](../user-guide/collect-backup-logs.md) HTTP रिपोर्टिंग पर निर्भर नहीं करता है। जो रन प्राप्त नहीं हुआ था, उसे बैकफ़िल करने के लिए इसका उपयोग करें।
 
-### Duplicati और duplistatus एक ही होस्ट पर {/* #duplicati-and-duplistatus-on-the-same-host */}
+### एक ही होस्ट पर Duplicati और duplistatus {/* #duplicati-and-duplistatus-on-the-same-host */}
 
-अपलोड URL **Duplicati प्रक्रिया से** पहुंचने योग्य होना चाहिए, आपके ब्राउज़र से नहीं।
+अपलोड URL **Duplicati प्रक्रिया से** पहुँच योग्य होना चाहिए, आपके ब्राउज़र से नहीं।
 
-- **होस्ट पर Duplicati और डॉक्टर के साथ duplistatus, पोर्ट `9666` प्रकाशित:** `http://127.0.0.1:9666/api/upload` (या होस्ट LAN आईपी).
-- **साझा नेटवर्क पर डॉक्टर में दोनों:** `http://duplistatus:9666/api/upload` (कंपोज सेवा या कंटेनर नाम). `localhost` डुप्लिकेटी कंटेनर के अंदर वह कंटेनर है, न कि **duplistatus**.
-- **समान होस्ट पर HTTPS रिवर्स प्रॉक्सी:** [सुरक्षा मजबूत करना](security-hardening.md) में सार्वजनिक HTTPS URL का उपयोग करें.
+- **होस्ट पर Duplicati, प्रकाशित पोर्ट `9666` के साथ Docker में duplistatus:** `http://127.0.0.1:9666/api/upload` (या होस्ट LAN IP)।
+- **साझा नेटवर्क पर Docker में दोनों:** `http://duplistatus:9666/api/upload` (Compose सर्विस या कंटेनर का नाम)। Duplicati कंटेनर के अंदर `localhost` वही कंटेनर है, **duplistatus** नहीं।
+- **उसी होस्ट पर HTTPS रिवर्स प्रॉक्सी:** [सुरक्षा सुदृढ़ीकरण](security-hardening.md) के अनुसार सार्वजनिक HTTPS URL का उपयोग करें।
 
-Backup Logs Ikattha Karein विपरीत दिशा में है: **duplistatus** कंटेनर से, `localhost:8200` होस्ट पर Duplicati नहीं है। होस्ट आईपी, `host.docker.internal` (Docker Desktop, या एक अतिरिक्त होस्ट जिसे आप कॉन्फ़िगर किया हैं), या Duplicati कंटेनर नाम का उपयोग करें।
+बैकअप लॉग एकत्र करें विपरीत दिशा में काम करता है: **duplistatus** कंटेनर से, `localhost:8200` होस्ट पर Duplicati नहीं है। होस्ट IP, `host.docker.internal` (Docker Desktop, या आपके द्वारा कॉन्फ़िगर किया गया कोई अतिरिक्त होस्ट), या Duplicati कंटेनर के नाम का उपयोग करें।
 
-2. **Optional - Allow remote UI access:** Agar aap **duplistatus** dashboard links se Duplicati web interface ko directly access karna chahte hain, to [Duplicati's UI](https://docs.duplicati.com/getting-started/set-up-a-backup-in-the-ui) par login karein, `Settings` select karein, aur remote access allow karein, including a list of hostnames (ya `*` ka use karein). Agar aap isko skip kar dete hain, to **duplistatus** backup reports prapt karega, lekin Duplicati UI ke direct links kaam nahi karenge.
+2. **वैकल्पिक - रिमोट UI एक्सेस की अनुमति दें:** यदि आप **duplistatus** डैशबोर्ड लिंक से सीधे Duplicati वेब इंटरफ़ेस तक पहुँचना चाहते हैं, तो [Duplicati के UI](https://docs.duplicati.com/getting-started/set-up-a-backup-in-the-ui) में लॉग इन करें, `Settings` चुनें, और होस्टनामों की सूची सहित रिमोट एक्सेस की अनुमति दें (या `*` का उपयोग करें)। यदि आप इसे छोड़ देते हैं, तो भी **duplistatus** को बैकअप रिपोर्ट प्राप्त होंगी, लेकिन Duplicati UI के सीधे लिंक काम नहीं करेंगे।
 
 :::info
-Agar aap Duplicati mein remote access enable nahi karte, to **Duplistatus** mein __Duplicati UI__ ko access karne ke liye links kaam nahi karenge. 
+यदि आप Duplicati में रिमोट एक्सेस सक्षम नहीं करते हैं, तो __Duplicati UI__ तक पहुँचने के लिए **Duplistatus** में दिए गए लिंक काम नहीं करेंगे।
 :::
 
-![Duplicati settings](/img/duplicati-settings.png)
+![Duplicati सेटिंग्स](/img/duplicati-settings.png)
 
 :::caution
-Remote access sirf tab enable karein jab aapka Duplicati server secure network se protected ho (jaise VPN, private LAN, ya firewall rules). Duplicati interface ko proper security measures ke bina public Internet par expose karna unauthorized access ke liye lead kar sakta hai. 
+रिमोट एक्सेस केवल तभी सक्षम करें जब आपका Duplicati सर्वर किसी सुरक्षित नेटवर्क
+(जैसे, VPN, निजी LAN, या फ़ायरवॉल नियम) द्वारा सुरक्षित हो। उचित सुरक्षा उपायों के बिना Duplicati इंटरफ़ेस को सार्वजनिक इंटरनेट पर
+उजागर करने से अनधिकृत एक्सेस हो सकता है।
 
-Apne servers ko local network ke bahar securely access karne ke liye Tailscale, Headscale, NetBird, ZeroTier, Nebula, Twingate, Pritunl, Cloudflare Access, Wireguard ya similar solutions ka use karna recommended hai.
+अपने स्थानीय नेटवर्क के बाहर से अपने सर्वर को सुरक्षित रूप से एक्सेस करने के लिए Tailscale, Headscale, NetBird, ZeroTier, Nebula, Twingate, Pritunl, Cloudflare Access, Wireguard या इसी तरह के समाधानों का उपयोग करने की अनुशंसा की जाती है।
 :::

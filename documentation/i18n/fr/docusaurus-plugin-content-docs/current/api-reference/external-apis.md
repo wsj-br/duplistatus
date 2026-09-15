@@ -2,14 +2,14 @@
 
 Ces points de terminaison sont conçus pour être utilisés par d'autres applications et intégrations, par exemple [Page d'accueil](../user-guide/homepage-integration.md). Ils sont exempts de CSRF et n'utilisent pas de cookies de session.
 
-L'authentification est facultative et désactivée par défaut. Bien que les clés soient facultatives, les clients peuvent omettre la clé ou en envoyer une : une clé valide avec la portée correspondante est acceptée et enregistrée ; une mauvaise clé est ignorée et la demande se poursuit. Quand **Exiger des clés API** est activé dans [Clés API](../user-guide/settings/api-keys-settings.md), envoyez la clé sous la forme `?api_key=`, `X-Api-Key`, ou `Authorization: Bearer`. Les clés de téléchargement fonctionnent uniquement sur `POST /api/upload`. Les clés de lecture fonctionnent uniquement sur `/api/summary` et `/api/lastbackup*`. Les clés de chaîne de requête apparaissent dans les journaux d'accès du proxy inverse.
+L'authentification est facultative et désactivée par défaut. Bien que les clés soient facultatives, les clients peuvent omettre la clé ou en envoyer une : une clé valide avec une portée correspondante est acceptée et enregistrée ; une mauvaise clé est ignorée et la requête continue. Lorsque **Exiger des clés API** est activé dans [Clés API](../user-guide/settings/api-keys-settings.md), envoyez la clé sous forme de `?api_key=`, `X-Api-Key` ou `Authorization: Bearer`. Les clés de téléchargement ne fonctionnent que sur `POST /api/upload`. Les clés de lecture ne fonctionnent que sur `/api/summary` et `/api/lastbackup*`. Les clés de chaîne de requête apparaissent dans les journaux d'accès des proxys inverses.
 
-Une [liste d'adresses IP autorisées](../user-guide/settings/ip-allowlist-settings.md) peut également restreindre ces routes. `/api/health` et `/api/ping` restent publiques tant que les deux listes sont désactivées ; quand l'une des listes est activée, elles acceptent les boucles locales et les CIDR de la liste admin ou externe, et les clients non locaux sont limités en taux.
+Une [liste d'adresses IP autorisées](../user-guide/settings/ip-allowlist-settings.md) peut également restreindre ces routes. `/api/health` et `/api/ping` restent publics tant que les deux listes sont désactivées ; lorsque l'une des listes est activée, elles acceptent les boucles locales et les CIDR de la liste admin ou externe, et les clients non en boucle locale sont limités en taux.
 
-## Obtenir un résumé global - `/api/summary` {/* #get-overall-summary---apisummary */}
-- **Point de terminaison**: `/api/summary`
-- **Méthode**: GET
-- **Description**: Récupère un résumé de toutes les opérations de sauvegarde sur tous les serveurs.
+## Obtenir le résumé global - `/api/summary` {/* #get-overall-summary---apisummary */}
+- **Point de terminaison** : `/api/summary`
+- **Méthode** : GET
+- **Description** : Récupère un résumé de toutes les opérations de sauvegarde sur tous les serveurs.
 - **Réponse** :
 
   ```json
@@ -25,23 +25,23 @@ Une [liste d'adresses IP autorisées](../user-guide/settings/ip-allowlist-settin
   }
   ```
 
-- **Réponses d'erreur**:
-  - `401`: Clé API manquante ou invalide quand les clés sont requises
-  - `403`: La portée de la clé n'est pas `read`, ou l'adresse IP du client n'est pas sur la liste d'adresses IP autorisées
-  - `429`: Limite de taux de l'API de lecture dépassée
-  - `500`: Erreur du serveur lors de la récupération des données de résumé
-- **Notes**:
+- **Réponses d'erreur** :
+  - `401` : Clé API manquante ou invalide lorsque les clés sont requises
+  - `403` : La portée de la clé n'est pas `read`, ou l'adresse IP du client n'est pas sur la liste d'adresses IP autorisées externes
+  - `429` : Limite de taux de l'API de lecture dépassée
+  - `500` : Erreur de serveur lors de la récupération des données de résumé
+- **Notes** :
   - Dans la version 0.5.x, le champ `totalBackupedSize` a été remplacé par `totalBackupSize`
   - Dans la version 0.7.x, le champ `totalMachines` a été remplacé par `totalServers`
-  - Le champ `overdueBackupsCount` affiche le nombre de sauvegardes en retard actuellement
+  - Le champ `overdueBackupsCount` affiche le nombre de sauvegardes actuellement en retard
   - Le champ `secondsSinceLastBackup` affiche le temps en secondes depuis la dernière sauvegarde sur tous les serveurs
   - Retourne une réponse de secours avec des zéros si la récupération des données échoue
-  - **Note**: Pour une utilisation interne du tableau de bord, envisagez d'utiliser `/api/dashboard` qui inclut ces données ainsi que des informations supplémentaires
+  - **Note** : Pour une utilisation par le tableau de bord interne, envisagez d'utiliser `/api/dashboard` qui inclut ces données ainsi que des informations supplémentaires
 
 ## Obtenir la dernière sauvegarde - `/api/lastbackup/:serverId` {/* #get-latest-backup---apilastbackupserverid */}
-- **Point de terminaison**: `/api/lastbackup/:serverId`
-- **Méthode**: GET
-- **Description**: Récupère les informations de sauvegarde les plus récentes pour un serveur spécifique.
+- **Point de terminaison** : `/api/lastbackup/:serverId`
+- **Méthode** : GET
+- **Description** : Récupère les informations de la dernière sauvegarde pour un serveur spécifique.
 - **Paramètres** :
   - `serverId` : l'identifiant du serveur (ID ou nom)
 
@@ -86,22 +86,22 @@ L'identifiant du serveur doit être encodé en URL.
   }
   ```
 
-- **Réponses d'erreur**:
-  - `401`: Clé API manquante ou invalide quand les clés sont requises
-  - `403`: La portée de la clé n'est pas `read`, ou l'adresse IP du client n'est pas sur la liste d'adresses IP autorisées
-  - `404`: Serveur introuvable
-  - `429`: Limite de taux de l'API de lecture dépassée
-  - `500`: Erreur interne du serveur
-- **Notes**:
+- **Réponses d'erreur** :
+  - `401` : Clé API manquante ou invalide lorsque les clés sont requises
+  - `403` : La portée de la clé n'est pas `read`, ou l'adresse IP du client n'est pas sur la liste d'adresses IP autorisées externes
+  - `404` : Serveur introuvable
+  - `429` : Limite de taux de l'API de lecture dépassée
+  - `500` : Erreur interne du serveur
+- **Notes** :
   - Dans la version 0.7.x, la clé de l'objet de réponse a changé de `machine` à `server`
   - L'identifiant du serveur peut être soit l'ID soit le nom
   - Retourne null pour latest_backup si aucune sauvegarde n'existe
   - Inclut des en-têtes de contrôle de cache pour empêcher le cache
 
 ## Obtenir les dernières sauvegardes - `/api/lastbackups/:serverId` {/* #get-latest-backups---apilastbackupsserverid */}
-- **Point de terminaison**: `/api/lastbackups/:serverId`
-- **Méthode**: GET
-- **Description**: Récupère les informations de sauvegarde les plus récentes pour toutes les sauvegardes configurées (par exemple, 'Fichiers', 'Bases de données') sur un serveur spécifique.
+- **Point de terminaison** : `/api/lastbackups/:serverId`
+- **Méthode** : GET
+- **Description** : Récupère les informations de la dernière sauvegarde pour toutes les sauvegardes configurées (par exemple 'Fichiers', 'Bases de données') sur un serveur spécifique.
 - **Paramètres** :
   - `serverId` : l'identifiant du serveur (ID ou nom)
 
@@ -172,24 +172,24 @@ L'identifiant du serveur doit être encodé en URL.
   }
   ```
 
-- **Réponses d'erreur**:
-  - `401`: Clé API manquante ou invalide quand les clés sont requises
-  - `403`: La portée de la clé n'est pas `read`, ou l'adresse IP du client n'est pas sur la liste d'adresses IP autorisées
-  - `404`: Serveur introuvable
-  - `429`: Limite de taux de l'API de lecture dépassée
-  - `500`: Erreur interne du serveur
-- **Notes**:
+- **Réponses d'erreur** :
+  - `401` : Clé API manquante ou invalide lorsque les clés sont requises
+  - `403` : La portée de la clé n'est pas `read`, ou l'adresse IP du client n'est pas sur la liste d'adresses IP autorisées externes
+  - `404` : Serveur introuvable
+  - `429` : Limite de taux de l'API de lecture dépassée
+  - `500` : Erreur interne du serveur
+- **Notes** :
   - Dans la version 0.7.x, la clé de l'objet de réponse a changé de `machine` à `server`, et le champ `backup_types_count` a été renommé en `backup_jobs_count`
   - L'identifiant du serveur peut être soit l'ID soit le nom
-  - Retourne la dernière sauvegarde pour chaque tâche de sauvegarde (backup_name) que le serveur a
-  - Contrairement à `/api/lastbackup/:serverId` qui retourne uniquement la sauvegarde la plus récente du serveur (indépendamment de la tâche de sauvegarde)
+  - Retourne la dernière sauvegarde pour chaque travail de sauvegarde (backup_name) que le serveur a
+  - Contrairement à `/api/lastbackup/:serverId` qui ne retourne que la sauvegarde la plus récente du serveur (indépendamment du travail de sauvegarde)
   - Inclut des en-têtes de contrôle de cache pour empêcher le cache
 
 ## Télécharger les données de sauvegarde - `/api/upload` {/* #upload-backup-data---apiupload */}
 - **Point de terminaison**: `/api/upload`
 - **Méthode**: POST
-- **Description**: Télécharge les données d'opération de sauvegarde pour un serveur. Prend en charge la détection de doublons de sauvegarde et envoie des notifications.
-- **Corps de la requête** : JSON envoyé par Duplicati avec les options suivantes :
+- **Description**: Télécharge les données d'opération de sauvegarde pour un serveur. Prend en charge la détection des exécutions de sauvegarde en double et envoie des notifications.
+- **Corps de la requête**: JSON envoyé par Duplicati avec les options suivantes:
 
   ```bash
   --send-http-json-urls=http://my.local.server:9666/api/upload?api_key=YOUR_UPLOAD_KEY
@@ -208,18 +208,18 @@ Sur Duplicati antérieur à 2.0.9.106, utilisez `--send-http-url` avec `--send-h
   ```
 
 - **Réponses d'erreur**:
-  - `400`: Champs requis manquants dans les sections Extra ou Data, ou MainOperation invalide
-  - `401`: Clé API manquante ou invalide quand les clés sont requises
-  - `403`: La portée de la clé n'est pas `upload`, ou l'adresse IP du client n'est pas sur la liste d'adresses IP autorisées
+  - `400`: Champs obligatoires manquants dans les sections Extra ou Data, ou MainOperation invalide
+  - `401`: Clé API manquante ou invalide lorsque les clés sont requises
+  - `403`: La portée de la clé n'est pas `upload`, ou l'adresse IP du client n'est pas sur la liste d'autorisation externe
   - `409`: Données de sauvegarde en double (ignorées)
   - `413`: Le corps de la requête dépasse la limite de taille de téléchargement configurée (5 Mo par défaut)
-  - `429`: Limite de taux de téléchargement ou d'échec d'authentification dépassée (`Retry-After` est défini)
+  - `429`: Limite de débit dépassée pour le téléchargement ou l'échec d'authentification (`Retry-After` est défini)
   - `500`: Erreur du serveur lors du traitement des données de sauvegarde
-- **Notes** :
-  - Ne traite que les opérations de sauvegarde (MainOperation doit être "Backup")
-  - Valide les champs requis dans la section Extra : machine-id, machine-name, backup-name, backup-id
-  - Valide les champs requis dans la section Data : ParsedResult, BeginTime, Duration
-  - Détecte automatiquement les exécutions de sauvegarde en double et renvoie un statut 409
-  - Envoie des notifications après une insertion réussie de la sauvegarde (si configuré)
-  - Journalise les données de la requête dans un fichier du répertoire `data` à la racine du projet en mode développement, à des fins de débogage
-  - Utilise une transaction pour assurer la cohérence des données
+- **Remarques**:
+  - Ne traite que les opérations de sauvegarde (MainOperation doit être "Sauvegarde")
+  - Valide les champs obligatoires dans la section Extra: machine-id, machine-name, backup-name, backup-id
+  - Valide les champs obligatoires dans la section Data: ParsedResult, BeginTime, Duration
+  - Détecte automatiquement les exécutions de sauvegarde en double et retourne un statut 409
+  - Envoie des notifications après l'insertion réussie de la sauvegarde (si configuré)
+  - Journalise les données de la requête dans un fichier dans le répertoire `data` à la racine du projet en mode développement pour le débogage
+  - Utilise une transaction pour la cohérence des données

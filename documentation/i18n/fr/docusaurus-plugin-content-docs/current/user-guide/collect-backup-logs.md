@@ -1,65 +1,65 @@
 # Collecter les journaux de sauvegarde {/* #collect-backup-logs */}
 
-**duplistatus** peut récupérer les journaux de sauvegarde directement à partir des serveurs Duplicati pour remplir la base de données ou restaurer les données de journaux manquantes. L'application ignore automatiquement tous les journaux en double qui existent déjà dans la base de données.
+**duplistatus** peut récupérer les journaux de sauvegarde directement depuis les serveurs Duplicati pour peupler la base de données ou restaurer les données de journal manquantes. L'application ignore automatiquement les journaux en double qui existent déjà dans la base de données.
 
-## Étapes pour Collecter les journaux de sauvegarde {/* #steps-to-collect-backup-logs */}
+## Étapes pour collecter les journaux de sauvegarde {/* #steps-to-collect-backup-logs */}
 
 ### Collecte manuelle {/* #manual-collection */}
 
-1.  Cliquez sur l'icône <IconButton icon="lucide:download" /> **Collecter les journaux de sauvegarde** dans la [barre d'outils de l'application](overview.md#application-toolbar).
+1. Cliquez sur l'icône <IconButton icon="lucide:download" /> **Collecter les journaux de sauvegarde** dans la [barre d'outils de l'application](overview.md#application-toolbar).
 
-![Collect Backup Logs Popup](../assets/screen-collect-button-popup.png)
+![Fenêtre contextuelle Collecter les journaux de sauvegarde](../assets/screen-collect-button-popup.png)
 
-2.  Sélectionner le serveur
+2. Sélectionner le serveur
 
-Si vous avez des adresses de serveurs configurées dans [Paramètres → Paramètres des serveurs](settings/server-settings.md), sélectionnez-en une dans la liste déroulante pour une collecte instantanée. Si vous n'avez pas de serveurs configurés, vous pouvez entrer les détails du serveur Duplicati manuellement.
+Si vous avez configuré des adresses de serveur dans [Paramètres → Paramètres du serveur](settings/server-settings.md), sélectionnez-en une dans la liste déroulante pour une collecte instantanée. Si vous n'avez aucun serveur configuré, vous pouvez entrer les détails du serveur Duplicati manuellement.
 
-3.  Entrez les détails du serveur Duplicati :
+3. Entrez les détails du serveur Duplicati :
     - **Nom d'hôte** : Le nom d'hôte ou l'adresse IP du serveur Duplicati. Vous pouvez entrer plusieurs noms d'hôte séparés par des virgules, par exemple `192.168.1.23,someserver.local,192.168.1.89`
     - **Port** : Le numéro de port utilisé par le serveur Duplicati (par défaut : `8200`).
-    - **Mot de passe** : Entrez le mot de passe d'authentification si requis.
+    - **Mot de passe** : Entrez le mot de passe d'authentification si nécessaire.
     - **Télécharger les données JSON collectées** : Activez cette option pour télécharger les données collectées par duplistatus.
-4.  Cliquez sur **Collecter les sauvegardes**.
+4. Cliquez sur **Collecter les sauvegardes**.
 
 ***Notes :***
 - Si vous entrez plusieurs noms d'hôte, la collecte sera effectuée en utilisant le même port et le même mot de passe pour tous les serveurs.
-- **duplistatus** détectera automatiquement le meilleur protocole de connexion (HTTPS ou HTTP). Il essaie d'abord HTTPS (avec validation SSL appropriée), puis HTTPS avec des certificats auto-signés, et enfin HTTP comme solution de secours.
+- **duplistatus** détectera automatiquement le meilleur protocole de connexion (HTTPS ou HTTP). Il essaie d'abord HTTPS (avec validation SSL appropriée), puis HTTPS avec certificats auto-signés, et enfin HTTP en tant que solution de repli.
 
 :::tip
-Les boutons <IconButton icon="lucide:download" /> sont disponibles dans [Paramètres → Surveillance des sauvegardes](settings/backup-monitoring-settings.md) et [Paramètres → Paramètres des serveurs](settings/server-settings.md) pour la collecte sur un seul serveur.
+Les boutons <IconButton icon="lucide:download" /> sont disponibles dans [Paramètres → Surveillance des sauvegardes](settings/backup-monitoring-settings.md) et [Paramètres → Paramètres du serveur](settings/server-settings.md) pour la collecte sur un seul serveur.
 :::
 
 <br/>
 
-### Collecte en masse {/* #bulk-collection */}
+### Collecte en vrac {/* #bulk-collection */}
 
 _Cliquez avec le bouton droit_ sur le bouton <IconButton icon="lucide:download" /> **Collecter les journaux de sauvegarde** dans la barre d'outils de l'application pour collecter à partir de tous les serveurs configurés.
 
-![Collect All Right-Click Menu](../assets/screen-collect-button-right-click-popup.png)
+![Menu contextuel Collecter tout](../assets/screen-collect-button-right-click-popup.png)
 
 :::tip
-Vous pouvez également utiliser le bouton <IconButton icon="lucide:import" label="Tout collecter"/> dans les pages [Paramètres → Surveillance des sauvegardes](settings/backup-monitoring-settings.md) et [Paramètres → Paramètres des serveurs](settings/server-settings.md) pour collecter à partir de tous les serveurs configurés.
+Vous pouvez également utiliser le bouton <IconButton icon="lucide:import" label="Collecter Tout"/> dans les pages [Paramètres → Surveillance des sauvegardes](settings/backup-monitoring-settings.md) et [Paramètres → Paramètres du serveur](settings/server-settings.md) pour collecter à partir de tous les serveurs configurés.
 :::
 
-## Comment fonctionne le processus de collecte {/* #how-the-collection-process-works */}
+## Fonctionnement du processus de collecte {/* #how-the-collection-process-works */}
 
 - **duplistatus** détecte automatiquement le meilleur protocole de connexion et se connecte au serveur Duplicati spécifié.
-- Il récupère l'historique des sauvegardes, les informations de journalisation et les paramètres de sauvegarde (pour la surveillance des sauvegardes).
+- Il récupère l'historique des sauvegardes, les informations de journal et les paramètres de sauvegarde (pour la surveillance des sauvegardes).
 - Les journaux déjà présents dans la base de données **duplistatus** sont ignorés.
-- Les nouvelles données sont traitées et stockées dans la base de données locale, y compris la version de Duplicati signalée dans chaque journal de sauvegarde. La [version du tableau de bord](dashboard.md#duplicati-server-version) est prise à partir du dernier journal stocké — **duplistatus** ne lit pas la version qui est actuellement en cours d'exécution sur le serveur. Après une mise à jour de Duplicati, collectez ou attendez une nouvelle sauvegarde afin que le tableau de bord puisse afficher la nouvelle version.
+- Les nouvelles données sont traitées et stockées dans la base de données locale, y compris la version de Duplicati signalée dans chaque journal de sauvegarde. La [version du tableau de bord](dashboard.md#duplicati-server-version) est prise à partir du dernier journal stocké — **duplistatus** ne lit pas la version qui est actuellement en cours d'exécution sur le serveur. Après une mise à niveau de Duplicati, collectez ou attendez une nouvelle sauvegarde afin que le tableau de bord puisse afficher la nouvelle version.
 - L'URL utilisée (avec le protocole détecté) sera stockée ou mise à jour dans la base de données locale.
-- Si l'option de téléchargement est sélectionnée, elle téléchargera les données JSON collectées chaque fois que des données sont reçues du serveur Duplicati — même si les journaux échouent à la validation ou ne peuvent pas être importés dans la base de données. Le nom du fichier sera au format suivant : `[serverName]_collected_[Timestamp].json`. L'horodatage utilise le format de date ISO 8601 (AAAA-MM-JJTHH:MM:SS).
+- Si l'option de téléchargement est sélectionnée, elle téléchargera les données JSON collectées chaque fois que des données sont reçues du serveur Duplicati — même si les journaux échouent à la validation ou ne peuvent pas être importés dans la base de données. Le nom de fichier sera au format : `[serverName]_collected_[Timestamp].json`. L'horodatage utilise le format de date ISO 8601 (AAAA-MM-JJTHH:MM:SS).
 - Le tableau de bord est mis à jour pour refléter les nouvelles informations.
 
-:::note Vous voyez des serveurs en double après la collecte ?
-Si le même serveur apparaît plusieurs fois après la collecte des journaux de sauvegarde (ou après une réinstallation/mise à niveau de Duplicati), c'est généralement dû à un changement de `machine_id` ou à un bogue de l'API Duplicati qui mélange l'`identity` id et l'`machine_id`. La solution consiste à aligner les identifiants sur le serveur Duplicati (modifier `identity.txt`/`machineid.txt` ou définir **Duplicati → Paramètres → Options avancées → Machine-id**), redémarrer Duplicati, puis fusionner les entrées dans **duplistatus** via [Paramètres → Maintenance de la base de données → Fusionner les serveurs en double](settings/database-maintenance.md#merge-duplicate-servers). Voir [Serveurs en double sur le tableau de bord](troubleshooting.md#duplicate-servers-on-the-dashboard) pour les étapes complètes.
+:::note Voir des serveurs en double après la collecte ?
+Si le même serveur apparaît plus d'une fois après la collecte des journaux de sauvegarde (ou après une réinstallation/mise à niveau de Duplicati), cela est généralement causé par un changement de `machine_id` ou par un bug de l'API Duplicati qui mélange l'`identity` id et l'`machine_id`. La solution consiste à aligner les identifiants sur le serveur Duplicati (éditer `identity.txt`/`machineid.txt` ou définir **Duplicati → Paramètres → Options avancées → Machine-id**), redémarrer Duplicati, puis fusionner les entrées dans **duplistatus** via [Paramètres → Maintenance de la base de données → Fusionner les serveurs en double](settings/database-maintenance.md#merge-duplicate-servers). Voir [Serveurs en double sur le tableau de bord](troubleshooting.md#duplicate-servers-on-the-dashboard) pour les étapes complètes.
 :::
 
-## Résoudre les problèmes de collecte {/* #troubleshooting-collection-issues */}
+## Dépannage des problèmes de collecte {/* #troubleshooting-collection-issues */}
 
-La collecte des journaux de sauvegarde nécessite que le Serveur Duplicati soit accessible à partir de l'installation **duplistatus**. Si vous rencontrez des problèmes, veuillez vérifier les éléments suivants :
+La collecte des journaux de sauvegarde nécessite que le serveur Duplicati soit accessible depuis l'installation de **duplistatus**. Si vous rencontrez des problèmes, veuillez vérifier les points suivants :
 
-- Vérifiez que le nom d'hôte (ou l'adresse IP) et le numéro de port sont corrects. Vous pouvez tester cela en accédant à l'interface utilisateur du serveur Duplicati dans votre navigateur (par exemple, `http://hostname:port`).
+- Confirmez que le nom d'hôte (ou l'adresse IP) et le numéro de port sont corrects. Vous pouvez tester cela en accédant à l'interface utilisateur du serveur Duplicati dans votre navigateur (par exemple, `http://hostname:port`).
 - Vérifiez que **duplistatus** peut se connecter au serveur Duplicati. Un problème courant est la résolution de noms DNS (le système ne peut pas trouver le serveur par son nom d'hôte). Voir plus dans la [section de dépannage](troubleshooting.md#collect-backup-logs-not-working).
 - Assurez-vous que le mot de passe que vous avez fourni est correct.
 - Sur Duplicati 2.4+, la collecte lit l'identifiant de la machine à partir des paramètres du serveur Duplicati lorsque l'option systeminfo par défaut est vide.

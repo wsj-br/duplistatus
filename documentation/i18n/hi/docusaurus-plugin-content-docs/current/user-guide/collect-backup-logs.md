@@ -1,65 +1,65 @@
-# Backup Logs Ikattha Karein {/* #collect-backup-logs */}
+# बैकअप लॉग एकत्र करें {/* #collect-backup-logs */}
 
-**duplistatus** can retrieve backup logs directly from Duplicati servers to populate the database or restore missing log data. The application automatically skips any duplicate logs that already exist in the database.
+**duplistatus** डेटाबेस को पॉप्युलेट करने या अनुपलब्ध लॉग डेटा को पुनर्स्थापित करने के लिए सीधे Duplicati सर्वर से बैकअप लॉग प्राप्त कर सकता है। डेटाबेस में पहले से मौजूद किसी भी डुप्लिकेट लॉग को एप्लिकेशन स्वचालित रूप से छोड़ देता है।
 
-## बैकअप लॉग्स इकट्ठा करें के चरण {/* #steps-to-collect-backup-logs */}
+## बैकअप लॉग एकत्र करने के चरण {/* #steps-to-collect-backup-logs */}
 
-### मैनुअल कलेक्शन {/* #manual-collection */}
+### मैन्युअल एकत्रण {/* #manual-collection */}
 
-1.  Click the <IconButton icon="lucide:download" /> **Backup Logs Ikattha Karein** icon on the [Application Toolbar](overview.md#application-toolbar).
+1.  [एप्लिकेशन टूलबार](overview.md#application-toolbar) पर <IconButton icon="lucide:download" /> **बैकअप लॉग एकत्र करें** आइकन पर क्लिक करें।
 
-![Collect Backup Logs Popup](../assets/screen-collect-button-popup.png)
+![बैकअप लॉग एकत्र करें पॉपअप](../assets/screen-collect-button-popup.png)
 
-2.  Select Server
+2.  सर्वर चुनें
 
-If you have server addresses configured in [Settings → Server Settings](settings/server-settings.md), select one from the dropdown list for instant collection. If you don't have any servers configured, you can enter the Duplicati server details manually.
+यदि आपके पास [सेटिंग्स → सर्वर सेटिंग्स](settings/server-settings.md) में सर्वर पते कॉन्फ़िगर किए गए हैं, तो तुरंत एकत्र करने के लिए ड्रॉपडाउन सूची में से एक चुनें। यदि आपके पास कोई सर्वर कॉन्फ़िगर नहीं है, तो आप Duplicati सर्वर विवरण मैन्युअल रूप से दर्ज कर सकते हैं।
 
-3.  Enter the Duplicati server details:
-    - **Hostname**: The hostname or IP address of the Duplicati server. You can enter multiple hostnames separated by commas, for example `192.168.1.23,someserver.local,192.168.1.89`
-    - **Port**: The port number used by the Duplicati server (default: `8200`).
-    - **Password**: Enter the authentication password if required.
-    - **Download collected JSON data**: Enable this option to download the data collected by duplistatus.
-4.  Click **Backups Ikattha Karein**.
+3.  Duplicati सर्वर विवरण दर्ज करें:
+    - **होस्टनाम**: Duplicati सर्वर का होस्टनाम या आईपी पता। आप कॉमा द्वारा अलग करके कई होस्टनाम दर्ज कर सकते हैं, उदाहरण के लिए `192.168.1.23,someserver.local,192.168.1.89`
+    - **पोर्ट**: Duplicati सर्वर द्वारा उपयोग की जाने वाली पोर्ट संख्या (डिफ़ॉल्ट: `8200`)।
+    - **पासवर्ड**: यदि आवश्यक हो तो प्रमाणीकरण पासवर्ड दर्ज करें।
+    - **एकत्रित JSON डेटा डाउनलोड करें**: duplistatus द्वारा एकत्र किए गए डेटा को डाउनलोड करने के लिए इस विकल्प को सक्षम करें।
+4.  **बैकअप एकत्र करें** पर क्लिक करें।
 
-***Notes:***
-- If you enter multiple hostnames, the collection will be performed using the same port and password for all servers.
-- **duplistatus** will automatically detect the best connection protocol (HTTPS or HTTP). It tries HTTPS first (with proper SSL validation), then HTTPS with self-signed certificates, and finally HTTP as a fallback.
+***नोट:***
+- यदि आप एकाधिक होस्टनाम दर्ज करते हैं, तो सभी सर्वर के लिए एक ही पोर्ट और पासवर्ड का उपयोग करके डेटा एकत्र किया जाएगा।
+- **duplistatus** स्वचालित रूप से सर्वोत्तम कनेक्शन प्रोटोकॉल (HTTPS या HTTP) का पता लगाएगा। यह पहले HTTPS (उचित SSL सत्यापन के साथ), फिर स्व-हस्ताक्षरित प्रमाणपत्रों के साथ HTTPS और अंत में फ़ॉलबैक के रूप में HTTP का प्रयास करता है।
 
 :::tip
-<IconButton icon="lucide:download" /> buttons are available in [Settings → Backup Monitoring](settings/backup-monitoring-settings.md) and [Settings → Server Settings](settings/server-settings.md) for single-server collection.
+एकल-सर्वर एकत्रण के लिए [सेटिंग्स → बैकअप निगरानी](settings/backup-monitoring-settings.md) और [सेटिंग्स → सर्वर सेटिंग्स](settings/server-settings.md) में <IconButton icon="lucide:download" /> बटन उपलब्ध हैं।
 :::
 
 <br/>
 
-### बल्क कलेक्शन {/* #bulk-collection */}
+### बल्क एकत्रण {/* #bulk-collection */}
 
-_Right-click_ the <IconButton icon="lucide:download" /> **Backup Logs Ikattha Karein** button in the application toolbar to collect from all configured servers.
+सभी कॉन्फ़िगर किए गए सर्वर से एकत्र करने के लिए एप्लिकेशन टूलबार में <IconButton icon="lucide:download" /> **बैकअप लॉग एकत्र करें** बटन पर _राइट-क्लिक_ करें।
 
-![Collect All Right-Click Menu](../assets/screen-collect-button-right-click-popup.png)
+![सभी एकत्र करें राइट-क्लिक मेनू](../assets/screen-collect-button-right-click-popup.png)
 
 :::tip
-You can also use the <IconButton icon="lucide:import" label="Sab Kuch Ikattha Karein"/> button in the [Settings → Backup Monitoring](settings/backup-monitoring-settings.md) and [Settings → Server Settings](settings/server-settings.md) pages to collect from all configured servers.
+सभी कॉन्फ़िगर किए गए सर्वर से एकत्र करने के लिए आप [सेटिंग्स → बैकअप निगरानी](settings/backup-monitoring-settings.md) और [सेटिंग्स → सर्वर सेटिंग्स](settings/server-settings.md) पृष्ठों में <IconButton icon="lucide:import" label="सभी एकत्र करें"/> बटन का भी उपयोग कर सकते हैं।
 :::
 
-## कलेक्शन प्रक्रिया कैसे काम करती है {/* #how-the-collection-process-works */}
+## एकत्र करने की प्रक्रिया कैसे काम करती है {/* #how-the-collection-process-works */}
 
 - **duplistatus** स्वचालित रूप से सर्वोत्तम कनेक्शन प्रोटोकॉल का पता लगाता है और निर्दिष्ट Duplicati सर्वर से कनेक्ट होता है।
-- यह बैकअप इतिहास, लॉग जानकारी, और बैकअप सम्मान (बैकअप मॉनिटरिंग के लिए) प्राप्त करता है।
-- **duplistatus** डेटाबेस में पहले से मौजूद किसी भी लॉग को छोड़ देता है।
-- नया डेटा संसाधित और स्थानीय डेटाबेस में संग्रहीत किया जाता है, जिसमें प्रत्येक बैकअप लॉग में रिपोर्ट की गई Duplicati संस्करण शामिल है। [डैशबोर्ड संस्करण](dashboard.md#duplicati-server-version) नवीनतम संग्रहीत लॉग से लिया जाता है — **duplistatus** सर्वर पर वर्तमान में चल रहे संस्करण को नहीं पढ़ता। Duplicati अपग्रेड के बाद, डैशबोर्ड नए संस्करण दिखाने के लिए एक नया बैकअप संग्रहित करें या प्रतीक्षा करें।
-- उपयोग किया गया URL (पता लगाए गए प्रोटोकॉल के साथ) स्थानीय डेटाबेस में संग्रहीत या अपडेट किया जाएगा।
-- यदि डाउनलोड विकल्प चुना गया है, तो यह डुप्लिकेटी सर्वर से किसी भी डेटा प्राप्त होने पर JSON डेटा डाउनलोड करेगा — भले ही लॉग्स वैधता विफल हों या डेटाबेस में आयात नहीं हो सकें। फ़ाइल का नाम इस प्रारूप में होगा: `[serverName]_collected_[Timestamp].json`। टाइमस्टैम्प आईएसओ 8601 तिथि प्रारूप का उपयोग करता है (YYYY-MM-DDTHH:MM:SS)।
-- डैशबोर्ड नए जानकारी को दर्शाने के लिए अपडेट होता है।
+- यह बैकअप इतिहास, लॉग जानकारी और बैकअप सेटिंग्स (बैकअप निगरानी के लिए) प्राप्त करता है।
+- **duplistatus** डेटाबेस में पहले से मौजूद किसी भी लॉग को छोड़ दिया जाता है।
+- नए डेटा को संसाधित किया जाता है और स्थानीय डेटाबेस में संग्रहीत किया जाता है, जिसमें प्रत्येक बैकअप लॉग में रिपोर्ट किया गया Duplicati संस्करण भी शामिल है। [डैशबोर्ड संस्करण](dashboard.md#duplicati-server-version) नवीनतम संग्रहीत लॉग से लिया जाता है — **duplistatus** उस संस्करण को नहीं पढ़ता है जो वर्तमान में सर्वर पर चल रहा है। Duplicati अपग्रेड के बाद, नया बैकअप एकत्र करें या उसकी प्रतीक्षा करें ताकि डैशबोर्ड नया संस्करण दिखा सके।
+- उपयोग किया गया URL (पहचाने गए प्रोटोकॉल के साथ) स्थानीय डेटाबेस में संग्रहीत या अपडेट किया जाएगा।
+- यदि डाउनलोड विकल्प चुना गया है, तो Duplicati सर्वर से कोई भी डेटा प्राप्त होने पर यह एकत्रित JSON डेटा डाउनलोड करेगा — भले ही लॉग सत्यापन में विफल हो जाएं या डेटाबेस में आयात न किए जा सकें। फ़ाइल का नाम इस प्रारूप में होगा: `[serverName]_collected_[Timestamp].json`। टाइमस्टैम्प ISO 8601 दिनांक प्रारूप (YYYY-MM-DDTHH:MM:SS) का उपयोग करता है।
+- नई जानकारी को दर्शाने के लिए डैशबोर्ड अपडेट होता है।
 
-:::note Seeing duplicated servers after collecting?
-If the same server appears more than once after collecting backup logs (or after a Duplicati reinstall/upgrade), it is usually caused by a changed `machine_id` or by a Duplicati API bug that mixes the `identity` id and the `machine_id`. The fix is to align the ids on the Duplicati server (edit `identity.txt`/`machineid.txt` or set **Duplicati → Settings → Advanced Options → Machine-id**), restart Duplicati, then merge the entries in **duplistatus** via [Settings → Database Maintenance → Duplicate servers merge karein](settings/database-maintenance.md#merge-duplicate-servers). See [Duplicate Servers on the Dashboard](troubleshooting.md#duplicate-servers-on-the-dashboard) for full steps.
+:::note एकत्र करने के बाद डुप्लिकेट सर्वर दिखाई दे रहे हैं?
+यदि बैकअप लॉग एकत्र करने के बाद (या Duplicati को पुनः स्थापित/अपग्रेड करने के बाद) एक ही सर्वर एक से अधिक बार दिखाई देता है, तो यह आमतौर पर बदले हुए `machine_id` के कारण होता है या Duplicati API बग के कारण होता है जो `identity` id और `machine_id` को मिला देता है। इसका समाधान Duplicati सर्वर पर id को संरेखित करना है (`identity.txt`/`machineid.txt` को संपादित करें या **Duplicati → Settings → Advanced Options → Machine-id** सेट करें), Duplicati को पुनरारंभ करें, फिर [सेटिंग्स → डेटाबेस रखरखाव → डुप्लिकेट सर्वर मर्ज करें](settings/database-maintenance.md#merge-duplicate-servers) के माध्यम से **duplistatus** में प्रविष्टियों को मर्ज करें। पूरे चरणों के लिए [डैशबोर्ड पर डुप्लिकेट सर्वर](troubleshooting.md#duplicate-servers-on-the-dashboard) देखें।
 :::
 
-## कलेक्शन समस्याओं का निवारण {/* #troubleshooting-collection-issues */}
+## एकत्रण संबंधी समस्याओं का निवारण {/* #troubleshooting-collection-issues */}
 
-Backup log collection requires the Duplicati server to be accessible from the **duplistatus** installation. If you encounter issues, please verify the following:
+बैकअप लॉग संग्रह के लिए आवश्यक है कि Duplicati सर्वर **duplistatus** इंस्टॉलेशन से ऐक्सेस करने योग्य हो। यदि आपको समस्याओं का सामना करना पड़ता है, तो कृपया निम्नलिखित को सत्यापित करें:
 
-- पुष्टि करें कि होस्टनेम (या आईपी पता) और पोर्ट संख्या सही है। आप इसे ब्राउज़र में डुप्लिकेटी सर्वर यूआई को एक्सेस करके परीक्षण कर सकते हैं (उदाहरण के लिए, `http://hostname:port`)।
-- जांचें कि **duplistatus** डुप्लिकेटी सर्वर से कनेक्ट कर सकता है। एक सामान्य समस्या DNS नाम रिज़ॉल्यूशन है (प्रणाली होस्टनेम द्वारा सर्वर को नहीं ढूंढ पाती है)। अधिक जानकारी के लिए [ट्रबलशूटिंग अनुभाग](troubleshooting.md#collect-backup-logs-not-working) देखें।
-- सुनिश्चित करें कि आपने प्रदान किया गया पासवर्ड सही है।
-- डुप्लिकेटी 2.4+ में, संग्रह प्रणाली की डिफ़ॉल्ट खाली होने पर डुप्लिकेटी सर्वर सेटिंग्स से मशीन-आईडी पढ़ता है।
+- पुष्टि करें कि होस्टनाम (या आईपी पता) और पोर्ट संख्या सही हैं। आप अपने ब्राउज़र में Duplicati सर्वर UI को ऐक्सेस करके इसे जाँचें (उदा. `http://hostname:port`)।
+- जांचें कि **duplistatus** Duplicati सर्वर से कनेक्ट हो सकता है। एक आम समस्या डीएनएस नाम रिज़ॉल्यूशन है (सिस्टम अपने होस्टनाम से सर्वर को नहीं ढूंढ सकता है)। [समस्या निवारण अनुभाग](troubleshooting.md#collect-backup-logs-not-working) में और देखें।
+- सुनिश्चित करें कि आपके द्वारा प्रदान किया गया पासवर्ड सही है।
+- Duplicati 2.4+ चालू होने पर, जब systeminfo विकल्प डिफ़ॉल्ट खाली होता है, तो संग्रह Duplicati सर्वर सेटिंग्स से machine-id पढ़ता है।

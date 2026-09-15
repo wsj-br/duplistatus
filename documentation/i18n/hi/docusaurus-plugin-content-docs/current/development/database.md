@@ -1,31 +1,31 @@
 # डेटाबेस स्कीमा {/* #database-schema */}
 
-यह दस्तावेज़ duplistatus द्वारा बैकअप ऑपरेशन डेटा संग्रहीत करने के लिए उपयोग किए जाने वाले SQLite डेटाबेस स्कीमा का वर्णन करता है।
+यह दस्तावेज़ duplistatus द्वारा बैकअप ऑपरेशन डेटा संग्रहीत करने के लिए उपयोग किए जाने वाले SQLite डेटाबेस स्कीमा का विवरण देता है।
 
 ## डेटाबेस स्थान {/* #database-location */}
 
-डेटाबेस एप्लिकेशन डेटा निर्देशिका में संग्रहीत किया जाता है:
-- **Default Location**: `/app/data/backups.db`
-- **Docker Volume**: `duplistatus_data:/app/data`
-- **File Name**: `backups.db`
+डेटाबेस एप्लिकेशन डेटा निर्देशिका (डायरेक्टरी) में संग्रहीत होता है:
+- **डिफ़ॉल्ट स्थान**: `/app/data/backups.db`
+- **Docker वॉल्यूम**: `duplistatus_data:/app/data`
+- **फ़ाइल नाम**: `backups.db`
 
-## डेटाबेस माइग्रेशन Pranali {/* #database-migration-system */}
+## डेटाबेस माइग्रेशन सिस्टम {/* #database-migration-system */}
 
-duplistatus संस्करणों के बीच डेटाबेस स्कीमा परिवर्तनों को संभालने के लिए एक स्वचालित माइग्रेशन प्रणाली का उपयोग करता है।
+संस्करणों के बीच डेटाबेस स्कीमा परिवर्तनों को संभालने के लिए duplistatus एक स्वचालित माइग्रेशन सिस्टम का उपयोग करता है।
 
-### माइग्रेशन Sanskaran इतिहास {/* #migration-version-history */}
+### माइग्रेशन संस्करण इतिहास {/* #migration-version-history */}
 
-निम्नलिखित ऐतिहासिक माइग्रेशन संस्करण हैं जो डेटाबेस को इसकी वर्तमान स्थिति में लाए गए हैं:
+डेटाबेस को उसकी वर्तमान स्थिति में लाने वाले ऐतिहासिक माइग्रेशन संस्करण निम्नलिखित हैं:
 
-- **Schema v1.0** (Application v0.6.x और उससे पहले): मशीनें और बैकअप तालिकाओं के साथ प्रारंभिक डेटाबेस स्कीमा
-- **Schema v2.0** (Application v0.7.x): लुप्त कॉलम और कॉन्फ़िगरेशन तालिका जोड़ी गई
-- **Schema v3.0** (Application v0.7.x): मशीनें तालिका को सर्वर में पुनर्नामित किया गया, सर्वर _यूआरएल कॉलम जोड़ा गया
-- **Schema v3.1** (Application v0.8.x): बैकअप डेटा फ़ील्डों को बढ़ाया गया, सर्वर_ पासवर्ड कॉलम जोड़ा गया
-- **Schema v4.0** (Application v0.9.x / v1.0.x): Added User Access Control (users, sessions, audit_log tables)
-- **Schema v4.1** (Application v1.5.x): Added `api_keys` and default configuration keys for optional API-key authentication, IP allowlists, and upload limits
-- **Schema v4.2** (Application v1.5.x): Added `daily_summary_deliveries` ledger and default `daily_summary` configuration for optional daily summary notifications
+- **स्कीमा v1.0** (एप्लिकेशन v0.6.x और उससे पहले): मशीनों और बैकअप तालिकाओं के साथ प्रारंभिक डेटाबेस स्कीमा
+- **स्कीमा v2.0** (एप्लिकेशन v0.7.x): अनुपलब्ध कॉलम और कॉन्फ़िगरेशन तालिका जोड़ी गई
+- **स्कीमा v3.0** (एप्लिकेशन v0.7.x): machines तालिका का नाम बदलकर servers कर दिया गया, server_url कॉलम जोड़ा गया
+- **स्कीमा v3.1** (एप्लिकेशन v0.8.x): बैकअप डेटा फ़ील्ड उन्नत किए गए, server_password कॉलम जोड़ा गया
+- **स्कीमा v4.0** (एप्लिकेशन v0.9.x / v1.0.x): उपयोगकर्ता एक्सेस नियंत्रण (उपयोगकर्ता, सत्र, audit_log तालिकाएं) जोड़ा गया
+- **स्कीमा v4.1** (एप्लिकेशन v1.5.x): वैकल्पिक API-की प्रमाणीकरण, IP अनुमत सूचियों और अपलोड सीमाओं के लिए `api_keys` और डिफ़ॉल्ट कॉन्फ़िगरेशन कुंजियाँ जोड़ी गईं
+- **स्कीमा v4.2** (एप्लिकेशन v1.5.x): वैकल्पिक दैनिक सारांश सूचनाएं के लिए `daily_summary_deliveries` बहीखाता और डिफ़ॉल्ट `daily_summary` कॉन्फ़िगरेशन जोड़ा गया
 
-Vartaman application version (v1.5.x) uses **Schema v4.2** as the latest database schema version.
+वर्तमान एप्लिकेशन संस्करण (v1.5.x) नवीनतम डेटाबेस स्कीमा संस्करण के रूप में **स्कीमा v4.2** का उपयोग करता है।
 
 ### माइग्रेशन प्रक्रिया {/* #migration-process */}
 
@@ -34,321 +34,321 @@ Vartaman application version (v1.5.x) uses **Schema v4.2** as the latest databas
 3. **डेटा माइग्रेशन**: मौजूदा डेटा को संरक्षित करता है
 4. **सत्यापन**: सफल माइग्रेशन की पुष्टि करता है
 
-## तालिकाएँ {/* #tables */}
+## तालिकाएं {/* #tables */}
 
-### Server तालिका {/* #servers-table */}
+### सर्वर तालिका {/* #servers-table */}
 
-निगरानी के लिए डुप्लिकेट सर्वर के बारे में जानकारी संग्रहीत करता है।
+निगरानी किए जा रहे Duplicati सर्वर के बारे में जानकारी संग्रहीत करता है।
 
-#### फ़ील्ड्स {/* #fields */}
+#### फ़ील्ड {/* #fields */}
 
-| फ़ील्ड             | प्रकार             | विवरण                        |
+| Field             | Type             | विवरण                        |
 |-------------------|------------------|------------------------------------|
 | `id`              | TEXT PRIMARY KEY | अद्वितीय सर्वर पहचानकर्ता           |
-| `name`            | TEXT NOT NULL    | डुप्लिकेट से सर्वर नाम         |
-| `server_url`      | TEXT             | डुप्लिकेट सर्वर URL               |
-| `alias`           | TEXT             | उप्योगकर्ता द्वारा परिभाषित अनुकूल नाम         |
-| `note`            | TEXT             | उप्योगकर्ता द्वारा परिभाषित टिप्पणियाँ/विवरण     |
+| `name`            | TEXT NOT NULL    | Duplicati से सर्वर नाम         |
+| `server_url`      | TEXT             | Duplicati सर्वर URL               |
+| `alias`           | TEXT             | उपयोगकर्ता द्वारा निर्धारित आसान नाम         |
+| `note`            | TEXT             | उपयोगकर्ता द्वारा निर्धारित नोट्स/विवरण     |
 | `server_password` | TEXT             | प्रमाणीकरण के लिए सर्वर पासवर्ड |
-| `created_at`      | DATETIME         | सर्वर निर्माण समय चिन्ह          |
+| `created_at`      | DATETIME         | सर्वर निर्माण टाइमस्टैम्प          |
 
 ### बैकअप तालिका {/* #backups-table */}
 
-डुप्लिकेट सर्वरों से प्राप्त बैकअप ऑपरेशन डेटा संग्रहीत करता है।
+Duplicati सर्वर से प्राप्त बैकअप ऑपरेशन डेटा संग्रहीत करता है।
 
-#### प्रमुख फ़ील्ड्स {/* #key-fields */}
+#### मुख्य फ़ील्ड {/* #key-fields */}
 
-| क्षेत्र              | प्रकार              | विवरण                                    |
+| फ़ील्ड              | प्रकार              | विवरण                                    |
 |--------------------|-------------------|------------------------------------------------|
 | `id`               | TEXT PRIMARY KEY  | अद्वितीय बैकअप पहचानकर्ता                       |
-| `server_id`        | TEXT NOT NULL     | सर्वर तालिका के संदर्भ                     |
-| `backup_name`      | TEXT NOT NULL     | बैकअप कार्य नाम                                |
-| `backup_id`        | TEXT NOT NULL     | डुप्लिकेट से बैकअप आईडी                       |
-| `date`             | DATETIME NOT NULL | बैकअप कार्यान्वयन समय                          |
-| `status`           | TEXT NOT NULL     | बैकअप स्थिति (सफलता, चेतावनी, त्रुटि, गंभीर) |
+| `server_id`        | TEXT NOT NULL     | सर्वर तालिका का संदर्भ                     |
+| `backup_name`      | TEXT NOT NULL     | बैकअप जॉब का नाम                                |
+| `backup_id`        | TEXT NOT NULL     | Duplicati से बैकअप आईडी                       |
+| `date`             | DATETIME NOT NULL | बैकअप निष्पादन समय                          |
+| `status`           | TEXT NOT NULL     | बैकअप स्थिति (सफलता, चेतावनी, त्रुटि, Fatal) |
 | `duration_seconds` | INTEGER NOT NULL  | सेकंड में अवधि                            |
-| `size`             | INTEGER           | स्रोत फ़ाइल का आकार                           |
+| `size`             | INTEGER           | स्रोत फ़ाइलों का आकार                           |
 | `uploaded_size`    | INTEGER           | अपलोड किए गए डेटा का आकार                          |
-| `examined_files`   | INTEGER           | जांची गई फ़ाइलों की संख्या                       |
+| `examined_files`   | INTEGER           | जाँची गई फ़ाइलों की संख्या                       |
 | `warnings`         | INTEGER           | चेतावनियों की संख्या                             |
 | `errors`           | INTEGER           | त्रुटियों की संख्या                               |
-| `created_at`       | DATETIME          | रिकॉर्ड निर्माण समय चिन्ह                      |
+| `created_at`       | DATETIME          | रिकॉर्ड निर्माण टाइमस्टैम्प                      |
 
-#### संदेश ऐरे (JSON Sanchayan) {/* #message-arrays-json-storage */}
+#### संदेश ऐरे (JSON संग्रहण) {/* #message-arrays-json-storage */}
 
-| क्षेत्र                | प्रकार | विवरण                                   |
+| फ़ील्ड               | प्रकार | विवरण                             |
 |---------------------|------|-----------------------------------------|
-| `messages_array`    | पाठ | लॉग संदेशों का JSON सरणी              |
-| `warnings_array`    | पाठ | चेतावनी संदेशों का JSON सरणी          |
-| `errors_array`      | पाठ | त्रुटि संदेशों का JSON सरणी            |
-| `available_backups` | पाठ | उपलब्ध बैकअप संस्करणों का JSON सरणी |
+| `messages_array`    | TEXT | लॉग संदेशों का JSON ऐरे              |
+| `warnings_array`    | TEXT | चेतावनी संदेशों का JSON ऐरे          |
+| `errors_array`      | TEXT | त्रुटि संदेशों का JSON ऐरे            |
+| `available_backups` | TEXT | उपलब्ध बैकअप वर्शन का JSON ऐरे |
 
-#### फ़ाइल ऑपरेशन फ़ील्ड्स {/* #file-operation-fields */}
+#### फ़ाइल ऑपरेशन फ़ील्ड {/* #file-operation-fields */}
 
-| क्षेत्र                 | प्रकार    | विवरण                  |
+| फ़ील्ड                 | प्रकार    | विवरण                  |
 |-----------------------|---------|------------------------------|
-| `examined_files`      | पूर्णांक | बैकअप के दौरान जाँच की गई फ़ाइलें |
-| `opened_files`        | पूर्णांक | बैकअप के लिए खोलने वाली फ़ाइलें      |
-| `added_files`         | पूर्णांक | बैकअप में जोड़ी गई नई फ़ाइलें    |
-| `modified_files`      | पूर्णांक | बैकअप में संशोधित फ़ाइलें     |
-| `deleted_files`       | पूर्णांक | बैकअप से हटाई गई फ़ाइलें    |
-| `deleted_folders`     | पूर्णांक | बैकअप से हटाए गए फ़ोल्डर  |
-| `added_folders`       | पूर्णांक | बैकअप में जोड़े गए फ़ोल्डर      |
-| `modified_folders`    | पूर्णांक | बैकअप में संशोधित फ़ोल्डर   |
-| `not_processed_files` | पूर्णांक | संसाधित नही हुई फ़ाइलें          |
-| `too_large_files`     | पूर्णांक | संसाधन के लिए बहुत बड़ी फ़ाइलें   |
-| `files_with_error`    | पूर्णांक | त्रुटियों वाली फ़ाइलें            |
-| `added_symlinks`      | पूर्णांक | जोड़ी गई सिंबोलिक लिंक         |
-| `modified_symlinks`   | पूर्णांक | संशोधित सिंबोलिक लिंक      |
-| `deleted_symlinks`    | पूर्णांक | हटाई गई सिंबोलिक लिंक       |
+| `examined_files`      | INTEGER | बैकअप के दौरान जाँची गईं फ़ाइलें |
+| `opened_files`        | INTEGER | बैकअप के लिए खोली गईं फ़ाइलें      |
+| `added_files`         | INTEGER | बैकअप में जोड़ी गईं नई फ़ाइलें    |
+| `modified_files`      | INTEGER | बैकअप में संशोधित की गईं फ़ाइलें     |
+| `deleted_files`       | INTEGER | बैकअप से हटाई गईं फ़ाइलें    |
+| `deleted_folders`     | INTEGER | बैकअप से हटाए गए फ़ोल्डर  |
+| `added_folders`       | INTEGER | बैकअप में जोड़े गए फ़ोल्डर      |
+| `modified_folders`    | INTEGER | बैकअप में संशोधित किए गए फ़ोल्डर   |
+| `not_processed_files` | INTEGER | प्रोसेस न की गई फ़ाइलें          |
+| `too_large_files`     | INTEGER | प्रोसेस करने के लिए बहुत बड़ी फ़ाइलें   |
+| `files_with_error`    | INTEGER | त्रुटियों वाली फ़ाइलें            |
+| `added_symlinks`      | INTEGER | जोड़े गए सिंबॉलिक लिंक         |
+| `modified_symlinks`   | INTEGER | संशोधित किए गए सिंबॉलिक लिंक      |
+| `deleted_symlinks`    | INTEGER | हटाए गए सिंबॉलिक लिंक       |
 
-#### File Aakar फ़ील्ड्स {/* #file-size-fields */}
+#### फ़ाइल आकार फ़ील्ड्स {/* #file-size-fields */}
 
-| Field                    | Type    | Description                          |
+| फ़ील्ड | प्रकार | विवरण |
 |--------------------------|---------|--------------------------------------|
-| `size_of_examined_files` | INTEGER | Backup ke dauran jachre gaye file ka Aakar |
-| `size_of_opened_files`   | INTEGER | Backup ke liye khole gaye file ka Aakar      |
-| `size_of_added_files`    | INTEGER | Backup mein jodne ke liye naye file ka Aakar    |
-| `size_of_modified_files` | INTEGER | Backup mein badal gaye file ka Aakar     |
+| `size_of_examined_files` | INTEGER | बैकअप के दौरान जाँची गई फ़ाइलों का आकार |
+| `size_of_opened_files` | INTEGER | बैकअप के लिए खोली गई फ़ाइलों का आकार |
+| `size_of_added_files` | INTEGER | बैकअप में जोड़ी गई नई फ़ाइलों का आकार |
+| `size_of_modified_files` | INTEGER | बैकअप में संशोधित की गई फ़ाइलों का आकार |
 
-#### ऑपरेशन Stithi फ़ील्ड्स {/* #operation-status-fields */}
+#### ऑपरेशन स्थिति फ़ील्ड्स {/* #operation-status-fields */}
 
-| Field                    | Type              | Description                    |
+| फ़ील्ड | प्रकार | विवरण |
 |--------------------------|-------------------|--------------------------------|
-| `parsed_result`          | TEXT NOT NULL     | Parsed operation result        |
-| `main_operation`         | TEXT NOT NULL     | Main operation type            |
-| `interrupted`            | BOOLEAN           | Whether backup was interrupted |
-| `partial_backup`         | BOOLEAN           | Whether backup was partial     |
-| `dryrun`                 | BOOLEAN           | Whether backup was a dry run   |
-| `version`                | TEXT              | Duplicati version used         |
-| `begin_time`             | DATETIME NOT NULL | Backup start time              |
-| `end_time`               | DATETIME NOT NULL | Backup end time                |
-| `warnings_actual_length` | INTEGER           | Actual warnings count          |
-| `errors_actual_length`   | INTEGER           | Actual errors count            |
-| `messages_actual_length` | INTEGER           | Actual messages count          |
+| `parsed_result` | TEXT NOT NULL | पार्स किया गया ऑपरेशन परिणाम |
+| `main_operation` | TEXT NOT NULL | मुख्य ऑपरेशन प्रकार |
+| `interrupted` | BOOLEAN | क्या बैकअप बाधित हुआ था |
+| `partial_backup` | BOOLEAN | क्या बैकअप आंशिक था |
+| `dryrun` | BOOLEAN | क्या बैकअप एक ड्राई रन था |
+| `version` | TEXT | उपयोग किया गया Duplicati संस्करण |
+| `begin_time` | DATETIME NOT NULL | बैकअप प्रारंभ समय |
+| `end_time` | DATETIME NOT NULL | बैकअप समाप्ति समय |
+| `warnings_actual_length` | INTEGER | वास्तविक चेतावनियों की संख्या |
+| `errors_actual_length` | INTEGER | वास्तविक त्रुटियों की संख्या |
+| `messages_actual_length` | INTEGER | वास्तविक संदेशों की संख्या |
 
-#### बैकएंड Aankde फ़ील्ड्स {/* #backend-statistics-fields */}
+#### बैकएंड आँकड़े फ़ील्ड्स {/* #backend-statistics-fields */}
 
-| Field                            | Type     | Description                       |
+| फ़ील्ड | प्रकार | विवरण |
 |----------------------------------|----------|-----------------------------------|
-| `bytes_downloaded`               | INTEGER  | Bytes downloaded from destination |
-| `known_file_size`                | INTEGER  | Known file size on destination    |
-| `last_backup_date`               | DATETIME | Antim Backup Tithi par ghar par   |
-| `backup_list_count`              | INTEGER  | Backup Sanskaranon ka Sankhya         |
-| `reported_quota_error`           | BOOLEAN  | Quota Truti ka Prabhava               |
-| `reported_quota_warning`         | BOOLEAN  | Quota Warning ka Prabhava             |
-| `backend_main_operation`         | TEXT     | Backend ka Mulaam Kaam            |
-| `backend_parsed_result`          | TEXT     | Backend ka Parsed Result             |
-| `backend_interrupted`            | BOOLEAN  | Backend ka Kaam Ruk gaya     |
-| `backend_version`                | TEXT     | Backend Sanskaran                   |
-| `backend_begin_time`             | DATETIME | Backend Kaam Shuru Samay      |
-| `backend_duration`               | TEXT     | Backend Kaam Avadhi        |
-| `backend_warnings_actual_length` | INTEGER  | Backend Chetaavaniyaan ka Sankhya            |
-| `backend_errors_actual_length`   | INTEGER  | Backend Trutiyon ka Sankhya              |
+| `bytes_downloaded` | INTEGER | गंतव्य से डाउनलोड किए गए बाइट्स |
+| `known_file_size` | INTEGER | गंतव्य पर ज्ञात फ़ाइल आकार |
+| `last_backup_date`               | DATETIME | गंतव्य पर अंतिम बैकअप तिथि   |
+| `backup_list_count`              | INTEGER  | बैकअप संस्करणों की संख्या         |
+| `reported_quota_error`           | BOOLEAN  | कोटा त्रुटि रिपोर्ट की गई              |
+| `reported_quota_warning`         | BOOLEAN  | कोटा चेतावनी रिपोर्ट की गई            |
+| `backend_main_operation`         | TEXT     | बैकएंड मुख्य ऑपरेशन            |
+| `backend_parsed_result`          | TEXT     | बैकएंड पार्स किया गया परिणाम             |
+| `backend_interrupted`            | BOOLEAN  | बैकएंड ऑपरेशन बाधित हुआ     |
+| `backend_version`                | TEXT     | बैकएंड संस्करण                   |
+| `backend_begin_time`             | DATETIME | बैकएंड ऑपरेशन प्रारंभ समय      |
+| `backend_duration`               | TEXT     | बैकएंड ऑपरेशन अवधि        |
+| `backend_warnings_actual_length` | INTEGER  | बैकएंड चेतावनियों की संख्या            |
+| `backend_errors_actual_length`   | INTEGER  | बैकएंड त्रुटियों की संख्या              |
 
 ### कॉन्फ़िगरेशन तालिका {/* #configurations-table */}
 
-Application ka Sammaan Sammaan ka Sammaan rakhta hai.
+एप्लिकेशन कॉन्फ़िगरेशन सेटिंग्स संग्रहीत करता है।
 
-#### फ़ील्ड्स {/* #fields-1 */}
+#### फ़ील्ड {/* #fields-1 */}
 
-| Field   | Type                      | Description                |
+| फ़ील्ड   | प्रकार                      | विवरण                |
 |---------|---------------------------|----------------------------|
-| `key`   | TEXT PRIMARY KEY NOT NULL | Sammaan ka Key          |
-| `value` | TEXT                      | Sammaan ka Maan (JSON) |
+| `key`   | TEXT PRIMARY KEY NOT NULL | कॉन्फ़िगरेशन कुंजी          |
+| `value` | TEXT                      | कॉन्फ़िगरेशन मान (JSON) |
 
-#### सामान्य कॉन्फ़िगरेशन कुंजी {/* #common-configuration-keys */}
+#### सामान्य कॉन्फ़िगरेशन कुंजियाँ {/* #common-configuration-keys */}
 
-- `email_config`: Email Notification Sammaan
-- `ntfy_config`: NTFY Notification Sammaan
-- `overdue_tolerance`: Vilambit Backup Samman Sammaan
-- `notification_templates`: Notification Message Templates
-- `daily_summary`: दैनिक सारांश मोड, अनुसूची, समय क्षेत्र, वैकल्पिक सार्वजनिक डैशबोर्ड यूआरएल, और वैकल्पिक SMTP प्राप्तकर्ता ओवरराइड (`smtpRecipient`; खाली उपयोग Email Settings)
-- `cron_service`: क्रॉन कार्य अनुसूचियां, जिसमें `daily-summary-dispatch` शामिल है (`minute hour * * *` से `daily_summary.utcTime`)
-- `audit_retention_days`: ऑडिट लॉग रिटेंशन अवधि (डिफ़ॉल्ट: 90 दिन)
+- `email_config`: ईमेल सूचना सेटिंग्स
+- `ntfy_config`: NTFY सूचना सेटिंग्स
+- `overdue_tolerance`: अतिदेय बैकअप सहनशीलता सेटिंग्स
+- `notification_templates`: सूचना संदेश टेम्पलेट
+- `daily_summary`: दैनिक सारांश मोड, शेड्यूल, टाइमज़ोन, वैकल्पिक सार्वजनिक डैशबोर्ड URL, और वैकल्पिक SMTP प्राप्तकर्ता ओवरराइड (`smtpRecipient`; खाली होने पर ईमेल सेटिंग्स का उपयोग करता है)
+- `cron_service`: क्रॉन कार्य शेड्यूल, जिसमें `daily-summary-dispatch` (`daily_summary.utcTime` से `minute hour * * *`) शामिल है
+- `audit_retention_days`: ऑडिट लॉग प्रतिधारण अवधि (डिफ़ॉल्ट: 90 दिन)
 
-### डेटाबेस Sanskaran तालिका {/* #database-version-table */}
+### डेटाबेस संस्करण तालिका {/* #database-version-table */}
 
-माइग्रेशन उद्देश्यों के लिए डेटाबेस स्कीमा संस्करण को ट्रैक करता है।
+माइग्रेशन के उद्देश्यों के लिए डेटाबेस स्कीमा संस्करण को ट्रैक करता है।
 
 #### फ़ील्ड्स {/* #fields-2 */}
 
 | फ़ील्ड        | प्रकार             | विवरण                |
 |--------------|------------------|----------------------------|
 | `version`    | TEXT PRIMARY KEY | डेटाबेस संस्करण           |
-| `applied_at` | DATETIME         | कब माइग्रेशन लागू किया गया |
+| `applied_at` | DATETIME         | जब माइग्रेशन लागू किया गया था |
 
-### Upyogkarta तालिका {/* #users-table */}
+### उपयोगकर्ता तालिका {/* #users-table */}
 
-प्रमाणीकरण और एक्सेस कंट्रोल के लिए उपयोक्ता खाता जानकारी को संग्रहीत करता है।
+प्रमाणीकरण और एक्सेस नियंत्रण के लिए उपयोगकर्ता खाता जानकारी संग्रहीत करता है।
 
 #### फ़ील्ड्स {/* #fields-3 */}
 
 | फ़ील्ड                   | प्रकार                 | विवरण                         |
 |-------------------------|----------------------|-------------------------------------|
-| `id`                    | TEXT PRIMARY KEY     | अद्वितीय उपयोक्ता पहचानकर्ता              |
-| `username`              | TEXT UNIQUE NOT NULL | लॉगिन के लिए उपयोक्ता नाम                  |
+| `id`                    | TEXT PRIMARY KEY     | विशिष्ट उपयोगकर्ता पहचानकर्ता              |
+| `username`              | TEXT UNIQUE NOT NULL | लॉगिन के लिए उपयोगकर्ता नाम                  |
 | `password_hash`         | TEXT NOT NULL        | Bcrypt हैश किया गया पासवर्ड              |
-| `is_admin`              | BOOLEAN NOT NULL     | क्या उपयोक्ता को व्यवस्थापक विशेषाधिकार हैं   |
-| `must_change_password`  | BOOLEAN              | क्या पासवर्ड बदलने की आवश्यकता है |
-| `created_at`            | DATETIME             | खाता निर्माण समय चिह्न          |
-| `updated_at`            | DATETIME             | अंतिम अपडेट समय चिह्न               |
-| `last_login_at`         | DATETIME             | अंतिम सफल लॉगिन समय चिह्न     |
+| `is_admin`              | BOOLEAN NOT NULL     | क्या उपयोगकर्ता के पास एडमिन विशेषाधिकार हैं   |
+| `must_change_password`  | BOOLEAN              | क्या पासवर्ड बदलना आवश्यक है |
+| `created_at`            | DATETIME             | खाता निर्माण टाइमस्टैम्प          |
+| `updated_at`       | DATETIME         | अंतिम अपडेट टाइमस्टैम्प                                                        |
+| `last_login_at`         | DATETIME             | अंतिम सफल लॉगिन टाइमस्टैम्प     |
 | `last_login_ip`         | TEXT                 | अंतिम लॉगिन का आईपी पता            |
-| `failed_login_attempts` | INTEGER              | असफल लॉगिन प्रयासों की गिनती      |
+| `failed_login_attempts` | INTEGER              | असफल लॉगिन प्रयासों की संख्या      |
 | `locked_until`          | DATETIME             | खाता लॉक समाप्ति (यदि लॉक किया गया है) |
 
 ### सत्र तालिका {/* #sessions-table */}
 
-उपयोगकर्ता सत्र डेटा प्रमाणीकरण और सुरक्षा के लिए संग्रहीत करता है।
+प्रमाणीकरण और सुरक्षा के लिए उपयोगकर्ता सेशन डेटा संग्रहीत करता है।
 
-#### फ़ील्ड्स {/* #fields-4 */}
+#### फ़ील्ड {/* #fields-4 */}
 
 | फ़ील्ड             | प्रकार              | विवरण                                                      |
 |-------------------|-------------------|------------------------------------------------------------------|
-| `id`              | TEXT PRIMARY KEY  | सत्र पहचानकर्ता                                               |
-| `user_id`         | TEXT              | उपयोगकर्ताओं तालिका का संदर्भ (अप्रमाणित सत्रों के लिए nullable) |
-| `created_at`      | DATETIME          | सत्र निर्माण समय चिन्ह                                       |
-| `last_accessed`   | DATETIME          | अंतिम पहुँच समय चिन्ह                                            |
-| `expires_at`      | DATETIME NOT NULL | सत्र समाप्ति समय चिन्ह                                     |
-| `ip_address`      | TEXT              | सत्र मूल का IP पता                                     |
-| `user_agent`    | TEXT                              | उपयोक्ता एजेंट स्ट्रिंग                                                 |
-| `csrf_token`      | TEXT              | सत्र के लिए CSRF टोकन                                       |
+| `id`              | TEXT PRIMARY KEY  | सेशन पहचानकर्ता                                               |
+| `user_id`         | TEXT              | उपयोगकर्ता तालिका का संदर्भ (अप्रमाणीकृत सेशन के लिए नलेबल) |
+| `created_at`      | DATETIME          | सेशन निर्माण टाइमस्टैम्प                                       |
+| `last_accessed`   | DATETIME          | अंतिम एक्सेस टाइमस्टैम्प                                            |
+| `expires_at`      | DATETIME NOT NULL | सेशन समाप्ति टाइमस्टैम्प                                     |
+| `ip_address`      | TEXT              | सेशन उत्पत्ति का आईपी पता                                     |
+| `user_agent`    | TEXT                              | यूज़र एजेंट स्ट्रिंग                                                 |
+| `csrf_token`      | TEXT              | सेशन के लिए CSRF टोकन                                       |
 | `csrf_expires_at` | DATETIME          | CSRF टोकन समाप्ति                                            |
 
-### Audit log तालिका {/* #audit-log-table */}
+### ऑडिट लॉग तालिका {/* #audit-log-table */}
 
-उपयोगकर्ता क्रियाओं और प्रणाली घटनाओं की ऑडिट ट्रेल संग्रहीत करता है।
+उपयोगकर्ता की कार्रवाइयों और सिस्टम इवेंट का ऑडिट ट्रेल संग्रहीत करता है।
 
-#### फ़ील्ड्स {/* #fields-5 */}
+#### फ़ील्ड {/* #fields-5 */}
 
 | फ़ील्ड           | प्रकार                              | विवरण                                                       |
 |-----------------|-----------------------------------|-------------------------------------------------------------------|
-| `id`            | INTEGER PRIMARY KEY AUTOINCREMENT | अद्वितीय ऑडिट लॉग प्रविष्टि पहचानकर्ता                                 |
-| `timestamp`     | DATETIME                          | घटना समय चिन्ह                                                   |
-| `user_id`       | TEXT                              | उपयोगकर्ताओं तालिका का संदर्भ (nullable)                               |
-| `username`      | TEXT                              | क्रिया के समय उपयोगकर्ता नाम                                        |
-| `action`        | TEXT NOT NULL                     | किये गये क्रिया                                                  |
-| `category`      | TEXT NOT NULL                     | क्रिया का श्रेणी (उदाहरण के लिए, 'प्रमाणीकरण', 'सेटिंग्स', 'बैकअप') |
-| `target_type`   | TEXT                              | लक्ष्य का प्रकार (जैसे, 'server', 'backup', 'user')                 |
-| `target_id`     | TEXT                              | लक्ष्य का पहचानकर्ता                                              |
+| `id`            | INTEGER PRIMARY KEY AUTOINCREMENT | विशिष्ट ऑडिट लॉग प्रविष्टि पहचानकर्ता                                 |
+| `timestamp`     | DATETIME                          | इवेंट टाइमस्टैम्प                                                   |
+| `user_id`       | TEXT                              | उपयोगकर्ता तालिका का संदर्भ (नलेबल)                               |
+| `username`      | TEXT                              | कार्रवाई के समय उपयोगकर्ता नाम                                        |
+| `action`        | TEXT NOT NULL                     | की गई कार्रवाई                                                  |
+| `category`      | TEXT NOT NULL                     | कार्रवाई की श्रेणी (उदा., 'प्रमाणीकरण', 'सेटिंग्स', 'बैकअप') |
+| `target_type`   | TEXT                              | लक्ष्य का प्रकार (जैसे, 'सर्वर', 'बैकअप', 'उपयोगकर्ता')                 |
+| `target_id`     | TEXT                              | लक्ष्य का पहचानकर्ता (Identifier)                                              |
 | `details`       | TEXT                              | अतिरिक्त विवरण (JSON)                                         |
-| `ip_address`    | TEXT                              | अनुरोधकर्ता का IP पता                                           |
-| `user_agent`    | TEXT                              | उपयोक्ता एजेंट स्ट्रिंग                                                 |
-| `status`        | TEXT NOT NULL                     | क्रिया की स्थिति ('सफलता', 'असफलता', 'त्रुटि')                  |
-| `error_message` | TEXT                              | त्रुटि संदेश यदि क्रिया असफल हुई                                    |
+| `ip_address`    | TEXT                              | अनुरोधकर्ता का आईपी पता                                           |
+| `user_agent`    | TEXT                              | यूज़र एजेंट स्ट्रिंग                                                 |
+| `status`        | TEXT NOT NULL                     | कार्रवाई की स्थिति ('success', 'विफलता', 'त्रुटि')                  |
+| `error_message` | TEXT                              | कार्रवाई विफल होने पर त्रुटि संदेश                                    |
 
-### एपीआई कुंजियाँ तालिका {/* #api-keys-table */}
+### API कुंजियाँ तालिका {/* #api-keys-table */}
 
-बाहरी एचटीटीपी एपीआई के लिए हैश्ड एपीआई कुंजियाँ संग्रहीत करता है। प्लेनटेक्स्ट सीक्रेट को बनाए जाने पर एक बार ही दिखाया जाता है और कभी भी संग्रहीत नहीं किया जाता।
+बाहरी HTTP API के लिए हैश की गई API कुंजियाँ संग्रहीत करता है। प्लेनटेक्स्ट सीक्रेट निर्माण के समय केवल एक बार दिखाया जाता है और इसे कभी नहीं संग्रहीत किया जाता है।
 
 #### फ़ील्ड्स {/* #fields-6 */}
 
 | फ़ील्ड          | प्रकार             | विवरण                                              |
 |----------------|------------------|----------------------------------------------------------|
 | `id`           | TEXT PRIMARY KEY | अद्वितीय कुंजी पहचानकर्ता                                    |
-| `name`         | TEXT NOT NULL    | प्रदर्शन नाम                                             |
-| `key_hash`     | TEXT UNIQUE      | सीक्रेट का SHA-256 हैश                                   |
-| `key_prefix`   | TEXT             | सीक्रेट के पहले चार अक्षर (फिंगरप्रिंट के लिए)   |
-| `key_suffix`   | TEXT             | सीक्रेट के अंतिम चार अक्षर (फिंगरप्रिंट के लिए)    |
-| `scope`        | TEXT NOT NULL    | `upload` या `read`                                       |
+| `name`         | TEXT NOT NULL    | प्रदर्शित नाम                                             |
+| `key_hash`     | TEXT UNIQUE      | सीक्रेट का SHA-256 हैश                               |
+| `key_prefix`   | TEXT             | सीक्रेट के पहले चार वर्ण (फ़िंगरप्रिंट के लिए)   |
+| `key_suffix`   | TEXT             | सीक्रेट के अंतिम चार वर्ण (फ़िंगरप्रिंट के लिए)    |
+| `scope`        | TEXT NOT NULL    | `upload` और `read`                                       |
 | `description`  | TEXT             | वैकल्पिक विवरण                                     |
-| `enabled`      | INTEGER          | `1` जब कुंजी सक्रिय है                               |
-| `created_at`   | DATETIME         | निर्माण समय चिन्ह                                       |
-| `created_by`   | TEXT             | कुंजी बनाने वाले व्यवस्थापक का उपयोगकर्ता आईडी         |
+| `enabled`      | INTEGER          | `1` जब कुंजी सक्रिय हो                               |
+| `created_at`   | DATETIME         | निर्माण टाइमस्टैम्प                                       |
+| `created_by`   | TEXT             | कुंजी बनाने वाले व्यवस्थापक (administrator) की उपयोगकर्ता ID         |
 | `expires_at`   | DATETIME         | वैकल्पिक समाप्ति                                          |
 | `last_used_at` | DATETIME         | अंतिम सफल उपयोग                                      |
-| `usage_count`  | INTEGER          | सफल उपयोग गणना                                     |
+| `usage_count`  | INTEGER          | सफल उपयोगों की संख्या                                     |
 
-संबंधित कॉन्फ़िगरेशन कुंजियाँ `configurations` तालिका में: `external_api_require_api_key`, `ip_trusted_proxies`, `admin_ip_allowlist`, `external_api_ip_allowlist`, `upload_limits`।
+`configurations` तालिका में संबंधित कॉन्फ़िगरेशन कुंजियाँ: `external_api_require_api_key`, `ip_trusted_proxies`, `admin_ip_allowlist`, `external_api_ip_allowlist`, `upload_limits`।
 
 ### दैनिक सारांश वितरण तालिका {/* #daily-summary-deliveries-table */}
 
-दैनिक सारांश ईमेल डिलीवरी के लिए चैनल-विशिष्ट लेजर। पुराने पंक्तियाँ में एक `ntfy` चैनल शामिल हो सकता है जो पिछले रिलीज़ से है। प्रत्येक अनुसूचित घटना (या अद्वितीय मैनुअल भेजा) प्रति चैनल अधिकतम एक पंक्ति होती है। रेंडर किए गए पेलोड भेजने से पहले संग्रहीत किए जाते हैं ताकि पुन: प्रयासों में वही स्नैपशॉट हो। 30 दिन से पुराने पंक्तियाँ हटा दी जाती हैं।
+दैनिक सारांश ईमेल वितरण के लिए प्रति-चैनल लेज़र। लेगेसी पंक्तियों में पुराने रिलीज़ से `ntfy` चैनल शामिल हो सकता है। प्रत्येक निर्धारित घटना (या अद्वितीय मैनुअल भेजने) के लिए प्रति चैनल अधिकतम एक पंक्ति होती है। रेंडर किए गए पेलोड भेजने से पहले संग्रहीत किए जाते हैं ताकि पुनः प्रयास समान स्नैपशॉट बनाए रखें। 30 दिनों से पुरानी पंक्तियों को हटा दिया जाता है।
 
-If the process dies after a provider accepts a message but before success is recorded, that channel may be retried (at-least-once).
+यदि किसी प्रदाता द्वारा संदेश स्वीकार किए जाने के बाद लेकिन सफलता रिकॉर्ड होने से पहले प्रक्रिया समाप्त हो जाती है, तो उस चैनल का पुनः प्रयास किया जा सकता है (कम से कम एक बार)।
 
-#### फ़ील्ड्स {/* #fields-7 */}
+#### फ़ील्ड {/* #fields-7 */}
 
-| Field              | Type             | Description                                                                 |
+| Field              | Type             | विवरण                                                                 |
 |--------------------|------------------|-----------------------------------------------------------------------------|
-| `id`               | TEXT PRIMARY KEY | Unique delivery identifier                                                  |
-| `occurrence_key`   | TEXT NOT NULL    | अनुसूचित कुंजी `scheduled:UTC:{date}:{HH:mm}` या `manual:{uuid}`             |
-| `channel`          | TEXT NOT NULL    | `email` or `ntfy`                                                           |
-| `trigger`          | TEXT NOT NULL    | `scheduled`, `manual`, or `retry`                                           |
-| `summary_date`     | TEXT NOT NULL    | Local calendar date for the snapshot                                        |
-| `time_zone`        | TEXT NOT NULL    | Saved IANA timezone                                                         |
-| `payload_json`     | TEXT             | Rendered subject, HTML, text, and NTFY fields                               |
-| `state`            | TEXT NOT NULL    | `pending`, `sending`, `sent`, or `failed`                                   |
-| `attempt_count`    | INTEGER          | Delivery attempts                                                           |
-| `next_retry_at`    | DATETIME         | When a failed channel may be claimed again                                  |
-| `lease_expires_at` | DATETIME         | Claim lease; a stale lease can be recovered                                 |
-| `error`            | TEXT             | Last error, if any                                                          |
-| `created_at`       | DATETIME         | Row creation timestamp                                                      |
-| `updated_at`            | DATETIME             | अंतिम अपडेट समय चिह्न               |
-| `sent_at`          | DATETIME         | Safalta ka samay chinh                                                           |
+| `id`               | TEXT PRIMARY KEY | अद्वितीय वितरण पहचानकर्ता                                                  |
+| `occurrence_key`   | TEXT NOT NULL    | निर्धारित कुंजी `scheduled:UTC:{date}:{HH:mm}` या `manual:{uuid}`             |
+| `channel`          | TEXT NOT NULL    | `email` या `ntfy`                                                           |
+| `trigger`          | TEXT NOT NULL    | `scheduled`, `manual`, या `retry`                                           |
+| `summary_date`     | TEXT NOT NULL    | स्नैपशॉट के लिए स्थानीय कैलेंडर तिथि                                        |
+| `time_zone`        | TEXT NOT NULL    | सहेजा गया IANA टाइमज़ोन                                                         |
+| `payload_json`     | TEXT             | रेंडर किया गया विषय, HTML, टेक्स्ट, और NTFY फ़ील्ड                               |
+| `state`            | TEXT NOT NULL    | `pending`, `sending`, `sent`, या `failed`                                   |
+| `attempt_count`    | INTEGER          | वितरण के प्रयास                                                           |
+| `next_retry_at`    | DATETIME         | जब किसी विफल चैनल पर फिर से दावा किया जा सकता है                                  |
+| `lease_expires_at` | DATETIME         | क्लेम लीज; पुरानी लीज को पुनर्प्राप्त किया जा सकता है                                 |
+| `error`            | TEXT             | अंतिम त्रुटि, यदि कोई हो                                                          |
+| `created_at`       | DATETIME         | पंक्ति निर्माण टाइमस्टैम्प                                                   |
+| `updated_at`       | DATETIME         | अंतिम अपडेट टाइमस्टैम्प                                                        |
+| `sent_at`          | DATETIME         | सफलता टाइमस्टैम्प                                                           |
 
-एक अद्वितीय सूचकांक `(occurrence_key, channel)` पर एक ही घटना के समान चैनल पर दोहराव से बचाता है।
+`(occurrence_key, channel)` पर एक यूनिक इंडेक्स एक ही चैनल पर एक ही घटना को दोबारा भेजे जाने से रोकता है।
 
 ## सत्र प्रबंधन {/* #session-management */}
 
-### डेटाबेस-समर्थित सत्र Sanchayan {/* #database-backed-session-storage */}
+### डेटाबेस-समर्थित सत्र संग्रहण {/* #database-backed-session-storage */}
 
-सत्र डेटाबेस में संग्रहीत होते हैं, साथ ही स्मृति में पिछड़ा हुआ:
-- **प्राथमिक संग्रहण**: डेटाबेस-सहायता सत्र तालिका
-- **पिछड़ा हुआ**: स्मृति में संग्रहण (विरासत समर्थन या त्रुटि मामलों के लिए)
-- **सत्र आईडी**: क्रिप्टोग्राफिक रूप से सुरक्षित यादृच्छिक स्ट्रिंग
-- **समय सीमा**: सत्र समय सीमा कॉन्फ़िगर करने योग्य
-- **CSRF रक्षा**: क्रॉस-साइट अनुरोध फर्जी रक्षा
-- **स्वचालित सफाई**: समाप्त हुए सत्र स्वचालित रूप से हटाए जाते हैं
+सत्रों को इन-मेमोरी फ़ॉलबैक के साथ डेटाबेस में संग्रहीत किया जाता है:
+- **प्राथमिक संग्रहण**: डेटाबेस-समर्थित sessions तालिका
+- **फ़ॉलबैक**: इन-मेमोरी संग्रहण (लीगेसी समर्थन या त्रुटि के मामले)
+- **सत्र ID**: क्रिप्टोग्राफ़िक रूप से सुरक्षित रैंडम स्ट्रिंग
+- **समाप्ति**: कॉन्फ़िगर करने योग्य सत्र टाइमआउट
+- **CSRF सुरक्षा**: क्रॉस-साइट रिक्वेस्ट फ़ोर्जरे सुरक्षा
+- **स्वचालित सफ़ाई**: समाप्त सत्रों को स्वचालित रूप से हटा दिया जाता है
 
-### सत्र एपीआई एंडपॉइंट्स {/* #session-api-endpoints */}
+### सत्र API एंडपॉइंट्स {/* #session-api-endpoints */}
 
-- `POST /api/session`: नया सत्र बनाएँ
-- `GET /api/session`: मौजूदा सत्र को सत्यापित करें
-- `DELETE /api/session`: सत्र को नष्ट करें
+- `POST /api/session`: नया सत्र बनाएं
+- `GET /api/session`: मौजूदा सत्र को मान्य करें
+- `DELETE /api/session`: सत्र नष्ट करें
 - `GET /api/csrf`: CSRF टोकन प्राप्त करें
 
-## अनुक्रमणिकाएँ {/* #indexes */}
+## इंडेक्स {/* #indexes */}
 
-डेटाबेस में अनुप्रयोग के लिए अनुकूलित क्वेरी प्रदर्शन के लिए कई सूचकांक शामिल हैं:
+डेटाबेस में इष्टतम क्वेरी प्रदर्शन के लिए कई इंडेक्स शामिल हैं:
 
-- **प्राथमिक कुंजियाँ**: सभी तालिकाओं में प्राथमिक कुंजी सूचकांक
-- **विदेशी कुंजियाँ**: बैकअप तालिका में सर्वर संदर्भ, उपयोक्ता संदर्भ सत्र और ऑडिट लॉग में
-- **क्वेरी अनुकूलन**: अक्सर क्वेरी किए जाने वाले क्षेत्रों पर सूचकांक
-- **तिथि सूचकांक**: समय-आधारित क्वेरी के लिए तिथि क्षेत्रों पर सूचकांक
-- **उपयोगकर्ता इंडेक्स**: उपयोगकर्ता लुकअप के लिए उपयोगकर्ता नाम इंडेक्स
-- **सत्र इंडेक्स**: सत्र प्रबंधन के लिए समाप्ति और उपयोगकर्ता_आईडी इंडेक्स
-- **ऑडिट इंडेक्स**: ऑडिट क्वेरी के लिए समय चिन्ह, उपयोगकर्ता_आईडी, क्रिया, श्रेणी, और स्थिति इंडेक्स
-- **एपीआई कुंजी इंडेक्स**: अद्वितीय हैश, साथ ही सक्रिय/स्कोप लुकअप के लिए प्रमाणीकरण
+- **Primary Keys**: सभी तालिकाओं में प्राथमिक कुंजी इंडेक्स होते हैं
+- **Foreign Keys**: backups तालिका में सर्वर संदर्भ, sessions और audit_log में उपयोगकर्ता संदर्भ
+- **क्वेरी अनुकूलन**: बार-बार क्वेरी किए जाने वाले फ़ील्ड पर इंडेक्स
+- **तिथि इंडेक्स**: समय-आधारित क्वेरी के लिए तिथि फ़ील्ड पर इंडेक्स
+- **उपयोगकर्ता इंडेक्स**: तेज़ उपयोगकर्ता लुकअप के लिए उपयोगकर्ता नाम इंडेक्स
+- **सत्र इंडेक्स**: सत्र प्रबंधन के लिए Expiration और user_id इंडेक्स
+- **ऑडिट इंडेक्स**: ऑडिट क्वेरी के लिए टाइमस्टैम्प, user_id, कार्रवाई, श्रेणी, और स्थिति इंडेक्स
+- **API कुंजी इंडेक्स**: प्रमाणीकरण के लिए यूनिक हैश, साथ ही सक्षम/स्कोप लुकअप
 
 ## संबंध {/* #relationships */}
 
-- **Server → Backups**: एक-से-एक से अधिक संबंध
-- **Upyogkarta → Sessions**: एक-से-एक से अधिक संबंध (sessions उप्योगकर्ता के बिना भी मौजूद हो सकते हैं)
-- **Upyogkarta → Audit Log**: एक-से-एक से अधिक संबंध (audit entries उप्योगकर्ता के बिना भी मौजूद हो सकते हैं)
-- **Upyogkarta → एपीआई कुंजियाँ**: एक-से-एक से अधिक संबंध `created_by` के माध्यम से (कुंजियाँ उप्योगकर्ता को हटाने के बाद भी मौजूद रहती हैं)
-- **Backups → Sandesh**: Embedded JSON arrays
-- **Configurations**: Key-value storage
+- **सर्वर → बैकअप**: वन-टू-मेनी संबंध
+- **उपयोगकर्ता → सत्र**: वन-टू-मेनी संबंध (सत्र उपयोगकर्ताओं के बिना भी मौजूद हो सकते हैं)
+- **उपयोगकर्ता → ऑडिट लॉग**: वन-टू-मेनी संबंध (ऑडिट प्रविष्टियाँ उपयोगकर्ताओं के बिना भी मौजूद हो सकती हैं)
+- **उपयोगकर्ता → API कुंजियाँ**: `created_by` के माध्यम से वन-टू-मेनी संबंध (उपयोगकर्ता हटाए जाने के बाद भी कुंजियाँ बनी रहती हैं)
+- **बैकअप → संदेश**: एम्बेडेड JSON ऐरे
+- **कॉन्फ़िगरेशन**: की-वैल्यू संग्रहण
 
 ## डेटा प्रकार {/* #data-types */}
 
-- **TEXT**: स्ट्रिंग डेटा, JSON एरे
-- **INTEGER**: संख्यात्मक डेटा, फ़ाइल गिनती, आकार
-- **REAL**: फ़्लोटिंग-पॉइंट नंबर, अवधि
+- **TEXT**: स्ट्रिंग डेटा, JSON ऐरे
+- **INTEGER**: संख्यात्मक डेटा, फ़ाइल संख्या, आकार
+- **REAL**: फ़्लोटिंग-पॉइंट संख्याएँ, अवधियाँ
 - **DATETIME**: टाइमस्टैम्प डेटा
 - **BOOLEAN**: सत्य/असत्य मान
 
-## बैकअप Stithi मान {/* #backup-status-values */}
+## बैकअप स्थिति के मान {/* #backup-status-values */}
 
-- **सफलता**: बैकअप सफलतापूर्वक पूरा हुआ
-- **चेतावनी**: चेतावनियों के साथ बैकअप पूरा हुआ
-- **त्रुटि**: त्रुटियों के साथ बैकअप पूरा हुआ
-- **गंभीर**: बैकअप गंभीर रूप से असफल हुआ
+- **Success**: बैकअप सफलतापूर्वक पूरा हुआ
+- **Warning**: बैकअप चेतावनियों के साथ पूरा हुआ
+- **Error**: बैकअप त्रुटियों के साथ पूरा हुआ
+- **Fatal**: बैकअप गंभीर रूप से (fatally) विफल हुआ
 
-## सामान्य प्रश्न {/* #common-queries */}
+## सामान्य क्वेरीज़ {/* #common-queries */}
 
-### सर्वर के लिए नवीनतम बैकअप प्राप्त करें {/* #get-latest-backup-for-a-server */}
+### किसी सर्वर के लिए नवीनतम बैकअप प्राप्त करें {/* #get-latest-backup-for-a-server */}
 
 ```sql
 SELECT * FROM backups 
@@ -357,7 +357,7 @@ ORDER BY date DESC
 LIMIT 1;
 ```
 
-### सर्वर के लिए sabhi backups ke liye प्राप्त करें {/* #get-all-backups-for-a-server */}
+### किसी सर्वर के लिए सभी बैकअप प्राप्त करें {/* #get-all-backups-for-a-server */}
 
 ```sql
 SELECT * FROM backups 
@@ -409,7 +409,7 @@ FROM servers s
 LEFT JOIN backups b ON b.server_id = s.id;
 ```
 
-### डेटाबेस सफाई {/* #database-cleanup */}
+### डेटाबेस क्लीनअप {/* #database-cleanup */}
 
 ```sql
 -- Delete old backups (older than 30 days)
@@ -421,11 +421,11 @@ DELETE FROM servers
 WHERE id NOT IN (SELECT DISTINCT server_id FROM backups);
 ```
 
-## JSON से डेटाबेस मैपिंग {/* #json-to-database-mapping */}
+## डेटाबेस मैपिंग के लिए JSON {/* #json-to-database-mapping */}
 
-### API अनुरोध बॉडी से डेटाबेस कॉलम मैपिंग {/* #api-request-body-to-database-columns-mapping */}
+### डेटाबेस कॉलम मैपिंग के लिए API अनुरोध बॉडी {/* #api-request-body-to-database-columns-mapping */}
 
-जब डुप्लिकेटी HTTP POST के माध्यम से बैकअप डेटा भेजता है, तो JSON संरचना डेटाबेस कॉलम में मैप की जाती है:
+जब Duplicati HTTP POST के माध्यम से बैकअप डेटा भेजता है, तो JSON संरचना को डेटाबेस कॉलम में मैप किया जाता है:
 
 ```json
 {
@@ -452,4 +452,4 @@ WHERE id NOT IN (SELECT DISTINCT server_id FROM backups);
 }
 ```
 
-**नोट**: बैकअप्स तालिका में `size` फ़ील्ड `SizeOfExaminedFiles` और `uploaded_size` में बैकअप ऑपरेशन से अपलोड/ट्रांसफर किया गया वास्तविक आकार संग्रहीत होता है।
+**ध्यान दें**: बैकअप तालिका में `size` फ़ील्ड `SizeOfExaminedFiles` को संग्रहीत करता है और `uploaded_size` बैकअप कार्रवाई से वास्तविक अपलोड किया गया/ट्रांसफ़र किया गया आकार संग्रहीत करता है।

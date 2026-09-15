@@ -1,40 +1,40 @@
-# गाइड स्थापना {/* #installation-guide */}
+# इंस्टॉलेशन गाइड {/* #installation-guide */}
 
-The application can be deployed using Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks), or Podman. After the installation, you may want to configure the TIMEZONE, as described in the [Configure Timezone](./configure-tz.md) and need to configure the Duplicati servers to send backup logs to **duplistatus**, as outlined in the [Duplicati Configuration](./duplicati-server-configuration.md) section.
+एप्लिकेशन को Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks), या Podman का उपयोग करके डिप्लॉय किया जा सकता है। इंस्टॉलेशन के बाद, आप [टाइमज़ोन कॉन्फ़िगर करें](./configure-tz.md) में बताए अनुसार TIMEZONE को कॉन्फ़िगर करना चाह सकते हैं और Duplicati सर्वर को **duplistatus** पर बैकअप लॉग भेजने के लिए कॉन्फ़िगर करने की आवश्यकता होगी, जैसा कि [Duplicati कॉन्फ़िगरेशन](./duplicati-server-configuration.md) अनुभाग में बताया गया है।
 
-## आवश्यक शर्तें {/* #prerequisites */}
+## पूर्वापेक्षाएँ {/* #prerequisites */}
 
-Ensure you have the following installed:
+सुनिश्चित करें कि आपके पास निम्नलिखित इंस्टॉल हैं:
 
-- Docker Engine - [Debian installation guide](https://docs.docker.com/engine/install/debian/)
-- Docker Compose - [Linux installation guide](https://docs.docker.com/compose/install/linux/)
-- Portainer (optional) - [Docker installation guide](https://docs.portainer.io/start/install-ce/server/docker/linux)
-- Podman (optional) - [Installation guide](http://podman.io/docs/installation#debian)
+- Docker Engine - [Debian इंस्टॉलेशन गाइड](https://docs.docker.com/engine/install/debian/)
+- Docker Compose - [Linux इंस्टॉलेशन गाइड](https://docs.docker.com/compose/install/linux/)
+- Portainer (वैकल्पिक) - [Docker इंस्टॉलेशन गाइड](https://docs.portainer.io/start/install-ce/server/docker/linux)
+- Podman (वैकल्पिक) - [इंस्टॉलेशन गाइड](http://podman.io/docs/installation#debian)
 
 ## प्रमाणीकरण {/* #authentication */}
 
-**duplistatus** since version 0.9.x requires user authentication. A default `admin` account is created automatically when installing the application for the first time or upgrading from an earlier version: 
-    - username: `admin`
-    - password: `Duplistatus09`
+संस्करण 0.9.x के बाद से **duplistatus** को उपयोगकर्ता प्रमाणीकरण की आवश्यकता होती है। पहली बार एप्लिकेशन इंस्टॉल करते समय या किसी पुराने संस्करण से अपग्रेड करते समय एक डिफ़ॉल्ट `admin` खाता स्वचालित रूप से बन जाता है: 
+    - उपयोगकर्ता नाम: `admin`
+    - पासवर्ड: `Duplistatus09`
 
-You can create additional users accounts in [Settings > Users](../user-guide/settings/user-management-settings.md) after the first login.
+आप पहले लॉगिन के बाद [सेटिंग्स > उपयोगकर्ता](../user-guide/settings/user-management-settings.md) में अतिरिक्त उपयोगकर्ता खाते बना सकते हैं।
 
-प्रशासक [एपीआई कुंजियाँ](../user-guide/settings/api-keys-settings.md) के लिए डुप्लिकेटी और होमपेज के लिए वैकल्पिक रूप से आवश्यक कर सकते हैं, और [आईपी अनुमति सूचियों](../user-guide/settings/ip-allowlist-settings.md) के साथ पहुंच को प्रतिबंधित कर सकते हैं। दोनों डिफ़ॉल्ट रूप से बंद हैं।
+व्यवस्थापक वैकल्पिक रूप से Duplicati और Homepage के लिए [API कुंजियाँ](../user-guide/settings/api-keys-settings.md) भी अनिवार्य कर सकते हैं, और [IP अनुमत सूचियों](../user-guide/settings/ip-allowlist-settings.md) के साथ एक्सेस को प्रतिबंधित कर सकते हैं। दोनों डिफ़ॉल्ट रूप से बंद हैं।
 
-::::info[IMPORTANT]
-The system enforces a minimum password length and complexity. These requirements can be adjusted using the `PWD_ENFORCE` and `PWD_MIN_LEN` [environment variables](environment-variables.md). Using a password without sufficient complexity or with a short length can compromise security. Please use these settings carefully.
+::::info[महत्वपूर्ण]
+सिस्टम पासवर्ड की न्यूनतम लंबाई और जटिलता लागू करता है। इन आवश्यकताओं को `PWD_ENFORCE` और `PWD_MIN_LEN` [एनवायरनमेंट वैरिएबल्स](environment-variables.md) का उपयोग करके समायोजित किया जा सकता है। पर्याप्त जटिलता के बिना या कम लंबाई वाले पासवर्ड का उपयोग करने से सुरक्षा से समझौता हो सकता है। कृपया इन सेटिंग्स का सावधानीपूर्वक उपयोग करें।
 ::::
 
 ### कंटेनर इमेज {/* #container-images */}
 
-You can use the images from:
+आप निम्न में से इमेज का उपयोग कर सकते हैं:
 
 - **Docker Hub**: `docker.io/wsjbr/duplistatus:latest`
 - **GitHub Container Registry**: `ghcr.io/wsj-br/duplistatus:latest`
 
-### विकल्प 1: Docker Compose का उपयोग करके {/* #option-1-using-docker-compose */}
+### विकल्प 1: Docker Compose का उपयोग करना {/* #option-1-using-docker-compose */}
 
-This is the recommended method for local deployments or when you want to customise the configuration. It uses a `docker compose` file to define and run the container with all its settings.
+यह स्थानीय डिप्लॉयमेंट के लिए या जब आप कॉन्फ़िगरेशन को कस्टमाइज़ करना चाहते हैं, तो अनुशंसित तरीका है। यह कंटेनर को उसकी सभी सेटिंग्स के साथ परिभाषित करने और चलाने के लिए `docker compose` फ़ाइल का उपयोग करता है।
 
 ```bash	
 # download the compose file
@@ -43,14 +43,14 @@ wget https://github.com/wsj-br/duplistatus/raw/refs/heads/master/production.yml 
 docker compose -f duplistatus.yml up -d
 ```
 
-Check [Timezone](./configure-tz.md) section to more details on how to adjust timezone and number/date/time format.
+टाइमज़ोन और संख्या/तिथि/समय प्रारूप को समायोजित करने के तरीके के बारे में अधिक विवरण के लिए [टाइमज़ोन](./configure-tz.md) अनुभाग जांचें।
 
-### विकल्प 2: Portainer Stacks का उपयोग करके (Docker Compose) {/* #option-2-using-portainer-stacks-docker-compose */}
+### विकल्प 2: Portainer Stacks (Docker Compose) का उपयोग करना {/* #option-2-using-portainer-stacks-docker-compose */}
 
-1. Go to "Stacks" in your [Portainer](https://docs.portainer.io/user/docker/stacks) server and click "Add stack".
-2. Name your stack (e.g., "duplistatus").
-3. Choose "Build method" as "Web editor".
-4. Copy and paste this in the web editor:
+1. अपने [Portainer](https://docs.portainer.io/user/docker/stacks) सर्वर में "Stacks" पर जाएँ और "स्टैक जोड़ें" पर क्लिक करें।
+2. अपने स्टैक को नाम दें (उदा., "duplistatus")।
+3. "Build method" के रूप में "Web editor" चुनें।
+4. इसे वेब एडिटर में कॉपी करें और पेस्ट करें:
 
 ```yaml
 # duplistatus production compose.yml
@@ -79,20 +79,20 @@ volumes:
     name: duplistatus_data
 ``` 
 
-5. Check the [Timezone](./configure-tz.md) section to more details on how to adjust the timezone and number/date/time format.
-6. Click "Deploy the stack".
+5. टाइमज़ोन और संख्या/तिथि/समय प्रारूप को समायोजित करने के तरीके के बारे में अधिक विवरण के लिए [टाइमज़ोन](./configure-tz.md) अनुभाग जांचें।
+6. "Deploy the stack" पर क्लिक करें।
 
-### विकल्प 3: Portainer Stacks का उपयोग करके (GitHub रिपॉज़िटरी) {/* #option-3-using-portainer-stacks-github-repository */}
+### विकल्प 3: Portainer Stacks (GitHub रिपॉजिटरी) का उपयोग करना {/* #option-3-using-portainer-stacks-github-repository */}
 
-1. In [Portainer](https://docs.portainer.io/user/docker/stacks), go to "Stacks" and click "Add stack".
-2. Name your stack (e.g., "duplistatus").
-3. Choose "Build method" as "Repository".
-4. Enter the repository URL: `https://github.com/wsj-br/duplistatus.git`
-5. In the "Compose path" field, enter: `production.yml`
-6. (optional) Set the `TZ`, `LANG`, `PWD_ENFORCE` and `PWD_MIN_LEN` environment variables in the "Environment variables" section. Check the [Timezone](./configure-tz.md) section to more details on how to adjust the timezone and number/date/time format. 
-6. Click "Deploy the stack".
+1. [Portainer](https://docs.portainer.io/user/docker/stacks) में, "Stacks" पर जाएं और "Add stack" पर क्लिक करें।
+2. अपने स्टैक को नाम दें (उदा., "duplistatus")।
+3. "Build method" के रूप में "Repository" चुनें।
+4. रिपॉजिटरी URL दर्ज करें: `https://github.com/wsj-br/duplistatus.git`
+5. "Compose path" फ़ील्ड में, दर्ज करें: `production.yml`
+6. (वैकल्पिक) "Environment variables" अनुभाग में `TZ`, `LANG`, `PWD_ENFORCE` और `PWD_MIN_LEN` एनवायरनमेंट वैरिएबल सेट करें। टाइमज़ोन और संख्या/तिथि/समय फ़ॉर्मेट को कैसे समायोजित करें, इस पर अधिक विवरण के लिए [Timezone](./configure-tz.md) अनुभाग जांचें। 
+6. "Deploy the stack" पर क्लिक करें।
 
-### विकल्प 4: Docker CLI का उपयोग करके {/* #option-4-using-docker-cli */}
+### विकल्प 4: Docker CLI का उपयोग करना {/* #option-4-using-docker-cli */}
 
 ```bash
 # Create the volume
@@ -108,9 +108,9 @@ docker run -d \
   ghcr.io/wsj-br/duplistatus:latest
 ```
 
-- `duplistatus_data` वॉल्यूम स्थायी संचयन के लिए उपयोग की जाती है। कंटेनर छवि डिफ़ॉल्ट के रूप में `Europe/London` का उपयोग करती है समय क्षेत्र और `en_GB` का उपयोग करती है डिफ़ॉल्ट लोकल (भाषा) के रूप में।
+- `duplistatus_data` वॉल्यूम का उपयोग परसिस्टेंट संग्रहण के लिए किया जाता है। कंटेनर इमेज डिफ़ॉल्ट टाइमज़ोन के रूप में `Europe/London` और डिफ़ॉल्ट लोकेल (भाषा) के रूप में `en_GB` का उपयोग करती है।
 
-### विकल्प 5: Podman का उपयोग करके (CLI) `rootless` {/* #option-5-using-podman-cli-rootless */}
+### विकल्प 5: Podman (CLI) का उपयोग करना `rootless` {/* #option-5-using-podman-cli-rootless */}
 
 बुनियादी सेटअप के लिए, आप DNS कॉन्फ़िगरेशन के बिना कंटेनर शुरू कर सकते हैं:
 
@@ -127,13 +127,13 @@ podman run -d \
   ghcr.io/wsj-br/duplistatus:latest
 ```
 
-#### Podman कंटेनर के लिए DNS कॉन्फ़िगर करना {/* #configuring-dns-for-podman-containers */}
+#### Podman कंटेनरों के लिए DNS कॉन्फ़िगर करना {/* #configuring-dns-for-podman-containers */}
 
-यदि आपको कस्टम DNS कॉन्फ़िगरेशन की आवश्यकता है (जैसे Tailscale MagicDNS, कॉर्पोरेट नेटवर्क, या कस्टम DNS सेटअप के लिए), तो आप DNS सर्वर और खोज डोमेन को मैन्युअल रूप से कॉन्फ़िगर कर सकते हैं।
+यदि आपको कस्टम DNS कॉन्फ़िगरेशन की आवश्यकता है (उदा., Tailscale MagicDNS, कॉर्पोरेट नेटवर्क, या कस्टम DNS सेटअप के लिए), तो आप मैन्युअल रूप से DNS सर्वर और खोज डोमेन कॉन्फ़िगर कर सकते हैं।
 
-**अपनी DNS कॉन्फ़िगरेशन खोजना:**
+**अपना DNS कॉन्फ़िगरेशन ढूंढना:**
 
-1. **systemd-resolved सिस्टम के लिए** (बहुत से आधुनिक Linux वितरण):
+1. **systemd-resolved सिस्टम के लिए** (अधिकांश आधुनिक Linux वितरण):
 
    ```bash
    # Get DNS servers
@@ -143,15 +143,15 @@ podman run -d \
    resolvectl status | grep "DNS Domain:" | awk '{print "--dns-search " $3}'
    ```
 
-2. **non-systemd सिस्टम** या एक फॉलबैक के रूप में:
+2. **गैर-systemd सिस्टम के लिए** या फ़ॉलबैक के रूप में:
 
    ```bash
    cat /run/systemd/resolve/resolv.conf 2>/dev/null || cat /etc/resolv.conf
    ```
 
-लाइनों को खोजें जो `nameserver` के साथ शुरू होते हैं (DNS सर्वर के लिए) और `search` के साथ (खोज डोमेन के लिए)। यदि आप अपने DNS सेटिंग्स या नेटवर्क खोज डोमेन के बारे में असमझ हैं, तो इस जानकारी के लिए अपने नेटवर्क व्यवस्थापक से परामर्श करें।
+`nameserver` (DNS सर्वर के लिए) और `search` (खोज डोमेन के लिए) से शुरू होने वाली पंक्तियों को देखें। यदि आप अपनी DNS सेटिंग्स या नेटवर्क खोज डोमेन के बारे में अनिश्चित हैं, तो इस जानकारी के लिए अपने नेटवर्क व्यवस्थापक से परामर्श लें।
 
-**DNS configuration ke saath example:**
+**DNS कॉन्फ़िगरेशन के साथ उदाहरण:**
 
 ```bash
 mkdir -p ~/duplistatus_data
@@ -168,27 +168,27 @@ podman run -d \
   ghcr.io/wsj-br/duplistatus:latest
 ```
 
-आप कई DNS सर्वर निर्दिष्ट कर सकते हैं कई `--dns` फ़्लैग जोड़कर:
+आप कई `--dns` फ़्लैग जोड़कर कई DNS सर्वर निर्दिष्ट कर सकते हैं:
 
 ```bash
 --dns 8.8.8.8 --dns 1.1.1.1
 ```
 
-आप कई खोज डोमेन निर्दिष्ट कर सकते हैं कई `--dns-search` फ़्लैग जोड़कर:
+आप कई `--dns-search` फ़्लैग जोड़कर कई खोज डोमेन निर्दिष्ट कर सकते हैं:
 
 ```bash
 --dns-search example.com --dns-search internal.local
 ```
 
-**नोट**: DNS सर्वर कॉन्फ़िगर करते समय IPv6 एड्रेस (जो `:` शामिल करते हैं) और लोकलहोस्ट एड्रेस (जैसे `127.0.0.53`) को छोड़ दें।
+**ध्यान दें**: DNS सर्वर कॉन्फ़िगर करते समय IPv6 पतों (जिनमें `:` शामिल है) और लोकलहोस्ट पतों (जैसे `127.0.0.53`) को छोड़ दें।
 
-[समय क्षेत्र](./configure-tz.md) अनुभाग में अधिक विवरण के लिए देखें कि कैसे समय क्षेत्र और संख्या/तारीख/समय प्रारूप को समायोजित किया जाए।
+टाइमज़ोन और संख्या/तिथि/समय फ़ॉर्मेट को कैसे समायोजित करें, इस पर अधिक विवरण के लिए [Timezone](./configure-tz.md) अनुभाग जांचें।
 
-### विकल्प 6: Podman Pods का उपयोग करके {/* #option-6-using-podman-pods */}
+### विकल्प 6: Podman पॉड्स का उपयोग करना {/* #option-6-using-podman-pods */}
 
-Podman पॉड आपको एक साझा नेटवर्क नेमस्पेस में कई कंटेनर चलाने की अनुमति देते हैं। यह परीक्षण के लिए उपयोगी है या जब आपको duplistatus के साथ अन्य कंटेनर चलाने की आवश्यकता होती है।
+Podman पॉड्स आपको एक साझा नेटवर्क नेमस्पेस में कई कंटेनर चलाने की अनुमति देते हैं। यह परीक्षण के लिए या तब उपयोगी होता है जब आपको अन्य कंटेनरों के साथ duplistatus चलाने की आवश्यकता होती है।
 
-**बुनियादी पॉड सेटअप:**
+**बेसिक पॉड सेटअप:**
 
 ```bash
 mkdir -p ~/duplistatus_data
@@ -209,12 +209,12 @@ podman create --name duplistatus \
 podman pod start duplistatus-pod
 ```
 
-#### Podman Pods के लिए DNS कॉन्फ़िगर करना {/* #configuring-dns-for-podman-pods */}
+#### Podman पॉड्स के लिए DNS कॉन्फ़िगर करना {/* #configuring-dns-for-podman-pods */}
 
-जब पॉड का उपयोग करते हैं, तो DNS कॉन्फ़िगरेशन को पॉड स्तर पर सेट किया जाना चाहिए, न कि कंटेनर स्तर पर।
-विकल्प 5 में वर्णित समान तरीकों का उपयोग करें अपने DNS सर्वर और खोज डोमेन खोजने के लिए।
+पॉड्स का उपयोग करते समय, DNS कॉन्फ़िगरेशन को पॉड स्तर पर सेट किया जाना चाहिए, कंटेनर स्तर पर नहीं।
+अपने DNS सर्वर और खोज डोमेन खोजने के लिए विकल्प 5 में वर्णित समान विधियों का उपयोग करें।
 
-**DNS configuration ke saath example:**
+**DNS कॉन्फ़िगरेशन के साथ उदाहरण:**
 
 ```bash
 mkdir -p ~/duplistatus_data
@@ -238,7 +238,7 @@ podman create --name duplistatus \
 podman pod start duplistatus-pod
 ```
 
-**Pod ka pravaasan:**
+**पॉड का प्रबंधन करना:**
 
 ```bash
 # Stop the pod (stops all containers in the pod)
@@ -253,12 +253,12 @@ podman pod rm -f duplistatus-pod
 
 ## आवश्यक कॉन्फ़िगरेशन {/* #essential-configuration */}
 
-1. Apne [Duplicati servers](duplicati-server-configuration.md) ko (anivarya) duplistatus ko backup log messages bhejne ke liye Configure karein. Duplicati 2.0.9.106 aur uske baad ke versions mein, us guide mein vishesh kiye gaye `--send-http-json-urls` ka istemal karein.
-2. duplistatus mein Pravesh karein – [User Guide](../user-guide/overview.md#accessing-the-dashboard) mein vishesh kiye gaye instructions dekhein.
-3. Initial backup logs Sankalan karein – [Backup Logs Ikattha Karein](../user-guide/collect-backup-logs.md) feature ka istemal karein taaki aapke sabhi Duplicati servers se historical backup data ke saath database ko bhar saken. Yeh automatically har server ke configuration ke hisaab se backup monitoring intervals ko bhi update karta hai.
-4. Server settings Configure karein – [Settings → Server](../user-guide/settings/server-settings.md) mein server aliases aur notes set up karein taaki aapka dashboard zyada informative ho.
-5. NTFY settings ko configure karein – [Settings → NTFY](../user-guide/settings/ntfy-settings.md) mein NTFY ke through notifications set up karein.
-6. Email settings ko configure karein – [Settings → Email](../user-guide/settings/email-settings.md) mein email notifications set up karein.
-7. Backup notifications ko configure karein – [Settings → Backup Notifications](../user-guide/settings/backup-notifications-settings.md) mein per-backup ya per-server notifications set up karein.
+1. अपने [Duplicati सर्वर](duplicati-server-configuration.md) को duplistatus पर बैकअप लॉग संदेश भेजने के लिए कॉन्फ़िगर करें (आवश्यक)। Duplicati 2.0.9.106 और बाद के संस्करणों पर, उस गाइड में वर्णित अनुसार `--send-http-json-urls` का उपयोग करें।
+2. duplistatus में लॉग इन करें – [उपयोगकर्ता गाइड](../user-guide/overview.md#accessing-the-dashboard) में दिए गए निर्देश देखें।
+3. प्रारंभिक बैकअप लॉग एकत्र करें – अपने सभी Duplicati सर्वर से ऐतिहासिक बैकअप डेटा के साथ डेटाबेस को पॉप्युलेट करने के लिए [बैकअप लॉग एकत्र करें](../user-guide/collect-backup-logs.md) सुविधा का उपयोग करें। यह प्रत्येक सर्वर के कॉन्फ़िगरेशन के आधार पर बैकअप निगरानी अंतरालों को स्वचालित रूप से भी अपडेट करता है।
+4. सर्वर सेटिंग्स कॉन्फ़िगर करें – अपने डैशबोर्ड को अधिक जानकारीपूर्ण बनाने के लिए [सेटिंग्स → सर्वर](../user-guide/settings/server-settings.md) में सर्वर उपनाम और नोट्स सेट करें।
+5. NTFY सेटिंग्स कॉन्फ़िगर करें – [सेटिंग्स → NTFY](../user-guide/settings/ntfy-settings.md) में NTFY के माध्यम से सूचनाएं सेट करें।
+6. ईमेल सेटिंग्स कॉन्फ़िगर करें – [सेटिंग्स → Email](../user-guide/settings/email-settings.md) में ईमेल सूचनाएं सेट करें।
+7. बैकअप सूचनाएं कॉन्फ़िगर करें – [सेटिंग्स → बैकअप सूचनाएं](../user-guide/settings/backup-notifications-settings.md) में प्रति-बैकअप या प्रति-सर्वर सूचनाएं सेट करें।
 
-अपने समय क्षेत्र, संख्या प्रारूप और [सुरक्षा मजबूत करने](security-hardening.md) जैसे वैकल्पिक सेटिंग्स को कॉन्फ़िगर करने के लिए निम्न अनुभाग देखें।
+टाइमज़ोन, संख्या प्रारूप, और [सुरक्षा सुदृढ़ीकरण](security-hardening.md) जैसी वैकल्पिक सेटिंग्स कॉन्फ़िगर करने के लिए निम्नलिखित अनुभाग देखें।

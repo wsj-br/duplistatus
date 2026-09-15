@@ -1,39 +1,39 @@
 # ऑडिट लॉग {/* #audit-logs */}
 
-Audit log **duplistatus** में सभी pranali badlavon aur upyogkarta Action ka ek vistrit record pradan karta hai. Yah suraksha aur troubleshooting uddeshyon ke liye configuration badlav, upyogkarta gatividhiyon, aur pranali karyon ko track karne mein madad karta hai.
+ऑडिट लॉग **duplistatus** में सिस्टम के सभी परिवर्तनों और उपयोगकर्ता की कार्रवाइयों का एक व्यापक रिकॉर्ड प्रदान करता है। यह सुरक्षा और समस्या निवारण उद्देश्यों के लिए कॉन्फ़िगरेशन परिवर्तनों, उपयोगकर्ता गतिविधियों और सिस्टम परिचालनों को ट्रैक करने में मदद करता है।
 
-![Audit log](../../assets/screen-settings-audit.png)
+![ऑडिट लॉग](../../assets/screen-settings-audit.png)
 
-## Audit Log Viewer {/* #audit-log-viewer */}
+## ऑडिट लॉग व्यूअर {/* #audit-log-viewer */}
 
-Audit log viewer nimnalikhit jankari ke saath sabhi logged events ki ek kalakramanusar soochi dikhata hai:
+ऑडिट लॉग व्यूअर निम्नलिखित जानकारी के साथ सभी लॉग किए गए इवेंट्स की एक कालानुक्रमिक सूची प्रदर्शित करता है:
 
-- **Samay chinh**: Kab event hua
-- **Upyogkarta**: Jis Username ne Action kiya (ya automated actions ke liye "Pranali")
-- **Action**: Woh vishisht Action jo kiya gaya
-- **Category**: Action ki Category (Authentication, Upyogkarta prabandhan, Configuration, Backup Operations, Server Management, Pranali Operations)
-- **Stithi**: Kya Action safal hua ya Asafal
-- **Lakshya**: Woh object jis par prabhav pada (yadi lagu ho)
-- **Vivaran**: Action ke bare mein atirikt jankari
+- **टाइमस्टैम्प**: इवेंट कब घटित हुआ
+- **उपयोगकर्ता**: वह उपयोगकर्ता नाम जिसने कार्रवाई की (या स्वचालित कार्रवाइयों के लिए "सिस्टम")
+- **कार्रवाई**: की गई विशिष्ट कार्रवाई
+- **श्रेणी**: कार्रवाई की श्रेणी (प्रमाणीकरण, उपयोगकर्ता प्रबंधन, कॉन्फ़िगरेशन, बैकअप परिचालन, सर्वर प्रबंधन, सिस्टम परिचालन)
+- **स्थिति**: क्या कार्रवाई सफल रही या विफल
+- **लक्ष्य**: प्रभावित हुआ ऑब्जेक्ट (यदि लागू हो)
+- **विवरण**: कार्रवाई के बारे में अतिरिक्त विवरण
 
 ### लॉग विवरण देखना {/* #viewing-log-details */}
 
-Vistrit jankari dekhne ke liye kisi bhi log entry ke bagal mein <IconButton icon="lucide:eye" /> aankh ke icon par click karein, jismein shaamil hai:
-- Pura samay chinh
-- Upyogkarta jankari
-- Poore action ke Vivaran (udaharan ke liye: badle gaye fields, Aankde, ityadi)
-- IP pata aur Upyogkarta agent
-- Truti Sandesh (yadi Action Asafal raha)
+विस्तृत विवरण देखने के लिए किसी भी लॉग प्रविष्टि के आगे दिए गए <IconButton icon="lucide:eye" /> आँख के आइकन पर क्लिक करें, जिसमें शामिल हैं:
+- पूरा टाइमस्टैम्प
+- उपयोगकर्ता जानकारी
+- कार्रवाई का पूरा विवरण (उदाहरण के लिए: बदले गए फ़ील्ड, आँकड़े, आदि)
+- आईपी पता और यूज़र एजेंट
+- त्रुटि संदेश (यदि कार्रवाई विफल रही हो)
 
 ### ऑडिट लॉग निर्यात करना {/* #exporting-audit-logs */}
 
-Aap filtered audit logs ko do formats mein export kar sakte hain:
+आप फ़िल्टर किए गए ऑडिट लॉग को दो फ़ॉर्मैट में निर्यात कर सकते हैं:
 
-| Button | Vivaran |
+| बटन | विवरण |
 |:------|:-----------|
-| <IconButton icon="lucide:download" label="CSV"/> | Spreadsheet analysis ke liye logs ko CSV file ke roop mein export karein |
-| <IconButton icon="lucide:download" label="JSON"/> | Programmatic analysis ke liye logs ko JSON file ke roop mein export karein |
+| <IconButton icon="lucide:download" label="CSV"/> | स्प्रेडशीट विश्लेषण के लिए लॉग को CSV फ़ाइल के रूप में निर्यात करें |
+| <IconButton icon="lucide:download" label="JSON"/> | प्रोग्रामेटिक विश्लेषण के लिए लॉग को JSON फ़ाइल के रूप में निर्यात करें |
 
 :::note
-Exports mein keval wahi logs shaamil honge jo aapke active filters ke aadhar par vartaman mein dikhayi de rahe hain. Sabhi logs export karne ke liye, pehle Sabhi saaf karein.
+निर्यात में केवल वही लॉग शामिल होते हैं जो आपके सक्रिय फ़िल्टर के आधार पर वर्तमान में दिखाई दे रहे हैं। सभी लॉग निर्यात करने के लिए, पहले सभी फ़िल्टर साफ़ करें।
 :::

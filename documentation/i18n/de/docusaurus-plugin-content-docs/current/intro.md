@@ -1,91 +1,96 @@
-# Willkommen zu duplistatus {/* #welcome-to-duplistatus */}
+# Willkommen bei duplistatus {/* #welcome-to-duplistatus */}
 
-**duplistatus** - Überwache mehrere [Duplicati's](https://github.com/duplicati/duplicati) Server von einem einzigen Dashboard aus
+**duplistatus** - Überwachen Sie mehrere [Duplicati's](https://github.com/duplicati/duplicati) Server von einem einzigen Dashboard
 
 ## Funktionen {/* #features */}
 
-- **Schnelle Einrichtung**: Einfache containerisierte Bereitstellung, mit Bildern auf Docker Hub und GitHub verfügbar.
-- **Einheitliches Dashboard**: Anzeige des Backup-Status, der Historie, der Duplicati-Version und der Details für alle Server an einem Ort.
+- **Schnelle Einrichtung**: Einfache Container-basierte Bereitstellung, mit Bildern auf Docker Hub und GitHub verfügbar.
+- **Einheitliches Dashboard**: Anzeige des Backup-Status, Verlaufs, der Duplicati-Version und Details aller Server an einem Ort.
 - **Backup-Überwachung**: Automatische Überprüfung und Benachrichtigung für überfällige geplante Backups.
-- **Datenvisualisierung & Protokolle**: Interaktive Diagramme und automatische Protokollierung von Duplicati-Servern.
-- **Benachrichtigungen & Warnungen**: Integrierte NTFY- und SMTP-E-Mail-Unterstützung für Sicherungswarnungen, einschließlich überfälliger Sicherungsbenachrichtigungen.
-- **Benutzerverwaltung**: Anmeldung mit Admin- und Benutzerrollen, konfigurierbare Passwortrichtlinien, Kontosperre und Benutzeradministration.
-- **Sicherheitsverbesserungen**: Optionale zusätzliche Schutzmaßnahmen, API-Schlüssel für Duplicati-Hochladen und Homepage-Widgets (mit Hochladegrößen- und -ratenbegrenzungen), unabhängige IP-Zulassungslisten für den Administrationsinterface und die externen APIs, Anti-Spoofing-Schutz und HTTPS-Reverse-Proxy-Anleitungen.
-- **Audit-Protokollierung**: Vollständige Audit-Spur aller Systemänderungen und Benutzeraktionen mit erweiterter Filterung, Exportfunktionen und konfigurierbaren Aufbewahrungszeiten.
+- **Datenvisualisierung & Protokolle**: Interaktive Diagramme und automatische Protokollsammlung von Duplicati-Servern.
+- **Benachrichtigungen & Warnungen**: Integrierte NTFY- und SMTP-E-Mail-Unterstützung für Backup-Benachrichtigungen, einschließlich Benachrichtigungen für überfällige Backups.
+- **Benutzerverwaltung**: Anmeldung mit Admin- und Benutzerrollen, konfigurierbare Passwortrichtlinien, Kontosperre und Benutzerverwaltung.
+- **Sicherheitsverbesserungen**: Optionale zusätzliche Schutzmaßnahmen, API-Schlüssel für Duplicati-Uploads und Homepage-Widgets (mit Upload-Größen- und Rate-Limits), unabhängige IP-Zulassungslisten für den Administrationsinterface und die externen APIs, Anti-Spoofing-Schutz und HTTPS-Reverse-Proxy-Anleitungen.
+- **Audit-Protokollierung**: Vollständige Audit-Spur aller Systemänderungen und Benutzeraktionen mit fortschrittlicher Filterung, Exportfunktionen und konfigurierbaren Aufbewahrungszeiten.
 - **Anwendungsprotokolle-Viewer**: Admin-only-Interface zum Anzeigen, Suchen und Exportieren von Anwendungsprotokollen direkt über die Weboberfläche mit Echtzeit-Überwachungsfunktionen.
 - **Mehrsprachige Unterstützung**: Oberfläche und Dokumentation in Englisch, Französisch, Deutsch, Spanisch, Brasilianisch-Portugiesisch, Hindi und Chinesisch (vereinfacht) verfügbar.
 
 ## Installation {/* #installation */}
 
-Die Anwendung kann mit Docker, Portainer Stacks oder Podman bereitgestellt werden. Weitere Details finden Sie in der [Installationsanleitung](installation/installation.md).
+Die Anwendung kann mit Docker, Portainer Stacks oder Podman bereitgestellt werden. 
+Siehe Details im [Installationshandbuch](installation/installation.md).
 
-- Bei einem Upgrade von einer älteren Version wird Ihre Datenbank automatisch [auf das neue Schema migriert](migration/version_upgrade.md) während des Upgrade-Prozesses.
+- Wenn Sie von einer früheren Version aktualisieren, wird Ihre Datenbank automatisch
+  [migriert](migration/version_upgrade.md) zum neuen Schema während des Aktualisierungsprozesses.
 
-- Bei Verwendung von Podman (entweder als eigenständiger Container oder innerhalb eines Pods) und bei Bedarf für benutzerdefinierte DNS-Einstellungen (z. B. für Tailscale MagicDNS, Unternehmensnetze oder andere benutzerdefinierte DNS-Konfigurationen), können Sie manuell DNS-Server und Suchdomänen angeben. Weitere Details finden Sie in der Installationsanleitung.
+- Wenn Sie Podman verwenden (entweder als eigenständiger Container oder innerhalb eines Pods) und Sie benutzerdefinierte DNS-Einstellungen benötigen 
+(solche wie Tailscale MagicDNS, Unternehmensnetzwerke oder andere benutzerdefinierte DNS-Konfigurationen), können Sie DNS-Server und Suchdomänen manuell 
+spezifizieren. Siehe das Installationshandbuch für weitere Details.
 
-## Duplicati Serverkonfiguration (erforderlich) {/* #duplicati-servers-configuration-required */}
+## Duplicati-Server-Konfiguration (erforderlich) {/* #duplicati-servers-configuration-required */}
 
-Sobald Ihr **duplistatus** Server gestartet ist, müssen Sie Ihre **Duplicati** Server so konfigurieren, dass sie Backup-Protokolle an **duplistatus** senden, wie in der [Duplicati-Konfigurations](installation/duplicati-server-configuration.md)-Abschnitt der Installationsanleitung beschrieben. Ohne diese Konfiguration erhält die Oberfläche keine Backup-Daten von Ihren Duplicati-Servern.
+Sobald Ihr **duplistatus**-Server läuft, müssen Sie Ihre **Duplicati**-Server konfigurieren, um Backup-Protokolle an **duplistatus** zu senden, wie im Abschnitt [Duplicati-Konfiguration](installation/duplicati-server-configuration.md) 
+ des Installationshandbuchs beschrieben. Ohne diese Konfiguration erhält das Dashboard keine Backup-Daten von Ihren Duplicati-Servern.
 
 ## Benutzerhandbuch {/* #user-guide */}
 
-Siehe die [Benutzeranleitung](user-guide/overview.md) für detaillierte Anweisungen zur Konfiguration und Nutzung von **duplistatus**, einschließlich der ersten Einrichtung, Funktionskonfiguration und Problembehebung.
+Siehe das [Benutzerhandbuch](user-guide/overview.md) für detaillierte Anweisungen zur Konfiguration und Verwendung von **duplistatus**, einschließlich der ersten Einrichtung, der Funktionskonfiguration und der Fehlerbehebung.
 
 ## Screenshots {/* #screenshots */}
 
 ### Dashboard {/* #dashboard */}
 
-![Dashboard](assets/screen-main-dashboard-card-mode.png)
+![dashboard](assets/screen-main-dashboard-card-mode.png)
 
-### Sicherungsverlauf {/* #backup-history */}
+### Backup-Verlauf {/* #backup-history */}
 
-![Server-Details](assets/screen-server-backup-list.png)
+![server-detail](assets/screen-server-backup-list.png)
 
-### Sicherungsdetails {/* #backup-details */}
+### Backup-Details {/* #backup-details */}
 
-![Backup-Details](assets/screen-backup-detail.png)
+![backup-detail](assets/screen-backup-detail.png)
 
 ### Überfällige Backups {/* #overdue-backups */}
 
-![Überfällige Backups](assets/screen-overdue-backup-hover-card.png)
+![überfällige Backups](assets/screen-overdue-backup-hover-card.png)
 
 ### Überfällige Benachrichtigungen auf Ihrem Telefon {/* #overdue-notifications-on-your-phone */}
 
-![NTFY Überfällig-Nachricht](/img/screen-overdue-notification.png)
+![ntfy überfällige Nachricht](/img/screen-overdue-notification.png)
 
 ## API-Referenz {/* #api-reference */}
 
-Siehe die [API-Endpunktsdokumentation](api-reference/overview.md) für Details zu verfügbaren Endpunkten, Anfrage/Antwortformaten und Beispielen.
+Weitere Informationen zu verfügbaren Endpunkten, Anforderungs-/Antwortformaten und Beispielen finden Sie in der [API-Endpunkte-Dokumentation](api-reference/overview.md).
 
 ## Entwicklung {/* #development */}
 
-Für Anweisungen zum Herunterladen, Ändern oder Ausführen des Codes, siehe [Entwicklungseinrichtung](development/setup.md).
+Anweisungen zum Herunterladen, Ändern oder Ausführen des Codes finden Sie unter [Entwicklungsumgebung einrichten](development/setup.md).
 
-Dieses Projekt wurde hauptsächlich mit KI-Unterstützung erstellt. Um zu erfahren wie, lesen Sie [Wie ich diese Anwendung mit KI-Tools entwickelt habe](development/how-i-build-with-ai).
+Dieses Projekt wurde hauptsächlich mit Hilfe von KI entwickelt. Weitere Informationen finden Sie unter [So habe ich diese Anwendung mit KI-Tools erstellt](development/how-i-build-with-ai).
 
 ## Danksagungen {/* #credits */}
 
-- Zunächst und vor allem möchte ich Kenneth Skovhede für die Erstellung von Duplicati—diesem beeindruckenden Backup-Tool—danken. Auch möchte ich allen Mitwirkenden danken.
+- Zuerst einmal vielen Dank an Kenneth Skovhede für die Erstellung von Duplicati – diesem großartigen Sicherungstool. Vielen Dank auch an alle Mitwirkenden.
 
-💙 Wenn Sie [Duplicati](https://www.duplicati.com) nützlich finden, bitten wir Sie, den Entwickler zu unterstützen. Weitere Details sind auf ihrer Website oder GitHub-Seite verfügbar.
+💙 Wenn Sie [Duplicati](https://www.duplicati.com) nützlich finden, denken Sie bitte daran, den Entwickler zu unterstützen. Weitere Details finden Sie auf ihrer Website oder auf ihrer GitHub-Seite.
 
-- API-Schlüssel- und IP-Zulassungslisten-Idee/Implementierung von `henmohr` in Issue [#79](https://github.com/wsj-br/duplistatus/issues/79)
-- Duplicati-SVG-Symbol von https://dashboardicons.com/icons/duplicati
-- ntfy-SVG-Symbol von https://dashboardicons.com/icons/ntfy
-- GitHub-SVG-Symbol von https://github.com/logos
+- API-Schlüssel und IP-Zulassungslisten-Idee/Implementierung von `henmohr` in Issue [#79](https://github.com/wsj-br/duplistatus/issues/79)
+- Duplicati SVG-Symbol von https://dashboardicons.com/icons/duplicati
+- ntfy SVG-Symbol von https://dashboardicons.com/icons/ntfy
+- GitHub SVG-Symbol von https://github.com/logos
 
 :::note
-Alle Produktnamen, Logos und Marken sind Eigentum ihrer jeweiligen Inhaber. Icons und Namen werden nur zu Identifikationszwecken verwendet und implizieren keine Unterstützung.
+ Alle Produktnamen, Logos und Markenzeichen sind Eigentum ihrer jeweiligen Inhaber. Symbole und Namen werden ausschließlich zur Identifikation verwendet und implizieren keine Unterstützung.
 :::
 
 ## Lizenz {/* #license */}
 
-Das Projekt steht unter der [Apache License 2.0](LICENSE.md).
+Das Projekt ist unter der [Apache Lizenz 2.0](LICENSE.md) lizenziert.
 
 **Copyright © 2026 Waldemar Scudeller Jr.**
 
 <small>
 
-> **Notiz zur Benutzeroberfläche und Dokumentationstranslation:** Alle Benutzeroberflächen- und Dokumentationssprachen außer Englisch (UK) wurden mit AI unter Verwendung von [ai-i18n-tools](https://wsj-br.github.io/ai-i18n-tools/) übersetzt; die Formulierungen können ungenau oder Fehler enthalten.
+> **Hinweis zu UI- und Dokumentationsübersetzungen:** Alle Benutzeroberflächen- und Dokumentationssprachen außer Englisch (UK) wurden mit KI übersetzt [ai-i18n-tools](https://wsj-br.github.io/ai-i18n-tools/); die Formulierungen können ungenau oder fehlerhaft sein.
 
 </small>

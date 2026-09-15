@@ -1,82 +1,82 @@
 # रिलीज़ प्रबंधन {/* #release-management */}
 
-## वर्ज़निंग (सिमेंटिक वर्ज़निंग) {/* #versioning-semantic-versioning */}
+## वर्शनिंग (सिमेंटिक वर्शनिंग) {/* #versioning-semantic-versioning */}
 
-प्रोजेक्ट सेमांटिक संस्करणिंग (सेमवर) का पालन करता है, जो इस प्रारूप का उपयोग करता है `MAJOR.MINOR.PATCH`:
+यह प्रोजेक्ट `MAJOR.MINOR.PATCH` प्रारूप के साथ सिमेंटिक वर्शनिंग (SemVer) का पालन करता है:
 
-- **MAJOR** संस्करण (x.0.0): जब आप असंगत API परिवर्तन करते हैं
-- **MINOR** संस्करण (0.x.0): जब आप पिछले संगत तरीके से कार्यक्षमता जोड़ते हैं
-- **PATCH** संस्करण (0.0.x): जब आप पिछले संगत बग फिक्स करते हैं
+- **MAJOR** संस्करण (x.0.0): जब आप असंगत (incompatible) API परिवर्तन करते हैं
+- **MINOR** संस्करण (0.x.0): जब आप बैकवर्ड-कम्पैटिबल तरीके से कार्यक्षमता जोड़ते हैं
+- **PATCH** संस्करण (0.0.x): जब आप बैकवर्ड-कम्पैटिबल बग फिक्स करते हैं
 
 ## रिलीज़-पूर्व चेकलिस्ट {/* #pre-release-checklist */}
 
-नया संस्करण रिलीज़ करने से पहले, सुनिश्चित करें कि आपने निम्नलिखित पूरा कर लिया है:
+नया संस्करण रिलीज़ करने से पहले, सुनिश्चित करें कि आपने निम्नलिखित कार्य पूरे कर लिए हैं:
 
-- [ ] सभी परिवर्तन कोमिट और `vMAJOR.MINOR.x` ब्रांच में पुश कर दिए गए हैं।
-- [ ] संस्करण संख्या को `package.json` में अपडेट कर दी गई है (फाइल्स में सिंक्रनाइज़ करने के लिए `scripts/update-version.sh` का उपयोग करें)।
-- [ ] सभी टेस्ट पास हो गए हैं (डेवल मोड, स्थानीय, डॉकर और पॉडमैन में)।
-- [ ] `pnpm docker:up` के साथ एक डॉकर कंटेनर शुरू करें और `scripts/compare-versions.sh` चलाएं विकास वातावरण और डॉकर कंटेनर के बीच संस्करण की सुसंगति की पुष्टि करने के लिए (यह स्क्रिप्ट SQLite संस्करणों को प्रमुख संस्करण के अनुसार तुलना करती है (उदाहरण के लिए, 3.45.1 और 3.51.1 संगत माने जाते हैं), और Node, npm, और Duplistatus संस्करणों को बिल्कुल ठीक से तुलना करती है।
-- [ ] दस्तावेज़ अप टू डेट हैं, स्क्रीनशॉट्स अपडेट करें (`pnpm take-screenshots` का उपयोग करें)
-- [ ] रिलीज़ नोट्स `documentation/docs/release-notes/VERSION.md` में तैयार किए गए हैं।
-- [ ] `scripts/generate-readme-from-intro.sh` चलाएं `README.md` को नए संस्करण और `documentation/docs/intro.md` से परिवर्तनों के साथ अपडेट करने के लिए। यह स्क्रिप्ट `README_dockerhub.md` और `RELEASE_NOTES_github_VERSION.md` को स्वचालित रूप से उत्पन्न भी करती है।
+- [ ] सभी परिवर्तन कमिट कर दिए गए हैं और `vMAJOR.MINOR.x` शाखा में पुश कर दिए गए हैं।
+- [ ] संस्करण संख्या को `package.json` में अपडेट कर दिया गया है (फ़ाइलें भर में इसे सिंक्रनाइज़ करने के लिए `scripts/update-version.sh` का उपयोग करें)।
+- [ ] सभी परीक्षण पास हो जाते हैं (डेवलपमेंट मोड, लोकल, docker और podman में)।
+- [ ] `pnpm docker:up` के साथ एक Docker कंटेनर प्रारंभ करें और डेवलपमेंट परिवेश और Docker कंटेनर के बीच संस्करण संगतता सत्यापित करने के लिए `scripts/compare-versions.sh` चलाएं (इसके लिए Docker कंटेनर का चालू होना आवश्यक है)। यह स्क्रिप्ट केवल प्रमुख संस्करण के आधार पर SQLite संस्करणों की तुलना करती है (उदा., 3.45.1 बनाम 3.51.1 को संगत माना जाता है), और Node, npm और Duplistatus संस्करणों की सटीक तुलना करती है।
+- [ ] दस्तावेज़ अप टू डेट हैं, स्क्रीनशॉट अपडेट करें (`pnpm take-screenshots` का उपयोग करें)
+- [ ] रिलीज़ नोट्स `documentation/docs/release-notes/VERSION.md` में तैयार हैं।
+- [ ] नए संस्करण और `documentation/docs/intro.md` के किसी भी परिवर्तन के साथ `README.md` को अपडेट करने के लिए `scripts/generate-readme-from-intro.sh` चलाएं। यह स्क्रिप्ट स्वचालित रूप से `README_dockerhub.md` और `RELEASE_NOTES_github_VERSION.md` भी जनरेट करती है।
 
-## रिलीज़ प्रक्रिया Overview {/* #release-process-overview */}
+## रिलीज़ प्रक्रिया अवलोकन {/* #release-process-overview */}
 
-अनुशंसित रिलीज़ प्रक्रिया **GitHub पुल रिक्वेस्ट्स और रिलीज़ेस** का उपयोग करती है (नीचे देखें)। यह बेहतर दृश्यता, समीक्षा क्षमताएं प्रदान करता है, और स्वचालित रूप से डॉकर इमेज बिल्ड ट्रिगर करता है। कमांड-लाइन विधि एक विकल्प के रूप में उपलब्ध है।
+अनुशंसित रिलीज़ प्रक्रिया **GitHub Pull Requests and Releases** का उपयोग करती है (नीचे देखें)। यह बेहतर दृश्यता, समीक्षा क्षमताएं प्रदान करता है, और स्वचालित रूप से Docker इमेज बिल्ड को ट्रिगर करता है। कमांड-लाइन विधि एक विकल्प के रूप में उपलब्ध है।
 
-## विधि 1: GitHub पुल रिक्वेस्ट aur रिलीज़ (अनुशंसित) {/* #method-1-github-pull-request-and-release-recommended */}
+## विधि 1: GitHub पुल रिक्वेस्ट और रिलीज़ (अनुशंसित) {/* #method-1-github-pull-request-and-release-recommended */}
 
-यह विधि पसंदीदा है क्योंकि यह बेहतर ट्रेसबिलिटी प्रदान करती है और स्वचालित रूप से डॉकर बिल्ड ट्रिगर करती है।
+यह पसंदीदा विधि है क्योंकि यह बेहतर ट्रैसेबिलिटी प्रदान करती है और स्वचालित रूप से Docker बिल्ड ट्रिगर करती है।
 
-### चरण 1: पुल रिक्वेस्ट बनाएँ {/* #step-1-create-pull-request */}
+### चरण 1: पुल रिक्वेस्ट बनाएं {/* #step-1-create-pull-request */}
 
 1. GitHub पर [duplistatus रिपॉजिटरी](https://github.com/wsj-br/duplistatus) पर जाएं।
 2. **"Pull requests"** टैब पर क्लिक करें।
 3. **"New pull request"** पर क्लिक करें।
-4. **base branch** को `master` और **compare branch** को `vMAJOR.MINOR.x` सेट करें।
-5. परिवर्तन पूर्वावलोकन की समीक्षा करें ताकि यह सुनिश्चित हो सके कि सब कुछ सही लग रहा है।
+4. **base branch** को `master` और **compare branch** को `vMAJOR.MINOR.x` पर सेट करें।
+5. सब कुछ सही दिखने की पुष्टि करने के लिए परिवर्तन पूर्वावलोकन की समीक्षा करें।
 6. **"Create pull request"** पर क्लिक करें।
-7. एक वर्णनात्मक शीर्षक जोड़ें (उदाहरण के लिए, "Release v1.2.0") और परिवर्तनों का सारांश देने वाला विवरण।
+7. एक विवरणात्मक शीर्षक (उदा., "Release v1.2.0") और परिवर्तनों का सारांश देने वाला विवरण जोड़ें।
 8. फिर से **"Create pull request"** पर क्लिक करें।
 
-### चरण 2: पुल रिक्वेस्ट मर्ज करें {/* #step-2-merge-the-pull-request */}
+### चरण 2: पुल रिक्वेस्ट को मर्ज करें {/* #step-2-merge-the-pull-request */}
 
-पुल रिक्वेस्ट की समीक्षा के बाद:
+पुल रिक्वेस्ट की समीक्षा करने के बाद:
 
-1. अगर कोई संघर्ष नहीं है, हरे **"Merge pull request"** बटन पर क्लिक करें।
-2. अपनी मर्ज स्ट्रैटेजी चुनें (सामान्यत: "Create a merge commit")।
+1. यदि कोई विरोध (conflict) नहीं है, तो हरे रंग के **"Merge pull request"** बटन पर क्लिक करें।
+2. अपनी मर्ज रणनीति चुनें (आमतौर पर "Create a merge commit")।
 3. मर्ज की पुष्टि करें।
 
-### चरण 3: GitHub रिलीज़ बनाएँ {/* #step-3-create-github-release */}
+### चरण 3: GitHub रिलीज़ बनाएं {/* #step-3-create-github-release */}
 
-एक बार मर्ज पूरा हो जाने के बाद, एक GitHub रिलीज़ बनाएं:
+मर्ज पूरा होने के बाद, एक GitHub रिलीज़ बनाएं:
 
-1. GitHub पर [duplistatus repository](https://github.com/wsj-br/duplistatus) पर जाएं।
-2. **"Releases"** अनुभाग पर जाएं (या राइट साइडबार में "Releases" पर क्लिक करें)।
+1. GitHub पर [duplistatus रिपॉजिटरी](https://github.com/wsj-br/duplistatus) पर जाएँ।
+2. **"Releases"** अनुभाग पर जाएँ (या दाएँ साइडबार में "Releases" पर क्लिक करें)।
 3. **"Draft a new release."** पर क्लिक करें।
-4. **"Choose a tag"** फ़ील्ड में, `vMAJOR.MINOR.PATCH` प्रारूप में अपना नया संस्करण संख्या टाइप करें (जैसे, `v1.2.0`)। यह एक नया टैग बनाएगा।
-5. `master` को लक्ष्य शाखा के रूप में चुनें।
-6. एक **रिलीज़ शीर्षक** जोड़ें (जैसे, "Release v1.2.0")।
-7. इस संस्करण में हुए बदलावों का दस्तावेज़ करने वाला **विवरण** जोड़ें। आप:
-   - `RELEASE_NOTES_github_VERSION.md` से सामग्री कॉपी कर सकते हैं (जो `scripts/generate-readme-from-intro.sh` द्वारा उत्पन्न की गई है)
-   - या `documentation/docs/release-notes/` से रिलीज़ नोट्स का संदर्भ दे सकते हैं (लेकिन ध्यान दें कि रिलेटिव लिंक्स GitHub रिलीज़ में काम नहीं करेंगे)
+4. **"Choose a tag"** फ़ील्ड में, `vMAJOR.MINOR.PATCH` प्रारूप में अपनी नई संस्करण संख्या टाइप करें (उदा., `v1.2.0`)। इससे एक नया टैग बन जाएगा।
+5. लक्ष्य शाखा के रूप में `master` चुनें।
+6. एक **रिलीज़ शीर्षक** जोड़ें (उदा., "Release v1.2.0")।
+7. इस संस्करण में हुए परिवर्तनों का दस्तावेज़ीकरण करते हुए एक **विवरण** जोड़ें। आप:
+   - `RELEASE_NOTES_github_VERSION.md` (`scripts/generate-readme-from-intro.sh` द्वारा जनरेट की गई) से सामग्री कॉपी करें
+   - या `documentation/docs/release-notes/` से रिलीज़ नोट्स का संदर्भ लें (लेकिन ध्यान रखें कि GitHub रिलीज़ में सापेक्ष लिंक काम नहीं करेंगे)
 8. **"Publish release."** पर क्लिक करें।
 
-**क्या स्वचालित रूप से होता है:**
+**स्वचालित रूप से क्या होता है:**
 - एक नया Git टैग बनाया जाता है
-- "Build and Publish Docker Image" वर्कफ़्लो ट्रिगर की जाती है
-- AMD64 और ARM64 आर्किटेक्चर के लिए Docker इमेज बनाए जाते हैं
-- इमेज पुश किए जाते हैं:
+- "Build and Publish Docker Image" वर्कफ़्लो ट्रिगर होता है
+- AMD64 और ARM64 आर्किटेक्चर के लिए Docker इमेज बनाई जाती हैं
+- इमेज यहाँ पुश की जाती हैं:
   - Docker Hub: `wsjbr/duplistatus:VERSION` और `wsjbr/duplistatus:latest` (यदि यह नवीनतम रिलीज़ है)
   - GitHub Container Registry: `ghcr.io/wsj-br/duplistatus:VERSION` और `ghcr.io/wsj-br/duplistatus:latest` (यदि यह नवीनतम रिलीज़ है)
 
 ## विधि 2: कमांड लाइन (वैकल्पिक) {/* #method-2-command-line-alternative */}
 
-यदि आप कमांड लाइन का उपयोग करना पसंद करते हैं, तो निम्नलिखित चरणों का पालन करें:
+यदि आप कमांड लाइन का उपयोग करना पसंद करते हैं, तो इन चरणों का पालन करें:
 
-### चरण 1: लोकल मास्टर ब्रांच अपडेट करें {/* #step-1-update-local-master-branch */}
+### चरण 1: लोकल Master ब्रांच को अपडेट करें {/* #step-1-update-local-master-branch */}
 
-सुनिश्चित करें कि आपका स्थानीय `master` शाखा अप टू डेट है:
+सुनिश्चित करें कि आपकी लोकल `master` ब्रांच अप-टू-डेट है:
 
 ```bash
 # Checkout the master branch
@@ -86,23 +86,23 @@ git checkout master
 git pull origin master
 ```
 
-### चरण 2: डेवलपमेंट ब्रांच मर्ज करें {/* #step-2-merge-development-branch */}
+### चरण 2: डेवलपमेंट ब्रांच को मर्ज करें {/* #step-2-merge-development-branch */}
 
-`vMAJOR.MINOR.x` शाखा को `master` में मर्ज करें:
+`vMAJOR.MINOR.x` ब्रांच को `master` में मर्ज करें:
 
 ```bash
 # Merge the vMAJOR.MINOR.x branch into master
 git merge vMAJOR.MINOR.x
 ```
 
-यदि **मर्ज कनफ्लिक्ट** होते हैं, तो उन्हें मैन्युअल रूप से हल करें:
-1. कनफ्लिक्टेड फाइलें संपादित करें
-2. हल की गई फाइलें स्टेज करें: `git add <file>`
+यदि **मर्ज कॉन्फ़्लिक्ट** हैं, तो उन्हें मैन्युअल रूप से हल करें:
+1. कॉन्फ़्लिक्ट वाली फ़ाइलें संपादित करें
+2. हल की गई फ़ाइलें स्टेज करें: `git add <file>`
 3. मर्ज पूरा करें: `git commit`
 
 ### चरण 3: रिलीज़ को टैग करें {/* #step-3-tag-the-release */}
 
-नए संस्करण के लिए एक एनोटेटेड टैग बनाएं:
+नए संस्करण के लिए एक एनोटेटेड टैग बनाएँ:
 
 ```bash
 # Create an annotated tag for the new version
@@ -113,7 +113,7 @@ git tag -a vMAJOR.MINOR.PATCH -m "Release vMAJOR.MINOR.PATCH - Brief description
 
 ### चरण 4: GitHub पर पुश करें {/* #step-4-push-to-github */}
 
-अपडेट की गई `master` शाखा और नया टैग दोनों पुश करें:
+अपडेट की गई `master` ब्रांच और नए टैग दोनों को पुश करें:
 
 ```bash
 # Push the updated master branch
@@ -123,42 +123,42 @@ git push origin master
 git push origin vMAJOR.MINOR.PATCH
 ```
 
-वैकल्पिक रूप से, एक बार में सभी टैग पुश करें: `git push --tags`
+वैकल्पिक रूप से, एक ही बार में सभी टैग पुश करें: `git push --tags`
 
 ### चरण 5: GitHub रिलीज़ बनाएँ {/* #step-5-create-github-release */}
 
-टैग पुश करने के बाद, Docker बिल्ड वर्कफ़्लो ट्रिगर करने के लिए GitHub रिलीज़ बनाएं (विधि 1, चरण 3 देखें)।
+टैग पुश करने के बाद, Docker बिल्ड वर्कफ़्लो को ट्रिगर करने के लिए एक GitHub रिलीज़ बनाएँ (विधि 1, चरण 3 देखें)।
 
-## मैन्युअल डॉकर इमेज बिल्ड {/* #manual-docker-image-build */}
+## मैन्युअल Docker इमेज बिल्ड {/* #manual-docker-image-build */}
 
-Docker छवि निर्माण वर्कफ़्लो को रिलीज़ बनाए बिना मैन्युअल रूप से ट्रिगर करने के लिए:
+रिलीज़ बनाए बिना Docker इमेज बिल्ड वर्कफ़्लो को मैन्युअल रूप से ट्रिगर करने के लिए:
 
 1. GitHub पर [duplistatus रिपॉजिटरी](https://github.com/wsj-br/duplistatus) पर जाएं।
-2. **"Kriyaen"** टैब पर क्लिक करें।
-3. **"Docker छवि बनाएँ और प्रकाशित करें"** वर्कफ़्लो का चयन करें।
+2. **"कार्रवाइयाँ"** टैब पर क्लिक करें।
+3. **"Build and Publish Docker Image"** वर्कफ़्लो चुनें।
 4. **"Run workflow"** पर क्लिक करें।
-5. उस शाखा का चयन करें जिसका निर्माण किया जाना है (सामान्यत: `master`)।
-6. **"Run workflow"** पर फिर से क्लिक करें।
+5. वह शाखा चुनें जिससे बिल्ड करना है (आमतौर पर `master`)।
+6. दोबारा **"Run workflow"** पर क्लिक करें।
 
-**Note:** मैन्युअल निर्माण छवियों को `latest` के रूप में स्वचालित रूप से टैग नहीं करेंगे जब तक कि वर्कफ़्लो नवीनतम रिलीज़ के रूप में निर्धारित न कर दे।
+**नोट:** मैन्युअल बिल्ड स्वचालित रूप से इमेज को `latest` के रूप में टैग नहीं करेंगे, जब तक कि वर्कफ़्लो यह निर्धारित न कर ले कि यह नवीनतम रिलीज़ है।
 
-## डॉक्यूमेंटेशन रिलीज़ करना {/* #releasing-documentation */}
+## दस्तावेज़ीकरण रिलीज़ करना {/* #releasing-documentation */}
 
-दस्तावेज़ [GitHub Pages](https://wsj-br.github.io/duplistatus/) पर होस्ट किए गए हैं और एप्लिकेशन रिलीज़ से अलग डिप्लॉय किए जाते हैं। अपडेट किए गए दस्तावेज़ रिलीज़ करने के लिए निम्नलिखित चरणों का पालन करें:
+दस्तावेज़ीकरण [GitHub Pages](https://wsj-br.github.io/duplistatus/) पर होस्ट किया गया है और इसे एप्लिकेशन रिलीज़ से अलग डिप्लॉय किया जाता है। अपडेट किए गए दस्तावेज़ों को रिलीज़ करने के लिए इन चरणों का पालन करें:
 
-### पूर्व-आवश्यकताएँ {/* #prerequisites */}
+### पूर्वापेक्षाएँ {/* #prerequisites */}
 
-1. सुनिश्चित करें कि आपके पास GitHub Personal Access Token है जिसमें `repo` स्कोप है।
-2. Git क्रेडेंशियल्स सेट अप करें (एक बार की सेटअप):
+1. सुनिश्चित करें कि आपके पास `repo` स्कोप वाला GitHub पर्सनल एक्सेस टोकन है।
+2. Git क्रेडेंशियल सेट अप करें (एक बार का सेटअप):
 
 ```bash
 cd documentation
 ./setup-git-credentials.sh
 ```
 
-यह आपको GitHub Personal Access Token के लिए प्रॉम्प्ट देगा और इसे सुरक्षित रूप से स्टोर करेगा।
+यह आपसे आपके GitHub पर्सनल एक्सेस टोकन के लिए पूछेगा और इसे सुरक्षित रूप से संग्रहीत करेगा।
 
-### डॉक्यूमेंटेशन डिप्लॉय करें {/* #deploy-documentation */}
+### दस्तावेज़ीकरण डिप्लॉय करें {/* #deploy-documentation */}
 
 1. `documentation` डायरेक्टरी पर जाएं:
 
@@ -166,31 +166,31 @@ cd documentation
 cd documentation
 ```
 
-2. सुनिश्चित करें कि सभी दस्तावेज़ परिवर्तन रिपॉजिटरी में कमिट और पुश किए गए हैं।
+2. सुनिश्चित करें कि दस्तावेज़ीकरण के सभी बदलाव कमिट और रिपॉजिटरी में पुश कर दिए गए हैं।
 
-3. दस्तावेज़ बनाएँ और डिप्लॉय करें:
+3. दस्तावेज़ीकरण को बिल्ड और डिप्लॉय करें:
 
 ```bash
 pnpm run deploy
 ```
 
-यह कमांड करेगा:
-- Docusaurus दस्तावेज़ साइट बनाएँ
-- बनाई गई साइट को `gh-pages` शाखा पर पुश करें
-- [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/) पर दस्तावेज़ उपलब्ध कराएँ
+यह कमांड:
+- Docusaurus दस्तावेज़ीकरण साइट को बिल्ड करेगी
+- बिल्ड की गई साइट को `gh-pages` शाखा में पुश करेगी
+- दस्तावेज़ीकरण को [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/) पर उपलब्ध कराएगी
 
-### डॉक्यूमेंटेशन कब डिप्लॉय करें {/* #when-to-deploy-documentation */}
+### दस्तावेज़ीकरण कब डिप्लॉय करें {/* #when-to-deploy-documentation */}
 
-दस्तावेज़ अपडेट डिप्लॉय करें:
-- जब `master` में दस्तावेज़ परिवर्तन मर्ज किए गए हों
-- जब एक नया संस्करण रिलीज़ किया जाए (यदि दस्तावेज़ अपडेट किया गया था)
-- महत्वपूर्ण दस्तावेज़ सुधारों के बाद
+दस्तावेज़ीकरण अपडेट डिप्लॉय करें:
+- दस्तावेज़ीकरण परिवर्तनों को `master` में मर्ज करने के बाद
+- नया संस्करण रिलीज़ करते समय (यदि दस्तावेज़ीकरण अपडेट किया गया था)
+- दस्तावेज़ीकरण में महत्वपूर्ण सुधारों के बाद
 
-**Note:** दस्तावेज़ डिप्लॉयमेंट एप्लिकेशन रिलीज़ से स्वतंत्र है। आप एप्लिकेशन रिलीज़ के बीच कई बार दस्तावेज़ डिप्लॉय कर सकते हैं।
+**नोट:** दस्तावेज़ीकरण डिप्लॉयमेंट एप्लिकेशन रिलीज़ से स्वतंत्र है। आप एप्लिकेशन रिलीज़ के बीच कई बार दस्तावेज़ डिप्लॉय कर सकते हैं।
 
 ### GitHub के लिए रिलीज़ नोट्स तैयार करना {/* #preparing-release-notes-for-github */}
 
-`generate-readme-from-intro.sh` स्क्रिप्ट स्वचालित रूप से रन होने पर GitHub रिलीज़ नोट्स उत्पन्न करती है। यह रिलीज़ नोट्स को `documentation/docs/release-notes/VERSION.md` से पढ़ती है (जहाँ VERSION `package.json` से निकाला जाता है) और प्रोजेक्ट रूट में `RELEASE_NOTES_github_VERSION.md` बनाती है।
+रन होने पर `generate-readme-from-intro.sh` स्क्रिप्ट स्वचालित रूप से GitHub रिलीज़ नोट्स जनरेट करती है। यह `documentation/docs/release-notes/VERSION.md` से रिलीज़ नोट्स पढ़ती है (जहाँ VERSION को `package.json` से निकाला जाता है) और प्रोजेक्ट रूट में `RELEASE_NOTES_github_VERSION.md` बनाती है।
 
 **उदाहरण:**
 
@@ -199,23 +199,23 @@ pnpm run deploy
 ./scripts/generate-readme-from-intro.sh
 ```
 
-उत्पन्न रिलीज़ नोट फ़ाइल को सीधे GitHub रिलीज़ विवरण में कॉपी और पेस्ट किया जा सकता है। सभी लिंक और छवियां GitHub रिलीज़ संदर्भ में सही ढंग से काम करेंगे।
+जनरेट की गई रिलीज़ नोट्स फ़ाइल को सीधे GitHub रिलीज़ विवरण में कॉपी और पेस्ट किया जा सकता है। GitHub रिलीज़ के संदर्भ में सभी लिंक और इमेज ठीक से काम करेंगे।
 
-**Note:** The generated file is temporary and can be deleted after creating the GitHub release. It's recommended to add `RELEASE_NOTES_github_*.md` to `.gitignore` if you don't want to commit these files.
+**ध्यान दें:** जनरेट की गई फ़ाइल अस्थायी है और GitHub रिलीज़ बनाने के बाद इसे हटाया जा सकता है। यदि आप ये फ़ाइलें कमिट नहीं करना चाहते हैं, तो यह अनुशंसा की जाती है कि `.gitignore` में `RELEASE_NOTES_github_*.md` जोड़ें।
 
 ### README.md अपडेट करें {/* #update-readmemd */}
 
-If you've made changes to `documentation/docs/intro.md`, regenerate the repository `README.md`:
+यदि आपने `documentation/docs/intro.md` में बदलाव किए हैं, तो रिपॉजिटरी `README.md` को फिर से जनरेट करें:
 
 ```bash
 ./scripts/generate-readme-from-intro.sh
 ```
 
-This script:
-- Extracts the version from `package.json`
-- Generates `README.md` from `documentation/docs/intro.md` (converts Docusaurus admonitions to GitHub-style alerts, converts links and images)
-- Creates `README_dockerhub.md` for Docker Hub (with Docker Hub-compatible formatting)
-- Generates `RELEASE_NOTES_github_VERSION.md` from `documentation/docs/release-notes/VERSION.md` (converts links and images to absolute URLs)
-- Updates the table of contents using `doctoc`
+यह स्क्रिप्ट:
+- `package.json` से संस्करण निकालती है
+- `documentation/docs/intro.md` से `README.md` जनरेट करती है (Docusaurus admonitions को GitHub-शैली के अलर्ट में बदलती है, लिंक और इमेज को बदलती है)
+- Docker Hub के लिए `README_dockerhub.md` बनाती है (Docker Hub-संगत फ़ॉर्मेटिंग के साथ)
+- `documentation/docs/release-notes/VERSION.md` से `RELEASE_NOTES_github_VERSION.md` जनरेट करती है (लिंक और इमेज को पूर्ण URL में बदलती है)
+- `doctoc` का उपयोग करके विषय-सूची को अपडेट करती है
 
-Commit and push the updated `README.md` along with your release.
+अपनी रिलीज़ के साथ अपडेट किए गए `README.md` को कमिट और पुश करें।

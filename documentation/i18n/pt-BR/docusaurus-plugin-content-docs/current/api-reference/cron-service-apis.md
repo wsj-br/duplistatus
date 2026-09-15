@@ -18,8 +18,8 @@
   - `500`: Falha ao obter a configuração do cron
 - **Notas**:
   - Retorna a configuração atual do serviço cron
-  - Inclui expressão cron e status habilitado
-  - Utilizado para gerenciamento do serviço cron
+  - Inclui a expressão cron e o status habilitado
+  - Usado para gerenciamento do serviço cron
 
 ## Atualizar Configuração do Cron - `/api/cron-config` {/* #update-cron-configuration---apicron-config */}
 - **Endpoint**: `/api/cron-config`
@@ -48,14 +48,14 @@
   - `500`: Falha ao atualizar a configuração do cron
 - **Notas**:
   - Atualiza a configuração do serviço cron
-  - Valida o intervalo com base nas opções permitidas
+  - Valida o intervalo contra as opções permitidas
   - Afeta a frequência da verificação de backup atrasado
 
 ## Proxy do Serviço Cron - `/api/cron/*` {/* #cron-service-proxy---apicron */}
 - **Endpoint**: `/api/cron/*`
 - **Método**: GET, POST
-- **Descrição**: Proxy para solicitações ao serviço cron. Este endpoint encaminha todas as solicitações para o serviço cron que está sendo executado em uma porta separada.
-- **Autenticação**: Requer sessão válida e token CSRF. GET é permitido para usuários autenticados; POST (iniciar/parar/acionar/recarregar) requer um administrador.
+- **Descrição**: Proxy de solicitações para o serviço cron. Este endpoint encaminha todas as solicitações para o serviço cron em execução em uma porta separada.
+- **Autenticação**: Requer sessão válida e token CSRF. GET é permitido para usuários autenticados; POST (iniciar/parar/acionar/reiniciar) requer um administrador.
 - **Parâmetros**:
   - `*`: Qualquer caminho que será encaminhado para o serviço cron
 - **Resposta**: Depende do endpoint do serviço cron sendo acessado
@@ -69,10 +69,10 @@
   ```
 
 - **Notas**:
-  - Proxy para requisições ao serviço cron em `127.0.0.1`
+  - Proxy de solicitações para o serviço cron em `127.0.0.1`
   - Encaminha `CRON_SERVICE_SECRET` como `X-Cron-Service-Secret` quando definido
   - Retorna 503 se o serviço cron não estiver disponível
-  - Suporta os métodos GET e POST
+  - Suporta ambos os métodos GET e POST
   - Usado para gerenciamento do serviço cron a partir da interface web
   - `POST /trigger/daily-summary-dispatch` é rejeitado pelo serviço cron; use `/api/configuration/daily-summary/send` em vez disso
   - `POST /trigger/database-compact` executa a compactação semanal imediatamente (backups órfãos/servidores e configurações de notificação, além do SQLite `VACUUM`)

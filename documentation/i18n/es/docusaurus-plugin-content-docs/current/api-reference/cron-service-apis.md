@@ -1,6 +1,6 @@
-# Gestión del Servicio Cron {/* #cron-service-management */}
+# Gestión del servicio Cron {/* #cron-service-management */}
 
-## Obtener Configuración de Cron - `/api/cron-config` {/* #get-cron-configuration---apicron-config */}
+## Obtener configuración de Cron - `/api/cron-config` {/* #get-cron-configuration---apicron-config */}
 - **Endpoint**: `/api/cron-config`
 - **Método**: GET
 - **Descripción**: Recupera la configuración actual del servicio cron.
@@ -15,17 +15,17 @@
   ```
 
 - **Respuestas de error**:
-  - `500`: Fallido al obtener la configuración de cron
+  - `500`: Error al obtener la configuración de cron
 - **Notas**:
   - Devuelve la configuración actual del servicio cron
   - Incluye la expresión cron y el estado habilitado
-  - Utilizado para la gestión del servicio cron
+  - Se utiliza para la gestión del servicio cron
 
-## Actualizar Configuración de Cron - `/api/cron-config` {/* #update-cron-configuration---apicron-config */}
+## Actualizar configuración de Cron - `/api/cron-config` {/* #update-cron-configuration---apicron-config */}
 - **Endpoint**: `/api/cron-config`
 - **Método**: POST
 - **Descripción**: Actualiza la configuración del servicio cron.
-- **Autenticación**: Requiere sesión válida y token CSRF
+- **Autenticación**: Requiere una sesión válida y un token CSRF
 - **Cuerpo de la solicitud**:
 
   ```json
@@ -44,22 +44,22 @@
 
 - **Intervalos disponibles**: `"disabled"`, `"1min"`, `"5min"`, `"10min"`, `"15min"`, `"20min"`, `"30min"`, `"1hour"`, `"2hours"`
 - **Respuestas de error**:
-  - `400`: El intervalo es obligatorio
-  - `500`: Fallido al actualizar la configuración de cron
+  - `400`: Se requiere el intervalo
+  - `500`: Error al actualizar la configuración de cron
 - **Notas**:
   - Actualiza la configuración del servicio cron
   - Valida el intervalo contra las opciones permitidas
-  - Afecta la frecuencia de verificación de copias de seguridad retrasadas
+  - Afecta la frecuencia de comprobación de copias de seguridad vencidas
 
-## Proxy del Servicio Cron - `/api/cron/*` {/* #cron-service-proxy---apicron */}
+## Proxy del servicio Cron - `/api/cron/*` {/* #cron-service-proxy---apicron */}
 - **Endpoint**: `/api/cron/*`
 - **Método**: GET, POST
 - **Descripción**: Proxy de solicitudes al servicio cron. Este endpoint reenvía todas las solicitudes al servicio cron que se ejecuta en un puerto separado.
 - **Autenticación**: Requiere una sesión válida y un token CSRF. GET está permitido para usuarios autenticados; POST (iniciar/detener/activar/recargar) requiere un administrador.
 - **Parámetros**:
   - `*`: Cualquier ruta que se reenviará al servicio cron
-- **Respuesta**: Depende del punto final del servicio cron al que se accede
-- **Respuesta de Error** (503):
+- **Respuesta**: Depende del endpoint del servicio cron al que se accede
+- **Respuesta de error** (503):
 
   ```json
   {
@@ -72,7 +72,7 @@
   - Proxy de solicitudes al servicio cron en `127.0.0.1`
   - Reenvía `CRON_SERVICE_SECRET` como `X-Cron-Service-Secret` cuando está configurado
   - Devuelve 503 si el servicio cron no está disponible
-  - Soporta los métodos GET y POST
+  - Soporta ambos métodos GET y POST
   - Se utiliza para la gestión del servicio cron desde la interfaz web
   - `POST /trigger/daily-summary-dispatch` es rechazado por el servicio cron; use `/api/configuration/daily-summary/send` en su lugar
   - `POST /trigger/database-compact` ejecuta la compactación semanal inmediatamente (copias de seguridad huérfanas/servidores y configuración de notificaciones, además de SQLite `VACUUM`)

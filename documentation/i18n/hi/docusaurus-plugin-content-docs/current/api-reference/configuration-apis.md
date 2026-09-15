@@ -1,11 +1,11 @@
-# प्रबंधन विन्यास {/* #configuration-management */}
+# कॉन्फ़िगरेशन प्रबंधन {/* #configuration-management */}
 
-## Email Configuration Praapt Karein - `/api/configuration/email` {/* #get-email-configuration---apiconfigurationemail */}
-- **Endpoint**: `/api/configuration/email`
-- **Method**: GET
-- **विवरण**: Vartaman email suchnaayi configuration aur yeh praapt karta hai ki email suchnaayein enabled/configured hain ya nahin.
-- **Authentication**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
-- **Response** (configured):
+## ईमेल कॉन्फ़िगरेशन प्राप्त करें - `/api/configuration/email` {/* #get-email-configuration---apiconfigurationemail */}
+- **एंडपॉइंट**: `/api/configuration/email`
+- **विधि**: GET
+- **विवरण**: वर्तमान ईमेल सूचना कॉन्फ़िगरेशन और यह प्राप्त करता है कि ईमेल सूचनाएं सक्षम/कॉन्फ़िगर हैं या नहीं।
+- **प्रमाणीकरण**: वैध सत्र और CSRF टोकन की आवश्यकता है
+- **प्रतिक्रिया** (कॉन्फ़िगर किया गया):
 
   ```json
   {
@@ -25,7 +25,7 @@
   }
   ```
 
-- **Response** (not configured):
+- **प्रतिक्रिया** (कॉन्फ़िगर नहीं है):
 
   ```json
   {
@@ -35,23 +35,23 @@
   }
   ```
 
-- **Error Responses**:
-  - `400`: मास्टर कुंजी अमान्य है - सभी एन्क्रिप्टेड पासवर्ड और सेटिंग्स को पुनः विन्यस्त किया जाना चाहिए
-  - `401`: Unauthorized - अमान्य सत्र या CSRF टोकन
-  - `500`: ईमेल विन्यास प्राप्त करने में असफल
-- **Notes**:
-  - सुरक्षा के लिए पासवर्ड के बिना विन्यास लौटाता है
-  - `hasPassword` फ़ील्ड शामिल है जो इंगित करता है कि क्या पासवर्ड सेट है
-  - `connectionType` (plain|starttls|ssl), `senderName`, `fromAddress`, और `requireAuth` फ़ील्ड शामिल हैं
-  - इंगित करता है कि क्या ईमेल सूचना परीक्षण और उत्पादन उपयोग के लिए उपलब्ध है
-  - मास्टर कुंजी त्रुटियों को सुलभता से संभालता है
+- **त्रुटि प्रतिक्रियाएं**:
+  - `400`: मास्टर कुंजी अमान्य है - सभी एन्क्रिप्ट किए गए पासवर्ड और सेटिंग्स को पुनः कॉन्फ़िगर किया जाना चाहिए
+  - `401`: अनुमति नहीं है - अमान्य सत्र या CSRF टोकन
+  - `500`: ईमेल कॉन्फ़िगरेशन प्राप्त करने में विफल
+- **नोट्स**:
+  - सुरक्षा के लिए पासवर्ड के बिना कॉन्फ़िगरेशन लौटाता है
+  - `hasPassword` फ़ील्ड शामिल करता है यह इंगित करने के लिए कि पासवर्ड सेट है या नहीं
+  - `connectionType` (plain|starttls|ssl), `senderName`, `fromAddress`, और `requireAuth` फ़ील्ड शामिल करता है
+  - इंगित करता है कि ईमेल सूचनाएं परीक्षण और उत्पादन उपयोग के लिए उपलब्ध हैं या नहीं
+  - मास्टर कुंजी सत्यापन त्रुटियों को सुंदरता से संभालता है
 
-## Email Configuration Ko Update Karein - `/api/configuration/email` {/* #update-email-configuration---apiconfigurationemail */}
-- **Endpoint**: `/api/configuration/email`
-- **Method**: POST
-- **विवरण**: SMTP email suchnaayi configuration ko update karta hai.
-- **Authentication**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
-- **Request Body**:
+## ईमेल कॉन्फ़िगरेशन अपडेट करें - `/api/configuration/email` {/* #update-email-configuration---apiconfigurationemail */}
+- **एंडपॉइंट**: `/api/configuration/email`
+- **विधि**: POST
+- **विवरण**: SMTP ईमेल सूचना कॉन्फ़िगरेशन को अपडेट करता है।
+- **प्रमाणीकरण**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
+- **अनुरोध बॉडी**:
 
   ```json
   {
@@ -64,7 +64,7 @@
   }
   ```
 
-- **Response**:
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -73,22 +73,22 @@
   }
   ```
 
-- **Error Responses**:
-  - `400`: आवश्यक फ़ील्ड गायब हैं या अमान्य पोर्ट संख्या
-  - `401`: Unauthorized - अमान्य सत्र या CSRF टोकन
-  - `500`: SMTP विन्यास सहेजने में असफल
-- **Notes**:
-  - सभी फ़ील्ड (होस्ट, पोर्ट, उपयोगकर्ता नाम, पासवर्ड, मेलटू) आवश्यक हैं
-  - पोर्ट एक मान्य संख्या होने चाहिए जो 1 और 65535 के बीच है
-  - सुरक्षित फ़ील्ड बूलियन है (SSL/TLS के लिए सच)
-  - पासवर्ड को अलग से पासवर्ड एंडपॉइंट के माध्यम से प्रबंधित किया जाता है
+- **त्रुटि प्रतिक्रियाएं**:
+  - `400`: आवश्यक फ़ील्ड गायब हैं या अमान्य पोर्ट संख्या है
+  - `401`: अनुमति नहीं है - अमान्य सत्र या CSRF टोकन
+  - `500`: SMTP कॉन्फ़िगरेशन सहेजने में विफल
+- **नोट्स**:
+  - सभी फ़ील्ड (होस्ट, पोर्ट, उपयोगकर्ता नाम, पासवर्ड, mailto) आवश्यक हैं
+  - पोर्ट 1 और 65535 के बीच एक वैध संख्या होनी चाहिए
+  - सुरक्षित फ़ील्ड बूलियन है (SSL/TLS के लिए true)
+  - पासवर्ड को पासवर्ड एंडपॉइंट के माध्यम से अलग से प्रबंधित किया जाता है
 
-## Email Configuration Ko Delete karein - `/api/configuration/email` {/* #delete-email-configuration---apiconfigurationemail */}
-- **Endpoint**: `/api/configuration/email`
-- **Method**: DELETE
-- **विवरण**: SMTP email suchnaayi configuration ko delete karta hai.
-- **Authentication**: वैध सत्र और CSRF टोकन की आवश्यकता होती है
-- **Response**:
+## ईमेल कॉन्फ़िगरेशन हटाएं - `/api/configuration/email` {/* #delete-email-configuration---apiconfigurationemail */}
+- **एंडपॉइंट**: `/api/configuration/email`
+- **विधि**: DELETE
+- **विवरण**: SMTP ईमेल सूचना कॉन्फ़िगरेशन को हटाता है।
+- **प्रमाणीकरण**: मान्य सत्र और CSRF टोकन की आवश्यकता है
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -97,21 +97,21 @@
   }
   ```
 
-- **Error Responses**:
-  - `401`: Unauthorized - अमान्य सत्र या CSRF टोकन
-  - `404`: हटाने के लिए कोई SMTP विन्यास नहीं मिला
-  - `500`: SMTP विन्यास हटाने में असफल
-- **Notes**:
+- **त्रुटि प्रतिक्रियाएं**:
+  - `401`: अनुमति नहीं है - अमान्य सत्र या CSRF टोकन
+  - `404`: हटाने के लिए कोई SMTP कॉन्फ़िगरेशन नहीं मिला
+  - `500`: SMTP कॉन्फ़िगरेशन हटाने में विफल
+- **नोट्स**:
   - यह ऑपरेशन SMTP कॉन्फ़िगरेशन को स्थायी रूप से हटा देता है
-  - अगर हटाने के लिए कोई कॉन्फ़िगरेशन मौजूद नहीं है तो 404 लौटाता है
-  - जब Daily Summary मोड सक्षम है तो 400 लौटाता है, क्योंकि उस मोड को SMTP की आवश्यकता होती है
+  - यदि हटाने के लिए कोई कॉन्फ़िगरेशन मौजूद नहीं है तो 404 लौटाता है
+  - दैनिक सारांश मोड सक्षम होने पर 400 लौटाता है, क्योंकि उस मोड के लिए SMTP की आवश्यकता है
 
-## Email Password Ko Update Karein - `/api/configuration/email/password` {/* #update-email-password---apiconfigurationemailpassword */}
-- **Endpoint**: `/api/configuration/email/password`
-- **Method**: PATCH
-- **विवरण**: SMTP authentication ke liye email password ko update karta hai.
-- **Authentication**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
-- **Request Body**:
+## ईमेल पासवर्ड अपडेट करें - `/api/configuration/email/password` {/* #update-email-password---apiconfigurationemailpassword */}
+- **एंडपॉइंट**: `/api/configuration/email/password`
+- **विधि**: PATCH
+- **विवरण**: SMTP प्रमाणीकरण के लिए ईमेल पासवर्ड को अपडेट करता है।
+- **प्रमाणीकरण**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
+- **अनुरोध बॉडी**:
 
   ```json
   {
@@ -126,7 +126,7 @@
   }
   ```
 
-- **Response**:
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -134,22 +134,22 @@
   }
   ```
 
-- **Error Responses**:
-  - `400`: पासवर्ड एक स्ट्रिंग होना चाहिए या आवश्यक विन्यास फ़ील्ड गायब हैं
-  - `401`: Unauthorized - अमान्य सत्र या CSRF टोकन
-  - `500`: ईमेल पासवर्ड अपडेट करने में असफल
-- **Notes**:
-  - पासवर्ड को खाली स्ट्रिंग के रूप में सेट किया जा सकता है पासवर्ड को साफ़ करने के लिए
-  - अगर कोई SMTP विन्यास मौजूद नहीं है, तो प्रदान किए गए विन्यास से एक न्यूनतम बनाता है
-  - जब कोई मौजूदा SMTP विन्यास मौजूद नहीं है तो कॉन्फ़िग पैरामीटर आवश्यक है
+- **त्रुटि प्रतिक्रियाएँ**:
+  - `400`: पासवर्ड एक स्ट्रिंग होना चाहिए या आवश्यक कॉन्फ़िग फ़ील्ड गायब हैं
+  - `401`: अधिकृत नहीं - अमान्य सत्र या CSRF टोकन
+  - `500`: ईमेल पासवर्ड अपडेट करने में विफल
+- **नोट्स**:
+  - पासवर्ड को साफ़ करने के लिए एक खाली स्ट्रिंग हो सकती है
+  - यदि कोई SMTP कॉन्फ़िग मौजूद नहीं है, तो प्रदान की गई कॉन्फ़िग से एक न्यूनतम कॉन्फ़िग बनाता है
+  - जब कोई मौजूदा SMTP कॉन्फ़िगरेशन मौजूद नहीं है तो कॉन्फ़िग पैरामीटर आवश्यक है
   - पासवर्ड को एन्क्रिप्शन का उपयोग करके सुरक्षित रूप से संग्रहीत किया जाता है
 
-## Email Password CSRF Token Praapt Karein - `/api/configuration/email/password` {/* #get-email-password-csrf-token---apiconfigurationemailpassword */}
-- **Endpoint**: `/api/configuration/email/password`
-- **Method**: GET
-- **विवरण**: Email password operations ke liye CSRF token praapt karta hai.
-- **Authentication**: मान्य सत्र की आवश्यकता होती है
-- **Response**:
+## ईमेल पासवर्ड CSRF टोकन प्राप्त करें - `/api/configuration/email/password` {/* #get-email-password-csrf-token---apiconfigurationemailpassword */}
+- **एंडपॉइंट**: `/api/configuration/email/password`
+- **विधि**: GET
+- **विवरण**: ईमेल पासवर्ड संचालन के लिए CSRF टोकन प्राप्त करता है।
+- **प्रमाणीकरण**: मान्य सत्र की आवश्यकता है
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -157,19 +157,19 @@
   }
   ```
 
-- **Error Responses**:
-  - `401`: Invalid ya expired session
-  - `500`: Failed to generate CSRF token
-- **Notes**:
-  - Password update operations ke liye CSRF token return karta hai
-  - Token generate karne ke liye session valid hona chahiye
+- **त्रुटि प्रतिक्रियाएँ**:
+  - `401`: अमान्य या समाप्त सत्र
+  - `500`: CSRF टोकन उत्पन्न करने में विफल
+- **नोट्स**:
+  - पासवर्ड अपडेट संचालन के लिए CSRF टोकन लौटाता है
+  - टोकन उत्पन्न करने के लिए सत्र मान्य होना चाहिए
 
-## Unified Configuration Praapt Karein - `/api/configuration/unified` {/* #get-unified-configuration---apiconfigurationunified */}
-- **Endpoint**: `/api/configuration/unified`
-- **Method**: GET
-- **विवरण**: Ek unified configuration object praapt karta hai jismein sabhi configuration data shamil hai jaise cron settings, notification frequency, aur backups wale servers.
-- **Authentication**: वैध सत्र और CSRF टोकन की आवश्यकता होती है
-- **Response**:
+## एकीकृत कॉन्फ़िगरेशन प्राप्त करें - `/api/configuration/unified` {/* #get-unified-configuration---apiconfigurationunified */}
+- **एंडपॉइंट**: `/api/configuration/unified`
+- **विधि**: GET
+- **विवरण**: सभी कॉन्फ़िगरेशन डेटा सहित एकीकृत कॉन्फ़िगरेशन ऑब्जेक्ट प्राप्त करता है जिसमें क्रोन सेटिंग्स, अधिसूचना आवृत्ति, और बैकअप के साथ सर्वर शामिल हैं।
+- **प्रमाणीकरण**: मान्य सत्र और CSRF टोकन की आवश्यकता है
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -256,19 +256,19 @@
   ```
 
 - **त्रुटि प्रतिक्रियाएँ**:
-  - `500`: एकीकृत कॉन्फ़िगरेशन प्राप्त करने में सर्वर त्रुटि
-- **टिप्पणियाँ**:
-  - एक ही प्रतिक्रिया में सभी कॉन्फ़िगरेशन डेटा लौटाता है
-  - क्रॉन सेटिंग्स, सूचना आवृत्ति, और बैकअप के साथ सर्वर शामिल हैं
+  - `500`: एकीकृत कॉन्फ़िगरेशन लाने में सर्वर त्रुटि
+- **नोट्स**:
+  - एकल प्रतिक्रिया में सभी कॉन्फ़िगरेशन डेटा लौटाता है
+  - इसमें क्रोन सेटिंग्स, अधिसूचना आवृत्ति, और बैकअप के साथ सर्वर शामिल हैं
   - ईमेल कॉन्फ़िगरेशन में `hasPassword` फ़ील्ड शामिल है लेकिन वास्तविक पासवर्ड नहीं
-  - बेहतर प्रदर्शन के लिए सभी डेटा को समानांतर में प्राप्त करता है
+  - बेहतर प्रदर्शन के लिए सभी डेटा समानांतर में लाता है
 
-## NTFY Configuration Praapt Karein - `/api/configuration/ntfy` {/* #get-ntfy-configuration---apiconfigurationntfy */}
-- **Endpoint**: `/api/configuration/ntfy`
-- **Method**: GET
-- **विवरण**: Vartaman NTFY Configuration settings praapt karta hai.
-- **Authentication**: वैध सत्र और CSRF टोकन की आवश्यकता होती है
-- **Response**:
+## NTFY कॉन्फ़िगरेशन प्राप्त करें - `/api/configuration/ntfy` {/* #get-ntfy-configuration---apiconfigurationntfy */}
+- **एंडपॉइंट**: `/api/configuration/ntfy`
+- **विधि**: GET
+- **विवरण**: वर्तमान NTFY कॉन्फ़िगरेशन सेटिंग्स प्राप्त करता है।
+- **प्रमाणीकरण**: मान्य सत्र और CSRF टोकन की आवश्यकता है
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -281,19 +281,19 @@
   ```
 
 - **त्रुटि प्रतिक्रियाएँ**:
-  - `401`: अनधिकृत - अमान्य सत्र या CSRF टोकन
-  - `500`: NTFY कॉन्फ़िगरेशन प्राप्त करने में असफल
-- **टिप्पणियाँ**:
+  - `401`: अधिकृत नहीं - अमान्य सत्र या CSRF टोकन
+  - `500`: NTFY कॉन्फ़िगरेशन लाने में विफल
+- **नोट्स**:
   - वर्तमान NTFY कॉन्फ़िगरेशन सेटिंग्स लौटाता है
-  - सूचना प्रणाली प्रबंधन के लिए उपयोग किया जाता है
-  - कॉन्फ़िगरेशन डेटा तक पहुंचने के लिए प्रमाणीकरण की आवश्यकता होती है
+  - अधिसूचना प्रणाली प्रबंधन के लिए उपयोग किया जाता है
+  - कॉन्फ़िगरेशन डेटा तक पहुँचने के लिए प्रमाणीकरण की आवश्यकता है
 
-## Notification Configuration Praapt Karein - `/api/configuration/notifications` {/* #get-notification-configuration---apiconfigurationnotifications */}
-- **Endpoint**: `/api/configuration/notifications`
-- **Method**: GET
-- **विवरण**: Vartaman notification frequency configuration praapt karta hai.
-- **Authentication**: वैध सत्र और CSRF टोकन की आवश्यकता होती है
-- **Response**:
+## अधिसूचना कॉन्फ़िगरेशन प्राप्त करें - `/api/configuration/notifications` {/* #get-notification-configuration---apiconfigurationnotifications */}
+- **एंडपॉइंट**: `/api/configuration/notifications`
+- **विधि**: GET
+- **विवरण**: वर्तमान अधिसूचना आवृत्ति कॉन्फ़िगरेशन प्राप्त करता है।
+- **प्रमाणीकरण**: मान्य सत्र और CSRF टोकन की आवश्यकता है
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -302,18 +302,18 @@
   ```
 
 - **त्रुटि प्रतिक्रियाएँ**:
-  - `401`: अनधिकृत - अमान्य सत्र या CSRF टोकन
-  - `500`: कॉन्फ़िगरेशन प्राप्त करने में असफल
-- **टिप्पणियाँ**:
-  - वर्तमान सूचना आवृत्ति कॉन्फ़िगरेशन प्राप्त करता है
-  - विलंबित बैकअप सूचना प्रबंधन के लिए उपयोग किया जाता है
-  - एक में से एक लौटाता है: `"onetime"`, `"every_day"`, `"every_week"`, `"every_month"`
+  - `401`: अधिकृत नहीं - अमान्य सत्र या CSRF टोकन
+  - `500`: कॉन्फ़िग लाने में विफल
+- **नोट्स**:
+  - वर्तमान अधिसूचना आवृत्ति कॉन्फ़िगरेशन प्राप्त करता है
+  - अतिदेय बैकअप अधिसूचना प्रबंधन के लिए उपयोग किया जाता है
+  - लौटाता है: `"onetime"`, `"every_day"`, `"every_week"`, `"every_month"`
 
-## Notification Configuration Ko Update Karein - `/api/configuration/notifications` {/* #update-notification-configuration---apiconfigurationnotifications */}
-- **Endpoint**: `/api/configuration/notifications`
-- **Method**: POST
-- **विवरण**: Notification configuration ko update karta hai (NTFY settings ya notification frequency).
-- **प्रमाणीकरण**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
+## अधिसूचना कॉन्फ़िगरेशन अपडेट करें - `/api/configuration/notifications` {/* #update-notification-configuration---apiconfigurationnotifications */}
+- **एंडपॉइंट**: `/api/configuration/notifications`
+- **विधि**: POST
+- **विवरण**: अधिसूचना कॉन्फ़िगरेशन (NTFY सेटिंग्स या अधिसूचना आवृत्ति) को अपडेट करता है।
+- **प्रमाणीकरण**: मान्य सत्र और CSRF टोकन की आवश्यकता है
 - **अनुरोध बॉडी**:
   NTFY कॉन्फ़िगरेशन के लिए:
 
@@ -360,26 +360,26 @@
   ```
 
 - **उपलब्ध मान**: `"onetime"`, `"every_day"`, `"every_week"`, `"every_month"`
-- **त्रुटि प्रतिक्रियाएँ**:
+- **त्रुटि प्रतिक्रियाएं**:
   - `401`: अनधिकृत - अमान्य सत्र या CSRF टोकन
-  - `400`: NTFY कॉन्फ़िगरेशन आवश्यक है या अमान्य मान
-  - `500`: सूचना कॉन्फ़िगरेशन अपडेट करने में सर्वर त्रुटि
+  - `400`: NTFY कॉन्फ़िगरेशन आवश्यक है या अमान्य मान है
+  - `500`: सूचना कॉन्फ़िगरेशन अपडेट करते समय सर्वर त्रुटि
 - **टिप्पणियाँ**:
   - NTFY कॉन्फ़िगरेशन और सूचना आवृत्ति अपडेट दोनों का समर्थन करता है
-  - जब ntfy फ़ील्ड प्रदान की जाती है तो केवल NTFY कॉन्फ़िगरेशन अपडेट करता है
-  - जब मान फ़ील्ड प्रदान की जाती है तो सूचना आवृत्ति अपडेट करता है
-  - अगर कोई टॉपिक प्रदान नहीं की जाती है तो डिफ़ॉल्ट टॉपिक जनरेट करता है
-  - मौजूदा कॉन्फ़िगरेशन सेटिंग्स को संरक्षित करता है
-  - `accessToken` फ़ील्ड का उपयोग करता है बजाय अलग-अलग यूज़रनेम/पासवर्ड फ़ील्ड
-  - अनुमत विकल्पों के खिलाफ सूचना आवृत्ति मान की वैधता की जाँच करता है
-  - यह निर्धारित करता है कि विलंबित सूचनाएँ कितनी बार भेजी जाती हैं
+  - ntfy फ़ील्ड प्रदान किए जाने पर केवल NTFY कॉन्फ़िगरेशन को अपडेट करता है
+  - value फ़ील्ड प्रदान किए जाने पर सूचना आवृत्ति को अपडेट करता है
+  - यदि कोई नहीं प्रदान किया गया है तो डिफ़ॉल्ट विषय जनरेट करता है
+  - मौजूदा कॉन्फ़िगरेशन सेटिंग्स को सुरक्षित रखता है
+  - अलग उपयोगकर्ता नाम/पासवर्ड फ़ील्ड के बजाय `accessToken` फ़ील्ड का उपयोग करता है
+  - अनुमत विकल्पों के विरुद्ध सूचना आवृत्ति मान को मान्य करता है
+  - प्रभावित करता है कि अतिदेय सूचनाएं कितनी बार भेजी जाती हैं
 
-## Backup Settings Ko Update Karein - `/api/configuration/backup-settings` {/* #update-backup-settings---apiconfigurationbackup-settings */}
-- **Endpoint**: `/api/configuration/backup-settings`
-- **Method**: POST
-- **विवरण**: Specific servers/backups ke liye backup notification settings ko update karta hai.
-- **Authentication**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
-- **Request Body**:
+## बैकअप सेटिंग्स अपडेट करें - `/api/configuration/backup-settings` {/* #update-backup-settings---apiconfigurationbackup-settings */}
+- **एंडपॉइंट**: `/api/configuration/backup-settings`
+- **विधि**: POST
+- **विवरण**: विशिष्ट सर्वर/बैकअप के लिए बैकअप सूचनाएं सेटिंग्स को अपडेट करता है।
+- **प्रमाणीकरण**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
+- **अनुरोध बॉडी**:
 
   ```json
   {
@@ -394,7 +394,7 @@
   }
   ```
 
-- **Response**:
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -402,21 +402,21 @@
   }
   ```
 
-- **त्रुटि प्रतिक्रियाएँ**:
+- **त्रुटि प्रतिक्रियाएं**:
   - `401`: अनधिकृत - अमान्य सत्र या CSRF टोकन
   - `400`: backupSettings आवश्यक है
-  - `500`: बैकअप सेटिंग्स अपडेट करने में सर्वर त्रुटि
-- **Notes**:
-  - विशिष्ट server/backup के लिए backup notification settings को update करता है
-  - निष्क्रिय backup के लिए विलंबित backup notifications को साफ़ करता है
-  - timeout settings बदलने पर notifications को clear करता है
+  - `500`: बैकअप सेटिंग्स अपडेट करते समय सर्वर त्रुटि
+- **टिप्पणियाँ**:
+  - विशिष्ट सर्वर/बैकअप के लिए बैकअप सूचनाएं सेटिंग्स को अपडेट करता है
+  - अक्षम बैकअप के लिए अतिदेय बैकअप सूचनाएं साफ़ करता है
+  - टाइमआउट सेटिंग्स बदलने पर सूचनाएं साफ़ करता है
 
-## Notification Templates Ko Update Karein - `/api/configuration/templates` {/* #update-notification-templates---apiconfigurationtemplates */}
-- **Endpoint**: `/api/configuration/templates`
-- **Method**: POST
-- **विवरण**: Notification Templates ko update karta hai.
-- **Authentication**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
-- **Request Body**:
+## सूचना टेम्पलेट अपडेट करें - `/api/configuration/templates` {/* #update-notification-templates---apiconfigurationtemplates */}
+- **एंडपॉइंट**: `/api/configuration/templates`
+- **विधि**: POST
+- **विवरण**: सूचना टेम्पलेट को अपडेट करता है।
+- **प्रमाणीकरण**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
+- **अनुरोध बॉडी**:
 
   ```json
   {
@@ -431,7 +431,7 @@
   }
   ```
 
-- **Response**:
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -439,68 +439,49 @@
   }
   ```
 
-- **Error Responses**:
-  - `401`: Unauthorized - Invalid session या CSRF token
+- **त्रुटि प्रतिक्रियाएं**:
+  - `401`: अनधिकृत - अमान्य सत्र या CSRF टोकन
   - `400`: templates आवश्यक हैं
-  - `500`: Notification templates को update करने में server error
-- **Notes**:
-  - विभिन्न बैकअप स्थितियों के लिए अधिसूचना टेम्प्लेट्स को अपडेट करता है
-  - मौजूदा कॉन्फ़िगरेशन सेटिंग्स को संरक्षित करता है
-  - टेम्प्लेट्स Markdown ईमेल बॉडी और `{placeholder}` प्रतिस्थापन का समर्थन करते हैं
-  - एक `dailySummary` ईमेल टेम्पलेट (विषय और मार्कडाउन बॉडी) आवश्यक है
+  - `500`: सूचना टेम्पलेट अपडेट करते समय सर्वर त्रुटि
+- **टिप्पणियाँ**:
+  - विभिन्न बैकअप स्थितियों के लिए सूचना टेम्पलेट को अपडेट करता है
+  - मौजूदा कॉन्फ़िगरेशन सेटिंग्स को सुरक्षित रखता है
+  - टेम्पलेट Markdown ईमेल बॉडी और `{placeholder}` प्रतिस्थापन का समर्थन करते हैं
+  - एक `dailySummary` ईमेल टेम्पलेट (विषय और Markdown बॉडी) आवश्यक है
 
 ## दैनिक सारांश - `/api/configuration/daily-summary` {/* #daily-summary---apiconfigurationdaily-summary */}
-- **Endpoint**: `/api/configuration/daily-summary`
-- **Method**: GET, POST
-- **Description**: दैनिक सारांश मोड को पढ़ता या अपडेट करता है। GET सैनिटाइज़्ड सेटिंग्स, डिस्पैचर स्वास्थ्य, अगला घटना, और ईमेल वितरण स्थिति लौटाता है। POST `enabled`, `utcTime` (`HH:mm` UTC), `timeZone` (अंतिम सहेजे गए ब्राउज़र IANA समय क्षेत्र), वैकल्पिक `publicUrl`, और वैकल्पिक `smtpRecipient` (खाली ईमेल सेटिंग्स SMTP प्राप्तकर्ता का उपयोग करता है) सहेजता है। सक्षम करने के लिए वैध SMTP की आवश्यकता होती है। `utcTime` बदलने से `daily-summary-dispatch` को `minute hour * * *` UTC में अपडेट किया जाता है और क्रॉन सेवा को पुनः लोड किया जाता है। अनुसूची बदलने से अगली **भविष्य की** घटना सेट की जाती है।
-- **Authentication**: GET के लिए एक वैध सत्र और CSRF टोकन की आवश्यकता होती है। POST के लिए एक व्यवस्थापक सत्र और CSRF टोकन की आवश्यकता होती है।
-- **Error Responses**:
-  - `400`: अमान्य समय/समय क्षेत्र, अमान्य सार्वजनिक URL, अमान्य SMTP प्राप्तकर्ता, या SMTP का अभाव
+- **एंडपॉइंट**: `/api/configuration/daily-summary`
+- **विधि**: GET, POST
+- **विवरण**: दैनिक सारांश मोड को पढ़ता है या अपडेट करता है। GET सैनिटाइज़ की गई सेटिंग्स, डिस्पैचर स्वास्थ्य, अगला घटनाक्रम, और ईमेल डिलीवरी स्थिति लौटाता है। POST `enabled`, `utcTime` (`HH:mm` UTC), `timeZone` (अंतिम सहेजें से ब्राउज़र IANA टाइमज़ोन), वैकल्पिक `publicUrl`, और वैकल्पिक `smtpRecipient` (खाली होने पर ईमेल सेटिंग्स SMTP प्राप्तकर्ता का उपयोग करता है) को सहेजता है। सक्षम करने के लिए मान्य SMTP आवश्यक है। `utcTime` बदलने से `daily-summary-dispatch` `minute hour * * *` UTC में अपडेट हो जाता है और cron सेवा रीलोड हो जाती है। शेड्यूल बदलने से अगला **भविष्य का** घटनाक्रम सेट होता है।
+- **प्रमाणीकरण**: GET के लिए एक मान्य सत्र और CSRF टोकन की आवश्यकता होती है। POST के लिए एक व्यवस्थापक सत्र और CSRF टोकन की आवश्यकता होती है।
+- **त्रुटि प्रतिक्रियाएं**:
+  - `400`: अमान्य समय/समय क्षेत्र, अमान्य सार्वजनिक URL, अमान्य SMTP प्राप्तकर्ता, या अनुपलब्ध SMTP
   - `401`: अनधिकृत
-  - `500`: Daily Summary को पढ़ने या अपडेट करने में असफल
+  - `500`: दैनिक सारांश को पढ़ने या अपडेट करने में विफल
 
 ## दैनिक सारांश भेजें - `/api/configuration/daily-summary/send` {/* #send-daily-summary---apiconfigurationdaily-summarysend */}
-- **Endpoint**: `/api/configuration/daily-summary/send`
-- **Method**: POST
-- **Description**: वर्तमान स्थिति का एक अतिरिक्त स्नैपशॉट तुरंत भेजता है। अगली अनुसूचित घटना का उपयोग नहीं करता। स्टोर किए गए SMTP का उपयोग करता है। जब सेट किया जाता है तो `daily_summary.smtpRecipient` को भेजता है, अन्यथा ईमेल सेटिंग्स प्राप्तकर्ता। अनुरोध में प्राप्तकर्ता पते स्वीकार नहीं करता। ऑडिट लॉग में `daily_summary_sent` रिकॉर्ड करता है (प्रणाली)।
-- **Authentication**: व्यवस्थापक सेशन और CSRF टोकन की आवश्यकता होती है
+- **एंडपॉइंट**: `/api/configuration/daily-summary/send`
+- **विधि**: POST
+- **विवरण**: वर्तमान-स्थिति का एक अतिरिक्त स्नैपशॉट तुरंत भेजता है। अगली निर्धारित घटना का उपभोग नहीं करता है। संग्रहीत SMTP का उपयोग करता है। सेट होने पर `daily_summary.smtpRecipient` को भेजता है, अन्यथा ईमेल सेटिंग्स प्राप्तकर्ता को। अनुरोध में प्राप्तकर्ता पते स्वीकार नहीं करता है। ऑडिट लॉग (सिस्टम) में `daily_summary_sent` रिकॉर्ड करता है।
+- **प्रमाणीकरण**: व्यवस्थापक सत्र और CSRF टोकन की आवश्यकता होती है
 
-## Daily Summary Phir Se Try Karein - `/api/configuration/daily-summary/retry` {/* #retry-daily-summary---apiconfigurationdaily-summaryretry */}
-- **Endpoint**: `/api/configuration/daily-summary/retry`
-- **Method**: POST
-- **विवरण**: Persisted payload se failed channels ko phir se try karta hai. Optional body `{ "occurrenceKey": "..." }`; otherwise latest failed email delivery ko phir se try karta hai.
-- **Authentication**: व्यवस्थापक सेशन और CSRF टोकन की आवश्यकता होती है
+## दैनिक सारांश पुनः प्रयास करें - `/api/configuration/daily-summary/retry` {/* #retry-daily-summary---apiconfigurationdaily-summaryretry */}
+- **एंडपॉइंट**: `/api/configuration/daily-summary/retry`
+- **विधि**: POST
+- **विवरण**: स्थायी पेलोड से विफल चैनलों का पुनः प्रयास करता है। वैकल्पिक बॉडी `{ "occurrenceKey": "..." }`; अन्यथा नवीनतम विफल ईमेल डिलीवरी का पुनः प्रयास करता है।
+- **प्रमाणीकरण**: व्यवस्थापक सत्र और CSRF टोकन की आवश्यकता होती है
 
-## Daily Summary Ka पूर्वावलोकन Karein - `/api/configuration/daily-summary/preview` {/* #preview-daily-summary---apiconfigurationdaily-summarypreview */}
-- **Endpoint**: `/api/configuration/daily-summary/preview`
-- **Method**: POST
-- **विवरण**: Current snapshot ko bina bheje aur bina delivery-ledger rows likhe render karta hai.
-- **Authentication**: वैलिड सेशन और CSRF टोकन की आवश्यकता होती है
+## दैनिक सारांश का पूर्वावलोकन करें - `/api/configuration/daily-summary/preview` {/* #preview-daily-summary---apiconfigurationdaily-summarypreview */}
+- **एंडपॉइंट**: `/api/configuration/daily-summary/preview`
+- **विधि**: POST
+- **विवरण**: बिना भेजे और डिलीवरी-लेज़र पंक्तियों को लिखे बिना वर्तमान स्नैपशॉट को रेंडर करता है।
+- **प्रमाणीकरण**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
 
-## Overdue Tolerance Praapt Karein - `/api/configuration/overdue-tolerance` {/* #get-overdue-tolerance---apiconfigurationoverdue-tolerance */}
-- **Endpoint**: `/api/configuration/overdue-tolerance`
-- **Method**: GET
-- **विवरण**: Vartaman Overdue tolerance setting praapt karta hai.
-- **Response**:
-
-  ```json
-  {
-    "overdue_tolerance": "2h"
-  }
-  ```
-
-- **Error Responses**:
-  - `500`: Overdue tolerance प्राप्त करने में असफल
-- **Notes**:
-  - वर्तमान overdue tolerance setting को लौटाता है
-  - वर्तमान configuration को प्रदर्शित करने के लिए उपयोग किया जाता है
-
-## Overdue Tolerance Ko Update Karein - `/api/configuration/overdue-tolerance` {/* #update-overdue-tolerance---apiconfigurationoverdue-tolerance */}
-- **Endpoint**: `/api/configuration/overdue-tolerance`
-- **Method**: POST
-- **विवरण**: Overdue tolerance setting ko update karta hai.
-- **Authentication**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
-- **Request Body**:
+## अतिदेय सहनशीलता प्राप्त करें - `/api/configuration/overdue-tolerance` {/* #get-overdue-tolerance---apiconfigurationoverdue-tolerance */}
+- **एंडपॉइंट**: `/api/configuration/overdue-tolerance`
+- **विधि**: GET
+- **विवरण**: वर्तमान अतिदेय सहनशीलता सेटिंग प्राप्त करता है।
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -508,7 +489,26 @@
   }
   ```
 
-- **Response**:
+- **त्रुटि प्रतिक्रियाएं**:
+  - `500`: अतिदेय सहनशीलता प्राप्त करने में विफल
+- **नोट्स**:
+  - वर्तमान अतिदेय सहनशीलता सेटिंग लौटाता है
+  - वर्तमान कॉन्फ़िगरेशन प्रदर्शित करने के लिए उपयोग किया जाता है
+
+## अतिदेय सहनशीलता अपडेट करें - `/api/configuration/overdue-tolerance` {/* #update-overdue-tolerance---apiconfigurationoverdue-tolerance */}
+- **एंडपॉइंट**: `/api/configuration/overdue-tolerance`
+- **विधि**: POST
+- **विवरण**: अतिदेय सहनशीलता सेटिंग को अपडेट करता है।
+- **प्रमाणीकरण**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
+- **अनुरोध बॉडी**:
+
+  ```json
+  {
+    "overdue_tolerance": "2h"
+  }
+  ```
+
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -516,21 +516,21 @@
   }
   ```
 
-- **Error Responses**:
-  - `401`: Unauthorized - Invalid session या CSRF token
+- **त्रुटि प्रतिक्रियाएं**:
+  - `401`: अनधिकृत - अमान्य सत्र या CSRF टोकन
   - `400`: overdue_tolerance आवश्यक है
-  - `500`: Overdue tolerance को update करने में server error
-- **Notes**:
-  - Overdue tolerance setting को update करता है (`"1h"`, `"2h"` आदि जैसे string format स्वीकार करता है; नए installs के लिए default `2h` है)
-  - जब backups को विलंबित माना जाता है, उस पर प्रभाव डालता है
-  - Overdue backup checker द्वारा उपयोग किया जाता है
+  - `500`: अतिदेय सहनशीलता को अपडेट करने में सर्वर त्रुटि
+- **नोट्स**:
+  - अतिदेय सहनशीलता सेटिंग को अपडेट करता है (`"1h"`, `"2h"`, आदि जैसे स्ट्रिंग प्रारूप स्वीकार करता है; नए इंस्टॉलेशन के लिए डिफ़ॉल्ट `2h` है)
+  - बैकअप को कब अतिदेय माना जाए, इस पर प्रभाव डालता है
+  - अतिदेय बैकअप चेकर द्वारा उपयोग किया जाता है
 
-## External API Security - `/api/configuration/external-api-security` {/* #external-api-security---apiconfigurationexternal-api-security */}
-- **Endpoint**: `/api/configuration/external-api-security`
-- **Methods**: GET, PATCH
-- **विवरण**: Padhta ya update karta hai ki बाहरी एपीआई ko key chahiye ya nahin, saath hi `/api/upload` Aakar aur rate limits.
-- **प्रमाणीकरण**: व्यवस्थापक विशेषाधिकार, मान्य सत्र और CSRF टोकन की आवश्यकता होती है
-- **PATCH शरीर**:
+## बाहरी API सुरक्षा - `/api/configuration/external-api-security` {/* #external-api-security---apiconfigurationexternal-api-security */}
+- **एंडपॉइंट**: `/api/configuration/external-api-security`
+- **विधियां**: GET, PATCH
+- **विवरण**: यह पढ़ता या अपडेट करता है कि क्या बाहरी API को कुंजी की आवश्यकता है, साथ ही `/api/upload` आकार और दर सीमाएं भी।
+- **प्रमाणीकरण**: एडमिन विशेषाधिकार, मान्य सत्र और CSRF टोकन की आवश्यकता होती है
+- **PATCH बॉडी**:
 
   ```json
   {
@@ -544,8 +544,8 @@
   }
   ```
 
-## आईपी अनुमति सूची - `/api/configuration/ip-allowlist` {/* #ip-allowlist---apiconfigurationip-allowlist */}
-- **Endpoint**: `/api/configuration/ip-allowlist`
-- **Methods**: GET, PATCH
-- **विवरण**: विश्वसनीय प्रॉक्सी aur admin / external-API CIDR allowlists padhta ya update karta hai. Admin list enable karna fail hoga jab tak current client IP pehle se listed nahin hai (loopback exempt hai).
-- **Authentication**: एडमिन प्राइविलेज, वैध सेशन और CSRF टोकन की आवश्यकता होती है
+## IP अनुमति सूची - `/api/configuration/ip-allowlist` {/* #ip-allowlist---apiconfigurationip-allowlist */}
+- **एंडपॉइंट**: `/api/configuration/ip-allowlist`
+- **विधियां**: GET, PATCH
+- **विवरण**: विश्वसनीय प्रॉक्सी और एडमिन / बाहरी-API CIDR अनुमति सूचियों को पढ़ता या अपडेट करता है। एडमिन सूची को सक्षम करना तब तक विफल रहता है जब तक कि वर्तमान क्लाइंट IP पहले से सूचीबद्ध न हो (लूपबैक को छूट प्राप्त है)।
+- **प्रमाणीकरण**: एडमिन विशेषाधिकारों, मान्य सत्र और CSRF टोकन की आवश्यकता होती है

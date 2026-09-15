@@ -3,7 +3,7 @@
 ## Gesundheitsprüfung - `/api/health` {/* #health-check---apihealth */}
 - **Endpunkt**: `/api/health`
 - **Methode**: GET
-- **Beschreibung**: Geringfügige Lebensprüfung für die Anwendung und die SQLite-Verbindung. Docker `HEALTHCHECK` und die Einstiegsschleife verwenden diese URL auf localhost.
+- **Beschreibung**: Einfache Lebensprüfung für die Anwendung und die SQLite-Verbindung. Docker `HEALTHCHECK` und die Einstiegsschleife verwenden diese URL auf localhost.
 - **Antwort** (gesund):
 
   ```json
@@ -18,7 +18,7 @@
   }
   ```
 
-- **Antwort** (beeinträchtigt):
+- **Antwort** (abgestuft):
 
   ```json
   {
@@ -49,8 +49,8 @@
   - Gibt 503 zurück, wenn die Initialisierung oder die Verbindungsprüfung fehlschlägt
   - Listet keine Tabellennamen auf oder führt Dashboard-Abfragen aus
   - Erfordert niemals einen API-Schlüssel
-  - Wenn eine der IP-Zulassungslisten aktiviert ist, muss die Client-IP eine Schleifenadresse sein oder in der Admin- oder externen CIDR-Liste aufgeführt sein (`403` `IP_NOT_ALLOWED` sonst)
-  - Nicht-Schleifenadressen-Clients werden drosselnd behandelt (`429` `PROBE_RATE_LIMITED`, 30/Minute und 120/Stunde). Schleifenadressen (`127.0.0.1`, `::1`) werden nie gedrosselt
+  - Wenn eine der IP-Zulassungslisten aktiviert ist, muss die Client-IP eine Schleife sein oder in der Admin- oder externen CIDR-Liste aufgeführt sein (`403` `IP_NOT_ALLOWED` andernfalls)
+  - Nicht-Schleifen-Clients werden drosselnd (`429` `PROBE_RATE_LIMITED`, 30 pro Minute und 120 pro Stunde). Schleifen (`127.0.0.1`, `::1`) werden nie gedrosselt
 
 ## Verbindungsprüfung - `/api/ping` {/* #connectivity-probe---apiping */}
 - **Endpunkt**: `/api/ping`
@@ -66,5 +66,5 @@
 
 - **Hinweise**:
   - Erfordert niemals einen API-Schlüssel oder ein Sitzungs-Cookie
-  - Gleiche Zulassungslisten-Vereinigung und Schleifenregeln wie `/api/health`
-  - Nicht-Schleifenadressen-Clients werden drosselnd behandelt (`429` `PROBE_RATE_LIMITED`, 60/Minute und 600/Stunde)
+  - Selbe Zulassungslisten-Vereinigung und Schleifen-Regeln wie `/api/health`
+  - Nicht-Schleifen-Clients werden drosselnd (`429` `PROBE_RATE_LIMITED`, 60 pro Minute und 600 pro Stunde)

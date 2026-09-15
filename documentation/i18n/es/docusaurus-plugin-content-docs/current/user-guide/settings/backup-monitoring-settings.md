@@ -1,8 +1,8 @@
-# Monitoreo de copias de seguridad {/* #backup-monitoring */}
+# Monitoreo de Copias de Seguridad {/* #backup-monitoring */}
 
 ![Alertas de copia de seguridad](../../assets/screen-settings-monitoring.png)
 
-## Filtrado de Servidor {/* #server-filtering */}
+## Filtrado de servidores {/* #server-filtering */}
 
 La lista de servidores en esta página se puede filtrar utilizando el campo de filtro.
 
@@ -13,46 +13,46 @@ Cuando **Resumen Diario** está habilitado, la detección de vencimiento contin�
 - URL del servidor
 - Nombres de trabajos de copia de seguridad
 
-Esto facilita la localización rápida de servidores o copias de seguridad específicos en la configuración de monitoreo cuando se administran muchos sistemas.
+Esto facilita la ubicación rápida de servidores o copias de seguridad específicas en la configuración de monitoreo cuando se gestionan muchos sistemas.
 
-## Configurar Monitoreo de copias de seguridad {/* #configure-per-backup-monitoring-settings */}
+## Configurar Configuración de Monitoreo por Copia de Seguridad {/* #configure-per-backup-monitoring-settings */}
 
--  **Nombre del servidor**: El nombre del servidor que se monitoreará en busca de copias de seguridad atrasadas. 
-   - Haga clic en <SvgIcon svgFilename="duplicati_logo.svg" height="18"/> para abrir la interfaz web del servidor Duplicati
-   - Haga clic en <IIcon2 icon="lucide:download" height="18"/> para recopilar registros de copia de seguridad de este servidor.
-- **Nombre del respaldo**: El nombre de la copia de seguridad que se monitoreará en busca de copias atrasadas.
-- **Próxima Ejecución**: La próxima hora programada para la copia de seguridad, mostrada en verde si está programada en el futuro, o en rojo si está retrasada. Al pasar el cursor sobre el valor de "Próxima Ejecución", aparece una sugerencia que muestra la marca de tiempo de la última copia de seguridad desde la base de datos, con formato de fecha/hora completa y tiempo relativo.
-- **Monitoreo de Copias de Seguridad**: Habilita o deshabilita el monitoreo de copias de seguridad para esta copia.
-- **Intervalo Esperado de Copia de Seguridad**: El intervalo esperado entre copias de seguridad.
+- **Nombre del servidor**: El nombre del servidor para monitorear copias de seguridad vencidas. 
+   - Haga clic en <SvgIcon svgFilename="duplicati_logo.svg" height="18"/> para abrir la interfaz web de Duplicati del servidor
+   - Haga clic en <IIcon2 icon="lucide:download" height="18"/> para recopilar registros de copias de seguridad de este servidor.
+- **Nombre de la copia de seguridad**: El nombre de la copia de seguridad para monitorear copias de seguridad vencidas.
+- **Próxima ejecución**: La próxima hora de copia de seguridad programada se muestra en verde si está programada en el futuro, o en rojo si está vencida. Al pasar el cursor sobre el valor de "Próxima ejecución", se muestra un tooltip que muestra la marca de tiempo de la última copia de seguridad de la base de datos, formateada con fecha/hora completa y tiempo relativo.
+- **Monitoreo de copias de seguridad**: Habilitar o deshabilitar el monitoreo de copias de seguridad para esta copia de seguridad.
+- **Intervalo de copia de seguridad esperado**: El intervalo de copia de seguridad esperado.
 - **Unidad**: La unidad del intervalo esperado.
-- **Días Permitidos**: Los días de la semana permitidos para la copia de seguridad.
+- **Días permitidos**: Los días de la semana permitidos para la copia de seguridad.
 
-Si los iconos al lado del nombre del servidor están atenuados, el servidor no está configurado en [Configuración → Configuración del servidor](/user-guide/settings/server-settings).
+Si los iconos a la derecha del nombre del servidor están desactivados, el servidor no está configurado en [Configuración → Configuración del servidor](/user-guide/settings/server-settings).
 
 :::note
-Cuando recopila logs de backup de un servidor Duplicati, **duplistatus** actualiza automáticamente los intervalos de monitoreo de backup y las configuraciones.
+Al recopilar registros de copias de seguridad de un servidor Duplicati, **duplistatus** actualiza automáticamente los intervalos y configuraciones de monitoreo de copias de seguridad.
 :::
 
 :::tip
-Para obtener los mejores resultados, recopile logs de backup después de cambiar la configuración de intervalos de trabajos de backup en su servidor Duplicati. Esto garantiza que **duplistatus** se mantenga sincronizado con su configuración actual.
+Para obtener los mejores resultados, recopile registros de copias de seguridad después de cambiar la configuración de intervalos de trabajos de copia de seguridad en su servidor Duplicati. Esto asegura que **duplistatus** se mantenga sincronizado con su configuración actual.
 :::
 
-## Configuraciones globales {/* #global-configurations */}
+## Configuraciones Globales {/* #global-configurations */}
 
 Estas configuraciones se aplican a todas las copias de seguridad:
 
-| Configuración                         | Descripción                                                                                                                                                                                                                                                                                                                             |
+| Configuración                     | Descripción                                                                                                                                                                                                                                                                                                                             |
 |:--------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Tolerancia de Copia de Seguridad**            | El período de gracia (tiempo adicional permitido) que se agrega al tiempo esperado de copia de seguridad antes de marcarla como atrasada. El valor predeterminado es **1 hora**.                                                                                                                                                                                                             |
-| **Intervalo de Monitoreo de Copias de Seguridad** | Con qué frecuencia el sistema verifica la existencia de copias de seguridad atrasadas. El valor predeterminado es **5 minutos**.                                                                                                                                                                                                                                                            |
-| **Frecuencia de Notificaciones**      | Con qué frecuencia enviar notificaciones de retraso: <br/> **Una vez`: Send **just one** notification when the backup becomes overdue. <br/> `Cada día`: Send **daily** notifications while overdue (default). <br/> `Cada semana`: Send **weekly** notifications while overdue. <br/> `Cada mes**: Envía notificaciones **mensuales** mientras esté atrasado. |
+| **Tolerancia de copia de seguridad**            | El período de gracia (tiempo adicional permitido) agregado al tiempo de copia de seguridad esperado antes de marcar como vencido. El valor predeterminado es **1 hora**.                                                                                                                                                                                                             |
+| **Intervalo de monitoreo de copias de seguridad** | Con qué frecuencia el sistema verifica las copias de seguridad vencidas. El valor predeterminado es **5 minutos**.                                                                                                                                                                                                                                                            |
+| **Frecuencia de notificaciones**      | Con qué frecuencia enviar notificaciones de vencimiento: <br/> **Una vez`: Send **just one** notification when the backup becomes overdue. <br/> `Todos los días`: Send **daily** notifications while overdue (default). <br/> `Cada semana`: Send **weekly** notifications while overdue. <br/> `Cada mes**: Enviar notificaciones **mensuales** mientras estén vencidas. |
 
-## Acciones disponibles {/* #available-actions */}
+## Acciones Disponibles {/* #available-actions */}
 
-| Botón                                                              | Descripción                                                                                                                           |
+| Botón                                                               | Descripción                                                                                                                           |
 |:--------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------|
-| <IconButton label="Guardar la configuración de monitoreo de copias de seguridad" />              | Guarda la configuración, borra los temporizadores de cualquier copia de seguridad deshabilitada y realiza una verificación de retrasos.                                                |
-| <IconButton icon="lucide:import" label="Recopilar todo (#)"/>          | Recopila registros de copia de seguridad de todos los servidores configurados; entre paréntesis, el número de servidores de los que se recopilará.                                   |
-| <IconButton icon="lucide:download" label="Descargar CSV"/>           | Descarga un archivo CSV que contiene toda la configuración de monitoreo de copias de seguridad y la "Marca de tiempo de la última copia de seguridad (BD)" desde la base de datos.               |
-| <IconButton icon="lucide:refresh-cw" label="Verificar ahora"/>            | Ejecuta inmediatamente la verificación de copias de seguridad atrasadas. Esto es útil después de cambiar la configuración. También desencadena un recálculo de "Próxima Ejecución". |
-| <IconButton icon="lucide:timer-reset" label="Restablecer notificaciones"/> | Restablece la última notificación de retraso enviada para todas las copias de seguridad.                                                                            |
+| <IconButton label="Guardar configuración de monitoreo de copias de seguridad" />              | Guarda la configuración, borra los temporizadores de cualquier copia de seguridad desactivada y ejecuta una comprobación de vencimiento.                                                |
+| <IconButton icon="lucide:import" label="Recopilar todo (#)"/>          | Recopila los registros de copias de seguridad de todos los servidores configurados, entre paréntesis el número de servidores de los que se recopilarán.                                   |
+| <IconButton icon="lucide:download" label="Descargar CSV"/>           | Descarga un archivo CSV que contiene todas las configuraciones de monitoreo de copias de seguridad y la "Marca de tiempo de la última copia de seguridad (BD)" de la base de datos.               |
+| <IconButton icon="lucide:refresh-cw" label="Comprobar ahora"/>            | Ejecuta la comprobación de copias de seguridad vencidas de inmediato. Esto es útil después de cambiar las configuraciones. También desencadena un recálculo de "Próxima ejecución". |
+| <IconButton icon="lucide:timer-reset" label="Restablecer notificaciones"/> | Restablece la última notificación vencida enviada para todas las copias de seguridad.                                                                            |

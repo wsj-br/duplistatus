@@ -2,7 +2,7 @@
 
 ## Criar Sessão - `/api/session` {/* #create-session---apisession */}
 - **Endpoint**: `/api/session`
-- **Method**: POST
+- **Método**: POST
 - **Descrição**: Cria uma nova sessão para o usuário.
 - **Resposta**:
 
@@ -17,12 +17,12 @@
   - `500`: Falha ao criar sessão
 - **Notas**:
   - Cria uma nova sessão com expiração de 24 horas
-  - Define um cookie de sessão HTTP-only
+  - Define cookie de sessão HTTP-only
   - Necessário para acessar endpoints protegidos
 
 ## Validar Sessão - `/api/session` {/* #validate-session---apisession */}
 - **Endpoint**: `/api/session`
-- **Method**: GET
+- **Método**: GET
 - **Descrição**: Valida uma sessão existente.
 - **Resposta** (válida):
 
@@ -43,15 +43,15 @@
   ```
 
 - **Respostas de Erro**:
-  - `401`: Sem cookie de sessão ou ID de sessão
+  - `401`: Nenhum cookie de sessão ou ID de sessão
   - `500`: Falha ao validar sessão
 - **Notas**:
   - Verifica se o cookie de sessão existe e é válido
-  - Retorna o ID da sessão se for válido
+  - Retorna ID da sessão se válido
 
 ## Excluir Sessão - `/api/session` {/* #delete-session---apisession */}
 - **Endpoint**: `/api/session`
-- **Method**: DELETE
+- **Método**: DELETE
 - **Descrição**: Exclui a sessão atual (logout).
 - **Resposta**:
 
@@ -65,11 +65,11 @@
   - `500`: Falha ao excluir sessão
 - **Notas**:
   - Limpa a sessão do servidor e do cliente
-  - Remove o cookie de sessão
+  - Remove cookie de sessão
 
 ## Obter Token CSRF - `/api/csrf` {/* #get-csrf-token---apicsrf */}
 - **Endpoint**: `/api/csrf`
-- **Method**: GET
+- **Método**: GET
 - **Descrição**: Gera um token CSRF para a sessão atual.
 - **Resposta**:
 
@@ -85,5 +85,5 @@
   - `500`: Falha ao gerar token CSRF
 - **Notas**:
   - Requer uma sessão válida
-  - O token CSRF é necessário para todas as operações que alteram estado
-  - O token está vinculado à sessão atual
+  - Token CSRF é necessário para todas as operações que alteram estado
+  - Token está vinculado à sessão atual

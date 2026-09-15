@@ -1,10 +1,10 @@
-# अधिसूचना प्रणाली {/* #notification-system */}
+# सूचना सिस्टम {/* #notification-system */}
 
-## Parikshan Suchnaayein - `/api/notifications/test` {/* #test-notification---apinotificationstest */}
-- **Endpoint**: `/api/notifications/test`
-- **Method**: POST
-- **Description**: Shochnaayi karyawahi ki janch ke liye Parikshan suchnaayen (sadharan, template-based, ya email) bhejein.
-- **प्रमाणीकरण**: व्यवस्थापक सत्र और CSRF टोकन की आवश्यकता होती है
+## जाँचें सूचना - `/api/notifications/test` {/* #test-notification---apinotificationstest */}
+- **एंडपॉइंट**: `/api/notifications/test`
+- **मेथड**: POST
+- **विवरण**: सूचना कॉन्फ़िगरेशन को सत्यापित करने के लिए परीक्षण सूचनाएं (सरल, टेम्पलेट-आधारित, या ईमेल) भेजें।
+- **प्रमाणीकरण**: इसके लिए एडमिनिस्ट्रेटर सत्र और CSRF टोकन की आवश्यकता होती है
 - **अनुरोध बॉडी**:
   सरल परीक्षण के लिए:
 
@@ -19,7 +19,7 @@
     }
     ```
 
-Template test ke liye:
+टेम्पलेट परीक्षण के लिए:
 
     ```json
     {
@@ -38,7 +38,7 @@ Template test ke liye:
     }
     ```
 
-Email test ke liye:
+ईमेल परीक्षण के लिए:
 
     ```json
     {
@@ -46,8 +46,8 @@ Email test ke liye:
     }
     ```
 
-- **Response**:
-  Sadha test ke liye:
+- **प्रतिक्रिया**:
+  सरल परीक्षण के लिए:
 
   ```json
   {
@@ -55,7 +55,7 @@ Email test ke liye:
   }
   ```
 
-Template test ke liye:
+टेम्पलेट परीक्षण के लिए:
 
   ```json
   {
@@ -65,7 +65,7 @@ Template test ke liye:
   }
   ```
 
-Email test ke liye:
+ईमेल परीक्षण के लिए:
 
   ```json
   {
@@ -73,41 +73,41 @@ Email test ke liye:
   }
   ```
 
-Test email content dikhata hai:
-  - SMTP server hostname aur port
-  - Connection type (Plain SMTP, STARTTLS, ya Direct SSL/TLS)
-  - SMTP authentication requirement status
-  - SMTP username (sirf jab authentication chahiye ho)
-  - Praaptak email address
-  - Email ke liye use ki gayi From address aur sender name
-  - Test timestamp
-- **Error Responses**:
-  - `401`: Unauthorized - Invalid session ya CSRF token
-  - `400`: NTFY configuration chahiye, invalid configuration, ya email configure nahin kiya gaya hai
-  - `500`: Test suchna bhejne mein asafal with error details
-- **Notes**:
-  - Sadha test messages, template-based notifications, aur email tests ko support karta hai
-  - Template testing sample data ka use karta hai template variables ko replace karne ke liye
-  - Test message mein timestamp shamil hai
-  - NTFY परीक्षणों में संग्रहीत NTFY कॉन्फ़िगरेशन का उपयोग किया जाता है; एक क्लाइंट-सप्लाई NTFY URL का उपयोग नहीं किया जाता
-  - संग्रहीत होने पर `accessToken` फ़ील्ड का उपयोग प्रमाणीकरण के लिए किया जाता है
-  - टेम्पलेट परीक्षणों में, दोनों NTFY और ईमेल (यदि कॉन्फ़िगर किया गया हो) को सूचनाएं भेजी जाती हैं
-  - ईमेल परीक्षणों के लिए SMTP कॉन्फ़िगरेशन सेट अप की आवश्यकता होती है
-  - परीक्षण ईमेल एंडपॉइंट SMTP कॉन्फ़िगरेशन को पढ़ने से पहले अनुरोध कैश को साफ़ करता है, जिससे बाहरी स्क्रिप्ट कॉन्फ़िगरेशन को अपडेट कर सकते हैं और इसे परीक्षण ईमेल में तुरंत प्रतिबिंबित किया जा सके
-  - टेम्पलेट परीक्षण और दैनिक सारांश भेजें-अब प्रति-बैकअप दबाव को बायपास करते हैं
+परीक्षण ईमेल सामग्री प्रदर्शित करती है:
+  - SMTP सर्वर होस्टनेम और पोर्ट
+  - कनेक्शन प्रकार (प्लेन SMTP, STARTTLS, या डायरेक्ट SSL/TLS)
+  - SMTP प्रमाणीकरण आवश्यकता स्थिति
+  - SMTP उपयोगकर्ता नाम (केवल प्रमाणीकरण आवश्यक होने पर दिखाया जाता है)
+  - प्राप्तकर्ता ईमेल पता
+  - ईमेल के लिए उपयोग किया गया प्रेषक पता और प्रेषक का नाम
+  - परीक्षण टाइमस्टैम्प
+- **त्रुटि प्रतिक्रियाएं**:
+  - `401`: अनधिकृत - अमान्य सत्र या CSRF टोकन
+  - `400`: NTFY कॉन्फ़िगरेशन आवश्यक है, अमान्य कॉन्फ़िगरेशन, या ईमेल कॉन्फ़िगर नहीं है
+  - `500`: त्रुटि विवरण के साथ परीक्षण सूचना भेजने में विफल
+- **नोट्स**:
+  - सरल परीक्षण संदेशों, टेम्पलेट-आधारित सूचनाएं, और ईमेल परीक्षणों का समर्थन करता है
+  - टेम्पलेट परीक्षण टेम्पलेट चरों को बदलने के लिए नमूना डेटा का उपयोग करता है
+  - परीक्षण संदेश में टाइमस्टैम्प शामिल करता है
+  - NTFY परीक्षण संग्रहीत NTFY कॉन्फ़िगरेशन का उपयोग करते हैं; क्लाइंट द्वारा दिए गए NTFY URL का उपयोग नहीं किया जाता है
+  - संग्रहीत होने पर प्रमाणीकरण के लिए `accessToken` फ़ील्ड का उपयोग करता है
+  - टेम्पलेट परीक्षणों के लिए, NTFY और ईमेल (यदि कॉन्फ़िगर किया गया है) दोनों पर सूचनाएं भेजता है
+  - ईमेल परीक्षणों के लिए SMTP कॉन्फ़िगरेशन सेट अप होना आवश्यक है
+  - परीक्षण ईमेल एंडपॉइंट SMTP कॉन्फ़िगरेशन पढ़ने से पहले अनुरोध कैश साफ़ करता है, जिससे यह सुनिश्चित होता है कि बाहरी स्क्रिप्ट कॉन्फ़िगरेशन को अपडेट कर सकते हैं और यह तुरंत परीक्षण ईमेल में दिखाई देता है
+  - टेम्पलेट परीक्षण और दैनिक सारांश send-now प्रति-बैकअप दमन को बायपास करते हैं
 
-## पूर्वावलोकन अधिसूचना टेम्पलेट - `/api/notifications/preview` {/* #preview-notification-template---apinotificationspreview */}
+## पूर्वावलोकन सूचना टेम्पलेट - `/api/notifications/preview` {/* #preview-notification-template---apinotificationspreview */}
 - **एंडपॉइंट**: `/api/notifications/preview`
-- **विधि**: POST
-- **विवरण**: उत्पादन मार्कडाउन रेंडरर के साथ एक अधिसूचना टेम्पलेट को रेंडर करता है बिना भेजे। बॉडी में `kind` शामिल है (`success`, `warning`, `overdueBackup`, या `dailySummaryEmail`) और संपादित हो रहे टेम्पलेट। दैनिक सारांश पूर्वावलोकन वर्तमान वास्तविक स्नैपशॉट का उपयोग करते हैं; अन्य प्रकार निर्धारित नमूना मानों का उपयोग करते हैं। ईमेल HTML एक सैंडबॉक्स्ड iframe के लिए है। सफलता, चेतावनी/त्रुटि, और विलंबित भी NTFY पेलोड (`ntfyMessage`) लौटाते हैं; कोई भी GFM टेबल हेडर छोड़ा जाता है और बॉडी पंक्तियाँ सादा पाठ हैं।
-- **Authentication**: वैलिड सेशन और CSRF टोकन की आवश्यकता होती है
+- **मेथड**: POST
+- **विवरण**: बिना भेजे प्रोडक्शन मार्कडाउन रेंडरर के साथ एक सूचना टेम्पलेट को रेंडर करता है। बॉडी में `kind` (`success`, `warning`, `overdueBackup`, या `dailySummaryEmail`) और संपादित किया जा रहा टेम्पलेट शामिल है। दैनिक सारांश पूर्वावलोकन वर्तमान वास्तविक स्नैपशॉट का उपयोग करते हैं; अन्य प्रकार नियतात्मक नमूना मानों का उपयोग करते हैं। ईमेल HTML एक सैंडबॉक्स्ड iframe के लिए अभिप्रेत है। सफलता, चेतावनी/त्रुटि, और अतिदेय भी NTFY पेलोड (`ntfyMessage`) लौटाते हैं; कोई भी GFM टेबल हेडर छोड़ दिया जाता है और बॉडी पंक्तियाँ सादा पाठ होती हैं।
+- **प्रमाणीकरण**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
 
-## Vilambit Backups ki Janch karein - `/api/notifications/check-overdue` {/* #check-overdue-backups---apinotificationscheck-overdue */}
-- **Endpoint**: `/api/notifications/check-overdue`
-- **Method**: POST
-- **Description**: Vilambit backup janch ko manually trigger karta hai aur suchnaayen bheja hai.
-- **Authentication**: वैध सत्र और CSRF टोकन की आवश्यकता होती है
-- **Response**:
+## बकाया बैकअप जांचें - `/api/notifications/check-overdue` {/* #check-overdue-backups---apinotificationscheck-overdue */}
+- **एंडपॉइंट**: `/api/notifications/check-overdue`
+- **मेथड**: POST
+- **विवरण**: बकाया बैकअप जाँच को मैन्युअल रूप से ट्रिगर करता है और सूचनाएं भेजता है।
+- **प्रमाणीकरण**: मान्य सत्र और CSRF टोकन की आवश्यकता है
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -121,19 +121,19 @@ Test email content dikhata hai:
   }
   ```
 
-- **Error Responses**:
-  - `500`: Vilambit backup janch karne mein asafal
-- **Notes**:
-  - Vilambit backup check ko manually trigger karta hai
-  - Check process ke baare mein statistics return karta hai
-  - Vilambit backups found ke liye notifications bhejein
+- **त्रुटि प्रतिक्रियाएं**:
+  - `500`: बकाया बैकअप की जाँच करने में विफल
+- **नोट्स**:
+  - बकाया बैकअप जाँच को मैन्युअल रूप से ट्रिगर करता है
+  - जाँच प्रक्रिया के बारे में आँकड़े लौटाता है
+  - मिले बकाया बैकअप के लिए सूचनाएं भेजता है
 
-## Vilambit Samayachinh ki Safai karein - `/api/notifications/clear-overdue-timestamps` {/* #clear-overdue-timestamps---apinotificationsclear-overdue-timestamps */}
-- **Endpoint**: `/api/notifications/clear-overdue-timestamps`
-- **Method**: POST
-- **Description**: Sabhi vilambit backup suchnaayi samayachinh ko saaf karta hai, jisse suchnaayen phir se bheje ja sakein.
-- **Authentication**: वैध सत्र और CSRF टोकन की आवश्यकता होती है
-- **Response**:
+## अतिदेय टाइमस्टैम्प साफ़ करें - `/api/notifications/clear-overdue-timestamps` {/* #clear-overdue-timestamps---apinotificationsclear-overdue-timestamps */}
+- **एंडपॉइंट**: `/api/notifications/clear-overdue-timestamps`
+- **मेथड**: POST
+- **विवरण**: सभी अतिदेय बैकअप सूचना टाइमस्टैम्प साफ़ करता है, जिससे सूचनाएं फिर से भेजी जा सकती हैं।
+- **प्रमाणीकरण**: मान्य सत्र और CSRF टोकन की आवश्यकता है
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -141,9 +141,9 @@ Test email content dikhata hai:
   }
   ```
 
-- **Error Responses**:
-  - `500`: Vilambit backup timestamps clear karne mein asafal
-- **Notes**:
-  - Sabhi vilambit backup notification timestamps ko clear karta hai
-  - Notifications dobara bhejne ki suvidha deta hai
-  - Notification system ko test karne ke liye useful hai
+- **त्रुटि प्रतिक्रियाएं**:
+  - `500`: अतिदेय बैकअप टाइमस्टैम्प साफ़ करने में विफल
+- **नोट्स**:
+  - सभी अतिदेय बैकअप सूचना टाइमस्टैम्प को साफ़ करता है
+  - सूचनाएं फिर से भेजे जाने की अनुमति देता है
+  - सूचना सिस्टम का परीक्षण करने के लिए उपयोगी

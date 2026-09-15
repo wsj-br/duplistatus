@@ -1,15 +1,15 @@
-# Audit Log Retention {/* #audit-log-retention */}
+# ऑडिट लॉग प्रतिधारण {/* #audit-log-retention */}
 
-Configure karein kitna samay tak audit logs rakhe jaate hain, phir automatic cleanup hota hai.
+कॉन्फ़िगर करें कि स्वचालित क्लीनअप से पहले ऑडिट लॉग कितने समय तक प्रतिधारित किए जाते हैं।
 
-![Audit Log Retention](../../assets/screen-settings-audit-retention.png)
+![ऑडिट लॉग प्रतिधारण](../../assets/screen-settings-audit-retention.png)
 
-| Sammaan | Vivaaran | Default Value |
+| सेटिंग | विवरण | डिफ़ॉल्ट मान |
 |:-------|:-----------|:-------------|
-| **Retention (din)** | Sankhya ka din jitna samay tak audit logs rakhe jaate hain, phir automatic deletion hota hai | **90 din** |
+| **प्रतिधारण (दिन)** | स्वचालित विलोपन से पहले ऑडिट लॉग को प्रतिधारित करने के दिनों की संख्या | **90 दिन** |
 
-## रिटेंशन सम्मान {/* #retention-settings */}
+## प्रतिधारण सेटिंग्स {/* #retention-settings */}
 
-- **Range**: 30 se 365 din
-- **Automatic Cleanup**: Daily 02:00 UTC par chalta hai (configurable nahi hai)
-- **Manual Cleanup**: API ke through available hai, administrators ke liye (see [Cleanup Audit Logs](../../api-reference/administration-apis.md#cleanup-audit-logs---apiaudit-logcleanup))
+- **रेंज**: 30 से 365 दिन
+- **स्वचालित क्लीनअप**: प्रतिदिन 02:00 UTC पर चलता है (कॉन्फ़िगर करने योग्य नहीं)
+- **मैनुअल क्लीनअप**: व्यवस्थापकों के लिए API के माध्यम से उपलब्ध ([ऑडिट लॉग क्लीनअप](../../api-reference/administration-apis.md#cleanup-audit-logs---apiaudit-logcleanup) देखें)

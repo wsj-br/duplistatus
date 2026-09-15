@@ -3,8 +3,8 @@
 ## Comprobación de salud - `/api/health` {/* #health-check---apihealth */}
 - **Punto final**: `/api/health`
 - **Método**: GET
-- **Descripción**: Comprobación de vitalidad económica para la aplicación y la conexión SQLite. Docker `HEALTHCHECK` y el bucle de espera de la entrada utilizan esta URL en localhost.
-- **Respuesta** (saludable):
+- **Descripción**: Comprobación de vitalidad económica para la aplicación y la conexión SQLite. Docker `HEALTHCHECK` y el bucle de entrada de espera usan esta URL en localhost.
+- **Respuesta** (sano):
 
   ```json
   {
@@ -18,7 +18,7 @@
   }
   ```
 
-- **Respuesta** (degradada):
+- **Respuesta** (degradado):
 
   ```json
   {
@@ -33,7 +33,7 @@
   }
   ```
 
-- **Respuesta de Error** (503):
+- **Respuesta de error** (503):
 
   ```json
   {
@@ -50,7 +50,7 @@
   - No enumera los nombres de las tablas ni ejecuta consultas del panel
   - Nunca requiere una clave de API
   - Cuando cualquiera de las listas de IPs permitidas está habilitada, la IP del cliente debe ser de bucle o estar en la lista de CIDR de administrador o externa (`403` `IP_NOT_ALLOWED` de lo contrario)
-  - Los clientes no de bucle están limitados por tasa (`429` `PROBE_RATE_LIMITED`, 30 por minuto y 120 por hora). El bucle (`127.0.0.1`, `::1`) nunca se limita
+  - Los clientes que no son de bucle están limitados por tasa (`429` `PROBE_RATE_LIMITED`, 30/minuto y 120/hora). El bucle (`127.0.0.1`, `::1`) nunca se limita
 
 ## Sonda de conectividad - `/api/ping` {/* #connectivity-probe---apiping */}
 - **Punto final**: `/api/ping`
@@ -66,5 +66,5 @@
 
 - **Notas**:
   - Nunca requiere una clave de API o una cookie de sesión
-  - Misma unión de lista de permitidos y reglas de bucle que `/api/health`
-  - Los clientes no de bucle están limitados por tasa (`429` `PROBE_RATE_LIMITED`, 60 por minuto y 600 por hora)
+  - Misma unión de lista de permisos y reglas de bucle que `/api/health`
+  - Los clientes que no son de bucle están limitados por tasa (`429` `PROBE_RATE_LIMITED`, 60/minuto y 600/hora)

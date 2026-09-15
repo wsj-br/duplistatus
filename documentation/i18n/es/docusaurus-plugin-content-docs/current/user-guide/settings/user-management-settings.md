@@ -1,65 +1,65 @@
 # Usuarios {/* #users */}
 
-Administre cuentas de usuario, permisos y control de acceso para **duplistatus**. Esta sección permite a los administradores crear, modificar y eliminar cuentas de usuario.
+Gestiona cuentas de usuario, permisos y control de acceso para **duplistatus**. Esta sección permite a los administradores crear, modificar y eliminar cuentas de usuario.
 
 ![Gestión de usuarios](../../assets/screen-settings-users.png)
 
 >[!TIP] 
->La cuenta `admin` por defecto puede ser eliminada. Para hacerlo, primero cree un nuevo usuario administrador, inicie sesión con esa cuenta, 
-> y luego elimine la cuenta `admin`.
+>La cuenta `admin` predeterminada puede eliminarse. Para ello, primero crea un nuevo usuario administrador, inicia sesión con esa cuenta
+> y luego elimina la cuenta `admin`.
 >
-> La contraseña por defecto para la cuenta `admin` es `Duplistatus09`. Se le requerirá cambiarla en el primer inicio de sesión.
+> La contraseña predeterminada para la cuenta `admin` es `Duplistatus09`. Se te pedirá que la cambies al iniciar sesión por primera vez.
 
-## Accediendo a la Gestión de usuarios {/* #accessing-user-management */}
+## Accediendo a la gestión de usuarios {/* #accessing-user-management */}
 
-Puede acceder a la sección Gestión de usuarios de dos formas:
+Puedes acceder a la sección de gestión de usuarios de dos formas:
 
-1. **Desde el Menú de Usuario**: Haga clic en <IconButton icon="lucide:user" label="nombre de usuario" />   en la [Barra de herramientas de la aplicación](../overview.md#application-toolbar) y seleccione "Usuarios Admin".
+1. **Desde el menú de usuario**: Haz clic en el <IconButton icon="lucide:user" label="nombre de usuario" /> en la [barra de herramientas de la aplicación](../overview.md#application-toolbar) y selecciona "Usuarios administradores".
 
-2. **Desde Configuración**: Haga clic en <IconButton icon="lucide:settings"/> y **Usuarios** en la barra lateral de configuración
+2. **Desde la configuración**: Haz clic en <IconButton icon="lucide:settings"/> y **Usuarios** en la barra lateral de configuración
 
-## Creando un Nuevo Usuario {/* #creating-a-new-user */}
+## Creando un nuevo usuario {/* #creating-a-new-user */}
 
-1. Haga clic en el botón <IconButton icon="lucide:plus" label="Agregar usuario"/>
-2. Ingrese los detalles del usuario:
-   - **Nombre de usuario**: debe tener entre 3 y 50 caracteres, ser único y no distinguir entre mayúsculas y minúsculas
-   - **Administrador**: marque para otorgar privilegios de administrador
-   - **Requerir cambio de contraseña**: marque para forzar el cambio de contraseña en el primer inicio de sesión
-   - **Contraseña**:
-     - Opción 1: marque "Generar contraseña automáticamente" para crear una contraseña temporal segura
-     - Opción 2: desmarque y escriba una contraseña personalizada
-3. Haga clic en <IconButton icon="lucide:user-plus" label="Crear usuario" />.
+1. Haz clic en el botón <IconButton icon="lucide:plus" label="Añadir usuario"/>
+2. Introduce los detalles del usuario:
+   - **Nombre de usuario**: Debe tener entre 3 y 50 caracteres, ser único y no distinguir mayúsculas de minúsculas
+   - **Administrador**: Marca para conceder privilegios de administrador
+   - **Requiere cambio de contraseña**: Marca para obligar al usuario a cambiar la contraseña al iniciar sesión por primera vez
+   - **Contraseña**: 
+     - Opción 1: Marca "Generar contraseña automáticamente" para crear una contraseña temporal segura
+     - Opción 2: Desmarca y introduce una contraseña personalizada
+3. Haz clic en <IconButton icon="lucide:user-plus" label="Crear usuario" />.
 
-## Editando un Usuario {/* #editing-a-user */}
+## Editando un usuario {/* #editing-a-user */}
 
-1. Haga clic en el icono de edición <IconButton icon="lucide:edit" /> junto al usuario
-2. Modifique cualquiera de los siguientes elementos:
-   - **Nombre de usuario**: cambie el nombre de usuario (debe ser único)
-   - **Administrador**: active o desactive los privilegios de administrador
-   - **Requerir cambio de contraseña**: active o desactive el requisito de cambio de contraseña
-3. Haga clic en <IconButton icon="lucide:check" label="Guardar cambios" />.
+1. Haz clic en el icono de edición <IconButton icon="lucide:edit" /> junto al usuario
+2. Modifica cualquiera de los siguientes:
+   - **Nombre de usuario**: Cambia el nombre de usuario (debe ser único)
+   - **Administrador**: Activa o desactiva los privilegios de administrador
+   - **Requiere cambio de contraseña**: Activa o desactiva la obligación de cambiar la contraseña
+3. Haz clic en <IconButton icon="lucide:check" label="Guardar cambios" />.
 
-## Restableciendo la Contraseña de un Usuario {/* #resetting-a-user-password */}
+## Restableciendo la contraseña de un usuario {/* #resetting-a-user-password */}
 
-1. Haga clic en el icono <IconButton icon="lucide:key-round" /> de clave junto al usuario
-2. Confirmar el restablecimiento de contraseña
-3. Se generará una contraseña temporal y se mostrará
-4. Copiar la contraseña y proporcionarla al usuario de forma segura
+1. Haz clic en el icono de clave <IconButton icon="lucide:key-round" /> junto al usuario
+2. Confirma el restablecimiento de la contraseña
+3. Se generará y mostrará una nueva contraseña temporal
+4. Copia la contraseña y proporciónala al usuario de forma segura
 
-## Eliminando un Usuario {/* #deleting-a-user */}
+## Eliminando un usuario {/* #deleting-a-user */}
 
-1. Haga clic en el icono <IconButton icon="lucide:trash-2" /> eliminar junto al usuario
-2. Confirme la eliminación en el cuadro de diálogo. **La eliminación del usuario es permanente y no se puede deshacer.**
+1. Haz clic en el icono de eliminación <IconButton icon="lucide:trash-2" /> junto al usuario
+2. Confirma la eliminación en el cuadro de diálogo. **La eliminación de usuarios es permanente y no se puede deshacer.**
 
-## Bloqueo de Cuenta {/* #account-lockout */}
+## Bloqueo de cuenta {/* #account-lockout */}
 
-Las cuentas se bloquean automáticamente después de múltiples intentos fallidos de inicio de sesión:
+Las cuentas se bloquean automáticamente después de varios intentos de inicio de sesión fallidos:
 - **Umbral de bloqueo**: 5 intentos fallidos
 - **Duración del bloqueo**: 15 minutos
 - Las cuentas bloqueadas no pueden iniciar sesión hasta que expire el período de bloqueo
 
-## Recuperando Acceso de Administrador {/* #recovering-admin-access */}
+## Recuperación de acceso de administrador {/* #recovering-admin-access */}
 
-Si ha perdido su contraseña de admin o ha sido bloqueado de su cuenta, puede recuperar el acceso utilizando el script de recuperación de admin. Consulte la guía [Admin Account Recovery](../admin-recovery.md) para obtener instrucciones detalladas sobre cómo recuperar el acceso de administrador en entornos Docker.
+Si has perdido tu contraseña de administrador o has sido bloqueado de tu cuenta, puedes recuperar el acceso usando el script de recuperación de administrador. Consulta la guía [Recuperación de cuenta de administrador](../admin-recovery.md) para obtener instrucciones detalladas sobre cómo recuperar el acceso de administrador en entornos Docker.
 
-Si el navegador muestra **Acceso denegado** (HTTP 403) antes del formulario de inicio de sesión, recupera con [Bloqueado por Lista de IPs permitidas](../troubleshooting.md#locked-out-by-ip-allowlist).
+Si el navegador muestra **Acceso denegado** (HTTP 403) antes del formulario de inicio de sesión, recupera el acceso con [Bloqueado por Lista de IPs permitidas](../troubleshooting.md#locked-out-by-ip-allowlist) en su lugar.

@@ -1,34 +1,34 @@
-# Application logs {/* #application-logs */}
+# एप्लिकेशन लॉग {/* #application-logs */}
 
-Application Log Viewer lets administrators monitor all application logs in one place, with filtering, export, and real-time updates directly from the web interface.
+एप्लिकेशन लॉग व्यूअर व्यवस्थापकों को वेब इंटरफ़ेस से सीधे फ़िल्टरिंग, निर्यात और रीयल-टाइम अपडेट के साथ सभी एप्लिकेशन लॉग की एक ही स्थान पर निगरानी करने की सुविधा देता है।
 
-![Application Log Viewer](../../assets/screen-settings-application-logs.png)
+![एप्लिकेशन लॉग व्यूअर](../../assets/screen-settings-application-logs.png)
 
 <br/>
 
-## उपलब्ध क्रियाएं {/* #available-actions */}
+## उपलब्ध कार्रवाइयाँ {/* #available-actions */}
 
-| Button                                                              | Description                                                                                         |
+| बटन                                                                 | विवरण                                                                                               |
 |:--------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------|
-| <IconButton icon="lucide:refresh-cw" label="Refresh" />            | Manually reload logs from the selected file. Shows a loading spinner while refreshing and resets tracking for new line detection. |
-| <IconButton icon="lucide:copy" label="Copy to clipboard" />         | Copy all filtered log lines to your clipboard. Respects the current search filter. Useful for quick sharing or pasting into other tools. |
-| <IconButton icon="lucide:download" label="Export" />               | Download logs as a text file. Exports from the currently selected file version and applies the current search filter (if any). Filename format: `duplistatus-logs-YYYY-MM-DD.txt` (date in ISO format). |
-| <IconButton icon="lucide:arrow-down-from-line" />                   | Quickly jump to the beginning of the displayed logs. Useful when auto-scroll is disabled or when navigating through long log files. |
-| <IconButton icon="lucide:arrow-down-to-line" />                    | Quickly jump to the end of the displayed logs. Useful when auto-scroll is disabled or when navigating through long log files. |
+| <IconButton icon="lucide:refresh-cw" label="रीफ़्रेश करें" />            | चयनित फ़ाइल से लॉग को मैन्युअल रूप से पुनः लोड करें। रीफ़्रेश करते समय लोडिंग स्पिनर दिखाता है और नई पंक्ति की पहचान के लिए ट्रैकिंग को रीसेट करता है। |
+| <IconButton icon="lucide:copy" label="क्लिपबोर्ड पर कॉपी करें" />         | सभी फ़िल्टर की गई लॉग पंक्तियों को अपने क्लिपबोर्ड पर कॉपी करें। वर्तमान खोज फ़िल्टर का पालन करता है। त्वरित साझाकरण या अन्य टूल में पेस्ट करने के लिए उपयोगी है। |
+| <IconButton icon="lucide:download" label="निर्यात करें" />               | लॉग को टेक्स्ट फ़ाइल के रूप में डाउनलोड करें। वर्तमान में चयनित फ़ाइल संस्करण से निर्यात करता है और वर्तमान खोज फ़िल्टर (यदि कोई हो) लागू करता है। फ़ाइल नाम प्रारूप: `duplistatus-logs-YYYY-MM-DD.txt` (ISO प्रारूप में तिथि)। |
+| <IconButton icon="lucide:arrow-down-from-line" />                   | प्रदर्शित लॉग की शुरुआत पर तुरंत जाएं। तब उपयोगी होता है जब ऑटो-स्क्रॉल अक्षम हो या लंबी लॉग फ़ाइलों में नेविगेट कर रहे हों। |
+| <IconButton icon="lucide:arrow-down-to-line" />                    | प्रदर्शित लॉग के अंत में तुरंत जाएं। तब उपयोगी होता है जब ऑटो-स्क्रॉल अक्षम हो या लंबी लॉग फ़ाइलों में नेविगेट कर रहे हों। |
 
 <br/>
 
 ## नियंत्रण और फ़िल्टर {/* #controls-and-filters */}
 
-| Control | Description |
+| नियंत्रण | विवरण |
 |:--------|:-----------|
-| **File Version** | Select which log file to view: **Vartaman** (active file) or rotated files (`.1`, `.2`, etc., where higher numbers are older). |
-| **Dikhane ke liye lines** | Display the most recent **100**, **500**, **1000** (default), **5000**, or **10000** lines from the selected file. |
-| **Auto-scroll** | When enabled (default for current file), automatically scrolls to new log entries and refreshes every 2 seconds. Only works for the **Vartaman** file version. |
-| **Khoj** | Filter log lines by text (case-insensitive). Filters apply to the currently displayed lines. |
+| **फ़ाइल संस्करण** | चुनें कि कौन सी लॉग फ़ाइल देखनी है: **वर्तमान** (सक्रिय फ़ाइल) या रोटेट की गई फ़ाइलें (`.1`, `.2`, आदि, जहाँ उच्च संख्याएँ पुरानी हैं)। |
+| **दिखाई जाने वाली पंक्तियां** | चयनित फ़ाइल से नवीनतम **100**, **500**, **1000** (डिफ़ॉल्ट), **5000**, या **10000** पंक्तियाँ प्रदर्शित करें। |
+| **ऑटो-स्क्रॉल** | सक्षम होने पर (वर्तमान फ़ाइल के लिए डिफ़ॉल्ट), स्वचालित रूप से नई लॉग प्रविष्टियों पर स्क्रॉल करता है और प्रत्येक 2 सेकंड में रीफ़्रेश करता है। केवल **वर्तमान** फ़ाइल संस्करण के लिए काम करता है। |
+| **खोजें** | टेक्स्ट के अनुसार लॉग पंक्तियों को फ़िल्टर करें (केस-असंवेदनशील)। फ़िल्टर वर्तमान में प्रदर्शित पंक्तियों पर लागू होते हैं। |
 
 <br/>
 
-The log display header shows the filtered line count, total lines, file size, and last modified timestamp.
+लॉग डिस्प्ले हेडर फ़िल्टर की गई पंक्तियों की संख्या, कुल पंक्तियाँ, फ़ाइल आकार, और अंतिम संशोधित टाइमस्टैम्प दिखाता है।
 
 <br/>

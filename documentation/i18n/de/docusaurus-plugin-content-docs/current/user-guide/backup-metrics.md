@@ -1,54 +1,54 @@
-# Sicherung Metriken {/* #backup-metrics */}
+# Sicherungsmetriken {/* #backup-metrics */}
 
-Ein Diagramm von Sicherungsmetriken im Zeitverlauf wird sowohl auf dem Dashboard (Tabellenansicht) als auch auf der Serverdetailseite angezeigt.
+Ein Diagramm mit Sicherungsmetriken über die Zeit wird sowohl auf dem Dashboard (Tabellenansicht) als auch auf der Server-Detailseite angezeigt.
 
-- **Dashboard**, das Diagramm zeigt die Gesamtanzahl der Sicherungen, die in der **duplistatus**-Datenbank aufgezeichnet wurden. Wenn Sie das Cards-Layout verwenden, können Sie einen Server auswählen, um seine konsolidierten Metriken anzuzeigen (wenn das Seitenpanel Metriken anzeigt).
-- **Server Details**-Seite, das Diagramm zeigt Metriken für den ausgewählten Server (für alle seine Sicherungen) oder für eine einzelne, spezifische Sicherung.
+- **Dashboard**: Das Diagramm zeigt die Gesamtzahl der in der **duplistatus**-Datenbank aufgezeichneten Sicherungen an. Wenn Sie das Kartenlayout verwenden, können Sie einen Server auswählen, um seine konsolidierten Metriken anzuzeigen (wenn das Seitenpanel die Metriken anzeigt).
+- **Server-Detailsseite**: Das Diagramm zeigt Metriken für den ausgewählten Server (für alle seine Sicherungen) oder für eine einzelne, spezifische Sicherung an.
 
-![Backup-Metriken](../assets/screen-metrics.png)
+![Sicherungsmetriken](../assets/screen-metrics.png)
 
 ## Inline-Diagrammsteuerungen {/* #inline-chart-controls */}
 
-Schnellzugriffs-Steuerelemente sind direkt in den Diagramm-Panelüberschriften verfügbar, um eine einfache Konfiguration ohne Navigation zu den Anzeigeeinstellungen zu ermöglichen:
+Schnellzugriffssteuerungen sind direkt in den Diagrammkopfzeilen verfügbar, um eine einfache Konfiguration ohne Navigation zu den Anzeigeeinstellungen zu ermöglichen:
 
 ### Zeitbereichsauswahl {/* #time-range-selector */}
 
-Pill-Buttons erscheinen in der Diagrammkopfzeile für schnelle Zeitbereichsauswahl: **1W | 2W | 1M | 3M**
+Pillen-Buttons erscheinen in der Diagrammkopfzeile für eine schnelle Zeitbereichsauswahl: **1W | 2W | 1M | 3M**
 
-- **1W**: Letzte 7 Tage (gleitendes Fenster)
-- **2W**: Letzte 14 Tage (gleitendes Fenster)
-- **1M**: Letzte 30 Tage (gleitendes Fenster, Standard)
-- **3M**: Letzte 90 Tage (gleitendes Fenster)
+- **1W**: Letzte 7 Tage (rollierendes Fenster)
+- **2W**: Letzte 14 Tage (rollierendes Fenster)
+- **1M**: Letzte 30 Tage (rollierendes Fenster, Standard)
+- **3M**: Letzte 90 Tage (rollierendes Fenster)
 
-Hier vorgenommene Änderungen synchronisieren sich mit Ihren Anzeigeeinstellungen, sodass Ihre Einstellung seitenübergreifend gespeichert wird.
+Änderungen hier werden mit Ihren Anzeigeeinstellungen synchronisiert, sodass Ihre Einstellung über Seitenaktualisierungen hinweg gespeichert bleibt.
 
-### Diagrammstil-Umschalter {/* #chart-style-toggle */}
+### Diagrammstiltoggle {/* #chart-style-toggle */}
 
-Ein Umschalter in der Diagrammkopfzeile ermöglicht das Wechseln zwischen:
+Ein Umschaltbutton in der Diagrammkopfzeile ermöglicht Ihnen den Wechsel zwischen:
 
-- **Weiche Linien**: Datenpunkte mit weichen Kurven verbinden
-- **Balkendiagramm**: Daten als diskrete Balken für jeden Zeitraum anzeigen
+- **Weiche Linien**: Datenpunkte werden mit glatten Kurven verbunden
+- **Balkendiagramm**: Daten werden als diskrete Balken für jeden Zeitbereich angezeigt
 
-Beide Modi verwenden Zeitintervall-Aggregation für optimale Darstellung. Leere Perioden im Balkenmodus zeigen keine Balken. Ihre Einstellung bleibt über Seitenaktualisierungen hinweg erhalten und wird mit den Anzeigeeinstellungen synchronisiert.
+Beide Modi verwenden Zeit-Bucket-Aggregation für eine optimale Anzeige. Leere Perioden im Balkenmodus werden ohne Balken dargestellt. Ihre Einstellung bleibt über Seitenaktualisierungen hinweg erhalten und wird mit den Anzeigeeinstellungen synchronisiert.
 
-## Diagrammdatenkonsolidierung {/* #chart-data-consolidation */}
+## Konsolidierung der Diagrammdaten {/* #chart-data-consolidation */}
 
-Wenn mehrere Backups am selben Tag auftreten, konsolidiert **duplistatus** die Daten vor der Anzeige im Diagramm:
+Wenn mehrere Sicherungen am selben Tag stattfinden, konsolidiert **duplistatus** die Daten, bevor sie auf den Diagrammen angezeigt werden:
 
-- **SUM**: Verwendet für kumulative Metriken (Dauer, Anzahl der Dateien, Dateigröße, Hochgeladene Größe)
-- **LAST**: Verwendet für Speichergröße (der aktuellste Wert des Tages)
-- **MAX**: Verwendet für Verfügbare Versionen (die höchste Anzahl des Tages)
+- **SUM**: Wird für kumulative Metriken verwendet (Dauer, Anzahl der Dateien, Dateigröße, Hochgeladene Größe)
+- **LAST**: Wird für die Speichergröße verwendet (der neueste Wert des Tages)
+- **MAX**: Wird für die verfügbaren Versionen verwendet (die höchste Anzahl des Tages)
 
-Diese Konsolidierung erfolgt vor der Zeitintervall-Aggregation und gewährleistet präzise aggregierte Metriken. Beispielsweise werden zwei Backups am 5.12.26 einen konsolidierten Datenpunkt im Diagramm erzeugen.
+Diese Konsolidierung erfolgt, bevor die Zeit-Bucketing-Anwendung erfolgt, um genaue aggregierte Metriken sicherzustellen. Beispielsweise werden zwei Sicherungen am 5/12/26 zu einem konsolidierten Datenpunkt auf dem Diagramm.
 
 ## Metrikdefinitionen {/* #metric-definitions */}
 
-- **Hochgeladene Größe**: Gesamte Menge an Daten, die täglich vom Duplicati-Server zur Sicherungsziel (lokaler Speicher, FTP, Cloud-Anbieter, ...) hochgeladen/übertragen wurden.
-- **Dauer**: Die Gesamtdauer aller täglich empfangenen Sicherungen in HH:MM.
-- **Anzahl der Dateien**: Die Summe der für alle täglichen Sicherungen empfangenen Dateianzahl-Zähler.
-- **Dateigröße**: Die Summe der vom Duplicati-Server für alle täglichen Sicherungen gemeldeten Dateigrößen.
-- **Speichergröße**: Die Summe des vom Duplicati-Server täglich gemeldeten genutzten Speicherplatzes am Sicherungsziel.
-- **Verfügbare Versionen**: Die Summe aller verfügbaren Versionen für alle täglichen Sicherungen.
+- **Hochgeladene Größe**: Gesamtmenge der hochgeladenen/übertragenen Daten während der Sicherungen vom Duplicati-Server zum Ziel (lokale Speicherung, FTP, Cloud-Anbieter, ...) pro Tag.
+- **Dauer**: Die Gesamtlaufzeit aller empfangenen Sicherungen pro Tag in HH:MM.
+- **Anzahl der Dateien**: Die Summe des Dateizählerstands für alle empfangenen Sicherungen pro Tag.
+- **Dateigröße**: Die Summe der von Duplicati-Server gemeldeten Dateigröße für alle empfangenen Sicherungen pro Tag.
+- **Speichergröße**: Die Summe der verwendeten Speichergröße auf dem Sicherungsziel, die vom Duplicati-Server pro Tag gemeldet wird.
+- **Verfügbare Versionen**: Die Summe aller verfügbaren Versionen für alle Sicherungen pro Tag.
 
 :::note
 Sie können die [Anzeigeeinstellungen](settings/display-settings.md) verwenden, um den Zeitbereich für das Diagramm zu konfigurieren.

@@ -1,65 +1,65 @@
-# Upyogkarta {/* #users */}
+# उपयोगकर्ता {/* #users */}
 
-Manage user accounts, permissions, and access control for **duplistatus**. This section allows administrators to create, modify, and delete user accounts.
+**duplistatus** के लिए उपयोगकर्ता खातों, अनुमतियों और पहुँच नियंत्रण को प्रबंधित करें। यह अनुभाग व्यवस्थापकों को उपयोगकर्ता खाते बनाने, संशोधित करने और हटाने की अनुमति देता है।
 
-![Upyogkarta prabandhan](../../assets/screen-settings-users.png)
+![उपयोगकर्ता प्रबंधन](../../assets/screen-settings-users.png)
 
 >[!TIP] 
->The default `admin` account can be deleted. To do so, first create a new admin user, log in with that account, 
-> and then delete the `admin` account.
+>डिफ़ॉल्ट `admin` खाता हटाया जा सकता है। ऐसा करने के लिए, पहले एक नया व्यवस्थापक उपयोगकर्ता बनाएं, उस खाते से लॉग इन करें, 
+> और फिर `admin` खाता हटाएं।
 >
-> The default password for the `admin` account is `Duplistatus09`. You will be required to change it upon first login.
+> `admin` खाते का डिफ़ॉल्ट पासवर्ड `Duplistatus09` है। आपको पहली बार लॉग इन करने पर इसे बदलना होगा।
 
-## Upyogkarta prabandhan तक पहुँच {/* #accessing-user-management */}
+## उपयोगकर्ता प्रबंधन तक पहुँचना {/* #accessing-user-management */}
 
-You can access the User Management section in two ways:
+आप दो तरीकों से उपयोगकर्ता प्रबंधन अनुभाग तक पहुँच सकते हैं:
 
-1. **From the User Menu**: Click the <IconButton icon="lucide:user" label="username" />   in the [Application Toolbar](../overview.md#application-toolbar) and select "Admin Users".
+1. **उपयोगकर्ता मेनू से**: [एप्लिकेशन टूलबार](../overview.md#application-toolbar) में <IconButton icon="lucide:user" label="उपयोगकर्ता नाम" /> पर क्लिक करें और "एडमिन उपयोगकर्ता" चुनें।
 
-2. **From Settings**: Click on <IconButton icon="lucide:settings"/> and **Users** in the settings sidebar
+2. **सेटिंग्स से**: सेटिंग्स साइडबार में <IconButton icon="lucide:settings"/> और **उपयोगकर्ता** पर क्लिक करें
 
-## नया Upyogkarta बनाना {/* #creating-a-new-user */}
+## नया उपयोगकर्ता बनाना {/* #creating-a-new-user */}
 
-1. Click the <IconButton icon="lucide:plus" label="Add User"/> button
-2. Enter the user details:
-   - **Username**: Must be 3-50 characters, unique, case-insensitive
-   - **Admin**: Check to grant administrator privileges
-   - **Require Password Change**: Check to force password change on first login
-   - **Password**: 
-     - Option 1: Check "Auto-generate password" to create a secure temporary password
-     - Option 2: Uncheck and enter a custom password
-3. Click <IconButton icon="lucide:user-plus" label="Create User" />.
+1. <IconButton icon="lucide:plus" label="उपयोगकर्ता जोड़ें"/> बटन पर क्लिक करें
+2. उपयोगकर्ता विवरण दर्ज करें:
+   - **उपयोगकर्ता नाम**: 3-50 वर्णों का, अद्वितीय, केस-इनसेंसिटिव होना चाहिए
+   - **एडमिन**: व्यवस्थापक विशेषाधिकार देने के लिए जांचें
+   - **पासवर्ड परिवर्तन आवश्यक करें**: पहली बार लॉग इन करने पर पासवर्ड बदलने के लिए बाध्य करने हेतु जांचें
+   - **पासवर्ड**: 
+     - विकल्प 1: एक सुरक्षित अस्थायी पासवर्ड बनाने के लिए "पासवर्ड स्वतः जनरेट करें" को जांचें
+     - विकल्प 2: अनचेक करें और एक कस्टम पासवर्ड दर्ज करें
+3. <IconButton icon="lucide:user-plus" label="उपयोगकर्ता बनाएं" /> पर क्लिक करें।
 
-## Upyogkarta संपादित करना {/* #editing-a-user */}
+## उपयोगकर्ता को संपादित करना {/* #editing-a-user */}
 
-1. Click the <IconButton icon="lucide:edit" /> edit icon next to the user
-2. Modify any of the following:
-   - **Username**: Change the username (must be unique)
-   - **Admin**: Toggle administrator privileges
-   - **Require Password Change**: Toggle password change requirement
-3. Click <IconButton icon="lucide:check" label="Save Changes" />.
+1. उपयोगकर्ता के आगे <IconButton icon="lucide:edit" /> संपादन आइकन पर क्लिक करें
+2. निम्नलिखित में से किसी को भी संशोधित करें:
+   - **उपयोगकर्ता नाम**: उपयोगकर्ता नाम बदलें (अद्वितीय होना चाहिए)
+   - **एडमिन**: व्यवस्थापक विशेषाधिकार टॉगल करें
+   - **पासवर्ड परिवर्तन आवश्यक करें**: पासवर्ड परिवर्तन की आवश्यकता को टॉगल करें
+3. <IconButton icon="lucide:check" label="परिवर्तन सहेजें" /> पर क्लिक करें।
 
-## Upyogkarta Password रीसेट करना {/* #resetting-a-user-password */}
+## उपयोगकर्ता पासवर्ड रीसेट करना {/* #resetting-a-user-password */}
 
-1. Click the <IconButton icon="lucide:key-round" /> key icon next to the user
-2. Confirm the password reset
-3. A new temporary password will be generated and displayed
-4. Copy the password and provide it to the user securely
+1. उपयोगकर्ता के आगे <IconButton icon="lucide:key-round" /> कुंजी आइकन पर क्लिक करें
+2. पासवर्ड रीसेट की पुष्टि करें
+3. एक नया अस्थायी पासवर्ड जनरेट किया जाएगा और प्रदर्शित होगा
+4. पासवर्ड कॉपी करें और इसे उपयोगकर्ता को सुरक्षित रूप से प्रदान करें
 
-## Upyogkarta हटाना {/* #deleting-a-user */}
+## उपयोगकर्ता हटाना {/* #deleting-a-user */}
 
-1. Click the <IconButton icon="lucide:trash-2" /> delete icon next to the user
-2. Confirm the deletion in the dialog box.  **User deletion is permanent and cannot be undone.**
+1. उपयोगकर्ता के आगे <IconButton icon="lucide:trash-2" /> हटाएँ आइकन पर क्लिक करें
+2. डायलॉग बॉक्स में हटाने की पुष्टि करें। **उपयोगकर्ता को हटाना स्थायी है और इसे पूर्ववत नहीं किया जा सकता है।**
 
 ## खाता लॉकआउट {/* #account-lockout */}
 
-Accounts are automatically locked after multiple failed login attempts:
-- **Lockout Threshold**: 5 failed attempts
-- **Lockout Duration**: 15 minutes
-- Locked accounts cannot log in until the lockout period expires
+कई असफल लॉगिन प्रयासों के बाद खाते स्वचालित रूप से लॉक हो जाते हैं:
+- **लॉकआउट सीमा**: 5 असफल प्रयास
+- **लॉकआउट अवधि**: 15 मिनट
+- लॉक किए गए खाते तब तक लॉग इन नहीं कर सकते जब तक कि लॉकआउट अवधि समाप्त न हो जाए
 
-## Prabandhak पहुँच पुनर्प्राप्त करना {/* #recovering-admin-access */}
+## एडमिन ऐक्सेस पुनर्प्राप्त करना {/* #recovering-admin-access */}
 
-Yadi aap apna prabandhak Password kho chuke hain ya aapke account ko Lock Kiya gaya hai, toh aap admin recovery script ka upyog karke access ko punah prapt kar sakte hain. Docker environments mein administrator access ko punah prapt karne ke vistrit nirdeshon ke liye [Admin Account Recovery](../admin-recovery.md) guide dekhein.
+यदि आप अपना एडमिन पासवर्ड भूल गए हैं या अपने खाते से बाहर लॉक हो गए हैं, तो आप एडमिन रिकवरी स्क्रिप्ट का उपयोग करके ऐक्सेस पुनर्प्राप्त कर सकते हैं। Docker परिवेशों में एडमिनिस्ट्रेटर ऐक्सेस पुनर्प्राप्त करने के विस्तृत निर्देशों के लिए [एडमिन खाता पुनर्प्राप्ति](../admin-recovery.md) मार्गदर्शिका देखें।
 
-यदि ब्राउज़र लॉगिन फॉर्म से पहले **Access denied** (HTTP 403) दिखाता है, तो [आईपी अनुमति सूची द्वारा Lock Kiya गया](../troubleshooting.md#locked-out-by-ip-allowlist) के साथ पुनर्प्राप्त करें।
+यदि ब्राउज़र लॉगिन फ़ॉर्म से पहले **Access denied** (HTTP 403) दिखाता है, तो इसके बजाय [IP अनुमति सूची द्वारा लॉक किया गया](../troubleshooting.md#locked-out-by-ip-allowlist) से पुनर्प्राप्त करें।

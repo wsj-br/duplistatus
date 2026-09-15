@@ -1,11 +1,11 @@
 # प्रशासन {/* #administration */}
 
-## Backups Ikattha Karein - `/api/backups/collect` {/* #collect-backups---apibackupscollect */}
-- **Endpoint**: `/api/backups/collect`
-- **Method**: POST
-- **विवरण**: Duplicati सर्वर से उसके API के माध्यम से सीधे backup data एकत्र करता है। यह endpoint स्वचालित रूप से सर्वोत्तम कनेक्शन प्रोटोकॉल का पता लगाता है (SSL validation के साथ HTTPS, self-signed certificates के साथ HTTPS, या HTTP as fallback) और backup information प्राप्त करने और इसे स्थानीय database में संसाधित करने के लिए Duplicati सर्वर से कनेक्ट होता है।
-- **Authentication**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
-- **Request Body**:
+## बैकअप एकत्र करें - `/api/backups/collect` {/* #collect-backups---apibackupscollect */}
+- **एंडपॉइंट**: `/api/backups/collect`
+- **विधि**: POST
+- **विवरण**: अपने API के माध्यम से सीधे Duplicati सर्वर से बैकअप डेटा एकत्र करता है। यह एंडपॉइंट स्वचालित रूप से सबसे अच्छे कनेक्शन प्रोटोकॉल (SSL सत्यापन के साथ HTTPS, स्व-हस्ताक्षरित प्रमाणपत्रों के साथ HTTPS, या फ़ॉलबैक के रूप में HTTP) का पता लगाता है और बैकअप जानकारी प्राप्त करने और इसे स्थानीय डेटाबेस में संसाधित करने के लिए Duplicati सर्वर से कनेक्ट होता है।
+- **प्रमाणीकरण**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
+- **अनुरोध बॉडी**:
 
   ```json
   {
@@ -16,7 +16,7 @@
   }
   ```
 
-- **Response**:
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -35,27 +35,27 @@
   }
   ```
 
-- **Error Responses**:
-  - `400`: Invalid request parameters ya sambandh asafal
-  - `500`: Backup collection ke dauran server error
-- **Notes**: 
-  - Endpoint automatically optimal sambandh protocol detect karta hai (HTTPS → HTTPS with self-signed → HTTP)
-  - Protocol detection attempts security preference ke anusar hote hain
-  - Sambandh timeouts environment variables ke zariye configurable hain
-  - Debugging ke liye development mode mein collected data ko log karta hai
-  - Sabhi servers aur backups ke liye backup settings complete hain
-  - Agar specified nahi hai to default port 8200 use hota hai
-  - Detected protocol aur server URL automatically database mein store hota hai
-  - `serverAlias` database se retrieve hota hai aur agar koi alias set nahi hai to empty ho sakta hai
-  - Frontend display purposes ke liye `serverAlias || serverName` ka use karna chahiye
-  - Both JSON download aur direct API collection methods ko support karta hai
+- **त्रुटि प्रतिक्रियाएं**:
+  - `400`: अमान्य अनुरोध पैरामीटर या कनेक्शन विफल
+  - `500`: बैकअप एकत्र करने के दौरान सर्वर त्रुटि
+- **नोट**: 
+  - एंडपॉइंट स्वचालित रूप से इष्टतम कनेक्शन प्रोटोकॉल (HTTPS → स्व-हस्ताक्षरित के साथ HTTPS → HTTP) का पता लगाता है
+  - सुरक्षा प्राथमिकता के क्रम में प्रोटोकॉल का पता लगाने के प्रयास किए जाते हैं
+  - कनेक्शन टाइमआउट एनवायरनमेंट वेरिएबल्स के माध्यम से कॉन्फ़िगर करने योग्य हैं
+  - डिबगिंग के लिए डेवलपमेंट मोड में एकत्रित डेटा लॉग करता है
+  - सुनिश्चित करता है कि सभी सर्वर और बैकअप के लिए बैकअप सेटिंग्स पूरी हैं
+  - यदि निर्दिष्ट नहीं है तो डिफ़ॉल्ट पोर्ट 8200 का उपयोग करता है
+  - पता लगाया गया प्रोटोकॉल और सर्वर URL स्वचालित रूप से डेटाबेस में संग्रहीत किए जाते हैं
+  - `serverAlias` डेटाबेस से पुनर्प्राप्त किया जाता है और यदि कोई उपनाम सेट नहीं है तो यह खाली हो सकता है
+  - फ़्रंटएंड को प्रदर्शन उद्देश्यों के लिए `serverAlias || serverName` का उपयोग करना चाहिए
+  - JSON डाउनलोड और सीधे API संग्रह दोनों विधियों का समर्थन करता है
 
-## Backups Saaf Karen - `/api/backups/cleanup` {/* #cleanup-backups---apibackupscleanup */}
-- **Endpoint**: `/api/backups/cleanup`
-- **Method**: POST
-- **विवरण**: Retention period के आधार पर पुराने backup data को delete करता है। यह endpoint outdated backup records को हटाकर और recent तथा important data को संरक्षित करके database size को manage करने में मदद करता है।
-- **Authentication**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
-- **Request Body**:
+## बैकअप साफ़ करें - `/api/backups/cleanup` {/* #cleanup-backups---apibackupscleanup */}
+- **एंडपॉइंट**: `/api/backups/cleanup`
+- **विधि**: POST
+- **विवरण**: प्रतिधारण अवधि के आधार पर पुराने बैकअप डेटा को हटाता है। यह एंडपॉइंट हाल के और महत्वपूर्ण डेटा को सुरक्षित रखते हुए पुराने बैकअप रिकॉर्ड को हटाकर डेटाबेस आकार को प्रबंधित करने में मदद करता है।
+- **प्रमाणीकरण**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
+- **अनुरोध बॉडी**:
 
   ```json
   {
@@ -63,8 +63,8 @@
   }
   ```
 
-- **Retention Periods**: `"6 months"`, `"1 year"`, `"2 years"`, `"Delete all data"`
-- **Response**:
+- **प्रतिधारण अवधियां**: `"6 months"`, `"1 year"`, `"2 years"`, `"Delete all data"`
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -73,7 +73,7 @@
   }
   ```
 
-For "Delete all data" option:
+"सारा डेटा हटाएं" विकल्प के लिए:
 
   ```json
   {
@@ -82,24 +82,24 @@ For "Delete all data" option:
   }
   ```
 
-- **Error Responses**:
-  - `401`: Unauthorized - Invalid session ya CSRF token
-  - `400`: Invalid retention period specified
-  - `500`: Cleanup operation ke dauran server error with detailed error information
-- **Notes**: 
-  - Cleanup operation irreversible hai
-  - Backup data database se permanently delete hota hai
-  - Machine records preserve rehte hain even if sabhi backups delete ho jate hain
-  - Jab "Delete all data" select hota hai, to sabhi machines aur backups remove hote hain aur configuration clear hoti hai
-  - Enhanced error reporting details aur stack trace development mode mein include hota hai
-  - Both time-based retention aur complete data deletion ko support karta hai
+- **त्रुटि प्रतिक्रियाएं**:
+  - `401`: अनधिकृत - अमान्य सत्र या CSRF टोकन
+  - `400`: अमान्य प्रतिधारण अवधि निर्दिष्ट की गई
+  - `500`: विस्तृत त्रुटि जानकारी के साथ क्लीनअप ऑपरेशन के दौरान सर्वर त्रुटि
+- **नोट**: 
+  - क्लीनअप ऑपरेशन अपरिवर्तनीय है
+  - बैकअप डेटा डेटाबेस से स्थायी रूप से हटा दिया जाता है
+  - मशीन रिकॉर्ड सुरक्षित रखे जाते हैं, भले ही सभी बैकअप हटा दिए जाएं
+  - जब "सारा डेटा हटाएं" चुना जाता है, तो सभी मशीनें और बैकअप हटा दिए जाते हैं और कॉन्फ़िगरेशन साफ़ हो जाती है
+  - उन्नत त्रुटि रिपोर्टिंग में डेवलपमेंट मोड में विवरण और स्टैक ट्रेस शामिल हैं
+  - समय-आधारित प्रतिधारण और पूर्ण डेटा विलोपन दोनों का समर्थन करता है
 
-## Backup job delete karein - `/api/backups/delete-job` {/* #delete-backup-job---apibackupsdelete-job */}
-- **Endpoint**: `/api/backups/delete-job`
-- **Method**: DELETE
-- **विवरण**: किसी विशिष्ट server-backup combination के लिए सभी backup records को delete करता है। यह endpoint केवल development mode में उपलब्ध है।
-- **Authentication**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
-- **Request Body**:
+## बैकअप जॉब हटाएं - `/api/backups/delete-job` {/* #delete-backup-job---apibackupsdelete-job */}
+- **एंडपॉइंट**: `/api/backups/delete-job`
+- **विधि**: DELETE
+- **विवरण**: किसी विशिष्ट सर्वर-बैकअप संयोजन के लिए सभी बैकअप रिकॉर्ड हटाता है। यह एंडपॉइंट केवल डेवलपमेंट मोड में उपलब्ध है।
+- **प्रमाणीकरण**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
+- **अनुरोध बॉडी**:
 
   ```json
   {
@@ -108,7 +108,7 @@ For "Delete all data" option:
   }
   ```
 
-- **Response**:
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -120,25 +120,25 @@ For "Delete all data" option:
   }
   ```
 
-- **Error Responses**:
-  - `401`: Unauthorized - Invalid session ya CSRF token
-  - `403`: Backup job deletion sirf development mode mein available hai
-  - `400`: Server ID aur backup name required hain
-  - `404`: Delete karne ke liye koi backups nahi mila
-  - `500`: Deletion ke dauran server error with detailed error information
-- **Notes**: 
-  - Ye operation sirf development mode mein available hai
-  - यह क्रिया अपरिवर्तनीय है
-  - निर्दिष्ट सर्वर-बैकअप संयोजन के लिए सभी बैकअप रिकॉर्ड स्थायी रूप से हटाए जाएंगे
-  - हटाए गए बैकअपों की गिनती और सर्वर की जानकारी लौटाता है
-  - प्रदर्शन के लिए सर्वर उपनाम का उपयोग करता है यदि उपलब्ध है, अन्यथा सर्वर नाम पर वापस आ जाता है
+- **त्रुटि प्रतिक्रियाएं**:
+  - `401`: अनधिकृत - अमान्य सत्र या CSRF टोकन
+  - `403`: बैकअप जॉब विलोपन केवल डेवलपमेंट मोड में उपलब्ध है
+  - `400`: सर्वर आईडी और बैकअप नाम आवश्यक हैं
+  - `404`: हटाने के लिए कोई बैकअप नहीं मिला
+  - `500`: विस्तृत त्रुटि जानकारी के साथ हटाने के दौरान सर्वर त्रुटि
+- **नोट**: 
+  - यह ऑपरेशन केवल डेवलपमेंट मोड में उपलब्ध है
+  - यह ऑपरेशन अपरिवर्तनीय है
+  - निर्दिष्ट सर्वर-बैकअप संयोजन के लिए सभी बैकअप रिकॉर्ड स्थायी रूप से हटा दिए जाएँगे
+  - हटाए गए बैकअप की संख्या और सर्वर जानकारी लौटाता है
+  - यदि उपलब्ध हो, तो प्रदर्शन के लिए सर्वर उपनाम का उपयोग करता है, अन्यथा सर्वर नाम पर वापस आ जाता है
 
-## Backup Schedules ko Sync karein - `/api/backups/sync-schedule` {/* #sync-backup-schedules---apibackupssync-schedule */}
-- **Endpoint**: `/api/backups/sync-schedule`
-- **Method**: POST
-- **विवरण**: Duplicati server से backup schedule information को synchronize करता है। यह endpoint server से कनेक्ट होता है, सभी backups के लिए schedule information प्राप्त करता है, और repeat intervals, allowed week days, और schedule times सहित schedule details के साथ स्थानीय backup settings को update करता है।
-- **Authentication**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
-- **Request Body**:
+## बैकअप शेड्यूल सिंक करें - `/api/backups/sync-schedule` {/* #sync-backup-schedules---apibackupssync-schedule */}
+- **एंडपॉइंट**: `/api/backups/sync-schedule`
+- **मेथड**: POST
+- **विवरण**: Duplicati सर्वर से बैकअप शेड्यूल जानकारी को सिंक्रनाइज़ करता है। यह एंडपॉइंट सर्वर से कनेक्ट होता है, सभी बैकअप के लिए शेड्यूल जानकारी प्राप्त करता है, और दोहराव अंतराल, अनुमत सप्ताह के दिनों और शेड्यूल समय सहित शेड्यूल विवरण के साथ स्थानीय बैकअप सेटिंग्स को अपडेट करता है।
+- **प्रमाणीकरण**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
+- **अनुरोध बॉडी**:
 
   ```json
   {
@@ -149,7 +149,7 @@ For "Delete all data" option:
   }
   ```
 
-या केवल serverId के साथ (संग्रहीत पासवर्ड का उपयोग करता है):
+या केवल serverId के साथ (सहेजे गए पासवर्ड का उपयोग करता है):
 
   ```json
   {
@@ -168,7 +168,7 @@ For "Delete all data" option:
   }
   ```
 
-- **Response**:
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -198,29 +198,29 @@ For "Delete all data" option:
   }
   ```
 
-- **Error Responses**:
-  - `400`: अमान्य अनुरोध पैरामीटर, जब serverId प्रदान नहीं किया गया है तो होस्टनाम/पासवर्ड गायब है, या कनेक्शन असफल
-  - `404`: सर्वर नहीं मिला (जब serverId प्रदान किया गया है) या सर्वर के लिए कोई पासवर्ड संग्रहीत नहीं है
-  - `500`: अनुसूची सिंक्रनाइज़ेशन के दौरान सर्वर त्रुटि
-- **Notes**: 
-  - एंडपॉइंट स्वचालित रूप से सर्वोत्तम कनेक्शन प्रोटोकॉल का पता लगाता है (HTTPS → HTTPS सेल्फ-साइन्ड → HTTP)
+- **त्रुटि रिस्पॉन्स**:
+  - `400`: अमान्य अनुरोध पैरामीटर, serverId प्रदान न किए जाने पर अनुपलब्ध होस्टनाम/पासवर्ड, या कनेक्शन विफल
+  - `404`: सर्वर नहीं मिला (जब serverId प्रदान किया गया हो) या सर्वर के लिए कोई पासवर्ड संग्रहीत नहीं है
+  - `500`: शेड्यूल सिंक्रनाइज़ेशन के दौरान सर्वर त्रुटि
+- **नोट्स**: 
+  - एंडपॉइंट स्वचालित रूप से इष्टतम कनेक्शन प्रोटोकॉल (HTTPS → स्व-हस्ताक्षरित के साथ HTTPS → HTTP) का पता लगाता है
   - संग्रहीत सर्वर क्रेडेंशियल का उपयोग करने के लिए केवल serverId के साथ कॉल किया जा सकता है
-  - नए सर्वर कनेक्शन विवरण अपडेट करने के लिए serverId और नए क्रेडेंशियल के साथ कॉल किया जा सकता है
-  - नए सर्वर के लिए serverId के बिना होस्टनाम/पोर्ट/पासवर्ड के साथ कॉल किया जा सकता है
-  - बैकअप सेटिंग्स को अनुसूची जानकारी के साथ अपडेट करता है जिसमें शामिल हैं:
-    - `expectedInterval`: रिपीट अंतराल (उदाहरण के लिए, "दैनिक", "साप्ताहिक", "मासिक")
-    - `allowedWeekDays`: अनुमत हफ्ते के दिनों की एक सरणी (0=रविवार, 1=सोमवार, आदि)
-    - `time`: बैकअप के लिए अनुसूचित समय
-  - सर्वर पर पाए गए सभी बैकअपों को संसाधित करता है
-  - संसाधित बैकअपों और किसी भी त्रुटियों पर प्राप्त सांख्यिकी लौटाता है
-  - सफल और असफल सिंक ऑपरेशन के लिए ऑडिट इवेंट्स लॉग करता है
-  - निर्दिष्ट नहीं होने पर डिफ़ॉल्ट पोर्ट 8200 का उपयोग करता है
+  - सर्वर कनेक्शन विवरण को अपडेट करने के लिए serverId और नए क्रेडेंशियल के साथ कॉल किया जा सकता है
+  - नए सर्वर के लिए serverId के बिना hostname/port/password के साथ कॉल किया जा सकता है
+  - शेड्यूल जानकारी के साथ बैकअप सेटिंग्स को अपडेट करता है, जिसमें शामिल हैं:
+    - `expectedInterval`: दोहराव अंतराल (उदा., "Daily", "Weekly", "Monthly")
+    - `allowedWeekDays`: अनुमत सप्ताह के दिनों की सरणी (0=रविवार, 1=सोमवार, आदि)
+    - `time`: बैकअप के लिए निर्धारित समय
+  - सर्वर पर पाए गए सभी बैकअप को संसाधित करता है
+  - संसाधित बैकअप और आने वाली किसी भी त्रुटि पर आँकड़े लौटाता है
+  - सफल और विफल सिंक ऑपरेशनों के लिए ऑडिट इवेंट लॉग करता है
+  - यदि निर्दिष्ट नहीं है तो डिफ़ॉल्ट पोर्ट 8200 का उपयोग करता है
 
-## सर्वर कनेक्शन का Parikshan करें - `/api/servers/test-connection` {/* #test-server-connection---apiserverstest-connection */}
-- **Endpoint**: `/api/servers/test-connection`
-- **Method**: POST
-- **विवरण**: यह सत्यापित करने के लिए कि Duplicati server accessible है या नहीं, उससे कनेक्शन का परीक्षण करता है।
-- **Request Body**:
+## सर्वर कनेक्शन जाँचें - `/api/servers/test-connection` {/* #test-server-connection---apiserverstest-connection */}
+- **एंडपॉइंट**: `/api/servers/test-connection`
+- **मेथड**: POST
+- **विवरण**: यह सत्यापित करने के लिए कि यह सुलभ है, Duplicati सर्वर से कनेक्शन की जाँच करता है।
+- **रिक्वेस्ट बॉडी**:
 
   ```json
   {
@@ -228,7 +228,7 @@ For "Delete all data" option:
   }
   ```
 
-- **Response**:
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -237,24 +237,24 @@ For "Delete all data" option:
   }
   ```
 
-- **Error Responses**:
-  - `400`: अमान्य URL प्रारूप या सर्वर URL गायब
+- **त्रुटि रिस्पॉन्स**:
+  - `400`: अमान्य URL प्रारूप या अनुपलब्ध सर्वर URL
   - `500`: कनेक्शन परीक्षण के दौरान सर्वर त्रुटि
-- **Notes**: 
-  - एंडपॉइंट URL प्रारूप को सत्यापित करता है और कनेक्टिविटी का परीक्षण करता है
-  - 401 स्थिति के साथ सफलता लौटाता है (क्रेडेंशियल के बिना लॉगिन एंडपॉइंट के लिए अपेक्षित)
-  - डुप्लिकेट सर्वर के लॉगिन एंडपॉइंट से कनेक्शन का परीक्षण करता है
-  - दोनों HTTP और HTTPS प्रोटोकॉल का समर्थन करता है
+- **नोट्स**: 
+  - एंडपॉइंट URL प्रारूप को मान्य करता है और कनेक्टिविटी की जाँच करता है
+  - यदि सर्वर 401 स्थिति के साथ प्रतिक्रिया देता है तो सफलता लौटाता है (बिना क्रेडेंशियल वाले लॉगिन एंडपॉइंट के लिए अपेक्षित)
+  - Duplicati सर्वर के लॉगिन एंडपॉइंट से कनेक्शन की जाँच करता है
+  - HTTP और HTTPS दोनों प्रोटोकॉल का समर्थन करता है
   - कनेक्शन परीक्षण के लिए टाइमआउट कॉन्फ़िगरेशन का उपयोग करता है
 
 ## सर्वर URL प्राप्त करें - `/api/servers/:serverId/server-url` {/* #get-server-url---apiserversserveridserver-url */}
-- **Endpoint**: `/api/servers/:serverId/server-url`
-- **Method**: GET
-- **विवरण**: किसी विशिष्ट सर्वर के लिए server URL प्राप्त करता है।
-- **Parameters**:
+- **एंडपॉइंट**: `/api/servers/:serverId/server-url`
+- **मेथड**: GET
+- **विवरण**: किसी विशिष्ट सर्वर के लिए सर्वर URL प्राप्त करता है।
+- **पैरामीटर**:
   - `serverId`: सर्वर पहचानकर्ता
 
-- **Response**:
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -263,22 +263,22 @@ For "Delete all data" option:
   }
   ```
 
-- **Truti Uttaran**:
-  - `404`: Server nahi mila
-  - `500`: Server truti
-- **Notes**:
-  - Specific server ke liye server URL return karta hai
-  - Server connection management ke liye istemal hota hai
-  - Agar koi server URL set nahi hai to khali string return karta hai
+- **त्रुटि प्रतिक्रियाएँ**:
+  - `404`: सर्वर नहीं मिला
+  - `500`: सर्वर त्रुटि
+- **नोट्स**:
+  - विशिष्ट सर्वर के लिए सर्वर URL लौटाता है
+  - सर्वर कनेक्शन प्रबंधन के लिए उपयोग किया जाता है
+  - यदि कोई सर्वर URL सेट नहीं है तो खाली स्ट्रिंग लौटाता है
 
-## सर्वर URL को Update karein - `/api/servers/:serverId/server-url` {/* #update-server-url---apiserversserveridserver-url */}
-- **Endpoint**: `/api/servers/:serverId/server-url`
-- **Method**: PATCH
-- **विवरण**: किसी विशिष्ट सर्वर के लिए server URL को update करता है।
-- **Authentication**: Valid session aur CSRF token ki zaroorat hoti hai
-- **Parameters**:
-  - `serverId`: the server identifier
-- **Request Body**:
+## सर्वर URL अपडेट करें - `/api/servers/:serverId/server-url` {/* #update-server-url---apiserversserveridserver-url */}
+- **एंडपॉइंट**: `/api/servers/:serverId/server-url`
+- **विधि**: PATCH
+- **विवरण**: विशिष्ट सर्वर के लिए सर्वर URL को अपडेट करता है।
+- **प्रमाणीकरण**: वैध सत्र और CSRF टोकन की आवश्यकता है
+- **पैरामीटर**:
+  - `serverId`: सर्वर पहचानकर्ता
+- **अनुरोध निकाय**:
 
   ```json
   {
@@ -286,7 +286,7 @@ For "Delete all data" option:
   }
   ```
 
-- **Response**:
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -297,25 +297,25 @@ For "Delete all data" option:
   }
   ```
 
-- **Error Responses**:
-  - `401`: Unauthorized - Invalid session or CSRF token
-  - `400`: Invalid URL format
-  - `404`: Server nahi mila
-  - `500`: Update karte samay server truti
-- **Notes**: 
-  - Endpoint URL format ko validate karta hai update karne se pehle
-  - Empty ya null server URLs allowed hain
-  - HTTP aur HTTPS protocols dono ko support karta hai
-  - Updated server information return karta hai
+- **त्रुटि प्रतिक्रियाएँ**:
+  - `401`: अनुमति नहीं है - अमान्य सत्र या CSRF टोकन
+  - `400`: अमान्य URL प्रारूप
+  - `404`: सर्वर नहीं मिला
+  - `500`: अपडेट के दौरान सर्वर त्रुटि
+- **नोट्स**: 
+  - एंडपॉइंट अपडेट करने से पहले URL प्रारूप को मान्य करता है
+  - खाली या null सर्वर URL की अनुमति है
+  - HTTP और HTTPS दोनों प्रोटोकॉल का समर्थन करता है
+  - अपडेट की गई सर्वर जानकारी लौटाता है
 
-## सर्वर Password प्राप्त करें - `/api/servers/:serverId/password` {/* #get-server-password---apiserversserveridpassword */}
-- **Endpoint**: `/api/servers/:serverId/password`
-- **Method**: GET
-- **विवरण**: server password operations के लिए एक CSRF token प्राप्त करता है।
-- **Authentication**: Valid session ki zaroorat hoti hai
-- **Parameters**:
-  - `serverId`: the server identifier
-- **Response**:
+## सर्वर पासवर्ड प्राप्त करें - `/api/servers/:serverId/password` {/* #get-server-password---apiserversserveridpassword */}
+- **एंडपॉइंट**: `/api/servers/:serverId/password`
+- **विधि**: GET
+- **विवरण**: सर्वर पासवर्ड संचालन के लिए CSRF टोकन प्राप्त करता है।
+- **प्रमाणीकरण**: वैध सत्र की आवश्यकता है
+- **पैरामीटर**:
+  - `serverId`: सर्वर पहचानकर्ता
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -324,21 +324,21 @@ For "Delete all data" option:
   }
   ```
 
-- **Error Responses**:
-  - `401`: Invalid ya expired session
-  - `500`: Failed to generate CSRF token
-- **Notes**:
-  - Password update operations ke liye CSRF token return karta hai
-  - Token generate karne ke liye session valid hona chahiye
+- **त्रुटि प्रतिक्रियाएँ**:
+  - `401`: अमान्य या समाप्त सत्र
+  - `500`: CSRF टोकन उत्पन्न करने में विफल
+- **नोट्स**:
+  - पासवर्ड अपडेट संचालन के लिए CSRF टोकन लौटाता है
+  - टोकन उत्पन्न करने के लिए सत्र मान्य होना चाहिए
 
-## सर्वर Password ko Update karein - `/api/servers/:serverId/password` {/* #update-server-password---apiserversserveridpassword */}
-- **Endpoint**: `/api/servers/:serverId/password`
-- **Method**: PATCH
-- **विवरण**: किसी विशिष्ट सर्वर के लिए password को update करता है।
-- **Authentication**: Valid session aur CSRF token ki zaroorat hoti hai
-- **Parameters**:
-  - `serverId`: the server identifier
-- **Request Body**:
+## सर्वर पासवर्ड अपडेट करें - `/api/servers/:serverId/password` {/* #update-server-password---apiserversserveridpassword */}
+- **एंडपॉइंट**: `/api/servers/:serverId/password`
+- **विधि**: PATCH
+- **विवरण**: विशिष्ट सर्वर के लिए पासवर्ड को अपडेट करता है।
+- **प्रमाणीकरण**: वैध सत्र और CSRF टोकन की आवश्यकता है
+- **पैरामीटर**:
+  - `serverId`: सर्वर पहचानकर्ता
+- **अनुरोध निकाय**:
 
   ```json
   {
@@ -346,7 +346,7 @@ For "Delete all data" option:
   }
   ```
 
-- **Response**:
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -355,26 +355,26 @@ For "Delete all data" option:
   }
   ```
 
-- **Error Responses**:
-  - `400`: Password must be a string
-  - `401`: Unauthorized - Invalid session or CSRF token
-  - `500`: Password update karne mein asamarth
-- **Notes**:
-  - Password clear karne ke liye empty string istemal ki ja sakti hai
-  - Password secrets management system ke through securely stored hota hai
+- **त्रुटि प्रतिक्रियाएँ**:
+  - `400`: पासवर्ड एक स्ट्रिंग होना चाहिए
+  - `401`: अनुमति नहीं है - अमान्य सत्र या CSRF टोकन
+  - `500`: पासवर्ड अपडेट करने में विफल
+- **नोट्स**:
+  - पासवर्ड को साफ़ करने के लिए पासवर्ड एक खाली स्ट्रिंग हो सकता है
+  - पासवर्ड को गोपनीयता प्रबंधन प्रणाली का उपयोग करके सुरक्षित रूप से संग्रहीत किया जाता है
 
-## Upyogkarta prabandhan {/* #user-management */}
+## उपयोगकर्ता प्रबंधन {/* #user-management */}
 
-### Upyogkarta ki Soochi - `/api/users` {/* #list-users---apiusers */}
-- **Endpoint**: `/api/users`
-- **Method**: GET
-- **विवरण**: Pagination के साथ सभी Upyogkarta की सूची देता है और वैकल्पिक खोज फ़िल्टरिंग। Login history और account status सहित Upyogkarta information लौटाता है।
-- **Authentication**: Admin privileges, valid session aur CSRF token ki zaroorat hoti hai
-- **Query Parameters**:
-  - `page` (optional): Page number (default: 1)
-  - `limit` (optional): Items per page (default: 50)
-  - `search` (optional): Username dwara filter karein ke liye search term
-- **Response**:
+### उपयोगकर्ता सूचीबद्ध करें - `/api/users` {/* #list-users---apiusers */}
+- **एंडपॉइंट**: `/api/users`
+- **विधि**: GET
+- **विवरण**: पेजिनेशन और वैकल्पिक खोज फ़िल्टरिंग के साथ सभी उपयोगकर्ताओं को सूचीबद्ध करता है। लॉगिन इतिहास और खाता स्थिति सहित उपयोगकर्ता जानकारी लौटाता है।
+- **प्रमाणीकरण**: एडमिन विशेषाधिकार, वैध सत्र और CSRF टोकन की आवश्यकता है
+- **क्वेरी पैरामीटर**:
+  - `page` (वैकल्पिक): पृष्ठ संख्या (डिफ़ॉल्ट: 1)
+  - `limit` (वैकल्पिक): प्रति पृष्ठ आइटम (डिफ़ॉल्ट: 50)
+  - `search` (वैकल्पिक): उपयोगकर्ता नाम से फ़िल्टर करने के लिए खोज पद
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -401,21 +401,21 @@ For "Delete all data" option:
   }
   ```
 
-- **Error Responses**:
-  - `401`: Unauthorized - Invalid session or CSRF token
-  - `403`: Forbidden - Admin privileges required
-  - `500`: Internal server error
-- **Notes**:
-  - Only accessible to admin users
-  - Supports pagination and search filtering
-  - Returns user account status including lock status
+- **त्रुटि प्रतिक्रियाएं**:
+  - `401`: अनधिकृत - अमान्य सत्र या CSRF टोकन
+  - `403`: वर्जित - एडमिन विशेषाधिकार आवश्यक हैं
+  - `500`: आंतरिक सर्वर त्रुटि
+- **टिप्पणियाँ**:
+  - केवल एडमिन उपयोगकर्ताओं के लिए सुलभ
+  - पृष्ठांकन और खोज फ़िल्टरिंग का समर्थन करता है
+  - लॉक स्थिति सहित उपयोगकर्ता खाता स्थिति लौटाता है
 
-### Upyogkarta Banayein - `/api/users` {/* #create-user---apiusers */}
+### उपयोगकर्ता बनाएं - `/api/users` {/* #create-user---apiusers */}
 - **Endpoint**: `/api/users`
 - **Method**: POST
-- **विवरण**: एक नया Upyogkarta account बनाता है। Temporary password generate कर सकता है या provided password use कर सकता है।
-- **Authentication**: Requires admin privileges, valid session and CSRF token
-- **Request Body**:
+- **विवरण**: एक नया उपयोगकर्ता खाता बनाता है। एक अस्थायी पासवर्ड जनरेट कर सकता है या प्रदान किए गए पासवर्ड का उपयोग कर सकता है।
+- **प्रमाणीकरण**: एडमिन विशेषाधिकार, मान्य सत्र और CSRF टोकन की आवश्यकता है
+- **अनुरोध बॉडी**:
 
   ```json
   {
@@ -426,11 +426,11 @@ For "Delete all data" option:
   }
   ```
 
-- `username`: Required, must be 3-50 characters, unique
-  - `password`: Optional, if not provided a secure temporary password is generated
-  - `isAdmin`: Optional, default false
-  - `requirePasswordChange`: Optional, default true
-- **Response**:
+- `username`: आवश्यक, 3-50 वर्णों का होना चाहिए, अद्वितीय
+  - `password`: वैकल्पिक, यदि प्रदान नहीं किया गया है तो एक सुरक्षित अस्थायी पासवर्ड जनरेट किया जाता है
+  - `isAdmin`: वैकल्पिक, डिफ़ॉल्ट false
+  - `requirePasswordChange`: वैकल्पिक, डिफ़ॉल्ट true
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -444,27 +444,27 @@ For "Delete all data" option:
   }
   ```
 
-- `temporaryPassword` is only included if a password was auto-generated
-- **Error Responses**:
-  - `400`: Invalid username format, password policy violation, or validation errors
-  - `401`: Unauthorized - Invalid session or CSRF token
-  - `403`: Forbidden - Admin privileges required
-  - `409`: Username already exists
-  - `500`: Internal server error
-- **Notes**:
-  - Only accessible to admin users
-  - Username is case-insensitive and stored in lowercase
-  - If password is not provided, a secure 12-character password is generated
-  - Generated temporary passwords are only returned once in the response
-  - User creation is logged to audit log
+- `temporaryPassword` केवल तभी शामिल किया जाता है जब पासवर्ड स्वतः जनरेट किया गया हो
+- **त्रुटि प्रतिक्रियाएं**:
+  - `400`: अमान्य उपयोगकर्ता नाम प्रारूप, पासवर्ड नीति उल्लंघन, या सत्यापन त्रुटियाँ
+  - `401`: अनधिकृत - अमान्य सत्र या CSRF टोकन
+  - `403`: वर्जित - एडमिन विशेषाधिकार आवश्यक हैं
+  - `409`: उपयोगकर्ता नाम पहले से मौजूद है
+  - `500`: आंतरिक सर्वर त्रुटि
+- **टिप्पणियाँ**:
+  - केवल एडमिन उपयोगकर्ताओं के लिए सुलभ
+  - उपयोगकर्ता नाम केस-असंवेदनशील है और लोअरकेस में संग्रहीत किया जाता है
+  - यदि पासवर्ड प्रदान नहीं किया गया है, तो एक सुरक्षित 12-वर्ण का पासवर्ड जनरेट किया जाता है
+  - जनरेट किए गए अस्थायी पासवर्ड प्रतिक्रिया में केवल एक बार लौटाए जाते हैं
+  - उपयोगकर्ता निर्माण को ऑडिट लॉग में लॉग किया जाता है
 
-### Upyogkarta ko Update karein - `/api/users/:id` {/* #update-user---apiusersid */}
+### उपयोगकर्ता अपडेट करें - `/api/users/:id` {/* #update-user---apiusersid */}
 - **Endpoint**: `/api/users/:id`
 - **Method**: PATCH
-- **विवरण**: Username, admin status, password change requirement, और password reset सहित Upyogkarta information को update करता है।
-- **Authentication**: Requires admin privileges, valid session and CSRF token
-- **Parameters**:
-  - `id`: User ID to update
+- **विवरण**: उपयोगकर्ता नाम, एडमिन स्थिति, पासवर्ड परिवर्तन आवश्यकता, और पासवर्ड रीसेट करें सहित उपयोगकर्ता जानकारी अपडेट करता है।
+- **प्रमाणीकरण**: एडमिन विशेषाधिकार, मान्य सत्र और CSRF टोकन आवश्यक हैं
+- **पैरामीटर**:
+  - `id`: अपडेट करने के लिए उपयोगकर्ता ID
 - **Request Body**:
 
   ```json
@@ -476,9 +476,9 @@ For "Delete all data" option:
   }
   ```
 
-- All fields are optional
-  - `resetPassword`: If true, generates a new temporary password and sets `requirePasswordChange` to true
-- **Response** (with password reset):
+- सभी फ़ील्ड वैकल्पिक हैं
+  - `resetPassword`: यदि true है, तो एक नया अस्थायी पासवर्ड जनरेट करता है और `requirePasswordChange` को true पर सेट करता है
+- **प्रतिक्रिया** (पासवर्ड रीसेट के साथ):
 
   ```json
   {
@@ -492,7 +492,7 @@ For "Delete all data" option:
   }
   ```
 
-- **Response** (without password reset):
+- **प्रतिक्रिया** (बिना पासवर्ड रीसेट के):
 
   ```json
   {
@@ -505,27 +505,27 @@ For "Delete all data" option:
   }
   ```
 
-- **Error Responses**:
-  - `400`: Invalid input or validation errors
-  - `401`: Unauthorized - Invalid session or CSRF token
-  - `403`: Forbidden - Admin privileges required
-  - `404`: User not found
-  - `409`: Username already exists (if changing username)
-  - `500`: Internal server error
-- **Notes**:
-  - Only accessible to admin users
-  - Username changes are validated for uniqueness
-  - Password reset generates a secure 12-character temporary password
-  - All changes are logged to audit log
+- **त्रुटि प्रतिक्रियाएं**:
+  - `400`: अमान्य इनपुट या सत्यापन त्रुटियाँ
+  - `401`: अनधिकृत - अमान्य सत्र या CSRF टोकन
+  - `403`: वर्जित - एडमिन विशेषाधिकार आवश्यक हैं
+  - `404`: उपयोगकर्ता नहीं मिला
+  - `409`: उपयोगकर्ता नाम पहले से मौजूद है (यदि उपयोगकर्ता नाम बदल रहे हैं)
+  - `500`: आंतरिक सर्वर त्रुटि
+- **टिप्पणियाँ**:
+  - केवल एडमिन उपयोगकर्ताओं के लिए सुलभ
+  - उपयोगकर्ता नाम परिवर्तनों को विशिष्टता के लिए मान्य किया जाता है
+  - पासवर्ड रीसेट एक सुरक्षित 12-वर्ण का अस्थायी पासवर्ड जनरेट करता है
+  - सभी परिवर्तनों को ऑडिट लॉग में लॉग किया जाता है
 
-### Upyogkarta ko delete karein - `/api/users/:id` {/* #delete-user---apiusersid */}
+### उपयोगकर्ता हटाएं - `/api/users/:id` {/* #delete-user---apiusersid */}
 - **Endpoint**: `/api/users/:id`
 - **Method**: DELETE
-- **विवरण**: एक Upyogkarta account को delete करता है। खुद को या last admin account को delete करने से रोकता है।
-- **Authentication**: Requires admin privileges, valid session and CSRF token
-- **Parameters**:
-  - `id`: User ID to delete
-- **Response**:
+- **विवरण**: एक उपयोगकर्ता खाता हटाता है। स्वयं को या अंतिम एडमिन खाते को हटाने से रोकता है।
+- **प्रमाणीकरण**: एडमिन विशेषाधिकार, मान्य सत्र और CSRF टोकन आवश्यक हैं
+- **पैरामीटर**:
+  - `id`: हटाने के लिए उपयोगकर्ता ID
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -534,38 +534,38 @@ For "Delete all data" option:
   }
   ```
 
-- **Truti Javab**:
-  - `400`: Apne khud ke account ko delete nahi kiya ja sakta ya antim admin account
-  - `401`: Unauthorized - Invalid session ya CSRF token
-  - `403`: Forbidden - Admin privileges chahiye
-  - `404`: User nahin mila
-  - `500`: Antarik server truti
-- **Notes**:
-  - Sirf admin users ke liye accessible
-  - Apne khud ke account ko delete nahi kiya ja sakta
-  - Antim admin account ko delete nahi kiya ja sakta (kam se kam ek admin bachana chahiye)
-  - User deletion ko audit log mein log kiya jata hai
-  - Associated sessions ko automatically delete kiya jata hai (cascade)
+- **त्रुटि प्रतिक्रियाएं**:
+  - `400`: अपना स्वयं का खाता या अंतिम व्यवस्थापक खाता हटाया नहीं जा सकता
+  - `401`: अनधिकृत - अमान्य सत्र या CSRF टोकन
+  - `403`: वर्जित - एडमिन विशेषाधिकार आवश्यक हैं
+  - `404`: उपयोगकर्ता नहीं मिला
+  - `500`: आंतरिक सर्वर त्रुटि
+- **नोट**:
+  - केवल एडमिन उपयोगकर्ताओं के लिए सुलभ
+  - अपना खाता हटाया नहीं जा सकता
+  - अंतिम व्यवस्थापक खाता हटाया नहीं जा सकता (कम से कम एक एडमिन रहना चाहिए)
+  - उपयोगकर्ता हटाना ऑडिट लॉग में लॉग किया जाता है
+  - संबद्ध सत्र अपने आप हटा दिए जाते हैं (कैस्केड)
 
-## Audit Log Prabandhan {/* #audit-log-management */}
+## ऑडिट लॉग प्रबंधन {/* #audit-log-management */}
 
-### Audit Logs ki Soochi - `/api/audit-log` {/* #list-audit-logs---apiaudit-log */}
-- **Endpoint**: `/api/audit-log`
-- **Method**: GET
-- **विवरण**: Filtering, pagination, और search capabilities के साथ audit log entries प्राप्त करता है। Page-based और offset-based pagination दोनों को support करता है।
-- **Authentication**: Valid session aur CSRF token chahiye (logged-in user required)
-- **Query Parameters**:
-  - `page` (optional): Page number for page-based pagination
-  - `offset` (optional): Offset for offset-based pagination (page se zyada precedence)
-  - `limit` (optional): Items per page (default: 50)
-  - `startDate` (optional): Filter logs from this date (ISO format)
-  - `endDate` (optional): Filter logs to this date (ISO format)
-  - `userId` (optional): Filter by user ID
-  - `username` (optional): Username dwara filter karein
-  - `action` (optional): Filter by action name
-  - `category` (optional): Filter by category (`auth`, `user_management`, `config`, `backup`, `server`)
-  - `status` (optional): Filter by status (`success`, `failure`, `error`)
-- **Response**:
+### ऑडिट लॉग सूचीबद्ध करें - `/api/audit-log` {/* #list-audit-logs---apiaudit-log */}
+- **एंडपॉइंट**: `/api/audit-log`
+- **विधि**: GET
+- **विवरण**: फ़िल्टरिंग, पेजिनेशन और खोज क्षमताओं के साथ ऑडिट लॉग प्रविष्टियां पुनर्प्राप्त करता है। पृष्ठ-आधारित और ऑफ़सेट-आधारित दोनों पेजिनेशन का समर्थन करता है।
+- **प्रमाणीकरण**: मान्य सत्र और CSRF टोकन की आवश्यकता है (लॉग-इन उपयोगकर्ता आवश्यक)
+- **क्वेरी पैरामीटर**:
+  - `page` (वैकल्पिक): पृष्ठ-आधारित पेजिनेशन के लिए पृष्ठ संख्या
+  - `offset` (वैकल्पिक): ऑफ़सेट-आधारित पेजिनेशन के लिए ऑफ़सेट (पृष्ठ पर प्राथमिकता लेता है)
+  - `limit` (वैकल्पिक): प्रति पृष्ठ आइटम (डिफ़ॉल्ट: 50)
+  - `startDate` (वैकल्पिक): इस तिथि से लॉग फ़िल्टर करें (ISO प्रारूप)
+  - `endDate` (वैकल्पिक): इस तिथि तक लॉग फ़िल्टर करें (ISO प्रारूप)
+  - `userId` (वैकल्पिक): उपयोगकर्ता आईडी द्वारा फ़िल्टर करें
+  - `username` (वैकल्पिक): उपयोगकर्ता नाम से फ़िल्टर करें
+  - `action` (वैकल्पिक): कार्रवाई नाम से फ़िल्टर करें
+  - `category` (वैकल्पिक): श्रेणी द्वारा फ़िल्टर करें (`auth`, `user_management`, `config`, `backup`, `server`)
+  - `status` (वैकल्पिक): स्थिति द्वारा फ़िल्टर करें (`success`, `failure`, `error`)
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -597,20 +597,20 @@ For "Delete all data" option:
   }
   ```
 
-- **Error Responses**:
-  - `401`: Unauthorized - Invalid session or CSRF token
-  - `500`: Internal server error
-- **Notes**:
-  - Page-based (`page`) aur offset-based (`offset`) pagination ko support karta hai
-  - `details` field mein parsed JSON hota hai with additional context
-  - Sabhi audit log queries ko log kiya jata hai
+- **त्रुटि प्रतिक्रियाएं**:
+  - `401`: अनधिकृत - अमान्य सत्र या CSRF टोकन
+  - `500`: आंतरिक सर्वर त्रुटि
+- **नोट**:
+  - पृष्ठ-आधारित (`page`) और ऑफ़सेट-आधारित (`offset`) दोनों पेजिनेशन का समर्थन करता है
+  - `details` फ़ील्ड में अतिरिक्त संदर्भ के साथ पार्स किया गया JSON शामिल होता है
+  - सभी ऑडिट लॉग प्रश्नों को लॉग किया जाता है
 
-### Audit Log Filter Values प्राप्त करें - `/api/audit-log/filters` {/* #get-audit-log-filter-values---apiaudit-logfilters */}
-- **Endpoint**: `/api/audit-log/filters`
-- **Method**: GET
-- **विवरण**: Audit logs को filter करने के लिए उपलब्ध unique filter values प्राप्त करता है। Audit log database में मौजूद सभी distinct actions, categories, और statuses लौटाता है। UI में filter dropdowns को populate करने के लिए useful।
-- **Authentication**: Valid session aur CSRF token chahiye (logged-in user required)
-- **Response**:
+### ऑडिट लॉग फ़िल्टर मान प्राप्त करें - `/api/audit-log/filters` {/* #get-audit-log-filter-values---apiaudit-logfilters */}
+- **एंडपॉइंट**: `/api/audit-log/filters`
+- **विधि**: GET
+- **विवरण**: ऑडिट लॉग को फ़िल्टर करने के लिए उपलब्ध अद्वितीय फ़िल्टर मान पुनर्प्राप्त करता है। ऑडिट लॉग डेटाबेस में मौजूद सभी विशिष्ट कार्रवाइयों, श्रेणियों और स्थितियों को लौटाता है। UI में फ़िल्टर ड्रॉपडाउन पॉप्युलेट करने के लिए उपयोगी है।
+- **प्रमाणीकरण**: मान्य सत्र और CSRF टोकन की आवश्यकता है (लॉग-इन उपयोगकर्ता आवश्यक)
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -636,53 +636,53 @@ For "Delete all data" option:
   }
   ```
 
-- **Error Responses**:
-  - `401`: Unauthorized - Invalid session or CSRF token
-  - `500`: Internal server error
-- **Notes**:
-  - Audit log database se unique values ko return karta hai
-  - Values ko alphabetically sort kiya jata hai
-  - Agar koi data nahin hai ya error hai toh empty arrays return hoti hai
-  - Audit log viewer ke liye filter dropdowns ko dynamically populate karne ke liye use kiya jata hai
+- **त्रुटि प्रतिक्रियाएं**:
+  - `401`: अनधिकृत - अमान्य सत्र या CSRF टोकन
+  - `500`: आंतरिक सर्वर त्रुटि
+- **नोट**:
+  - ऑडिट लॉग डेटाबेस से अद्वितीय मानों की सरणियाँ लौटाता है
+  - मानों को वर्णानुक्रम में क्रमबद्ध किया जाता है
+  - यदि कोई डेटा मौजूद नहीं है या त्रुटि होने पर रिक्त सरणियाँ लौटाई जाती हैं
+  - फ़िल्टर ड्रॉपडाउन को गतिशील रूप से पॉप्युलेट करने के लिए ऑडिट लॉग व्यूअर द्वारा उपयोग किया जाता है
 
-### Audit Logs Download करें - `/api/audit-log/download` {/* #download-audit-logs---apiaudit-logdownload */}
-- **Endpoint**: `/api/audit-log/download`
-- **Method**: GET
-- **विवरण**: वैकल्पिक filtering के साथ CSV या JSON format में audit logs download करता है। External analysis और reporting के लिए useful।
-- **Authentication**: Valid session aur CSRF token chahiye (logged-in user required)
-- **Query Parameters**:
-  - `format` (optional): Export format - `csv` or `json` (default: `csv`)
-  - `startDate` (optional): Filter logs from this date (ISO format)
-  - `endDate` (optional): Filter logs to this date (ISO format)
-  - `userId` (optional): Filter by user ID
-  - `username` (optional): Filter by username
-  - `action` (optional): Filter by action name
-  - `category` (optional): Filter by category
-  - `status` (optional): Filter by status
-- **Response** (CSV):
+### ऑडिट लॉग डाउनलोड करें - `/api/audit-log/download` {/* #download-audit-logs---apiaudit-logdownload */}
+- **एंडपॉइंट**: `/api/audit-log/download`
+- **विधि**: GET
+- **विवरण**: वैकल्पिक फ़िल्टरिंग के साथ CSV या JSON प्रारूप में ऑडिट लॉग डाउनलोड करता है। बाहरी विश्लेषण और रिपोर्टिंग के लिए उपयोगी है।
+- **प्रमाणीकरण**: मान्य सत्र और CSRF टोकन की आवश्यकता है (लॉग-इन उपयोगकर्ता आवश्यक)
+- **क्वेरी पैरामीटर**:
+  - `format` (वैकल्पिक): निर्यात प्रारूप - `csv` या `json` (डिफ़ॉल्ट: `csv`)
+  - `startDate` (वैकल्पिक): इस तिथि से लॉग फ़िल्टर करें (ISO प्रारूप)
+  - `endDate` (वैकल्पिक): इस तिथि तक लॉग फ़िल्टर करें (ISO प्रारूप)
+  - `userId` (वैकल्पिक): उपयोगकर्ता आईडी द्वारा फ़िल्टर करें
+  - `username` (वैकल्पिक): उपयोगकर्ता नाम से फ़िल्टर करें
+  - `action` (वैकल्पिक): कार्रवाई नाम से फ़िल्टर करें
+  - `category` (वैकल्पिक): श्रेणी द्वारा फ़िल्टर करें
+  - `status` (वैकल्पिक): स्थिति द्वारा फ़िल्टर करें
+- **प्रतिक्रिया** (CSV):
   - Content-Type: `text/csv`
   - Content-Disposition: `attachment; filename="audit-log-YYYY-MM-DD.csv"`
-  - CSV file with headers: ID, Timestamp, User ID, Username, Action, Category, Target Type, Target ID, Status, IP Address, User Agent, Details, Error Message
-- **Response** (JSON):
+  - शीर्षलेखों के साथ CSV फ़ाइल: आईडी, टाइमस्टैम्प, उपयोगकर्ता आईडी, उपयोगकर्ता नाम, कार्रवाई, श्रेणी, लक्ष्य प्रकार, लक्ष्य आईडी, स्थिति, आईपी पता, यूज़र एजेंट, विवरण, त्रुटि संदेश
+- **प्रतिक्रिया** (JSON):
   - Content-Type: `application/json`
   - Content-Disposition: `attachment; filename="audit-log-YYYY-MM-DD.json"`
-  - JSON array of audit log entries
-- **Error Responses**:
-  - `400`: No logs to export
-  - `401`: Unauthorized - Invalid session or CSRF token
-  - `500`: Internal server error
-- **Notes**:
-  - Export limit is 10,000 records
-  - CSV format escapes special characters properly
-  - Details field in CSV is JSON-stringified
-  - File name includes the current date
+  - ऑडिट लॉग प्रविष्टियों का JSON ऐरे
+- **त्रुटि प्रतिक्रियाएं**:
+  - `400`: निर्यात करने के लिए कोई लॉग नहीं हैं
+  - `401`: अनधिकृत - अमान्य सत्र या CSRF टोकन
+  - `500`: आंतरिक सर्वर त्रुटि
+- **नोट्स**:
+  - निर्यात सीमा 10,000 रिकॉर्ड है
+  - CSV प्रारूप विशेष वर्णों को ठीक से एस्केप करता है
+  - CSV में विवरण फ़ील्ड JSON-स्ट्रिंगिफ़ाइड है
+  - फ़ाइल नाम में वर्तमान तिथि शामिल होती है
 
-### Audit Logs Saaf Karen - `/api/audit-log/cleanup` {/* #cleanup-audit-logs---apiaudit-logcleanup */}
-- **Endpoint**: `/api/audit-log/cleanup`
-- **Method**: POST
-- **विवरण**: Retention period के आधार पर पुराने audit logs की सफाई को मैन्युअल रूप से trigger करता है। Preview करने के लिए dry-run mode को support करता है कि क्या delete किया जाएगा।
-- **Authentication**: Requires admin privileges, valid session and CSRF token
-- **Request Body**:
+### ऑडिट लॉग क्लीनअप करें - `/api/audit-log/cleanup` {/* #cleanup-audit-logs---apiaudit-logcleanup */}
+- **एंडपॉइंट**: `/api/audit-log/cleanup`
+- **मेथड**: POST
+- **विवरण**: प्रतिधारण अवधि के आधार पर पुराने ऑडिट लॉग के क्लीनअप को मैन्युअल रूप से ट्रिगर करता है। क्या हटाया जाएगा, इसका पूर्वावलोकन करने के लिए ड्राई-रन मोड का समर्थन करता है।
+- **प्रमाणीकरण**: एडमिन विशेषाधिकार, मान्य सत्र और CSRF टोकन की आवश्यकता है
+- **अनुरोध बॉडी**:
 
   ```json
   {
@@ -691,9 +691,9 @@ For "Delete all data" option:
   }
   ```
 
-- `retentionDays` (optional): Override retention days (30-365), otherwise uses configured value
-  - `dryRun` (optional): If true, only returns what would be deleted without actually deleting
-- **Response** (dry run):
+- `retentionDays` (वैकल्पिक): प्रतिधारण दिनों (30-365) को ओवरराइड करें, अन्यथा कॉन्फ़िगर किए गए मान का उपयोग करता है
+  - `dryRun` (वैकल्पिक): यदि true है, तो वास्तव में हटाए बिना केवल वही लौटाता है जो हटाया जाएगा
+- **प्रतिक्रिया** (ड्राई रन):
 
   ```json
   {
@@ -705,7 +705,7 @@ For "Delete all data" option:
   }
   ```
 
-- **Response** (actual cleanup):
+- **प्रतिक्रिया** (वास्तविक क्लीनअप):
 
   ```json
   {
@@ -716,23 +716,23 @@ For "Delete all data" option:
   }
   ```
 
-- **Error Responses**:
-  - `400`: Invalid retention days (must be 30-365)
-  - `401`: Unauthorized - Invalid session or CSRF token
-  - `403`: Forbidden - Admin privileges required
-  - `500`: Internal server error
-- **Notes**:
-  - Only accessible to admin users
-  - Default retention is 90 days if not configured
-  - Cleanup operation is logged to audit log
-  - Dry-run mode is useful for previewing cleanup impact
+- **त्रुटि प्रतिक्रियाएं**:
+  - `400`: अमान्य प्रतिधारण दिन (30-365 होने चाहिए)
+  - `401`: अनधिकृत - अमान्य सत्र या CSRF टोकन
+  - `403`: वर्जित - एडमिन विशेषाधिकार आवश्यक हैं
+  - `500`: आंतरिक सर्वर त्रुटि
+- **नोट्स**:
+  - केवल एडमिन उपयोगकर्ताओं के लिए सुलभ
+  - यदि कॉन्फ़िगर नहीं है तो डिफ़ॉल्ट प्रतिधारण 90 दिन है
+  - क्लीनअप ऑपरेशन को ऑडिट लॉग में लॉग किया जाता है
+  - क्लीनअप के प्रभाव का पूर्वावलोकन करने के लिए ड्राई-रन मोड उपयोगी है
 
-### Audit Log Retention प्राप्त करें - `/api/audit-log/retention` {/* #get-audit-log-retention---apiaudit-logretention */}
-- **Endpoint**: `/api/audit-log/retention`
-- **Method**: GET
-- **विवरण**: दिनों में वर्तमान audit log retention कॉन्फ़िगरेशन प्राप्त करता है।
-- **Authentication**: Requires valid session and CSRF token (no logged-in user required)
-- **Response**:
+### ऑडिट लॉग प्रतिधारण प्राप्त करें - `/api/audit-log/retention` {/* #get-audit-log-retention---apiaudit-logretention */}
+- **एंडपॉइंट**: `/api/audit-log/retention`
+- **मेथड**: GET
+- **विवरण**: दिनों में वर्तमान ऑडिट लॉग प्रतिधारण कॉन्फ़िगरेशन पुनर्प्राप्त करता है।
+- **प्रमाणीकरण**: मान्य सत्र और CSRF टोकन आवश्यक है (किसी लॉग-इन उपयोगकर्ता की आवश्यकता नहीं है)
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -740,18 +740,18 @@ For "Delete all data" option:
   }
   ```
 
-- **Error Responses**:
-  - `500`: Internal server error
-- **Notes**:
-  - Default retention is 90 days if not configured
-  - Can be accessed without authentication (read-only)
+- **त्रुटि प्रतिक्रियाएं**:
+  - `500`: आंतरिक सर्वर त्रुटि
+- **नोट्स**:
+  - यदि कॉन्फ़िगर नहीं है तो डिफ़ॉल्ट प्रतिधारण 90 दिन है
+  - बिना प्रमाणीकरण के एक्सेस किया जा सकता है (केवल पढ़ने के लिए)
 
-### Audit Log Retention अपडेट करें - `/api/audit-log/retention` {/* #update-audit-log-retention---apiaudit-logretention */}
-- **Endpoint**: `/api/audit-log/retention`
-- **Method**: PATCH
-- **विवरण**: दिनों में audit log retention अवधि को अपडेट करता है। यह सेटिंग यह निर्धारित करती है कि स्वचालित सफाई से पहले audit logs कितनी देर तक रखी जाती हैं।
-- **Authentication**: Requires admin privileges, valid session and CSRF token
-- **Request Body**:
+### ऑडिट लॉग प्रतिधारण अपडेट करें - `/api/audit-log/retention` {/* #update-audit-log-retention---apiaudit-logretention */}
+- **एंडपॉइंट**: `/api/audit-log/retention`
+- **मेथड**: PATCH
+- **विवरण**: दिनों में ऑडिट लॉग प्रतिधारण अवधि को अपडेट करता है। यह सेटिंग निर्धारित करती है कि स्वचालित क्लीनअप से पहले ऑडिट लॉग को कितने समय तक रखा जाए।
+- **प्रमाणीकरण**: एडमिन विशेषाधिकार, मान्य सत्र और CSRF टोकन की आवश्यकता है
+- **अनुरोध बॉडी**:
 
   ```json
   {
@@ -759,8 +759,8 @@ For "Delete all data" option:
   }
   ```
 
-- `retentionDays`: Required, must be between 30 and 365 days
-- **Response**:
+- `retentionDays`: आवश्यक, 30 और 365 दिनों के बीच होना चाहिए
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -769,34 +769,34 @@ For "Delete all data" option:
   }
   ```
 
-- **Error Responses**:
-  - `400`: Invalid retention days (must be 30-365)
-  - `401`: Unauthorized - Invalid session or CSRF token
-  - `403`: Forbidden - Admin privileges required
-  - `500`: Internal server error
-- **Notes**:
-  - Only accessible to admin users
-  - Configuration change is logged to audit log
-  - Retention period affects automatic and manual cleanup operations
+- **त्रुटि प्रतिक्रियाएं**:
+  - `400`: अमान्य प्रतिधारण दिन (30-365 होने चाहिए)
+  - `401`: अनधिकृत - अमान्य सत्र या CSRF टोकन
+  - `403`: वर्जित - एडमिन विशेषाधिकार आवश्यक हैं
+  - `500`: आंतरिक सर्वर त्रुटि
+- **नोट्स**:
+  - केवल एडमिन उपयोगकर्ताओं के लिए सुलभ
+  - कॉन्फ़िगरेशन परिवर्तन ऑडिट लॉग में लॉग किया जाता है
+  - प्रतिधारण अवधि स्वचालित और मैन्युअल क्लीनअप संचालन को प्रभावित करती है
 
-## एपीआई कुंजियाँ {/* #api-keys */}
+## API कुंजियाँ {/* #api-keys */}
 
-### एपीआई कुंजियाँ सूचीबद्ध करें - `/api/api-keys` {/* #list-api-keys---apiapi-keys */}
-- **Endpoint**: `/api/api-keys`
-- **Method**: GET
-- **विवरण**: सभी एपीआई कुंजियों की सूची बनाता है। Secrets कभी वापस नहीं किए जाते; प्रत्येक कुंजी में एक फिंगरप्रिंट शामिल होता है (`Qk7v…3xTa`)।
-- **Authentication**: एडमिन प्राइविलेज, वैध सेशन और CSRF टोकन की आवश्यकता होती है
-- **Error Responses**:
-  - `401`: Unauthorized - Invalid session or CSRF token
-  - `403`: Forbidden - Admin privileges required
-  - `500`: Internal server error
+### API कुंजियाँ सूचीबद्ध करें - `/api/api-keys` {/* #list-api-keys---apiapi-keys */}
+- **एंडपॉइंट**: `/api/api-keys`
+- **मेथड**: GET
+- **विवरण**: सभी API कुंजियों को सूचीबद्ध करता है। सीक्रेट कभी नहीं लौटाए जाते हैं; प्रत्येक कुंजी में एक फिंगरप्रिंट (`Qk7v…3xTa`) शामिल होता है।
+- **प्रमाणीकरण**: एडमिन विशेषाधिकार, मान्य सत्र और CSRF टोकन की आवश्यकता है
+- **त्रुटि प्रतिक्रियाएँ**:
+  - `401`: अनधिकृत - अमान्य सत्र या CSRF टोकन
+  - `403`: निषिद्ध - एडमिन विशेषाधिकार आवश्यक हैं
+  - `500`: आंतरिक सर्वर त्रुटि
 
-### एपीआई कुंजी बनाएँ - `/api/api-keys` {/* #create-api-key---apiapi-keys */}
-- **Endpoint**: `/api/api-keys`
-- **Method**: POST
-- **विवरण**: एक scoped एपीआई कुंजी बनाता है। plaintext secret केवल इस प्रतिक्रिया में वापस किया जाता है।
-- **Authentication**: Requires admin privileges, valid session and CSRF token
-- **Request Body**:
+### API कुंजी बनाएँ - `/api/api-keys` {/* #create-api-key---apiapi-keys */}
+- **एंडपॉइंट**: `/api/api-keys`
+- **मेथड**: POST
+- **विवरण**: एक स्कोप्ड API कुंजी बनाता है। प्लेनटेक्स्ट सीक्रेट केवल इसी प्रतिक्रिया में लौटाया जाता है।
+- **प्रमाणीकरण**: एडमिन विशेषाधिकार, मान्य सत्र और CSRF टोकन की आवश्यकता है
+- **अनुरोध बॉडी**:
 
   ```json
   {
@@ -807,59 +807,59 @@ For "Delete all data" option:
   }
   ```
 
-- **Error Responses**:
-  - `400`: Missing name or invalid scope (`upload` or `read`)
-  - `401`: Unauthorized - Invalid session or CSRF token
-  - `403`: Forbidden - Admin privileges required
-  - `500`: Internal server error
+- **त्रुटि प्रतिक्रियाएँ**:
+  - `400`: अनुपलब्ध नाम या अमान्य स्कोप (`upload` या `read`)
+  - `401`: अनधिकृत - अमान्य सत्र या CSRF टोकन
+  - `403`: निषिद्ध - एडमिन विशेषाधिकार आवश्यक हैं
+  - `500`: आंतरिक सर्वर त्रुटि
 
-### एपीआई कुंजी अपडेट करें - `/api/api-keys/:id` {/* #update-api-key---apiapi-keysid */}
-- **Endpoint**: `/api/api-keys/:id`
-- **Method**: PATCH
-- **विवरण**: एक कुंजी को सक्षम या अक्षम करता है।
-- **Authentication**: एडमिन प्राइविलेज, वैध सेशन और CSRF टोकन की आवश्यकता होती है
+### API कुंजी अपडेट करें - `/api/api-keys/:id` {/* #update-api-key---apiapi-keysid */}
+- **एंडपॉइंट**: `/api/api-keys/:id`
+- **मेथड**: PATCH
+- **विवरण**: किसी कुंजी को सक्षम या अक्षम करता है।
+- **प्रमाणीकरण**: एडमिन विशेषाधिकारों, मान्य सत्र और CSRF टोकन की आवश्यकता होती है
 
-### एपीआई कुंजी हटाएँ - `/api/api-keys/:id` {/* #delete-api-key---apiapi-keysid */}
-- **Endpoint**: `/api/api-keys/:id`
-- **Method**: DELETE
-- **विवरण**: एक कुंजी को हटाता है। उस secret का उपयोग करने वाले मौजूदा क्लाइंट तुरंत पहुँच खो देते हैं।
-- **Authentication**: एडमिन प्राइविलेज, वैध सेशन और CSRF टोकन की आवश्यकता होती है
+### API कुंजी हटाएँ - `/api/api-keys/:id` {/* #delete-api-key---apiapi-keysid */}
+- **एंडपॉइंट**: `/api/api-keys/:id`
+- **मेथड**: DELETE
+- **विवरण**: किसी कुंजी को हटाता है। उस सीक्रेट का उपयोग करने वाले मौजूदा क्लाइंट तुरंत एक्सेस खो देते हैं।
+- **प्रमाणीकरण**: एडमिन विशेषाधिकारों, मान्य सत्र और CSRF टोकन की आवश्यकता होती है
 
 ## डेटाबेस प्रबंधन {/* #database-management */}
 
 ### डेटाबेस का बैकअप लें - `/api/database/backup` {/* #backup-database---apidatabasebackup */}
-- **Endpoint**: `/api/database/backup`
-- **Method**: GET
-- **विवरण**: डेटाबेस का बैकअप बाइनरी (.db) या SQL (.sql) फॉर्मेट में बनाता है। बैकअप फ़ाइल स्वचालित रूप से timestamped फ़ाइलनाम के साथ डाउनलोड होती है।
-- **Authentication**: एडमिन प्राधिकृत, वैध सत्र और CSRF टोकन की आवश्यकता होती है
-- **Query Parameters**:
-  - `format` (optional): बैकअप फॉर्मेट - `db` (बाइनरी) या `sql` (SQL डंप)। डिफ़ॉल्ट: `db`
-- **Response**:
-  - Content-Type: `application/octet-stream` (for .db) or `text/plain` (for .sql)
-  - Content-Disposition: `attachment; filename="duplistatus-backup-YYYY-MM-DDTHH-MM-SS.db"` or `.sql`
-  - Binary file content (for .db) or SQL text content (for .sql)
-- **Error Responses**:
-  - `400`: अमान्य फॉर्मेट ("db" या "sql" होना चाहिए)
+- **एंडपॉइंट**: `/api/database/backup`
+- **मेथड**: GET
+- **विवरण**: बाइनरी (.db) या SQL (.sql) फ़ॉर्मेट में डेटाबेस का एक बैकअप बनाता है। बैकअप फ़ाइल टाइमस्टैम्प वाले फ़ाइल नाम के साथ स्वचालित रूप से डाउनलोड हो जाती है।
+- **प्रमाणीकरण**: एडमिन विशेषाधिकार, मान्य सत्र और CSRF टोकन की आवश्यकता है
+- **क्वेरी पैरामीटर**:
+  - `format` (वैकल्पिक): बैकअप फ़ॉर्मेट - `db` (बाइनरी) या `sql` (SQL डंप)। डिफ़ॉल्ट: `db`
+- **प्रतिक्रिया**:
+  - Content-Type: `application/octet-stream` (.db के लिए) या `text/plain` (.sql के लिए)
+  - Content-Disposition: `attachment; filename="duplistatus-backup-YYYY-MM-DDTHH-MM-SS.db"` या `.sql`
+  - बाइनरी फ़ाइल सामग्री (.db के लिए) या SQL टेक्स्ट सामग्री (.sql के लिए)
+- **त्रुटि प्रतिक्रियाएँ**:
+  - `400`: अमान्य फ़ॉर्मेट ("db" या "sql" होना चाहिए)
   - `401`: अनधिकृत - अमान्य सत्र या CSRF टोकन
-  - `403`: निषेधित - एडमिन प्राधिकृत आवश्यक
-  - `500`: डेटाबेस बैकअप बनाने में असफल
-- **Notes**:
-  - केवल एडमिन उपयोगकर्ताओं के लिए उपलब्ध
-  - बाइनरी फॉर्मेट में SQLite का बैकअप विधि उपयोग की जाती है, अखंडता के लिए
-  - SQL फॉर्मेट में सभी डेटाबेस सामग्री का टेक्स्ट डंप बनाया जाता है
-  - फ़ाइलनाम में टाइमस्टैम्प सर्वर के स्थानीय समय क्षेत्र का उपयोग करता है
-  - बैकअप ऑपरेशन ऑडिट लॉग में लॉग किया जाता है
-  - डाउनलोड के बाद अस्थायी फ़ाइलें स्वचालित रूप से साफ़ की जाती हैं
+  - `403`: निषिद्ध - एडमिन विशेषाधिकार आवश्यक हैं
+  - `500`: डेटाबेस बैकअप बनाने में विफल
+- **नोट्स**:
+  - केवल एडमिन उपयोगकर्ताओं के लिए सुलभ
+  - बाइनरी फ़ॉर्मेट अखंडता के लिए SQLite की बैकअप पद्धति का उपयोग करता है
+  - SQL फ़ॉर्मेट सभी डेटाबेस सामग्री का एक टेक्स्ट डंप बनाता है
+  - फ़ाइल नाम में टाइमस्टैम्प सर्वर के स्थानीय टाइमज़ोन का उपयोग करता है
+  - बैकअप ऑपरेशन ऑडिट लॉग में दर्ज किया जाता है
+  - डाउनलोड के बाद अस्थायी फ़ाइलें स्वचालित रूप से साफ़ कर दी जाती हैं
 
 ### डेटाबेस पुनर्स्थापित करें - `/api/database/restore` {/* #restore-database---apidatabaserestore */}
-- **Endpoint**: `/api/database/restore`
-- **Method**: POST
-- **विवरण**: बैकअप फ़ाइल (.db या .sql फॉर्मेट) से डेटाबेस को पुनर्स्थापित करता है। सुरक्षा के लिए पुनर्स्थापना से पहले एक सुरक्षा बैकअप बनाता है और पुनर्स्थापना के बाद सभी सत्रों को साफ़ करता है।
-- **Authentication**: एडमिन प्राधिकृत, वैध सत्र और CSRF टोकन की आवश्यकता होती है
-- **Request Body**: FormData जिसमें एक फ़ाइल फ़ील्ड होता है, जिसका नाम `database` होता है
-  - फ़ाइल या तो `.db`, `.sqlite`, `.sqlite3` (बाइनरी फॉर्मेट) या `.sql` (SQL फॉर्मेट) होनी चाहिए
+- **एंडपॉइंट**: `/api/database/restore`
+- **मेथड**: POST
+- **विवरण**: बैकअप फ़ाइल (.db या .sql फ़ॉर्मेट) से डेटाबेस को पुनर्स्थापित करता है। पुनर्स्थापना से पहले एक सुरक्षा बैकअप बनाता है और सुरक्षा के लिए पुनर्स्थापना के बाद सभी सत्रों को साफ़ करता है।
+- **प्रमाणीकरण**: एडमिन विशेषाधिकार, वैध सत्र और CSRF टोकन की आवश्यकता है
+- **अनुरोध निकाय**: `database` नामक फ़ाइल फ़ील्ड के साथ FormData
+  - फ़ाइल `.db`, `.sqlite`, `.sqlite3` (बाइनरी प्रारूप) या `.sql` (SQL प्रारूप) में से कोई एक होनी चाहिए
   - अधिकतम फ़ाइल आकार: 100MB
-- **Response**:
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -870,32 +870,32 @@ For "Delete all data" option:
   }
   ```
 
-- **Error Responses**:
-  - `400`: कोई फ़ाइल प्रदान नहीं की गई, फ़ाइल आकार सीमा से अधिक, अमान्य फ़ाइल फॉर्मेट, या डेटाबेस अखंडता जाँच असफल
-  - `401`: अनधिकृत - अमान्य सत्र या CSRF टोकन
-  - `403`: निषेधित - एडमिन प्राधिकृत आवश्यक
-  - `500`: डेटाबेस रिस्टोर करने में असफल (असफल होने पर मूल डेटाबेस सुरक्षा बैकअप से रिस्टोर किया जाता है)
-- **Notes**:
-  - केवल एडमिन उपयोगकर्ताओं के लिए उपलब्ध
-  - रिस्टोर से पहले स्वचालित रूप से एक सुरक्षा बैकअप बनाता है
-  - दोनों बाइनरी (.db) और SQL (.sql) फॉर्मेट का समर्थन करता है
-  - रिस्टोर के बाद डेटाबेस अखंडता की जाँच करता है
-  - अगर रिस्टोर असफल होता है, तो स्वचालित रूप से सुरक्षा बैकअप से रिस्टोर करता है
-  - सफल रिस्टोर के बाद सभी सत्र साफ़ किए जाते हैं, सुरक्षा के लिए
-  - वापस `requiresReauth: true` लौटाता है, जो इंगित करता है कि उपयोगकर्ता को फिर से लॉग इन करना होगा
-  - रिस्टोर ऑपरेशन ऑडिट लॉग में लॉग किया जाता है
-  - SQL फॉर्मेट के लिए, निष्पादन से पहले SQL सामग्री की जाँच की जाती है
-  - रिस्टोर के बाद डेटाबेस कनेक्शन को फिर से प्रारंभ किया जाता है
-  - रिस्टोर के बाद सभी कैशे अमान्य हो जाते हैं
+- **त्रुटि प्रतिक्रियाएं**:
+  - `400`: कोई फ़ाइल प्रदान नहीं की गई, फ़ाइल आकार सीमा से अधिक है, अमान्य फ़ाइल प्रारूप है, या डेटाबेस अखंडता जांच विफल रही
+  - `401`: अनुमति नहीं है - अमान्य सत्र या CSRF टोकन
+  - `403`: निषिद्ध - एडमिन विशेषाधिकार आवश्यक है
+  - `500`: डेटाबेस पुनर्स्थापित करने में विफल (यदि पुनर्स्थापन विफल होता है तो मूल डेटाबेस सुरक्षा बैकअप से पुनर्स्थापित किया जाता है)
+- **नोट्स**:
+  - केवल एडमिन उपयोगकर्ताओं के लिए सुलभ
+  - पुनर्स्थापन से पहले स्वचालित रूप से एक सुरक्षा बैकअप बनाता है
+  - बाइनरी (.db) और SQL (.sql) दोनों प्रारूपों का समर्थन करता है
+  - पुनर्स्थापन के बाद डेटाबेस अखंडता को सत्यापित करता है
+  - यदि पुनर्स्थापन विफल होता है, तो स्वचालित रूप से सुरक्षा बैकअप से पुनर्स्थापित करता है
+  - सुरक्षा के लिए सफल पुनर्स्थापन के बाद सभी सत्र साफ़ किए जाते हैं
+  - उपयोगकर्ता को फिर से लॉग इन करने की आवश्यकता को इंगित करने के लिए `requiresReauth: true` लौटाता है
+  - पुनर्स्थापन ऑपरेशन ऑडिट लॉग में लॉग किया जाता है
+  - SQL प्रारूप के लिए, निष्पादन से पहले SQL सामग्री को सत्यापित करता है
+  - पुनर्स्थापन के बाद डेटाबेस कनेक्शन को पुनः आरंभ किया जाता है
+  - पुनर्स्थापन के बाद सभी कैश अमान्य किए जाते हैं
 
 ## बैकअप टाइमस्टैम्प {/* #backup-timestamps */}
 
 ### अंतिम बैकअप टाइमस्टैम्प प्राप्त करें - `/api/backups/last-timestamps` {/* #get-last-backup-timestamps---apibackupslast-timestamps */}
-- **Endpoint**: `/api/backups/last-timestamps`
-- **Method**: GET
-- **विवरण**: प्रत्येक सर्वर-बैकअप संयोजन के लिए अंतिम बैकअप टाइमस्टैम्प प्राप्त करता है। आसान खोज के लिए एक map लौटाता है।
-- **Authentication**: वैध सत्र और CSRF टोकन की आवश्यकता होती है
-- **Response**:
+- **एंडपॉइंट**: `/api/backups/last-timestamps`
+- **विधि**: GET
+- **विवरण**: प्रत्येक सर्वर-बैकअप संयोजन के लिए अंतिम बैकअप टाइमस्टैम्प प्राप्त करता है। आसान लुकअप के लिए एक मानचित्र लौटाता है।
+- **प्रमाणीकरण**: मान्य सत्र और CSRF टोकन की आवश्यकता है
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -915,26 +915,26 @@ For "Delete all data" option:
   }
   ```
 
-- **Error Responses**:
-  - `401`: अनधिकृत - अमान्य सत्र या CSRF टोकन
-  - `500`: अंतिम बैकअप टाइमस्टैम्प प्राप्त करने में असफल
-- **Notes**:
-  - एक मैप (आसान लुकअप के लिए `server_id:backup_name` द्वारा) और रॉ एरे फॉर्मेट दोनों लौटाता है
-  - कैशिंग को रोकने के लिए कैश कंट्रोल हेडर शामिल हैं
-  - सभी सर्वर-बैकअप संयोजन के अंतिम बैकअप समयों को ट्रैक करने के लिए उपयोगी
-  - टाइमस्टैम्प ISO फॉर्मेट में होते हैं
+- **त्रुटि प्रतिक्रियाएं**:
+  - `401`: अनुमति नहीं है - अमान्य सत्र या CSRF टोकन
+  - `500`: अंतिम बैकअप टाइमस्टैम्प प्राप्त करने में विफल
+- **नोट्स**:
+  - `server_id:backup_name` द्वारा आसान लुकअप के लिए मानचित्र और कच्चे सरणी प्रारूप दोनों लौटाता है
+  - कैशिंग को रोकने के लिए कैश नियंत्रण हेडर शामिल करता है
+  - सभी सर्वर-बैकअप संयोजनों में अंतिम बैकअप समय ट्रैक करने के लिए उपयोगी
+  - टाइमस्टैम्प ISO प्रारूप में हैं
 
 ## एप्लिकेशन लॉग प्रबंधन {/* #application-logs-management */}
 
 ### एप्लिकेशन लॉग प्राप्त करें - `/api/application-logs` {/* #get-application-logs---apiapplication-logs */}
-- **Endpoint**: `/api/application-logs`
-- **Method**: GET
-- **विवरण**: लॉग फ़ाइलों से एप्लिकेशन लॉग प्रविष्टियाँ प्राप्त करता है। tail कार्यक्षमता के साथ वर्तमान और घुमाई गई लॉग फ़ाइलों को पढ़ने का समर्थन करता है।
-- **Authentication**: Admin privileges, valid session aur CSRF token ki zarurat hoti hai
-- **Query Parameters**:
-  - `file` (optional): Padhne ke liye log file ka naam - `application.log`, `application.log.1`, `application.log.2`, etc. Agar nahi diya gaya hai, to available files list return karta hai
-  - `tail` (optional): File ke end se return karne wale lines ki sankhya (default: 1000, min: 1, max: 10000)
-- **Response** (with file parameter):
+- **एंडपॉइंट**: `/api/application-logs`
+- **विधि**: GET
+- **विवरण**: लॉग फ़ाइलों से एप्लिकेशन लॉग प्रविष्टियां प्राप्त करता है। टेल कार्यक्षमता के साथ वर्तमान और घुमाई गई लॉग फ़ाइलों को पढ़ने का समर्थन करता है।
+- **प्रमाणीकरण**: एडमिन विशेषाधिकार, वैध सत्र और CSRF टोकन की आवश्यकता है
+- **क्वेरी पैरामीटर**:
+  - `file` (वैकल्पिक): पढ़ने के लिए लॉग फ़ाइल का नाम - `application.log`, `application.log.1`, `application.log.2`, आदि। यदि प्रदान नहीं किया गया है, तो उपलब्ध फ़ाइलों की सूची लौटाता है
+  - `tail` (वैकल्पिक): फ़ाइल के अंत से लौटाने के लिए पंक्तियों की संख्या (डिफ़ॉल्ट: 1000, न्यूनतम: 1, अधिकतम: 10000)
+- **प्रतिक्रिया** (फ़ाइल पैरामीटर के साथ):
 
   ```json
   {
@@ -947,7 +947,7 @@ For "Delete all data" option:
   }
   ```
 
-- **Response** (without file parameter):
+- **प्रतिक्रिया** (फ़ाइल पैरामीटर के बिना):
 
   ```json
   {
@@ -960,46 +960,46 @@ For "Delete all data" option:
   }
   ```
 
-- **Error Responses**:
-  - `400`: Invalid tail parameter (must be 1-10000) or invalid file parameter format
-  - `401`: Unauthorized - Invalid session or CSRF token
-  - `403`: Forbidden - Admin privileges required
-  - `404`: Log file not found
-  - `500`: Failed to read log file
-- **Notes**:
-  - Sirf admin users ke liye accessible hai
-  - Current log file aur rotated log files (upto 10 rotated files) ko padhne ka support karta hai
-  - Specified log file se last N lines (tail) return karta hai
-  - Log file ka naam environment variable se decide hota hai (default: `application.log`)
-  - Agar file parameter nahi diya gaya hai, to available log files ki list return karta hai
-  - File names ko directory traversal attacks se bachane ke liye validate kiya jata hai
-  - Rotated files sequentially numbered hoti hain (`.1`, `.2`, etc.)
+- **त्रुटि प्रतिक्रियाएं**:
+  - `400`: अमान्य टेल पैरामीटर (1-10000 होना चाहिए) या अमान्य फ़ाइल पैरामीटर प्रारूप
+  - `401`: अनुमति नहीं है - अमान्य सत्र या CSRF टोकन
+  - `403`: निषिद्ध - एडमिन विशेषाधिकार आवश्यक है
+  - `404`: लॉग फ़ाइल नहीं मिली
+  - `500`: लॉग फ़ाइल पढ़ने में विफल
+- **नोट्स**:
+  - केवल एडमिन उपयोगकर्ताओं के लिए सुलभ
+  - वर्तमान लॉग फ़ाइल और घुमाई गई लॉग फ़ाइलों (10 घुमाई गई फ़ाइलों तक) को पढ़ने का समर्थन करता है
+  - निर्दिष्ट लॉग फ़ाइल से अंतिम N पंक्तियां (टेल) लौटाता है
+  - लॉग फ़ाइल का नाम पर्यावरण चर द्वारा निर्धारित किया जाता है (डिफ़ॉल्ट: `application.log`)
+  - जब फ़ाइल पैरामीटर प्रदान नहीं किया जाता है तो उपलब्ध लॉग फ़ाइलों की सूची लौटाता है
+  - डायरेक्टरी ट्रैवर्सल हमलों को रोकने के लिए फ़ाइल नामों को मान्य किया जाता है
+  - रोटेट की गई फ़ाइलों को क्रमिक रूप से क्रमांकित किया जाता है (`.1`, `.2`, आदि)
 
 ### एप्लिकेशन लॉग निर्यात करें - `/api/application-logs/export` {/* #export-application-logs---apiapplication-logsexport */}
-- **Endpoint**: `/api/application-logs/export`
-- **Method**: GET
-- **विवरण**: फ़िल्टर किए गए टेक्स्ट फॉर्मेट में एप्लिकेशन लॉग प्रविष्टियाँ निर्यात करता है। log level और search string द्वारा फ़िल्टर करने का समर्थन करता है।
-- **Authentication**: Admin privileges, valid session aur CSRF token ki zarurat hoti hai
-- **Query Parameters**:
-  - `file` (required): Export karne ke liye log file ka naam - `application.log`, `application.log.1`, `application.log.2`, etc.
-  - `logLevels` (optional): Include karne wale log levels ki comma-separated list - `INFO`, `WARN`, `ERROR` (default: `INFO,WARN,ERROR`)
-  - `search` (optional): Log lines ko filter karne ke liye search string (case-insensitive)
-- **Response**:
+- **एंडपॉइंट**: `/api/application-logs/export`
+- **मेथड**: GET
+- **विवरण**: फ़िल्टर किए गए टेक्स्ट फ़ॉर्मैट में एप्लिकेशन लॉग प्रविष्टियों को निर्यात करता है। लॉग स्तर और खोज स्ट्रिंग के आधार पर फ़िल्टर करने का समर्थन करता है।
+- **प्रमाणीकरण**: एडमिन विशेषाधिकार, मान्य सत्र और CSRF टोकन आवश्यक हैं
+- **क्वेरी पैरामीटर**:
+  - `file` (आवश्यक): निर्यात करने के लिए लॉग फ़ाइल का नाम - `application.log`, `application.log.1`, `application.log.2`, आदि
+  - `logLevels` (वैकल्पिक): शामिल करने के लिए लॉग स्तरों की अल्पविराम से अलग की गई सूची - `INFO`, `WARN`, `ERROR` (डिफ़ॉल्ट: `INFO,WARN,ERROR`)
+  - `search` (वैकल्पिक): लॉग पंक्तियों को फ़िल्टर करने के लिए खोज स्ट्रिंग (केस-असंवेदनशील)
+- **प्रतिक्रिया**:
   - Content-Type: `text/plain`
   - Content-Disposition: `attachment; filename="duplistatus-logs-YYYY-MM-DDTHH-MM-SS.txt"`
-  - Filtered log content as plain text
-- **Error Responses**:
-  - `400`: File parameter is required or invalid file parameter format
-  - `401`: Unauthorized - Invalid session or CSRF token
-  - `403`: Forbidden - Admin privileges required
-  - `500`: Failed to export logs
-- **Notes**:
-  - Sirf admin users ke liye accessible hai
-  - Log level aur search criteria ke basis par filtered log entries ko export karta hai
-  - Log levels ke basis par filtering ka support karta hai: `INFO`, `WARN`, `ERROR`
-  - Search string filtering case-insensitive hoti hai
-  - Empty lines automatically filter out hoti hain
-  - Log file ka naam environment variable se decide hota hai (default: `application.log`)
-  - File names ko directory traversal attacks se bachane ke liye validate kiya jata hai
-  - Exported file mein filename mein timestamp shamil hota hai
-  - External analysis aur troubleshooting ke liye useful hai
+  - सादा पाठ के रूप में फ़िल्टर की गई लॉग सामग्री
+- **त्रुटि प्रतिक्रियाएं**:
+  - `400`: फ़ाइल पैरामीटर आवश्यक है या अमान्य फ़ाइल पैरामीटर फ़ॉर्मैट
+  - `401`: अनधिकृत - अमान्य सत्र या CSRF टोकन
+  - `403`: निषिद्ध - एडमिन विशेषाधिकार आवश्यक हैं
+  - `500`: लॉग निर्यात करने में विफल
+- **नोट**:
+  - केवल एडमिन उपयोगकर्ताओं के लिए सुलभ
+  - लॉग स्तर और खोज मानदंडों के आधार पर फ़िल्टर की गई लॉग प्रविष्टियों को निर्यात करता है
+  - लॉग स्तरों द्वारा फ़िल्टर करने का समर्थन करता है: `INFO`, `WARN`, `ERROR`
+  - खोज स्ट्रिंग फ़िल्टरिंग केस-असंवेदनशील है
+  - खाली पंक्तियां स्वचालित रूप से फ़िल्टर हो जाती हैं
+  - लॉग फ़ाइल का नाम परिवेश चर (environment variable) द्वारा निर्धारित किया जाता है (डिफ़ॉल्ट: `application.log`)
+  - डायरेक्टरी ट्रैवर्सल हमलों को रोकने के लिए फ़ाइल नामों को मान्य किया जाता है
+  - निर्यात की गई फ़ाइल के फ़ाइल नाम में टाइमस्टैम्प शामिल होता है
+  - बाहरी विश्लेषण और समस्या निवारण के लिए उपयोगी

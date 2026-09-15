@@ -1,13 +1,13 @@
 # APIs externas {/* #external-apis */}
 
-Estos endpoints están diseñados para ser utilizados por otras aplicaciones e integraciones, por ejemplo [Página principal](../user-guide/homepage-integration.md). Son exentos de CSRF y no utilizan cookies de sesión.
+Estos puntos finales están diseñados para su uso por otras aplicaciones e integraciones, por ejemplo [Página principal](../user-guide/homepage-integration.md). Son exentos de CSRF y no usan cookies de sesión.
 
-La autenticación es opcional y está desactivada por defecto. Aunque las claves son opcionales, los clientes pueden omitir la clave o enviar una: se acepta y registra una clave válida de ámbito coincidente; una clave incorrecta se ignora y la solicitud sigue adelante. Cuándo **Requerir claves de API** está habilitado en [Claves de API](../user-guide/settings/api-keys-settings.md), envía la clave como `?api_key=`, `X-Api-Key` o `Authorization: Bearer`. Las claves de subir solo funcionan en `POST /api/upload`. Las claves de leer solo funcionan en `/api/summary` y `/api/lastbackup*`. Las claves de cadena de consulta aparecen en los registros de acceso del proxy inverso.
+La autenticación es opcional y está desactivada por defecto. Aunque las claves son opcionales, los clientes pueden omitir la clave o enviar una: una clave válida con ámbito coincidente es aceptada y registrada; una clave incorrecta se ignora y la solicitud sigue adelante. Cuando **Requiere claves de API** está habilitado en [Claves de API](../user-guide/settings/api-keys-settings.md), envíe la clave como `?api_key=`, `X-Api-Key`, o `Authorization: Bearer`. Las claves de carga solo funcionan en `POST /api/upload`. Las claves de lectura solo funcionan en `/api/summary` y `/api/lastbackup*`. Las claves de consulta de cadena aparecen en los registros de acceso del proxy inverso.
 
-Una [lista de IPs permitidas](../user-guide/settings/ip-allowlist-settings.md) también puede restringir estas rutas. `/api/health` y `/api/ping` permanecen públicas mientras ambas listas estén desactivadas; cuando alguna de las listas esté habilitada, aceptan bucles de retorno y CIDRs de la lista del administrador o externa, y los clientes que no sean de bucles de retorno están limitados por la tasa.
+Una [lista de IPs permitidas](../user-guide/settings/ip-allowlist-settings.md) también puede restringir estas rutas. `/api/health` y `/api/ping` permanecen públicas mientras ambas listas están desactivadas; cuando alguna lista está habilitada, aceptan bucles de retorno y CIDRs de la lista de administradores o externa, y los clientes no de bucles de retorno están limitados por tasa.
 
 ## Obtener Resumen General - `/api/summary` {/* #get-overall-summary---apisummary */}
-- **Endpoint**: `/api/summary`
+- **Punto final**: `/api/summary`
 - **Método**: GET
 - **Descripción**: Recupera un resumen de todas las operaciones de copia de seguridad en todos los servidores.
 - **Respuesta**:
@@ -28,18 +28,18 @@ Una [lista de IPs permitidas](../user-guide/settings/ip-allowlist-settings.md) t
 - **Respuestas de error**:
   - `401`: Clave de API faltante o inválida cuando las claves son requeridas
   - `403`: El ámbito de la clave no es `read`, o la IP del cliente no está en la lista de IPs permitidas externas
-  - `429`: Límite de tasa de la API de lectura excedido
+  - `429`: Límite de tasa de API de lectura excedido
   - `500`: Error del servidor al obtener datos de resumen
 - **Notas**:
   - En la versión 0.5.x, el campo `totalBackupedSize` fue reemplazado por `totalBackupSize`
   - En la versión 0.7.x, el campo `totalMachines` fue reemplazado por `totalServers`
   - El campo `overdueBackupsCount` muestra el número de copias de seguridad pendientes actualmente
   - El campo `secondsSinceLastBackup` muestra el tiempo en segundos desde la última copia de seguridad en todos los servidores
-  - Devuelve una respuesta de respaldo con ceros si falla la obtención de datos
-  - **Nota**: Para uso en el panel interno, considera usar `/api/dashboard` que incluye estos datos más información adicional
+  - Devuelve una respuesta de respaldo con ceros si la obtención de datos falla
+  - **Nota**: Para uso del panel interno, considere usar `/api/dashboard` que incluye estos datos más información adicional
 
 ## Obtener Última Copia de Seguridad - `/api/lastbackup/:serverId` {/* #get-latest-backup---apilastbackupserverid */}
-- **Endpoint**: `/api/lastbackup/:serverId`
+- **Punto final**: `/api/lastbackup/:serverId`
 - **Método**: GET
 - **Descripción**: Recupera la información de la última copia de seguridad para un servidor específico.
 - **Parámetros**:
@@ -90,18 +90,18 @@ El identificador del servidor debe estar codificado en URL.
   - `401`: Clave de API faltante o inválida cuando las claves son requeridas
   - `403`: El ámbito de la clave no es `read`, o la IP del cliente no está en la lista de IPs permitidas externas
   - `404`: Servidor no encontrado
-  - `429`: Límite de tasa de la API de lectura excedido
+  - `429`: Límite de tasa de API de lectura excedido
   - `500`: Error interno del servidor
 - **Notas**:
   - En la versión 0.7.x, la clave del objeto de respuesta cambió de `machine` a `server`
   - El identificador del servidor puede ser ID o nombre
   - Devuelve null para latest_backup si no existen copias de seguridad
-  - Incluye encabezados de control de caché para evitar el almacenamiento en caché
+  - Incluye encabezados de control de caché para prevenir el almacenamiento en caché
 
 ## Obtener Últimas Copias de Seguridad - `/api/lastbackups/:serverId` {/* #get-latest-backups---apilastbackupsserverid */}
-- **Endpoint**: `/api/lastbackups/:serverId`
+- **Punto final**: `/api/lastbackups/:serverId`
 - **Método**: GET
-- **Descripción**: Recupera la información de las últimas copias de seguridad para todas las copias de seguridad configuradas (por ejemplo, 'Archivos', 'Bases de datos') en un servidor específico.
+- **Descripción**: Recupera la información de la última copia de seguridad para todas las copias de seguridad configuradas (por ejemplo, 'Archivos', 'Bases de datos') en un servidor específico.
 - **Parámetros**:
   - `serverId`: el identificador del servidor (ID o nombre)
 
@@ -176,19 +176,19 @@ El identificador del servidor debe estar codificado en URL.
   - `401`: Clave de API faltante o inválida cuando las claves son requeridas
   - `403`: El ámbito de la clave no es `read`, o la IP del cliente no está en la lista de IPs permitidas externas
   - `404`: Servidor no encontrado
-  - `429`: Límite de tasa de la API de lectura excedido
+  - `429`: Límite de tasa de API de lectura excedido
   - `500`: Error interno del servidor
 - **Notas**:
   - En la versión 0.7.x, la clave del objeto de respuesta cambió de `machine` a `server`, y el campo `backup_types_count` fue renombrado a `backup_jobs_count`
   - El identificador del servidor puede ser ID o nombre
-  - Devuelve la última copia de seguridad para cada trabajo de copia de seguridad (backup_name) que el servidor tiene
-  - A diferencia de `/api/lastbackup/:serverId` que devuelve solo la última copia de seguridad más reciente del servidor (independientemente del trabajo de copia de seguridad)
-  - Incluye encabezados de control de caché para evitar el almacenamiento en caché
+  - Devuelve la última copia de seguridad para cada trabajo de copia de seguridad (backup_name) que el servidor tenga
+  - A diferencia de `/api/lastbackup/:serverId` que devuelve solo la copia de seguridad más reciente del servidor (independientemente del trabajo de copia de seguridad)
+  - Incluye encabezados de control de caché para prevenir el almacenamiento en caché
 
-## Subir Datos de Copia de Seguridad - `/api/upload` {/* #upload-backup-data---apiupload */}
+## Subir datos de copia de seguridad - `/api/upload` {/* #upload-backup-data---apiupload */}
 - **Endpoint**: `/api/upload`
 - **Método**: POST
-- **Descripción**: Sube datos de operación de copia de seguridad para un servidor. Soporta la detección de ejecuciones de copia de seguridad duplicadas y envía notificaciones.
+- **Descripción**: Sube datos de operaciones de copia de seguridad para un servidor. Soporta detección de ejecuciones duplicadas de copia de seguridad y envía notificaciones.
 - **Cuerpo de la solicitud**: JSON enviado por Duplicati con las siguientes opciones:
 
   ```bash
@@ -197,7 +197,7 @@ El identificador del servidor debe estar codificado en URL.
   --send-http-max-log-lines=500
 ```
 
-En Duplicati versiones anteriores a 2.0.9.106, use `--send-http-url` con `--send-http-result-output-format=Json`. Consulte [Configuración del Servidor Duplicati](../installation/duplicati-server-configuration.md).
+En Duplicati anterior a 2.0.9.106, usa `--send-http-url` con `--send-http-result-output-format=Json`. Consulta [Configuración del servidor Duplicati](../installation/duplicati-server-configuration.md).
 
 - **Respuesta**:
 
@@ -208,18 +208,18 @@ En Duplicati versiones anteriores a 2.0.9.106, use `--send-http-url` con `--send
   ```
 
 - **Respuestas de error**:
-  - `400`: Campos requeridos faltantes en las secciones Extra o Data, o MainOperation inválido
-  - `401`: Clave de API faltante o inválida cuando las claves son requeridas
-  - `403`: El ámbito de la clave no es `upload`, o la IP del cliente no está en la lista de IPs permitidas externas
+  - `400`: Campos requeridos faltantes en las secciones Extra o Data, o MainOperation no válida
+  - `401`: Clave de API faltante o no válida cuando las claves son requeridas
+  - `403`: Ámbito de la clave no es `upload`, o la IP del cliente no está en la lista de permitidos externos
   - `409`: Datos de copia de seguridad duplicados (ignorados)
   - `413`: El cuerpo de la solicitud excede el límite de tamaño de subida configurado (predeterminado 5 MB)
-  - `429`: Límite de tasa de subida o fallo de autenticación excedido (`Retry-After` está configurado)
+  - `429`: Límite de tasa excedido para subida o fallo de autenticación (`Retry-After` está configurado)
   - `500`: Error del servidor al procesar los datos de copia de seguridad
 - **Notas**:
-  - Solo procesa operaciones de respaldo (MainOperation debe ser "Backup")
+  - Solo procesa operaciones de copia de seguridad (MainOperation debe ser "Backup")
   - Valida los campos requeridos en la sección Extra: machine-id, machine-name, backup-name, backup-id
   - Valida los campos requeridos en la sección Data: ParsedResult, BeginTime, Duration
-  - Detecta automáticamente ejecuciones duplicadas de respaldo y devuelve el estado 409
-  - Envía notificaciones tras la inserción exitosa del respaldo (si está configurado)
-  - Registra los datos de la solicitud en un archivo en el directorio `data` en la raíz del proyecto en modo desarrollo para depuración
-  - Usa transacciones para garantizar la consistencia de los datos
+  - Detecta automáticamente ejecuciones duplicadas de copia de seguridad y devuelve el estado 409
+  - Envía notificaciones después de la inserción exitosa de la copia de seguridad (si está configurado)
+  - Registra los datos de la solicitud en un archivo en el directorio `data` en la raíz del proyecto en modo de desarrollo para depuración
+  - Usa transacción para la consistencia de los datos

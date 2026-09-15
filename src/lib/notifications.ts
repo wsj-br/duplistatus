@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer';
+import nodemailer, { type Transporter, type TransportOptions } from 'nodemailer';
 import { getConfigBackupSettings, getNtfyConfig, getServerInfoById, getSMTPConfig, getNotificationTemplates, isDailySummaryEnabled } from './db-utils';
 import { NotificationTemplate, Backup, BackupStatus, BackupKey, SMTPConnectionType, SupportedTemplateLanguage, NotificationDeliveryOutcome } from './types';
 import { defaultNotificationTemplates } from './default-config';
@@ -444,7 +444,7 @@ function analyzeSMTPError(
 }
 
 // Email configuration functions
-export async function createEmailTransporter(): Promise<nodemailer.Transporter | null> {
+export async function createEmailTransporter(): Promise<Transporter | null> {
   try {
     const config = getSMTPConfig();
     if (!config) {
@@ -517,7 +517,7 @@ export async function createEmailTransporter(): Promise<nodemailer.Transporter |
       };
     }
     
-    const transporter = nodemailer.createTransport(transporterConfig as nodemailer.TransportOptions);
+    const transporter = nodemailer.createTransport(transporterConfig as TransportOptions);
 
     // Verify the connection
     try {

@@ -1,22 +1,22 @@
 # Duplicati कॉन्फ़िगरेशन {/* #duplicati-configuration */}
 
-The <SvgButton svgFilename="duplicati_logo.svg" /> button on the [Application Toolbar](overview.md#application-toolbar) opens the Duplicati server's web interface in a new tab.
+[एप्लिकेशन टूलबार](overview.md#application-toolbar) पर मौजूद <SvgButton svgFilename="duplicati_logo.svg" /> बटन Duplicati सर्वर के वेब इंटरफ़ेस को एक नए टैब में खोलता है।
 
-You can select a server from the dropdown list. If you have already selected a server (by clicking its card) or are viewing its details, the button will open that specific server's Duplicati configuration directly.
+आप ड्रॉपडाउन सूची से एक सर्वर चुन सकते हैं। यदि आपने पहले ही कोई सर्वर चुन लिया है (उसके कार्ड पर क्लिक करके) या उसका विवरण देख रहे हैं, तो यह बटन सीधे उस विशिष्ट सर्वर का Duplicati कॉन्फ़िगरेशन खोलेगा।
 
-![Duplicati configuration](../assets/screen-duplicati-configuration.png)
+![Duplicati कॉन्फ़िगरेशन](../assets/screen-duplicati-configuration.png)
 
-- The list of servers will show the `server name` or `server alias (server name)`.
-- Server addresses are configured in [Settings → Server](settings/server-settings.md).
-- The application automatically saves a server's URL when you use the <IconButton icon="lucide:download" height="16" href="collect-backup-logs" /> [Backup Logs Ikattha Karein](collect-backup-logs.md) feature.
-- Servers will not appear in the server list if their address has not been configured.
+- सर्वर की सूची `server name` या `server alias (server name)` दिखाएगी।
+- सर्वर पते [सेटिंग्स → सर्वर](settings/server-settings.md) में कॉन्फ़िगर किए जाते हैं।
+- जब आप <IconButton icon="lucide:download" height="16" href="collect-backup-logs" /> [बैकअप लॉग एकत्र करें](collect-backup-logs.md) सुविधा का उपयोग करते हैं, तो एप्लिकेशन सर्वर का URL स्वचालित रूप से सहेज लेता है।
+- यदि सर्वर का पता कॉन्फ़िगर नहीं किया गया है, तो वे सर्वर सूची में दिखाई नहीं देंगे।
 
-## पुराने Duplicati UI तक पहुँचना {/* #accessing-the-old-duplicati-ui */}
+## पुराने Duplicati UI को एक्सेस करना {/* #accessing-the-old-duplicati-ui */}
 
-If you experience login issues with the new Duplicati web interface (`/ngclient/`), you can right-click the <SvgButton svgFilename="duplicati_logo.svg" /> button on or any server item in the server selection popover to open the old Duplicati UI (`/ngax/`) in a new tab.
+यदि आप नए Duplicati वेब इंटरफ़ेस (`/ngclient/`) के साथ लॉगिन समस्याओं का सामना करते हैं, तो आप पुराने Duplicati UI (`/ngax/`) को एक नए टैब में खोलने के लिए <SvgButton svgFilename="duplicati_logo.svg" /> बटन पर या सर्वर चयन पॉपओवर में किसी भी सर्वर आइटम पर राइट-क्लिक कर सकते हैं।
 
 <br/><br/>
 
 :::note
- सभी उत्पाद नाम, लोगो और ट्रेडमार्क उनके संबंधित मालिकों का संपत्ति है। आइकन और नाम पहचान के लिए उपयोग किए जाते हैं और समर्थन का इम्प्लाई नहीं करते हैं।
+सभी उत्पाद नाम, लोगो और ट्रेडमार्क उनके संबंधित स्वामियों की संपत्ति हैं। आइकन और नामों का उपयोग केवल पहचान के उद्देश्य से किया जाता है और इसका अर्थ कोई समर्थन नहीं है।
 :::

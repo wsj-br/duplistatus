@@ -3,7 +3,7 @@
 ## Obter Dados do Painel (Consolidado) - `/api/dashboard` {/* #get-dashboard-data-consolidated---apidashboard */}
 - **Endpoint**: `/api/dashboard`
 - **Método**: GET
-- **Descrição**: Recupera todos os dados do painel em uma única resposta consolidada, incluindo resumos de servidores, resumo geral e dados de gráficos.
+- **Descrição**: Recupera todos os dados do painel em uma única resposta consolidada, incluindo resumos dos servidores, resumo geral e dados do gráfico.
 - **Resposta**:
 
   ```json
@@ -55,13 +55,13 @@
   ```
 
 - **Respostas de Erro**:
-  - `500`: Erro do servidor ao buscar dados do painel
-- **Observações**:
+  - `500`: Erro no servidor ao buscar dados do painel
+- **Notas**:
   - Este endpoint consolida o endpoint anterior `/api/servers-summary` (que foi removido)
-  - O campo `overallSummary` contém os mesmos dados que `/api/summary` (mantido para aplicações externas)
-  - O campo `chartData` contém os mesmos dados que `/api/chart-data/aggregated` (ainda existente para acesso direto)
-  - Oferece melhor desempenho ao reduzir múltiplas chamadas à API para uma única solicitação
-  - Todos os dados são recuperados em paralelo para desempenho ideal
+  - O campo `overallSummary` contém os mesmos dados que `/api/summary` (que é mantido para aplicações externas)
+  - O campo `chartData` contém os mesmos dados que `/api/chart-data/aggregated` (que ainda existe para acesso direto)
+  - Fornece melhor desempenho reduzindo múltiplas chamadas de API para uma única solicitação
+  - Todos os dados são buscados em paralelo para otimizar o desempenho
   - O campo `secondsSinceLastBackup` mostra o tempo em segundos desde o último backup em todos os servidores
 
 ## Obter Todos os Servidores - `/api/servers` {/* #get-all-servers---apiservers */}
@@ -102,18 +102,18 @@
 
 - **Respostas de Erro**:
   - `401`: Não autorizado - Sessão ou token CSRF inválido
-  - `500`: Erro do servidor ao buscar servidores
-- **Observações**:
-  - Retorna informações do servidor, incluindo campos de apelido e observação
-  - Quando `includeBackups=true`, retorna combinações de servidor-backup com URLs e status de senha
+  - `500`: Erro no servidor ao buscar servidores
+- **Notas**:
+  - Retorna informações do servidor incluindo campos de alias e nota
+  - Quando `includeBackups=true`, retorna combinações de servidor-backup com URLs e status da senha
   - Consolida o endpoint anterior `/api/servers-with-backups` (que foi removido)
-  - Utilizado para seleção, exibição e configuração de servidores
-  - Inclui o campo `hasPassword` para indicar se o servidor possui senha armazenada
+  - Usado para seleção, exibição e configuração de servidores
+  - Inclui campo `hasPassword` para indicar se o servidor tem senha armazenada
 
 ## Obter Detalhes do Servidor - `/api/servers/:id` {/* #get-server-details---apiserversid */}
 - **Endpoint**: `/api/servers/:id`
 - **Método**: GET
-- **Descrição**: Recupera informações sobre um servidor específico. Pode retornar informações básicas do servidor ou informações detalhadas, incluindo backups e dados de gráficos.
+- **Descrição**: Recupera informações sobre um servidor específico. Pode retornar informações básicas do servidor ou informações detalhadas incluindo backups e dados do gráfico.
 - **Autenticação**: Requer sessão válida e token CSRF
 - **Parâmetros**:
   - `id`: o identificador do servidor
@@ -153,16 +153,16 @@
 - **Respostas de Erro**:
   - `401`: Não autorizado - Sessão ou token CSRF inválido
   - `404`: Servidor não encontrado
-  - `500`: Erro do servidor ao buscar detalhes do servidor
-- **Observações**:
+  - `500`: Erro no servidor ao buscar detalhes do servidor
+- **Notas**:
   - Retorna informações básicas do servidor quando nenhum parâmetro de consulta é fornecido
-  - Definir `includeBackups` ou `includeChartData` como `true` retorna todos os dados do servidor, incluindo backups e chartData
-  - Utilizado para visualizações de configurações e detalhes do servidor
+  - Definir `includeBackups` ou `includeChartData` como `true` retorna dados completos do servidor incluindo backups e chartData
+  - Usado para configurações do servidor e visualizações detalhadas
 
 ## Atualizar Servidor - `/api/servers/:id` {/* #update-server---apiserversid */}
 - **Endpoint**: `/api/servers/:id`
 - **Método**: PATCH
-- **Descrição**: Atualiza os detalhes do servidor, incluindo alias, nota e URL do servidor.
+- **Descrição**: Atualiza os detalhes do servidor incluindo alias, nota e URL do servidor.
 - **Autenticação**: Requer sessão válida e token CSRF
 - **Parâmetros**:
   - `id`: o identificador do servidor
@@ -191,16 +191,16 @@
 - **Respostas de Erro**:
   - `401`: Não autorizado - Sessão ou token CSRF inválido
   - `404`: Servidor não encontrado
-  - `500`: Erro do servidor durante a atualização
-- **Observações**:
-  - Atualiza apelido, observação e URL do servidor
+  - `500`: Erro no servidor durante a atualização
+- **Notas**:
+  - Atualiza o alias do servidor, nota e URL do servidor
   - Todos os campos são opcionais
-  - Cadeias de caracteres vazias são permitidas para todos os campos
+  - Strings vazias são permitidas para todos os campos
 
 ## Excluir Servidor - `/api/servers/:id` {/* #delete-server---apiserversid */}
 - **Endpoint**: `/api/servers/:id`
-- **Método**: DELETE
-- **Descrição**: Exclui um servidor e todos os seus backups associados.
+- **Method**: DELETE
+- **Descrição**: Exclui um servidor e todos os backups associados a ele.
 - **Autenticação**: Requer sessão válida e token CSRF
 - **Parâmetros**:
   - `id`: o identificador do servidor
@@ -219,19 +219,19 @@
   ```
 
 - **Respostas de Erro**:
-  - `401`: Não autorizado - Sessão inválida ou token CSRF inválido
+  - `401`: Não autorizado - Sessão ou token CSRF inválido
   - `404`: Servidor não encontrado
-  - `500`: Erro do servidor durante a exclusão
-- **Notas**:
+  - `500`: Erro de servidor durante a exclusão
+- **Notas**: 
   - Esta operação é irreversível
-  - Todos os dados de backup associados ao servidor serão permanentemente excluídos
-  - O próprio registro do servidor também será removido
+  - Todos os dados de backup associados ao servidor serão excluídos permanentemente
+  - O registro do servidor também será removido
   - Retorna a contagem de backups e servidores excluídos
 
-## Obter Dados do Servidor com Informações Atrasadas - `/api/detail/:serverId` {/* #get-server-data-with-overdue-info---apidetailserverid */}
+## Obter Dados do Servidor com Informações de Backup Atrasado - `/api/detail/:serverId` {/* #get-server-data-with-overdue-info---apidetailserverid */}
 - **Endpoint**: `/api/detail/:serverId`
-- **Método**: GET
-- **Descrição**: Recupera informações detalhadas do servidor, incluindo status de backup atrasado.
+- **Method**: GET
+- **Descrição**: Recupera informações detalhadas do servidor, incluindo o status de backup atrasado.
 - **Parâmetros**:
   - `serverId`: o identificador do servidor
 
@@ -261,16 +261,16 @@
 
 - **Respostas de Erro**:
   - `404`: Servidor não encontrado
-  - `500`: Erro do servidor ao buscar detalhes do servidor
+  - `500`: Erro de servidor ao buscar detalhes do servidor
 - **Notas**:
-  - Retorna os dados do servidor com informações de backup atrasado
-  - Inclui detalhes e carimbos de data/hora de backups atrasados
-  - Utilizado para gerenciamento e monitoramento de backups atrasados
+  - Retorna dados do servidor com informações de backup atrasado
+  - Inclui detalhes de backup atrasado e carimbos de data/hora
+  - Usado para gerenciamento e monitoramento de backups atrasados
 
 ## Obter Servidores Duplicados - `/api/servers/duplicates` {/* #get-duplicate-servers---apiserversduplicates */}
 - **Endpoint**: `/api/servers/duplicates`
-- **Método**: GET
-- **Descrição**: Recupera uma lista de servidores duplicados com base no ID da máquina. Servidores duplicados são servidores que compartilham o mesmo ID de máquina, mas são armazenados como registros separados no banco de dados.
+- **Method**: GET
+- **Descrição**: Recupera uma lista de servidores duplicados com base no ID da máquina. Servidores duplicados são servidores que compartilham o mesmo ID da máquina, mas são armazenados como registros separados no banco de dados.
 - **Autenticação**: Requer sessão válida, token CSRF e acesso de administrador
 - **Resposta**:
 
@@ -299,20 +299,20 @@
   ```
 
 - **Respostas de Erro**:
-  - `401`: Não autorizado - Sessão inválida ou token CSRF inválido
+  - `401`: Não autorizado - Sessão ou token CSRF inválido
   - `403`: Acesso de administrador necessário
-  - `500`: Erro do servidor ao buscar servidores duplicados
+  - `500`: Erro de servidor ao buscar servidores duplicados
 - **Notas**:
   - Apenas administradores podem acessar este endpoint
-  - Retorna grupos de servidores que compartilham o mesmo ID de máquina
-  - Cada grupo contém todos os servidores com o mesmo ID de máquina
-  - Utilizado para identificar e mesclar registros duplicados de servidores
-  - Inclui detalhes do servidor e contagem de backups para cada duplicado
+  - Retorna grupos de servidores que compartilham o mesmo ID da máquina
+  - Cada grupo contém todos os servidores com o mesmo ID da máquina
+  - Usado para identificar e mesclar registros de servidores duplicados
+  - Inclui detalhes do servidor e contagens de backups para cada duplicado
 
 ## Mesclar Servidores - `/api/servers/merge` {/* #merge-servers---apiserversmerge */}
 - **Endpoint**: `/api/servers/merge`
-- **Método**: POST
-- **Descrição**: Mescla múltiplos servidores em um servidor de destino. Todos os backups dos servidores de origem são transferidos para o servidor de destino, e os servidores de origem são excluídos.
+- **Method**: POST
+- **Descrição**: Mescla vários servidores em um servidor de destino. Todos os backups dos servidores de origem são transferidos para o servidor de destino, e os servidores de origem são excluídos.
 - **Autenticação**: Requer sessão válida, token CSRF e acesso de administrador
 - **Corpo da Requisição**:
 
@@ -334,16 +334,16 @@
   ```
 
 - **Respostas de Erro**:
-  - `400`: Corpo da requisição inválido, campos obrigatórios ausentes ou servidor de destino está na lista de servidores a mesclar
-  - `401`: Não autorizado - Sessão inválida ou token CSRF inválido
+  - `400`: Corpo da requisição inválido, campos obrigatórios ausentes ou servidor de destino está na lista de servidores a serem mesclados
+  - `401`: Não autorizado - Sessão ou token CSRF inválido
   - `403`: Acesso de administrador necessário
-  - `500`: Erro do servidor durante a operação de mesclagem
+  - `500`: Erro de servidor durante a operação de mesclagem
 - **Notas**:
   - Apenas administradores podem realizar operações de mesclagem
-  - O servidor de destino não deve estar na lista de servidores a mesclar
+  - O servidor de destino não deve estar na lista de servidores a serem mesclados
   - Todos os backups dos servidores de origem são transferidos para o servidor de destino
-  - Valores duplicados `backup_id` para o mesmo `backup_name` no servidor mesclado são normalizados para o ID da linha de backup mais recente
-  - Servidores de origem são excluídos após mesclagem bem-sucedida
+  - Valores duplicados de `backup_id` para o mesmo `backup_name` no servidor mesclado são normalizados para o ID da linha de backup mais recente
+  - Servidores de origem são excluídos após a mesclagem bem-sucedida
   - Esta operação é irreversível
   - Usado para consolidar registros de servidores duplicados
   - Valida que oldServerIds é um array não vazio

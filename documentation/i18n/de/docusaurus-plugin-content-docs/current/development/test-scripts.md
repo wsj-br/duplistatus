@@ -1,9 +1,9 @@
 # Testskripte {/* #test-scripts */}
 
-Das Projekt enthält mehrere Test-Skripte, um bei der Entwicklung und dem Testen zu helfen:
+Das Projekt enthält mehrere Testskripte, die bei der Entwicklung und beim Testen helfen:
 
 > [!NOTE]
-> Veraltete Repository-Stamm-`pnpm`-Hilfsprogramme zur Fehlersuche bei überfälligen Aufgaben, SMTP-Matrix-Tests und Cron-Port-Überprüfungen wurden entfernt. Verwenden Sie die Anwendungsoberfläche (**Einstellungen → Backup-Überwachung**), authentifizierte HTTP-APIs und `curl` gegenüber dem Cron-Dienst, wie unten dokumentiert.
+> Hilfsprogramme für das Repository-Root (`pnpm`) zur Überprüfung überfälliger Backups, SMTP-Matrix-Tests und Port-Prüfungen für Cron wurden entfernt. Verwenden Sie die Anwendungsoberfläche (**Einstellungen → Backup-Überwachung**), authentifizierte HTTP-APIs und `curl` gegen den Cron-Dienst wie unten beschrieben.
 
 ## Testdaten generieren {/* #generate-test-data */}
 
@@ -11,7 +11,7 @@ Das Projekt enthält mehrere Test-Skripte, um bei der Entwicklung und dem Testen
 pnpm generate-test-data --servers=N
 ```
 
-Dieses Skript generiert Testdaten für Sicherungen auf mehreren Servern und Sicherungen.
+Dieses Skript generiert Test-Backup-Daten für mehrere Server und Backups.
 
 Der Parameter `--servers=N` ist **erforderlich** und gibt die Anzahl der zu generierenden Server an (1-30).
 
@@ -22,7 +22,7 @@ pnpm generate-test-data --servers=N --upload
 pnpm generate-test-data --servers=N --upload --api-key=YOUR_UPLOAD_KEY
 ```
 
-`--api-key` ist erforderlich, wenn in Einstellungen → API-Schlüssel der Wert „Schlüssel erforderlich“ festgelegt ist. Das Skript wiederholt einmal bei HTTP 429, sodass ein großer `--upload` Lauf innerhalb der Standard-Ratenlimits bleibt.
+`--api-key` ist erforderlich, wenn in den Einstellungen → API-Schlüssel die Verwendung von Schlüsseln aktiviert ist. Das Skript wiederholt den Versuch einmal bei HTTP 429, damit ein großer `--upload` Lauf innerhalb der Standard-Rate-Limits bleibt.
 
 **Beispiele:**
 
@@ -39,34 +39,34 @@ pnpm generate-test-data --servers=30
 
 Das Skript weist Duplicati-Versionen **pro Server** zu (der gleiche Bericht-String wird für jedes Backup desselben Servers geschrieben):
 
-- **70–80% aktuell**: verwendet die neueste zwischengespeicherte stabile Version aus `configurations.duplicati_versions`, falls verfügbar, sonst eine festgelegte Fallback-Version (`2.1.0.5_stable`).
-- **Verbleibende ältere**: eine streng vorherige stabile Version, damit das Dashboard-Badge als veraltet (gelb) angezeigt wird.
-- Der Direkt-DB-Modus löscht `configurations` zuerst, dann wird der Versionscache wiederhergestellt oder mit der Version versorgt, damit die Vergleichbarkeit zwischen aktuellen und veralteten Versionen sofort funktioniert.
-- Kleine Mengen können nicht immer in 70–80% liegen: `--servers=1` ist 100% aktuell; `--servers=2` oder `3` behält mindestens einen älteren Server; `--servers=6` ist 5 aktuell (83%). `--servers=12` (verwendet von `pnpm take-screenshots`) ist **9 aktuell / 3 älter**.
-- Wenn `pnpm take-screenshots` später die Datenmenge auf drei Server reduziert, behält es den geschützten überfälligen Server und **mindestens einen Server mit einer älteren Version**.
+- **70–80% aktuell**: verwendet die neueste zwischengespeicherte stabile Version von `configurations.duplicati_versions`, falls verfügbar, sonst eine festgelegte Fallback-Version (`2.1.0.5_stable`).
+- **Verbleibende ältere**: eine strikt vorherige stabile Version, damit das Dashboard-Badge als veraltet angezeigt wird (gelb).
+- Der Direkt-DB-Modus löscht `configurations` zuerst, dann wird die Version zwischengespeichert, damit die Vergleichbarkeit zwischen aktuell und veraltet sofort funktioniert.
+- Kleine Mengen können nicht immer in 70–80% landen: `--servers=1` ist 100% aktuell; `--servers=2` oder `3` behält mindestens einen älteren Server; `--servers=6` ist 5 aktuell (83%). `--servers=12` (verwendet von `pnpm take-screenshots`) ist **9 aktuell / 3 älter**.
+- Wenn `pnpm take-screenshots` später die Datenmenge auf drei Server reduziert, behält es den geschützten überfälligen Server und **mindestens einen Server mit älterer Version**.
 
 >[!CAUTION]
 > Dieses Skript löscht alle vorherigen Daten in der Datenbank und ersetzt sie durch Testdaten.
-> Sichern Sie Ihre Datenbank, bevor Sie dieses Skript ausführen.
+> Sichern Sie Ihre Datenbank vor dem Ausführen dieses Skripts.
 
-## Überfällige Prüfungen und Cron-Konnektivität (Entwicklung) {/* #overdue-checks-and-cron-connectivity-development */}
+## Überprüfung überfälliger Backups und Cron-Konnektivität (Entwicklung) {/* #overdue-checks-and-cron-connectivity-development */}
 
-### Überprüfung der überfälligen Sicherung ausführen {/* #run-an-overdue-backup-check */}
+### Überprüfung überfälliger Backups ausführen {/* #run-an-overdue-backup-check */}
 
 Während die Anwendung läuft:
 
-- **UI (empfohlen):** öffnen Sie **Einstellungen → Backup-Überwachung** und verwenden Sie **Überprüfen überfälliger Sicherungen**. Dadurch wird dieselbe Logik ausgeführt wie beim geplanten Job über authentifiziertes `POST /api/notifications/check-overdue`.
+- **UI (empfohlen):** Öffnen Sie **Einstellungen → Backup-Überwachung** und verwenden Sie **Überfällige Backups testen**. Dies führt dieselbe Logik wie der geplante Job über authentifizierte `POST /api/notifications/check-overdue` aus.
 
-### Gesundheitszustand des Cron-Dienstes {/* #cron-service-health */}
+### Cron-Dienst-Health {/* #cron-service-health */}
 
 ```bash
 curl http://localhost:8667/health
 curl http://localhost:8666/api/cron/health
 ```
 
-### Simulieren eines bestimmten Datums oder einer bestimmten Zeit {/* #simulating-a-specific-date-or-time */}
+### Simulation eines bestimmten Datums oder einer bestimmten Uhrzeit {/* #simulating-a-specific-date-or-time */}
 
-Es gibt kein integriertes CLI-Tool, um eine simulierte „aktuelle“ Uhrzeit einzuspeisen. Für den Algorithmus und Ideen zur manuellen Prüfung siehe die Repository-Datei `dev/OVERDUE_DETECTION_ALGORITHM.md` und die Implementierung in `src/lib/overdue-backup-checker.ts`.
+Es gibt kein gebündeltes CLI zum Einfügen einer simulierten „aktuellen“ Zeit. Für den Algorithmus und Ideen zur manuellen Tests finden Sie die Repository-Datei `dev/OVERDUE_DETECTION_ALGORITHM.md` und die Implementierung in `src/lib/overdue-backup-checker.ts`.
 
 ## CSV-Export validieren {/* #validate-csv-export */}
 
@@ -74,34 +74,34 @@ Es gibt kein integriertes CLI-Tool, um eine simulierte „aktuelle“ Uhrzeit ei
 pnpm validate-csv-export
 ```
 
-Dieses Skript validiert die CSV-Exportfunktionalität. Es:
-- Testet die CSV-Exportgenerierung
-- Überprüft Datenformat und Struktur
-- Prüft die Datenintegrität in exportierten Dateien
+Dieses Skript validiert die CSV-Export-Funktionalität. Es:
+- Testet die CSV-Export-Generierung
+- Überprüft das Datenformat und die Struktur
+- Prüft die Datenintegrität in den exportierten Dateien
 
-Nützlich, um sicherzustellen, dass CSV-Exporte vor Releases ordnungsgemäß funktionieren.
+Nützlich, um sicherzustellen, dass CSV-Exporte vor Releases korrekt funktionieren.
 
-## NTFY-Server vorübergehend blockieren (zum Testen) {/* #temporarily-block-ntfy-server-for-testing */}
+## NTFY-Server temporär blockieren (für Tests) {/* #temporarily-block-ntfy-server-for-testing */}
 
 ```bash
 sudo ./scripts/temporary_ntfy.sh_block.sh
 ```
 
-Dieses Skript blockiert vorübergehend den ausgehenden Netzwerkzugriff auf den NTFY-Server (`ntfy.sh`), um den Benachrichtigungs-Wiederholungsmechanismus zu testen. Es führt Folgendes durch:
-- Ermittelt die IP-Adresse des NTFY-Servers
-- Fügt eine iptables-Regel hinzu, um ausgehenden Datenverkehr zu blockieren
+Dieses Skript blockiert temporär den ausgehenden Netzwerkzugriff zum NTFY-Server (`ntfy.sh`), um das Benachrichtigungs-Wiederholungsmechanismus zu testen. Es:
+- Löst die IP-Adresse des NTFY-Servers auf
+- Fügt eine iptables-Regel hinzu, um den ausgehenden Datenverkehr zu blockieren
 - Blockiert für 10 Sekunden (konfigurierbar)
 - Entfernt die Blockierungsregel automatisch beim Beenden
 - Erfordert Root-Rechte (sudo)
 
 >[!CAUTION]
-> Dieses Skript ändert iptables-Regeln und erfordert Root-Privilegien. Verwenden Sie es nur zum Testen von Benachrichtigungs-Wiederholungsmechanismen.
+> Dieses Skript ändert iptables-Regeln und erfordert Root-Rechte. Verwenden Sie es nur zum Testen des Benachrichtigungs-Wiederholungsmechanismus.
 
 ## Datenbank-Migrationstests {/* #database-migration-testing */}
 
-Das Projekt enthält Skripte zum Testen von Datenbankmigrationen von älteren Versionen zur aktuellen Version. Diese Skripte stellen sicher, dass Datenbankmigrationen korrekt funktionieren und die Datenintegrität bewahrt bleibt.
+Das Projekt enthält Skripte zum Testen von Datenbank-Migrationen von älteren Versionen zur aktuellen Version. Diese Skripte stellen sicher, dass Datenbank-Migrationen korrekt funktionieren und die Datenintegrität erhalten bleiben.
 
-### Migrations-Testdaten generieren {/* #generate-migration-test-data */}
+### Migrationstestdaten generieren {/* #generate-migration-test-data */}
 
 ```bash
 ./scripts/generate-migration-test-data.sh
@@ -112,19 +112,19 @@ Dieses Skript generiert Testdatenbanken für mehrere historische Versionen der A
 1. **Stoppt und entfernt** alle vorhandenen Docker-Container
 2. **Für jede Version** (v0.4.0, v0.5.0, v0.6.1, 0.7.27, 0.8.21):
    - Entfernt vorhandene Datenbankdateien
-   - Erstellt eine Versions-Taggdatei
-   - Startet einen Docker-Container mit der jeweiligen Version
+   - Erstellt eine Versions-Tag-Datei
+   - Startet einen Docker-Container mit der spezifischen Version
    - Wartet, bis der Container bereit ist
-   - Generiert Testdaten mithilfe von `pnpm generate-test-data`
-   - Erstellt einen Screenshot der Benutzeroberfläche mit den Testdaten
+   - Generiert Testdaten mit `pnpm generate-test-data`
+   - Erstellt einen Screenshot der Benutzeroberfläche mit Testdaten
    - Stoppt und entfernt den Container
-   - Leert die WAL-Dateien und speichert das Datenbankschema
+   - Leert WAL-Dateien und speichert das Datenbankschema
    - Kopiert die Datenbankdatei nach `scripts/migration_test_data/`
 
-**Voraussetzungen:**
+**Anforderungen:**
 - Docker muss installiert und konfiguriert sein
-- Chromium (via Playwright) muss installiert sein
-- Root-/sudo-Zugriff für Docker-Operationen
+- Chromium (über Playwright) muss installiert sein
+- Root/Sudo-Zugriff für Docker-Operationen
 - Das Docker-Volume `duplistatus_data` muss existieren
 
 **Ausgabe:**
@@ -133,43 +133,43 @@ Dieses Skript generiert Testdatenbanken für mehrere historische Versionen der A
 - Screenshots: `scripts/migration_test_data/duplistatus_test_data_<VERSION>.png`
 
 **Konfiguration:**
-- Anzahl der Server: Wird über die Variable `SERVERS` festgelegt (Standard: 3)
+- Anzahl der Server: Über die Variable `SERVERS` einstellbar (Standard: 3)
 - Datenverzeichnis: `/var/lib/docker/volumes/duplistatus_data/_data`
 - Port: 9666 (Docker-Container-Port)
 
 >[!CAUTION]
-> Dieses Skript erfordert Docker und stoppt/entfernt vorhandene Container. Es erfordert außerdem sudo-Zugriff für Docker-Operationen und Dateisystemzugriff. Führen Sie zuerst `pnpm take-screenshots:install` aus, um den Playwright Chromium-Browser zu installieren, falls Sie dies noch nicht getan haben.
+> Dieses Skript erfordert Docker und stoppt/entfernt vorhandene Container. Es erfordert auch Sudo-Zugriff für Docker-Operationen und Dateisystemzugriff. Führen Sie `pnpm take-screenshots:install` zuerst aus, um den Playwright-Chromium-Browser zu installieren, falls dies noch nicht geschehen ist.
 
 >[!IMPORTANT]
-> Dieses Skript sollte nur einmal ausgeführt werden. Bei neuen Versionen kann der Entwickler die Datenbankdatei und Screenshots direkt in das Verzeichnis `scripts/migration_test_data/` kopieren. Führen Sie während der Entwicklung einfach das Skript `./scripts/test-migrations.sh` aus, um die Migrationen zu testen.
+> Dieses Skript sollte nur einmal ausgeführt werden, da neue Versionen der Entwickler die Datenbankdatei und Screenshots direkt in das `scripts/migration_test_data/`-Verzeichnis kopieren können. Während der Entwicklung führen Sie einfach das `./scripts/test-migrations.sh`-Skript aus, um die Migrationen zu testen.
 
-### Datenbankmigrationen testen {/* #test-database-migrations */}
+### Testen von Datenbank-Migrationen {/* #test-database-migrations */}
 
 ```bash
 ./scripts/test-migrations.sh
 ```
 
-Dieses Skript testet Datenbankmigrationen von alten Versionen zur aktuellen Version (4.0). Es:
+Dieses Skript testet Datenbank-Migrationen von alten Versionen zur aktuellen Version (4.0). Es:
 
 1. **Für jede Version** (v0.4.0, v0.5.0, v0.6.1, 0.7.27, 0.8.21):
    - Erstellt eine temporäre Kopie der Testdatenbank
    - Führt den Migrationsprozess mit `test-migration.ts` aus
-   - Überprüft die Struktur der migrierten Datenbank
-   - Überprüft das Vorhandensein erforderlicher Tabellen und Spalten
-   - Stellt sicher, dass die Datenbankversion 4.0 ist
-   - Entfernt temporäre Dateien
+   - Validiert die Struktur der migrierten Datenbank
+   - Prüft auf erforderliche Tabellen und Spalten
+   - Überprüft, ob die Datenbankversion 4.0 ist
+   - Bereinigt temporäre Dateien
 
 **Anforderungen:**
-- Testdatenbanken müssen in `scripts/migration_test_data/` vorhanden sein
-- Generiert durch vorheriges Ausführen von `generate-migration-test-data.sh`
+- Testdatenbanken müssen in `scripts/migration_test_data/` existieren
+- Wurden durch Ausführen von `generate-migration-test-data.sh` erstellt
 
 **Ausgabe:**
-- Farbkodierte Testergebnisse (grün für bestanden, rot für fehlgeschlagen)
-- Zusammenfassung der bestandenen und fehlgeschlagenen Versionen
+- Farbcodierte Testresultate (grün für Erfolg, rot für Fehler)
+- Zusammenfassung der erfolgreichen und fehlgeschlagenen Versionen
 - Detaillierte Fehlermeldungen für fehlgeschlagene Migrationen
-- Exit-Code 0, wenn alle Tests bestanden werden, 1, wenn mindestens ein Test fehlschlägt
+- Exit-Code 0, wenn alle Tests erfolgreich sind, 1, wenn einer fehlschlägt
 
-**Was validiert wird:**
+**Was wird validiert:**
 - Die Datenbankversion ist nach der Migration 4.0
 - Alle erforderlichen Tabellen existieren: `servers`, `backups`, `configurations`, `users`, `sessions`, `audit_log`, `db_version`
 - Erforderliche Spalten existieren in jeder Tabelle
@@ -218,27 +218,27 @@ echo $?  # 0 = all passed, 1 = some failed
 ```
 
 >[!NOTE]
-> Dieses Skript verwendet intern das TypeScript-Migrationstestskript (`test-migration.ts`). Das Testskript validiert die Datenbankstruktur nach der Migration und stellt die Datenintegrität sicher.
+> Dieses Skript verwendet das TypeScript-Migrationstestskript (`test-migration.ts`) intern. Das Testskript validiert die Datenbankstruktur nach der Migration und stellt die Datenintegrität sicher.
 
 ## SMTP und E-Mail (Entwicklung) {/* #smtp-and-email-development */}
 
-Konfigurieren Sie SMTP unter **Einstellungen → E-Mail** und verwenden Sie die integrierten E-Mail-Test- und Benachrichtigungsabläufe. Die früheren `pnpm set-smtp-test-config`- und `pnpm test-smtp-connections`-Hilfsskripte wurden aus dem Repository entfernt.
+Konfigurieren Sie SMTP unter **Einstellungen → E-Mail** und verwenden Sie die in-App-E-Mail-Test- und Benachrichtigungsflüsse. Die vorherigen `pnpm set-smtp-test-config` und `pnpm test-smtp-connections` Hilfsskripte wurden aus dem Repository entfernt.
 
-## Docker-Einstiegsskript testen {/* #test-docker-entrypoint-script */}
+## Testen des Docker-Einstiegsskripts {/* #test-docker-entrypoint-script */}
 
 ```bash
 pnpm test-entrypoint
 ```
 
-Dieses Skript bietet einen Test-Wrapper für `docker-entrypoint.sh` in der lokalen Entwicklung. Es richtet die Umgebung ein, um die Protokollierungsfunktionalität des Einstiegspunkts zu testen, und stellt sicher, dass Protokolle in `data/logs/` geschrieben werden, damit die Anwendung darauf zugreifen kann.
+Dieses Skript bietet einen Testwrapper für `docker-entrypoint.sh` in der lokalen Entwicklung. Es richtet die Umgebung ein, um die Logging-Funktionalität des Einstiegsskripts zu testen und stellt sicher, dass die Protokolle in `data/logs/` geschrieben werden, damit die Anwendung darauf zugreifen kann.
 
 **Was es tut:**
 
-1. **Erstellt immer eine frische Version**: Führt automatisch `pnpm build-local` aus, um vor dem Testen einen frischen Build zu erstellen (kein manueller Build erforderlich)
-2. **Baut den Cron-Service**: Stellt sicher, dass der Cron-Service gebaut wird (`dist/cron-service.cjs`)
-3. **Richtet eine Docker-ähnliche Struktur ein**: Erstellt notwendige symbolische Verknüpfungen und Verzeichnisstrukturen, um die Docker-Umgebung nachzuahmen
-4. **Führt das Entrypoint-Skript aus**: Führt `docker-entrypoint.sh` mit den richtigen Umgebungsvariablen aus
-5. **Aufräumen**: Entfernt automatisch temporäre Dateien beim Beenden
+1. **Erstellt immer eine frische Version**: Führt `pnpm build-local` automatisch aus, um eine frische Version vor dem Testen zu erstellen (kein manuelles Erstellen erforderlich)
+2. **Erstellt den Cron-Dienst**: Stellt sicher, dass der Cron-Dienst erstellt wird (`dist/cron-service.cjs`)
+3. **Richtet eine Docker-ähnliche Struktur ein**: Erstellt notwendige Symlinks und Verzeichnisstruktur, um die Docker-Umgebung zu imitieren
+4. **Führt das Einstiegsskript aus**: Führt `docker-entrypoint.sh` mit den richtigen Umgebungsvariablen aus
+5. **Bereinigt**: Entfernt temporäre Dateien automatisch beim Beenden
 
 **Verwendung:**
 
@@ -249,28 +249,28 @@ pnpm test-entrypoint
 
 **Umgebungsvariablen:**
 - `PORT=8666` - Port für den Next.js-Server (entspricht `start-local`)
-- `CRON_PORT=8667` - Port für den Cron-Service
-- `VERSION` - Wird automatisch im Format `test-YYYYMMDD-HHMMSS` gesetzt
+- `CRON_PORT=8667` - Port für den cron-Dienst
+- `VERSION` - Wird automatisch auf `test-YYYYMMDD-HHMMSS`-Format gesetzt
 
 **Ausgabe:**
 - Protokolle werden in `data/logs/application.log` geschrieben (zugänglich durch die Anwendung)
-- Die Konsolenausgabe zeigt die Ausführung des Einstiegspunktskripts
-- Drücken Sie Strg+C zum Stoppen und Testen der Protokollpufferung
+- Konsolenausgabe zeigt die Ausführung des Einstiegsskripts
+- Drücken Sie Strg+C, um zu stoppen und das Protokoll-Flushing zu testen
 
 **Anforderungen:**
-- Das Skript muss aus dem Repository-Stammverzeichnis ausgeführt werden (pnpm handhabt dies automatisch)
-- Das Skript handhabt automatisch alle Voraussetzungen (Build, Cron-Service usw.)
+- Das Skript muss aus dem Repository-Stammverzeichnis ausgeführt werden (pnpm erledigt dies automatisch)
+- Das Skript erledigt alle Voraussetzungen automatisch (Build, cron-Dienst, etc.)
 
 **Anwendungsfälle:**
-- Lokales Testen von Änderungen am Entrypoint-Skript vor der Docker-Bereitstellung
-- Überprüfung der Protokollrotation und Protokollierungsfunktionen
-- Testen des geordneten Herunterfahrens und der Signalverarbeitung
-- Debuggen des Verhaltens des Entrypoint-Skripts in einer lokalen Umgebung
+- Lokales Testen von Änderungen am Einstiegsskript vor der Docker-Bereitstellung
+- Überprüfung der Protokollrotation und der Protokollfunktionalität
+- Testen des ordnungsgemäßen Herunterfahrens und der Signalbehandlung
+- Debuggen des Einstiegsskriptverhaltens in einer lokalen Umgebung
 
-## Validierung der täglichen Zusammenfassung {/* #daily-summary-validation */}
+## Tägliche Zusammenfassung Validierung {/* #daily-summary-validation */}
 
 ```bash
 pnpm validate-daily-summary
 ```
 
-Führt deterministische Prüfungen für die Planung der Täglichen Zusammenfassung (einschließlich DST), die Aggregation von Snapshots (nur die neuesten Sicherungsjobs), das Bereinigen von verwaisten Benachrichtigungseinstellungen, verwaisten Sicherungs-/Serverzeilen, die Sanitisierung von Markdown, die Überprüfung von Lieferungsprotokollen und die Migration von Schema 4.1 → 4.2 mit benutzerdefinierten Vorlagen durch. Sendet keine E-Mail oder NTFY.
+Führt deterministische Prüfungen für die Planung der Täglichen Zusammenfassung (einschließlich Sommerzeit), die Aggregation von Snapshots (nur neueste Sicherungsjobs), die Bereinigung von Benachrichtigungseinstellungen, verwaiste Sicherungs-/Serverzeilen, die Markdown-Sanitisierung, die Lieferungsprotokollansprüche und die Schema-Migration 4.1 → 4.2 mit angepassten Vorlagen aus. Sendet keine E-Mail oder NTFY.

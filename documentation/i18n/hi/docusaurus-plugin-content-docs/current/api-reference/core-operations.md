@@ -1,10 +1,10 @@
-# मूल कार्यवाही {/* #core-operations */}
+# कोर ऑपरेशन्स {/* #core-operations */}
 
-## Dashboard Data (Consolidated) Prapt Karein - `/api/dashboard` {/* #get-dashboard-data-consolidated---apidashboard */}
-- **Endpoint**: `/api/dashboard`
-- **Method**: GET
-- **विवरण**: Server summaries, overall summary, aur chart data ko include karke, sabhi dashboard data ko ek consolidated response mein retrieve karta hai.
-- **Response**:
+## डैशबोर्ड डेटा प्राप्त करें (समेकित) - `/api/dashboard` {/* #get-dashboard-data-consolidated---apidashboard */}
+- **एंडपॉइंट**: `/api/dashboard`
+- **मेथड**: GET
+- **विवरण**: एकल समेकित प्रतिक्रिया में सभी डैशबोर्ड डेटा प्राप्त करता है, जिसमें सर्वर सारांश, समग्र सारांश, और चार्ट डेटा शामिल हैं।
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -54,24 +54,24 @@
   }
   ```
 
-- **Error Responses**:
+- **त्रुटि प्रतिक्रियाएँ**:
   - `500`: डैशबोर्ड डेटा प्राप्त करने में सर्वर त्रुटि
-- **Notes**:
-  - यह एंडपॉइंट पिछले `/api/servers-summary` एंडपॉइंट को संयोजित करता है (जो हटा दिया गया है)
-  - `overallSummary` फ़ील्ड में `/api/summary` के समान डेटा होता है (जो बाहरी अनुप्रयोगों के लिए बनाए रखा गया है)
-  - `chartData` फ़ील्ड में `/api/chart-data/aggregated` के समान डेटा होता है (जो सीधे पहुंच के लिए अभी भी मौजूद है)
-  - एकल अनुरोध द्वारा कई एपीआई कॉल को कम करके बेहतर प्रदर्शन प्रदान करता है
-  - सर्वोत्तम प्रदर्शन के लिए सभी डेटा को समानांतर में प्राप्त किया जाता है
-  - `secondsSinceLastBackup` फ़ील्ड में सभी सर्वरों के अंतिम बैकअप से सेकंड में समय दिखाता है
+- **नोट्स**:
+  - यह एंडपॉइंट पिछले `/api/servers-summary` एंडपॉइंट को समेकित करता है (जिसे हटा दिया गया है)
+  - `overallSummary` फ़ील्ड में वही डेटा होता है जो `/api/summary` में होता है (जिसे बाहरी ऐप्लिकेशन्स के लिए बनाए रखा गया है)
+  - `chartData` फ़ील्ड में वही डेटा होता है जो `/api/chart-data/aggregated` में होता है (जो प्रत्यक्ष ऐक्सेस के लिए अभी भी मौजूद है)
+  - एकाधिक API कॉलों को एकल अनुरोध में घटाकर बेहतर प्रदर्शन प्रदान करता है
+  - सर्वोत्तम प्रदर्शन के लिए सभी डेटा समानांतर रूप से प्राप्त किया जाता है
+  - `secondsSinceLastBackup` फ़ील्ड सभी सर्वर पर अंतिम बैकअप के बाद का समय सेकंड में दिखाता है
 
-## Sabhi Server Prapt Karein - `/api/servers` {/* #get-all-servers---apiservers */}
-- **Endpoint**: `/api/servers`
-- **Method**: GET
-- **विवरण**: Unke basic information ke saath sabhi servers ki soochi retrieve karta hai. Optionally backup information include karta hai.
-- **Authentication**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
-- **Query Parameters**:
-  - `includeBackups` (optional): प्रत्येक सर्वर के लिए बैकअप जानकारी शामिल करने के लिए `true` पर सेट करें
-- **Response** (without parameters):
+## सभी सर्वर प्राप्त करें - `/api/servers` {/* #get-all-servers---apiservers */}
+- **एंडपॉइंट**: `/api/servers`
+- **मेथड**: GET
+- **विवरण**: सभी सर्वर की उनकी बुनियादी जानकारी के साथ एक सूची प्राप्त करता है। वैकल्पिक रूप से बैकअप जानकारी शामिल करता है।
+- **प्रमाणीकरण**: मान्य सत्र और CSRF टोकन की आवश्यकता है
+- **क्वेरी पैरामीटर्स**:
+  - `includeBackups` (वैकल्पिक): प्रत्येक सर्वर के लिए बैकअप जानकारी शामिल करने के लिए `true` पर सेट करें
+- **प्रतिक्रिया** (पैरामीटर्स के बिना):
 
   ```json
   [
@@ -84,7 +84,7 @@
   ]
   ```
 
-- **Response** (with `includeBackups=true`):
+- **प्रतिक्रिया** (`includeBackups=true` के साथ):
 
   ```json
   [
@@ -100,27 +100,27 @@
   ]
   ```
 
-- **Error Responses**:
-  - `401`: Unauthorized - Invalid session or CSRF token
-  - `500`: सर्वर त्रुटि सर्वर प्राप्त करने में
-- **Notes**:
+- **त्रुटि प्रतिक्रियाएँ**:
+  - `401`: अनधिकृत - अमान्य सत्र या CSRF टोकन
+  - `500`: सर्वर प्राप्त करने में सर्वर त्रुटि
+- **नोट्स**:
   - उपनाम और नोट फ़ील्ड सहित सर्वर जानकारी लौटाता है
-  - जब `includeBackups=true`, तो सर्वर-बैकअप संयोजन लौटाता है जिसमें यूआरएल और पासवर्ड स्थिति शामिल होती है
-  - पिछले `/api/servers-with-backups` एंडपॉइंट को संयोजित करता है (जो हटा दिया गया है)
+  - जब `includeBackups=true`, URL और पासवर्ड स्थिति के साथ सर्वर-बैकअप संयोजन लौटाता है
+  - पिछले `/api/servers-with-backups` एंडपॉइंट को समेकित करता है (जिसे हटा दिया गया है)
   - सर्वर चयन, प्रदर्शन, और कॉन्फ़िगरेशन उद्देश्यों के लिए उपयोग किया जाता है
-  - सर्वर में संग्रहीत पासवर्ड होने का संकेत देने के लिए `hasPassword` फ़ील्ड शामिल है
+  - सर्वर के पास संग्रहीत पासवर्ड है या नहीं, यह इंगित करने के लिए `hasPassword` फ़ील्ड शामिल है
 
-## Server Vivaran Prapt Karein - `/api/servers/:id` {/* #get-server-details---apiserversid */}
-- **Endpoint**: `/api/servers/:id`
-- **Method**: GET
-- **विवरण**: Ek specific server ke baare mein jaankaaree retrieve karta hai. Basic server info ya detailed information return kar sakta hai jismein backups aur chart data shaamil hain.
-- **Authentication**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
-- **Parameters**:
-  - `id`: the server identifier
-- **Query Parameters**:
-  - `includeBackups` (optional): बैकअप डेटा शामिल करने के लिए `true` पर सेट करें
-  - `includeChartData` (optional): चार्ट डेटा शामिल करने के लिए `true` पर सेट करें
-- **Response** (without parameters):
+## सर्वर विवरण प्राप्त करें - `/api/servers/:id` {/* #get-server-details---apiserversid */}
+- **एंडपॉइंट**: `/api/servers/:id`
+- **मेथड**: GET
+- **विवरण**: किसी विशिष्ट सर्वर के बारे में जानकारी प्राप्त करता है। बुनियादी सर्वर जानकारी या बैकअप और चार्ट डेटा सहित विस्तृत जानकारी लौटा सकता है।
+- **प्रमाणीकरण**: मान्य सत्र और CSRF टोकन की आवश्यकता है
+- **पैरामीटर्स**:
+  - `id`: सर्वर पहचानकर्ता
+- **क्वेरी पैरामीटर्स**:
+  - `includeBackups` (वैकल्पिक): बैकअप डेटा शामिल करने के लिए `true` पर सेट करें
+  - `includeChartData` (वैकल्पिक): चार्ट डेटा शामिल करने के लिए `true` पर सेट करें
+- **प्रतिक्रिया** (पैरामीटर्स के बिना):
 
   ```json
   {
@@ -132,7 +132,7 @@
   }
   ```
 
-- **Response** (with parameters):
+- **प्रतिक्रिया** (पैरामीटर्स के साथ):
 
   ```json
   {
@@ -150,23 +150,23 @@
   }
   ```
 
-- **Error Responses**:
-  - `401`: Unauthorized - Invalid session or CSRF token
+- **त्रुटि प्रतिक्रियाएँ**:
+  - `401`: अनधिकृत - अमान्य सत्र या CSRF टोकन
   - `404`: सर्वर नहीं मिला
-  - `500`: सर्वर त्रुटि सर्वर विवरण प्राप्त करने में
-- **Notes**:
-  - कोई क्वेरी पैरामीटर प्रदान न होने पर बुनियादी सर्वर जानकारी लौटाता है
-  - या तो `includeBackups` या `includeChartData` को `true` पर सेट करने से बैकअप और चार्टडेटा सहित पूर्ण सर्वर डेटा लौटाता है
+  - `500`: सर्वर विवरण प्राप्त करने में सर्वर त्रुटि
+- **नोट्स**:
+  - कोई क्वेरी पैरामीटर प्रदान न किए जाने पर बुनियादी सर्वर जानकारी लौटाता है
+  - `includeBackups` या `includeChartData` में से किसी एक को भी `true` पर सेट करने से बैकअप और chartData सहित पूरा सर्वर डेटा वापस मिलता है
   - सर्वर सेटिंग्स और विवरण दृश्यों के लिए उपयोग किया जाता है
 
-## Server Update Karein - `/api/servers/:id` {/* #update-server---apiserversid */}
-- **Endpoint**: `/api/servers/:id`
-- **Method**: PATCH
-- **विवरण**: Server details update karta hai jismein alias, note, aur server URL shaamil hain.
-- **Authentication**: मान्य सत्र और CSRF टोकन की आवश्यकता होती है
-- **Parameters**:
-  - `id`: the server identifier
-- **Request Body**:
+## सर्वर अपडेट करें - `/api/servers/:id` {/* #update-server---apiserversid */}
+- **एंडपॉइंट**: `/api/servers/:id`
+- **मेथड**: PATCH
+- **विवरण**: उपनाम, नोट और सर्वर URL सहित सर्वर विवरण अपडेट करता है।
+- **प्रमाणीकरण**: मान्य सत्र और CSRF टोकन की आवश्यकता है
+- **पैरामीटर्स**:
+  - `id`: सर्वर पहचानकर्ता
+- **रिक्वेस्ट बॉडी**:
 
   ```json
   {
@@ -176,7 +176,7 @@
   }
   ```
 
-- **Response**:
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -188,24 +188,24 @@
   }
   ```
 
-- **Error Responses**:
-  - `401`: Unauthorized - Invalid session or CSRF token
+- **त्रुटि प्रतिक्रियाएं**:
+  - `401`: अनधिकृत - अमान्य सत्र या CSRF टोकन
   - `404`: सर्वर नहीं मिला
   - `500`: अपडेट के दौरान सर्वर त्रुटि
-- **Notes**:
-  - Server upnaam, note, aur server URL ko update karta hai
-  - Sabhi fields optional hain
-  - Sabhi fields ke liye khali strings allowed hain
+- **नोट्स**:
+  - सर्वर उपनाम, नोट और सर्वर URL को अपडेट करता है
+  - सभी फ़ील्ड वैकल्पिक हैं
+  - सभी फ़ील्ड के लिए रिक्त स्ट्रिंग की अनुमति है
 
-## Server Delete Karein - `/api/servers/:id` {/* #delete-server---apiserversid */}
-- **Endpoint**: `/api/servers/:id`
-- **Method**: DELETE
-- **विवरण**: Ek server aur uske saare associated backups ko delete karta hai.
-- **Authentication**: Valid session aur CSRF token chahiye
-- **Parameters**:
-  - `id`: the server identifier
+## सर्वर हटाएं - `/api/servers/:id` {/* #delete-server---apiserversid */}
+- **एंडपॉइंट**: `/api/servers/:id`
+- **विधि**: DELETE
+- **विवरण**: सर्वर और उसके सभी संबद्ध बैकअप हटाता है।
+- **प्रमाणीकरण**: मान्य सत्र और CSRF टोकन की आवश्यकता है
+- **पैरामीटर**:
+  - `id`: सर्वर पहचानकर्ता
 
-- **Response**:
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -218,24 +218,24 @@
   }
   ```
 
-- **Error Responses**:
-  - `401`: Unauthorized - Invalid session or CSRF token
-  - `404`: Server not found
-  - `500`: Server error during deletion
-- **Notes**: 
-  - Yeh operation irreversible hai
-  - Server ke saare associated backup data permanently delete ho jayenge
-  - Server record bhi remove ho jayega
-  - Deleted backups aur servers ka count return karta hai
+- **त्रुटि प्रतिक्रियाएं**:
+  - `401`: अनधिकृत - अमान्य सत्र या CSRF टोकन
+  - `404`: सर्वर नहीं मिला
+  - `500`: हटाने के दौरान सर्वर त्रुटि
+- **नोट्स**: 
+  - यह ऑपरेशन अपरिवर्तनीय है
+  - सर्वर से संबद्ध सभी बैकअप डेटा स्थायी रूप से हटा दिया जाएगा
+  - सर्वर रिकॉर्ड स्वयं भी हटा दिया जाएगा
+  - हटाए गए बैकअप और सर्वर की संख्या लौटाता है
 
-## Vilambit Info ke Saath Server Data Prapt Karein - `/api/detail/:serverId` {/* #get-server-data-with-overdue-info---apidetailserverid */}
-- **Endpoint**: `/api/detail/:serverId`
-- **Method**: GET
-- **विवरण**: Vilambit backup status ko include karke detailed server information retrieve karta hai.
-- **Parameters**:
+## अतिदेय जानकारी के साथ सर्वर डेटा प्राप्त करें - `/api/detail/:serverId` {/* #get-server-data-with-overdue-info---apidetailserverid */}
+- **एंडपॉइंट**: `/api/detail/:serverId`
+- **विधि**: GET
+- **विवरण**: अतिदेय बैकअप स्थिति सहित विस्तृत सर्वर जानकारी प्राप्त करता है।
+- **पैरामीटर**:
   - `serverId`: सर्वर पहचानकर्ता
 
-- **Response**:
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -259,20 +259,20 @@
   }
   ```
 
-- **Error Responses**:
-  - `404`: Server not found
-  - `500`: Server error fetching server details
-- **Notes**:
-  - Overdue backup information ke saath server data return karta hai
-  - Overdue backup details aur timestamps include karta hai
-  - Overdue backup management aur monitoring ke liye use hota hai
+- **त्रुटि प्रतिक्रियाएं**:
+  - `404`: सर्वर नहीं मिला
+  - `500`: सर्वर विवरण प्राप्त करने में सर्वर त्रुटि
+- **नोट्स**:
+  - अतिदेय बैकअप जानकारी के साथ सर्वर डेटा लौटाता है
+  - अतिदेय बैकअप विवरण और टाइमस्टैम्प शामिल हैं
+  - अतिदेय बैकअप प्रबंधन और निगरानी के लिए उपयोग किया जाता है
 
-## Duplicate Servers Prapt Karein - `/api/servers/duplicates` {/* #get-duplicate-servers---apiserversduplicates */}
-- **Endpoint**: `/api/servers/duplicates`
-- **Method**: GET
-- **विवरण**: Machine ID ke aadhaar par duplicate servers ki soochi retrieve karta hai. Duplicate servers woh servers hain jo same machine ID share karte hain lekin database mein alag records ke roop mein store hain.
-- **Authentication**: Valid session, CSRF token, aur administrator access chahiye
-- **Response**:
+## डुप्लिकेट सर्वर प्राप्त करें - `/api/servers/duplicates` {/* #get-duplicate-servers---apiserversduplicates */}
+- **एंडपॉइंट**: `/api/servers/duplicates`
+- **विधि**: GET
+- **विवरण**: मशीन आईडी के आधार पर डुप्लिकेट सर्वर की सूची प्राप्त करता है। डुप्लिकेट सर्वर वे सर्वर होते हैं जो समान मशीन आईडी साझा करते हैं लेकिन डेटाबेस में अलग-अलग रिकॉर्ड के रूप में संग्रहीत होते हैं।
+- **प्रमाणीकरण**: मान्य सत्र, CSRF टोकन और व्यवस्थापक पहुँच की आवश्यकता है
+- **प्रतिक्रिया**:
 
   ```json
   [
@@ -298,23 +298,23 @@
   ]
   ```
 
-- **Error Responses**:
-  - `401`: Unauthorized - Invalid session or CSRF token
-  - `403`: Administrator access required
-  - `500`: Server error fetching duplicate servers
-- **Notes**:
-  - Yeh endpoint sirf administrators ke liye accessible hai
-  - Same machine ID wale servers ke groups return karta hai
-  - Har group mein same machine ID wale saare servers hain
-  - Duplicate server records ko identify aur merge karne ke liye use hota hai
-  - Har duplicate ke liye server details aur backup counts include karta hai
+- **त्रुटि प्रतिक्रियाएं**:
+  - `401`: अनधिकृत - अमान्य सत्र या CSRF टोकन
+  - `403`: व्यवस्थापक पहुँच आवश्यक है
+  - `500`: डुप्लिकेट सर्वर प्राप्त करने में सर्वर त्रुटि
+- **नोट्स**:
+  - केवल व्यवस्थापक ही इस एंडपॉइंट तक पहुँच सकते हैं
+  - समान मशीन आईडी साझा करने वाले सर्वर के समूह लौटाता है
+  - प्रत्येक समूह में समान मशीन आईडी वाले सभी सर्वर होते हैं
+  - डुप्लिकेट सर्वर रिकॉर्ड की पहचान करने और उन्हें मर्ज करने के लिए उपयोग किया जाता है
+  - प्रत्येक डुप्लिकेट के लिए सर्वर विवरण और बैकअप संख्या शामिल है
 
-## Servers Merge Karein - `/api/servers/merge` {/* #merge-servers---apiserversmerge */}
-- **Endpoint**: `/api/servers/merge`
-- **Method**: POST
-- **विवरण**: Multiple servers ko ek target server mein merge karta hai. Source servers se sabhi backups target server mein transfer ho jaate hain, aur source servers delete ho jaate hain.
-- **Authentication**: Valid session, CSRF token, aur administrator access chahiye
-- **Request Body**:
+## सर्वर मर्ज करें - `/api/servers/merge` {/* #merge-servers---apiserversmerge */}
+- **एंडपॉइंट**: `/api/servers/merge`
+- **विधि**: POST
+- **विवरण**: एकाधिक सर्वर को एक लक्ष्य सर्वर में मर्ज करता है। स्रोत सर्वर से सभी बैकअप लक्ष्य सर्वर पर स्थानांतरित कर दिए जाते हैं, और स्रोत सर्वर हटा दिए जाते हैं।
+- **प्रमाणीकरण**: मान्य सत्र, CSRF टोकन और व्यवस्थापक पहुँच आवश्यक है
+- **रिक्वेस्ट बॉडी**:
 
   ```json
   {
@@ -323,7 +323,7 @@
   }
   ```
 
-- **Response**:
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -333,18 +333,18 @@
   }
   ```
 
-- **Error Responses**:
-  - `400`: Invalid request body, missing required fields, or target server is in the list of servers to merge
-  - `401`: Unauthorized - Invalid session or CSRF token
-  - `403`: Administrator access required
-  - `500`: Server error during merge operation
-- **Notes**:
-  - Yeh operation sirf administrators ke liye accessible hai
-  - Target server list of servers to merge mein nahi hona chahiye
-  - Source servers ke saare backups target server mein transfer ho jate hain
-  - Merged server par same `backup_id` values ke liye `backup_name` ka normalization most recent backup row ke ID se hota hai
-  - Successful merge ke baad source servers delete ho jate hain
-  - Yeh operation irreversible hai
-  - Duplicate server records ko consolidate karne ke liye use hota hai
-  - Validate karta hai ki oldServerIds ek non-empty array hai
-  - Validate karta hai ki targetServerId provided hai aur ek string hai
+- **त्रुटि रिस्पॉन्स**:
+  - `400`: अमान्य रिक्वेस्ट बॉडी, आवश्यक फ़ील्ड मौजूद नहीं हैं, या लक्ष्य सर्वर मर्ज किए जाने वाले सर्वर की सूची में है
+  - `401`: अनधिकृत - अमान्य सत्र या CSRF टोकन
+  - `403`: व्यवस्थापक पहुँच आवश्यक है
+  - `500`: मर्ज ऑपरेशन के दौरान सर्वर त्रुटि
+- **नोट**:
+  - केवल व्यवस्थापक ही मर्ज ऑपरेशन कर सकते हैं
+  - लक्ष्य सर्वर मर्ज किए जाने वाले सर्वर की सूची में नहीं होना चाहिए
+  - स्रोत सर्वर से सभी बैकअप लक्ष्य सर्वर पर स्थानांतरित किए जाते हैं
+  - मर्ज किए गए सर्वर पर समान `backup_name` के लिए डुप्लिकेट `backup_id` मान सबसे हाल की बैकअप पंक्ति की ID पर सामान्यीकृत किए जाते हैं
+  - सफल मर्ज के बाद स्रोत सर्वर हटा दिए जाते हैं
+  - यह ऑपरेशन अपरिवर्तनीय है
+  - डुप्लिकेट सर्वर रिकॉर्ड को समेकित करने के लिए उपयोग किया जाता है
+  - पुष्टि करता है कि oldServerIds एक गैर-रिक्त ऐरे है
+  - पुष्टि करता है कि targetServerId प्रदान किया गया है और यह एक स्ट्रिंग है

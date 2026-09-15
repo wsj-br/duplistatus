@@ -1,115 +1,115 @@
-# Overview {/* #overview */}
+# अवलोकन {/* #overview */}
 
-duplistatus उपयोक्ता मार्गदर्शिका में आपका स्वागत है। यह व्यापक दस्तावेज़ duplistatus का उपयोग करके कई सर्वरों पर अपने डुप्लिकेटी बैकअप ऑपरेशन को निगरानी और प्रबंधित करने के लिए विस्तृत निर्देश प्रदान करता है।
+duplistatus उपयोगकर्ता मार्गदर्शिका में आपका स्वागत है। यह व्यापक दस्तावेज़ कई सर्वर पर आपके Duplicati बैकअप संचालन की निगरानी और प्रबंधन के लिए duplistatus का उपयोग करने के विस्तृत निर्देश प्रदान करता है।
 
 ## duplistatus क्या है? {/* #what-is-duplistatus */}
 
-duplistatus एक शक्तिशाली निगरानी डैशबोर्ड है जो विशेष रूप से डुप्लिकेटी बैकअप प्रणालियों के लिए डिज़ाइन किया गया है। यह प्रदान करता है:
+duplistatus एक शक्तिशाली निगरानी डैशबोर्ड है जिसे विशेष रूप से Duplicati बैकअप सिस्टम के लिए डिज़ाइन किया गया है। यह प्रदान करता है:
 
-- एक सेंट्रलाइज़्ड निगरानी प्रणाली जो एक ही इंटरफ़ेस से कई डुप्लिकेटी सर्वरों को निगरानी करती है
-- सभी बैकअप ऑपरेशन की रियल-टाइम स्थिति ट्रैकिंग
-- कॉन्फ़िगर करने योग्य चेतावनियों के साथ स्वचालित विलंबित बैकअप का पता लगाने
-- बैकअप प्रदर्शन का व्यापक मेट्रिक्स और विज़ुअलाइज़ेशन
-- NTFY aur Email ke madhyam se anuvartan nirdeshan ki pravesh
-- [Sanket durghatna](../installation/security-hardening.md) ke liye anuvartan
-- Anuvartan ke liye bahu-bhaasha samarthan (English, French, German, Spanish, Brazilian Portuguese, Hindi aur Simplified Chinese)
+- एकल इंटरफ़ेस से एकाधिक Duplicati सर्वर की केंद्रीकृत निगरानी
+- सभी बैकअप संचालन की रीयल-टाइम स्थिति ट्रैकिंग
+- कॉन्फ़िगर करने योग्य चेतावनियों के साथ स्वचालित अतिदेय बैकअप पहचान
+- बैकअप प्रदर्शन के व्यापक मेट्रिक्स और विज़ुअलाइज़ेशन
+- NTFY और ईमेल के माध्यम से लचीला अधिसूचना सिस्टम
+- वैकल्पिक [सुरक्षा सुदृढ़ीकरण](../installation/security-hardening.md) सुविधाएँ
+- बहु-भाषा समर्थन (अंग्रेज़ी, फ़्रेंच, जर्मन, स्पैनिश, ब्राज़ीलियाई पुर्तगाली, हिंदी और सरलीकृत चीनी)।
 
-## स्थापना {/* #installation */}
+## संस्थापन {/* #installation */}
 
-पहले से आवश्यकताओं और विस्तृत स्थापना निर्देशों के लिए, कृपया [स्थापना मार्गदर्शिका](../installation/installation.md) देखें।
+पूर्वापेक्षाओं और विस्तृत संस्थापन निर्देशों के लिए, कृपया [संस्थापन मार्गदर्शिका](../installation/installation.md) देखें।
 
-## डैशबोर्ड तक पहुँच {/* #accessing-the-dashboard */}
+## डैशबोर्ड तक पहुँचना {/* #accessing-the-dashboard */}
 
-सफल स्थापना के बाद, निम्नलिखित चरणों का पालन करके duplistatus वेब इंटरफ़ेस तक पहुंचें:
+सफल संस्थापन के बाद, इन चरणों का पालन करके duplistatus वेब इंटरफ़ेस तक पहुँचें:
 
-1. अपनी पसंदीदा वेब ब्राउज़र खोलें
-2. `http://your-server-ip:9666` पर नेविगेट करें
-   - `your-server-ip` को वास्तविक आईपी पते या duplistatus सर्वर के होस्टनेम से बदलें
-   - डिफ़ॉल्ट पोर्ट है `9666`
-3. आपको एक लॉगिन पृष्ठ दिखाई देगा।
+1. अपना पसंदीदा वेब ब्राउज़र खोलें
+2. `http://your-server-ip:9666` पर जाएँ
+   - `your-server-ip` को अपने duplistatus सर्वर के वास्तविक आईपी पता या होस्टनाम से बदलें
+   - डिफ़ॉल्ट पोर्ट `9666` है
+3. आपके सामने एक लॉगिन पृष्ठ प्रदर्शित होगा।
 
-पहली बार उपयोग के लिए या (0.9.x से पहले के संस्करण से अपग्रेड के बाद):
+पहली बार उपयोग के लिए (या 0.9.x से पहले के संस्करणों से अपग्रेड करने के बाद) इन क्रेडेंशियल्स का उपयोग करें:
     - उपयोगकर्ता नाम: `admin`
     - पासवर्ड: `Duplistatus09`
 
-लॉगिन के बाद, दाईं ओर <IconButton icon="lucide:languages" label="भाषा" /> में या <IconButton icon="lucide:user" label="उपयोगकर्ता नाम" /> में उपयोगकर्ता इंटरफ़ेस भाषा का चयन करें (नीचे देखें)।
+ऊपर दाएँ कोने में उपयोगकर्ता इंटरफ़ेस भाषा चुनें <IconButton icon="lucide:languages" label="भाषा" />, या लॉगिन के बाद <IconButton icon="lucide:user" label="उपयोगकर्ता नाम" /> में (नीचे देखें)।
 
-4. लॉगिन के बाद, मुख्य डैशबोर्ड स्वचालित रूप से प्रदर्शित होगा (पहली बार उपयोग पर कोई डेटा नहीं)
+4. लॉगिन के बाद, मुख्य डैशबोर्ड स्वचालित रूप से प्रदर्शित होगा (पहली बार उपयोग करने पर बिना किसी डेटा के)
 
-## उपयोगकर्ता इंटरफ़ेस Overview {/* #user-interface-overview */}
+## उपयोगकर्ता इंटरफ़ेस अवलोकन {/* #user-interface-overview */}
 
-duplistatus आपके पूरे इन्फ्रास्ट्रक्चर में डुप्लिकेटी बैकअप ऑपरेशन की निगरानी करने के लिए एक सहज डैशबोर्ड प्रदान करता है।
+duplistatus आपके संपूर्ण बुनियादी ढाँचे में Duplicati बैकअप संचालन की निगरानी के लिए एक सहज डैशबोर्ड प्रदान करता है।
 
 ![डैशबोर्ड अवलोकन](../assets/screen-main-dashboard-card-mode.png)
 
-उपयोगकर्ता इंटरफ़ेस को एक स्पष्ट और व्यापक निगरानी अनुभव प्रदान करने के लिए कई प्रमुख अनुभागों में संगठित किया गया है:
+एक स्पष्ट और व्यापक निगरानी अनुभव प्रदान करने के लिए उपयोगकर्ता इंटरफ़ेस को कई प्रमुख अनुभागों में व्यवस्थित किया गया है:
 
-1. [Application Toolbar](#application-toolbar): Muleemaan chiz aur sankalpan ke liye tathyaayogya pratyaksh prastuta
-2. [Dashboard Summary](dashboard.md#dashboard-summary): Sabhi nigaar kiye gaye server ke liye aankde ka samkshipt chakkar
-3. Servers Overview: [Cards layout](dashboard.md#cards-layout) ya [table layout](dashboard.md#table-layout) jo sabhi backups ki tathyaayogya stithi dikhaata hai, shamil karke [Duplicati server version](dashboard.md#duplicati-server-version) jo antim backup log se mila hai
-4. [Overdue Details](dashboard.md#overdue-details): Samay se adhik backups ke liye darshaayogya chetaavaniyaan, jisme hover par vistrit jankari hoti hai
-5. [उपलब्ध बैकअप संस्करण](dashboard.md#available-backup-versions): डिस्टिनेशन पर उपलब्ध बैकअप संस्करण देखने के लिए नीले आइकन पर क्लिक करें
-6. [बैकअप मेट्रिक्स](backup-metrics.md): बैकअप प्रदर्शन को समय के साथ इंटरैक्टिव चार्ट्स प्रदर्शित करता है
-7. [सर्वर विवरण](server-details.md): विशिष्ट सर्वरों के लिए रिकॉर्ड किए गए बैकअप की व्यापक सूची, विस्तृत आँकड़ों सहित
-8. [बैकअप विवरण](server-details.md#backup-details): व्यक्तिगत बैकअप के लिए गहन जानकारी, निष्पादन लॉग, चेतावनियाँ और त्रुटियाँ सहित
+1. [एप्लिकेशन टूलबार](#application-toolbar): आवश्यक कार्यों और कॉन्फ़िगरेशन तक त्वरित पहुँच
+2. [डैशबोर्ड सारांश](dashboard.md#dashboard-summary): सभी मॉनिटर किए गए सर्वर के लिए अवलोकन आँकड़े
+3. सर्वर अवलोकन: [कार्ड लेआउट](dashboard.md#cards-layout) या [तालिका लेआउट](dashboard.md#table-layout) जो प्राप्त अंतिम बैकअप लॉग से [Duplicati सर्वर संस्करण](dashboard.md#duplicati-server-version) सहित सभी बैकअप की नवीनतम स्थिति दिखाता है
+4. [अतिदेय विवरण](dashboard.md#overdue-details): होवर करने पर विस्तृत जानकारी के साथ बकाया बैकअप के लिए दृश्य चेतावनियाँ
+5. [उपलब्ध बैकअप वर्शन](dashboard.md#available-backup-versions): गंतव्य पर उपलब्ध बैकअप वर्शन देखने के लिए नीले आइकन पर क्लिक करें
+6. [बैकअप मेट्रिक्स](backup-metrics.md): समय के साथ बैकअप प्रदर्शन प्रदर्शित करने वाले इंटरएक्टिव चार्ट
+7. [सर्वर विवरण](server-details.md): विस्तृत आँकड़े सहित विशिष्ट सर्वर के लिए रिकॉर्ड किए गए बैकअप की व्यापक सूची
+8. [बैकअप विवरण](server-details.md#backup-details): निष्पादन लॉग, चेतावनियाँ और त्रुटियाँ सहित व्यक्तिगत बैकअप के लिए गहन जानकारी
 
 ## एप्लिकेशन टूलबार {/* #application-toolbar */}
 
-एप्लिकेशन टूलबार मुख्य कार्यक्षमता और सेटिंग्स तक सुविधाजनक पहुंच प्रदान करता है, जो कुशल कार्यप्रवाह के लिए व्यवस्थित किया गया है।
+एप्लिकेशन टूलबार कुशल वर्कफ़्लो के लिए व्यवस्थित प्रमुख फ़ंक्शनों और सेटिंग्स तक सुविधाजनक पहुँच प्रदान करता है।
 
 ![एप्लिकेशन टूलबार](../assets/duplistatus_toolbar.svg)
 
 | बटन                                                                                                                                           | विवरण                                                                                                                                                                                |
 |--------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| <IconButton icon="lucide:search" /> &nbsp; फ़िल्टर                                                                                            | आईडी, URL, या बैकअप जॉब नाम के द्वारा सर्वर खोजें और फ़िल्टर करें।                                                      |
-| <IconButton icon="lucide:rotate-ccw" /> &nbsp; स्क्रीन रीफ्रेश करें                                                                                    | सभी डेटा के लिए तत्काल मैनुअल स्क्रीन रीफ्रेश करें                                                                                                                                     |
-| <IconButton label="ऑटो-रीफ्रेश" />                                                                                                              | स्वचालित रीफ्रेश कार्यक्षमता को सक्षम या अक्षम करें। [डिस्प्ले सेटिंग्स](settings/display-settings.md) <br/> में कॉन्फ़िगर करें _राइट-क्लिक_ डिस्प्ले सेटिंग्स पृष्ठ खोलने के लिए                         |
-| <SvgButton svgFilename="ntfy.svg" /> &nbsp; NTFY खोलें                                                                                            | अपने कॉन्फ़िगर किए गए सूचना विषय के लिए ntfy.sh वेबसाइट तक पहुंचें। <br/> _राइट-क्लिक_ duplistatus से सूचनाएं प्राप्त करने के लिए अपने डिवाइस को कॉन्फ़िगर करने के लिए एक क्यूआर कोड दिखाने के लिए।               |
-| <SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [डुप्लिकेटी कॉन्फ़िगरेशन](duplicati-configuration.md)       | चयनित डुप्लिकेटी सर्वर के वेब इंटरफ़ेस खोलें <br/> _राइट-क्लिक_ नए टैब में डुप्लिकेटी लेगसी UI (`/ngax`) खोलने के लिए                                                              |
-| <IconButton icon="lucide:download" href="collect-backup-logs" /> &nbsp; [लॉग संग्रहित करें](collect-backup-logs.md)                                   | डुप्लिकेटी सर्वरों से कनेक्ट करें और बैकअप लॉग प्राप्त करें <br/> _राइट-क्लिक_ सभी कॉन्फ़िगर किए गए सर्वरों के लिए लॉग संग्रहित करने के लिए                                                                       |
-| <IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [सेटिंग्स](settings/backup-notifications-settings.md) | सूचनाएं, मॉनिटरिंग, एसएमटीपी सर्वर, और सूचना टेम्पलेट्स कॉन्फ़िगर करें                                                                                                               |
-| <IconButton icon="lucide:user" label="उपयोगकर्ता नाम" />                                                                                               | कनेक्टेड उपयोगकर्ता, उपयोगकर्ता प्रकार (`Admin`, `User`) दिखाएं, उपयोगकर्ता मेनू के लिए क्लिक करें (भाषा चयन सहित)। [उपयोगकर्ता प्रबंधन](settings/user-management-settings.md) में अधिक देखें               |
-| <IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; उपयोगकर्ता गाइड                                                                    | आप वर्तमान में देख रहे पृष्ठ से संबंधित अनुभाग को खोलने के लिए [उपयोगकर्ता गाइड](overview.md) खोलें। टूलटिप "[पृष्ठ का नाम] के लिए सहायता" दिखाता है, जो बताता है कि कौन सा दस्तावेज़ खुला जाएगा। |
+| <IconButton icon="lucide:search" /> &nbsp; फ़िल्टर                                                                                            | ID, URL, या बैकअप जॉब नाम के आधार पर सर्वर खोजें और फ़िल्टर करें।                                                      |
+| <IconButton icon="lucide:rotate-ccw" /> &nbsp; स्क्रीन रीफ़्रेश करें                                                                                    | सभी डेटा का तत्काल मैन्युअल स्क्रीन रीफ़्रेश निष्पादित करें                                                                                                                                     |
+| <IconButton label="स्वतः रीफ्रेश" />                                                                                                              | स्वचालित रीफ़्रेश कार्यक्षमता सक्षम करें या अक्षम करें। [प्रदर्शन सेटिंग्स](settings/display-settings.md) में कॉन्फ़िगर करें <br/> प्रदर्शन सेटिंग्स पृष्ठ खोलने के लिए _राइट-क्लिक_ करें                         |
+| <SvgButton svgFilename="ntfy.svg" /> &nbsp; NTFY खोलें                                                                                            | अपने कॉन्फ़िगर किए गए सूचना विषय के लिए ntfy.sh वेबसाइट पर जाएँ। <br/> duplistatus से सूचनाएं प्राप्त करने के लिए अपना डिवाइस कॉन्फ़िगर करें हेतु QR कोड दिखाने के लिए _राइट-क्लिक_ करें।               |
+| <SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Duplicati कॉन्फ़िगरेशन](duplicati-configuration.md)       | चयनित Duplicati सर्वर का वेब इंटरफ़ेस खोलें <br/> एक नए टैब में Duplicati लीगेसी UI (`/ngax`) खोलने के लिए _राइट-क्लिक_ करें                                                              |
+| <IconButton icon="lucide:download" href="collect-backup-logs" /> &nbsp; [लॉग एकत्र करें](collect-backup-logs.md)                                   | Duplicati सर्वर से कनेक्ट करें और बैकअप लॉग प्राप्त करें <br/> सभी कॉन्फ़िगर किए गए सर्वर के लिए लॉग एकत्र करने हेतु _राइट-क्लिक_ करें                                                                       |
+| <IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [सेटिंग्स](settings/backup-notifications-settings.md) | सूचनाएं, मॉनिटरिंग, SMTP सर्वर, और सूचना टेम्पलेट कॉन्फ़िगर करें                                                                                                               |
+| <IconButton icon="lucide:user" label="उपयोगकर्ता नाम" />                                                                                               | कनेक्टेड उपयोगकर्ता, उपयोगकर्ता प्रकार (`Admin`, `User`) दिखाएँ, उपयोगकर्ता मेनू (भाषा चयन शामिल है) के लिए क्लिक करें। [उपयोगकर्ता प्रबंधन](settings/user-management-settings.md) में और अधिक देखें               |
+| <IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; उपयोगकर्ता गाइड                                                                    | वर्तमान में देखे जा रहे पृष्ठ से संबंधित अनुभाग पर [उपयोगकर्ता गाइड](overview.md) खोलें। टूलटिप "Help for [Page Name]" दिखाता है ताकि यह पता चले कि कौन सा दस्तावेज़ खोला जाएगा। |
 
 ### उपयोगकर्ता मेनू {/* #user-menu */}
 
-उपयोगकर्ता बटन पर क्लिक करने से एक ड्रॉपडाउन मेनू खुलता है जिसमें उपयोगकर्ता-विशिष्ट विकल्प होते हैं। मेनू विकल्पों में अंतर होता है इस आधार पर कि आप व्यवस्थापक के रूप में या सामान्य उपयोगकर्ता के रूप में लॉग इन हैं। दोनों भूमिकाएँ **Bhaasha** सबमेनू के माध्यम से इंटरफ़ेस भाषा बदल सकते हैं। चयनित भाषा इस ब्राउज़र पर उपयोगकर्ता के लिए सहेजी जाती है (सिस्टम-वाइड सेटिंग के रूप में नहीं), इसलिए अलग-अलग खातों में अलग-अलग भाषाएँ रखी जा सकती हैं। समर्थित भाषाएँ: अंग्रेज़ी, फ़्रेंच, जर्मन, स्पैनिश, ब्राज़ीलियन पुर्तगाली, हिंदी और सरलीकृत चीनी.
+उपयोगकर्ता बटन पर क्लिक करने से उपयोगकर्ता-विशिष्ट विकल्पों के साथ एक ड्रॉपडाउन मेनू खुलता है। मेनू विकल्प इस आधार पर भिन्न होते हैं कि आप एक एडमिनिस्ट्रेटर के रूप में लॉग इन हैं या एक सामान्य उपयोगकर्ता के रूप में। दोनों भूमिकाएँ **Language** सबमेनू के माध्यम से इंटरफ़ेस भाषा बदल सकती हैं। चुनी गई भाषा इस ब्राउज़र पर प्रति उपयोगकर्ता सहेजी जाती है (पूरे सिस्टम की सेटिंग के रूप में नहीं), इसलिए विभिन्न खाते अलग-अलग भाषाएं रख सकते हैं। समर्थित भाषाएं: अंग्रेज़ी, फ़्रेंच, जर्मन, स्पैनिश, ब्राज़ीलियाई पुर्तगाली, हिंदी और सरलीकृत चीनी।
 
 <table>
   <tr>
-    <th>प्रबंधक</th>
+    <th>एडमिनिस्ट्रेटर</th>
     <th>सामान्य उपयोगकर्ता</th>
   </tr>
   <tr>
-    <td style={{verticalAlign: 'top'}}>![उपयोगकर्ता मेनू - प्रशासक](../assets/screen-user-menu-admin.png)</td>
+    <td style={{verticalAlign: 'top'}}>![उपयोगकर्ता मेनू - एडमिन](../assets/screen-user-menu-admin.png)</td>
     <td style={{verticalAlign: 'top'}}>![उपयोगकर्ता मेनू - उपयोगकर्ता](../assets/screen-user-menu-user.png)</td>
   </tr>
 </table>
 
 ## आवश्यक कॉन्फ़िगरेशन {/* #essential-configuration */}
 
-1. [Duplicati servers](../installation/duplicati-server-configuration.md) को backup log sandesh duplistatus पर भेजने के लिए configure करें (anivarya).
-2. प्रारंभिक backup logs संग्रहित करें – [Backup Logs Ikattha Karein](collect-backup-logs.md) सुविधा का उपयोग करें ताकि डेटाबेस को आपकी सभी Duplicati servers से ऐतिहासिक backup डेटा से भर सकें। यह backup monitoring intervals को प्रत्येक server के configuration के आधार पर स्वचालित रूप से अपडेट भी करता है।
-3. server settings configure करें – [Settings → Server](settings/server-settings.md) में server aliases और notes सेट करें ताकि आपका dashboard अधिक सूचनात्मक हो।
-4. NTFY settings configure करें – [Settings → NTFY](settings/ntfy-settings.md) में NTFY के माध्यम से notifications सेट करें।
+1. अपने [Duplicati सर्वर](../installation/duplicati-server-configuration.md) को duplistatus पर बैकअप लॉग संदेश भेजने के लिए कॉन्फ़िगर करें (आवश्यक)।
+2. प्रारंभिक बैकअप लॉग एकत्र करें – अपने सभी Duplicati सर्वर से ऐतिहासिक बैकअप डेटा के साथ डेटाबेस को भरने के लिए [बैकअप लॉग एकत्र करें](collect-backup-logs.md) सुविधा का उपयोग करें। यह प्रत्येक सर्वर के कॉन्फ़िगरेशन के आधार पर बैकअप निगरानी अंतरालों को भी स्वचालित रूप से अपडेट करता है।
+3. सर्वर सेटिंग्स कॉन्फ़िगर करें – अपने डैशबोर्ड को अधिक जानकारीपूर्ण बनाने के लिए [सेटिंग्स → सर्वर](settings/server-settings.md) में सर्वर उपनाम (aliases) और नोट्स सेट करें।
+4. NTFY सेटिंग्स कॉन्फ़िगर करें – [सेटिंग्स → NTFY](settings/ntfy-settings.md) में NTFY के माध्यम से सूचनाएं सेट करें।
 5. ईमेल सेटिंग्स कॉन्फ़िगर करें – [सेटिंग्स → ईमेल](settings/email-settings.md) में ईमेल सूचनाएं सेट करें।
-6. बैकअप सूचनाएं कॉन्फ़िगर करें – [सेटिंग्स → बैकअप सूचनाएं](settings/backup-notifications-settings.md) में प्रति-बैकअप या प्रति-सेर्वर सूचनाएं सेट करें।
-7. वैकल्पिक रूप से एक्सेस प्रतिबंधित करें – यदि आप `/api/upload` और व्यवस्थापक इंटरफेस को सुरक्षित करना चाहते हैं, तो [एपीआई कुंजियाँ](settings/api-keys-settings.md) और/या [आईपी व्हाइटलिस्ट](settings/ip-allowlist-settings.md) बनाएं। दोनों डिफ़ॉल्ट रूप से बंद हैं।
+6. बैकअप सूचनाएं कॉन्फ़िगर करें – [सेटिंग्स → बैकअप सूचनाएं](settings/backup-notifications-settings.md) में प्रति-बैकअप या प्रति-सर्वर सूचनाएं सेट करें।
+7. वैकल्पिक रूप से एक्सेस प्रतिबंधित करें – यदि आप `/api/upload` और एडमिन इंटरफ़ेस को सुरक्षित करना चाहते हैं, तो [API कुंजियाँ](settings/api-keys-settings.md) और/या [IP अनुमत सूचियाँ (allowlists)](settings/ip-allowlist-settings.md) बनाएं। दोनों डिफ़ॉल्ट रूप से बंद हैं।
 
 <br/>
 
 :::info[महत्वपूर्ण]
-Duplicati servers को backup logs duplistatus पर भेजने के लिए configure करना याद रखें, जैसा कि [Duplicati Configuration](../installation/duplicati-server-configuration.md) अनुभाग में बताया गया है।
+Duplicati सर्वर को duplistatus पर बैकअप लॉग भेजने के लिए कॉन्फ़िगर करना याद रखें, जैसा कि [Duplicati कॉन्फ़िगरेशन](../installation/duplicati-server-configuration.md) अनुभाग में बताया गया है।
 :::
 
 <br/>
 
 :::note
- सभी उत्पाद नाम, लोगो और ट्रेडमार्क उनके संबंधित मालिकों का संपत्ति है। आइकन और नाम पहचान के लिए उपयोग किए जाते हैं और समर्थन का इम्प्लाई नहीं करते हैं।
+सभी उत्पाद नाम, लोगो और ट्रेडमार्क उनके संबंधित स्वामियों की संपत्ति हैं। आइकन और नामों का उपयोग केवल पहचान के उद्देश्य से किया जाता है और इसका अर्थ कोई समर्थन नहीं है।
 :::
 
 <small>
 
-> **Note on UI and documentation translations:** Sabhi interface aur documentation languages except English (UK) were translated with AI using [ai-i18n-tools](https://wsj-br.github.io/ai-i18n-tools/); the wording may be imprecise or contain errors.
+> **UI और दस्तावेज़ अनुवादों पर ध्यान दें:** अंग्रेज़ी (UK) को छोड़कर सभी इंटरफ़ेस और दस्तावेज़ भाषाओं का अनुवाद [ai-i18n-tools](https://wsj-br.github.io/ai-i18n-tools/) का उपयोग करके AI द्वारा किया गया था; शब्दों का चयन सटीक नहीं हो सकता है या उनमें त्रुटियाँ हो सकती हैं।
 
 </small>

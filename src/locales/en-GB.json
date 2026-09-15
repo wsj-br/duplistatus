@@ -102,7 +102,7 @@
   "7e98fbf9_one": "Merge Selected Server ({{count}})",
   "7e98fbf9_other": "Merge Selected Servers ({{count}})",
   "1dda0180_original": "This will merge {{count}} server groups. For each group, all old server IDs will be merged into the target server (newest by creation date). All backup records and configurations will be transferred to the target servers. The old server entries will be deleted. This action cannot be undone.",
-  "1dda0180_one": "This will merge {{count}} server group. For each group, all old server IDs will be merged into the target server (newest by creation date). All backup records and configurations will be transferred to the target server. The old server entry will be deleted. This action cannot be undone.",
+  "1dda0180_one": "This will merge {{count}} server group. For each group, all old server IDs will be merged into the target server (newest by creation date). All backup records and configurations will be transferred to the target servers. The old server entries will be deleted. This action cannot be undone.",
   "1dda0180_other": "This will merge {{count}} server groups. For each group, all old server IDs will be merged into the target server (newest by creation date). All backup records and configurations will be transferred to the target servers. The old server entries will be deleted. This action cannot be undone.",
   "79690b99_original": "{{count}} rows",
   "79690b99_one": "{{count}} row",

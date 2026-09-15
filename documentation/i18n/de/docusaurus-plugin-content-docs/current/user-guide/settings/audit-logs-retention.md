@@ -1,15 +1,15 @@
 # Prüfprotokoll-Aufbewahrung {/* #audit-log-retention */}
 
-Konfigurieren Sie, wie lange Audit-Protokolle vor der automatischen Bereinigung beibehalten werden.
+Konfigurieren Sie, wie lange Prüfprotokolle vor der automatischen Bereinigung aufbewahrt werden.
 
 ![Prüfprotokoll-Aufbewahrung](../../assets/screen-settings-audit-retention.png)
 
 | Einstellung | Beschreibung | Standardwert |
 |:-------|:-----------|:-------------|
-| **Aufbewahrung (Tage)** | Anzahl der Tage zur Aufbewahrung von Audit-Protokollen vor automatischer Löschung | **90 Tage** |
+| **Aufbewahrung (Tage)** | Anzahl der Tage, für die Prüfprotokolle vor der automatischen Löschung aufbewahrt werden | **90 Tage** |
 
 ## Aufbewahrungseinstellungen {/* #retention-settings */}
 
-- **Zeitraum**: 30 bis 365 Tage
-- **Automatische Bereinigung**: Läuft täglich um 02:00 UTC (nicht konfigurierbar)
-- **Manuelle Bereinigung**: Verfügbar über die API für Administratoren (siehe [Audit-Logs bereinigen](../../api-reference/administration-apis.md#cleanup-audit-logs---apiaudit-logcleanup))
+- **Bereich**: 30 bis 365 Tage
+- **Automatische Bereinigung**: Wird täglich um 02:00 UTC ausgeführt (nicht konfigurierbar)
+- **Manuelle Bereinigung**: Über die API für Administratoren verfügbar (siehe [Prüfprotokolle bereinigen](../../api-reference/administration-apis.md#cleanup-audit-logs---apiaudit-logcleanup))

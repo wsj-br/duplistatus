@@ -2,7 +2,7 @@
 
 ## Verificação de Saúde - `/api/health` {/* #health-check---apihealth */}
 - **Endpoint**: `/api/health`
-- **Método**: GET
+- **Method**: GET
 - **Descrição**: Verificação de vitalidade barata para a aplicação e conexão SQLite. O Docker `HEALTHCHECK` e o loop de entrada usam esta URL no localhost.
 - **Resposta** (saudável):
 
@@ -18,7 +18,7 @@
   }
   ```
 
-- **Resposta** (degradada):
+- **Resposta** (degradado):
 
   ```json
   {
@@ -45,16 +45,16 @@
   ```
 
 - **Notas**:
-  - Retorna 200 quando a inicialização é concluída e `SELECT 1` bem-sucedido
+  - Retorna 200 quando a inicialização é concluída e `SELECT 1` é bem-sucedido
   - Retorna 503 quando a inicialização ou a verificação de conexão falha
-  - Não lista nomes de tabelas ou executa consultas do painel
+  - Não lista nomes de tabelas ou executa consultas de painel
   - Nunca requer uma chave de API
-  - Quando qualquer lista de permissões de IP está habilitada, o IP do cliente deve ser loopback ou listado na lista CIDR do administrador ou externo (`403` `IP_NOT_ALLOWED` caso contrário)
-  - Clientes não loopback são limitados em taxa (`429` `PROBE_RATE_LIMITED`, 30/minuto e 120/hora). Loopback (`127.0.0.1`, `::1`) nunca é limitado
+  - Quando qualquer lista de permissões de IP está habilitada, o IP do cliente deve ser loopback ou listado na lista de CIDR do administrador ou externo (`403` `IP_NOT_ALLOWED` caso contrário)
+  - Clientes não loopback são limitados por taxa (`429` `PROBE_RATE_LIMITED`, 30/minuto e 120/hora). Loopback (`127.0.0.1`, `::1`) nunca é limitado
 
 ## Verificação de Conectividade - `/api/ping` {/* #connectivity-probe---apiping */}
 - **Endpoint**: `/api/ping`
-- **Método**: GET
+- **Method**: GET
 - **Descrição**: Resposta pequena `{ "ok": true }` usada pela verificação de conectividade do painel (a cada 30 segundos).
 - **Resposta**:
 
@@ -67,4 +67,4 @@
 - **Notas**:
   - Nunca requer uma chave de API ou um cookie de sessão
   - Mesmas regras de lista de permissões e loopback que `/api/health`
-  - Clientes não loopback são limitados em taxa (`429` `PROBE_RATE_LIMITED`, 60/minuto e 600/hora)
+  - Clientes não loopback são limitados por taxa (`429` `PROBE_RATE_LIMITED`, 60/minuto e 600/hora)

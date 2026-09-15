@@ -1,6 +1,6 @@
-# Visão geral {/* #overview */}
+# Visão Geral {/* #overview */}
 
-A página de Configurações oferece uma interface unificada para configurar todos os aspectos do **duplistatus**. Você pode acessá-la clicando no botão <IconButton icon="lucide:settings" /> **Configurações** na [Barra de Aplicativos](../overview.md#application-toolbar). Observe que usuários regulares verão um menu simplificado com menos opções em comparação com os administradores.
+A página Configurações oferece uma interface unificada para configurar todos os aspectos do **duplistatus**. Você pode acessá-la clicando no botão <IconButton icon="lucide:settings" /> **Configurações** na [Barra de Ferramentas do Aplicativo](../overview.md#application-toolbar). Observe que usuários regulares verão um menu simplificado com menos opções em comparação com administradores.
 
 ## Visualização do Administrador {/* #administrator-view */}
 
@@ -9,7 +9,7 @@ Administradores veem todas as configurações disponíveis.
 <table>
   <tr>
     <td>
-      ![Barra Lateral de Configurações - Visualização do Administrador](../../assets/screen-settings-left-panel-admin.png)
+      ![Barra Lateral de Configurações - Visualização do Admin](../../assets/screen-settings-left-panel-admin.png)
     </td>
     <td>
       <ul>
@@ -17,7 +17,7 @@ Administradores veem todas as configurações disponíveis.
           <strong>Notificações</strong>
           <ul>
             <li><a href="backup-notifications-settings.md">Notificações de Backup</a>: Configurar configurações de notificação por backup</li>
-            <li><a href="backup-monitoring-settings.md">Monitoramento de Backup</a>: Configurar detecção de backup atrasado e alertas</li>
+            <li><a href="backup-monitoring-settings.md">Monitoramento de Backup</a>: Configurar detecção de backups atrasados e alertas</li>
             <li><a href="daily-summary-settings.md">Resumo Diário</a>: Snapshot diário opcional que substitui e-mails para o destinatário padrão (destinos adicionais continuam)</li>
             <li><a href="notification-templates.md">Modelos</a>: Personalizar modelos de mensagens de notificação</li>
           </ul>
@@ -26,7 +26,7 @@ Administradores veem todas as configurações disponíveis.
           <strong>Integrações</strong>
           <ul>
             <li><a href="ntfy-settings.md">NTFY</a>: Configurar serviço de notificação push NTFY</li>
-            <li><a href="email-settings.md">E-mail</a>: Configurar notificações por e-mail SMTP</li>
+            <li><a href="email-settings.md">E-mail</a>: Configurar notificações de e-mail SMTP</li>
           </ul>
         </li><br/>
         <li>
@@ -35,13 +35,13 @@ Administradores veem todas as configurações disponíveis.
             <li><a href="server-settings.md">Servidores</a>: Gerenciar configurações do servidor Duplicati</li>
             <li><a href="display-settings.md">Configurações de Exibição</a>: Configurar tema, intervalo de tempo do gráfico, estilo do gráfico, localidade de formatação, intervalo de atualização automática, ordem de classificação dos cards e início da semana</li>
             <li><a href="duplicati-versions.md">Versões do Duplicati</a>: Visualizar versões de lançamento do Duplicati em cache e configurar o agendamento da verificação de versão</li>
-            <li><a href="database-maintenance.md">Manutenção do Banco de Dados</a>: Realizar limpeza do banco de dados (apenas administrador)</li>
-            <li><a href="api-keys-settings.md">Chaves de API</a>: Gerenciar chaves com escopo e proteção de APIs externas (apenas administrador)</li>
-            <li><a href="ip-allowlist-settings.md">Lista de permissões de IP</a>: Restringir a interface de administração e APIs externas (apenas administrador)</li>
-            <li><a href="user-management-settings.md">Usuários</a>: Gerenciar contas de usuário (apenas administrador)</li>
+            <li><a href="database-maintenance.md">Manutenção do Banco de Dados</a>: Realizar limpeza do banco de dados (apenas admin)</li>
+            <li><a href="api-keys-settings.md">Chaves de API</a>: Gerenciar chaves com escopo e proteção de APIs externas (apenas admin)</li>
+            <li><a href="ip-allowlist-settings.md">Lista de permissões de IP</a>: Restringir a interface de administração e APIs externas (apenas admin)</li>
+            <li><a href="user-management-settings.md">Usuários</a>: Gerenciar contas de usuário (apenas admin)</li>
             <li><a href="audit-logs-viewer.md">Log de Auditoria</a>: Visualizar logs de auditoria do sistema</li>
-            <li><a href="audit-logs-retention.md">Retenção de Log de Auditoria</a>: Configurar retenção de log de auditoria (apenas administrador)</li>
-            <li><a href="application-logs-settings.md">Logs do Aplicativo</a>: Visualizar e exportar logs do aplicativo (apenas administrador)</li>
+            <li><a href="audit-logs-retention.md">Retenção de Log de Auditoria</a>: Configurar retenção de log de auditoria (apenas admin)</li>
+            <li><a href="application-logs-settings.md">Logs do Aplicativo</a>: Visualizar e exportar logs do aplicativo (apenas admin)</li>
           </ul>
         </li>
       </ul>
@@ -49,24 +49,24 @@ Administradores veem todas as configurações disponíveis.
   </tr>
 </table>
 
-## Visualização do Não Administrador {/* #non-administrator-view */}
+## Visualização de Não-Administrador {/* #non-administrator-view */}
 
 Usuários regulares veem um conjunto limitado de configurações.
 
 <table>
   <tr>
     <td>
-      ![Configurações da Barra Lateral - Visualização Não-Administrativa](../../assets/screen-settings-left-panel-non-admin.png)
+      ![Barra Lateral de Configurações - Visualização Não Administrativa](../../assets/screen-settings-left-panel-non-admin.png)
     </td>
     <td>
       <ul>
         <li>
           <strong>Notificações</strong>
           <ul>
-            <li><a href="backup-notifications-settings.md">Notificações de Backup</a>: Visualizar configurações de notificações por backup (somente leitura)</li>
+            <li><a href="backup-notifications-settings.md">Notificações de Backup</a>: Visualizar configurações de notificação por backup (somente leitura)</li>
             <li><a href="backup-monitoring-settings.md">Monitoramento de Backup</a>: Visualizar configurações de backup atrasado (somente leitura)</li>
             <li><a href="daily-summary-settings.md">Resumo Diário</a>: Visualizar configurações de resumo diário (somente leitura)</li>
-            <li><a href="notification-templates.md">Modelos</a>: Visualizar modelos de notificações (somente leitura)</li>
+            <li><a href="notification-templates.md">Modelos</a>: Visualizar modelos de notificação (somente leitura)</li>
           </ul>
         </li><br/>
         <li>
@@ -79,9 +79,9 @@ Usuários regulares veem um conjunto limitado de configurações.
         <li>
           <strong id="system">Sistema</strong>
           <ul>
-            <li><a href="server-settings.md">Servidores</a>: Visualizar configurações de servidores (somente leitura)</li>
-            <li><a href="display-settings.md">Exibição</a>: Configurar tema, intervalo de tempo do gráfico, estilo do gráfico, localidade de formatação, intervalo de atualização automática, ordem de classificação de cartões e início da semana</li>
-            <li><a href="duplicati-versions.md">Versões do Duplicati</a>: Visualizar versões de lançamento em cache do Duplicati (mudanças de agendamento são somente para administradores)</li>
+            <li><a href="server-settings.md">Servidores</a>: Visualizar configurações do servidor (somente leitura)</li>
+            <li><a href="display-settings.md">Exibição</a>: Configurar tema, intervalo de tempo do gráfico, estilo do gráfico, localidade de formatação, intervalo de atualização automática, ordem de classificação dos cards e início da semana</li>
+            <li><a href="duplicati-versions.md">Versões do Duplicati</a>: Visualizar versões de lançamento do Duplicati em cache (alterações de agendamento são apenas para administradores)</li>
             <li><a href="audit-logs-viewer.md">Log de Auditoria</a>: Visualizar logs de auditoria do sistema (somente leitura)</li>
           </ul>
         </li>
@@ -93,15 +93,15 @@ Usuários regulares veem um conjunto limitado de configurações.
 ## Ícones de Status {/* #status-icons */}
 
 A barra lateral exibe ícones de status ao lado das configurações de integração **NTFY** e **E-mail**:
-- <IIcon2 icon="lucide:message-square" color="green"/> <IIcon2 icon="lucide:mail" color="green"/> **Ícone Verde**: Suas configurações são válidas e configuradas corretamente
-- <IIcon2 icon="lucide:message-square" color="yellow"/> <IIcon2 icon="lucide:mail" color="yellow"/> **Ícone Amarelo**: Suas configurações não são válidas ou não estão configuradas
+- <IIcon2 icon="lucide:message-square" color="green"/> <IIcon2 icon="lucide:mail" color="green"/> **Ícone verde**: Suas configurações são válidas e configuradas corretamente
+- <IIcon2 icon="lucide:message-square" color="yellow"/> <IIcon2 icon="lucide:mail" color="yellow"/> **Ícone amarelo**: Suas configurações não são válidas ou não estão configuradas
 
-Quando a configuração é inválida, as caixas de seleção correspondentes na aba [Notificações de Backup](backup-notifications-settings.md) estarão desativadas e desmarcadas. Para mais detalhes, consulte as páginas [Configurações do NTFY](ntfy-settings.md) e [Configurações de E-mail](email-settings.md).
+Quando a configuração é inválida, as caixas de seleção correspondentes na guia [Notificações de Backup](backup-notifications-settings.md) serão cinzas e desativadas. Para mais detalhes, consulte as páginas [Configurações do NTFY](ntfy-settings.md) e [Configurações de E-mail](email-settings.md).
 
 <br/>
 
 :::important
-Um ícone verde não significa necessariamente que as notificações estão funcionando corretamente. Sempre use os recursos de teste disponíveis para confirmar se suas notificações estão funcionando antes de confiar nelas. 
+Um ícone verde não significa necessariamente que as notificações estão funcionando corretamente. Sempre use os recursos de teste disponíveis para confirmar que suas notificações estão funcionando antes de depender delas. 
 :::
 
 <br/>

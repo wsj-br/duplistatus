@@ -14,15 +14,15 @@
   ```
 
 - **Fehlerantworten**:
-  - `500`: Fehlgeschlagen beim Erstellen der Sitzung
+  - `500`: Sitzung konnte nicht erstellt werden
 - **Hinweise**:
-  - Erstellt eine neue Sitzung mit einer Gültigkeitsdauer von 24 Stunden
-  - Setzt ein HTTP-only-Sitzungs-Cookie
+  - Erstellt eine neue Sitzung mit 24-Stunden-Ablauf
+  - Setzt HTTP-only Sitzungscookie
   - Erforderlich für den Zugriff auf geschützte Endpunkte
 
 ## Sitzung validieren - `/api/session` {/* #validate-session---apisession */}
-- **Endpoint**: `/api/session`
-- **Method**: GET
+- **Endpunkt**: `/api/session`
+- **Methode**: GET
 - **Beschreibung**: Validiert eine bestehende Sitzung.
 - **Antwort** (gültig):
 
@@ -43,11 +43,11 @@
   ```
 
 - **Fehlerantworten**:
-  - `401`: Kein Sitzungs-Cookie oder Sitzungs-ID vorhanden
-  - `500`: Fehlgeschlagen beim Überprüfen der Sitzung
+  - `401`: Kein Sitzungscookie oder Sitzungs-ID
+  - `500`: Sitzung konnte nicht validiert werden
 - **Hinweise**:
-  - Prüft, ob das Sitzungs-Cookie vorhanden ist und gültig
-  - Gibt die Sitzungs-ID zurück, falls gültig
+  - Überprüft, ob das Sitzungscookie vorhanden und gültig ist
+  - Gibt die Sitzungs-ID zurück, wenn gültig
 
 ## Sitzung löschen - `/api/session` {/* #delete-session---apisession */}
 - **Endpunkt**: `/api/session`
@@ -62,14 +62,14 @@
   ```
 
 - **Fehlerantworten**:
-  - `500`: Fehlgeschlagen beim Löschen der Sitzung
+  - `500`: Sitzung konnte nicht gelöscht werden
 - **Hinweise**:
-  - Entfernt die Sitzung vom Server und Client
-  - Entfernt das Sitzungs-Cookie
+  - Löscht die Sitzung vom Server und Client
+  - Entfernt das Sitzungscookie
 
 ## CSRF-Token abrufen - `/api/csrf` {/* #get-csrf-token---apicsrf */}
-- **Endpoint**: `/api/csrf`
-- **Method**: GET
+- **Endpunkt**: `/api/csrf`
+- **Methode**: GET
 - **Beschreibung**: Generiert ein CSRF-Token für die aktuelle Sitzung.
 - **Antwort**:
 
@@ -82,8 +82,8 @@
 
 - **Fehlerantworten**:
   - `401`: Keine Sitzung gefunden oder ungültige/abgelaufene Sitzung
-  - `500`: Fehlgeschlagen beim Generieren des CSRF-Tokens
+  - `500`: CSRF-Token konnte nicht generiert werden
 - **Hinweise**:
   - Erfordert eine gültige Sitzung
-  - Das CSRF-Token ist für alle statusändernden Operationen erforderlich
-  - Das Token ist an die aktuelle Sitzung gebunden
+  - CSRF-Token ist für alle zustandsverändernden Operationen erforderlich
+  - Token ist an die aktuelle Sitzung gebunden

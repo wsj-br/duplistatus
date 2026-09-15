@@ -1,10 +1,10 @@
-# सत्र प्रबंधन {/* #session-management */}
+# सेशन प्रबंधन {/* #session-management */}
 
-## सत्र बनाएँ - `/api/session` {/* #create-session---apisession */}
+## सेशन बनाएं - `/api/session` {/* #create-session---apisession */}
 - **एंडपॉइंट**: `/api/session`
-- **विधि**: POST
-- **विवरण**: उपयोगकर्ता के लिए एक नया सत्र बनाता है।
-- **Response**:
+- **मेथड**: POST
+- **विवरण**: उपयोगकर्ता के लिए एक नया सेशन बनाता है।
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -13,18 +13,18 @@
   }
   ```
 
-- **Error Responses**:
-  - `500`: Session banane mein Asafal
-- **Notes**:
-  - 24-ghante ki expiry ke saath ek naya session banata hai
-  - HTTP-only session cookie set karta hai
-  - Protected endpoints ko access karne ke liye aavashyak hai
+- **त्रुटि रिस्पॉन्स**:
+  - `500`: सेशन बनाने में विफल रहा
+- **नोट्स**:
+  - 24 घंटे की समाप्ति के साथ एक नया सेशन बनाता है
+  - HTTP-only सेशन कुकी सेट करता है
+  - सुरक्षित एंडपॉइंट्स तक पहुँचने के लिए आवश्यक है
 
-## सत्र सत्यापित करें - `/api/session` {/* #validate-session---apisession */}
+## सेशन सत्यापित करें - `/api/session` {/* #validate-session---apisession */}
 - **एंडपॉइंट**: `/api/session`
-- **विधि**: GET
-- **विवरण**: मौजूदा सत्र को सत्यापित करता है।
-- **Response** (valid):
+- **मेथड**: GET
+- **विवरण**: किसी मौजूदा सेशन को सत्यापित करता है।
+- **रिस्पॉन्स** (मान्य):
 
   ```json
   {
@@ -33,7 +33,7 @@
   }
   ```
 
-- **Response** (invalid):
+- **रिस्पॉन्स** (अमान्य):
 
   ```json
   {
@@ -42,18 +42,18 @@
   }
   ```
 
-- **Error Responses**:
-  - `401`: Koi session cookie ya session ID nahi mili
-  - `500`: Session validate karne mein Asafal
-- **Notes**:
-  - Check karta hai ki kya session cookie maujood hai aur valid hai
-  - Agar valid hai to session ID return karta hai
+- **त्रुटि रिस्पॉन्स**:
+  - `401`: कोई सेशन कुकी या सेशन ID नहीं है
+  - `500`: सेशन सत्यापित करने में विफल रहा
+- **नोट्स**:
+  - जाँच करता है कि सेशन कुकी मौजूद और मान्य है या नहीं
+  - मान्य होने पर सेशन ID लौटाता है
 
-## सत्र डिलीट करें - `/api/session` {/* #delete-session---apisession */}
+## सेशन हटाएं - `/api/session` {/* #delete-session---apisession */}
 - **एंडपॉइंट**: `/api/session`
-- **विधि**: DELETE
-- **विवरण**: वर्तमान सत्र को डिलीट करें (प्रवेश से बाहर निकलें)।
-- **Response**:
+- **मेथड**: DELETE
+- **विवरण**: वर्तमान सेशन को हटाता है (लॉगआउट)।
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -61,17 +61,17 @@
   }
   ```
 
-- **Error Responses**:
-  - `500`: Session delete karne mein Asafal
-- **Notes**:
-  - Server aur client se session ko clear karta hai
-  - Session cookie ko hata deta hai
+- **त्रुटि रिस्पॉन्स**:
+  - `500`: सेशन हटाने में विफल रहा
+- **नोट्स**:
+  - सर्वर और क्लाइंट से सेशन साफ़ करता है
+  - सेशन कुकी को हटाता है
 
 ## CSRF टोकन प्राप्त करें - `/api/csrf` {/* #get-csrf-token---apicsrf */}
 - **एंडपॉइंट**: `/api/csrf`
-- **विधि**: GET
-- **विवरण**: वर्तमान सत्र के लिए एक CSRF टोकन उत्पन्न करता है।
-- **Response**:
+- **मेथड**: GET
+- **विवरण**: वर्तमान सेशन के लिए CSRF टोकन जनरेट करता है।
+- **प्रतिक्रिया**:
 
   ```json
   {
@@ -80,10 +80,10 @@
   }
   ```
 
-- **Error Responses**:
-  - `401`: Koi session nahi mila ya invalid/expired session
-  - `500`: CSRF token generate karne mein Asafal
-- **Notes**:
-  - Ek valid session ki aavashyakta hai
-  - Sabhi state-changing operations ke liye CSRF token aavashyak hai
-  - Token vartaman session se juda hota hai
+- **त्रुटि रिस्पॉन्स**:
+  - `401`: कोई सेशन नहीं मिला या अमान्य/समाप्त सेशन
+  - `500`: CSRF टोकन जनरेट करने में विफल रहा
+- **नोट्स**:
+  - एक मान्य सेशन की आवश्यकता होती है
+  - सभी स्टेट-चेंजिंग ऑपरेशन्स के लिए CSRF टोकन आवश्यक है
+  - टोकन वर्तमान सेशन से जुड़ा होता है

@@ -1,58 +1,58 @@
-# Backup Monitoring {/* #backup-monitoring */}
+# बैकअप निगरानी {/* #backup-monitoring */}
 
-![Backup alerts](../../assets/screen-settings-monitoring.png)
+![बैकअप अलर्ट](../../assets/screen-settings-monitoring.png)
 
 ## सर्वर फ़िल्टरिंग {/* #server-filtering */}
 
-Ye prushth par server list ko filter field ka upayog karke filter kiya ja sakta hai.
+इस पृष्ठ पर सर्वर सूची को फ़िल्टर फ़ील्ड का उपयोग करके फ़िल्टर किया जा सकता है।
 
-जब **दैनिक सारांश** सक्शम किया गया है, विलंबित पता लगाने जारी रहता है लेकिन डिफ़ॉल्ट Email प्राप्तकर्ता को विलंबित Email रोक दिया जाता है। अतिरिक्त Email गंतव्यों के लिए जारी रहता है (विलंबित गिनती को एक Warning के रूप में माना जाता है)। [दैनिक सारांश](daily-summary-settings.md) देखें।
+जब **दैनिक सारांश** सक्षम होता है, तो अतिदेय पहचान जारी रहती है लेकिन डिफ़ॉल्ट ईमेल प्राप्तकर्ता को अतिदेय ईमेल रोक दिया जाता है। मेल खाने वाले इवेंट के लिए अतिरिक्त ईमेल गंतव्य जारी रहते हैं (अतिदेय को एक चेतावनी माना जाता है)। [दैनिक सारांश](daily-summary-settings.md) देखें।
 
-**फ़िल्टर मैच:**
+**फ़िल्टर मिलान:**
 - सर्वर आईडी
 - सर्वर URL
 - बैकअप जॉब नाम
 
-Isse aapko bahut saare systems ko manage karte hue specific servers ya backups ko quickly locate karna asaan ho jata hai.
+यह कई सिस्टम का प्रबंधन करते समय निगरानी सेटिंग्स में विशिष्ट सर्वर या बैकअप को तेज़ी से खोजने में आसान बनाता है।
 
-## Configure karein Per-Backup Monitoring Sammaan {/* #configure-per-backup-monitoring-settings */}
+## प्रति-बैकअप निगरानी सेटिंग्स कॉन्फ़िगर करें {/* #configure-per-backup-monitoring-settings */}
 
--  **Server Name**: Server ka naam jo overdue backups ke liye monitor kiya ja raha hai. 
-   - Duplicati server ke web interface kholne ke liye <SvgIcon svgFilename="duplicati_logo.svg" height="18"/> par click karein
-   - Is server se backup logs collect karne ke liye <IIcon2 icon="lucide:download" height="18"/> par click karein.
-- **Backup Name**: Backup ka naam jo overdue backups ke liye monitor kiya ja raha hai.
-- **Next Run**: Aage ke chalan ka samay jo agar aage ke liye scheduled hai toh sabz me dikhata hai, ya agar overdue hai toh laal me dikhata hai. "Next Run" value par hover karne se ek tooltip dikhata hai jo database se last backup timestamp ko dikhata hai, full date/time aur relative time ke saath format kiya gaya hai.
-- **Backup Monitoring**: Is backup ke liye backup monitoring enable ya disable karein.
-- **Expected Backup Interval**: Apekshit backup antaraal.
-- **Unit**: Apekshit antaraal ka unit.
-- **Allowed Days**: Backup ke liye anumati prapt saptaah ke din.
+-  **सर्वर नाम**: बकाया बैकअप के लिए निगरानी किए जाने वाले सर्वर का नाम। 
+   - Duplicati सर्वर का वेब इंटरफ़ेस खोलने के लिए <SvgIcon svgFilename="duplicati_logo.svg" height="18"/> पर क्लिक करें
+   - इस सर्वर से बैकअप लॉग एकत्र करने के लिए <IIcon2 icon="lucide:download" height="18"/> पर क्लिक करें।
+- **बैकअप नाम**: बकाया बैकअप के लिए निगरानी किए जाने वाले बैकअप का नाम।
+- **अगला रन**: अगला निर्धारित बैकअप समय, जो भविष्य के लिए निर्धारित होने पर हरे रंग में या अतिदेय होने पर लाल रंग में प्रदर्शित होता है। "अगला रन" मान पर होवर करने से डेटाबेस से अंतिम बैकअप टाइमस्टैम्प दिखाने वाला एक टूलटिप प्रदर्शित होता है, जिसे पूर्ण तिथि/समय और सापेक्ष समय के साथ फ़ॉर्मेट किया गया है।
+- **बैकअप निगरानी**: इस बैकअप के लिए बैकअप निगरानी सक्षम करें या अक्षम करें।
+- **अपेक्षित बैकअप अंतराल**: अपेक्षित बैकअप अंतराल।
+- **इकाई**: अपेक्षित अंतराल की इकाई।
+- **अनुमत दिन**: बैकअप के लिए अनुमत सप्ताह के दिन।
 
-Agar server name ke paas ke icons greyed out hai, toh server [Settings → Server Settings](/user-guide/settings/server-settings) me configure nahin kiya gaya hai.
+यदि सर्वर नाम के बगल के आइकन धूसर हैं, तो सर्वर [सेटिंग्स → सर्वर सेटिंग्स](/user-guide/settings/server-settings) में कॉन्फ़िगर नहीं है।
 
 :::note
-Jab aap Duplicati server se backup logs collect karte hain, **duplistatus** automatically backup monitoring intervals aur configurations ko update karta hai.
+जब आप किसी Duplicati सर्वर से बैकअप लॉग एकत्र करते हैं, तो **duplistatus** स्वचालित रूप से बैकअप निगरानी अंतरालों और कॉन्फ़िगरेशन को अपडेट कर देता है।
 :::
 
 :::tip
-Best results ke liye, aap apne Duplicati server me backup job intervals configuration badalne ke baad backup logs collect karein. Isse **duplistatus** apne current configuration ke saath synchronised rehta hai.
+सर्वोत्तम परिणामों के लिए, अपने Duplicati सर्वर में बैकअप जॉब अंतराल कॉन्फ़िगरेशन बदलने के बाद बैकअप लॉग एकत्र करें। यह सुनिश्चित करता है कि **duplistatus** आपके वर्तमान कॉन्फ़िगरेशन के साथ सिंक्रनाइज़ रहे।
 :::
 
 ## वैश्विक कॉन्फ़िगरेशन {/* #global-configurations */}
 
-Ye sammaan sabhi backups ke liye lagte hain:
+ये सेटिंग्स सभी बैकअप पर लागू होती हैं:
 
-| Sammaan                         | Vivaaran                                                                                                                                                                                                                                                                                                                             |
+| सेटिंग                         | विवरण                                                                                                                                                                                                                                                                                                                             |
 |:--------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Backup Tolerance**            | Overdue ke liye mark karne se pehle apekshit backup time ke liye grace period (extra time allowed) jod diya gaya hai. Default **1 ghanta** hai.                                                                                                                                                                                                             |
-| **Backup Monitoring Interval** | System overdue backups ke liye kitni baar check karta hai. Default **5 minute** hai.                                                                                                                                                                                                                                                            |
-| **Notification Frequency**      | Overdue notifications bhejne ka samay: <br/> **Ek baar`: Send **just one** notification when the backup becomes overdue. <br/> `Har din`: Send **daily** notifications while overdue (default). <br/> `Har saptaah`: Send **weekly** notifications while overdue. <br/> `Har mahine**: Overdue rahe hue **monthly** notifications bhejein. |
+| **बैकअप टॉलरेंस**            | अतिदेय के रूप में चिह्नित करने से पहले अपेक्षित बैकअप समय में जोड़ी गई छूट अवधि (अनुमत अतिरिक्त समय)। डिफ़ॉल्ट **1 घंटा** है।                                                                                                                                                                                                             |
+| **बैकअप निगरानी अंतराल** | सिस्टम बकाया बैकअप की कितनी बार जांच करता है। डिफ़ॉल्ट **5 मिनट** है।                                                                                                                                                                                                                                                            |
+| **सूचना आवृत्ति**      | अतिदेय सूचनाएं कितनी बार भेजनी हैं: <br/> **एक बार`: Send **just one** notification when the backup becomes overdue. <br/> `हर दिन`: Send **daily** notifications while overdue (default). <br/> `हर सप्ताह`: Send **weekly** notifications while overdue. <br/> `हर महीने**: अतिदेय रहने के दौरान **मासिक** सूचनाएं भेजें। |
 
-## उपलब्ध क्रियाएं {/* #available-actions */}
+## उपलब्ध कार्रवाइयाँ {/* #available-actions */}
 
-| Button                                                              | Vivaaran                                                                                                                           |
-|:--------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------|
-| <IconButton label="Backup Monitoring Settings Save karein" />              | Settings save karta hai, disabled backups ke liye timers clear karta hai, aur overdue check chalta hai.                                                |
-| <IconButton icon="lucide:import" label="Sab Kuch Ikattha Karein (#)"/>          | Sabhi configured servers se backup logs sankalan karein, brackets mein sankhya server sankalan karne ke liye.                                   |
-| <IconButton icon="lucide:download" label="CSV Download"/>           | Sabhi backup monitoring sammaan aur "Antim Backup Samay chinh (DB)" ko database se lekar ek CSV file download karta hai.               |
-| <IconButton icon="lucide:refresh-cw" label="Abhi Janch karein"/>            | Vilambit backup janch ko tathya samay chalao. Isse fayda hota hai jab configurations badalte hain. Yeh "Aage ke chalan" recalculation bhi trigger karta hai. |
-| <IconButton icon="lucide:timer-reset" label="Notifications Reset"/> | Sabhi backups ke liye last vilambit notification reset karta hai.                                                                            |
+| बटन | विवरण |
+|:---|:---|
+| <IconButton label="बैकअप निगरानी सेटिंग्स सहेजें" /> | सेटिंग्स को सहेजता है, किसी भी अक्षम बैकअप के लिए टाइमर साफ़ करता है, और एक अतिदेय जांच चलाता है। |
+| <IconButton icon="lucide:import" label="सभी एकत्र करें (#)"/> | सभी कॉन्फ़िगर किए गए सर्वर से बैकअप लॉग एकत्र करें, कोष्ठक में उन सर्वर की संख्या दी गई है जिनसे एकत्र करना है। |
+| <IconButton icon="lucide:download" label="CSV डाउनलोड करें"/> | एक CSV फ़ाइल डाउनलोड करता है जिसमें सभी बैकअप निगरानी सेटिंग्स और डेटाबेस से "अंतिम बैकअप टाइमस्टैम्प (DB)" शामिल होते हैं। |
+| <IconButton icon="lucide:refresh-cw" label="अभी जांचें"/> | अतिदेय बैकअप जांच तुरंत चलाता है। कॉन्फ़िगरेशन बदलने के बाद यह उपयोगी होता है। यह एक "अगला रन" पुनर्गणना को भी ट्रिगर करता है। |
+| <IconButton icon="lucide:timer-reset" label="सूचनाएं रीसेट करें"/> | सभी बैकअप के लिए भेजी गई अंतिम अतिदेय सूचना को रीसेट करता है। |

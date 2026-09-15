@@ -1,131 +1,131 @@
-# Backup suchnaayein {/* #backup-notifications */}
+# बैकअप सूचनाएं {/* #backup-notifications */}
 
-Use this settings to send notifications when a [new backup log is received](../../installation/duplicati-server-configuration.md).
+जब कोई [नया बैकअप लॉग प्राप्त होता है](../../installation/duplicati-server-configuration.md), तब सूचनाएं भेजने के लिए इन सेटिंग्स का उपयोग करें।
 
-![Backup alerts](../../assets/screen-settings-notifications.png)
+![बैकअप अलर्ट](../../assets/screen-settings-notifications.png)
 
-The backup notifications table is organised by server. The display format depends on how many backups a server has:
-- **Multiple backups**: Shows a server header row with individual backup rows below it. Click the server header to expand or collapse the backup list.
-- **Single backup**: Displays a **merged row** with a blue left border, showing:
-  -  **Server Naam : Backup Naam** if no server alias configured,  or
-  - **Server Upnaam (Server Naam) : Backup Naam** if it is configured.
+बैकअप सूचनाएं तालिका सर्वर के अनुसार व्यवस्थित होती है। प्रदर्शन प्रारूप इस बात पर निर्भर करता है कि सर्वर में कितने बैकअप हैं:
+- **एकाधिक बैकअप**: इसके नीचे अलग-अलग बैकअप पंक्तियों के साथ एक सर्वर हेडर पंक्ति दिखाता है। बैकअप सूची को विस्तृत या संक्षिप्त करने के लिए सर्वर हेडर पर क्लिक करें।
+- **एकल बैकअप**: नीले बाएं बॉर्डर के साथ एक **मर्ज की गई पंक्ति** प्रदर्शित करता है, जो निम्न दिखाती है:
+  -  **सर्वर नाम : बैकअप नाम** यदि कोई सर्वर उपनाम कॉन्फ़िगर नहीं किया गया है, या
+  - **सर्वर उपनाम (सर्वर नाम) : बैकअप नाम** यदि यह कॉन्फ़िगर किया गया है।
 
-This page has an auto-save feature. Any changes you make will be saved automatically.
+इस पृष्ठ में एक ऑटो-सेव सुविधा है। आपके द्वारा किया गया कोई भी परिवर्तन अपने आप सहेज लिया जाएगा।
 
-जब **दैनिक सारांश** सक्रिय है, तो डिफ़ॉल्ट ईमेल प्राप्तकर्ता को ईमेल रोक दी जाती है। इस पृष्ठ पर अतिरिक्त ईमेल गंतव्यों को मिलान घटनाएँ जारी रखते हैं। इस पृष्ठ पर सेटिंग्स संरक्षित रहती हैं और फिर से सक्रिय हो जाती हैं जब दैनिक सारांश बंद हो जाता है। [दैनिक सारांश](daily-summary-settings.md) देखें।
+जब **दैनिक सारांश** सक्षम होता है, तो डिफ़ॉल्ट ईमेल प्राप्तकर्ता को भेजे जाने वाले ईमेल रोक दिए जाते हैं। इस पृष्ठ पर अतिरिक्त ईमेल गंतव्य मेल खाने वाले इवेंट प्राप्त करना जारी रखते हैं। इस पृष्ठ की सेटिंग्स सुरक्षित रखी जाती हैं और दैनिक सारांश बंद होने पर फिर से सक्रिय हो जाती हैं। [दैनिक सारांश](daily-summary-settings.md) देखें।
 
 <br/>
 
 ## फ़िल्टर {/* #filter */}
 
-Use the **Filter by Server Name** field at the top of the page to quickly find specific backups by server name or alias. The table will automatically filter to show only matching entries.
+सर्वर नाम या उपनाम द्वारा विशिष्ट बैकअप को त्वरित रूप से खोजने के लिए पृष्ठ के शीर्ष पर **सर्वर नाम से फ़िल्टर करें** फ़ील्ड का उपयोग करें। तालिका केवल मेल खाने वाली प्रविष्टियों को दिखाने के लिए स्वचालित रूप से फ़िल्टर हो जाएगी।
 
 <br/>
 
-## प्रति-बैकअप सूचना सम्मान कॉन्फ़िगर करें {/* #configure-per-backup-notification-settings */}
+## प्रति-बैकअप सूचना सेटिंग्स कॉन्फ़िगर करें {/* #configure-per-backup-notification-settings */}
 
-| Setting                       | Description                                               | Default Value |
+| सेटिंग                       | विवरण                                               | डिफ़ॉल्ट मान |
 | :---------------------------- | :-------------------------------------------------------- | :------------ |
-| **Suchna ghatnaayein**       | Configure when to send notifications for new backup logs. | **Chetaavaniyaan**    |
-| **NTFY**                      | Enable or disable NTFY notifications for this backup.     | **Saksham kiya gaya**     |
-| **Email**                     | Enable or disable email notifications for this backup.    | **Saksham kiya gaya**    |
+| **सूचना इवेंट**       | कॉन्फ़िगर करें कि नए बैकअप लॉग के लिए सूचनाएं कब भेजनी हैं। | **चेतावनियाँ**    |
+| **NTFY**                      | इस बैकअप के लिए NTFY सूचनाएं सक्षम या अक्षम करें।     | **सक्षम**     |
+| **ईमेल**                     | इस बैकअप के लिए ईमेल सूचनाएं सक्षम या अक्षम करें।    | **सक्षम**    |
 
-**Notification Events Options:**
+**सूचना इवेंट विकल्प:**
 
-- **all**: Send notifications for all backup events.
-- **warnings**: Send notifications for warnings and errors only (default).
-- **errors**: Send notifications for errors only.
-- **off**: Disable notifications for new backup logs for this backup.
+- **सभी**: सभी बैकअप इवेंट के लिए सूचनाएं भेजें।
+- **चेतावनियाँ**: केवल चेतावनियों और त्रुटियों के लिए सूचनाएं भेजें (डिफ़ॉल्ट)।
+- **त्रुटियाँ**: केवल त्रुटियों के लिए सूचनाएं भेजें।
+- **बंद**: इस बैकअप के लिए नए बैकअप लॉग हेतु सूचनाएं अक्षम करें।
 
 <br/>
 
-## आधितेय गंतव्य {/* #additional-destinations */}
+## अतिरिक्त गंतव्य {/* #additional-destinations */}
 
-Additional notification destinations allow you to send notifications to specific email addresses or NTFY topics beyond the global settings. The system uses a hierarchical inheritance model where backups can inherit default settings from their server, or override them with backup-specific values.
+अतिरिक्त सूचना गंतव्य आपको वैश्विक सेटिंग्स से परे विशिष्ट ईमेल पतों या NTFY विषयों पर सूचनाएं भेजने की अनुमति देते हैं। सिस्टम एक पदानुक्रमित इनहेरिटेंस मॉडल का उपयोग करता है जहाँ बैकअप अपने सर्वर से डिफ़ॉल्ट सेटिंग्स इनहेरिट कर सकते हैं, या उन्हें बैकअप-विशिष्ट मानों से ओवरराइड कर सकते हैं।
 
-Additional destination configuration is indicated by contextual icons next to server and backup names:
+अतिरिक्त गंतव्य कॉन्फ़िगरेशन को सर्वर और बैकअप नामों के आगे प्रासंगिक आइकनों द्वारा दर्शाया जाता है:
 
-- **Server icon** <IconButton icon="lucide:settings-2" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} />: Appears next to server names when default additional destinations are configured at the server level.
+- **सर्वर आइकन** <IconButton icon="lucide:settings-2" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} />: सर्वर नामों के बगल में दिखाई देता है जब सर्वर स्तर पर डिफ़ॉल्ट अतिरिक्त गंतव्य कॉन्फ़िगर किए जाते हैं।
 
-- **Backup icon** <IconButton icon="lucide:external-link" style={{border: 'none', padding: 0, color: '#60a5fa', background: 'transparent'}} /> (blue): Appears next to backup names when custom additional destinations are configured (overriding server defaults).
+- **बैकअप आइकन** <IconButton icon="lucide:external-link" style={{border: 'none', padding: 0, color: '#60a5fa', background: 'transparent'}} /> (नीला): बैकअप नामों के बगल में दिखाई देता है जब कस्टम अतिरिक्त गंतव्य कॉन्फ़िगर किए जाते हैं (सर्वर डिफ़ॉल्ट को ओवरराइड करते हुए)।
 
-- **Backup icon** <IconButton icon="lucide:external-link" style={{border: 'none', padding: 0, color: '#64748b', background: 'transparent'}} /> (gray): Appears next to backup names when the backup is inheriting additional destinations from server defaults.
+- **बैकअप आइकन** <IconButton icon="lucide:external-link" style={{border: 'none', padding: 0, color: '#64748b', background: 'transparent'}} /> (धूसर): बैकअप नामों के आगे तब दिखाई देता है जब बैकअप सर्वर डिफ़ॉल्ट से अतिरिक्त गंतव्य इनहेरिट कर रहा हो।
 
-If no icon is displayed, the server or backup does not have additional destinations configured.
+यदि कोई आइकन प्रदर्शित नहीं होता है, तो सर्वर या बैकअप में अतिरिक्त गंतव्य कॉन्फ़िगर नहीं हैं।
 
-![Server-level additional destinations](../../assets/screen-settings-notifications-server.png)
+![सर्वर-स्तरीय अतिरिक्त गंतव्य](../../assets/screen-settings-notifications-server.png)
 
 ### सर्वर-स्तरीय डिफ़ॉल्ट {/* #server-level-defaults */}
 
-Aap server level par default aadhaar rihaishi gantavya sanrachit kar sakte hain jo ki us server par sabhi backups ke liye aadhaar sankalit honge.
+आप सर्वर स्तर पर डिफ़ॉल्ट अतिरिक्त गंतव्य कॉन्फ़िगर कर सकते हैं जिन्हें उस सर्वर के सभी बैकअप स्वचालित रूप से इनहेरिट करेंगे।
 
-1. [Settings → Backup Notifications](backup-notifications-settings.md) par jaane ke liye.
-2. Table server ke hisaab se group kiya gaya hai, jisme har server ke liye alag-alag server header rows dikhaye jaate hain jo ki server naam, upnaam, aur backup ginti dikhate hain.
-   - **Note**: Jisme sirf ek backup hai, uske liye ek merged row dikhaya jata hai, jisme alag-alag server header nahi hota. Server-level defaults ko merged rows se aadhaar sanrachit nahi kiya ja sakta. Agar aapko sirf ek backup server ke liye server defaults sanrachit karna hai, to aap us server par doosri backup temporarily add karke ya backup ke Additional Destinations ko aadhaar existing server defaults se sankalit kar sakte hain.
-3. **Default Additional Destinations for this server** section expand karne ke liye server row ke kisi bhi jagah par click karein.
-4. Niche diye gaye default settings sanrachit karein:
-   - **Notification event**: Choose which events trigger notifications to the additional destinations (**all**, **warnings**, **errors**, or **off**).
-   - **Additional Emails**: Enter one or more email addresses (comma-separated) that will receive notifications for all backups on this server. Click the <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> icon button to send a test email to the addresses in the field.
-   - **Additional NTFY Topic**: Enter a custom NTFY topic name where notifications will be published for all backups on this server. Click the <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> icon button to send a test notification to the topic, or click the <IconButton icon="lucide:qr-code" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> icon button to display a QR code for the topic to configure your device to receive notifications.
+1. [सेटिंग्स → बैकअप सूचनाएं](backup-notifications-settings.md) पर जाएं।
+2. तालिका को सर्वर के अनुसार समूहीकृत किया गया है, जिसमें अलग-अलग सर्वर हेडर पंक्तियाँ सर्वर नाम, उपनाम और बैकअप संख्या दिखाती हैं।
+   - **नोट**: केवल एक बैकअप वाले सर्वर के लिए, अलग सर्वर हेडर के बजाय एक मर्ज की गई पंक्ति प्रदर्शित होती है। मर्ज की गई पंक्तियों से सर्वर-स्तरीय डिफ़ॉल्ट सीधे कॉन्फ़िगर नहीं किए जा सकते। यदि आपको एकल-बैकअप सर्वर के लिए सर्वर डिफ़ॉल्ट कॉन्फ़िगर करने की आवश्यकता है, तो आप उस सर्वर में अस्थायी रूप से दूसरा बैकअप जोड़कर ऐसा कर सकते हैं, या बैकअप के अतिरिक्त गंतव्य किसी भी मौजूदा सर्वर डिफ़ॉल्ट से स्वचालित रूप से इनहेरिट हो जाएंगे।
+3. **इस सर्वर के लिए डिफ़ॉल्ट अतिरिक्त गंतव्य** अनुभाग का विस्तार करने के लिए सर्वर पंक्ति में कहीं भी क्लिक करें।
+4. निम्नलिखित डिफ़ॉल्ट सेटिंग्स कॉन्फ़िगर करें:
+   - **सूचना इवेंट**: चुनें कि कौन से इवेंट अतिरिक्त गंतव्यों पर सूचनाएं ट्रिगर करते हैं (**सभी**, **चेतावनियाँ**, **त्रुटियाँ**, या **बंद**)।
+   - **अतिरिक्त ईमेल**: एक या अधिक ईमेल पते (अल्पविराम से अलग करके) दर्ज करें जो इस सर्वर के सभी बैकअप के लिए सूचनाएं प्राप्त करेंगे। फ़ील्ड में दिए गए पतों पर परीक्षण ईमेल भेजने के लिए <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> आइकन बटन पर क्लिक करें।
+   - **अतिरिक्त NTFY टॉपिक**: एक कस्टम NTFY टॉपिक नाम दर्ज करें जहाँ इस सर्वर के सभी बैकअप के लिए सूचनाएं प्रकाशित की जाएंगी। टॉपिक पर परीक्षण सूचना भेजने के लिए <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> आइकन बटन पर क्लिक करें, या सूचनाएं प्राप्त करने के लिए अपना डिवाइस कॉन्फ़िगर करने हेतु टॉपिक के लिए QR कोड प्रदर्शित करने के लिए <IconButton icon="lucide:qr-code" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> आइकन बटन पर क्लिक करें।
 
-**Server Default Management:**
+**सर्वर डिफ़ॉल्ट प्रबंधन:**
 
-- **Sync to All**: Clears all backup overrides, making all backups inherit from the server defaults.
-- **Clear All**: Clears all additional destinations from both server defaults and all backups while maintaining the inheritance structure.
+- **सभी में सिंक करें**: सभी बैकअप ओवरराइड हटाता है, जिससे सभी बैकअप सर्वर डिफ़ॉल्ट से इनहेरिट करने लगते हैं।
+- **सभी हटाएं**: इनहेरिटेंस संरचना को बनाए रखते हुए सर्वर डिफ़ॉल्ट और सभी बैकअप दोनों से सभी अतिरिक्त गंतव्य हटाता है।
 
 ### प्रति-बैकअप कॉन्फ़िगरेशन {/* #per-backup-configuration */}
 
-Individual backups automatically inherit the server defaults, but you can override them for specific backup jobs.
+व्यक्तिगत बैकअप स्वचालित रूप से सर्वर डिफ़ॉल्ट इनहेरिट करते हैं, लेकिन आप विशिष्ट बैकअप जॉब्स के लिए उन्हें ओवरराइड कर सकते हैं।
 
-1. Click the anywhere in a backup row to expand its **Additional Destinations** section.
-2. Configure the following settings:
-   - **Notification event**: Choose which events trigger notifications to the additional destinations (**all**, **warnings**, **errors**, or **off**).
-   - **Additional Emails**: Enter one or more email addresses (comma-separated) that will receive notifications in addition to the global recipient. Click the <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> icon button to send a test email to the addresses in the field.
-   - **Additional NTFY Topic**: Enter a custom NTFY topic name where notifications will be published in addition to the default topic. Click the <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> icon button to send a test notification to the topic, or click the <IconButton icon="lucide:qr-code" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> icon button to display a QR code for the topic to configure your device to receive notifications.
+1. बैकअप पंक्ति में उसके **अतिरिक्त गंतव्य** अनुभाग का विस्तार करने के लिए कहीं भी क्लिक करें।
+2. निम्नलिखित सेटिंग्स कॉन्फ़िगर करें:
+   - **सूचना इवेंट**: चुनें कि कौन से इवेंट अतिरिक्त गंतव्यों पर सूचनाएं ट्रिगर करते हैं (**सभी**, **चेतावनियाँ**, **त्रुटियाँ**, या **बंद**)।
+   - **अतिरिक्त ईमेल**: एक या अधिक ईमेल पते (अल्पविराम से अलग करके) दर्ज करें जो वैश्विक प्राप्तकर्ता के अलावा सूचनाएं प्राप्त करेंगे। फ़ील्ड में दिए गए पतों पर परीक्षण ईमेल भेजने के लिए <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> आइकन बटन पर क्लिक करें।
+   - **अतिरिक्त NTFY टॉपिक**: एक कस्टम NTFY टॉपिक नाम दर्ज करें जहाँ डिफ़ॉल्ट टॉपिक के अलावा सूचनाएं प्रकाशित की जाएंगी। टॉपिक पर परीक्षण सूचना भेजने के लिए <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> आइकन बटन पर क्लिक करें, या सूचनाएं प्राप्त करने के लिए अपना डिवाइस कॉन्फ़िगर करने हेतु टॉपिक के लिए QR कोड प्रदर्शित करने के लिए <IconButton icon="lucide:qr-code" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> आइकन बटन पर क्लिक करें।
 
-**Inheritance Indicators:**
+**इनहेरिटेंस संकेतक:**
 
-- **Link icon** <IconButton icon="lucide:link" style={{border: 'none', padding: 0, color: '#3b82f6', background: 'transparent'}} /> in blue: Indicates the value is inherited from server defaults. Clicking the field will create an override for editing.
-- **Broken link icon** <IconButton icon="lucide:link-2-off" style={{border: 'none', padding: 0, color: '#3b82f6', background: 'transparent'}} /> in blue: Indicates the value has been overridden. Click the icon to revert to inheritance.
+- नीले रंग में **लिंक आइकन** <IconButton icon="lucide:link" style={{border: 'none', padding: 0, color: '#3b82f6', background: 'transparent'}} />: इंगित करता है कि मान सर्वर डिफ़ॉल्ट से इनहेरिट किया गया है। फ़ील्ड पर क्लिक करने से संपादन के लिए एक ओवरराइड बन जाएगा।
+- नीले रंग में **टूटा हुआ लिंक आइकन** <IconButton icon="lucide:link-2-off" style={{border: 'none', padding: 0, color: '#3b82f6', background: 'transparent'}} />: इंगित करता है कि मान को ओवरराइड कर दिया गया है। इनहेरिटेंस पर वापस लौटने के लिए आइकन पर क्लिक करें।
 
-**Additional Destinations Behavior:**
+**अतिरिक्त गंतव्य व्यवहार:**
 
-- जब कॉन्फ़िगर किया जाता है, तो नोटिफ़िकेशन दोनों ग्लोबल सेटिंग्स और अतिरिक्त गंतव्यों को भेजा जाता है।
-- अतिरिक्त गंतव्यों के लिए नोटिफ़िकेशन इवेंट सेटिंग मुख्य नोटिफ़िकेशन इवेंट सेटिंग से स्वतंत्र है।
-- यदि अतिरिक्त गंतव्यों को **बंद** कर दिया जाता है, तो उन गंतव्यों को कोई नोटिफ़िकेशन नहीं भेजा जाएगा, लेकिन मुख्य नोटिफ़िकेशन प्राथमिक सेटिंग्स के अनुसार काम करेंगे।
-- **विलंबित** चेतावनियाँ अतिरिक्त नोटिफ़िकेशन इवेंट फ़िल्टर के लिए एक **चेतावनी** के रूप में गिनाई जाती हैं: वे तब भेजे जाते हैं जब घटना **सभी** या **चेतावनियाँ** है, और नहीं जब यह **त्रुटियाँ** या **बंद** है। उसी फ़िल्टर को अतिरिक्त NTFY टॉपिक्स पर लागू किया जाता है।
-- जब एक बैकअप सर्वर डिफ़ॉल्ट्स से विरासत में मिलता है, तो सर्वर डिफ़ॉल्ट्स में किसी भी बदलाव को स्वचालित रूप से उस बैकअप पर लागू किया जाएगा (यदि यह ओवरराइड नहीं किया गया है)।
-- जब [दैनिक सारांश](daily-summary-settings.md) चालू है, तो अतिरिक्त ईमेल गंतव्यों को मिलान घटनाएँ जारी रखते हैं; केवल डिफ़ॉल्ट ईमेल प्राप्तकर्ता रोक दिया जाता है।
+- कॉन्फ़िगर किए जाने पर सूचनाएं ग्लोबल सेटिंग्स और अतिरिक्त गंतव्य दोनों पर भेजी जाती हैं।
+- अतिरिक्त गंतव्य के लिए सूचना इवेंट सेटिंग मुख्य सूचना इवेंट सेटिंग से स्वतंत्र होती है।
+- यदि अतिरिक्त गंतव्य **बंद** पर सेट हैं, तो उन गंतव्यों पर कोई सूचनाएं नहीं भेजी जाएंगी, लेकिन मुख्य सूचनाएं प्राथमिक सेटिंग्स के अनुसार काम करती रहेंगी।
+- अतिरिक्त सूचना इवेंट फ़िल्टर के लिए **अतिदेय** अलर्ट को **चेतावनी** माना जाता है: वे तब भेजे जाते हैं जब इवेंट **सभी** या **चेतावनियाँ** हो, और तब नहीं जब यह **त्रुटियाँ** या **बंद** हो। यही फ़िल्टर अतिरिक्त NTFY टॉपिक पर भी लागू होता है।
+- जब कोई बैकअप सर्वर डिफ़ॉल्ट से इनहेरिट करता है, तो सर्वर डिफ़ॉल्ट में किए गए कोई भी बदलाव स्वचालित रूप से उस बैकअप पर लागू होंगे (जब तक कि इसे ओवरराइड न किया गया हो)।
+- जब [दैनिक सारांश](daily-summary-settings.md) सक्षम होता है, तब भी अतिरिक्त ईमेल गंतव्य मेल खाने वाले इवेंट प्राप्त करते हैं; केवल डिफ़ॉल्ट ईमेल प्राप्तकर्ता को रोका जाता है।
 
 <br/>
 
 ## बल्क संपादन {/* #bulk-edit */}
 
-You can edit additional destination settings for multiple backups at once using the bulk edit feature. This is particularly useful when you need to apply the same additional destinations to many backup jobs.
+बल्क संपादन सुविधा का उपयोग करके आप एक साथ कई बैकअप के लिए अतिरिक्त गंतव्य सेटिंग्स संपादित कर सकते हैं। यह विशेष रूप से तब उपयोगी होता है जब आपको कई बैकअप जॉब्स पर समान अतिरिक्त गंतव्य लागू करने की आवश्यकता हो।
 
-![Bulk edit dialog](../../assets/screen-settings-notifications-bulk.png)
+![बल्क संपादन डायलॉग](../../assets/screen-settings-notifications-bulk.png)
 
-1. [Settings → Backup suchnaayein](backup-notifications-settings.md) पर जाएं।
-2. पहले कॉलम में चेकबॉक्स का उपयोग करके उन बैकअप या सर्वरों का चयन करें जिन्हें आप संपादित करना चाहते हैं।
-   - दृश्यमान सभी बैकअप का चयन या अचयन करने के लिए हेडर रो में चेकबॉक्स का उपयोग करें।
-   - आप चयन करने से पहले सूची को संकुचित करने के लिए फ़िल्टर का उपयोग कर सकते हैं।
-3. बैकअप चयनित होने के बाद, एक बुल्क एक्शन बार दिखाई देगा जिसमें चयनित बैकअप की संख्या दिखाई देगी।
-4. संपादन संवाद खोलने के लिए **Bulk संपादन** पर क्लिक करें।
-5. अतिरिक्त गंतव्य सेटिंग्स को कॉन्फ़िगर करें:
-   - **Suchna ghatna**: सभी चयनित बैकअप के लिए सूचना घटना सेट करें।
-   - **Rihaishi Emails**: सभी चयनित बैकअप के लिए लागू करने के लिए ईमेल पते दर्ज करें (अल्पविराम से अलग किए गए)।
-   - **Rihaishi NTFY vishay**: सभी चयनित बैकअप के लिए लागू करने के लिए एक NTFY विषय नाम दर्ज करें।
-   - बुल्क संपादन संवाद में ईमेल पते और NTFY विषयों को सत्यापित करने के लिए परीक्षण बटन उपलब्ध हैं, इससे पहले कि वे कई बैकअप पर लागू किए जाएं।
-6. सभी चयनित बैकअप पर सेटिंग्स लागू करने के लिए **Save** पर क्लिक करें।
+1. [सेटिंग्स → बैकअप सूचनाएं](backup-notifications-settings.md) पर जाएं।
+2. जिन बैकअप या सर्वर को आप संपादित करना चाहते हैं, उन्हें चुनने के लिए पहले कॉलम के चेकबॉक्स का उपयोग करें।
+   - सभी दिखाई दे रहे बैकअप को चुनने या अचयनित करने के लिए हेडर पंक्ति में दिए गए चेकबॉक्स का उपयोग करें।
+   - चयन करने से पहले सूची को सीमित करने के लिए आप फ़िल्टर का उपयोग कर सकते हैं।
+3. बैकअप चुने जाने के बाद, एक बल्क कार्रवाई बार दिखाई देगा जिसमें चुने गए बैकअप की संख्या दिखेगी।
+4. संपादन डायलॉग खोलने के लिए **बल्क संपादन** पर क्लिक करें।
+5. अतिरिक्त गंतव्य सेटिंग्स कॉन्फ़िगर करें:
+   - **सूचना इवेंट**: सभी चयनित बैकअप के लिए सूचना इवेंट सेट करें।
+   - **अतिरिक्त ईमेल**: सभी चयनित बैकअप पर लागू करने के लिए ईमेल पते (अल्पविराम से अलग किए गए) दर्ज करें।
+   - **अतिरिक्त NTFY टॉपिक**: सभी चयनित बैकअप पर लागू करने के लिए NTFY टॉपिक नाम दर्ज करें।
+   - कई बैकअप पर लागू करने से पहले ईमेल पतों और NTFY टॉपिक को सत्यापित करने के लिए बल्क संपादन डायलॉग में जाँचें बटन उपलब्ध हैं।
+6. सभी चयनित बैकअप पर सेटिंग्स लागू करने के लिए **सहेजें** पर क्लिक करें।
 
-**Bulk Saaf karein:**
+**बल्क साफ़ करें:**
 
-चयनित बैकअप से सभी अतिरिक्त गंतव्य सेटिंग्स को हटाने के लिए:
+चयनित बैकअप से सभी अतिरिक्त गंतव्य सेटिंग्स हटाने के लिए:
 
-1. उन बैकअप का चयन करें जिन्हें आप साफ़ करना चाहते हैं।
-2. बुल्क एक्शन बार में **Bulk Saaf karein** पर क्लिक करें।
-3. संवाद बॉक्स में क्रिया की पुष्टि करें।
+1. जिन बैकअप को आप साफ़ करना चाहते हैं, उन्हें चुनें।
+2. बल्क कार्रवाई बार में **बल्क साफ़ करें** पर क्लिक करें।
+3. डायलॉग बॉक्स में कार्रवाई की पुष्टि करें।
 
-यह चयनित बैकअप के लिए सभी अतिरिक्त ईमेल पते, NTFY विषयों, और सूचना घटना को हटा देगा। साफ़ करने के बाद, बैकअप सर्वर के डिफ़ॉल्ट से विरासत में मिलने के लिए वापस आएंगे (यदि कोई कॉन्फ़िगर किया गया है)।
+यह चयनित बैकअप के लिए सभी अतिरिक्त ईमेल पते, NTFY टॉपिक और सूचना इवेंट को हटा देगा। साफ़ करने के बाद, बैकअप सर्वर डिफ़ॉल्ट से इनहेरिट हो रहा है पर वापस आ जाएंगे (यदि कोई कॉन्फ़िगर किया गया है)।
 
 <br/>

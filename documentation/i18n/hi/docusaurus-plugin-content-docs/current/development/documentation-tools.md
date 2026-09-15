@@ -1,6 +1,6 @@
-# {/* #documentation-tools */} दस्तावेज़ उपकरण
+# दस्तावेज़ीकरण टूल्स {/* #documentation-tools */}
 
-दस्तावेज़ [Docusaurus](https://docusaurus.io/) का उपयोग करके बनाया गया है और `documentation` फ़ोल्डर में स्थित है। दस्तावेज़ [GitHub Pages](https://wsj-br.github.io/duplistatus/) पर होस्ट किया गया है और अब डॉकर कंटेनर छवि में शामिल नहीं है।
+दस्तावेज़ीकरण को [Docusaurus](https://docusaurus.io/) का उपयोग करके बनाया गया है और यह `documentation` फ़ोल्डर में स्थित है। दस्तावेज़ीकरण [GitHub Pages](https://wsj-br.github.io/duplistatus/) पर होस्ट किया गया है और अब यह Docker कंटेनर इमेज में शामिल नहीं है।
 
 ## फ़ोल्डर संरचना {/* #folder-structure */}
 
@@ -30,42 +30,42 @@ documentation/
 └── package.json       # Dependencies and scripts
 ```
 
-### अंतरराष्ट्रीयकरण (i18n) {/* #internationalization-i18n */}
+### अंतर्राष्ट्रीयकरण (i18n) {/* #internationalization-i18n */}
 
-दस्तावेज़ Docusaurus के अंतर्निहित i18n प्रणाली का उपयोग करता है जिसमें अंग्रेजी डिफ़ॉल्ट लोकेल है। अनुवादित सामग्री `i18n/{locale}/docusaurus-plugin-content-docs/current/` में रहती है, जो `docs/` फ़ोल्डर की संरचना का प्रतिबिंबित करती है।
+दस्तावेज़ीकरण Docusaurus के इन-बिल्ट i18n सिस्टम का उपयोग करता है, जिसमें अंग्रेज़ी डिफ़ॉल्ट भाषा (लोकेल) है। अनूदित सामग्री `i18n/{locale}/docusaurus-plugin-content-docs/current/` में मौजूद है, जो `docs/` फ़ोल्डर की संरचना को दर्शाता है।
 
-- **स्रोत फ़ाइलें**: `docs/**/*.md` (अंग्रेजी)
-- **अनुवादित फ़ाइलें**: `i18n/{locale}/docusaurus-plugin-content-docs/current/**/*.md`
+- **स्रोत फ़ाइलें**: `docs/**/*.md` (अंग्रेज़ी)
+- **अनूदित फ़ाइलें**: `i18n/{locale}/docusaurus-plugin-content-docs/current/**/*.md`
 - **UI अनुवाद**: `i18n/{locale}/docusaurus-theme-classic/*.json` और अन्य JSON फ़ाइलें
-- **स्थानीयकृत स्क्रीनशॉट**: `i18n/{locale}/docusaurus-plugin-content-docs/current/**/assets`, basedir में `pnpm take-screenhots` द्वारा उत्पन्न।
+- **स्थानीयकृत स्क्रीनशॉट्स**: `i18n/{locale}/docusaurus-plugin-content-docs/current/**/assets`, जो बेस्डिर में `pnpm take-screenhots` द्वारा जनरेट किए जाते हैं।
 
-`pnpm write-translations` कमांड UI स्ट्रिंग्स (Docusaurus थीम और कस्टम घटकों से) को JSON अनुवाद फ़ाइलों में निकालता है। `pnpm translate` स्क्रिप्ट (`documentation/` से, रिपो रूट तक डेलीगेट करता है) **ai-i18n-tools** को चलाता है ताकि markdown, JSON, और SVGs को `ai-i18n-tools.config.json` के अनुसार अनुवादित किया जा सके।
+`pnpm write-translations` कमांड UI स्ट्रिंग्स (Docusaurus थीम और कस्टम कंपोनेंट्स से) को JSON अनुवाद फ़ाइलों में निकालता है। `pnpm translate` स्क्रिप्ट (`documentation/` से, जो रेपो रूट को डेलिगेट करती है) `ai-i18n-tools.config.json` के अनुसार मार्कडाउन, JSON और SVGs का अनुवाद करने के लिए **ai-i18n-tools** चलाती है।
 
 :::important
-केवल `docs/` और `i18n/en/` में स्रोत JSON फ़ाइलें संपादित करें। `i18n/{other-locales}/` में अनुवादित markdown फ़ाइलें ऑटो-जनरेट की गई हैं और उन्हें मैन्युअल रूप से संपादित नहीं किया जाना चाहिए।
+केवल `docs/` की फ़ाइलों और `i18n/en/` की स्रोत JSON फ़ाइलों में ही संपादन करें। `i18n/{other-locales}/` में अनूदित मार्कडाउन फ़ाइलें ऑटो-जनरेटेड होती हैं और इन्हें मैन्युअल रूप से संपादित नहीं किया जाना चाहिए।
 :::
 
-### समर्थित लोकेल {/* #supported-locales */}
+### समर्थित भाषाएं (लोकेल्स) {/* #supported-locales */}
 
-| लोकेल  | भाषा                | डायरेक्टरी                                           |
+| लोकेल  | भाषा             | डायरेक्टरी                                            |
 |---------|----------------------|------------------------------------------------------|
-| `en-GB`  | अंग्रेजी (डिफ़ॉल्ट)    | `docs/` (स्रोत)                                      |
+| `en-GB`  | अंग्रेज़ी (डिफ़ॉल्ट)    | `docs/` (स्रोत)                                      |
 | `de`     | जर्मन               | `i18n/de/docusaurus-plugin-content-docs/current/`     |
 | `es`     | स्पैनिश              | `i18n/es/docusaurus-plugin-content-docs/current/`     |
-| `fr`     | फ्रेंच               | `i18n/fr/docusaurus-plugin-content-docs/current/`     |
+| `fr`     | फ़्रेंच               | `i18n/fr/docusaurus-plugin-content-docs/current/`     |
 | `hi`     | हिंदी        | `i18n/hi/docusaurus-plugin-content-docs/current/`     |
-| `pt-BR`  | ब्राज़ीलियन पुर्तगाली | `i18n/pt-BR/docusaurus-plugin-content-docs/current/`  |
+| `pt-BR`  | ब्राज़ीलियाई पुर्तगाली | `i18n/pt-BR/docusaurus-plugin-content-docs/current/`  |
 | `zh-Hans`| सरलीकृत चीनी   | `i18n/zh-Hans/docusaurus-plugin-content-docs/current/`|
 
 ## दस्तावेज़ीकरण का अनुवाद करें {/* #translate-the-documentation */}
 
-दस्तावेज़ एक एआई-संचालित अनुवाद प्रणाली का उपयोग करता है, जो दोनों सामग्री (मार्कडाउन फ़ाइलें) और यूआई स्ट्रिंग्स (डॉक्यूसॉरस और कस्टम घटकों से) का अनुवाद करने के लिए अनुवाद उत्पन्न करता है। स्रोत सामग्री `docs/` में है, और जर्मन, फ्रेंच, स्पैनिश, ब्राज़ीलियन पुर्तगाली, हिंदी और सरलीकृत चीनी के लिए अनुवाद उत्पन्न किए जाते हैं।
+सामग्री (मार्कडाउन फ़ाइलें) और UI स्ट्रिंग्स (Docusaurus और कस्टम कंपोनेंट्स से) दोनों का अनुवाद करने के लिए दस्तावेज़ीकरण एक AI-संचालित अनुवाद सिस्टम का उपयोग करता है। स्रोत सामग्री अंग्रेज़ी (`docs/`) में है, और जर्मन, फ़्रेंच, स्पैनिश, ब्राज़ीलियाई पुर्तगाली, हिंदी और सरलीकृत चीनी के लिए अनुवाद जनरेट किए जाते हैं।
 
 ### अनुवाद कैसे काम करता है {/* #how-translation-works */}
 
-1. **Docusaurus UI strings**: `pnpm write-translations` vastu shaili/anukoolit strings ko `i18n/en/*.json` में निकालता है।
-2. **AI translation** (OpenRouter; config `ai-i18n-tools.config.json` में repo root पर): `documentation/` से, `pnpm translate` root `i18n:translate` script (UI strings, SVGs, Docusaurus markdown/JSON, aur default notification Templates) ko configured `documentation/i18n/`, `src/locales/`, aur `src/locales/templates/` में चलाता है।
-3. **Build**: `pnpm build` `documentation/build/` के तहत sabhi locales ke liye static HTML जनरेट करता है।
+1. **Docusaurus UI स्ट्रिंग्स**: `pnpm write-translations` थीम/कस्टम स्ट्रिंग्स को `i18n/en/*.json` में निकालता है।
+2. **AI अनुवाद** (OpenRouter; रेपो रूट पर `ai-i18n-tools.config.json` में कॉन्फ़िग): `documentation/` से, `pnpm translate` कॉन्फ़िगरेशन के अनुसार रूट `i18n:translate` स्क्रिप्ट (UI स्ट्रिंग्स, SVGs, Docusaurus मार्कडाउन/JSON, और डिफ़ॉल्ट नोटिफ़िकेशन टेम्पलेट्स) को `documentation/i18n/`, `src/locales/`, और `src/locales/templates/` में चलाता है।
+3. **बिल्ड**: `pnpm build` सभी लोकेल्स के लिए `documentation/build/` के तहत स्टैटिक HTML जनरेट करता है।
 
 ### अनुवाद चलाना {/* #running-translation */}
 
@@ -79,19 +79,19 @@ pnpm translate:ui
 pnpm translate:status
 ```
 
-CLI फ़्लैग **ai-i18n-tools** द्वारा परिभाषित हैं; रिपॉजिटरी रूट से `pnpm exec ai-i18n-tools --help` चलाएँ या [अनुवाद कार्यप्रवाह](translation-workflow.md) देखें।
+CLI फ़्लैग **ai-i18n-tools** द्वारा परिभाषित किए गए हैं; रेपो रूट से `pnpm exec ai-i18n-tools --help` चलाएं या [अनुवाद वर्कफ़्लो](translation-workflow.md) देखें।
 
-### मैनुअल अनुवाद ओवरराइड {/* #manual-translation-overrides */}
+### मैन्युअल अनुवाद ओवरराइड {/* #manual-translation-overrides */}
 
-`documentation/glossary-user.csv` संपादित करें (और वैकल्पिक रूप से रिपॉजिटरी रूट पर `.translation-cache/` के ताजा प्रविष्टियाँ साफ़ करें), फिर संबंधित `pnpm translate:*` कमांड पुनः चलाएँ।
+`documentation/glossary-user.csv` को संपादित करें (और वैकल्पिक रूप से रेपो रूट पर `.translation-cache/` के तहत पुराने प्रविष्टियों को साफ़ करें), फिर प्रासंगिक `pnpm translate:*` कमांड को फिर से चलाएं।
 
 ## सामान्य कमांड {/* #common-commands */}
 
-सभी कमांड को `documentation` डायरेक्टरी से चलाना चाहिए:
+सभी कमांड `documentation` डायरेक्टरी से चलाए जाने चाहिए:
 
 ### विकास {/* #development */}
 
-एक विशिष्ट लोकल के लिए हॉट-रिलोड के साथ विकास सर्वर शुरू करें:
+किसी विशिष्ट स्थान-भाषा (लोकेल) के लिए हॉट-रीलोड के साथ डेवलपमेंट सर्वर शुरू करें:
 
 ```bash
 cd documentation
@@ -102,39 +102,39 @@ pnpm start:es    # Spanish
 pnpm start:pt-br # Brazilian Portuguese
 ```
 
-साइट `http://localhost:3000/duplistatus/` (या अगले उपलब्ध Port) पर उपलब्ध होगी। `/duplistatus/` पाथ GitHub Pages `baseUrl` aur इन-ऐप Sahayata बटन लिंक से मेल खाता है।
+साइट `http://localhost:3000/duplistatus/` पर (या अगले उपलब्ध पोर्ट पर) उपलब्ध होगी। `/duplistatus/` पाथ GitHub Pages `baseUrl` और इन-ऐप सहायता बटन लिंक से मेल खाता है।
 
 ### बिल्ड {/* #build */}
 
-प्रोडक्शन के लिए दस्तावेज़ साइट बिल्ड करें:
+प्रोडक्शन के लिए दस्तावेज़ीकरण साइट का निर्माण करें:
 
 ```bash
 cd documentation
 pnpm build
 ```
 
-यह `documentation/build` डायरेक्टरी में स्टैटिक HTML फ़ाइलें उत्पन्न करता है।
+यह `documentation/build` डायरेक्टरी में स्थिर HTML फ़ाइलें जनरेट करता है।
 
-### प्रोडक्शन बिल्ड सर्व करें {/* #serve-production-build */}
+### प्रोडक्शन बिल्ड को सर्व करना {/* #serve-production-build */}
 
-स्थानीय रूप से प्रोडक्शन बिल्ड पूर्वावलोकन करें:
+प्रोडक्शन बिल्ड का स्थानीय रूप से पूर्वावलोकन करें:
 
 ```bash
 cd documentation
 pnpm serve
 ```
 
-यह `documentation/build` डायरेक्टरी से बिल्ड की गई साइट सर्व करता है।
+यह `documentation/build` डायरेक्टरी से निर्मित साइट को सर्व करता है।
 
 ### अन्य उपयोगी कमांड {/* #other-useful-commands */}
 
-- `pnpm clear` - Docusaurus कैश साफ करें
-- `pnpm typecheck` - TypeScript प्रकार की जाँच चलाएँ
-- `pnpm write-heading-ids` - Docusaurus MDX टिप्पणी संरचना का उपयोग करके मार्कडाउन में स्पष्ट `{/* #id */}` हेडिंग एंकर लिखें (स्थिर लिंक के लिए `documentation/` से चलाएँ)। CLI `h1` शीर्षकों को छोड़ता है, जिन्हें Docusaurus साइडबार लेबल के रूप में उपयोग करता है।
+- `pnpm clear` - Docusaurus कैश साफ़ करें
+- `pnpm typecheck` - TypeScript प्रकार (टाइप) जाँच चलाएं
+- `pnpm write-heading-ids` - Docusaurus MDX टिप्पणी सिंटैक्स का उपयोग करके मार्कडाउन में स्पष्ट `{/* #id */}` हेडिंग एंकर लिखें (अनुवादों में स्थिर लिंक के लिए `documentation/` से चलाएं)। CLI `h1` शीर्षकों को छोड़ देता है, जिनका Docusaurus साइडबार लेबल के रूप में उपयोग करता है।
 
 ## README.md जनरेट करना {/* #generating-readmemd */}
 
-प्रोजेक्ट का `README.md` फ़ाइल स्वचालित रूप से `documentation/docs/intro.md` से जनरेट किया जाता है ताकि GitHub रिपॉजिटरी README को Docusaurus दस्तावेज़ के साथ सिंक्रनाइज़ किया जा सके।
+GitHub रिपॉजिटरी README को Docusaurus दस्तावेज़ीकरण के साथ सिंक्रनाइज़ रखने के लिए प्रोजेक्ट की `README.md` फ़ाइल स्वचालित रूप से `documentation/docs/intro.md` से जनरेट की जाती है।
 
 README.md फ़ाइल जनरेट या अपडेट करने के लिए:
 
@@ -143,35 +143,35 @@ README.md फ़ाइल जनरेट या अपडेट करने �
 ```
 
 यह स्क्रिप्ट:
-- `package.json` से वर्तमान संस्करण निकालता है और एक संस्करण बैज जोड़ता है
-- `documentation/docs/intro.md` से सामग्री कॉपी करता है
-- Docusaurus चेतावनी (नोट, टिप, चेतावनी, आदि) को GitHub-शैली की चेतावनियों में परिवर्तित करता है
-- सभी सापेक्ष Docusaurus लिंक को पूर्ण GitHub दस्तावेज़ URL में परिवर्तित करता है (`https://wsj-br.github.io/duplistatus/...`)
-- `/img/` से छवि पथ को `documentation/static/img/` में परिवर्तित करता है GitHub संगतता के लिए
-- माइग्रेशन महत्वपूर्ण ब्लॉक को हटाता है और एक माइग्रेशन सूचना अनुभाग जोड़ता है जिसमें Docusaurus दस्तावेज़ों की एक लिंक होती है
-- `doctoc` का उपयोग करके एक सामग्री तालिका बनाता है
-- Docker Hub-संगत प्रारूपण के साथ `README_dockerhub.md` उत्पन्न करता है (चित्रों और लिंक को पूर्ण URL में परिवर्तित करता है, GitHub चेतावनियों को इमोजी-आधारित प्रारूप में परिवर्तित करता है)
-- `documentation/docs/release-notes/VERSION.md` से GitHub रिलीज़ नोट्स (`RELEASE_NOTES_github_VERSION.md`) उत्पन्न करता है (लिंक और चित्रों को पूर्ण URL में परिवर्तित करता है)
+- `package.json` से वर्तमान संस्करण निकालती है और एक संस्करण बैज जोड़ती है
+- `documentation/docs/intro.md` से सामग्री कॉपी करती है
+- Docusaurus एडमोनिशन (नोट, टिप, चेतावनी, आदि) को GitHub-शैली अलर्ट में बदलती है
+- सभी सापेक्ष Docusaurus लिंक को एब्सोल्यूट GitHub डॉक्स URL (`https://wsj-br.github.io/duplistatus/...`) में बदलती है
+- GitHub कम्पैटिबिलिटी के लिए इमेज पाथ को `/img/` से `documentation/static/img/` में बदलती है
+- माइग्रेशन IMPORTANT ब्लॉक को हटाती है और Docusaurus डॉक्स के लिंक के साथ एक माइग्रेशन जानकारी अनुभाग जोड़ती है
+- `doctoc` का उपयोग करके सामग्री की तालिका जनरेट करती है
+- Docker Hub-कम्पैटिबल फॉर्मेटिंग के साथ `README_dockerhub.md` जनरेट करती है (इमेज और लिंक को एब्सोल्यूट URL में बदलती है, GitHub अलर्ट को इमोजी-आधारित फॉर्मेट में बदलती है)
+- `documentation/docs/release-notes/VERSION.md` से GitHub रिलीज़ नोट्स (`RELEASE_NOTES_github_VERSION.md`) जनरेट करती है (लिंक और इमेज को एब्सोल्यूट URL में बदलती है)
 
 ## Docker Hub के लिए README अपडेट करें {/* #update-readme-for-docker-hub */}
 
-`generate-readme-from-intro.sh` स्क्रिप्ट स्वचालित रूप से `README_dockerhub.md` को Docker Hub-संगत प्रारूप के साथ उत्पन्न करता है। यह:
-- `README.md` को `README_dockerhub.md` में कॉपी करता है
-- सापेक्ष छवि पथ को पूर्ण GitHub रॉ URL में परिवर्तित करता है
-- सापेक्ष दस्तावेज़ लिंक को पूर्ण GitHub ब्लॉब URL में परिवर्तित करता है
-- GitHub-शैली की चेतावनियों (`[!NOTE]`, `[!WARNING]`, आदि) को बेहतर Docker Hub संगतता के लिए इमोजी-आधारित प्रारूप में परिवर्तित करता है
-- सुनिश्चित करता है कि सभी छवियां और लिंक Docker Hub पर सही ढंग से काम करती हैं
+`generate-readme-from-intro.sh` स्क्रिप्ट Docker Hub-कम्पैटिबल फॉर्मेटिंग के साथ स्वचालित रूप से `README_dockerhub.md` जनरेट करती है। यह:
+- `README.md` को `README_dockerhub.md` में कॉपी करती है
+- सापेक्ष इमेज पाथ को एब्सोल्यूट GitHub raw URL में बदलती है
+- सापेक्ष दस्तावेज़ लिंक को एब्सोल्यूट GitHub blob URL में बदलती है
+- बेहतर Docker Hub कम्पैटिबिलिटी के लिए GitHub-शैली अलर्ट (`[!NOTE]`, `[!WARNING]`, आदि) को इमोजी-आधारित फॉर्मेट में बदलती है
+- यह सुनिश्चित करती है कि सभी इमेज और लिंक Docker Hub पर ठीक से काम करें
 
 ## GitHub रिलीज़ नोट्स जनरेट करें {/* #generate-github-release-notes */}
 
-`generate-readme-from-intro.sh` स्क्रिप्ट जब चलाया जाता है तो स्वचालित रूप से GitHub रिलीज़ नोट उत्पन्न करता है। यह:
-- रिलीज़ नोट को `documentation/docs/release-notes/VERSION.md` से पढ़ता है (जहाँ संस्करण `package.json` से निकाला जाता है)
-- शीर्षक को "# Version xxxx" से "# Release Notes - Version xxxxx" में बदलता है
-- सापेक्ष मार्कडाउन लिंक को पूर्ण GitHub दस्तावेज़ URL में परिवर्तित करता है (`https://wsj-br.github.io/duplistatus/...`)
-- छवि पथ को GitHub रॉ URL में परिवर्तित करता है (`https://raw.githubusercontent.com/wsj-br/duplistatus/main/documentation/static/img/...`) रिलीज़ विवरण में सही ढंग से प्रदर्शित होने के लिए
-- `../` उपसर्ग के साथ सापेक्ष पथ को संभालता है
-- पूर्ण URL (http:// और https://) को अपरिवर्तित छोड़ता है
-- प्रोजेक्ट रूट में `RELEASE_NOTES_github_VERSION.md` बनाता है
+चलने पर `generate-readme-from-intro.sh` स्क्रिप्ट स्वचालित रूप से GitHub रिलीज़ नोट्स जनरेट करती है। यह:
+- `documentation/docs/release-notes/VERSION.md` से रिलीज़ नोट्स पढ़ती है (जहाँ VERSION `package.json` से निकाला जाता है)
+- शीर्षक को "# Version xxxx" से बदलकर "# Release Notes - Version xxxxx" करती है
+- सापेक्ष मार्कडाउन लिंक को एब्सोल्यूट GitHub डॉक्स URL (`https://wsj-br.github.io/duplistatus/...`) में बदलती है
+- रिलीज़ विवरण में सही प्रदर्शन के लिए इमेज पाथ को GitHub raw URL (`https://raw.githubusercontent.com/wsj-br/duplistatus/main/documentation/static/img/...`) में बदलती है
+- `../` प्रीफ़िक्स वाले सापेक्ष पाथ को संभालती है
+- एब्सोल्यूट URL (http:// और https://) को बिना बदले सुरक्षित रखती है
+- प्रोजेक्ट रूट में `RELEASE_NOTES_github_VERSION.md` बनाती है
 
 **उदाहरण:**
 
@@ -180,7 +180,7 @@ README.md फ़ाइल जनरेट या अपडेट करने �
 ./scripts/generate-readme-from-intro.sh
 ```
 
-उत्पन्न रिलीज़ नोट फ़ाइल को सीधे GitHub रिलीज़ विवरण में कॉपी और पेस्ट किया जा सकता है। सभी लिंक और छवियां GitHub रिलीज़ संदर्भ में सही ढंग से काम करेंगे।
+जनरेट की गई रिलीज़ नोट्स फ़ाइल को सीधे GitHub रिलीज़ विवरण में कॉपी और पेस्ट किया जा सकता है। GitHub रिलीज़ के संदर्भ में सभी लिंक और इमेज ठीक से काम करेंगे।
 
 ## दस्तावेज़ीकरण के लिए स्क्रीनशॉट लें {/* #take-screenshots-for-documentation */}
 
@@ -188,23 +188,23 @@ README.md फ़ाइल जनरेट या अपडेट करने �
 pnpm take-screenshots
 ```
 
-या सीधे चलाएं: `pnpm take-screenshots` (अगर आवश्यक हो तो `--env-file=.env` का उपयोग करें पर्यावरण चर के लिए)।
+या सीधे चलाएँ: `pnpm take-screenshots` (एनवायरनमेंट वैरिएबल के लिए आवश्यकता होने पर `--env-file=.env` का उपयोग करें)।
 
-यह स्क्रिप्ट स्वचालित रूप से एप्लिकेशन के लिए स्क्रीनशॉट लेती है, दस्तावेज़ीकरण उद्देश्यों के लिए। यह:
-- env और स्वास्थ्य चेक के बाद `pnpm exec playwright install` चलाता है ताकि Playwright ब्राउज़र मौजूद हों
-- एक हेडलेस ब्राउज़र (Playwright Chromium) लॉन्च करता है
-- व्यवस्थापक और नियमित उपयोगकर्ता के रूप में लॉगिन करता है
-- विभिन्न पृष्ठों (डैशबोर्ड, सर्वर विवरण, सेटिंग्स, आदि) के माध्यम से नेविगेट करता है
-- विभिन्न व्यूपोर्ट आकारों पर स्क्रीनशॉट लेता है
-- स्क्रीनशॉट को `documentation/static/assets/` (अंग्रेज़ी) या `documentation/i18n/{locale}/docusaurus-plugin-content-docs/current/assets` (अन्य लोकल) में सहेजता है
+यह स्क्रिप्ट दस्तावेज़ीकरण के उद्देश्य से एप्लिकेशन के स्क्रीनशॉट स्वचालित रूप से लेती है। यह:
+- env और स्वास्थ्य जाँच के बाद, `pnpm exec playwright install` चलाती है ताकि Playwright ब्राउज़र मौजूद हों
+- एक हेडलेस ब्राउज़र (Playwright Chromium) लॉन्च करती है
+- एडमिन और नियमित उपयोगकर्ता के रूप में लॉग इन करती है
+- विभिन्न पेजों (डैशबोर्ड, सर्वर विवरण, सेटिंग्स, आदि) पर नेविगेट करती है
+- अलग-अलग व्यूपोर्ट आकारों में स्क्रीनशॉट लेती है
+- स्क्रीनशॉट को `documentation/static/assets/` (अंग्रेज़ी) या `documentation/i18n/{locale}/docusaurus-plugin-content-docs/current/assets` (अन्य लोकेल) में सहेजती है
 
 **आवश्यकताएँ:**
-- विकास सर्वर `http://localhost:8666` पर चल रहा होना चाहिए
-- पर्यावरण चर (Environment variables) सेट किए जाने चाहिए, उन्हें अपने `.env` फ़ाइल में जोड़ें या निर्यात करें:
-  - `ADMIN_PASSWORD`: व्यवस्थापक खाते का पासवर्ड
+- डेवलपमेंट सर्वर `http://localhost:8666` पर चल रहा होना चाहिए
+- एनवायरनमेंट वैरिएबल सेट होने चाहिए, इन्हें अपनी `.env` फ़ाइल में जोड़ें या उन्हें एक्सपोर्ट करें:
+  - `ADMIN_PASSWORD`: एडमिन खाते का पासवर्ड
   - `USER_PASSWORD`: नियमित उपयोगकर्ता खाते का पासवर्ड
 
-**विकल्प:** `--locale` स्क्रीनशॉट को एक या अधिक लोकल्स (अल्पविराम से अलग किए गए) तक सीमित करता है। अगर छोड़ा जाता है, तो सभी लोकल्स कैप्चर की जाती हैं। मान्य लोकल्स: `en-GB`, `de`, `fr`, `es`, `pt-BR`, `hi`, `zh-Hans`. उपयोग `-h` या `--help` उपयोग की जानकारी प्रिंट करने के लिए।
+**विकल्प:** `--locale` स्क्रीनशॉट को एक या अधिक लोकेल तक सीमित करता है (अल्पविराम से अलग किए गए)। यदि छोड़ दिया जाता है, तो सभी लोकेल कैप्चर किए जाते हैं। मान्य लोकेल: `en-GB`, `de`, `fr`, `es`, `pt-BR`, `hi`, `zh-Hans`। उपयोग विधि प्रिंट करने के लिए `-h` या `--help` का उपयोग करें।
 
 **उदाहरण:**
 
@@ -222,55 +222,55 @@ pnpm take-screenshots --locale en-GB,de,pt-BR
 
 ## दस्तावेज़ीकरण डिप्लॉय करना {/* #deploying-the-documentation */}
 
-GitHub Pages पर दस्तावेज़ को डिप्लॉय करने के लिए, आपको एक GitHub Personal Access Token जनरेट करना होगा। [GitHub Personal Access Tokens](https://github.com/settings/tokens) पर जाएं और `repo` स्कोप के साथ एक नया टोकन बनाएं।
+GitHub Pages पर दस्तावेज़ डिप्लॉय करने के लिए, आपको एक GitHub Personal Access Token जनरेट करना होगा। [GitHub Personal Access Tokens](https://github.com/settings/tokens) पर जाएं और `repo` स्कोप के साथ एक नया टोकन बनाएं।
 
-टोकन प्राप्त करने के बाद, इसे Git क्रेडेंशियल स्टोर में स्टोर करें (जैसे `git config credential.helper store` का उपयोग करके या आपकी प्रणाली की क्रेडेंशियल मैनेजर का उपयोग करके)।
+जब आपके पास टोकन आ जाए, तो इसे Git क्रेडेंशियल स्टोर में सहेजें (उदा. `git config credential.helper store` या अपने सिस्टम के क्रेडेंशियल मैनेजर का उपयोग करके)।
 
-फिर, GitHub Pages पर दस्तावेज़ को डिप्लॉय करने के लिए, `documentation` डायरेक्टरी से निम्नलिखित कमांड चलाएं:
+फिर, दस्तावेज़ को GitHub Pages पर डिप्लॉय करने के लिए, `documentation` डायरेक्टरी से निम्नलिखित कमांड चलाएं:
 
 ```bash
 pnpm run deploy
 ```
 
-यह दस्तावेज़ को बिल्ड करेगा और इसे रिपॉजिटरी के `gh-pages` ब्रांच पर पुश करेगा, और दस्तावेज़ [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/) पर उपलब्ध होगा।
+यह दस्तावेज़ को बिल्ड करेगा और इसे रिपॉजिटरी की `gh-pages` शाखा (ब्रांच) में पुश करेगा, और दस्तावेज़ [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/) पर उपलब्ध होगा।
 
-## दस्तावेज़ीकरण के साथ काम करना {/* #working-with-documentation */}
+## दस्तावेज़ के साथ काम करना {/* #working-with-documentation */}
 
-पूर्ण अनुवाद कार्यप्रवाह (ग्लॉसरी प्रबंधन, एआई अनुवाद, कैश प्रबंधन) के लिए, [Translation Workflow](translation-workflow.md) देखें।
+संपूर्ण अनुवाद वर्कफ़्लो (शब्दावली प्रबंधन, AI अनुवाद, कैश प्रबंधन) के लिए, [Translation Workflow](translation-workflow.md) देखें।
 
-### सोर्स फ़ाइलें {/* #source-files */}
+### स्रोत फ़ाइलें {/* #source-files */}
 
-- **दस्तावेज़ सामग्री**: `documentation/docs/` में अंग्रेजी मार्कडाउन फाइलें
-- **UI अनुवाद**: `documentation/i18n/en/` में अंग्रेजी JSON फाइलें (`pnpm write-translations` द्वारा ऑटो-जनरेट की गई)
+- **दस्तावेज़ सामग्री**: `documentation/docs/` में अंग्रेज़ी मार्कडाउन फ़ाइलें
+- **UI अनुवाद**: `documentation/i18n/en/` में अंग्रेज़ी JSON फ़ाइलें (`pnpm write-translations` द्वारा स्वचालित रूप से जनरेट की गईं)
 - **साइडबार नेविगेशन**: `documentation/sidebars.ts`
 - **Docusaurus कॉन्फ़िगरेशन**: `documentation/docusaurus.config.ts`
-- **कस्टम React कंपोनेंट्स**: `documentation/src/components/`
-- **स्टैटिक एसेट्स**: `documentation/static/`
-- **मुख्य होमपेज**: `documentation/docs/intro.md` (`README.md` जनरेट करने के लिए स्रोत)
+- **कस्टम React घटक**: `documentation/src/components/`
+- **स्टैटिक एसेट**: `documentation/static/`
+- **मुख्य होमपेज**: `documentation/docs/intro.md` (`README.md` जनरेट करने का स्रोत)
 
 ### नए घटक जोड़ना {/* #adding-new-components */}
 
-1. `documentation/src/components/` में अपना React कंपोनेंट बनाएं
-2. इसे MDX में उपलब्ध बनाने के लिए `documentation/src/theme/MDXComponents.js` से एक्सपोर्ट करें
-3. अगर कंपोनेंट में अनुवाद योग्य UI स्ट्रिंग्स शामिल हैं, तो उन्हें निकालने के लिए `pnpm write-translations` चलाएं
-4. नए स्ट्रिंग्स को सभी लोकल्स में अनुवादित करने के लिए `pnpm translate` चलाएं
+1. अपना React घटक `documentation/src/components/` में बनाएं
+2. MDX में उपलब्ध कराने के लिए इसे `documentation/src/theme/MDXComponents.js` से एक्सपोर्ट करें
+3. यदि घटक में अनुवाद योग्य UI स्ट्रिंग्स शामिल हैं, तो उन्हें निकालने के लिए `pnpm write-translations` चलाएं
+4. नए स्ट्रिंग्स का सभी लोकेल में अनुवाद करने के लिए `pnpm translate` चलाएं
 
 ### नए दस्तावेज़ पृष्ठ जोड़ना {/* #adding-new-documentation-pages */}
 
-1. `documentation/docs/` में एक नई `.md` फाइल बनाएं (या एक सबडायरेक्टरी)
+1. `documentation/docs/` (या किसी सब-डायरेक्टरी) में एक नई `.md` फ़ाइल बनाएं
 2. इसे `documentation/sidebars.ts` में साइडबार में जोड़ें
-3. अनुवाद फाइल्स संरचना को अपडेट करने के लिए `pnpm write-translations` चलाएं
-4. हेडिंग आईडी (ऐंकर) जनरेट करने के लिए `pnpm write-heading-ids` चलाएं
-5. नए पेज को सभी लोकल्स में अनुवादित करने के लिए `pnpm translate` चलाएं
-6. बिल्ड और टेस्ट करें: `pnpm build`
+3. अनुवाद फ़ाइल संरचना को अपडेट करने के लिए `pnpm write-translations` चलाएं
+4. हेडिंग ID (एंकर) जनरेट करने के लिए `pnpm write-heading-ids` चलाएं
+5. नए पृष्ठ का सभी लोकेल में अनुवाद करने के लिए `pnpm translate` चलाएं
+6. बिल्ड करें और जाँचें: `pnpm build`
 
-### स्थैतिक संपत्तियाँ {/* #static-assets */}
+### स्टैटिक एसेट {/* #static-assets */}
 
-- **इमेजेज**: `documentation/static/img/` में रखें और मार्कडाउन में `/img/filename.png` के साथ संदर्भ दें
-- **डाउनलोड/PDFs**: `documentation/static/` में रखें और `/filename.pdf` के साथ संदर्भ दें
-- **पर-लोकल एसेट्स**: अगर एक एसेट को लोकल-स्पेसिफिक होने की आवश्यकता है (जैसे, स्क्रीनशॉट्स), तो इसे `documentation/i18n/{locale}/docusaurus-plugin-content-docs/current/assets/` में रखें
+- **छवियां**: `documentation/static/img/` में रखें और मार्कडाउन में `/img/filename.png` के साथ संदर्भित करें
+- **डाउनलोड/PDF**: `documentation/static/` में रखें और `/filename.pdf` के साथ संदर्भित करें
+- **प्रति-लोकेल एसेट**: यदि किसी एसेट को लोकेल-विशिष्ट होना आवश्यक है (उदा. स्क्रीनशॉट), तो इसे `documentation/i18n/{locale}/docusaurus-plugin-content-docs/current/assets/` में रखें
 
-### बिल्ड और परीक्षण {/* #build--test */}
+### बिल्ड करें और जाँचें {/* #build--test */}
 
 ```bash
 cd documentation
@@ -280,4 +280,4 @@ pnpm start:en         # Development server for English
 pnpm start:pt-br      # Development server for Portuguese
 ```
 
-हमेशा डिफ़ॉल्ट अंग्रेजी लोकल और एक अन्य लोकल में अपने परिवर्तनों का टेस्ट करें ताकि अनुवाद सही ढंग से दिखाई दें।
+यह सुनिश्चित करने के लिए कि अनुवाद सही ढंग से दिखाई दे रहे हैं, हमेशा कम से कम डिफ़ॉल्ट अंग्रेज़ी लोकेल और एक अन्य लोकेल में अपने परिवर्तनों की जाँच करें।

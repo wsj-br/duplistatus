@@ -2,159 +2,159 @@
 
 ## डैशबोर्ड सारांश {/* #dashboard-summary */}
 
-इस अनुभाग में सभी बैकअप के लिए एकत्रित आँकड़े प्रदर्शित किए जाते हैं।
+यह अनुभाग सभी बैकअप के लिए एकत्रित आँकड़े प्रदर्शित करता है।
 
 ![डैशबोर्ड सारांश - अवलोकन](../assets/screen-dashboard-summary.png)
 ![डैशबोर्ड सारांश - तालिका](../assets/screen-dashboard-summary-table.png)
 
-- **कुल सर्वर**: मॉनिटर किए जाने वाले सर्वर की संख्या।
-- **कुल बैकअप जॉब्स**: सभी सर्वरों के लिए कॉन्फ़िगर किए गए बैकअप जॉब्स (प्रकार) की कुल संख्या।
-- **कुल बैकअप रन**: सभी सर्वरों के लिए प्राप्त या एकत्रित बैकअप लॉग्स की कुल संख्या।
-- **कुल बैकअप साइज़**: नवीनतम प्राप्त बैकअप लॉग्स के आधार पर सभी स्रोत डेटा का संयुक्त साइज़।
-- **कुल स्टोरेज उपयोग**: बैकअप डेस्टिनेशन (जैसे क्लाउड स्टोरेज, FTP सर्वर, लोकल ड्राइव) पर बैकअप द्वारा उपयोग की गई कुल स्टोरेज स्पेस, नवीनतम प्राप्त बैकअप लॉग्स के आधार पर।
-- **कुल अपलोड साइज़**: डुप्लिकेट सर्वर से डेस्टिनेशन (जैसे लोकल स्टोरेज, FTP, क्लाउड प्रदाता) तक अपलोड किए गए कुल डेटा की मात्रा।
-- **विलंबित बैकअप** (तालिका): विलंबित बैकअप की संख्या। देखें [बैकअप सूचनाएं सेटिंग्स](settings/backup-notifications-settings.md)
-- **लेआउट टॉगल**: कार्ड्स लेआउट (डिफ़ॉल्ट) और तालिका लेआउट के बीच स्विच करता है।
+- **कुल सर्वर**: मॉनिटर किए जा रहे सर्वर की संख्या।                                                                                                             
+- **कुल बैकअप जॉब**: सभी सर्वर के लिए कॉन्फ़िगर किए गए बैकअप जॉब (प्रकारों) की कुल संख्या।                                                                                
+- **कुल बैकअप रन**: सभी सर्वर के लिए प्राप्त या एकत्रित किए गए रन से बैकअप लॉग की कुल संख्या।                                                                   
+- **कुल बैकअप आकार**: प्राप्त नवीनतम बैकअप लॉग के आधार पर, सभी स्रोत डेटा का संयुक्त आकार।                                                                    
+- **कुल उपयोग किया गया संग्रहण**: नवीनतम बैकअप लॉग के आधार पर, बैकअप गंतव्य (उदा., क्लाउड संग्रहण, FTP सर्वर, स्थानीय ड्राइव) पर बैकअप द्वारा उपयोग किया गया कुल संग्रहण स्थान।                
+- **कुल अपलोड किया गया आकार**: Duplicati सर्वर से गंतव्य (उदा., स्थानीय संग्रहण, FTP, क्लाउड प्रदाता) पर अपलोड किया गया डेटा की कुल मात्रा।                                       
+- **बकाया बैकअप** (तालिका): अतिदेय बैकअप की संख्या। देखें [बैकअप सूचनाएं सेटिंग्स](settings/backup-notifications-settings.md)                          
+- **लेआउट टॉगल**: कार्ड लेआउट (डिफ़ॉल्ट) और तालिका लेआउट के बीच स्विच करता है।
 
-:::tip डुप्लिकेट सर्वर देख रहे हैं?
-यदि डैशबोर्ड पर एक ही सर्वर एक से अधिक बार दिखाई देता है, तो उन्हें एकत्रित करने के लिए [सेटिंग्स → डेटाबेस मेनटेनेंस → डुप्लिकेट सर्वर मर्ज करें](settings/database-maintenance.md#merge-duplicate-servers) का उपयोग करें। डुप्लिकेट तब हो सकते हैं जब आप डुप्लिकेट को पुनः इंस्टॉल या अपग्रेड करते हैं, क्योंकि सर्वर का `machine_id` बदल सकता है और **duplistatus** इसे एक नए सर्वर के रूप में देखता है।
+:::tip क्या डुप्लिकेट सर्वर दिखाई दे रहे हैं?
+यदि वही सर्वर डैशबोर्ड पर एक से अधिक बार दिखाई देता है, तो उन्हें समेकित करने के लिए [सेटिंग्स → डेटाबेस रखरखाव → डुप्लिकेट सर्वर मर्ज करें](settings/database-maintenance.md#merge-duplicate-servers) का उपयोग करें। Duplicati को फिर से इंस्टॉल या अपग्रेड करते समय डुप्लिकेट हो सकते हैं, क्योंकि सर्वर की `machine_id` बदल सकती है और **duplistatus** तब इसे एक नए सर्वर के रूप में मानता है।
 :::
 
 ## सर्वर फ़िल्टरिंग {/* #server-filtering */}
 
-आप एप्लिकेशन टूलबार में सर्च फ़ील्ड का उपयोग करके डैशबोर्ड पर प्रदर्शित सर्वर और बैकअप को फ़िल्टर कर सकते हैं। सर्च फ़ील्ड को प्रकट करने के लिए फ़िल्टर आइकन <IconButton icon="lucide:search" /> पर क्लिक करें।
+आप एप्लिकेशन टूलबार में खोज फ़ील्ड का उपयोग करके डैशबोर्ड पर प्रदर्शित सर्वर और बैकअप को फ़िल्टर कर सकते हैं। खोज फ़ील्ड दिखाने के लिए फ़िल्टर आइकन <IconButton icon="lucide:search" /> पर क्लिक करें।
 
-**फ़िल्टर मैच:**
+**फ़िल्टर मिलान:**
 - सर्वर आईडी
 - सर्वर URL
 - बैकअप जॉब नाम
 
 **स्कोप:**
-- डैशबोर्ड पर कार्ड और तालिका व्यू दोनों को फ़िल्टर करता है
-- सेशन स्टेट डैशबोर्ड सर्वर फ़िल्टर प्रदाता द्वारा बनाए रखा जाता है
-- जब आप डैशबोर्ड छोड़ते हैं या रीफ्रेश करते हैं तो यह साफ़ हो जाता है
+- डैशबोर्ड पर कार्ड और तालिका दोनों दृश्यों को फ़िल्टर करता है
+- सत्र की स्थिति डैशबोर्ड सर्वर फ़िल्टर प्रदाता के माध्यम से बनाए रखी जाती है
+- जब आप डैशबोर्ड को रीफ़्रेश करते हैं या छोड़ते हैं तो यह साफ़ हो जाता है
 
-यह कई मॉनिटर किए जाने वाले सिस्टम के बीच विशिष्ट सर्वर या बैकअप को जल्दी से स्थानांतरित करने में मदद करता है।
+इससे कई मॉनिटर किए जा रहे सिस्टम में से विशिष्ट सर्वर या बैकअप को तेज़ी से खोजना आसान हो जाता है।
 
 ## कार्ड लेआउट {/* #cards-layout */}
 
-कार्ड्स लेआउट प्रत्येक बैकअप के लिए प्राप्त नवीनतम बैकअप लॉग की स्थिति को दिखाता है।
+कार्ड लेआउट प्रत्येक बैकअप के लिए प्राप्त नवीनतम बैकअप लॉग की स्थिति दिखाता है।
 
 ![कार्ड लेआउट](../assets/duplistatus_dash-cards.svg)
 
-- **Server Naam**: Duplicati server ka naam (ya Upnaam)
-  - **Server Naam** पर होवर करने से server naam aur note dikhayi dega
-- **Overall Stithi**: Server ki stithi. Vilambit backups **Warning** stithi ke roop mein dikhayi denge
-- **Sanskaran**: Sabse antim backup log se Duplicati sanskaran, jo stithi indicator ke bayin or dikhaya jata hai. [Duplicati Server Version](#duplicati-server-version) dekhein.
-- **Summary jankari**: Is server ke sabhi backups ke liye ekathrit File sankhya, aakar aur upyog kiya gaya sanchayan. Yah sabse haliya prapt backup ka beeta hua samay bhi dikhata hai (samay chinh dekhne ke liye hover karein)
-- **Backups list**: Is server ke liye configured sabhi backups ke saath ek table, 3 columns ke saath:
-  - **Backup Naam**: Duplicati server mein backup ka naam
-  - **Stithi itihas**: Prapt antim 10 backups ki stithi.
-  - **Antim backup prapt**: Antim prapt log ke vartaman samay se beeta hua samay. Yadi backup overdue hai to yah warning icon dikhayega.
-    - Samay sankshipt format mein dikhaya jata hai: `m` minutes ke liye, `h` hours ke liye, `d` days ke liye, `w` weeks ke liye, `mo` months ke liye, `y` years ke liye.
+- **सर्वर नाम**: Duplicati सर्वर का नाम (या उपनाम)
+  - **सर्वर नाम** पर होवर करने पर सर्वर का नाम और नोट दिखाई देगा
+- **समग्र स्थिति**: सर्वर की स्थिति। अतिदेय बैकअप **चेतावनी** स्थिति के रूप में दिखाई देंगे
+- **संस्करण**: नवीनतम बैकअप लॉग से Duplicati संस्करण, जो स्थिति संकेतक के बाईं ओर दिखाई देता है। देखें [Duplicati सर्वर संस्करण](#duplicati-server-version)।
+- **सारांश जानकारी**: इस सर्वर के सभी बैकअप के लिए उपयोग की गई फ़ाइलों, आकार और संग्रहण की समेकित संख्या। प्राप्त नवीनतम बैकअप का बीता हुआ समय भी दिखाता है (टाइमस्टैम्प दिखाने के लिए ऊपर होवर करें)
+- **बैकअप सूची**: इस सर्वर के लिए कॉन्फ़िगर किए गए सभी बैकअप वाली एक तालिका, जिसमें 3 कॉलम हैं:
+  - **बैकअप नाम**: Duplicati सर्वर में बैकअप का नाम
+  - **स्थिति इतिहास**: प्राप्त अंतिम 10 बैकअप की स्थिति।
+  - **अंतिम प्राप्त बैकअप**: अंतिम प्राप्त लॉग के वर्तमान समय के बाद से बीता हुआ समय। यदि बैकअप अतिदेय है तो यह एक चेतावनी आइकन दिखाएगा।
+    - समय संक्षिप्त प्रारूप में दिखाया गया है: मिनट के लिए `m`, घंटे के लिए `h`, दिन के लिए `d`, सप्ताह के लिए `w`, महीने के लिए `mo`, वर्ष के लिए `y`।
 
-कार्ड सॉर्ट ऑर्डर और अन्य कॉन्फ़िगरेशन [डिस्प्ले सेटिंग्स](settings/display-settings.md) में सेट किए जा सकते हैं।
+कार्ड सॉर्ट क्रम और अन्य कॉन्फ़िगरेशन [प्रदर्शन सेटिंग्स](settings/display-settings.md) में सेट किए जा सकते हैं।
 
-पैनल व्यू दो सूचनात्मक डिस्प्ले प्रदान करता है, जो साइड पैनल के ऊपरी दाएँ बटन पर क्लिक करके पहुंचा जा सकता है:
+पैनल दृश्य दो सूचनात्मक प्रदर्शन प्रदान करता है, जिन्हें साइड पैनल पर शीर्ष दाईं ओर के बटन पर क्लिक करके देखा जा सकता है:
 
-- स्थिति: स्थिति के अनुसार बैकअप जॉब्स की आँकड़े दिखाता है, विलंबित बैकअप और चेतावनी/त्रुटि स्थिति वाले बैकअप जॉब्स की सूची के साथ।
+- स्थिति: प्रति स्थिति बैकअप जॉब्स के आँकड़े दिखाएँ, जिसमें बकाया बैकअप और चेतावनियाँ/त्रुटियाँ स्थिति वाले बैकअप जॉब्स की एक सूची शामिल है।
 
-![status panel](../assets/screen-overview-side-status.png)
+![स्थिति पैनल](../assets/screen-overview-side-status.png)
 
-- Manak: Aggregated ya selected server ke liye samay se samay ke liye avadhi, file aakar aur sanchayan aakar ke charts dikhate hain.
+- मेट्रिक्स: समग्र या चयनित सर्वर के लिए समय के साथ अवधि, फ़ाइल आकार और संग्रहण आकार वाले चार्ट दिखाएँ।
 
-![charts panel](../assets/screen-overview-side-charts.png)
+![चार्ट पैनल](../assets/screen-overview-side-charts.png)
 
 ### बैकअप विवरण {/* #backup-details */}
 
-List mein kisi backup par hover karne se, last backup log ke details aur kisi bhi vilambit jankari dikhati hai.
+सूची में किसी बैकअप पर कर्सर ले जाने से प्राप्त अंतिम बैकअप लॉग का विवरण और कोई भी अतिदेय जानकारी प्रदर्शित होती है।
 
-![Vilambit vivaran](../assets/screen-backup-tooltip.png)
+![अतिदेय विवरण](../assets/screen-backup-tooltip.png)
 
-- **Server Naam : Backup**: Duplicati server aur backup ka naam ya upnaam, server naam aur note bhi dikhayega.
-  - Upnaam aur note ko [Settings → Server Settings](settings/server-settings.md) par configure kiya ja sakta hai.
-- **Suchnaayein**: Naye backup logs ke liye [configured notification](#notifications-icons) setting ko dikhane wala icon.
-- **Taareekh**: Backup ka samay chinh aur last screen refresh se lekar elapsed samay.
-- **Stithi**: Last received backup ki stithi (Safalta, Warning, Truti, Gambhir).
-- **Avadhi, File Ginti, File Aakar, Sanchayan Aakar, Upload Kiya Gaya Aakar**: Duplicati server ke dwara report kiye gaye values.
-- **Upalabdh Versions**: Backup destination par stored backup versions ki sankhya, backup ke samay.
+- **सर्वर नाम : बैकअप**: Duplicati सर्वर और बैकअप का नाम या उपनाम, सर्वर का नाम और नोट भी दिखाएगा।
+  - उपनाम और नोट को [सेटिंग्स → सर्वर सेटिंग्स](settings/server-settings.md) पर कॉन्फ़िगर किया जा सकता है।
+- **सूचना**: नए बैकअप लॉग के लिए [कॉन्फ़िगर की गई सूचना](#notifications-icons) सेटिंग दिखाने वाला एक आइकन।
+- **तिथि**: बैकअप का टाइमस्टैम्प और अंतिम स्क्रीन रीफ़्रेश के बाद से बीता हुआ समय।
+- **स्थिति**: प्राप्त अंतिम बैकअप की स्थिति (Success, Warning, Error, Fatal)।
+- **अवधि, फ़ाइल गणना, फ़ाइल आकार, संग्रहण आकार, अपलोड किया गया आकार**: Duplicati सर्वर द्वारा रिपोर्ट किए गए मान।
+- **उपलब्ध संस्करण**: बैकअप के समय बैकअप गंतव्य पर संग्रहीत बैकअप संस्करणों की संख्या।
 
-Agar ye backup vilambit hai, tooltip bhi dikhayega:
+यदि यह बैकअप अतिदेय है, तो टूलटिप यह भी दिखाता है:
 
-- **Expected Backup**: Backup ka expected samay, including the configured grace period (extra time allowed before marking as overdue).
+- **अपेक्षित बैकअप**: वह समय जब बैकअप अपेक्षित था, जिसमें कॉन्फ़िगर की गई रियायती अवधि (अतिदेय के रूप में चिह्नित करने से पहले दी गई अतिरिक्त समय सीमा) शामिल है।
 
-Aap bhi bottom par buttons click karke [Settings → Backup Notifications](settings/backup-notifications-settings.md) khol sakte hain monitoring settings configure karne ke liye ya Duplicati server's web interface kholne ke liye.
+आप निगरानी सेटिंग्स कॉन्फ़िगर करने के लिए [सेटिंग्स → बैकअप सूचनाएं](settings/backup-notifications-settings.md) खोलने या Duplicati सर्वर के वेब इंटरफ़ेस को खोलने के लिए सबसे नीचे दिए गए बटनों पर भी क्लिक कर सकते हैं।
 
 ## तालिका लेआउट {/* #table-layout */}
 
-Table layout lists the most recent backup logs received for all servers and backups.
+तालिका लेआउट सभी सर्वर और बैकअप के लिए प्राप्त नवीनतम बैकअप लॉग सूचीबद्ध करता है।
 
-![Dashboard Table Mode](../assets/screen-main-dashboard-table-mode.png)
+![डैशबोर्ड तालिका मोड](../assets/screen-main-dashboard-table-mode.png)
 
-- **Server Naam**: Duplicati server ka naam (ya Upnaam)
-  - Naam ke neeche server note hai
-- **Backup Naam**: Duplicati server mein backup ka naam.
-- **Sanskaran**: Us backup job ke liye sabse antim backup log se Duplicati sanskaran. [Duplicati Server Version](#duplicati-server-version) dekhein.
-- **Upalabdh Versions**: Backup destination par store kiye gaye backup versions ki sankhya. Yadi icon greyed out hai, to log mein vistrit vivaran prapt nahi hua tha. Vivaran ke liye [Duplicati Configuration instructions](../installation/duplicati-server-configuration.md) dekhein.
-- **Backup Ginti**: Duplicati server dwara report ki gayi backups ki sankhya.
-- **Antim Backup Tithi**: Prapt antim backup log ka samay chinh aur antim screen refresh se beeta hua samay.
-- **Antim Backup Stithi**: Prapt antim backup ki stithi (Safalta, Warning, Truti, Gambhir).
-- **Avadhi**: HH:MM:SS mein backup ki avadhi.
-- **चेतावनियाँ/त्रुटियाँ**: Backup log mein report ki gayi chetavaniyon aur trutiyon ki sankhya, `warnings/errors` ke roop mein dikhayi jati hai (udaharan ke liye `0/0`).
-- **Sammaan**:
-  - **Notification**: Naye backup logs ke liye configured notification setting dikhane wala ek icon.
-  - **Duplicati configuration**: Duplicati server ke web interface ko kholne ke liye ek button
+- **सर्वर नाम**: Duplicati सर्वर का नाम (या उपनाम)
+  - नाम के नीचे सर्वर नोट है
+- **बैकअप नाम**: Duplicati सर्वर में बैकअप का नाम।
+- **संस्करण**: उस बैकअप जॉब के नवीनतम बैकअप लॉग से Duplicati संस्करण। देखें [Duplicati सर्वर संस्करण](#duplicati-server-version)।
+- **उपलब्ध संस्करण**: बैकअप गंतव्य पर संग्रहीत बैकअप संस्करणों की संख्या। यदि आइकन धूसर (greyed out) है, तो लॉग में विस्तृत जानकारी प्राप्त नहीं हुई थी। विवरण के लिए [Duplicati कॉन्फ़िगरेशन निर्देश](../installation/duplicati-server-configuration.md) देखें।
+- **बैकअप संख्या**: Duplicati सर्वर द्वारा रिपोर्ट किए गए बैकअप की संख्या।
+- **अंतिम बैकअप तिथि**: प्राप्त अंतिम बैकअप लॉग का टाइमस्टैम्प और अंतिम स्क्रीन रीफ़्रेश के बाद से बीता हुआ समय।
+- **अंतिम बैकअप स्थिति**: प्राप्त अंतिम बैकअप की स्थिति (Success, Warning, Error, Fatal)।
+- **अवधि**: HH:MM:SS में बैकअप की अवधि।
+- **चेतावनियाँ/त्रुटियाँ**: बैकअप लॉग में रिपोर्ट की गई चेतावनियों और त्रुटियों की संख्या, जो `warnings/errors` के रूप में दिखाई गई है (उदाहरण के लिए `0/0`)।
+- **सेटिंग्स**:
+  - **सूचना**: नए बैकअप लॉग के लिए कॉन्फ़िगर की गई सूचना सेटिंग दिखाने वाला एक आइकन।
+  - **Duplicati कॉन्फ़िगरेशन**: Duplicati सर्वर का वेब इंटरफ़ेस खोलने के लिए एक बटन
 
-Aap [Display Settings](settings/display-settings.md) use kar sakte hain table size aur other configurations configure karne ke liye.
+तालिका का आकार और अन्य कॉन्फ़िगरेशन को कॉन्फ़िगर करने के लिए आप [प्रदर्शन सेटिंग्स](settings/display-settings.md) का उपयोग कर सकते हैं।
 
-### सूचनाएँ आइकन {/* #notifications-icons */}
+### सूचनाएं आइकन {/* #notifications-icons */}
 
 | Icon                                                                                                                               | Notification Option | Description                                                                                         |
 |------------------------------------------------------------------------------------------------------------------------------------|---------------------|-----------------------------------------------------------------------------------------------------|
-| <IconButton icon="lucide:message-square-off" style={{border: 'none', padding: 0, color: '#9ca3af', background: 'transparent'}} />  | Band                 | Naye backup log received hone par koi notifications nahi bheje jayenge                                     |
-| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#60a5fa', background: 'transparent'}} /> | Sabhi                 | Har naye backup log ke liye notifications bheje jayenge, regardless of its status.                      |
-| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#fbbf24', background: 'transparent'}} /> | Chetaavaniyaan            | Suchnaayein sirf Warning, Anjaan, Truti, aur Gambhir stithi ke backup logs ke liye bheje jaayenge. |
-| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#f87171', background: 'transparent'}} /> | Trutiyon              | Suchnaayein sirf Truti aur Gambhir stithi ke backup logs ke liye bheje jaayenge.                    |
+| <IconButton icon="lucide:message-square-off" style={{border: 'none', padding: 0, color: '#9ca3af', background: 'transparent'}} />  | बंद                 | नया बैकअप लॉग प्राप्त होने पर कोई सूचनाएं नहीं भेजी जाएंगी                                     |
+| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#60a5fa', background: 'transparent'}} /> | सभी                 | प्रत्येक नए बैकअप लॉग के लिए सूचनाएं भेजी जाएंगी, चाहे उसकी स्थिति कुछ भी हो।                      |
+| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#fbbf24', background: 'transparent'}} /> | चेतावनियाँ            | केवल उन बैकअप लॉग के लिए सूचनाएं भेजी जाएंगी जिनकी स्थिति चेतावनी, अज्ञात, त्रुटि या Fatal है। |
+| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#f87171', background: 'transparent'}} /> | त्रुटियाँ              | केवल उन बैकअप लॉग के लिए सूचनाएं भेजी जाएंगी जिनकी स्थिति त्रुटि या Fatal है।                    |
 
 :::note
-Yah suchnaayein samaan sirf tab lagta hai jab **duplistatus** ek naya backup log Duplicati server se praapt karta hai. Vilambit suchnaayein alag se samaan ki gayi hain aur is samaan ke bina bheje jaayenge.
+यह सूचना सेटिंग केवल तब लागू होती है जब **duplistatus** किसी Duplicati सर्वर से नया बैकअप लॉग प्राप्त करता है। अतिदेय सूचनाएं अलग से कॉन्फ़िगर की जाती हैं और इस सेटिंग की परवाह किए बिना भेजी जाएंगी।
 :::
 
-### समय से अधिक विस्तृत {/* #overdue-details */}
+### अतिदेय विवरण {/* #overdue-details */}
 
-Vilambit chetaavani icon par mouse rakhne se vilambit backup ke baare mein vishesh vivaran dikhaye jaate hain.
+अतिदेय चेतावनी आइकन पर होवर करने से अतिदेय बैकअप के बारे में विवरण प्रदर्शित होता है।
 
-![Vilambit vivaran](../assets/screen-overdue-backup-hover-card.png)
+![अतिदेय विवरण](../assets/screen-overdue-backup-hover-card.png)
 
-- **Janch karein**: Kab aakhiri vilambit janch ki gayi thi. [Backup Suchnaayein Sammaan](settings/backup-notifications-settings.md) mein samay ka samaan karein.
-- **Antim Backup**: Kab aakhiri backup log praapt kiya gaya tha.
-- **Anumati Backup**: Backup ka anumati samay, vilambit ke roop mein mark kiye jaane se pehle anumati samay (extra samay) shamil kiya gaya tha.
-- **Antim Suchnaayein**: Kab aakhiri vilambit suchnaayein bheji gayi thi.
+- **जांच की गई**: जब अंतिम अतिदेय जांच की गई थी। [बैकअप सूचनाएं सेटिंग्स](settings/backup-notifications-settings.md) में आवृत्ति कॉन्फ़िगर करें।
+- **अंतिम बैकअप**: जब अंतिम बैकअप लॉग प्राप्त हुआ था।
+- **अपेक्षित बैकअप**: बैकअप का अपेक्षित समय, जिसमें कॉन्फ़िगर की गई छूट अवधि (अतिदेय के रूप में चिह्नित करने से पहले दी गई अतिरिक्त समयावधि) शामिल है।
+- **अंतिम सूचना**: जब अंतिम अतिदेय सूचना भेजी गई थी।
 
-## duplicati सर्वर संस्करण {/* #duplicati-server-version */}
+## Duplicati सर्वर संस्करण {/* #duplicati-server-version */}
 
-Dashboard har server (card view) ya backup job (Table view) ke liye sabse antim backup log mein report kiye gaye Duplicati sanskaran ko dikhata hai.
+डैशबोर्ड प्रत्येक सर्वर (कार्ड दृश्य) या बैकअप जॉब (तालिका दृश्य) के लिए नवीनतम बैकअप लॉग में रिपोर्ट किए गए Duplicati संस्करण को दिखाता है।
 
-- **यह कहाँ दिखाई देता है**: कार्ड्स पर स्थिति संकेतक (status indicator) के बाईं ओर, और टेबल में **Sanskaran** कॉलम में (**Overdue / Agla chalan** के बाद)। आप [Display settings](settings/display-settings.md) या [डुप्लिकेटी संस्करण](settings/duplicati-versions.md) से कार्ड बैज को छिपा सकते हैं। टेबल कॉलम हमेशा दिखाई देता रहता है।
-- **रंग**: म्यूटेड टेक्स्ट का अर्थ है कि संस्करण उस चैनल के नवीनतम रिलीज़ से मेल खाता है (या तुलना अनुपलब्ध है)। Warning पीला रंग का अर्थ है कि संस्करण उस चैनल के नवीनतम रिलीज़ से पुराना है।
-- **टूलटिप**: अपडेट चैनल (`stable`, `beta`, `experimental`, या `canary`), सर्वर संस्करण, और उस चैनल के लिए नवीनतम उपलब्ध संस्करण देखने के लिए संस्करण संख्या पर होवर करें या क्लिक करें।
+- **कहाँ दिखाई देता है**: कार्ड्स पर स्थिति संकेतक के बाईं ओर, और तालिका में **संस्करण** कॉलम में (**बकाया / अगला रन** के बाद)। आप [प्रदर्शन सेटिंग्स](settings/display-settings.md) या [Duplicati संस्करण](settings/duplicati-versions.md) से कार्ड बैज छिपा सकते हैं। तालिका कॉलम हमेशा दिखाई देता है।
+- **रंग**: धूसर टेक्स्ट का अर्थ है कि संस्करण उस चैनल के लिए नवीनतम रिलीज़ से मेल खाता है (या तुलना अनुपलब्ध है)। चेतावनी पीला रंग का अर्थ है कि संस्करण उस चैनल के नवीनतम रिलीज़ से पुराना है।
+- **टूलटिप**: अपडेट चैनल (`stable`, `beta`, `experimental`, या `canary`), सर्वर संस्करण, और उस चैनल के लिए उपलब्ध नवीनतम संस्करण देखने के लिए संस्करण संख्या पर होवर करें या क्लिक करें।
 
-**duplistatus** बैकअप लॉग से संस्करण को GitHub पर प्रकाशित नवीनतम डुप्लिकेटी रिलीज़ के साथ तुलना करता है। व्यवस्थापक कैश्ड चैनल संस्करण देख सकते हैं और जांच अंतराल और प्रारंभ समय को [Settings → Duplicati Versions](settings/duplicati-versions.md) में कॉन्फ़िगर कर सकते हैं। कैश भी शुरू पर रिफ्रेश होता है जब यह चयनित अंतराल से पुराना होता है। सफल और असफल GitHub अपडेट्स को [Audit log](settings/audit-logs-viewer.md) में `duplicati_version_refresh` के रूप में रिकॉर्ड किया जाता है (`startup`, `cron`, या `manual` द्वारा शुरू किया गया)।
+**duplistatus** बैकअप लॉग के संस्करण की तुलना GitHub पर प्रकाशित नवीनतम Duplicati रिलीज़ से करता है। व्यवस्थापक कैश्ड चैनल संस्करण देख सकते हैं और [सेटिंग्स → Duplicati संस्करण](settings/duplicati-versions.md) में जांच अंतराल और प्रारंभ समय कॉन्फ़िगर कर सकते हैं। चयनित अंतराल से पुराना होने पर स्टार्टअप पर भी कैश रीफ़्रेश किया जाता है। सफल और विफल GitHub अपडेट [ऑडिट लॉग](settings/audit-logs-viewer.md) में `duplicati_version_refresh` (`startup`, `cron`, या `manual` द्वारा प्रारंभ) के रूप में रिकॉर्ड किए जाते हैं।
 
 :::important
-**duplistatus** vartaman mein chal rahe sanskaran ke liye Duplicati server se query nahi karta hai. Yah prapt kiye gaye ya [Ekathrit](collect-backup-logs.md) antim backup log mein store kiye gaye sanskaran ka upyog karta hai. Duplicati upgrade karne ke baad, dashboard naya backup log aane tak pichla sanskaran dikhata rehta hai.
+**duplistatus** वर्तमान में चल रहे संस्करण के लिए Duplicati सर्वर से पूछताछ नहीं करता है। यह प्राप्त किए गए या [एकत्रित](collect-backup-logs.md) किए गए अंतिम बैकअप लॉग में संग्रहीत संस्करण का उपयोग करता है। Duplicati को अपग्रेड करने के बाद, जब तक कोई नया बैकअप लॉग नहीं आ जाता, तब तक डैशबोर्ड पिछला संस्करण दिखाना जारी रखता है।
 :::
 
-### उपलब्ध बैकअप संस्करण {/* #available-backup-versions */}
+### उपलब्ध बैकअप वर्शन {/* #available-backup-versions */}
 
-Neela ghadi icon par click karne se backup ke samay praapt upalabdh backup versions ki ek list khuli jaati hai, jise Duplicati server ne report kiya hai.
+नीले क्लॉक आइकन पर क्लिक करने से Duplicati सर्वर द्वारा रिपोर्ट किए गए अनुसार बैकअप के समय उपलब्ध बैकअप संस्करणों की सूची खुलती है।
 
-![Upalabdh versions](../assets/screen-available-backups-modal.png)
+![उपलब्ध संस्करण](../assets/screen-available-backups-modal.png)
 
-- **Backup Vivaran**: Server naam aur upnaam, server note, backup naam, aur kab backup chalaya gaya tha, ye dikhata hai.
-- **Sanskaran Vivaran**: Sanskaran sankhya, utpatti taareekh, aur aayu dikhata hai.
+- **बैकअप विवरण**: सर्वर नाम और उपनाम, सर्वर नोट, बैकअप नाम, और बैकअप कब निष्पादित किया गया था, दिखाता है।
+- **संस्करण विवरण**: संस्करण संख्या, निर्माण तिथि, और आयु दिखाता है।
 
 :::note
-Agar icon kharaab ho jata hai, to iska matlab hai ki message logs mein koi vishesh jankari praapt nahi ki gayi.
-Vishesh jankari ke liye [Duplicati Configuration instructions](../installation/duplicati-server-configuration.md) dekhiye.
+यदि आइकन धूसर है, तो इसका मतलब है कि संदेश लॉग में कोई विस्तृत जानकारी प्राप्त नहीं हुई थी।
+विवरण के लिए [Duplicati कॉन्फ़िगरेशन निर्देश](../installation/duplicati-server-configuration.md) देखें।
 :::

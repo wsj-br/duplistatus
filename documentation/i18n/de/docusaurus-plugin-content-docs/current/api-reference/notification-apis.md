@@ -1,10 +1,10 @@
 # Benachrichtigungssystem {/* #notification-system */}
 
-## Testbenachrichtigung - `/api/notifications/test` {/* #test-notification---apinotificationstest */}
-- **Endpoint**: `/api/notifications/test`
+## Test-Benachrichtigung - `/api/notifications/test` {/* #test-notification---apinotificationstest */}
+- **Endpunkt**: `/api/notifications/test`
 - **Methode**: POST
-- **Beschreibung**: Testbenachrichtigungen (einfach, vorlagenbasiert oder E-Mail) senden, um die Benachrichtigungskonfiguration zu überprüfen.
-- **Authentifizierung**: Erfordert eine Administrator-Sitzung und einen CSRF-Token
+- **Beschreibung**: Senden Sie Testbenachrichtigungen (einfach, vorlagenbasiert oder E-Mail), um die Benachrichtigungs-Konfiguration zu überprüfen.
+- **Authentifizierung**: Erfordert eine Administrator-Sitzung und ein CSRF-Token
 - **Anfragekörper**:
   Für einfache Tests:
 
@@ -19,7 +19,7 @@
     }
     ```
 
-Für Template-Test:
+Für Vorlagen-Tests:
 
     ```json
     {
@@ -38,7 +38,7 @@ Für Template-Test:
     }
     ```
 
-Für E-Mail-Test:
+Für E-Mail-Tests:
 
     ```json
     {
@@ -47,7 +47,7 @@ Für E-Mail-Test:
     ```
 
 - **Antwort**:
-  Für einfachen Test:
+  Für einfache Tests:
 
   ```json
   {
@@ -55,7 +55,7 @@ Für E-Mail-Test:
   }
   ```
 
-Für Template-Test:
+Für Vorlagen-Tests:
 
   ```json
   {
@@ -65,7 +65,7 @@ Für Template-Test:
   }
   ```
 
-Für E-Mail-Test:
+Für E-Mail-Tests:
 
   ```json
   {
@@ -73,39 +73,39 @@ Für E-Mail-Test:
   }
   ```
 
-Der Inhalt der Test-E-Mail zeigt Folgendes an:
+Der Inhalt der Test-E-Mail zeigt an:
   - SMTP-Server-Hostname und Port
   - Verbindungstyp (Einfaches SMTP, STARTTLS oder Direkte SSL/TLS)
-  - Status der SMTP-Authentifizierungsanforderung
+  - Status der SMTP-Authentifizierung
   - SMTP-Benutzername (nur angezeigt, wenn Authentifizierung erforderlich ist)
   - Empfänger-E-Mail-Adresse
-  - Absenderadresse und Name des Absenders für die E-Mail
+  - Absenderadresse und -name, die für die E-Mail verwendet werden
   - Test-Zeitstempel
 - **Fehlerantworten**:
-  - `401`: Nicht autorisiert – Ungültige Sitzung oder CSRF-Token
-  - `400`: NTFY-Konfiguration ist erforderlich, ungültige Konfiguration oder E-Mail nicht konfiguriert
-  - `500`: Testbenachrichtigung konnte nicht gesendet werden, mit Fehlerdetails
+  - `401`: Unautorisiert - Ungültige Sitzung oder CSRF-Token
+  - `400`: NTFY-Konfiguration ist erforderlich, die Konfiguration ist ungültig oder die E-Mail ist nicht konfiguriert
+  - `500`: Senden der Test-Benachrichtigung fehlgeschlagen mit Fehlerdetails
 - **Hinweise**:
   - Unterstützt einfache Testnachrichten, vorlagenbasierte Benachrichtigungen und E-Mail-Tests
-  - Bei der Vorlagenprüfung werden Beispieldaten verwendet, um Vorlagenvariablen zu ersetzen
-  - Enthält Zeitstempel in der Testnachricht
+  - Vorlagen-Tests verwenden Beispiel-Daten, um Vorlagen-Variablen zu ersetzen
+  - Enthält einen Zeitstempel in der Testnachricht
   - NTFY-Tests verwenden die gespeicherte NTFY-Konfiguration; eine vom Client bereitgestellte NTFY-URL wird nicht verwendet
   - Verwendet das `accessToken`-Feld für die Authentifizierung, wenn gespeichert
-  - Bei Vorlagen-Tests werden Benachrichtigungen sowohl an NTFY als auch an E-Mail (falls konfiguriert) gesendet
+  - Für Vorlagen-Tests werden Benachrichtigungen sowohl an NTFY als auch an E-Mail (falls konfiguriert) gesendet
   - E-Mail-Tests erfordern, dass die SMTP-Konfiguration eingerichtet ist
-  - Der Test-E-Mail-Endpunkt leert den Anfrage-Cache, bevor die SMTP-Konfiguration gelesen wird, sodass externe Skripte die Konfiguration aktualisieren und die Änderungen sofort in den Test-E-Mails widerspiegeln können
-  - Vorlagen-Tests und die sofortige Senden-Funktion der Täglichen Zusammenfassung umgehen die pro-Sicherung-Unterdrückung
+  - Der Test-E-Mail-Endpunkt löscht den Anfrage-Cache, bevor die SMTP-Konfiguration gelesen wird, um sicherzustellen, dass externe Skripte die Konfiguration aktualisieren können und diese sofort in Test-E-Mails widerspiegelt
+  - Vorlagen-Tests und Tägliche Zusammenfassung (Senden jetzt) umgehen die pro-Sicherung-Unterdrückung
 
-## Vorschau der Benachrichtigung Vorlage - `/api/notifications/preview` {/* #preview-notification-template---apinotificationspreview */}
+## Vorschau der Benachrichtigungsvorlage - `/api/notifications/preview` {/* #preview-notification-template---apinotificationspreview */}
 - **Endpunkt**: `/api/notifications/preview`
 - **Methode**: POST
-- **Beschreibung**: Rendert eine Benachrichtigung Vorlage mit dem Produktions-Markdown-Renderer ohne Senden. Der Body enthält `kind` (`success`, `warning`, `overdueBackup`, oder `dailySummaryEmail`) und die bearbeitete Vorlage. Tägliche Zusammenfassungen verwenden die aktuelle reale Momentaufnahme; andere Arten verwenden deterministische Beispielwerte. E-Mail HTML ist für ein sandboxed iframe vorgesehen. Erfolgreich, Warnung/Fehler und Überfällig geben auch die NTFY-Payload (`ntfyMessage`) zurück; jeder GFM-Tabellenkopf wird weggelassen und die Körperzeilen sind Klartext.
+- **Beschreibung**: Rendert eine Benachrichtigungsvorlage mit dem Produktions-Markdown-Renderer ohne Senden. Der Körper enthält `kind` (`success`, `warning`, `overdueBackup` oder `dailySummaryEmail`) und die bearbeitete Vorlage. Vorschauen der Täglichen Zusammenfassung verwenden die aktuelle reale Momentaufnahme; andere Arten verwenden deterministische Beispielwerte. E-Mail HTML ist für ein sandboxed iframe vorgesehen. Erfolg, Warnung/Fehler und Überfällig geben auch die NTFY-Payload (`ntfyMessage`) zurück; jeder GFM-Tabellenkopf wird ausgelassen und die Körperzeilen sind Klartext.
 - **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
 
 ## Überfällige Backups prüfen - `/api/notifications/check-overdue` {/* #check-overdue-backups---apinotificationscheck-overdue */}
-- **Endpoint**: `/api/notifications/check-overdue`
+- **Endpunkt**: `/api/notifications/check-overdue`
 - **Methode**: POST
-- **Beschreibung**: Auslösen der Überprüfung überfälliger Backups und Versenden von Benachrichtigungen.
+- **Beschreibung**: Löst manuell die Überprüfung der überfälligen Backups aus und sendet Benachrichtigungen.
 - **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
 - **Antwort**:
 
@@ -122,16 +122,16 @@ Der Inhalt der Test-E-Mail zeigt Folgendes an:
   ```
 
 - **Fehlerantworten**:
-  - `500`: Überprüfung auf überfällige Sicherungen fehlgeschlagen
+  - `500`: Überprüfung der überfälligen Backups fehlgeschlagen
 - **Hinweise**:
-  - Löst manuell die Überprüfung auf überfällige Sicherungen aus
+  - Löst manuell die Überprüfung der überfälligen Backups aus
   - Gibt Statistiken über den Überprüfungsprozess zurück
-  - Sendet Benachrichtigungen für gefundene überfällige Sicherungen
+  - Sendet Benachrichtigungen für überfällige Backups, die gefunden wurden
 
 ## Überfällige Zeitstempel löschen - `/api/notifications/clear-overdue-timestamps` {/* #clear-overdue-timestamps---apinotificationsclear-overdue-timestamps */}
-- **Endpoint**: `/api/notifications/clear-overdue-timestamps`
+- **Endpunkt**: `/api/notifications/clear-overdue-timestamps`
 - **Methode**: POST
-- **Beschreibung**: Löscht alle Zeitstempel überfälliger Backupbenachrichtigungen, sodass Benachrichtigungen erneut gesendet werden können.
+- **Beschreibung**: Löscht alle Zeitstempel der Benachrichtigungen für überfällige Backups, sodass Benachrichtigungen erneut gesendet werden können.
 - **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
 - **Antwort**:
 
@@ -142,8 +142,8 @@ Der Inhalt der Test-E-Mail zeigt Folgendes an:
   ```
 
 - **Fehlerantworten**:
-  - `500`: Löschen der Zeitstempel für überfällige Sicherungen fehlgeschlagen
+  - `500`: Löschen der Zeitstempel für überfällige Backups fehlgeschlagen
 - **Hinweise**:
-  - Löscht alle Zeitstempel für Benachrichtigungen über überfällige Sicherungen
-  - Ermöglicht erneutes Senden von Benachrichtigungen
+  - Löscht alle Zeitstempel der Benachrichtigungen für überfällige Backups
+  - Erlaubt das erneute Senden von Benachrichtigungen
   - Nützlich zum Testen des Benachrichtigungssystems

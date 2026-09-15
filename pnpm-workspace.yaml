@@ -123,3 +123,5 @@ minimumReleaseAgeExclude:
   - autoprefixer@10.6.0
   - nodemailer@10.0.9
   - tailwind-merge@3.7.0
+  - react-i18next@17.0.14
+  - zod@4.6.5

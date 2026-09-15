@@ -1,6 +1,6 @@
 # Duplicati-Versionen {/* #duplicati-versions */}
 
-Diese Seite zeigt die neuesten Duplicati-Release-Versionen, die im **duplistatus**-Cache gespeichert sind, und ermöglicht Administratoren, die Häufigkeit der Aktualisierung dieser Versionen von GitHub zu konfigurieren.
+Diese Seite zeigt die neuesten Duplicati-Release-Versionen, die im **duplistatus**-Cache gespeichert sind, und ermöglicht Administratoren, die Häufigkeit der Aktualisierungen von GitHub zu konfigurieren.
 
 ![Duplicati-Versionen](../../assets/screen-settings-duplicati-versions.png)
 
@@ -19,13 +19,13 @@ Die Tabelle listet die neueste gecachte Version für jeden Duplicati-Kanal auf:
 
 Die letzte erfolgreiche GitHub-Aktualisierungszeit wird über der Tabelle angezeigt. Wenn ein Kanal noch nicht gefunden wurde oder der Cache noch nie aktualisiert wurde, zeigt die Seite an, dass die Version nicht verfügbar ist.
 
-Administratoren können auf **Jetzt aktualisieren** klicken, um die neuesten Versionen sofort abzurufen. Dies erfordert nicht, dass der Cron-Dienst läuft. Wenn GitHub nicht erreicht werden kann, behält **duplistatus** den vorherigen Cache bei.
+Administratoren können auf **Jetzt aktualisieren** klicken, um die neuesten Releases sofort abzurufen. Dies erfordert nicht, dass der Cron-Dienst läuft. Wenn GitHub nicht erreicht werden kann, behält **duplistatus** den vorherigen Cache bei.
 
-## Version Prüfen {/* #version-check-schedule */}
+## Versionsprüfungsplan {/* #version-check-schedule */}
 
-**Version auf dem Dashboard anzeigen** schaltet das Versionsabzeichen im [Dashboard](../dashboard.md#duplicati-server-version) Card-Ansicht ein oder aus. Die Dashboard-Tabelle zeigt immer die **Version**-Spalte an. Sie ist standardmäßig aktiviert und auch in den [Anzeigeeinstellungen](display-settings.md) verfügbar. Dies ist eine Benutzereinstellung.
+**Version auf dem Dashboard anzeigen** schaltet das Versionsabzeichen im [Dashboard](../dashboard.md#duplicati-server-version) Kartenansicht ein oder aus. Die Dashboard-Tabelle zeigt immer die **Version**-Spalte an. Sie ist standardmäßig aktiviert und ist auch in den [Anzeigeeinstellungen](display-settings.md) verfügbar. Dies ist eine Benutzereinstellung.
 
-Administratoren können auswählen, wie oft **duplistatus** GitHub auf neue Duplicati-Versionen prüft:
+Administratoren können wählen, wie oft **duplistatus** GitHub auf neue Duplicati-Releases prüft:
 
 | Intervall          | Ausführung                                                         |
 |:-------------------|:-------------------------------------------------------------|
@@ -33,16 +33,16 @@ Administratoren können auswählen, wie oft **duplistatus** GitHub auf neue Dupl
 | **Alle 12 Stunden** | Zur Startzeit und 12 Stunden später                         |
 | **Alle 6 Stunden**  | Zur Startzeit und alle 6 Stunden danach               |
 
-Die Startzeit wird in Ihrer Browser-Zeitzone mit der gleichen kompakten Zeitsteuerung wie die Tägliche Zusammenfassung ausgewählt. Wählen Sie eine beliebige `HH:mm` Zeit. **duplistatus** speichert diesen Wert in UTC und der Cron-Dienst führt die Prüfung in UTC aus.
+Die Startzeit wird in Ihrer Browser-Zeitzone gewählt, indem das gleiche kompakte Zeitsteuerelement wie bei der Täglichen Zusammenfassung verwendet wird. Wählen Sie eine beliebige `HH:mm`-Zeit. **duplistatus** speichert diesen Wert in UTC und der Cron-Dienst führt die Prüfung in UTC aus.
 
 Beispiele:
 
-- Täglich mit einer Startzeit von 06:00 läuft um 06:00.
-- Täglich mit einer Startzeit von 06:30 läuft um 06:30.
-- Alle 12 Stunden mit einer Startzeit von 08:15 läuft um 08:15 und 20:15.
-- Alle 6 Stunden mit einer Startzeit von 02:45 läuft um 02:45, 08:45, 14:45 und 20:45.
+- Täglich mit einer Startzeit von 06:00 wird um 06:00 ausgeführt.
+- Täglich mit einer Startzeit von 06:30 wird um 06:30 ausgeführt.
+- Alle 12 Stunden mit einer Startzeit von 08:15 wird um 08:15 und 20:15 ausgeführt.
+- Alle 6 Stunden mit einer Startzeit von 02:45 wird um 02:45, 08:45, 14:45 und 20:45 ausgeführt.
 
-Beim Start wird **duplistatus** auch dann den Cache aktualisieren, wenn er älter ist als das ausgewählte Intervall (24 Stunden, 12 Stunden oder 6 Stunden), einschließlich einer neuen leeren Datenbank. Transiente GitHub-Fehler wie HTTP 504 werden wiederholt. Fehlgeschlagene Aktualisierungen behalten die letzten zwischengespeicherten Versionen.
+Beim Start aktualisiert **duplistatus** auch den Cache, wenn er älter ist als das ausgewählte Intervall (24 Stunden, 12 Stunden oder 6 Stunden), einschließlich einer neuen leeren Datenbank. Transiente GitHub-Fehler wie HTTP 504 werden wiederholt. Fehlgeschlagene Aktualisierungen behalten die letzten zwischengespeicherten Versionen.
 
 Reguläre Benutzer können die zwischengespeicherten Versionen und den Zeitplan anzeigen und können **Version auf dem Dashboard anzeigen** ein- oder ausschalten. Nur Administratoren können das Intervall, die Startzeit oder eine erzwungene Aktualisierung ändern.
 

@@ -2,23 +2,23 @@
 
 Vous pouvez configurer un nom alternatif (alias) pour vos serveurs, une note pour décrire sa fonction et les adresses web de vos serveurs Duplicati ici.
 
-![paramètres du serveur](../../assets/screen-settings-server.png)
+![Paramètres du serveur](../../assets/screen-settings-server.png)
 
-| Paramètre                         | Description                                                                                                                                                                                  |
+| Paramètre                      | Description                                                                                                                                                                                  |
 |:--------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Nom du serveur**                 | Nom du serveur configuré dans le serveur Duplicati. Un <IIcon2 icon="lucide:key-round" color="#42A5F5"/> apparaîtra si un mot de passe est défini pour le serveur.                                         |
-| **Alias**                       | Un surnom ou un nom lisible par l'humain pour votre serveur. Lorsque vous placez le curseur sur un alias, le nom s'affiche ; dans certains cas, pour plus de clarté, l'alias et le nom sont affichés entre parenthèses. |
-| **Note**                        | Texte libre permettant de décrire les fonctionnalités du serveur, son emplacement d'installation ou toute autre information. Une fois configuré, il s'affiche à côté du nom ou de l'alias du serveur.                 |
+| **Alias**                       | Un surnom ou un nom lisible par l'homme de votre serveur. Lorsque vous survolez un alias, il affichera son nom ; dans certains cas, pour le rendre clair, il affichera l'alias et le nom entre crochets. |
+| **Note**                        | Texte libre pour décrire la fonctionnalité du serveur, l'emplacement de l'installation ou toute autre information. Lorsque configuré, il sera affiché à côté du nom ou de l'alias du serveur.                 |
 | **Version**                     | La version de Duplicati à partir du dernier journal de sauvegarde, avec la même couleur et l'info-bulle que le [tableau de bord](../dashboard.md#duplicati-server-version). Le texte atténué est actuel ou indisponible ; le jaune d'avertissement est obsolète. |
 | **Adresse de l'interface web (URL)** | Configurez l'URL pour accéder à l'interface utilisateur du serveur Duplicati. Les URL `HTTP` et `HTTPS` sont prises en charge.                                                                                           |
-| **Statut**                      | Affiche les résultats du test ou de la collecte des journaux de sauvegarde                                                                                                                                              |
-| **Actions**                     | Vous pouvez tester, ouvrir l'interface Duplicati, collecter les journaux et définir un mot de passe. Voir ci-dessous pour plus de détails.                                                                                         |
+| **Statut**                      | Affiche les résultats des tests ou des journaux de sauvegarde collectés                                                                                                                                              |
+| **Actions**                     | Vous pouvez tester, ouvrir l'interface de Duplicati, collecter les journaux et définir un mot de passe, voir ci-dessous pour plus de détails.                                                                                         |
 
 <br/>
 
 :::note
-Si l'Adresse de l'interface Web (URL) n'est pas configurée, le bouton <SvgIcon svgFilename="duplicati_logo.svg" /> 
-sera désactivé sur toutes les pages et le serveur ne s'affichera pas dans la liste [Configuration Duplicati](../duplicati-configuration.md) <SvgButton svgFilename="duplicati_logo.svg" href="../duplicati-configuration"/>.
+Si l'adresse de l'interface web (URL) n'est pas configurée, le bouton <SvgIcon svgFilename="duplicati_logo.svg" /> 
+sera désactivé sur toutes les pages et le serveur ne sera pas affiché dans la liste [Configuration de Duplicati](../duplicati-configuration.md) <SvgButton svgFilename="duplicati_logo.svg" href="../duplicati-configuration"/>.
 :::
 
 <br/>
@@ -29,14 +29,14 @@ sera désactivé sur toutes les pages et le serveur ne s'affichera pas dans la l
 |:------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------|
 | <IconButton icon="lucide:play" label="Tester"/>                                                               | Tester la connexion au serveur Duplicati.                            |
 | <SvgButton svgFilename="duplicati_logo.svg" />                                                              | Ouvrir l'interface web du serveur Duplicati dans un nouvel onglet du navigateur.         |
-| <IconButton icon="lucide:download" />                                                                       | Collecter les journaux de sauvegarde depuis le serveur Duplicati.                          |
-| <IconButton icon="lucide:rectangle-ellipsis" /> &nbsp; ou <IIcon2 icon="lucide:key-round" color="#42A5F5"/> | Modifier ou définir un mot de passe pour le serveur Duplicati afin de collecter les sauvegardes. |
+| <IconButton icon="lucide:download" />                                                                       | Collecter les journaux de sauvegarde du serveur Duplicati.                          |
+| <IconButton icon="lucide:rectangle-ellipsis" /> &nbsp; ou <IIcon2 icon="lucide:key-round" color="#42A5F5"/> | Changer ou définir un mot de passe pour le serveur Duplicati afin de collecter les sauvegardes. |
 
 <br/>
 
 :::info[IMPORTANT]
 
-Pour protéger votre sécurité, vous pouvez uniquement effectuer les actions suivantes :
+Pour protéger votre sécurité, vous ne pouvez effectuer que les actions suivantes :
 - Définir un mot de passe pour le serveur
 - Supprimer (supprimer) le mot de passe entièrement
  
@@ -50,7 +50,7 @@ Le mot de passe est stocké chiffré dans la base de données et n'est jamais af
 | Bouton                                                     | Description                                     |
 |:-----------------------------------------------------------|:------------------------------------------------|
 | <IconButton label="Enregistrer les modifications" />                        | Enregistrer les modifications apportées aux paramètres du serveur.   |
-| <IconButton icon="lucide:fast-forward" label="Tout tester"/>  | Tester la connexion à tous les serveurs Duplicati.   |
-| <IconButton icon="lucide:import" label="Tout collecter (#)"/> | Collecter les journaux de sauvegarde depuis tous les serveurs Duplicati. |
+| <IconButton icon="lucide:fast-forward" label="Tester Tout"/>  | Tester la connexion à tous les serveurs Duplicati.   |
+| <IconButton icon="lucide:import" label="Tout collecter (N°)"/> | Collecter les journaux de sauvegarde de tous les serveurs Duplicati. |
 
 <br/>

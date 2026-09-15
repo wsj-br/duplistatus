@@ -1,84 +1,84 @@
-# {/* #troubleshooting */} के समस्याओं का समाधान
+# समस्या निवारण {/* #troubleshooting */}
 
-### डैशबोर्ड लोड नहीं हो रहा {/* #dashboard-not-loading */}
-- Janch karein कि कंटेनर चल रहा है: `docker ps`
-- सत्यापित करें कि Port 9666 पहुँच योग्य है
-- कंटेनर लॉग Janch karein: `docker logs duplistatus`
-- यदि आप एक रिवर्स प्रॉक्सी का उपयोग कर रहे हैं, तो त्रुटियों के लिए रिवर्स प्रॉक्सी लॉग्स जाँचें
-- यदि आप आईपी अनुमति सूची का उपयोग कर रहे हैं, तो आईपी अनुमति सूची लॉग्स में त्रुटियों की जाँच करें
+### डैशबोर्ड लोड नहीं हो रहा है {/* #dashboard-not-loading */}
+- जांचें कि कंटेनर चल रहा है या नहीं: `docker ps`
+- सत्यापित करें कि पोर्ट 9666 सुलभ है
+- कंटेनर लॉग जांचें: `docker logs duplistatus`
+- यदि आप रिवर्स प्रॉक्सी का उपयोग कर रहे हैं, तो त्रुटियों के लिए रिवर्स प्रॉक्सी लॉग जांचें
+- यदि आप IP अनुमति सूचियों का उपयोग कर रहे हैं, तो त्रुटियों के लिए IP अनुमति सूची लॉग जांचें
 
 ### कोई बैकअप डेटा नहीं {/* #no-backup-data */}
 - Duplicati सर्वर कॉन्फ़िगरेशन सत्यापित करें
-- Server के बीच नेटवर्क कनेक्टिविटी Janch karein
-- Trutiyon के लिए duplistatus लॉग समीक्षा करें
-- सुनिश्चित करें कि बैकअप कार्य चल रहे हैं
-- यदि आप एपीआई कुंजियाँ का उपयोग कर रहे हैं, तो सुनिश्चित करें कि एपीआई कुंजी सही है, स्कोप सही है और समाप्त नहीं हुई है (एक पढ़ने की कुंजी अपलोड नहीं कर सकती)
+- सर्वर के बीच नेटवर्क कनेक्टिविटी जांचें
+- त्रुटियों के लिए duplistatus लॉग की समीक्षा करें
+- सुनिश्चित करें कि बैकअप जॉब्स चल रहे हैं
+- यदि API कुंजियों का उपयोग कर रहे हैं, तो सुनिश्चित करें कि API कुंजी सही है, स्कोप सही है और समाप्त नहीं हुआ है (एक रीड कुंजी अपलोड नहीं कर सकती)
 
-### Suchnaayein काम नहीं कर रही {/* #notifications-not-working */}
-- नोटिफिकेशन कॉन्फ़िगरेशन Janch karein
-- NTFY सर्वर कनेक्टिविटी सत्यापित करें (यदि NTFY उपयोग कर रहे हैं)
-- नोटिफिकेशन Sammaan Parikshan karein
-- Notification logs check karein
+### सूचनाएं काम नहीं कर रही हैं {/* #notifications-not-working */}
+- सूचना कॉन्फ़िगरेशन जांचें
+- NTFY सर्वर कनेक्टिविटी सत्यापित करें (यदि NTFY का उपयोग कर रहे हैं)
+- सूचना सेटिंग्स जाँचें
+- सूचना लॉग जांचें
 
-### नए बैकअप दिखाई नहीं दे रहे {/* #new-backups-not-showing */}
+### नए बैकअप दिखाई नहीं दे रहे हैं {/* #new-backups-not-showing */}
 
-Agar aapko Duplicati server warnings jaise `HTTP Response request failed for:` aur `Failed to send message: System.Net.Http.HttpRequestException:` dikh rahe hain, aur new backups dashboard ya backup itihas mein nahi dikh rahe hain:
+यदि आपको `HTTP Response request failed for:` और `Failed to send message: System.Net.Http.HttpRequestException:` जैसी Duplicati सर्वर चेतावनियाँ दिखाई देती हैं, और नए बैकअप डैशबोर्ड या बैकअप इतिहास में दिखाई नहीं देते हैं:
 
-- **Duplicati configuration की जाँच करें**: सुनिश्चित करें कि Duplicati सही ढंग से कॉन्फ़िगर किया गया है ताकि यह **duplistatus** को JSON भेज सके। Duplicati 2.0.9.106 और बाद के संस्करणों पर, `--send-http-json-urls` का उपयोग करें जो `/api/upload` पर इंगित करता है। पुराने Duplicati पर, `--send-http-url` का उपयोग करें जिसमें `--send-http-result-output-format=Json` शामिल है। [Duplicati Server Configuration](../installation/duplicati-server-configuration.md) देखें।
-- **नेटवर्क कनेक्टिविटी की जाँच करें**: सुनिश्चित करें कि Duplicati सर्वर **duplistatus** सर्वर से कनेक्ट हो सकता है। पोर्ट सही है या नहीं (डिफ़ॉल्ट: `9666`) की पुष्टि करें।
-- **HTTP 401**: API कुंजियाँ आवश्यक हैं और अपलोड URL में एक वैध अपलोड-स्कोप कुंजी नहीं है। [API Keys](settings/api-keys-settings.md) में वर्णित अनुसार `?api_key=` जोड़ें।
-- **HTTP 403**: कुंजी स्कोप गलत है (एक रीड कुंजी अपलोड नहीं कर सकती), या Duplicati होस्ट [बाहरी API आईपी अनुमति सूची](settings/ip-allowlist-settings.md) पर नहीं है।
-- **HTTP 413**: JSON रिपोर्ट अपलोड साइज़ लिमिट से बड़ी है (डिफ़ॉल्ट 5 MB)। `--send-http-max-log-lines` कम करें या सेटिंग्स → API Keys में लिमिट बढ़ाएं।
-- **HTTP 429**: आईपी प्रति अपलोड दर सीमा पार हो गई। `Retry-After` के लिए प्रतीक्षा करें, या यदि कई जॉब एक साथ समाप्त होते हैं तो लिमिट बढ़ाएं।
-- **Duplicati लॉग्स की समीक्षा करें**: Duplicati लॉग्स में HTTP रिक्वेस्ट त्रुटियों की जाँच करें।
-- **डबल रिपोर्टिंग**: यदि आप [Duplicati Monitoring](https://www.duplicati-monitoring.com/) को फॉर्म रिपोर्ट भी भेजते हैं, तो उस सेवा से एक विफलता या HTTP 500 **duplistatus** को JSON रिपोर्ट भेजने से रोक सकता है। फॉर्म URLs पहले भेजी जाती हैं। [Reporting to duplistatus and Duplicati Monitoring](../installation/duplicati-server-configuration.md#reporting-to-duplistatus-and-duplicati-monitoring) देखें।
+- **Duplicati कॉन्फ़िगरेशन जांचें**: पुष्टि करें कि Duplicati **duplistatus** को JSON भेजने के लिए सही ढंग से कॉन्फ़िगर किया गया है। Duplicati 2.0.9.106 और बाद के संस्करणों पर, `/api/upload` की ओर इंगित करते हुए `--send-http-json-urls` का उपयोग करें। पुराने Duplicati पर, `--send-http-result-output-format=Json` के साथ `--send-http-url` का उपयोग करें। [Duplicati सर्वर कॉन्फ़िगरेशन](../installation/duplicati-server-configuration.md) देखें।
+- **नेटवर्क कनेक्टिविटी जांचें**: सुनिश्चित करें कि Duplicati सर्वर **duplistatus** सर्वर से कनेक्ट हो सकता है। पुष्टि करें कि पोर्ट सही है (डिफ़ॉल्ट: `9666`)।
+- **HTTP 401**: API कुंजियाँ आवश्यक हैं और अपलोड URL में एक मान्य अपलोड-स्कोप कुंजी मौजूद नहीं है। [API कुंजियाँ](settings/api-keys-settings.md) में वर्णित अनुसार `?api_key=` जोड़ें।
+- **HTTP 403**: कुंजी स्कोप गलत है (एक रीड कुंजी अपलोड नहीं कर सकती), या Duplicati होस्ट [बाहरी API IP अनुमति सूची](settings/ip-allowlist-settings.md) पर नहीं है।
+- **HTTP 413**: JSON रिपोर्ट अपलोड आकार सीमा (डिफ़ॉल्ट 5 MB) से बड़ी है। `--send-http-max-log-lines` को कम करें या सेटिंग्स → API कुंजियाँ में सीमा बढ़ाएं।
+- **HTTP 429**: प्रति-IP अपलोड दर सीमा पार हो गई थी। `Retry-After` की प्रतीक्षा करें, या यदि कई जॉब्स एक ही समय में समाप्त होते हैं तो सीमा बढ़ाएं।
+- **Duplicati लॉग की समीक्षा करें**: Duplicati लॉग में HTTP अनुरोध त्रुटियों की जांच करें।
+- **डुअल रिपोर्टिंग**: यदि आप [Duplicati Monitoring](https://www.duplicati-monitoring.com/) को फॉर्म रिपोर्ट भी भेजते हैं, तो उस सेवा से विफलता या HTTP 500 Duplicati को **duplistatus** पर JSON रिपोर्ट भेजने से रोक सकता है। फॉर्म URL पहले भेजे जाते हैं। [duplistatus और Duplicati Monitoring को रिपोर्ट करना](../installation/duplicati-server-configuration.md#reporting-to-duplistatus-and-duplicati-monitoring) देखें।
 
-### डैशबोर्ड पर Duplicate Server {/* #duplicate-servers-on-the-dashboard */}
+### डैशबोर्ड पर डुप्लिकेट सर्वर {/* #duplicate-servers-on-the-dashboard */}
 
-Agar dashboard par ek hi server ek se jyada baar dikh rahi hai, toh ye sabse jyada [backup logs collect karne](collect-backup-logs.md) ke baad hota hai, ya Duplicati server reinstall ya upgrade karne ke baad.
+यदि वही सर्वर डैशबोर्ड पर एक से अधिक बार दिखाई देता है, तो ऐसा अक्सर [बैकअप लॉग एकत्र करने](collect-backup-logs.md) के बाद, या Duplicati सर्वर को पुनः इंस्टॉल या अपग्रेड करने के बाद होता है।
 
-**Karanon:**
+**कारण:**
 
-- **`machine_id` badal gayi**: Jab aap Duplicati reinstall ya upgrade karte hain, toh server ka `machine_id` badal sakta hai, aur **duplistatus** use ek naye server ke roop mein treat karta hai.
-- **Duplicati API bug**: Duplicati ke naye versions mein ek bug hai jahan some API endpoints `identity` id aur `machine_id` ko mix kar dete hain. Is inconsistency ke karan **duplistatus** same server ko alag-alag IDs ke saath register karta hai, duplicates generate karne ke liye.
+- **परिवर्तित `machine_id`**: जब आप Duplicati को फिर से इंस्टॉल या अपग्रेड करते हैं, तो सर्वर का `machine_id` बदल सकता है, और **duplistatus** फिर इसे एक नए सर्वर के रूप में मानता है।
+- **Duplicati API बग**: Duplicati के नए संस्करणों में एक बग है जहां कुछ API एंडपॉइंट्स `identity` id और `machine_id` को मिला देते हैं। यह विसंगति **duplistatus** को विभिन्न ID के तहत एक ही सर्वर को पंजीकृत करने का कारण बनती है, जिससे डुप्लिकेट उत्पन्न होते हैं।
 
-**सुधार:**
+**समाधान:**
 
-1.  **Duplicati server** par, aapko **ek** inme se koi bhi karna hai:
-    - `identity.txt` aur `machineid.txt` files edit karein taaki dono files mein **same** id ho; ya
-    - **Duplicati → Settings → Advanced Options → Machine-id** kholiye aur ek value set karein (ye auto-filled hai — bas suggested value accept karein).
-2.  **Restart** karein Duplicati server taaki change effect ho.
-3.  **duplistatus** mein, [Settings → Database Maintenance → Merge Duplicate Servers](settings/database-maintenance.md#merge-duplicate-servers) use karke duplicate entries consolidate karein.
+1.  **Duplicati सर्वर** पर, निम्नलिखित में से **एक** कार्य करें:
+    - `identity.txt` और `machineid.txt` फ़ाइलों को संपादित करें ताकि दोनों फ़ाइलों में **समान** id हो; या
+    - **Duplicati → सेटिंग्स → Advanced Options → Machine-id** खोलें और एक मान सेट करें (यह स्वतः भरा जाता है — बस सुझाए गए मान को स्वीकार करें)।
+2.  Duplicati सर्वर को **रीस्टार्ट** करें ताकि परिवर्तन प्रभावी हो सके।
+3.  **duplistatus** में, [सेटिंग्स → डेटाबेस रखरखाव → डुप्लिकेट सर्वर मर्ज करें](settings/database-maintenance.md#merge-duplicate-servers) का उपयोग करके डुप्लिकेट प्रविष्टियों को समेकित करें।
 
-### Suchnaayein काम नहीं कर रही (विस्तृत) {/* #notifications-not-working-detailed */}
+### सूचनाएं काम नहीं कर रही हैं (विस्तृत) {/* #notifications-not-working-detailed */}
 
-Agar notifications bheje ja rahe hain ya received nahi ho rahe hain:
+यदि सूचनाएं भेजी या प्राप्त नहीं की जा रही हैं:
 
-- **NTFY Configuration Check Karein**: Janch karein ki NTFY URL aur topic sahi hai. Test ke liye **Send Test Notification** button use karein.
-- **Network Connectivity Check Karein**: Janch karein ki **duplistatus** aapke NTFY server se connect ho sakta hai. Agar applicable hai toh firewall settings review karein.
-- **Notification Settings Check Karein**: Janch karein ki relevant backups ke liye notifications enable hai.
+- **NTFY कॉन्फ़िगरेशन जांचें**: सुनिश्चित करें कि NTFY URL और विषय सही हैं। परीक्षण करने के लिए **परीक्षण सूचना भेजें** बटन का उपयोग करें।
+- **नेटवर्क कनेक्टिविटी जांचें**: सत्यापित करें कि **duplistatus** आपके NTFY सर्वर तक पहुंच सकता है। यदि लागू हो तो फ़ायरवॉल सेटिंग्स की समीक्षा करें।
+- **सूचना सेटिंग्स जांचें**: पुष्टि करें कि प्रासंगिक बैकअप के लिए सूचनाएं सक्षम हैं।
 
-### Upalabdh Sanskaran दिखाई नहीं दे रहे {/* #available-versions-not-appearing */}
+### उपलब्ध संस्करण दिखाई नहीं दे रहे हैं {/* #available-versions-not-appearing */}
 
-Agar backup versions dashboard ya details page par nahi dikh rahe hain:
+यदि बैकअप संस्करण डैशबोर्ड या विवरण पृष्ठ पर नहीं दिख रहे हैं:
 
-- **Duplicati configuration जाँच करें**: सुनिश्चित करें कि `send-http-log-level=Information` और `send-http-max-log-lines=500` ड्युप्लिकेटी के उन्नत विकल्पों में कॉन्फ़िगर किए गए हैं। ड्युप्लिकेटी पहले N लॉग लाइनों को रखता है। अगर संस्करण सूची अभी भी गायब है, तो कैप बढ़ाएं या ड्युप्लिकेटी मॉनिटरिंग को रिपोर्ट नहीं भेज रहे हैं तो `0` का उपयोग करें। संस्करण **गिनती** अभी भी JSON सांख्यिकी से दिखाई दे सकती है जब विस्तृत सूची गायब है। [Log lines and available versions](../installation/duplicati-server-configuration.md#log-lines-and-available-versions) देखें।
+- **Duplicati कॉन्फ़िगरेशन जांचें**: सुनिश्चित करें कि Duplicati के उन्नत विकल्पों में `send-http-log-level=Information` और `send-http-max-log-lines=500` कॉन्फ़िगर किए गए हैं। Duplicati पहली N लॉग पंक्तियों को रखता है। यदि संस्करण सूची अभी भी गायब है, तो सीमा बढ़ाएँ या `0` का उपयोग करें जब आप Duplicati Monitoring को रिपोर्ट भी नहीं भेज रहे हों। विस्तृत सूची अनुपलब्ध होने पर भी JSON आँकड़े से संस्करण **गणना** दिखाई दे सकती है। [लॉग पंक्तियाँ और उपलब्ध संस्करण](../installation/duplicati-server-configuration.md#log-lines-and-available-versions) देखें।
 
-### Vilambit बैकअप अलर्ट काम नहीं कर रहे {/* #overdue-backup-alerts-not-working */}
+### अतिदेय बैकअप अलर्ट काम नहीं कर रहे हैं {/* #overdue-backup-alerts-not-working */}
 
-यदि विलंबित बैकअप सूचनाएं भेजी जा रही नहीं हैं:
+यदि अतिदेय बैकअप सूचनाएं नहीं भेजी जा रही हैं:
 
-- **विलंबित कॉन्फ़िगरेशन जाँच करें**: सुनिश्चित करें कि बैकअप के लिए बैकअप मॉनिटरिंग सक्षम की गई है। अपेक्षित अंतराल और सहिष्णुता सेटिंग्स की पुष्टि करें।
-- **सूचना आवृत्ति जाँच करें**: यदि **एक बार** पर सेट किया गया है, तो अलर्ट केवल एक बार प्रति विलंबित घटना भेजे जाते हैं।
-- **क्रॉन सेवा जाँच करें**: सुनिश्चित करें कि क्रॉन सेवा जो विलंबित बैकअप के लिए मॉनिटर करती है, सही ढंग से चल रही है। एप्लिकेशन लॉग्स में त्रुटियों की जाँच करें। क्रॉन सेवा को कॉन्फ़िगर किए गए पोर्ट (डिफ़ॉल्ट: `8667`) पर पहुंच योग्य है, यह भी पुष्टि करें।
+- **देरी वाला कॉन्फ़िगरेशन जांचें**: पुष्टि करें कि बैकअप के लिए बैकअप निगरानी सक्षम है। अपेक्षित अंतराल और सहनशीलता सेटिंग्स सत्यापित करें।
+- **अधिसूचना आवृत्ति जांचें**: यदि इसे **एक बार** पर सेट किया गया है, तो अलर्ट प्रति अतिदेय इवेंट केवल एक बार भेजे जाते हैं।
+- **क्रॉन सेवा जांचें**: सुनिश्चित करें कि अतिदेय बैकअप की निगरानी करने वाली क्रॉन सेवा ठीक से चल रही है। त्रुटियों के लिए एप्लिकेशन लॉग जांचें। सत्यापित करें कि कॉन्फ़िगर किए गए पोर्ट (डिफ़ॉल्ट: `8667`) पर क्रॉन सेवा सुलभ है।
 
-### Backup Logs Ikattha Karein काम नहीं कर रहा {/* #collect-backup-logs-not-working */}
+### बैकअप लॉग एकत्र करें काम नहीं कर रहा है {/* #collect-backup-logs-not-working */}
 
-यदि मैनुअल बैकअप लॉग संग्रहण विफल हो जाता है:
+यदि मैन्युअल बैकअप लॉग संग्रह विफल हो जाता है:
 
-- **Duplicati सर्वर एक्सेस जाँच करें**: सुनिश्चित करें कि Duplicati सर्वर होस्टनेम और पोर्ट सही हैं। Duplicati में रिमोट एक्सेस सक्षम है, यह पुष्टि करें। प्रमाणीकरण पासवर्ड सही है, यह भी पुष्टि करें।
-- **नेटवर्क कनेक्टिविटी जाँच करें**: **duplistatus** से Duplicati सर्वर तक कनेक्टिविटी का परीक्षण करें। Duplicati सर्वर पोर्ट पहुंच योग्य है (डिफ़ॉल्ट: `8200`), यह पुष्टि करें।
-  उदाहरण के लिए, यदि आप Docker का उपयोग कर रहे हैं, तो आप `docker exec -it <container-name> /bin/sh` का उपयोग करके कंटेनर के कमांड लाइन तक पहुंच सकते हैं और `ping` और `curl` जैसे नेटवर्क टूल चला सकते हैं।
+- **Duplicati सर्वर एक्सेस जांचें**: सत्यापित करें कि Duplicati सर्वर होस्टनाम और पोर्ट सही हैं। पुष्टि करें कि Duplicati में रिमोट एक्सेस सक्षम है। सुनिश्चित करें कि प्रमाणीकरण पासवर्ड सही है।
+- **नेटवर्क कनेक्टिविटी जांचें**: **duplistatus** से Duplicati सर्वर तक कनेक्टिविटी की जाँच करें। पुष्टि करें कि Duplicati सर्वर पोर्ट सुलभ है (डिफ़ॉल्ट: `8200`)।
+  उदाहरण के लिए, यदि आप Docker का उपयोग कर रहे हैं, तो आप कंटेनर की कमांड लाइन तक पहुँचने और `ping` और `curl` जैसे नेटवर्क टूल्स चलाने के लिए `docker exec -it <container-name> /bin/sh` का उपयोग कर सकते हैं।
 
     ```bash
     docker exec -it duplistatus /bin/sh
@@ -86,103 +86,103 @@ Agar backup versions dashboard ya details page par nahi dikh rahe hain:
     curl -I http://duplicati-server.local:8200
     ```
 
-कंटेनर के अंदर DNS कॉन्फ़िगरेशन की जाँच भी करें (अधिक जानकारी के लिए [Podman कंटेनर के लिए DNS कॉन्फ़िगरेशन](../installation/installation.md#configuring-dns-for-podman-containers) देखें)
+कंटेनर के अंदर DNS कॉन्फ़िगरेशन की भी जाँच करें ([Podman कंटेनरों के लिए DNS कॉन्फ़िगरेशन](../installation/installation.md#configuring-dns-for-podman-containers) पर अधिक देखें)
 
-- **Duplicati 2.4 aur baad** par, `/api/v1/systeminfo` `machine-id` ko khali Default ke saath list karta hai. **duplistatus** Duplicati server sammaan se configured id padhta hai. Agar collection ab bhi server ko identify nahi kar sakta, to **Duplicati → Sammaan → Advanced Options → Machine-id** set karein aur phir se try karein.
+- **Duplicati 2.4 और बाद के संस्करण** पर, `/api/v1/systeminfo` खाली डिफ़ॉल्ट के साथ `machine-id` को सूचीबद्ध करता है। **duplistatus** Duplicati सर्वर सेटिंग्स से कॉन्फ़िगर की गई id को पढ़ता है। यदि संग्रह अभी भी सर्वर की पहचान नहीं कर पाता है, तो **Duplicati → सेटिंग्स → उन्नत विकल्प → Machine-id** सेट करें और पुनः प्रयास करें।
 
-### पहले के Sanskaran (0.9.x से पहले) से अपग्रेड करें aur लॉगिन नहीं हो पा रहा {/* #upgrade-from-an-earlier-version-before-09x-and-cant-login */}
+### पुराने संस्करण (0.9.x से पहले) से अपग्रेड किया है और लॉगिन नहीं कर पा रहे हैं {/* #upgrade-from-an-earlier-version-before-09x-and-cant-login */}
 
-**duplistatus** since version 0.9.x requires user authentication. A default `admin` account is created automatically when installing the application for the first time or upgrading from an earlier version: 
-    - username: `admin`
-    - password: `Duplistatus09`
+संस्करण 0.9.x के बाद से **duplistatus** को उपयोगकर्ता प्रमाणीकरण की आवश्यकता होती है। पहली बार एप्लिकेशन इंस्टॉल करते समय या किसी पुराने संस्करण से अपग्रेड करते समय एक डिफ़ॉल्ट `admin` खाता स्वचालित रूप से बन जाता है: 
+    - उपयोगकर्ता नाम: `admin`
+    - पासवर्ड: `Duplistatus09`
 
-आप [सेटिंग्स > उपयोगकर्ता](settings/user-management-settings.md) में अतिरिक्त उपयोगकर्ता खाते बना सकते हैं, पहली लॉगिन के बाद।
+आप पहले लॉगिन के बाद [सेटिंग्स > उपयोगकर्ता](settings/user-management-settings.md) में अतिरिक्त उपयोगकर्ता खाते बना सकते हैं।
 
-### Prabandhak Password खो गया या Lock Kiya गया {/* #lost-admin-password-or-locked-out */}
+### एडमिन पासवर्ड खो गया या लॉक हो गए हैं {/* #lost-admin-password-or-locked-out */}
 
-Agar aapne apne administrator password ko gaya hai ya apne account se lock ho gaye hain (aap abhi bhi `/login` khol sakte hain):
+यदि आप अपना एडमिनिस्ट्रेटर पासवर्ड खो चुके हैं या अपने खाते से लॉक हो गए हैं (आप अभी भी `/login` खोल सकते हैं):
 
-- **एडमिन रिकवरी स्क्रिप्ट का उपयोग करें**: Docker वातावरण में प्रशासक एक्सेस को पुनर्प्राप्त करने के लिए निर्देशों के लिए [एडमिन खाता पुनर्प्राप्ति](admin-recovery.md) गाइड देखें।
-- **कंटेनर एक्सेस की पुष्टि करें**: सुनिश्चित करें कि आप कंटेनर में रिकवरी स्क्रिप्ट चलाने के लिए Docker exec एक्सेस है।
+- **एडमिन रिकवरी स्क्रिप्ट का उपयोग करें**: Docker परिवेश में एडमिनिस्ट्रेटर एक्सेस पुनर्प्राप्त करने के निर्देशों के लिए [एडमिन खाता पुनर्प्राप्ति](admin-recovery.md) गाइड देखें।
+- **कंटेनर एक्सेस सत्यापित करें**: सुनिश्चित करें कि रिकवरी स्क्रिप्ट चलाने के लिए आपके पास कंटेनर का Docker exec एक्सेस है।
 
-Agar login se pehle browser **Access denied** (HTTP 403) dikhata hai, toh yeh ek [IP allowlist lockout](#locked-out-by-ip-allowlist) hai, na ki bhula gaya password. Admin-recovery script isse bypass nahi kar sakta.
+यदि ब्राउज़र लॉगिन से पहले **Access denied** (HTTP 403) दिखाता है, तो वह एक [IP अनुमति सूची लॉकआउट](#locked-out-by-ip-allowlist) है, भूला हुआ पासवर्ड नहीं। एडमिन-रिकवरी स्क्रिप्ट इसे बायपास नहीं कर सकती है।
 
-### आईपी अनुमति सूची द्वारा Lock Kiya गया {/* #locked-out-by-ip-allowlist */}
+### IP अनुमति सूची द्वारा लॉक आउट किया गया {/* #locked-out-by-ip-allowlist */}
 
-Agar Sammaan → [IP Allowlist](settings/ip-allowlist-settings.md) CIDR ke bina ya galat CIDR ke saath Saksham kiya gaya hai, toh proxy authentication se pehle request ko reject kar deta hai. Typicall symptoms:
+यदि अनुपलब्ध या गलत CIDR के साथ सेटिंग्स → [IP अनुमति सूची](settings/ip-allowlist-settings.md) सक्षम है, तो प्रॉक्सी प्रमाणीकरण से पहले अनुरोध को अस्वीकार कर देता है। सामान्य लक्षण:
 
-- पृष्ठ (`/`, `/login`, `/settings`, …) **Access denied** (HTTP 403) सादा-टेक्स्ट लौटाते हैं।
-- सत्र और प्रशासनिक API JSON `{ "errorCode": "IP_NOT_ALLOWED" }` लौटाते हैं।
-- `/api/health` और `/api/ping` भी एक अनलिस्टेड IP से 403 लौटाते हैं जब कोई भी व्हाइटलिस्ट सक्रिय है। वे अभी भी लूपबैक से प्रतिक्रिया देते हैं। लॉगिन कुकीज़ मदद नहीं करतीं।
+- पृष्ठ (`/`, `/login`, `/settings`, …) प्लेन-टेक्स्ट **Access denied** (HTTP 403) लौटाते हैं।
+- सत्र और एडमिन API JSON `{ "errorCode": "IP_NOT_ALLOWED" }` लौटाते हैं।
+- किसी भी अनुमति सूची के सक्षम होने पर `/api/health` और `/api/ping` भी गैर-सूचीबद्ध IP से 403 लौटाते हैं। वे लूपबैक से तब भी रिस्पॉन्स देते हैं। लॉगिन कुकीज़ से कोई मदद नहीं मिलती है।
 
-लॉकआउट के दौरान एप्लिकेशन चल रहा है या नहीं यह पुष्टि करने के लिए, कंटेनर के अंदर से प्रोब चलाएं (लूपबैक हमेशा अनुमत है):
+लॉकआउट के दौरान एप्लिकेशन चालू है या नहीं, इसकी पुष्टि करने के लिए कंटेनर के अंदर से प्रोब चलाएं (लूपबैक की हमेशा अनुमति होती है):
 
 ```bash
 docker exec duplistatus curl -sf http://127.0.0.1:9666/api/ping
 ```
 
-Save path isse rokne ki koshish karti hai: aap **admin** list ko enable nahi kar sakte jab tak aapka current IP CIDRs mein nahi hai (loopback se save karne ke alawa). Aap apne aap ko lock kar sakte hain CIDR ke saath jo abhi match karta hai lekin baad mein nahi (VPN, DHCP, another network), trusted proxies ko galat configuration karne se, ya `127.0.0.1` / `::1` se list ko enable karne ke baad us address ko add karne se.
+सेव पाथ इसे रोकने का प्रयास करता है: जब तक आपका मौजूदा IP पहले से CIDR में न हो (लूपबैक से सहेजते समय को छोड़कर), तब तक आप **एडमिन** सूची को सक्षम नहीं कर सकते। फिर भी आप ऐसे CIDR का उपयोग करके स्वयं को लॉकआउट कर सकते हैं जो अभी तो मेल खाता है लेकिन बाद में नहीं (VPN, DHCP, कोई अन्य नेटवर्क), विश्वसनीय प्रॉक्सी को गलत कॉन्फ़िगर करके, या उस पते को जोड़े बिना `127.0.0.1` / `::1` से सूची को सक्षम करके।
 
-Environment variables database ko override karte hain, isliye aap UI ke bina recover kar sakte hain. Ye Settings ko rewrite nahi karte; restart ki zaroorat hai taaki process unhe pick up kar sake.
+एनवायरनमेंट वैरिएबल डेटाबेस को ओवरराइड करते हैं, इसलिए आप UI के बिना भी पुनर्प्राप्त कर सकते हैं। वे सेटिंग्स को दोबारा नहीं लिखते हैं; रीस्टार्ट आवश्यक है ताकि प्रोसेस उन्हें पिक कर सके।
 
-**Admin list ko disable karein** (usual recovery):
+**एडमिन सूची अक्षम करें** (सामान्य पुनर्प्राप्ति):
 
 ```bash
 ADMIN_IP_ALLOWLIST_ENABLED=false
 ```
 
-**Ya isse enable rakhein aur apne current IP ko include karne wala CIDR inject karein:**
+**या इसे सक्षम रखें और ऐसा CIDR इंजेक्ट करें जिसमें आपका मौजूदा IP शामिल हो:**
 
 ```bash
 ADMIN_IP_ALLOWLIST=203.0.113.10/32
 ```
 
-Phir application ko restart karein:
+फिर एप्लिकेशन को रीस्टार्ट करें:
 
-- **Docker Compose**: `docker-compose.yml` mein `environment` ke same keys ko set karein (file mein commented examples shamil hain) aur app container ko recreate karein. `docker exec` running container ke environment variables ko change nahi karta.
-- **Local / systemd**: service environment mein variable ko export karein aur Next.js process ko restart karein (cron service ke alawa).
+- **Docker Compose**: `docker-compose.yml` में `environment` के अंतर्गत समान कीज़ सेट करें (फ़ाइल में टिप्पणी किए गए उदाहरण शामिल हैं) और ऐप कंटेनर को फिर से बनाएं। `docker exec` चल रहे कंटेनर के एनवायरनमेंट वैरिएबल को नहीं बदलता है।
+- **लोकल / systemd**: सर्विस एनवायरनमेंट में वैरिएबल को एक्सपोर्ट करें और Next.js प्रोसेस को रीस्टार्ट करें (न केवल क्रॉन सर्विस को)।
 
-Jab tak aap UI ko phir se khol sakte hain:
+जब आप UI को फिर से खोल सकें:
 
-1. Log in karein aur CIDRs aur trusted proxies ko Sammaan → IP Allowlist mein fix karein.
-2. Environment override ko remove karein taaki Settings phir se truth ka source ban sake.
+1. लॉग इन करें और सेटिंग्स → IP अनुमति सूची में CIDR और विश्वसनीय प्रॉक्सी ठीक करें।
+2. एनवायरनमेंट ओवरराइड को हटा दें ताकि सेटिंग्स फिर से सोर्स ऑफ़ ट्रुथ बन जाए।
 
-The **external API** allowlist (`/api/upload`, `/api/summary`, `/api/lastbackup*`) dashboard ko lock nahi karta. Isse `EXTERNAL_API_IP_ALLOWLIST_ENABLED=false` ya `EXTERNAL_API_IP_ALLOWLIST` ke saath same tareeke se recover karein. Agar aapne us list ko enable karne ke baad Duplicati uploads HTTP 403 ke saath fail ho rahi hain, toh [New Backups Not Showing](#new-backups-not-showing) dekhiye. Trusted-proxy recovery `IP_TRUSTED_PROXIES` ka use karta hai (non-empty value ka matlab bhi trust-proxy hai).
+**बाहरी API** अनुमति सूची (`/api/upload`, `/api/summary`, `/api/lastbackup*`) डैशबोर्ड को लॉक नहीं करती है। इसे `EXTERNAL_API_IP_ALLOWLIST_ENABLED=false` या `EXTERNAL_API_IP_ALLOWLIST` के साथ उसी तरह पुनर्प्राप्त करें। यदि उस सूची को सक्षम करने के बाद Duplicati अपलोड HTTP 403 के साथ विफल हो जाते हैं, तो [New Backups Not Showing](#new-backups-not-showing) देखें। विश्वसनीय प्रॉक्सी पुनर्प्राप्ति के लिए `IP_TRUSTED_PROXIES` का उपयोग किया जाता है (एक गैर-रिक्त मान का अर्थ ट्रस्ट-प्रॉक्सी भी है)।
 
-See [IP Allowlist](settings/ip-allowlist-settings.md#environment-overrides) aur [Environment Variables](../installation/environment-variables.md).
+[IP अनुमति सूची](settings/ip-allowlist-settings.md#environment-overrides) और [Environment Variables](../installation/environment-variables.md) देखें।
 
-### Database Backup aur माइग्रेशन {/* #database-backup-and-migration */}
+### डेटाबेस बैकअप और माइग्रेशन {/* #database-backup-and-migration */}
 
-पिछले संस्करण से माइग्रेट करते समय या डेटाबेस बैकअप बनाते समय:
+पिछले संस्करणों से माइग्रेट करते समय या डेटाबेस बैकअप बनाते समय:
 
-**यदि आप 1.2.1 या उससे बाद का संस्करण चला रहे हैं:**
-- [सेटिंग्स → डेटाबेस रखरखाव](user-guide/settings/database-maintenance.md) में बिल्ट-इन डेटाबेस बैकअप फ़ंक्शन का उपयोग करें
-- अपनी पसंदीदा प्रारूप (.db या .sql) चुनें और **डाउनलोड बैकअप** पर क्लिक करें
-- बैकअप फ़ाइल आपके कंप्यूटर पर डाउनलोड की जाएगी
-- [डेटाबेस रखरखाव](settings/database-maintenance.md#database-backup) में विस्तृत निर्देशों के लिए देखें
+**यदि आप संस्करण 1.2.1 या बाद का संस्करण चला रहे हैं:**
+- [सेटिंग्स → डेटाबेस रखरखाव](user-guide/settings/database-maintenance.md) में इन-बिल्ट डेटाबेस बैकअप फ़ंक्शन का उपयोग करें
+- अपना पसंदीदा फ़ॉर्मेट (.db या .sql) चुनें और **बैकअप डाउनलोड करें** पर क्लिक करें
+- बैकअप फ़ाइल आपके कंप्यूटर पर डाउनलोड हो जाएगी
+- विस्तृत निर्देशों के लिए [डेटाबेस रखरखाव](settings/database-maintenance.md#database-backup) देखें
 
 **यदि आप 1.2.1 से पहले का संस्करण चला रहे हैं:**
-- आपको मैन्युअल रूप से बैकअप करना पड़ेगा। अधिक जानकारी के लिए [माइग्रेशन गाइड](../migration/version_upgrade.md#backing-up-your-database-before-migration) देखें।
+- आपको मैन्युअल रूप से बैकअप लेना होगा। अधिक जानकारी के लिए [Migration Guide](../migration/version_upgrade.md#backing-up-your-database-before-migration) देखें।
 
-यदि आप अभी भी समस्याओं का सामना कर रहे हैं, तो निम्नलिखित चरणों का प्रयास करें:
+यदि आपको अभी भी समस्याओं का सामना करना पड़ रहा है, तो निम्नलिखित चरणों का प्रयास करें:
 
-1.  **एप्लिकेशन लॉग्स की जाँच करें**: यदि Docker का उपयोग कर रहे हैं, तो `docker logs <container-name>` चलाएं विस्तृत त्रुटि जानकारी की समीक्षा के लिए।
-2.  **कॉन्फ़िगरेशन की पुष्टि करें**: अपने कंटेनर प्रबंधन टूल (Docker, Portainer, Podman, आदि) में सभी कॉन्फ़िगरेशन सेटिंग्स की दोबारा जाँच करें, जिसमें पोर्ट, नेटवर्क, और अनुमतियाँ शामिल हैं।
-3.  **नेटवर्क कनेक्टिविटी की पुष्टि करें**: सुनिश्चित करें कि सभी नेटवर्क कनेक्शन स्थिर हैं।
-4.  **क्रॉन सेवा की जाँच करें**: सुनिश्चित करें कि क्रॉन सेवा मुख्य एप्लिकेशन के साथ चल रही है। दोनों सेवाओं के लिए लॉग्स की जाँच करें।
-5.  **दस्तावेज़ देखें**: अधिक जानकारी के लिए स्थापना गाइड और README देखें।
-6.  **समस्याओं की रिपोर्ट**: यदि समस्या बनी रहती है, तो कृपया [duplistatus GitHub रिपॉजिटरी](https://github.com/wsj-br/duplistatus/issues) पर विस्तृत समस्या सबमिट करें।
+1.  **एप्लिकेशन लॉग जांचें**: यदि Docker का उपयोग कर रहे हैं, तो विस्तृत त्रुटि जानकारी की समीक्षा करने के लिए `docker logs <container-name>` चलाएं।
+2.  **कॉन्फ़िगरेशन मान्य करें**: अपने कंटेनर प्रबंधन टूल (Docker, Portainer, Podman, आदि) में पोर्ट, नेटवर्क और अनुमतियों सहित सभी कॉन्फ़िगरेशन सेटिंग्स की दोबारा जांच करें।
+3.  **नेटवर्क कनेक्टिविटी सत्यापित करें**: पुष्टि करें कि सभी नेटवर्क कनेक्शन स्थिर हैं।
+4.  **क्रॉन सर्विस जांचें**: सुनिश्चित करें कि क्रॉन सर्विस मुख्य एप्लिकेशन के साथ चल रही है। दोनों सेवाओं के लॉग जांचें।
+5.  **दस्तावेज़ीकरण देखें**: अधिक जानकारी के लिए इंस्टॉलेशन गाइड और README देखें।
+6.  **समस्याओं की रिपोर्ट करें**: यदि समस्या बनी रहती है, तो कृपया [duplistatus GitHub repository](https://github.com/wsj-br/duplistatus/issues) पर एक विस्तृत समस्या दर्ज करें।
 
 <br/>
 
 # अतिरिक्त संसाधन {/* #additional-resources */}
 
-- **स्थापना गाइड**: [स्थापना गाइड](../installation/installation.md)
-- **डुप्लिकेटी दस्तावेज़**: [docs.duplicati.com](https://docs.duplicati.com)
+- **इंस्टॉलेशन गाइड**: [इंस्टॉलेशन गाइड](../installation/installation.md)
+- **Duplicati दस्तावेज़**: [docs.duplicati.com](https://docs.duplicati.com)
 - **API दस्तावेज़**: [API संदर्भ](../api-reference/overview.md)
 - **GitHub रिपॉजिटरी**: [wsj-br/duplistatus](https://github.com/wsj-br/duplistatus)
-- **विकास गाइड**: [विकास गाइड](../development/setup.md)
+- **डेवलपमेंट गाइड**: [डेवलपमेंट गाइड](../development/setup.md)
 - **डेटाबेस स्कीमा**: [डेटाबेस दस्तावेज़](../development/database)
 
 ### सहायता {/* #support */}
-- **GitHub Issues**: [बग रिपोर्ट करें या फ़ीचर अनुरोध करें](https://github.com/wsj-br/duplistatus/issues)
+- **GitHub Issues**: [बग रिपोर्ट करें या फ़ीचर का अनुरोध करें](https://github.com/wsj-br/duplistatus/issues)

@@ -250,7 +250,7 @@
        y="162.72096"
        id="text3"
        inkscape:label="auto-refresh"
-       transform="matrix(0.80000001,0,0,0.80000001,19.387386,-33.738121)"><tspan>habilitar/deshabilitar</tspan></text><text
+       transform="matrix(0.80000001,0,0,0.80000001,19.387386,-33.738121)"><tspan>activar/desactivar</tspan></text><text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.9389px;font-family:Geist;-inkscape-font-specification:Geist;text-align:end;writing-mode:lr-tb;direction:ltr;text-anchor:end;white-space:pre;inline-size:54.9284;display:inline;fill:#3a5af9;fill-opacity:1;stroke:#3a5af9;stroke-width:0.079375;stroke-miterlimit:0;stroke-opacity:1"
        x="124.78"
@@ -264,7 +264,7 @@
        y="118.66154"
        id="text6-1"
        inkscape:label="view-ntfy"
-       transform="matrix(0.80000001,0,0,0.80000001,13.687373,-37.29461)"><tspan>ver mensajes de ntfy</tspan></text><text
+       transform="matrix(0.80000001,0,0,0.80000001,13.687373,-37.29461)"><tspan>ver mensajes ntfy</tspan></text><text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.9389px;font-family:Geist;-inkscape-font-specification:Geist;text-align:end;writing-mode:lr-tb;direction:ltr;text-anchor:end;white-space:pre;inline-size:39.7827;display:inline;fill:#3a5af9;fill-opacity:1;stroke:#3a5af9;stroke-width:0.07875;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1"
        x="114.63708"

@@ -1,16 +1,16 @@
 # Versions de Duplicati {/* #duplicati-versions */}
 
-Cette page affiche les dernières versions de Duplicati stockées dans le cache **duplistatus** et permet aux administrateurs de configurer la fréquence de mise à jour de ces versions depuis GitHub.
+Cette page affiche les dernières versions de Duplicati stockées dans le cache **duplistatus** et permet aux administrateurs de configurer la fréquence à laquelle celles-ci sont actualisées depuis GitHub.
 
 ![Versions de Duplicati](../../assets/screen-settings-duplicati-versions.png)
 
-Le cache est utilisé par le [tableau de bord](../dashboard.md#duplicati-server-version) et la [page Serveurs](server-settings.md) pour colorer chaque version de serveur et indiquer si elle est à jour ou obsolète.
+Le cache est utilisé par le [tableau de bord](../dashboard.md#duplicati-server-version) et la page [Serveurs](server-settings.md) pour colorer chaque version du serveur et afficher si elle est à jour ou obsolète.
 
 ## Dernières versions de la chaîne {/* #latest-channel-versions */}
 
 Le tableau liste la dernière version en cache pour chaque chaîne Duplicati :
 
-| Chaîne        | Description                                      |
+| Canal          | Description                                      |
 |:---------------|:-------------------------------------------------|
 | **Stable**     | Dernière version stable                            |
 | **Bêta**       | Dernière version bêta                              |
@@ -21,31 +21,31 @@ La dernière heure de mise à jour réussie de GitHub est affichée au-dessus du
 
 Les administrateurs peuvent cliquer sur **Mettre à jour maintenant** pour récupérer les dernières versions immédiatement. Cela ne nécessite pas que le service cron soit en cours d'exécution. Si GitHub ne peut pas être atteint, **duplistatus** conserve le cache précédent.
 
-## Vérification de la version {/* #version-check-schedule */}
+## Planification de la vérification des versions {/* #version-check-schedule */}
 
 **Afficher la version sur le tableau de bord** active ou désactive le badge de version dans la vue en carte du [tableau de bord](../dashboard.md#duplicati-server-version). Le tableau du tableau de bord affiche toujours la colonne **Version**. Il est activé par défaut et est également disponible dans les [Paramètres d'affichage](display-settings.md). Il s'agit d'une préférence d'affichage par utilisateur.
 
 Les administrateurs peuvent choisir la fréquence à laquelle **duplistatus** vérifie GitHub pour de nouvelles versions de Duplicati :
 
-| Intervalle           | Exécutions                                                         |
+| Intervalle         | Exécutions                                                         |
 |:-------------------|:-------------------------------------------------------------|
 | **Une fois par jour**     | Une fois à l'heure de début configurée                            |
 | **Toutes les 12 heures** | À l'heure de début et 12 heures plus tard                         |
 | **Toutes les 6 heures**  | À l'heure de début et toutes les 6 heures après cela               |
 
-L'heure de début est choisie dans le fuseau horaire de votre navigateur en utilisant le même contrôle d'heure compact que le Résumé quotidien. Choisissez n'importe quelle `HH:mm` heure. **duplistatus** stocke cette valeur en UTC et le service cron exécute la vérification en UTC.
+L'heure de début est choisie dans le fuseau horaire de votre navigateur en utilisant le même contrôle d'heure compact que le Résumé quotidien. Choisissez n'importe quelle heure `HH:mm`. **duplistatus** stocke cette valeur en UTC et le service cron exécute la vérification en UTC.
 
 Exemples :
 
-- Quotidien avec une heure de début de 06:00 s'exécute à 06:00.
-- Quotidien avec une heure de début de 06:30 s'exécute à 06:30.
-- Toutes les 12 heures avec une heure de début de 08:15 s'exécute à 08:15 et 20:15.
-- Toutes les 6 heures avec une heure de début de 02:45 s'exécute à 02:45, 08:45, 14:45, et 20:45.
+- Tous les jours avec une heure de début à 06:00 s'exécute à 06:00.
+- Tous les jours avec une heure de début à 06:30 s'exécute à 06:30.
+- Toutes les 12 heures avec une heure de début à 08:15 s'exécute à 08:15 et 20:15.
+- Toutes les 6 heures avec une heure de début à 02:45 s'exécute à 02:45, 08:45, 14:45 et 20:45.
 
-Au démarrage, **duplistatus** actualise également le cache s'il est plus ancien que l'intervalle sélectionné (24 heures, 12 heures ou 6 heures), y compris sur une nouvelle base de données vide. Les échecs transitoires de GitHub, tels que les erreurs HTTP 504, sont réessayés. Les actualisations échouées conservent les dernières versions en cache.
+Au démarrage, **duplistatus** actualise également le cache s'il est plus ancien que l'intervalle sélectionné (24 heures, 12 heures ou 6 heures), y compris sur une nouvelle base de données vide. Les échecs transitoires de GitHub, tels que HTTP 504, sont réessayés. Les actualisations échouées conservent les dernières versions en cache.
 
-Les utilisateurs réguliers peuvent consulter les versions en cache et le planning, et peuvent activer ou désactiver **Afficher la version sur le tableau de bord**. Seuls les administrateurs peuvent modifier l'intervalle, l'heure de début ou forcer une mise à jour.
+Les utilisateurs réguliers peuvent voir les versions en cache et le planning, et peuvent activer ou désactiver **Afficher la version sur le tableau de bord**. Seuls les administrateurs peuvent modifier l'intervalle, l'heure de début ou forcer une mise à jour.
 
 :::note
-Changer le planning écrit une entrée `duplicati_version_check_updated` dans le [journal d'audit](audit-logs-viewer.md). Les mises à jour GitHub réussies et échouées sont enregistrées comme `duplicati_version_refresh` avec un déclencheur de `startup`, `cron`, ou `manual`.
+Changer le planning écrit une entrée `duplicati_version_check_updated` dans le [journal d'audit](audit-logs-viewer.md). Les mises à jour GitHub réussies et échouées sont enregistrées comme `duplicati_version_refresh` avec un déclencheur de `startup`, `cron` ou `manual`.
 :::

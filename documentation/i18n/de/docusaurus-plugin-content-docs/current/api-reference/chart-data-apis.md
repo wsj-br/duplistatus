@@ -1,11 +1,11 @@
 # Diagrammdaten {/* #chart-data */}
 
 ## Aggregierte Diagrammdaten abrufen - `/api/chart-data/aggregated` {/* #get-aggregated-chart-data---apichart-dataaggregated */}
-- **Endpoint**: `/api/chart-data/aggregated`
+- **Endpunkt**: `/api/chart-data/aggregated`
 - **Methode**: GET
 - **Beschreibung**: Ruft aggregierte Diagrammdaten mit optionaler Zeitbereichsfilterung ab.
 - **Abfrageparameter**:
-  - `startDate` (optional): Anfangsdatum für die Filterung (ISO-Format)
+  - `startDate` (optional): Startdatum für die Filterung (ISO-Format)
   - `endDate` (optional): Enddatum für die Filterung (ISO-Format)
 - **Antwort**:
 
@@ -28,18 +28,18 @@
   - `400`: Ungültige Datumsparameter
   - `500`: Serverfehler beim Abrufen der Diagrammdaten
 - **Hinweise**:
-  - Unterstützt die Filterung nach Zeitraum mit den Parametern startDate und endDate
-  - Überprüft das Datumsformat vor der Verarbeitung
+  - Unterstützt Zeitbereichsfilterung mit startDate und endDate Parametern
+  - Validiert das Datumsformat vor der Verarbeitung
   - Gibt aggregierte Daten über alle Server zurück
 
-## Serverdiagrammdaten abrufen - `/api/chart-data/server/:serverId` {/* #get-server-chart-data---apichart-dataserverserverid */}
-- **Endpoint**: `/api/chart-data/server/:serverId`
+## Server-Diagrammdaten abrufen - `/api/chart-data/server/:serverId` {/* #get-server-chart-data---apichart-dataserverserverid */}
+- **Endpunkt**: `/api/chart-data/server/:serverId`
 - **Methode**: GET
 - **Beschreibung**: Ruft Diagrammdaten für einen bestimmten Server mit optionaler Zeitbereichsfilterung ab.
 - **Parameter**:
-  - `serverId`: die Serverkennung
+  - `serverId`: der Server-Identifikator
 - **Abfrageparameter**:
-  - `startDate` (optional): Anfangsdatum für die Filterung (ISO-Format)
+  - `startDate` (optional): Startdatum für die Filterung (ISO-Format)
   - `endDate` (optional): Enddatum für die Filterung (ISO-Format)
 - **Antwort**:
 
@@ -62,19 +62,19 @@
   - `400`: Ungültige Datumsparameter
   - `500`: Serverfehler beim Abrufen der Diagrammdaten
 - **Hinweise**:
-  - Unterstützt die Filterung nach Zeitraum mit den Parametern startDate und endDate
-  - Überprüft das Datumsformat vor der Verarbeitung
+  - Unterstützt Zeitbereichsfilterung mit startDate und endDate Parametern
+  - Validiert das Datumsformat vor der Verarbeitung
   - Gibt Diagrammdaten für einen bestimmten Server zurück
 
-## Server-Sicherungsdiagrammdaten abrufen - `/api/chart-data/server/:serverId/backup/:backupName` {/* #get-server-backup-chart-data---apichart-dataserverserveridbackupbackupname */}
-- **Endpoint**: `/api/chart-data/server/:serverId/backup/:backupName`
+## Server-Backup-Diagrammdaten abrufen - `/api/chart-data/server/:serverId/backup/:backupName` {/* #get-server-backup-chart-data---apichart-dataserverserveridbackupbackupname */}
+- **Endpunkt**: `/api/chart-data/server/:serverId/backup/:backupName`
 - **Methode**: GET
-- **Beschreibung**: Ruft Diagrammdaten für einen bestimmten Server und eine Sicherung mit optionaler Zeitbereichsfilterung ab.
+- **Beschreibung**: Ruft Diagrammdaten für einen bestimmten Server und Backup mit optionaler Zeitbereichsfilterung ab.
 - **Parameter**:
-  - `serverId`: die Serverkennung
-  - `backupName`: der Sicherungsname (URL-kodiert)
+  - `serverId`: der Server-Identifikator
+  - `backupName`: der Backup-Name (URL-kodiert)
 - **Abfrageparameter**:
-  - `startDate` (optional): Anfangsdatum für die Filterung (ISO-Format)
+  - `startDate` (optional): Startdatum für die Filterung (ISO-Format)
   - `endDate` (optional): Enddatum für die Filterung (ISO-Format)
 - **Antwort**:
 
@@ -97,7 +97,7 @@
   - `400`: Ungültige Datumsparameter
   - `500`: Serverfehler beim Abrufen der Diagrammdaten
 - **Hinweise**:
-  - Unterstützt die Filterung nach Zeitraum mit den Parametern startDate und endDate
-  - Überprüft das Datumsformat vor der Verarbeitung
-  - Gibt Diagrammdaten für eine bestimmte Kombination aus Server und Sicherung zurück
-  - Der Sicherungsname muss URL-kodiert sein
+  - Unterstützt Zeitbereichsfilterung mit startDate und endDate Parametern
+  - Validiert das Datumsformat vor der Verarbeitung
+  - Gibt Diagrammdaten für eine bestimmte Server- und Backup-Kombination zurück
+  - Der Backup-Name muss URL-kodiert sein

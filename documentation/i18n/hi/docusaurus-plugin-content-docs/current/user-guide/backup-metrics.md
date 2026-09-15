@@ -1,55 +1,55 @@
-# बैकअप Manak {/* #backup-metrics */}
+# बैकअप मेट्रिक्स {/* #backup-metrics */}
 
-Dashboard (table view) aur server details page par samay ke sath backup manak ka ek chart dikhaya jata hai.
+समय के साथ बैकअप मेट्रिक्स का एक चार्ट डैशबोर्ड (तालिका दृश्य) और सर्वर विवरण पृष्ठ दोनों पर दिखाया जाता है।
 
-- **Dashboard**, chart par **duplistatus** database mein record ki gayi sabhi backups ki sankhya dikhati hai. Agar aap Cards layout ka istemal kar rahe hain, to aap ek server select karke uske consolidated manak dekh sakte hain (jab side panel manak dikhata hai).
-- **Server Details** page, chart par selected server ke liye manak dikhaye jate hain (uske sabhi backups ke liye) ya ek specific backup ke liye.
+- **डैशबोर्ड**, चार्ट **duplistatus** डेटाबेस में दर्ज किए गए बैकअप की कुल संख्या दिखाता है। यदि आप कार्ड लेआउट का उपयोग करते हैं, तो आप इसके समेकित मेट्रिक्स देखने के लिए एक सर्वर का चयन कर सकते हैं (जब साइड पैनल मेट्रिक्स दिखा रहा हो)।
+- **सर्वर विवरण** पृष्ठ, चार्ट चयनित सर्वर के लिए (इसके सभी बैकअप के लिए) या किसी एकल, विशिष्ट बैकअप के लिए मेट्रिक्स दिखाता है।
 
-![Backup Manak](../assets/screen-metrics.png)
+![बैकअप मेट्रिक्स](../assets/screen-metrics.png)
 
 ## इनलाइन चार्ट नियंत्रण {/* #inline-chart-controls */}
 
-Quick access controls are available directly on chart panel headers for easy configuration without navigating to Display Settings:
+प्रदर्शन सेटिंग्स पर जाए बिना आसान कॉन्फ़िगरेशन के लिए सीधे चार्ट पैनल हेडर पर त्वरित एक्सेस नियंत्रण उपलब्ध हैं:
 
 ### समय सीमा चयनकर्ता {/* #time-range-selector */}
 
-Chart header mein pill buttons dikhaye jate hain quick time range selection ke liye: **1W | 2W | 1M | 3M**
+त्वरित समय सीमा चयन के लिए चार्ट हेडर में पिल बटन दिखाई देते हैं: **1W | 2W | 1M | 3M**
 
-- **1W**: Antim 7 din (rolling window)
-- **2W**: Antim 14 din (rolling window)
-- **1M**: Antim 30 din (rolling window, default)
-- **3M**: Antim 90 din (rolling window)
+- **1W**: अंतिम 7 दिन (रोलिंग विंडो)
+- **2W**: अंतिम 14 दिन (रोलिंग विंडो)
+- **1M**: अंतिम 30 दिन (रोलिंग विंडो, डिफ़ॉल्ट)
+- **3M**: अंतिम 90 दिन (रोलिंग विंडो)
 
-Yahan par kiya gaye changes Display Settings ke sath sync hote hain, isliye aapka preference page refreshes ke beech bhi yad rakha jata hai.
+यहां किए गए परिवर्तन आपकी प्रदर्शन सेटिंग्स के साथ सिंक होते हैं, इसलिए पृष्ठ रीफ़्रेश होने पर भी आपकी प्राथमिकता याद रखी जाती है।
 
-### Chart shaili टॉगल {/* #chart-style-toggle */}
+### चार्ट शैली टॉगल {/* #chart-style-toggle */}
 
-Chart header mein ek toggle button hai jisse aap smooth lines aur bar chart ke beech switch kar sakte hain:
+चार्ट हेडर में एक टॉगल बटन आपको इनके बीच स्विच करने की अनुमति देता है:
 
-- **Smooth Lines**: Smooth curves ke sath data points ko connect karke dikhata hai
-- **Bar Chart**: Har time period ke liye discrete bars ke roop mein data dikhata hai
+- **स्मूथ रेखाएं**: स्मूथ वक्रों से जुड़े डेटा बिंदुओं को प्रदर्शित करें
+- **बार चार्ट**: प्रत्येक समय अवधि के लिए असतत बार के रूप में डेटा प्रदर्शित करें
 
-Dono modes time-bucket aggregation ka istemal karte hain optimal display ke liye. Bar mode mein empty periods par koi bar nahi dikhata. Aapka preference page refreshes ke beech bhi yad rakha jata hai aur Display Settings ke sath sync hota hai.
+इष्टतम प्रदर्शन के लिए दोनों मोड टाइम-बकेट एग्रीगेशन का उपयोग करते हैं। बार मोड में खाली अवधियों के लिए कोई बार रेंडर नहीं होता है। आपकी प्राथमिकता पृष्ठ रीफ़्रेश होने पर भी बनी रहती है और प्रदर्शन सेटिंग्स के साथ सिंक होती है।
 
 ## चार्ट डेटा समेकन {/* #chart-data-consolidation */}
 
-Jab ek hi din par multiple backups hote hain, to **duplistatus** chart par dikhane se pehle data ko consolidate karta hai:
+जब एक ही दिन में कई बैकअप होते हैं, तो **duplistatus** डेटा को चार्ट पर प्रदर्शित करने से पहले समेकित करता है:
 
-- **SUM**: Cumulative metrics (Duration, File Count, File Size, Uploaded Size) ke liye istemal kiya jata hai
-- **LAST**: Storage Size ke liye istemal kiya jata hai (din ke sabse recent value)
-- **MAX**: Available Versions ke liye istemal kiya jata hai (din ke sabse highest count)
+- **SUM**: संचयी मेट्रिक्स (अवधि, फ़ाइल गणना, फ़ाइल आकार, अपलोड किया गया आकार) के लिए उपयोग किया जाता है
+- **LAST**: संग्रहण आकार (दिन का सबसे हालिया मान) के लिए उपयोग किया जाता है
+- **MAX**: उपलब्ध संस्करण (दिन की उच्चतम संख्या) के लिए उपयोग किया जाता है
 
-Yeh consolidation time bucketing ke apply hone se pehle hota hai, isse accurate aggregated metrics ensure hote hain. For example, 5/12/26 par do backups hone par chart par ek consolidated data point dikhayi jayegi.
+यह समेकन टाइम बकेटिंग लागू होने से पहले होता है, जिससे सटीक संचित मेट्रिक्स सुनिश्चित होते हैं। उदाहरण के लिए, 5/12/26 को दो बैकअप चार्ट पर एक समेकित डेटा बिंदु तैयार करेंगे।
 
-## मेट्रिक परिभाषाएँ {/* #metric-definitions */}
+## मेट्रिक परिभाषाएं {/* #metric-definitions */}
 
-- **Uploaded Size**: Duplicati server se destination (local storage, FTP, cloud provider, ...) par backups ke dauran upload/transmit ki gayi total data ki miktar per din.
-- **Duration**: Per din HH:MM mein sabhi backups ke liye total duration.
-- **File Count**: Per din sabhi backups ke liye file count counter ki sankhya ka sum.
-- **File Size**: Per din sabhi backups ke liye Duplicati server ne report ki gayi file size ka sum.
-- **Sanchayan Aakar**: Sabhi backups ke liye Duplicati server ne dinank ke hisab se report kiya gaya sanrakhshan aakar ka sankhya.
-- **Upalabdh Versions**: Sabhi backups ke liye sabhi upalabdh versions ka sankhya dinank ke hisab se.
+- **अपलोड किया गया आकार**: Duplicati सर्वर से गंतव्य (स्थानीय संग्रहण, FTP, क्लाउड प्रदाता, ...) तक बैकअप के दौरान प्रति दिन अपलोड/ट्रांसमिट किए गए डेटा की कुल मात्रा।
+- **अवधि**: HH:MM में प्रति दिन प्राप्त सभी बैकअप की कुल अवधि।
+- **फ़ाइल गणना**: प्रति दिन सभी बैकअप के लिए प्राप्त फ़ाइल गणना काउंटर का योग।
+- **फ़ाइल आकार**: प्रति दिन प्राप्त सभी बैकअप के लिए Duplicati सर्वर द्वारा रिपोर्ट किए गए फ़ाइल आकार का योग।
+- **संग्रहण आकार**: Duplicati सर्वर द्वारा प्रतिदिन रिपोर्ट किए गए बैकअप गंतव्य पर उपयोग किया गया स्टोरेज आकार का योग।
+- **उपलब्ध संस्करण**: प्रतिदिन सभी बैकअप के लिए सभी उपलब्ध संस्करणों का योग।
 
 :::note
-Chart ke liye samay rang ko configure karne ke liye aap [Display settings](settings/display-settings.md) control ka upyog kar sakte hain.
+आप चार्ट के लिए समय सीमा कॉन्फ़िगर करने के लिए [प्रदर्शन सेटिंग्स](settings/display-settings.md) नियंत्रण का उपयोग कर सकते हैं।
 :::

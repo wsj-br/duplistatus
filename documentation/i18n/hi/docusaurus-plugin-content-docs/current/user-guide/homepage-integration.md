@@ -1,10 +1,10 @@
-# होमपेज एकीकरण (optional) {/* #homepage-integration-optional */}
+# Homepage एकीकरण (वैकल्पिक) {/* #homepage-integration-optional */}
 
-[होमपेज](https://gethomepage.dev/) एक अनुकूलन योग्य डैशबोर्ड एप्लिकेशन है। **duplistatus** को होमपेज के साथ एकीकरण करने के लिए, [Custom API widget type](https://gethomepage.dev/widgets/services/customapi/) का उपयोग करके अपने `services.yaml` फ़ाइल में एक विजेट जोड़ें।
+[Homepage](https://gethomepage.dev/) एक कस्टमाइज़ करने योग्य डैशबोर्ड एप्लिकेशन है। **duplistatus** को Homepage के साथ एकीकृत करने के लिए, [कस्टम API विजेट प्रकार](https://gethomepage.dev/widgets/services/customapi/) का उपयोग करके अपनी `services.yaml` फ़ाइल में एक विजेट जोड़ें।
 
 ## सारांश विजेट {/* #summary-widget */}
 
-यह विजेट आपके होमपेज डैशबोर्ड पर समग्र बैकअप आँकड़े प्रदर्शित करता है।
+यह विजेट आपके Homepage डैशबोर्ड पर समग्र बैकअप सांख्यिकी प्रदर्शित करता है।
 
 ```yaml
 - Dashboard:
@@ -42,7 +42,7 @@
 
 **विजेट प्रदर्शन:**
 
-![होमपेज सारांश विजेट](/img/homepage-summary.png)
+![Homepage सारांश विजेट](/img/homepage-summary.png)
 
 ## अंतिम बैकअप जानकारी विजेट {/* #last-backup-information-widget */}
 
@@ -77,13 +77,13 @@
 
 **विजेट प्रदर्शन:**
 
-![होमपेज अंतिम बैकअप विजेट](/img/homepage-lastbackup.png)
+![Homepage अंतिम बैकअप विजेट](/img/homepage-lastbackup.png)
 
 ## कॉन्फ़िगरेशन नोट्स {/* #configuration-notes */}
 
-- `your-server` को अपने सर्वर के IP पते या होस्टनेम से बदलें।
-- `refreshInterval` को आवश्यकतानुसार समायोजित करें (मिलीसेकंड में)।
-- URL में मशीन नामों में अंतराल को `%20` से बदलें (उदाहरण के लिए, `Test Machine 1` को `Test%20Machine%201` में बदलें)।
-- `scale` मान बाइट को अधिक पठनीय इकाइयों (GB, MB) में परिवर्तित करते हैं।
-- **पढ़ें**-स्कोप एपीआई कुंजियाँ का उपयोग करें जब [एपीआई कुंजियाँ](settings/api-keys-settings.md) की आवश्यकता हो। कुंजियाँ वैकल्पिक होने पर `?api_key=` छोड़ दें।
-- अगर [बाहरी एपीआई आईपी अनुमति सूची](settings/ip-allowlist-settings.md) सक्शम किया गया है, तो होमपेज होस्ट शामिल करें।
+- `your-server` को अपने सर्वर के आईपी पता या होस्टनाम से बदलें।
+- आवश्यकतानुसार `refreshInterval` को समायोजित करें (मिलीसेकंड में)।
+- URL में मशीन के नामों में मौजूद स्पेस को `%20` से बदलें (उदाहरण के लिए, `Test Machine 1`, `Test%20Machine%201` बन जाता है)।
+- `scale` मान बाइट्स को अधिक पठनीय इकाइयों (GB, MB) में बदलते हैं।
+- जब [API कुंजियाँ](settings/api-keys-settings.md) आवश्यक हों, तो **read**-स्कोप API कुंजी का उपयोग करें। कुंजियाँ वैकल्पिक होने पर `?api_key=` को हटा दें।
+- यदि [बाहरी API IP अनुमति सूची](settings/ip-allowlist-settings.md) सक्षम है, तो Homepage होस्ट को शामिल करें।

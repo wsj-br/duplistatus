@@ -1,9 +1,9 @@
 # Système de notifications {/* #notification-system */}
 
-## Notification de test - `/api/notifications/test` {/* #test-notification---apinotificationstest */}
-- **Point de terminaison**: `/api/notifications/test`
-- **Méthode**: POST
-- **Description**: Envoyer des notifications de test (simples, basées sur des modèles ou par E-mail) pour vérifier la configuration des notifications.
+## Tester la notification - `/api/notifications/test` {/* #test-notification---apinotificationstest */}
+- **Point de terminaison** : `/api/notifications/test`
+- **Méthode** : POST
+- **Description** : Envoyer des notifications de test (simples, basées sur des modèles ou par e-mail) pour vérifier la configuration des notifications.
 - **Authentification** : Nécessite une session d'administrateur et un jeton CSRF
 - **Corps de la requête** :
   Pour un test simple :
@@ -73,39 +73,39 @@ Pour un test d'e-mail :
   }
   ```
 
-Le contenu du courrier de test affiche :
-  - Le nom d'hôte et le port du serveur SMTP
-  - Le type de connexion (SMTP standard, STARTTLS ou SSL/TLS direct)
-  - L'état de la nécessité d'authentification SMTP
-  - Le nom d'utilisateur SMTP (affiché uniquement si l'authentification est requise)
-  - L'adresse e-mail du destinataire
-  - L'adresse d'expédition et le nom de l'expéditeur utilisés pour le courrier
-  - L'horodatage du test
+Le contenu de l'e-mail de test affiche :
+  - Nom d'hôte et port du serveur SMTP
+  - Type de connexion (SMTP simple, STARTTLS ou SSL/TLS direct)
+  - Statut de l'authentification SMTP
+  - Nom d'utilisateur SMTP (affiché uniquement lorsque l'authentification est requise)
+  - Adresse e-mail du destinataire
+  - Adresse d'expéditeur et nom de l'expéditeur utilisés pour l'e-mail
+  - Horodatage du test
 - **Réponses d'erreur** :
   - `401` : Non autorisé - Session ou jeton CSRF invalide
-  - `400` : La configuration NTFY est requise, la configuration est invalide ou l'e-mail n'est pas configuré
+  - `400` : Configuration NTFY requise, configuration invalide ou e-mail non configuré
   - `500` : Échec de l'envoi de la notification de test avec détails de l'erreur
-- **Notes** :
-  - Prend en charge les messages de test simples, les notifications basées sur un modèle et les tests par courrier électronique
-  - Le test de modèle utilise des données d'exemple pour remplacer les variables du modèle
+- **Remarques** :
+  - Prend en charge les messages de test simples, les notifications basées sur des modèles et les tests d'e-mail
+  - Le test de modèle utilise des données d'exemple pour remplacer les variables de modèle
   - Inclut un horodatage dans le message de test
   - Les tests NTFY utilisent la configuration NTFY stockée ; une URL NTFY fournie par le client n'est pas utilisée
-  - Utilisations le champ `accessToken` pour l'authentification quand stocké
-  - Pour les tests de modèle, envoie des notifications à la fois à NTFY et à l'e-mail (si configuré)
-  - Les tests d'e-mail nécessitent que la configuration SMTP soit configurée
+  - Utilise le champ `accessToken` pour l'authentification lorsque stocké
+  - Pour les tests de modèle, envoie des notifications à NTFY et à l'e-mail (si configuré)
+  - Les tests d'e-mail nécessitent que la configuration SMTP soit définie
   - Le point de terminaison de l'e-mail de test efface le cache de la requête avant de lire la configuration SMTP, garantissant que les scripts externes peuvent mettre à jour la configuration et que celle-ci soit immédiatement reflétée dans les e-mails de test
   - Les tests de modèle et l'envoi immédiat du Résumé quotidien contournent la suppression par sauvegarde
 
 ## Aperçu du modèle de notification - `/api/notifications/preview` {/* #preview-notification-template---apinotificationspreview */}
 - **Point de terminaison** : `/api/notifications/preview`
 - **Méthode** : POST
-- **Description** : Rendu d'un modèle de notification avec le moteur de rendu Markdown de production sans envoi. Le corps inclut `kind` (`success`, `warning`, `overdueBackup`, ou `dailySummaryEmail`) et le modèle en cours d'édition. Les aperçus de Résumé quotidien utilisent le snapshot réel actuel ; les autres utilisent des valeurs échantillon déterministes. Le HTML de l'email est destiné à une iframe sandboxée. Succès, Avertissement/Erreur et En retard retournent également le payload NTFY (`ntfyMessage`) ; tout en-tête de tableau GFM est omis et les lignes du corps sont en texte brut.
-- **Authentication**: Requiert une session valide et un jeton CSRF
+- **Description** : Rendu d'un modèle de notification avec le moteur de rendu Markdown de production sans envoi. Le corps inclut `kind` (`success`, `warning`, `overdueBackup`, ou `dailySummaryEmail`) et le modèle en cours d'édition. Les aperçus du Résumé quotidien utilisent l'instantané réel actuel ; les autres utilisent des valeurs d'échantillon déterministes. L'Email HTML est destiné à un iframe sandboxé. Succès, Avertissement/Erreur et En retard renvoient également le payload NTFY (`ntfyMessage`) ; tout en-tête de tableau GFM est omis et les lignes du corps sont en texte brut.
+- **Authentification**: Nécessite une session et un jeton CSRF valides
 
 ## Vérifier les sauvegardes en retard - `/api/notifications/check-overdue` {/* #check-overdue-backups---apinotificationscheck-overdue */}
-- **Point de terminaison**: `/api/notifications/check-overdue`
-- **Méthode**: POST
-- **Description**: Déclenche manuellement la vérification des sauvegardes en retard et envoie des notifications.
+- **Point de terminaison** : `/api/notifications/check-overdue`
+- **Méthode** : POST
+- **Description** : Déclenche manuellement la vérification des sauvegardes en retard et envoie des notifications.
 - **Authentification** : Nécessite une session valide et un jeton CSRF
 - **Réponse** :
 
@@ -123,15 +123,15 @@ Le contenu du courrier de test affiche :
 
 - **Réponses d'erreur** :
   - `500` : Échec de la vérification des sauvegardes en retard
-- **Notes** :
+- **Remarques** :
   - Déclenche manuellement la vérification des sauvegardes en retard
-  - Renvoie des statistiques sur le processus de vérification
-  - Envoie des notifications pour les sauvegardes en retard détectées
+  - Retourne des statistiques sur le processus de vérification
+  - Envoie des notifications pour les sauvegardes en retard trouvées
 
-## Effacer les horodatages en retard - `/api/notifications/clear-overdue-timestamps` {/* #clear-overdue-timestamps---apinotificationsclear-overdue-timestamps */}
-- **Point de terminaison**: `/api/notifications/clear-overdue-timestamps`
-- **Méthode**: POST
-- **Description**: Efface tous les horodatages de notification de sauvegarde en retard, permettant aux notifications d'être envoyées à nouveau.
+## Effacer les horodatages des sauvegardes en retard - `/api/notifications/clear-overdue-timestamps` {/* #clear-overdue-timestamps---apinotificationsclear-overdue-timestamps */}
+- **Point de terminaison** : `/api/notifications/clear-overdue-timestamps`
+- **Méthode** : POST
+- **Description** : Efface tous les horodatages de notification des sauvegardes en retard, permettant de renvoyer les notifications.
 - **Authentification** : Nécessite une session valide et un jeton CSRF
 - **Réponse** :
 
@@ -143,7 +143,7 @@ Le contenu du courrier de test affiche :
 
 - **Réponses d'erreur** :
   - `500` : Échec de l'effacement des horodatages des sauvegardes en retard
-- **Notes** :
-  - Efface tous les horodatages des notifications de sauvegardes en retard
+- **Remarques** :
+  - Efface tous les horodatages de notification des sauvegardes en retard
   - Permet de renvoyer les notifications
-  - Utile pour tester le système de notification
+  - Utile pour tester le système de notifications
