@@ -99,6 +99,9 @@ async function navigateApp(
       throw new Error(`Page ${path} did not render data-screenshot-target="${options.readyTarget}" within ${timeoutMs}ms`);
     }
   }
+  if (currentCaptureLocale) {
+    await waitForUiLocale(page, currentCaptureLocale, timeoutMs);
+  }
 }
 
 async function waitForAuthenticated(page: Page, timeoutMs: number = PAGE_GOTO_TIMEOUT_MS): Promise<boolean> {
@@ -374,16 +377,97 @@ function makeUrl(pathWithLeadingSlash: string): string {
   return `${BASE_URL}${path}`;
 }
 
-/** Set locale via NEXT_LOCALE cookie. */
+const LOCALE_COOKIE_MAX_AGE_SECONDS = 365 * 24 * 60 * 60;
+
+/** Resolve the authenticated user id (same pattern as switchToTableView / setDarkTheme). */
+async function getPageUserId(page: Page): Promise<string | null> {
+  return page.evaluate(async () => {
+    try {
+      const response = await fetch('/api/auth/me');
+      const data = (await response.json()) as {
+        authenticated?: boolean;
+        user?: { id?: string };
+      };
+      if (data.authenticated && data.user?.id) {
+        return data.user.id;
+      }
+    } catch {
+      // fall through to localStorage scan
+    }
+    const keys = Object.keys(localStorage);
+    for (const key of keys) {
+      if (key.includes('user') && key.includes('id')) {
+        const value = localStorage.getItem(key);
+        if (value && value.length > 10) {
+          return value;
+        }
+      }
+    }
+    return null;
+  });
+}
+
+/**
+ * Set the capture locale the same way the app stores it: NEXT_LOCALE cookie (SSR)
+ * plus per-user `ui-locale:user-<id>` localStorage (UserLocaleSync).
+ */
 async function setLocale(page: Page, locale: Locale): Promise<void> {
   await page.context().addCookies([
     {
       name: 'NEXT_LOCALE',
       value: locale,
-      domain: 'localhost',
-      path: '/',
+      url: BASE_URL,
     },
   ]);
+
+  const userId = await getPageUserId(page);
+  await page.evaluate(
+    ({ loc, uid, maxAge }: { loc: string; uid: string | null; maxAge: number }) => {
+      document.cookie = `NEXT_LOCALE=${encodeURIComponent(loc)}; path=/; max-age=${maxAge}; SameSite=Lax`;
+      localStorage.setItem('ui-locale', loc);
+      if (uid) {
+        localStorage.setItem(`ui-locale:user-${uid}`, loc);
+      }
+      for (const key of Object.keys(localStorage)) {
+        if (key.startsWith('ui-locale:user-')) {
+          localStorage.setItem(key, loc);
+        }
+      }
+    },
+    { loc: locale, uid: userId, maxAge: LOCALE_COOKIE_MAX_AGE_SECONDS }
+  );
+  log(`Set UI locale to ${locale}${userId ? ` (user ${userId})` : ''}`);
+}
+
+/**
+ * Wait until client i18n has applied the target locale.
+ * Do not use SSR `html lang` — the cookie can set that before translations load.
+ * Builds that predate `data-i18n-ready` skip the marker wait after a short probe.
+ */
+async function waitForUiLocale(page: Page, locale: Locale, timeoutMs: number = 15000): Promise<void> {
+  const markerAppeared = await page.waitForFunction(
+    () => document.documentElement.getAttribute('data-i18n-ready') != null,
+    undefined,
+    { timeout: Math.min(1500, timeoutMs) }
+  ).then(() => true).catch(() => false);
+
+  if (!markerAppeared) {
+    log(`  data-i18n-ready not present; skipping client-locale wait for ${locale}`);
+    return;
+  }
+
+  try {
+    await page.waitForFunction(
+      (expected: string) => document.documentElement.getAttribute('data-i18n-ready') === expected,
+      locale,
+      { timeout: timeoutMs }
+    );
+    log(`  UI locale ready: ${locale}`);
+  } catch {
+    const actual = await page.evaluate(() => document.documentElement.getAttribute('data-i18n-ready'));
+    logError(`Timed out waiting for UI locale ${locale} (data-i18n-ready=${actual ?? 'missing'})`);
+    throw new Error(`UI locale did not become ${locale} within ${timeoutMs}ms (data-i18n-ready=${actual ?? 'missing'})`);
+  }
 }
 
 // ANSI color codes for console output
@@ -770,41 +854,9 @@ async function login(page: Page, username: string, password: string) {
     throw new Error(`Failed to login as ${username}: session not established`);
   }
 
-  // Land on dashboard and wait for the app shell — not navigation lifecycle events.
-  await navigateApp(page, '/', { readyTarget: 'dashboard-main' });
-  await waitForDashboardLoad(page);
-
-  if (page.url().includes('/login')) {
-    throw new Error(`Failed to login as ${username}. Redirected back to login page.`);
-  }
-
-  log(`Successfully logged in as ${username}`);
-  
-  // Resolve user id (same pattern as switchToTableView) and persist explicit dark preference
-  const userId = await page.evaluate(async () => {
-    try {
-      const response = await fetch('/api/auth/me');
-      const data = (await response.json()) as {
-        authenticated?: boolean;
-        user?: { id?: string };
-      };
-      if (data.authenticated && data.user?.id) {
-        return data.user.id;
-      }
-    } catch {
-      // fall through to localStorage scan
-    }
-    const keys = Object.keys(localStorage);
-    for (const key of keys) {
-      if (key.includes('user') && key.includes('id')) {
-        const value = localStorage.getItem(key);
-        if (value && value.length > 10) {
-          return value;
-        }
-      }
-    }
-    return null;
-  });
+  // Resolve user id before dashboard navigation so per-user localStorage (theme, locale)
+  // is in place when UserLocaleSync runs.
+  const userId = await getPageUserId(page);
 
   if (userId) {
     await setDarkTheme(page, userId);
@@ -814,6 +866,20 @@ async function login(page: Page, username: string, password: string) {
       localStorage.setItem('theme', 'dark');
     });
   }
+
+  if (currentCaptureLocale) {
+    await setLocale(page, currentCaptureLocale);
+  }
+
+  // Land on dashboard and wait for the app shell — not navigation lifecycle events.
+  await navigateApp(page, '/', { readyTarget: 'dashboard-main' });
+  await waitForDashboardLoad(page);
+
+  if (page.url().includes('/login')) {
+    throw new Error(`Failed to login as ${username}. Redirected back to login page.`);
+  }
+
+  log(`Successfully logged in as ${username}`);
 }
 
 async function getCSRFToken(page: Page): Promise<string> {
@@ -976,6 +1042,9 @@ async function takeScreenshot(
   const screenshotTarget = options?.screenshotTarget;
   
   log(`${colors.cyan} 📸 Taking screenshot: ${filename}...${colors.reset}`);
+  if (currentCaptureLocale) {
+    await waitForUiLocale(page, currentCaptureLocale);
+  }
   if (screenshotTarget) {
     await waitForScreenshotTarget(page, screenshotTarget);
     await delay(500); // Brief pause after target appears
@@ -3030,10 +3099,9 @@ ${colors.reset}`);
       const screenshotDir = getScreenshotDir(locale);
       currentCaptureLocale = locale;
 
-      console.log('-------------------------------------------------------');
-      console.log(`🌐 [Phase A] Capturing locale: ${locale}`);
-      
-      // Set locale via cookie (no URL prefix anymore)
+      log('-------------------------------------------------------');
+      log(`🌐 [Phase A] Capturing locale: ${locale}`);
+
       await setLocale(page, locale);
 
       // Navigate to dashboard
@@ -3397,10 +3465,9 @@ ${colors.reset}`);
       const screenshotDir = getScreenshotDir(locale);
       currentCaptureLocale = locale;
 
-      console.log('-------------------------------------------------------');
-      console.log(`🌐 [Phase B] Capturing locale: ${locale}`);
-      
-      // Set locale via cookie (no URL prefix anymore)
+      log('-------------------------------------------------------');
+      log(`🌐 [Phase B] Capturing locale: ${locale}`);
+
       await setLocale(page, locale);
 
       // Set table view in localStorage BEFORE navigating to dashboard
@@ -3825,9 +3892,11 @@ ${colors.reset}`);
 
       // Non-admin captures (per locale)
       if (shouldCaptureAny(['screen-user-menu-user.png', 'screen-settings-left-panel-non-admin.png'])) {
-        console.log('Logging out and logging in as non-admin user...');
+        log('Logging out and logging in as non-admin user...');
         await logout(page);
         await login(page, USER_USERNAME, USER_PASSWORD!);
+        await setLocale(page, locale);
+        await waitForUiLocale(page, locale);
 
         if (shouldCapture('screen-user-menu-user.png')) {
           console.log('-------------------------------------------------------');
@@ -3852,6 +3921,8 @@ ${colors.reset}`);
         // Restore admin session for next locale in Phase B (except after last)
         await logout(page);
         await login(page, ADMIN_USERNAME, ADMIN_PASSWORD!);
+        await setLocale(page, locale);
+        await waitForUiLocale(page, locale);
       }
     }
 

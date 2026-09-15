@@ -13,7 +13,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { cn, formatRelativeTime } from '@/lib/utils';
 import { useConfig, useRelativeTimeLocale, type ChartTimeRange } from '@/contexts/config-context';
-import { CHART_TIME_RANGES } from '@/lib/chart-utils';
+import { CHART_TIME_RANGES, getTimeRangeLabel } from '@/lib/chart-utils';
 import { useTheme } from '@/contexts/theme-context';
 import type { FormatLocaleOverride, StartOfWeek } from '@/lib/types';
 import { MonitorCog, Table, BarChart3, RefreshCw, SortDesc, Moon, Sun, Calendar1, Languages, Check, ChevronsUpDown, SunMoon, LineChart, GitCompare } from 'lucide-react';
@@ -171,10 +171,7 @@ export function DisplaySettingsForm() {
                 <SelectContent>
                   {CHART_TIME_RANGES.map((range) => (
                     <SelectItem key={range} value={range}>
-                      {t(range === '1 week' ? 'Last week' : 
-                         range === '2 weeks' ? 'Last 2 weeks' : 
-                         range === '1 month' ? 'Last month' : 
-                         'Last quarter')}
+                      {getTimeRangeLabel(range, t)}
                     </SelectItem>
                   ))}
                 </SelectContent>

@@ -7,7 +7,7 @@ import {
 } from "react";
 import { useTranslation } from "react-i18next";
 import { applyDirection } from "ai-i18n-tools/runtime";
-import { SOURCE_LOCALE } from "@/lib/locales";
+import { SOURCE_LOCALE, parseLocaleTag } from "@/lib/locales";
 
 const LocaleContext = createContext<string>(SOURCE_LOCALE);
 
@@ -20,6 +20,9 @@ export function ClientLocaleProvider({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     document.documentElement.lang = locale;
+    // Client-only signal: SSR already sets html lang from the cookie, so Playwright
+    // must not treat that as "translations are loaded".
+    document.documentElement.dataset.i18nReady = parseLocaleTag(locale) ?? locale;
     applyDirection(locale);
   }, [locale]);
 

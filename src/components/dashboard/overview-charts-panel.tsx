@@ -458,8 +458,7 @@ function OverviewChartsPanelCore({
       baseText = t("All Servers & Backups");
     }
     
-    // Use centralized getTimeRangeLabel from chart-utils
-    return `${baseText} (${t(getTimeRangeLabel(chartTimeRange))})`;
+    return `${baseText} (${getTimeRangeLabel(chartTimeRange, t)})`;
   })();
 
   return (

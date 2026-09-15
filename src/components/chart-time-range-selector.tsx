@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ChartSpline, ChartColumn } from "lucide-react";
 import { 
-  getTimeRangeAbbreviation, 
+  getTimeRangeAbbreviation,
+  getTimeRangeLabel,
   CHART_TIME_RANGES,
-  type ChartTimeRangeValue 
 } from "@/lib/chart-utils";
 import type { ChartTimeRange, ChartStyle } from "@/contexts/config-context";
 
@@ -103,7 +103,8 @@ export function ChartTimeRangeSelector({
                 : "text-muted-foreground hover:text-foreground hover:bg-accent"
             )}
             aria-pressed={isSelected}
-            aria-label={t(getTimeRangeAbbreviation(range))}
+            aria-label={getTimeRangeLabel(range, t)}
+            title={getTimeRangeLabel(range, t)}
           >
             {abbr}
           </Button>

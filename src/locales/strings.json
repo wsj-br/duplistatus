@@ -443,7 +443,7 @@
       },
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 478
+        "line": 475
       }
     ]
   },
@@ -8105,7 +8105,7 @@
       },
       {
         "file": "src/components/dashboard/overview-charts-panel.tsx",
-        "line": 489
+        "line": 488
       },
       {
         "file": "src/components/metrics-charts-panel.tsx",
@@ -8113,7 +8113,7 @@
       },
       {
         "file": "src/components/metrics-charts-panel.tsx",
-        "line": 555
+        "line": 554
       }
     ]
   },
@@ -8202,11 +8202,11 @@
     "locations": [
       {
         "file": "src/components/dashboard/overview-charts-panel.tsx",
-        "line": 479
+        "line": 478
       },
       {
         "file": "src/components/metrics-charts-panel.tsx",
-        "line": 545
+        "line": 544
       }
     ]
   },
@@ -8233,11 +8233,11 @@
     "locations": [
       {
         "file": "src/components/dashboard/overview-charts-panel.tsx",
-        "line": 518
+        "line": 517
       },
       {
         "file": "src/components/metrics-charts-panel.tsx",
-        "line": 583
+        "line": 582
       }
     ]
   },
@@ -8264,11 +8264,11 @@
     "locations": [
       {
         "file": "src/components/dashboard/overview-charts-panel.tsx",
-        "line": 558
+        "line": 557
       },
       {
         "file": "src/components/metrics-charts-panel.tsx",
-        "line": 634
+        "line": 633
       }
     ]
   },
@@ -13674,7 +13674,7 @@
       },
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 243
+        "line": 240
       }
     ]
   },
@@ -13705,7 +13705,7 @@
       },
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 247
+        "line": 244
       }
     ]
   },
@@ -13736,7 +13736,7 @@
       },
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 248
+        "line": 245
       }
     ]
   },
@@ -24785,7 +24785,7 @@
       },
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 428
+        "line": 425
       }
     ]
   },
@@ -25059,7 +25059,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 188
+        "line": 185
       }
     ]
   },
@@ -25086,7 +25086,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 208
+        "line": 205
       }
     ]
   },
@@ -25113,7 +25113,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 222
+        "line": 219
       }
     ]
   },
@@ -25140,7 +25140,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 231
+        "line": 228
       }
     ]
   },
@@ -25167,7 +25167,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 238
+        "line": 235
       }
     ]
   },
@@ -25194,7 +25194,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 241
+        "line": 238
       }
     ]
   },
@@ -25221,7 +25221,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 242
+        "line": 239
       }
     ]
   },
@@ -25248,7 +25248,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 244
+        "line": 241
       }
     ]
   },
@@ -25275,7 +25275,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 245
+        "line": 242
       }
     ]
   },
@@ -25302,7 +25302,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 246
+        "line": 243
       }
     ]
   },
@@ -25329,7 +25329,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 257
+        "line": 254
       }
     ]
   },
@@ -25356,7 +25356,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 264
+        "line": 261
       }
     ]
   },
@@ -25383,7 +25383,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 267
+        "line": 264
       }
     ]
   },
@@ -25410,7 +25410,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 268
+        "line": 265
       }
     ]
   },
@@ -25437,7 +25437,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 269
+        "line": 266
       }
     ]
   },
@@ -25462,7 +25462,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 283
+        "line": 280
       },
       {
         "file": "src/components/settings/duplicati-version-settings-form.tsx",
@@ -25491,7 +25491,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 292
+        "line": 289
       }
     ]
   },
@@ -25518,7 +25518,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 311
+        "line": 308
       }
     ]
   },
@@ -25545,7 +25545,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 332
+        "line": 329
       }
     ]
   },
@@ -25572,7 +25572,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 346
+        "line": 343
       }
     ]
   },
@@ -25599,7 +25599,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 360
+        "line": 357
       }
     ]
   },
@@ -25626,7 +25626,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 371
+        "line": 368
       }
     ]
   },
@@ -25653,7 +25653,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 378
+        "line": 375
       }
     ]
   },
@@ -25680,7 +25680,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 381
+        "line": 378
       }
     ]
   },
@@ -25707,7 +25707,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 382
+        "line": 379
       }
     ]
   },
@@ -25734,7 +25734,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 383
+        "line": 380
       }
     ]
   },
@@ -25761,7 +25761,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 393
+        "line": 390
       }
     ]
   },
@@ -25788,7 +25788,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 410
+        "line": 407
       }
     ]
   },
@@ -25815,7 +25815,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 415
+        "line": 412
       }
     ]
   },
@@ -25840,7 +25840,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 468
+        "line": 465
       }
     ]
   },
@@ -25865,7 +25865,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 471
+        "line": 468
       }
     ]
   },
@@ -25892,7 +25892,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 482
+        "line": 479
       }
     ]
   },
@@ -25919,7 +25919,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 486
+        "line": 483
       }
     ]
   },
@@ -25944,7 +25944,7 @@
     "locations": [
       {
         "file": "src/components/settings/display-settings-form.tsx",
-        "line": 490
+        "line": 487
       }
     ]
   },
@@ -36404,6 +36404,106 @@
         "line": 144
       }
     ]
+  },
+  "438c1d26": {
+    "source": "Last week",
+    "translated": {
+      "fr": "La semaine dernière",
+      "es": "Últ. semana",
+      "pt-BR": "Últ. semana",
+      "de": "Letzte Woche",
+      "zh-Hans": "上周",
+      "hi": "पिछले सप्ताह"
+    },
+    "locations": [
+      {
+        "file": "src/lib/chart-utils.ts",
+        "line": 50
+      }
+    ],
+    "models": {
+      "fr": "qwen/qwen-2.5-72b-instruct",
+      "es": "qwen/qwen-2.5-72b-instruct",
+      "pt-BR": "qwen/qwen-2.5-72b-instruct",
+      "de": "qwen/qwen-2.5-72b-instruct",
+      "zh-Hans": "qwen/qwen-2.5-72b-instruct",
+      "hi": "qwen/qwen-2.5-72b-instruct"
+    }
+  },
+  "1e937283": {
+    "source": "Last 2 weeks",
+    "translated": {
+      "fr": "Les 2 dernières semaines",
+      "es": "Últ. 2 semanas",
+      "pt-BR": "Últ. 2 semanas",
+      "de": "Letzte 2 Wochen",
+      "zh-Hans": "过去2周",
+      "hi": "पिछले 2 सप्ताह"
+    },
+    "locations": [
+      {
+        "file": "src/lib/chart-utils.ts",
+        "line": 52
+      }
+    ],
+    "models": {
+      "fr": "qwen/qwen-2.5-72b-instruct",
+      "es": "qwen/qwen-2.5-72b-instruct",
+      "pt-BR": "qwen/qwen-2.5-72b-instruct",
+      "de": "qwen/qwen-2.5-72b-instruct",
+      "zh-Hans": "qwen/qwen-2.5-72b-instruct",
+      "hi": "qwen/qwen-2.5-72b-instruct"
+    }
+  },
+  "80cbddde": {
+    "source": "Last month",
+    "translated": {
+      "fr": "Le mois dernier",
+      "es": "Últ. mes",
+      "pt-BR": "Últ. mês",
+      "de": "Letzten Monat",
+      "zh-Hans": "上月",
+      "hi": "पिछले महीने"
+    },
+    "locations": [
+      {
+        "file": "src/lib/chart-utils.ts",
+        "line": 54
+      }
+    ],
+    "models": {
+      "fr": "qwen/qwen-2.5-72b-instruct",
+      "es": "qwen/qwen-2.5-72b-instruct",
+      "pt-BR": "qwen/qwen-2.5-72b-instruct",
+      "de": "qwen/qwen-2.5-72b-instruct",
+      "zh-Hans": "qwen/qwen-2.5-72b-instruct",
+      "hi": "qwen/qwen-2.5-72b-instruct"
+    }
+  },
+  "2f33528a": {
+    "source": "Last quarter",
+    "translated": {
+      "fr": "Le dernier trimestre",
+      "es": "Últ. trimestre",
+      "pt-BR": "Últ. trimestre",
+      "de": "Letztes Quartal",
+      "zh-Hans": "上个季度",
+      "hi": "पिछले त्रैमासिक"
+    },
+    "locations": [
+      {
+        "file": "src/lib/chart-utils.ts",
+        "line": 56
+      }
+    ],
+    "models": {
+      "fr": "qwen/qwen-2.5-72b-instruct",
+      "es": "qwen/qwen-2.5-72b-instruct",
+      "pt-BR": "qwen/qwen-2.5-72b-instruct",
+      "de": "qwen/qwen-2.5-72b-instruct",
+      "zh-Hans": "qwen/qwen-2.5-72b-instruct",
+      "hi": "qwen/qwen-2.5-72b-instruct"
+    }
   },
   "93cba074": {
     "source": "Yes",

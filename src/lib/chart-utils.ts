@@ -32,21 +32,32 @@ export function calculateOptimalBucketSize(daysInRange: number): number {
 }
 
 /**
- * Converts chartTimeRange value to a display label.
- * This is the centralized mapping - used by both chart panels.
+ * Type for all valid ChartTimeRange values.
+ * Limited to 4 options for simplicity: 1W, 2W, 1M, 3M
  */
-export function getTimeRangeLabel(timeRange: string): string {
+export type ChartTimeRangeValue = '1 week' | '2 weeks' | '1 month' | '3 months';
+
+/**
+ * Converts chartTimeRange value to a display label.
+ * Pass `t` so extract can pick up the literal English keys.
+ */
+export function getTimeRangeLabel(
+  timeRange: ChartTimeRangeValue,
+  t: (key: string) => string,
+): string {
   switch (timeRange) {
     case '1 week':
-      return 'Last week';
+      return t('Last week');
     case '2 weeks':
-      return 'Last 2 weeks';
+      return t('Last 2 weeks');
     case '1 month':
-      return 'Last month';
+      return t('Last month');
     case '3 months':
-      return 'Last quarter';
-    default:
-      return timeRange;
+      return t('Last quarter');
+    default: {
+      const exhaustive: never = timeRange;
+      return exhaustive;
+    }
   }
 }
 
@@ -54,7 +65,7 @@ export function getTimeRangeLabel(timeRange: string): string {
  * Gets the abbreviated label for time range buttons (e.g., '1W', '2W', '1M', '3M').
  * Used for compact time range selectors.
  */
-export function getTimeRangeAbbreviation(timeRange: string): string {
+export function getTimeRangeAbbreviation(timeRange: ChartTimeRangeValue): string {
   switch (timeRange) {
     case '1 week':
       return '1W';
@@ -64,16 +75,12 @@ export function getTimeRangeAbbreviation(timeRange: string): string {
       return '1M';
     case '3 months':
       return '3M';
-    default:
-      return timeRange;
+    default: {
+      const exhaustive: never = timeRange;
+      return exhaustive;
+    }
   }
 }
-
-/**
- * Type for all valid ChartTimeRange values.
- * Limited to 4 options for simplicity: 1W, 2W, 1M, 3M
- */
-export type ChartTimeRangeValue = '1 week' | '2 weeks' | '1 month' | '3 months';
 
 /**
  * All available time range options in order.
