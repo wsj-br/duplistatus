@@ -71,7 +71,7 @@
     "@tailwindcss/postcss": "^4.3.3",
     "@types/bcrypt": "^6.0.0",
     "@types/qrcode": "^1.5.6",
-    "ai-i18n-tools": "link:../ai-i18n-tools",
+    "ai-i18n-tools": "^1.8.12",
     "autoprefixer": "^10.6.1",
     "bcrypt": "^6.0.0",
     "better-sqlite3": "^13.0.3",
