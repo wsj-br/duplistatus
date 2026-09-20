@@ -55,12 +55,12 @@ Una vez completada la fusión, crea un lanzamiento de GitHub:
 2. Ve a la sección **"Releases"** (o haz clic en "Releases" en la barra lateral derecha).
 3. Haz clic en **"Draft a new release."**
 4. En el campo **"Choose a tag"**, escribe tu nuevo número de versión en el formato `vMAJOR.MINOR.PATCH` (por ejemplo, `v1.2.0`). Esto creará una nueva etiqueta.
-5. Selecciona `master` como la rama de destino.
-6. Añade un **título de lanzamiento** (por ejemplo, "Release v1.2.0").
-7. Añade una **descripción** documentando los cambios en esta versión. Puedes:
+5. Seleccione `master` como la rama de destino.
+6. Añada un **título de lanzamiento** (por ejemplo, "Lanzamiento v1.2.0").
+7. Añada una **descripción** documentando los cambios en esta versión. Puede:
    - Copiar el contenido de `RELEASE_NOTES_github_VERSION.md` (generado por `scripts/generate-readme-from-intro.sh`)
-   - O hacer referencia a las notas de lanzamiento de `documentation/docs/release-notes/` (pero ten en cuenta que los enlaces relativos no funcionarán en los lanzamientos de GitHub)
-8. Haz clic en **"Publish release."**
+   - O hacer referencia a las notas de lanzamiento de `documentation/docs/release-notes/` (pero tenga en cuenta que los enlaces relativos no funcionarán en los lanzamientos de GitHub)
+8. Haga clic en **"Publicar lanzamiento."**
 
 **Lo que sucede automáticamente:**
 - Se crea una nueva etiqueta de Git

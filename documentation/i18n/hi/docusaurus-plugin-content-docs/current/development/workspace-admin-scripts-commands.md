@@ -196,7 +196,7 @@ pnpm i18n:tools --remote
 
 **नोट:** अलग-अलग पैच संस्करणों के भीतर एक ही प्रमुख संस्करण के सामान्य रूप से संगत होने के कारण एसक्यूलाइट संस्करणों की तुलना केवल प्रमुख संस्करण के आधार पर की जाती है। स्क्रिप्ट यह संकेत देगा कि एसक्यूलाइट संस्करण प्रमुख स्तर पर मेल खाते हैं लेकिन पैच संस्करणों में अलग हैं।
 
-## डेटाबेस में कॉन्फ़िगरेशन देखना {/* #viewing-the-configurations-in-the-database */}
+## डेटाबेस {/* #viewing-the-configurations-in-the-database */} में कॉन्फ़िगरेशन देखना
 
 ```bash
 sqlite3 data/backups.db "SELECT key, value FROM configurations;" | awk -F'|' '

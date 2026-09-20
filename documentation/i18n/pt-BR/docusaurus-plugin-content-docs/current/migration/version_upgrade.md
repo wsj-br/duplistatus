@@ -23,10 +23,10 @@ Use a função de backup de banco de dados integrada:
 
 1. Navegue até [Configurações → Manutenção do Banco de Dados](../user-guide/settings/database-maintenance.md) na interface web
 2. Na seção **Backup do Banco de Dados**, selecione um formato de backup:
-   - **Arquivo de Banco de Dados (.db)**: Formato binário - backup mais rápido, preserva toda a estrutura do banco de dados exatamente
-   - **Despejo SQL (.sql)**: Formato de texto - instruções SQL legíveis por humanos
+   - **Arquivo de Banco de Dados (.db)**: Formato binário - backup mais rápido, preserva exatamente toda a estrutura do banco de dados
+   - **Despejo SQL (.sql)**: Formato texto - instruções SQL legíveis por humanos
 3. Clique em **Baixar Backup**
-4. O arquivo de backup será baixado para seu computador com um nome de arquivo com timestamp
+4. O arquivo de backup será baixado para seu computador com um nome de arquivo contendo carimbo de data/hora
 
 Para mais detalhes, consulte a documentação de [Manutenção do Banco de Dados](../user-guide/settings/database-maintenance.md#database-backup).
 
@@ -172,12 +172,12 @@ Procure por mensagens como:
 
 #### O Que Você Deve Fazer {/* #what-you-must-do */}
 
-1. **Entre** com as credenciais padrão do administrador:
+1. **Entre** com as credenciais padrão de administrador:
    - Nome de usuário: `admin`
    - Senha: `Duplistatus09`
 2. **Altere a senha** quando solicitado (obrigatório no primeiro acesso)
 3. **Crie contas de usuário** para outros usuários (Configurações → Usuários)
-4. **Atualize as integrações de API externas** para incluir autenticação (consulte [Alterações de API incompatíveis com versões anteriores](api-changes.md))
+4. **Atualize integrações de API externas** para incluir autenticação (veja [Mudanças incompatíveis de API](api-changes.md))
 5. **Configure a retenção de log de auditoria** se necessário (Configurações → Log de Auditoria)
 
 #### Se Você Estiver Bloqueado {/* #if-youre-locked-out */}
@@ -220,12 +220,12 @@ Consulte o [Guia de Recuperação do Administrador](../user-guide/admin-recovery
 
 #### O que Você Deve Fazer {/* #what-you-must-do-2 */}
 
-1. **Atualize as integrações de API externas**:
+1. **Atualize integrações de API externas**:
    - Altere `totalMachines` → `totalServers` em `/api/summary`
    - Altere `machine` → `server` em objetos de resposta da API
    - Altere `backup_types_count` → `backup_jobs_count` em `/api/lastbackups/{serverId}`
-   - Atualize os caminhos dos endpoints de `/api/machines/...` para `/api/servers/...`
-2. **Atualize os modelos de notificação**:
+   - Atualize caminhos de endpoints de `/api/machines/...` para `/api/servers/...`
+2. **Atualize modelos de notificação**:
    - Substitua `{machine_name}` por `{server_name}`
 
 Consulte [Alterações de API incompatíveis com versões anteriores](api-changes.md) para obter as etapas detalhadas de migração da API.
@@ -288,16 +288,16 @@ Se você está usando Podman e enfrentando problemas de conectividade de rede ap
 
 Se você precisar reverter para uma versão anterior:
 
-1. **Interrompa o contêiner**: `docker stop <container-name>` (ou `podman stop <container-name>`)
+1. **Pare o container**: `docker stop <container-name>` (ou `podman stop <container-name>`)
 2. **Localize seu backup**: 
-   - Se você criou um backup usando a interface web (versão 1.2.1+), use esse arquivo de backup baixado
-   - Se você criou um backup de volume manual, extraia-o primeiro
-   - Os backups de migração automática estão localizados no diretório de dados (arquivos `.db` com timestamp)
+   - Se você criou um backup usando a interface web (versão 1.2.1+), utilize esse arquivo de backup baixado
+   - Se você criou um backup manual de volume, extraia-o primeiro
+   - Backups de migração automáticos estão localizados no diretório de dados (arquivos `.db` com carimbo de data/hora)
 3. **Restaure o banco de dados**: 
-   - **Para backups da interface web (versão 1.2.1+)**: Use a função de restauração em `Settings → Database Maintenance` (consulte [Manutenção do Banco de Dados](../user-guide/settings/database-maintenance.md#database-restore))
-   - **Para backups manuais**: Substitua `backups.db` em seu diretório de dados/volume pelo arquivo de backup
-4. **Use a versão anterior da imagem**: Faça pull e execute a imagem do contêiner anterior
-5. **Inicie o contêiner**: Inicie com a versão anterior
+   - **Para backups da interface web (versão 1.2.1+)**: Utilize a função de restauração em `Settings → Database Maintenance` (veja [Manutenção do Banco de Dados](../user-guide/settings/database-maintenance.md#database-restore))
+   - **Para backups manuais**: Substitua `backups.db` em seu diretório/volume de dados pelo arquivo de backup
+4. **Utilize a versão anterior da imagem**: Faça pull e execute a imagem anterior do container
+5. **Inicie o container**: Inicie com a versão anterior
 
 :::warning
 A reversão pode causar perda de dados se o esquema mais recente for incompatível com a versão anterior. Sempre certifique-se de ter um backup recente antes de tentar a reversão.

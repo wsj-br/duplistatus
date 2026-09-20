@@ -1,4 +1,4 @@
-# Duplicati 服务器配置（必需） {/* #duplicati-server-configuration-required */}
+# Duplicati 服务器配置（必需）{/* #duplicati-server-configuration-required */}
 
 为了使此应用程序正常工作，您需要将每个 Duplicati 服务器配置为在每次备份运行时向 **duplistatus** 服务器发送 HTTP 报告。
 
@@ -12,7 +12,7 @@
 
 有关选项参考，请参阅 Duplicati 的 [HTTP 通知](https://docs.duplicati.com/monitoring-and-notifications/sending-reports-via-email/sending-http-notifications) 文档。
 
-### 推荐选项（Duplicati 2.0.9.106 及更高版本） {/* #recommended-options-duplicati-209106-and-later */}
+### 推荐选项（Duplicati 2.0.9.106 及更高版本）{/* #recommended-options-duplicati-209106-and-later */}
 
 `--send-http-json-urls` 已经发送 JSON，因此不需要 `--send-http-result-output-format=Json`（对于这些 URL 将被忽略）。
 

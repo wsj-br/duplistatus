@@ -56,11 +56,11 @@ Une fois la fusion terminée, créez une version GitHub :
 3. Cliquez sur **« Créer une nouvelle version »**.
 4. Dans le champ **« Choisir une étiquette »**, tapez votre nouveau numéro de version au format `vMAJOR.MINOR.PATCH` (par exemple, `v1.2.0`). Cela créera une nouvelle étiquette.
 5. Sélectionnez `master` comme branche cible.
-6. Ajoutez un **titre de version** (par exemple, « Version v1.2.0 »).
-7. Ajoutez une **description** documentant les modifications de cette version. Vous pouvez :
-   - Copier le contenu de `RELEASE_NOTES_github_VERSION.md` (généré par `scripts/generate-readme-from-intro.sh`)
-   - Ou référencer les notes de version de `documentation/docs/release-notes/` (notez que les liens relatifs ne fonctionneront pas dans les versions GitHub)
-8. Cliquez sur **« Publier la version »**.
+6. Ajoutez un **titre de version** (par exemple, "Release v1.2.0").
+7. Ajoutez une **description** documentant les modifications apportées dans cette version. Vous pouvez :
+   - Copier le contenu depuis `RELEASE_NOTES_github_VERSION.md` (généré par `scripts/generate-readme-from-intro.sh`)
+   - Ou référencer les notes de version depuis `documentation/docs/release-notes/` (mais notez que les liens relatifs ne fonctionneront pas dans les versions GitHub)
+8. Cliquez sur **"Publier la version."**
 
 **Ce qui se passe automatiquement :**
 - Une nouvelle étiquette Git est créée

@@ -109,17 +109,17 @@ O projeto inclui scripts para testar migrações de banco de dados de versões a
 
 Este script gera bancos de dados de teste para múltiplas versões históricas da aplicação. Ele:
 
-1. **Para e remove** qualquer contêiner Docker existente
+1. **Interrompe e remove** qualquer contêiner Docker existente
 2. **Para cada versão** (v0.4.0, v0.5.0, v0.6.1, 0.7.27, 0.8.21):
    - Remove arquivos de banco de dados existentes
-   - Cria um arquivo de tag de versão
+   - Cria um arquivo de etiqueta de versão
    - Inicia um contêiner Docker com a versão específica
    - Aguarda o contêiner estar pronto
    - Gera dados de teste usando `pnpm generate-test-data`
-   - Tira uma captura de tela da interface com dados de teste
-   - Para e remove o contêiner
-   - Libera arquivos WAL e salva o esquema do banco de dados
-   - Copia o arquivo de banco de dados para `scripts/migration_test_data/`
+   - Faz uma captura de tela da interface com os dados de teste
+   - Interrompe e remove o contêiner
+   - Descarrega arquivos WAL e salva o esquema do banco de dados
+   - Copia o arquivo do banco de dados para `scripts/migration_test_data/`
 
 **Requisitos:**
 - Docker deve estar instalado e configurado
@@ -155,9 +155,9 @@ Este script testa migrações de banco de dados de versões antigas para a vers�
    - Cria uma cópia temporária do banco de dados de teste
    - Executa o processo de migração usando `test-migration.ts`
    - Valida a estrutura do banco de dados migrado
-   - Verifica tabelas e colunas obrigatórias
+   - Verifica se as tabelas e colunas necessárias estão presentes
    - Confirma que a versão do banco de dados é 4.0
-   - Remove arquivos temporários
+   - Limpa arquivos temporários
 
 **Requisitos:**
 - Os bancos de dados de teste devem existir em `scripts/migration_test_data/`

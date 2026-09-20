@@ -55,12 +55,12 @@ Após a mesclagem ser concluída, crie um lançamento do GitHub:
 2. Vá para a seção **"Releases"** (ou clique em "Releases" na barra lateral direita).
 3. Clique em **"Draft a new release."**
 4. No campo **"Choose a tag"**, digite seu novo número de versão no formato `vMAJOR.MINOR.PATCH` (por exemplo, `v1.2.0`). Isso criará uma nova tag.
-5. Selecione `master` como o ramo de destino.
-6. Adicione um **título de lançamento** (por exemplo, "Release v1.2.0").
+5. Selecione `master` como o branch de destino.
+6. Adicione um **título de versão** (por exemplo, "Release v1.2.0").
 7. Adicione uma **descrição** documentando as alterações nesta versão. Você pode:
    - Copiar o conteúdo de `RELEASE_NOTES_github_VERSION.md` (gerado por `scripts/generate-readme-from-intro.sh`)
-   - Ou referenciar notas de lançamento de `documentation/docs/release-notes/` (mas observe que links relativos não funcionarão em lançamentos do GitHub)
-8. Clique em **"Publish release."**
+   - Ou referenciar as notas de versão de `documentation/docs/release-notes/` (mas observe que links relativos não funcionarão nas versões do GitHub)
+8. Clique em **"Publicar versão."**
 
 **O que acontece automaticamente:**
 - Uma nova tag Git é criada

@@ -17,8 +17,8 @@
   - `500`: Falló al crear la sesión
 - **Notas**:
   - Crea una nueva sesión con expiración de 24 horas
-  - Establece cookie de sesión HTTP-only
-  - Requerido para acceder a endpoints protegidos
+  - Establece una cookie de sesión solo HTTP
+  - Requerida para acceder a puntos finales protegidos
 
 ## Validar Sesión - `/api/session` {/* #validate-session---apisession */}
 - **Endpoint**: `/api/session`
@@ -43,10 +43,10 @@
   ```
 
 - **Respuestas de Error**:
-  - `401`: Sin cookie de sesión o ID de sesión
+  - `401`: No hay cookie de sesión o ID de sesión
   - `500`: Falló al validar la sesión
 - **Notas**:
-  - Verifica si la cookie de sesión existe y es válida
+  - Verifica si existe la cookie de sesión y es válida
   - Devuelve el ID de sesión si es válido
 
 ## Eliminar Sesión - `/api/session` {/* #delete-session---apisession */}
@@ -64,7 +64,7 @@
 - **Respuestas de Error**:
   - `500`: Falló al eliminar la sesión
 - **Notas**:
-  - Borra la sesión del servidor y del cliente
+  - Borra la sesión del servidor y cliente
   - Elimina la cookie de sesión
 
 ## Obtener Token CSRF - `/api/csrf` {/* #get-csrf-token---apicsrf */}
@@ -82,8 +82,8 @@
 
 - **Respuestas de Error**:
   - `401`: No se encontró sesión o sesión inválida/expirada
-  - `500`: Falló al generar el token CSRF
+  - `500`: Falló al generar token CSRF
 - **Notas**:
   - Requiere una sesión válida
   - El token CSRF es requerido para todas las operaciones que cambian estado
-  - El token está vinculado a la sesión actual
+  - El token está asociado a la sesión actual

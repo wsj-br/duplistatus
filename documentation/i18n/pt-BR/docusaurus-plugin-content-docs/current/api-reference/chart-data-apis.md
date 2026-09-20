@@ -26,11 +26,11 @@
 
 - **Respostas de Erro**:
   - `400`: Parâmetros de data inválidos
-  - `500`: Erro no servidor ao buscar dados do gráfico
-- **Observações**:
-  - Suporta filtragem por intervalo de tempo com os parâmetros startDate e endDate
-  - Valida o formato da data antes do processamento
-  - Retorna dados agregados de todos os servidores
+  - `500`: Erro de servidor ao buscar dados do gráfico
+- **Notas**:
+  - Suporta filtragem por intervalo de tempo com parâmetros startDate e endDate
+  - Valida formato de data antes do processamento
+  - Retorna dados agregados em todos os servidores
 
 ## Obter Dados do Gráfico do Servidor - `/api/chart-data/server/:serverId` {/* #get-server-chart-data---apichart-dataserverserverid */}
 - **Endpoint**: `/api/chart-data/server/:serverId`
@@ -39,8 +39,8 @@
 - **Parâmetros**:
   - `serverId`: o identificador do servidor
 - **Parâmetros de Consulta**:
-  - `startDate` (opcional): Data de início para filtragem (formato ISO)
-  - `endDate` (opcional): Data de término para filtragem (formato ISO)
+  - `startDate` (opcional): Data inicial para filtragem (formato ISO)
+  - `endDate` (opcional): Data final para filtragem (formato ISO)
 - **Resposta**:
 
   ```json
@@ -60,11 +60,11 @@
 
 - **Respostas de Erro**:
   - `400`: Parâmetros de data inválidos
-  - `500`: Erro no servidor ao buscar dados do gráfico
-- **Observações**:
-  - Suporta filtragem por intervalo de tempo com os parâmetros startDate e endDate
-  - Valida o formato da data antes do processamento
-  - Retorna dados do gráfico para um servidor específico
+  - `500`: Erro de servidor ao buscar dados do gráfico
+- **Notas**:
+  - Suporta filtragem por intervalo de tempo com parâmetros startDate e endDate
+  - Valida formato de data antes do processamento
+  - Retorna dados do gráfico para servidor específico
 
 ## Obter Dados do Gráfico de Backup do Servidor - `/api/chart-data/server/:serverId/backup/:backupName` {/* #get-server-backup-chart-data---apichart-dataserverserveridbackupbackupname */}
 - **Endpoint**: `/api/chart-data/server/:serverId/backup/:backupName`
@@ -74,8 +74,8 @@
   - `serverId`: o identificador do servidor
   - `backupName`: o nome do backup (codificado em URL)
 - **Parâmetros de Consulta**:
-  - `startDate` (opcional): Data de início para filtragem (formato ISO)
-  - `endDate` (opcional): Data de término para filtragem (formato ISO)
+  - `startDate` (opcional): Data inicial para filtragem (formato ISO)
+  - `endDate` (opcional): Data final para filtragem (formato ISO)
 - **Resposta**:
 
   ```json
@@ -95,9 +95,9 @@
 
 - **Respostas de Erro**:
   - `400`: Parâmetros de data inválidos
-  - `500`: Erro no servidor ao buscar dados do gráfico
-- **Observações**:
-  - Suporta filtragem por intervalo de tempo com os parâmetros startDate e endDate
-  - Valida o formato da data antes do processamento
-  - Retorna dados do gráfico para uma combinação específica de servidor e backup
+  - `500`: Erro de servidor ao buscar dados do gráfico
+- **Notas**:
+  - Suporta filtragem por intervalo de tempo com parâmetros startDate e endDate
+  - Valida formato de data antes do processamento
+  - Retorna dados do gráfico para combinação específica de servidor e backup
   - O nome do backup deve ser codificado em URL

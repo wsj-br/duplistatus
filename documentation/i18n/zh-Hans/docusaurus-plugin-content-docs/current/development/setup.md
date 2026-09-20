@@ -13,14 +13,14 @@
 
 ## 步骤 {/* #steps */}
 
-### 1. 克隆仓库： {/* #1-clone-the-repository */}
+### 1. 克隆仓库：{/* #1-clone-the-repository */}
 
     ```bash
     git clone https://github.com/wsj-br/duplistatus.git
     cd duplistatus
     ```
 
-### 2. 安装依赖项（Debian/Ubuntu）： {/* #2-install-dependencies-debianubuntu */}
+### 2. 安装依赖项（Debian/Ubuntu）：{/* #2-install-dependencies-debianubuntu */}
 
     ```bash
     sudo apt update
@@ -46,7 +46,7 @@
     sudo rm -rf /usr/local/bin/node*
     ```
 
-### 4. 安装 Node.js 和 pnpm： {/* #4-install-nodejs-and-pnpm */}
+### 4. 安装 Node.js 和 pnpm：{/* #4-install-nodejs-and-pnpm */}
 
     ```bash
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
@@ -97,7 +97,7 @@
   Cursor、Lingma、Antigravity、Zed，...），以便使这些更改生效。
 :::
 
-### 6. 在仓库基础目录创建包含这些变量的 `.env` 文件。 {/* #6-create-the-env-file-at-the-repository-basedir-with-these-variables */}
+### 6. 在仓库基础目录创建包含这些变量的 `.env` 文件。{/* #6-create-the-env-file-at-the-repository-basedir-with-these-variables */}
 
 - 您可以为 `VERSION` 使用任何值；使用开发脚本时它将自动更新。
 - 为 `ADMIN_PASSWORD` 和 `USER_PASSWORD` 使用随机密码；这些密码将在 `pnpm take-screenshots` 脚本中使用。

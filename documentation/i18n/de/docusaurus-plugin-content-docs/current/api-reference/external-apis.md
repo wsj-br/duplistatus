@@ -27,16 +27,16 @@ Eine [IP-Zulassungsliste](../user-guide/settings/ip-allowlist-settings.md) kann 
 
 - **Fehlerantworten**:
   - `401`: Fehlender oder ungültiger API-Schlüssel, wenn Schlüssel erforderlich sind
-  - `403`: Der Schlüsselbereich ist nicht `read`, oder die Client-IP befindet sich nicht auf der externen Zulassungsliste
-  - `429`: Ratenlimit für Lese-API überschritten
-  - `500`: Serverfehler beim Abrufen von Zusammenfassungsdaten
-- **Notizen**:
+  - `403`: Schlüsselbereich ist nicht `read` oder die Client-IP befindet sich nicht auf der externen Zulassungsliste
+  - `429`: Lesen-API-Ratelimit überschritten
+  - `500`: Serverfehler beim Abrufen der Zusammenfassungsdaten
+- **Hinweise**:
   - In Version 0.5.x wurde das Feld `totalBackupedSize` durch `totalBackupSize` ersetzt
   - In Version 0.7.x wurde das Feld `totalMachines` durch `totalServers` ersetzt
-  - Das Feld `overdueBackupsCount` zeigt die Anzahl der derzeit überfälligen Sicherungen
-  - Das Feld `secondsSinceLastBackup` zeigt die Zeit in Sekunden seit der letzten Sicherung auf allen Servern
-  - Gibt Fallback-Antwort mit Nullen zurück, wenn das Abrufen von Daten fehlschlägt
-  - **Notiz**: Für die interne Dashboard-Nutzung sollten Sie `/api/dashboard` verwenden, das diese Daten plus zusätzliche Informationen enthält
+  - Das Feld `overdueBackupsCount` zeigt die Anzahl der aktuell überfälligen Backups an
+  - Das Feld `secondsSinceLastBackup` zeigt die Zeit in Sekunden seit der letzten Sicherung aller Server an
+  - Gibt eine Ausweichantwort mit Nullwerten zurück, falls der Datenabruf fehlschlägt
+  - **Hinweis**: Für interne Dashboard-Nutzung sollten Sie `/api/dashboard` verwenden, das diese Daten sowie zusätzliche Informationen enthält
 
 ## Letzte Sicherung abrufen - `/api/lastbackup/:serverId` {/* #get-latest-backup---apilastbackupserverid */}
 - **Endpunkt**: `/api/lastbackup/:serverId`
@@ -88,14 +88,14 @@ Die Server-ID muss URL-codiert sein.
 
 - **Fehlerantworten**:
   - `401`: Fehlender oder ungültiger API-Schlüssel, wenn Schlüssel erforderlich sind
-  - `403`: Der Schlüsselbereich ist nicht `read`, oder die Client-IP befindet sich nicht auf der externen Zulassungsliste
+  - `403`: Schlüsselbereich ist nicht `read` oder die Client-IP befindet sich nicht auf der externen Zulassungsliste
   - `404`: Server nicht gefunden
-  - `429`: Ratenlimit für Lese-API überschritten
+  - `429`: Lesen-API-Ratelimit überschritten
   - `500`: Interner Serverfehler
-- **Notizen**:
-  - In Version 0.7.x wurde der Schlüssel des Antwortobjekts von `machine` zu `server` geändert
-  - Server-ID kann entweder ID oder Name sein
-  - Gibt null für latest_backup zurück, wenn keine Sicherungen vorhanden sind
+- **Hinweise**:
+  - In Version 0.7.x änderte sich der Antwortobjektschlüssel von `machine` zu `server`
+  - Serverkennung kann entweder ID oder Name sein
+  - Gibt null für latest_backup zurück, wenn keine Backups vorhanden sind
   - Enthält Cache-Control-Header, um Caching zu verhindern
 
 ## Letzte Sicherungen abrufen - `/api/lastbackups/:serverId` {/* #get-latest-backups---apilastbackupsserverid */}
@@ -174,15 +174,15 @@ Die Server-ID muss URL-codiert sein.
 
 - **Fehlerantworten**:
   - `401`: Fehlender oder ungültiger API-Schlüssel, wenn Schlüssel erforderlich sind
-  - `403`: Der Schlüsselbereich ist nicht `read`, oder die Client-IP befindet sich nicht auf der externen Zulassungsliste
+  - `403`: Schlüsselbereich ist nicht `read` oder die Client-IP befindet sich nicht auf der externen Zulassungsliste
   - `404`: Server nicht gefunden
-  - `429`: Ratenlimit für Lese-API überschritten
+  - `429`: Lesen-API-Ratelimit überschritten
   - `500`: Interner Serverfehler
-- **Notizen**:
-  - In Version 0.7.x wurde der Schlüssel des Antwortobjekts von `machine` zu `server` geändert, und das Feld `backup_types_count` wurde in `backup_jobs_count` umbenannt
-  - Server-ID kann entweder ID oder Name sein
-  - Gibt die neueste Sicherung für jeden Sicherungsauftrag (backup_name) zurück, den der Server hat
-  - Im Gegensatz zu `/api/lastbackup/:serverId`, das nur die einzelne neueste Sicherung des Servers zurückgibt (unabhängig vom Sicherungsauftrag)
+- **Hinweise**:
+  - In Version 0.7.x änderte sich der Antwortobjektschlüssel von `machine` zu `server` und das Feld `backup_types_count` wurde in `backup_jobs_count` umbenannt
+  - Serverkennung kann entweder ID oder Name sein
+  - Gibt das neueste Backup für jeden Backup-Job (backup_name) zurück, den der Server hat
+  - Im Gegensatz zu `/api/lastbackup/:serverId`, das nur das einzige letzte Backup des Servers zurückgibt (unabhängig vom Backup-Job)
   - Enthält Cache-Control-Header, um Caching zu verhindern
 
 ## Sicherungsdaten hochladen - `/api/upload` {/* #upload-backup-data---apiupload */}
@@ -208,18 +208,18 @@ Verwenden Sie bei Duplicati älter als 2.0.9.106 `--send-http-url` mit `--send-h
   ```
 
 - **Fehlerantworten**:
-  - `400`: Erforderliche Felder in den Abschnitten Extra oder Data fehlen oder MainOperation ist ungültig
-  - `401`: API-Schlüssel fehlt oder ist ungültig, wenn Schlüssel erforderlich sind
-  - `403`: Schlüsselbereich ist nicht `upload`, oder die Client-IP befindet sich nicht auf der externen Zulassungsliste
+  - `400`: Fehlende erforderliche Felder in den Abschnitten Extra oder Data oder ungültige MainOperation
+  - `401`: Fehlender oder ungültiger API-Schlüssel, wenn Schlüssel erforderlich sind
+  - `403`: Schlüsselbereich ist nicht `upload` oder die Client-IP befindet sich nicht auf der externen Zulassungsliste
   - `409`: Doppelte Sicherungsdaten (ignoriert)
-  - `413`: Request Body überschreitet das konfigurierte Hochladegrößenlimit (Standard 5 MB)
-  - `429`: Hochladen oder Authentifizierungsfehler-Ratenlimit überschritten (`Retry-After` ist gesetzt)
-  - `500`: Serverfehler beim Verarbeiten von Sicherungsdaten
+  - `413`: Anforderungstext überschreitet das konfigurierte Upload-Größenlimit (Standard 5 MB)
+  - `429`: Upload- oder Authentifizierungsfehler-Ratelimit überschritten (`Retry-After` ist gesetzt)
+  - `500`: Serverfehler bei der Verarbeitung der Sicherungsdaten
 - **Hinweise**:
   - Verarbeitet nur Sicherungsvorgänge (MainOperation muss "Backup" sein)
-  - Validiert erforderliche Felder im Abschnitt Extra: machine-id, machine-name, backup-name, backup-id
-  - Validiert erforderliche Felder im Abschnitt Data: ParsedResult, BeginTime, Duration
+  - Validiert erforderliche Felder im Extra-Abschnitt: machine-id, machine-name, backup-name, backup-id
+  - Validiert erforderliche Felder im Data-Abschnitt: ParsedResult, BeginTime, Duration
   - Erkennt automatisch doppelte Sicherungsläufe und gibt Status 409 zurück
-  - Sendet Benachrichtigungen nach erfolgreichem Einfügen von Sicherungen (falls konfiguriert)
+  - Sendet Benachrichtigungen nach erfolgreichem Einfügen der Sicherung (falls konfiguriert)
   - Protokolliert Anfragedaten in eine Datei im Verzeichnis `data` im Stammverzeichnis des Projekts im Entwicklungsmodus zum Debuggen
   - Verwendet Transaktion für Datenkonsistenz

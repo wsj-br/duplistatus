@@ -55,14 +55,14 @@
   ```
 
 - **Fehlerantworten**:
-  - `500`: Serverfehler beim Abrufen von Dashboard-Daten
-- **Notizen**:
-  - Dieser Endpoint konsolidiert den vorherigen `/api/servers-summary`-Endpoint (der entfernt wurde)
+  - `500`: Serverfehler beim Abrufen der Dashboard-Daten
+- **Hinweise**:
+  - Dieser Endpunkt fasst den vorherigen `/api/servers-summary`-Endpunkt zusammen (der entfernt wurde)
   - Das Feld `overallSummary` enthält dieselben Daten wie `/api/summary` (das für externe Anwendungen beibehalten wird)
-  - Das Feld `chartData` enthält dieselben Daten wie `/api/chart-data/aggregated` (das weiterhin für direkten Zugriff vorhanden ist)
-  - Bietet bessere Leistung durch Reduzierung mehrerer API-Aufrufe auf eine einzelne Anfrage
-  - Alle Daten werden parallel abgerufen für optimale Leistung
-  - Das Feld `secondsSinceLastBackup` zeigt die Zeit in Sekunden seit der letzten Sicherung auf allen Servern
+  - Das Feld `chartData` enthält dieselben Daten wie `/api/chart-data/aggregated` (das weiterhin für direkten Zugriff existiert)
+  - Bietet bessere Leistung durch Reduzierung mehrerer API-Aufrufe auf eine einzige Anfrage
+  - Alle Daten werden parallel abgerufen, um optimale Leistung zu erzielen
+  - Das Feld `secondsSinceLastBackup` zeigt die Zeit in Sekunden seit der letzten Sicherung über alle Server hinweg an
 
 ## Alle Server abrufen - `/api/servers` {/* #get-all-servers---apiservers */}
 - **Endpoint**: `/api/servers`
@@ -101,14 +101,14 @@
   ```
 
 - **Fehlerantworten**:
-  - `401`: Nicht autorisiert – Ungültige Sitzung oder CSRF-Token
-  - `500`: Serverfehler beim Abrufen von Servern
-- **Notizen**:
-  - Gibt Server-Informationen einschließlich Alias- und Notizfelder zurück
-  - Wenn `includeBackups=true`, gibt Server-Sicherungs-Kombinationen mit URLs und Passwort-Status zurück
-  - Konsolidiert den vorherigen `/api/servers-with-backups`-Endpoint (der entfernt wurde)
-  - Wird für Serverauswahl, Anzeige und Konfiguration verwendet
-  - Enthält `hasPassword`-Feld, um anzuzeigen, ob der Server ein gespeichertes Passwort hat
+  - `401`: Nicht autorisiert - Ungültige Sitzung oder CSRF-Token
+  - `500`: Serverfehler beim Abrufen der Server
+- **Hinweise**:
+  - Gibt Serverinformationen einschließlich Alias- und Notizfelder zurück
+  - Wenn `includeBackups=true`, gibt Server-Sicherungskombinationen mit URLs und Passwortstatus zurück
+  - Konsolidiert den vorherigen `/api/servers-with-backups`-Endpunkt (der entfernt wurde)
+  - Wird für Serverauswahl, Anzeige und Konfigurationszwecke verwendet
+  - Enthält das Feld `hasPassword`, um anzugeben, ob der Server ein gespeichertes Passwort hat
 
 ## Server-Details abrufen - `/api/servers/:id` {/* #get-server-details---apiserversid */}
 - **Endpoint**: `/api/servers/:id`
@@ -116,10 +116,10 @@
 - **Beschreibung**: Ruft Informationen über einen bestimmten Server ab. Kann grundlegende Server-Informationen oder detaillierte Informationen einschließlich Sicherungen und Diagrammdaten zurückgeben.
 - **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
 - **Parameter**:
-  - `id`: die Server-Kennung
+  - `id`: die Server-ID
 - **Abfrageparameter**:
-  - `includeBackups` (optional): Auf `true` setzen, um Sicherungsdaten einzubeziehen
-  - `includeChartData` (optional): Auf `true` setzen, um Diagrammdaten einzubeziehen
+  - `includeBackups` (optional): Auf `true` setzen, um Sicherungsdaten einzuschließen
+  - `includeChartData` (optional): Auf `true` setzen, um Diagrammdaten einzuschließen
 - **Antwort** (ohne Parameter):
 
   ```json
@@ -151,13 +151,13 @@
   ```
 
 - **Fehlerantworten**:
-  - `401`: Nicht autorisiert – Ungültige Sitzung oder CSRF-Token
+  - `401`: Nicht autorisiert - Ungültige Sitzung oder CSRF-Token
   - `404`: Server nicht gefunden
-  - `500`: Serverfehler beim Abrufen von Server-Details
-- **Notizen**:
-  - Gibt grundlegende Server-Informationen zurück, wenn keine Abfrageparameter bereitgestellt werden
-  - Das Setzen von `includeBackups` oder `includeChartData` auf `true` gibt vollständige Server-Daten einschließlich Sicherungen und chartData zurück
-  - Wird für Server-Einstellungen und Detailansichten verwendet
+  - `500`: Serverfehler beim Abrufen der Serverdetails
+- **Hinweise**:
+  - Gibt grundlegende Serverinformationen zurück, wenn keine Abfrageparameter angegeben sind
+  - Wenn entweder `includeBackups` oder `includeChartData` auf `true` gesetzt ist, werden vollständige Serverdaten einschließlich Sicherungen und chartData zurückgegeben
+  - Wird für Servereinstellungen und Detailansichten verwendet
 
 ## Server aktualisieren - `/api/servers/:id` {/* #update-server---apiserversid */}
 - **Endpoint**: `/api/servers/:id`
@@ -189,7 +189,7 @@
   ```
 
 - **Fehlerantworten**:
-  - `401`: Nicht autorisiert – Ungültige Sitzung oder CSRF-Token
+  - `401`: Nicht autorisiert - Ungültige Sitzung oder CSRF-Token
   - `404`: Server nicht gefunden
   - `500`: Serverfehler während der Aktualisierung
 - **Hinweise**:
@@ -219,13 +219,13 @@
   ```
 
 - **Fehlerantworten**:
-  - `401`: Nicht autorisiert – Ungültige Sitzung oder CSRF-Token
+  - `401`: Nicht autorisiert - Ungültige Sitzung oder CSRF-Token
   - `404`: Server nicht gefunden
-  - `500`: Serverfehler beim Löschen
-- **Hinweise**: 
-  - Dieser Vorgang kann nicht rückgängig gemacht werden
-  - Alle mit dem Server verknüpften Sicherungsdaten werden dauerhaft gelöscht
-  - Der Server-Datensatz selbst wird ebenfalls entfernt
+  - `500`: Serverfehler während des Löschvorgangs
+- **Hinweise**:
+  - Dieser Vorgang ist irreversibel
+  - Alle mit dem Server verbundenen Sicherungsdaten werden dauerhaft gelöscht
+  - Der Servereintrag selbst wird ebenfalls entfernt
   - Gibt die Anzahl der gelöschten Sicherungen und Server zurück
 
 ## Serverdaten mit Informationen zu überfälligen Sicherungen abrufen - `/api/detail/:serverId` {/* #get-server-data-with-overdue-info---apidetailserverid */}
@@ -264,8 +264,8 @@
   - `500`: Serverfehler beim Abrufen der Serverdetails
 - **Hinweise**:
   - Gibt Serverdaten mit Informationen zu überfälligen Sicherungen zurück
-  - Enthält Details und Zeitstempel zu überfälligen Sicherungen
-  - Wird für die Verwaltung und Überwachung überfälliger Sicherungen verwendet
+  - Enthält Details zu überfälligen Sicherungen und Zeitstempel
+  - Wird für Management und Überwachung überfälliger Sicherungen verwendet
 
 ## Doppelte Server abrufen - `/api/servers/duplicates` {/* #get-duplicate-servers---apiserversduplicates */}
 - **Endpunkt**: `/api/servers/duplicates`
@@ -299,15 +299,15 @@
   ```
 
 - **Fehlerantworten**:
-  - `401`: Nicht autorisiert – Ungültige Sitzung oder CSRF-Token
+  - `401`: Nicht autorisiert - Ungültige Sitzung oder CSRF-Token
   - `403`: Administratorzugriff erforderlich
   - `500`: Serverfehler beim Abrufen doppelter Server
 - **Hinweise**:
   - Nur Administratoren können auf diesen Endpunkt zugreifen
-  - Gibt Gruppen von Servern zurück, die dieselbe Maschinen-ID aufweisen
+  - Gibt Gruppen von Servern zurück, die dieselbe Maschinen-ID teilen
   - Jede Gruppe enthält alle Server mit derselben Maschinen-ID
-  - Wird zum Identifizieren und Zusammenführen doppelter Server-Datensätze verwendet
-  - Enthält Serverdetails und die Anzahl der Sicherungen für jedes Duplikat
+  - Wird zum Identifizieren und Zusammenführen doppelter Servereinträge verwendet
+  - Enthält Serverdetails und Sicherungszahlen für jedes Duplikat
 
 ## Server zusammenführen - `/api/servers/merge` {/* #merge-servers---apiserversmerge */}
 - **Endpunkt**: `/api/servers/merge`
@@ -334,17 +334,17 @@
   ```
 
 - **Fehlerantworten**:
-  - `400`: Ungültiger Request-Body, fehlende erforderliche Felder oder der Zielserver befindet sich in der Liste der zusammenzuführenden Server
-  - `401`: Nicht autorisiert – Ungültige Sitzung oder CSRF-Token
+  - `400`: Ungültiger Anforderungstext, fehlende erforderliche Felder oder Zielserver befindet sich in der Liste der zu zusammenführenden Server
+  - `401`: Nicht autorisiert - Ungültige Sitzung oder CSRF-Token
   - `403`: Administratorzugriff erforderlich
-  - `500`: Serverfehler während des Zusammenführungsvorgangs
+  - `500`: Serverfehler während des Zusammenführvorgangs
 - **Hinweise**:
-  - Nur Administratoren können Zusammenführungsvorgänge durchführen
-  - Der Zielserver darf sich nicht in der Liste der zusammenzuführenden Server befinden
+  - Nur Administratoren können Zusammenführvorgänge durchführen
+  - Der Zielserver darf nicht in der Liste der zusammenzuführenden Server enthalten sein
   - Alle Sicherungen von Quellservern werden auf den Zielserver übertragen
-  - Doppelte `backup_id`-Werte für dieselbe `backup_name` auf dem zusammengeführten Server werden auf die ID aus der neuesten Sicherungszeile normalisiert
+  - Doppelte `backup_id`-Werte für denselben `backup_name` auf dem zusammengeführten Server werden auf die ID aus der neuesten Sicherungszeile normalisiert
   - Quellserver werden nach erfolgreicher Zusammenführung gelöscht
-  - Dieser Vorgang kann nicht rückgängig gemacht werden
-  - Wird zur Konsolidierung doppelter Server-Datensätze verwendet
-  - Validiert, dass oldServerIds ein nicht-leeres Array ist
-  - Validiert, dass targetServerId angegeben ist und ein String ist
+  - Dieser Vorgang ist irreversibel
+  - Wird verwendet, um doppelte Serverdatensätze zusammenzufassen
+  - Überprüft, dass oldServerIds ein Array mit mindestens einem Element ist
+  - Überprüft, dass targetServerId angegeben ist und eine Zeichenkette ist

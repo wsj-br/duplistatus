@@ -34,12 +34,12 @@ Les points de terminaison d'API externes sont maintenus pour la compatibilité r
 
 La version 0.9.x introduit l'authentification et nécessite que tous les utilisateurs se connectent. Lors de la mise à niveau à partir de la version 0.8.x :
 
-1. **Authentification requise** : Toutes les pages et tous les points de terminaison d'API interne nécessitent maintenant une authentification
-2. **Compte Admin par défaut** : Un compte admin par défaut est créé automatiquement :
+1. **Authentification requise** : Toutes les pages et tous les points de terminaison internes de l'API nécessitent désormais une authentification
+2. **Compte administrateur par défaut** : Un compte administrateur par défaut est créé automatiquement :
    - Nom d'utilisateur : `admin`
-   - Mot de passe : `Duplistatus09` (doit être modifié à la première connexion)
-3. **Invalidation de session** : Toutes les sessions existantes sont invalidées
-4. **Accès à l'API externe** : Les points de terminaison d'API externe (`/api/summary`, `/api/lastbackup`, `/api/lastbackups`, `/api/upload`) restent non authentifiés pour la compatibilité avec les intégrations et Duplicati
+   - Mot de passe : `Duplistatus09` (doit être modifié lors de la première connexion)
+3. **Invalidation des sessions** : Toutes les sessions existantes sont invalidées
+4. **Accès externe à l'API** : Les points de terminaison externes de l'API (`/api/summary`, `/api/lastbackup`, `/api/lastbackups`, `/api/upload`) restent non authentifiés pour assurer la compatibilité avec les intégrations et Duplicati
 
 ### Version 0.8.x {/* #version-08x */}
 

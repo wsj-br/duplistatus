@@ -15,11 +15,11 @@
   ```
 
 - **Respostas de Erro**:
-  - `500`: Falha ao obter a configuração do cron
+  - `500`: Falha ao obter configuração do cron
 - **Notas**:
   - Retorna a configuração atual do serviço cron
-  - Inclui a expressão cron e o status habilitado
-  - Usado para o gerenciamento do serviço cron
+  - Inclui expressão cron e status habilitado
+  - Usado para gerenciamento do serviço cron
 
 ## Atualizar Configuração do Cron - `/api/cron-config` {/* #update-cron-configuration---apicron-config */}
 - **Endpoint**: `/api/cron-config`
@@ -44,21 +44,21 @@
 
 - **Intervalos Disponíveis**: `"disabled"`, `"1min"`, `"5min"`, `"10min"`, `"15min"`, `"20min"`, `"30min"`, `"1hour"`, `"2hours"`
 - **Respostas de Erro**:
-  - `400`: O intervalo é obrigatório
-  - `500`: Falha ao atualizar a configuração do cron
+  - `400`: Intervalo é obrigatório
+  - `500`: Falha ao atualizar configuração do cron
 - **Notas**:
-  - Atualiza a configuração do serviço cron
-  - Valida o intervalo em relação às opções permitidas
-  - Afeta a frequência de verificação de backup atrasado
+  - Atualiza configuração do serviço cron
+  - Valida intervalo contra opções permitidas
+  - Afeta frequência de verificação de backup atrasado
 
 ## Proxy do Serviço Cron - `/api/cron/*` {/* #cron-service-proxy---apicron */}
 - **Endpoint**: `/api/cron/*`
 - **Método**: GET, POST
 - **Descrição**: Faz proxy de requisições para o serviço cron. Este endpoint encaminha todas as requisições para o serviço cron em execução em uma porta separada.
-- **Autenticação**: Requer sessão válida e token CSRF. GET é permitido para usuários autenticados; POST (start/stop/trigger/reload) requer um administrador.
+- **Autenticação**: Requer sessão válida e token CSRF. GET é permitido para usuários autenticados; POST (iniciar/parar/acionar/recarregar) requer um administrador.
 - **Parâmetros**:
   - `*`: Qualquer caminho que será encaminhado para o serviço cron
-- **Resposta**: Depende do endpoint do serviço cron que está sendo acessado
+- **Resposta**: Depende do endpoint do serviço cron sendo acessado
 - **Resposta de Erro** (503):
 
   ```json
@@ -69,10 +69,10 @@
   ```
 
 - **Notas**:
-  - Faz proxy de requisições para o serviço cron em `127.0.0.1`
+  - Encaminha solicitações para o serviço cron em `127.0.0.1`
   - Encaminha `CRON_SERVICE_SECRET` como `X-Cron-Service-Secret` quando definido
   - Retorna 503 se o serviço cron não estiver disponível
-  - Suporta os métodos GET e POST
-  - Usado para o gerenciamento do serviço cron a partir da interface web
+  - Suporta ambos os métodos GET e POST
+  - Usado para gerenciamento do serviço cron a partir da interface web
   - `POST /trigger/daily-summary-dispatch` é rejeitado pelo serviço cron; use `/api/configuration/daily-summary/send` em vez disso
-  - `POST /trigger/database-compact` executa a compactação semanal imediatamente (backups/servidores órfãos e configurações de notificação, além do `VACUUM` do SQLite)
+  - `POST /trigger/database-compact` executa o compactador semanal imediatamente (backups/servidores órfãos e configurações de notificação, além do `VACUUM` SQLite)

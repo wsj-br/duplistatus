@@ -46,11 +46,11 @@
 
 - **Notas**:
   - Devuelve 200 cuando la inicialización se completó y `SELECT 1` tiene éxito
-  - Devuelve 503 cuando la inicialización o la comprobación de conexión falla
-  - No enumera nombres de tablas ni ejecuta consultas del panel de control
+  - Devuelve 503 cuando falla la inicialización o la comprobación de conexión
+  - No enumera nombres de tablas ni ejecuta consultas de panel
   - Nunca requiere una clave de API
-  - Cuando se habilita la lista de IPs permitidas, la IP del cliente debe ser loopback o estar listada en la lista CIDR de administrador o externa (`403` `IP_NOT_ALLOWED` en caso contrario)
-  - Los clientes que no son loopback tienen límite de velocidad (`429` `PROBE_RATE_LIMITED`, 30/minuto y 120/hora). Loopback (`127.0.0.1`, `::1`) nunca se acelera
+  - Cuando está habilitada alguna lista de IPs permitidas, la IP del cliente debe ser de loopback o estar incluida en la lista de CIDR de administrador o externa (`403` `IP_NOT_ALLOWED` de lo contrario)
+  - Los clientes que no son de loopback tienen limitación de frecuencia (`429` `PROBE_RATE_LIMITED`, 30 por minuto y 120 por hora). El loopback (`127.0.0.1`, `::1`) nunca se limita
 
 ## Sonda de Conectividad - `/api/ping` {/* #connectivity-probe---apiping */}
 - **Endpoint**: `/api/ping`

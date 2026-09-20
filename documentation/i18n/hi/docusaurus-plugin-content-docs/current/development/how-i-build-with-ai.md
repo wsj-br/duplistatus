@@ -1,4 +1,4 @@
-# एआई टूल्स का उपयोग करके मैं इस एप्लिकेशन को कैसे बनाऊं {/* #how-i-build-this-application-using-ai-tools */}
+# एआई टूल्स {/* #how-i-build-this-application-using-ai-tools */} का उपयोग करके मैं इस एप्लिकेशन को कैसे बनाऊं
 
 # प्रेरणा {/* #motivation */}
 

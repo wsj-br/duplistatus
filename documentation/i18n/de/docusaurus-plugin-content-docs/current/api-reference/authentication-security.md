@@ -108,18 +108,18 @@ const response = await fetch('/api/servers/server-id', {
   }
   ```
 
-- **Fehlerantworten**: Alle Fehlerantworten enthalten `error` (englische Nachricht) und `errorCode` (stabiler Code für clientseitige Übersetzung).
+- **Fehlerantworten**: Alle Fehlerantworten enthalten `error` (englische Meldung) und `errorCode` (stabilen Code für clientseitige Übersetzung).
   - `400`: Fehlender Benutzername oder Passwort — `errorCode: "REQUIRED_CREDENTIALS"`
   - `401`: Ungültiger Benutzername oder Passwort — `errorCode: "INVALID_CREDENTIALS"`
   - `403`: Konto aufgrund zu vieler fehlgeschlagener Anmeldeversuche gesperrt — `errorCode: "ACCOUNT_LOCKED"` (enthält `lockedUntil`, `minutesRemaining`)
   - `500`: Interner Serverfehler — `errorCode: "INTERNAL_ERROR"`
   - `503`: Datenbank nicht bereit — `errorCode: "DATABASE_NOT_READY"`
 - **Hinweise**:
-  - Das Konto wird nach 5 fehlgeschlagenen Anmeldeversuchen für 15 Minuten gesperrt
-  - Fehlgeschlagene Anmeldeversuche werden nachverfolgt und protokolliert
-  - Das Session-Cookie wird automatisch in der Antwort gesetzt
-  - Wenn für den Benutzer das Flag `mustChangePassword` gesetzt ist, sollte er zur Seite „Passwort ändern“ weitergeleitet werden
-  - Alle Anmeldeversuche (erfolgreiche und fehlgeschlagene) werden im Audit-Protokoll protokolliert
+  - Konto wird nach 5 fehlgeschlagenen Anmeldeversuchen für 15 Minuten gesperrt
+  - Fehlgeschlagene Anmeldeversuche werden verfolgt und protokolliert
+  - Sitzungs-Cookie wird automatisch in der Antwort gesetzt
+  - Wenn der Benutzer das Flag `mustChangePassword` gesetzt hat, sollte er zur Passwort-Änderungsseite weitergeleitet werden
+  - Alle Anmeldeversuche (erfolgreich und fehlgeschlagen) werden im Audit-Protokoll protokolliert
 
 ### Abmelden - `/api/auth/logout` {/* #logout---apiauthlogout */}
 - **Endpunkt**: `/api/auth/logout`
@@ -140,9 +140,9 @@ const response = await fetch('/api/servers/server-id', {
   - `400`: Keine aktive Sitzung — `errorCode: "NO_ACTIVE_SESSION"`
   - `500`: Interner Serverfehler — `errorCode: "INTERNAL_ERROR"`
 - **Hinweise**:
-  - Das Session-Cookie wird in der Antwort gelöscht
-  - Die Abmeldung wird im Audit-Protokoll protokolliert
-  - Die Sitzung wird sofort ungültig
+  - Sitzungs-Cookie wird in der Antwort gelöscht
+  - Abmeldung wird im Audit-Protokoll protokolliert
+  - Sitzung wird sofort ungültig gemacht
 
 ### Aktuellen Benutzer abrufen - `/api/auth/me` {/* #get-current-user---apiauthme */}
 - **Endpunkt**: `/api/auth/me`
@@ -176,7 +176,7 @@ const response = await fetch('/api/servers/server-id', {
   - `500`: Interner Serverfehler — `errorCode: "INTERNAL_ERROR"`
 - **Hinweise**:
   - Kann ohne angemeldeten Benutzer aufgerufen werden (gibt `authenticated: false` zurück)
-  - Nützlich zum Überprüfen des Authentifizierungsstatus beim Laden der Seite
+  - Nützlich zum Prüfen des Authentifizierungsstatus beim Laden der Seite
 
 ### Passwort ändern - `/api/auth/change-password` {/* #change-password---apiauthchange-password */}
 - **Endpunkt**: `/api/auth/change-password`
@@ -204,17 +204,17 @@ const response = await fetch('/api/servers/server-id', {
   }
   ```
 
-- **Fehlerantworten**: Enthalten `error` und `errorCode` für clientseitige Übersetzung. Bei einer Richtlinienverletzung kann `validationErrors` enthalten sein (Array von Zeichenfolgen).
+- **Fehlerantworten**: Enthalten `error` und `errorCode` für clientseitige Übersetzung. Richtlinienverstoß kann `validationErrors` enthalten (Array von Zeichenketten).
   - `400`: Neues Passwort fehlt — `errorCode: "NEW_PASSWORD_REQUIRED"`
-  - `400`: Verstoß gegen die Passwortrichtlinie — `errorCode: "POLICY_NOT_MET"` (kann `validationErrors` enthalten)
+  - `400`: Verstoß gegen Passwort-Richtlinie — `errorCode: "POLICY_NOT_MET"` (kann `validationErrors` enthalten)
   - `400`: Neues Passwort entspricht dem aktuellen — `errorCode: "NEW_PASSWORD_SAME_AS_CURRENT"`
   - `401`: Aktuelles Passwort ist falsch — `errorCode: "CURRENT_PASSWORD_INCORRECT"`
   - `404`: Benutzer nicht gefunden — `errorCode: "USER_NOT_FOUND"`
   - `500`: Interner Serverfehler — `errorCode: "INTERNAL_ERROR"`
 - **Hinweise**:
-  - Neues Passwort muss den Anforderungen der Passwortrichtlinie entsprechen (Länge, Komplexität usw.)
-  - Wenn das `mustChangePassword`-Flag gesetzt ist, wird die Überprüfung des aktuellen Passworts übersprungen
-  - Nach erfolgreicher Passwortänderung wird das `mustChangePassword`-Flag zurückgesetzt
+  - Neues Passwort muss die Anforderungen der Passwort-Richtlinie erfüllen (Länge, Komplexität usw.)
+  - Wenn das Flag `mustChangePassword` gesetzt ist, wird die Überprüfung des aktuellen Passworts übersprungen
+  - Nach erfolgreicher Passwortänderung wird das Flag `mustChangePassword` gelöscht
   - Passwortänderungen werden im Audit-Protokoll protokolliert
   - Neues Passwort muss sich vom aktuellen Passwort unterscheiden
 
@@ -231,12 +231,12 @@ const response = await fetch('/api/servers/server-id', {
   ```
 
 - **Fehlerantworten**:
-  - `500`: Interner Serverfehler (gibt bei einem Fehler `mustChangePassword: false` zurück, um zu vermeiden, dass der Hinweis angezeigt wird, wenn ein Datenbankproblem vorliegt)
+  - `500`: Interner Serverfehler (gibt bei Fehler `mustChangePassword: false` zurück, um Tipp nicht anzuzeigen, falls es ein Datenbankproblem gibt)
 - **Hinweise**:
   - Öffentlicher Endpunkt, keine Authentifizierung erforderlich
-  - Gibt `false` zurück, wenn der Administrator-Benutzer nicht existiert
-  - Wird verwendet, um zu bestimmen, ob der Hinweis zur Passwortänderung angezeigt werden soll
-  - Gibt bei einem Fehler `false` zurück, um zu vermeiden, dass der Hinweis angezeigt wird, wenn ein Datenbankproblem vorliegt
+  - Gibt `false` zurück, wenn Administrator-Benutzer nicht existiert
+  - Wird verwendet, um zu bestimmen, ob Passwort-Änderungshinweis angezeigt werden soll
+  - Bei Fehler gibt `false` zurück, um Tipp nicht anzuzeigen, falls es ein Datenbankproblem gibt
 
 ### Passwortrichtlinie abrufen - `/api/auth/password-policy` {/* #get-password-policy---apiauthpassword-policy */}
 - **Endpunkt**: `/api/auth/password-policy`
@@ -254,13 +254,13 @@ const response = await fetch('/api/servers/server-id', {
   }
   ```
 
-- **Fehlerantworten**: Enthalten `error` und `errorCode` für die clientseitige Übersetzung.
-  - `500`: Abrufen der Passwortrichtlinie fehlgeschlagen — `errorCode: "POLICY_RETRIEVE_FAILED"`
+- **Fehlerantworten**: Enthalten `error` und `errorCode` für clientseitige Übersetzung.
+  - `500`: Abrufen der Passwort-Richtlinie fehlgeschlagen — `errorCode: "POLICY_RETRIEVE_FAILED"`
 - **Hinweise**:
   - Öffentlicher Endpunkt, keine Authentifizierung erforderlich
-  - Wird von Frontend-Komponenten verwendet, um Passwortanforderungen anzuzeigen und Passwörter vor dem Absenden zu validieren
+  - Wird von Frontend-Komponenten verwendet, um Passwortanforderungen anzuzeigen und Passwörter vor der Übermittlung zu überprüfen
   - Richtlinie wird über Umgebungsvariablen konfiguriert (`PWD_ENFORCE`, `PWD_MIN_LEN`)
-  - Standard-Passwortprüfung (Verhinderung der Verwendung des Standard-Admin-Passworts) wird unabhängig von den Richtlinieneinstellungen immer erzwungen
+  - Standard-Passwort-Überprüfung (Verhinderung der Verwendung des Standard-Admin-Passworts) wird immer erzwungen, unabhängig von Richtlinieneinstellungen
 
 ### Fehler- und Erfolgscodes der Auth-API (i18n) {/* #auth-api-error-and-success-codes-i18n */}
 

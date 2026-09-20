@@ -3,11 +3,11 @@
 ## Organización del código {/* #code-organisation */}
 
 - **Componentes**: `src/components/` con subdirectorios:
-  - `ui/` - componentes shadcn/ui y elementos de interfaz reutilizables
+  - `ui/` - componentes de shadcn/ui y elementos de interfaz reutilizables
   - `dashboard/` - componentes específicos del panel de control
   - `settings/` - componentes de la página de configuración
   - `server-details/` - componentes de la página de detalles del servidor
-- **Rutas API**: `src/app/api/` con estructura de puntos finales RESTful (consulta [Referencia de API](../api-reference/overview))
+- **Rutas de API**: `src/app/api/` con estructura de punto final RESTful (ver [Referencia de API](../api-reference/overview))
 - **Base de datos**: SQLite con better-sqlite3, utilidades en `src/lib/db-utils.ts`, migraciones en `src/lib/db-migrations.ts`
 - **Tipos**: interfaces de TypeScript en `src/lib/types.ts`
 - **Configuración**: configuraciones predeterminadas en `src/lib/default-config.ts`

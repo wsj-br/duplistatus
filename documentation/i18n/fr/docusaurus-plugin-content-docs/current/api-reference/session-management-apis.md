@@ -43,11 +43,11 @@
   ```
 
 - **Réponses d'erreur** :
-  - `401` : Aucun cookie de session ou ID de session
-  - `500` : Échec de la validation de la session
+  - `401` : Aucun cookie de session ou identifiant de session
+  - `500` : Échec de validation de la session
 - **Notes** :
   - Vérifie si le cookie de session existe et est valide
-  - Renvoie l'ID de session si valide
+  - Retourne l'identifiant de session s'il est valide
 
 ## Supprimer la session - `/api/session` {/* #delete-session---apisession */}
 - **Point de terminaison** : `/api/session`
@@ -62,7 +62,7 @@
   ```
 
 - **Réponses d'erreur** :
-  - `500` : Échec de la suppression de la session
+  - `500` : Échec de suppression de la session
 - **Notes** :
   - Efface la session du serveur et du client
   - Supprime le cookie de session
@@ -82,7 +82,7 @@
 
 - **Réponses d'erreur** :
   - `401` : Aucune session trouvée ou session invalide/expirée
-  - `500` : Échec de la génération du jeton CSRF
+  - `500` : Échec de génération du jeton CSRF
 - **Notes** :
   - Nécessite une session valide
   - Le jeton CSRF est requis pour toutes les opérations modifiant l'état

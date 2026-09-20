@@ -35,16 +35,16 @@
   }
   ```
 
-- **Respuestas de error**:
-  - `400`: La clave maestra no es válida - Todos los ajustes y contraseñas cifrados deben volver a configurarse
-  - `401`: No autorizado - Sesión o token CSRF no válidos
-  - `500`: Fallo al obtener la configuración del correo electrónico
+- **Respuestas de Error**:
+  - `400`: La clave maestra no es válida - Todas las contraseñas y configuraciones cifradas deben volver a configurarse
+  - `401`: No autorizado - Sesión inválida o token CSRF
+  - `500`: Error al obtener la configuración de correo electrónico
 - **Notas**:
-  - Devuelve la configuración sin la contraseña por motivos de seguridad
-  - Incluye el campo `hasPassword` para indicar si la contraseña está configurada
+  - Devuelve la configuración sin contraseña por seguridad
+  - Incluye el campo `hasPassword` para indicar si se ha establecido una contraseña
   - Incluye los campos `connectionType` (plain|starttls|ssl), `senderName`, `fromAddress` y `requireAuth`
-  - Indica si las notificaciones por correo electrónico están disponibles para pruebas y para su uso en producción
-  - Gestiona de forma fluida los errores de validación de la clave maestra
+  - Indica si las notificaciones por correo electrónico están disponibles para uso de prueba y producción
+  - Maneja errores de validación de clave maestra correctamente
 
 ## Actualizar la configuración de correo electrónico - `/api/configuration/email` {/* #update-email-configuration---apiconfigurationemail */}
 - **Endpoint**: `/api/configuration/email`
@@ -73,15 +73,15 @@
   }
   ```
 
-- **Respuestas de error**:
-  - `400`: Faltan campos obligatorios o el número de puerto no es válido
-  - `401`: No autorizado - Sesión o token CSRF no válidos
-  - `500`: Fallo al guardar la configuración de SMTP
+- **Respuestas de Error**:
+  - `400`: Faltan campos obligatorios o número de puerto no válido
+  - `401`: No autorizado - Sesión inválida o token CSRF
+  - `500`: Error al guardar la configuración SMTP
 - **Notas**:
-  - Todos los campos (host, port, username, password, mailto) son obligatorios
+  - Todos los campos (host, puerto, nombre de usuario, contraseña, mailto) son obligatorios
   - El puerto debe ser un número válido entre 1 y 65535
-  - El campo secure es booleano (true para SSL/TLS)
-  - La contraseña se gestiona por separado a través del endpoint de contraseña
+  - El campo seguro es booleano (verdadero para SSL/TLS)
+  - La contraseña se gestiona por separado a través del punto final de contraseña
 
 ## Eliminar configuración de correo electrónico - `/api/configuration/email` {/* #delete-email-configuration---apiconfigurationemail */}
 - **Endpoint**: `/api/configuration/email`
@@ -97,14 +97,14 @@
   }
   ```
 
-- **Respuestas de error**:
-  - `401`: No autorizado - Sesión o token CSRF no válidos
-  - `404`: No se ha encontrado ninguna configuración de SMTP para eliminar
-  - `500`: Fallo al eliminar la configuración de SMTP
+- **Respuestas de Error**:
+  - `401`: No autorizado - Sesión inválida o token CSRF
+  - `404`: No se encontró configuración SMTP para eliminar
+  - `500`: Error al eliminar la configuración SMTP
 - **Notas**:
-  - Esta operación elimina permanentemente la configuración de SMTP
+  - Esta operación elimina permanentemente la configuración SMTP
   - Devuelve 404 si no existe ninguna configuración para eliminar
-  - Devuelve 400 mientras el modo de Resumen Diario esté habilitado, ya que ese modo requiere SMTP
+  - Devuelve 400 mientras el modo Resumen Diario esté habilitado, porque ese modo requiere SMTP
 
 ## Actualizar la contraseña de correo electrónico - `/api/configuration/email/password` {/* #update-email-password---apiconfigurationemailpassword */}
 - **Endpoint**: `/api/configuration/email/password`
@@ -134,9 +134,9 @@
   }
   ```
 
-- **Respuestas de error**:
-  - `400`: La contraseña debe ser una cadena o faltan campos de configuración requeridos
-  - `401`: No autorizado - Sesión inválida o token CSRF incorrecto
+- **Respuestas de Error**:
+  - `400`: La contraseña debe ser una cadena o faltan campos de configuración obligatorios
+  - `401`: No autorizado - Sesión inválida o token CSRF
   - `500`: Error al actualizar la contraseña de correo electrónico
 - **Notas**:
   - La contraseña puede ser una cadena vacía para borrar la contraseña
@@ -157,11 +157,11 @@
   }
   ```
 
-- **Respuestas de error**:
-  - `401`: Sesión inválida o expirada
-  - `500`: Error al generar token CSRF
+- **Respuestas de Error**:
+  - `401`: Sesión no válida o expirada
+  - `500`: Error al generar el token CSRF
 - **Notas**:
-  - Devuelve token CSRF para usar con operaciones de actualización de contraseña
+  - Devuelve el token CSRF para su uso con operaciones de actualización de contraseña
   - La sesión debe ser válida para generar el token
 
 ## Obtener configuración unificada - `/api/configuration/unified` {/* #get-unified-configuration---apiconfigurationunified */}
@@ -255,13 +255,13 @@
   }
   ```
 
-- **Respuestas de error**:
+- **Respuestas de Error**:
   - `500`: Error del servidor al recuperar la configuración unificada
 - **Notas**:
-  - Devuelve todos los datos de configuración en una única respuesta
-  - Incluye configuración de cron, frecuencia de notificación y servidores con copias de seguridad
+  - Devuelve todos los datos de configuración en una sola respuesta
+  - Incluye configuración de cron, frecuencia de notificaciones y servidores con copias de seguridad
   - La configuración de correo electrónico incluye el campo `hasPassword` pero no la contraseña real
-  - Recupera todos los datos en paralelo para mejor rendimiento
+  - Recupera todos los datos en paralelo para un mejor rendimiento
 
 ## Obtener Configuración de NTFY - `/api/configuration/ntfy` {/* #get-ntfy-configuration---apiconfigurationntfy */}
 - **Endpoint**: `/api/configuration/ntfy`
@@ -281,12 +281,12 @@
   ```
 
 - **Respuestas de Error**:
-  - `401`: No autorizado - Sesión inválida o token CSRF incorrecto
-  - `500`: Fallido al obtener Configuración de NTFY
+  - `401`: No autorizado - Sesión inválida o token CSRF
+  - `500`: Error al recuperar la configuración de NTFY
 - **Notas**:
-- Devuelve la Configuración de NTFY actual
-- Se utiliza para la gestión del sistema de notificaciones
-- Requiere autenticación para acceder a los datos de configuración
+  - Devuelve la configuración actual de NTFY
+  - Se utiliza para la gestión del sistema de notificaciones
+  - Requiere autenticación para acceder a los datos de configuración
 
 ## Obtener configuración de notificación - `/api/configuration/notifications` {/* #get-notification-configuration---apiconfigurationnotifications */}
 - **Punto de conexión**: `/api/configuration/notifications`
@@ -301,11 +301,11 @@
   }
   ```
 
-- **Respuestas de error**:
-  - `401`: No autorizado - Sesión inválida o token CSRF incorrecto
+- **Respuestas de Error**:
+  - `401`: No autorizado - Sesión inválida o token CSRF
   - `500`: Error al recuperar la configuración
 - **Notas**:
-  - Recupera la configuración de frecuencia de notificación actual
+  - Recupera la configuración actual de frecuencia de notificaciones
   - Se utiliza para la gestión de notificaciones de copia de seguridad vencida
   - Devuelve uno de: `"onetime"`, `"every_day"`, `"every_week"`, `"every_month"`
 
@@ -359,20 +359,20 @@ Para la Frecuencia de notificación:
   }
   ```
 
-- **Valores disponibles**: `"onetime"`, `"every_day"`, `"every_week"`, `"every_month"`
-- **Respuestas de error**:
-  - `401`: No autorizado - Sesión o token CSRF no válidos
-  - `400`: La Configuración de NTFY es obligatoria o el valor no es válido
-  - `500`: Error del Servidor al actualizar la configuración de Notificaciones
+- **Valores Disponibles**: `"onetime"`, `"every_day"`, `"every_week"`, `"every_month"`
+- **Respuestas de Error**:
+  - `401`: No autorizado - Sesión inválida o token CSRF
+  - `400`: Se requiere la configuración de NTFY o valor no válido
+  - `500`: Error del servidor al actualizar la configuración de notificaciones
 - **Notas**:
-  - Admite actualizaciones tanto de la Configuración de NTFY como de la Frecuencia de notificación
-  - Actualiza únicamente la Configuración de NTFY cuando se proporciona el campo ntfy
-  - Actualiza la Frecuencia de notificación cuando se proporciona el campo value
+  - Admite actualizaciones tanto de configuración de NTFY como de frecuencia de notificaciones
+  - Actualiza solo la configuración de NTFY cuando se proporciona el campo ntfy
+  - Actualiza la frecuencia de notificación cuando se proporciona el campo value
   - Genera un tema predeterminado si no se proporciona ninguno
-  - Conserva los ajustes de configuración existentes
-  - Usos del campo `accessToken` en lugar de campos independientes para Nombre de usuario/Contraseña
-  - Valida el valor de la Frecuencia de notificación comparándolo con las opciones permitidas
-  - Afecta a la frecuencia con la que se envían las Notificaciones de Copia de seguridad Vencida
+  - Conserva la configuración existente de configuración
+  - Utiliza el campo `accessToken` en lugar de campos separados de nombre de usuario/contraseña
+  - Valida el valor de frecuencia de notificación contra opciones permitidas
+  - Afecta la frecuencia con que se envían las notificaciones vencidas
 
 ## Actualizar la configuración de la Copia de seguridad - `/api/configuration/backup-settings` {/* #update-backup-settings---apiconfigurationbackup-settings */}
 - **Endpoint**: `/api/configuration/backup-settings`
@@ -402,14 +402,14 @@ Para la Frecuencia de notificación:
   }
   ```
 
-- **Respuestas de error**:
-  - `401`: No autorizado - Sesión o token CSRF no válidos
+- **Respuestas de Error**:
+  - `401`: No autorizado - Sesión inválida o token CSRF
   - `400`: backupSettings es obligatorio
-  - `500`: Error del Servidor al actualizar la configuración de la Copia de seguridad
+  - `500`: Error del servidor al actualizar la configuración de copia de seguridad
 - **Notas**:
-  - Actualiza la configuración de las Notificaciones de Copia de Seguridad para Servidores/copias de seguridad específicos
-  - Limpia las Notificaciones de Copia de Seguridad Vencida para copias de seguridad en estado Desactivado
-  - Borra las Notificaciones cuando cambia la configuración del tiempo de espera
+  - Actualiza la configuración de notificaciones de copia de seguridad para servidores/copias de seguridad específicos
+  - Limpia las notificaciones de copia de seguridad vencida para copias de seguridad deshabilitadas
+  - Borra las notificaciones cuando cambian los ajustes de tiempo de espera
 
 ## Actualizar Plantillas de Notificaciones - `/api/configuration/templates` {/* #update-notification-templates---apiconfigurationtemplates */}
 - **Endpoint**: `/api/configuration/templates`
@@ -439,25 +439,25 @@ Para la Frecuencia de notificación:
   }
   ```
 
-- **Respuestas de error**:
-  - `401`: No autorizado - Sesión o token CSRF no válidos
-  - `400`: templates es obligatorio
-  - `500`: Error del Servidor al actualizar las Plantillas de notificación
+- **Respuestas de Error**:
+  - `401`: No autorizado - Sesión o token CSRF inválido
+  - `400`: Las plantillas son obligatorias
+  - `500`: Error del servidor al actualizar las plantillas de notificación
 - **Notas**:
-  - Actualiza las Plantillas de notificación para distintos estados de Copia de seguridad
-  - Conserva los ajustes de configuración existentes
-  - Las Plantillas admiten cuerpos de Correo electrónico en Markdown y sustitución de `{placeholder}`
-  - Se requiere una plantilla de Correo electrónico `dailySummary` (Asunto y cuerpo en Markdown)
+  - Actualiza las plantillas de notificación para diferentes estados de copia de seguridad
+  - Conserva la configuración existente
+  - Las plantillas admiten cuerpos de correo electrónico en formato Markdown y sustitución de `{placeholder}`
+  - Se requiere una plantilla de correo electrónico `dailySummary` (asunto y cuerpo en formato Markdown)
 
 ## Resumen Diario - `/api/configuration/daily-summary` {/* #daily-summary---apiconfigurationdaily-summary */}
 - **Endpoint**: `/api/configuration/daily-summary`
 - **Método**: GET, POST
 - **Descripción**: Lee o actualiza el Modo resumen diario. GET devuelve la configuración saneada, el estado del despachador, la Siguiente ejecución y el Estado de entrega del Correo electrónico. POST guarda `enabled`, `utcTime` (`HH:mm` UTC), `timeZone` (zona horaria IANA del navegador del último Guardar), `publicUrl` opcional y `smtpRecipient` opcional (si está vacío, utiliza el Destinatario SMTP de la Configuración de correo electrónico). La activación requiere un SMTP válido. Modificar `utcTime` actualiza `daily-summary-dispatch` a `minute hour * * *` UTC y recarga el servicio cron. Modificar la programación establece la **próxima** ejecución futura.
 - **Autenticación**: GET requiere una sesión válida y token CSRF. POST requiere una sesión de administrador y token CSRF.
-- **Respuestas de error**:
-  - `400`: Hora/zona horaria no válida, URL pública no válida, destinatario SMTP no válido o SMTP faltante
+- **Respuestas de Error**:
+  - `400`: Hora/zona horaria inválida, URL pública inválida, destinatario SMTP inválido o falta SMTP
   - `401`: No autorizado
-  - `500`: Error al leer o actualizar Resumen Diario
+  - `500`: Falló al leer o actualizar el Resumen Diario
 
 ## Enviar Resumen Diario - `/api/configuration/daily-summary/send` {/* #send-daily-summary---apiconfigurationdaily-summarysend */}
 - **Endpoint**: `/api/configuration/daily-summary/send`
@@ -489,11 +489,11 @@ Para la Frecuencia de notificación:
   }
   ```
 
-- **Respuestas de error**:
-  - `500`: Error al obtener tolerancia de vencimiento
+- **Respuestas de Error**:
+  - `500`: Falló al obtener la tolerancia de vencimiento
 - **Notas**:
-  - Devuelve la configuración de tolerancia de vencimiento actual
-  - Se utiliza para mostrar la configuración actual
+  - Devuelve la configuración actual de tolerancia de vencimiento
+  - Utilizado para mostrar la configuración actual
 
 ## Actualizar Tolerancia de Vencimiento - `/api/configuration/overdue-tolerance` {/* #update-overdue-tolerance---apiconfigurationoverdue-tolerance */}
 - **Endpoint**: `/api/configuration/overdue-tolerance`
@@ -516,14 +516,14 @@ Para la Frecuencia de notificación:
   }
   ```
 
-- **Respuestas de error**:
-  - `401`: No autorizado - Sesión o token CSRF no válido
-  - `400`: overdue_tolerance es obligatorio
-  - `500`: Error del servidor al actualizar tolerancia de vencimiento
+- **Respuestas de Error**:
+  - `401`: No autorizado - Sesión o token CSRF inválido
+  - `400`: Se requiere overdue_tolerance
+  - `500`: Error del servidor al actualizar la tolerancia de vencimiento
 - **Notas**:
   - Actualiza la configuración de tolerancia de vencimiento (acepta formato de cadena como `"1h"`, `"2h"`, etc.; el valor predeterminado para nuevas instalaciones es `2h`)
   - Afecta cuándo se consideran vencidas las copias de seguridad
-  - Utilizado por el verificador de copia de seguridad vencida
+  - Utilizado por el verificador de copias de seguridad vencidas
 
 ## Seguridad de APIs Externas - `/api/configuration/external-api-security` {/* #external-api-security---apiconfigurationexternal-api-security */}
 - **Endpoint**: `/api/configuration/external-api-security`

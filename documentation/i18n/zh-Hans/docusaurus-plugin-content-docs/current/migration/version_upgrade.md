@@ -157,7 +157,7 @@ docker logs <container-name>
 
 ## 版本特定迁移说明 {/* #version-specific-migration-notes */}
 
-### 升级到版本 0.9.x 或更高版本（架构 v4.0） {/* #upgrading-to-version-09x-or-later-schema-v40 */}
+### 升级到版本 0.9.x 或更高版本（架构 v4.0）{/* #upgrading-to-version-09x-or-later-schema-v40 */}
 
 :::warning
 **现在需要身份验证。** 升级后，所有用户必须登录。
@@ -307,7 +307,7 @@ docker exec -it duplistatus /app/admin-recovery admin NewPassword123
 
 如果应用程序在恢复或回滚后无法启动或数据未显示，请检查以下常见问题：
 
-#### 1. 数据库文件权限（Linux/Podman） {/* #1-database-file-permissions-linuxpodman */}
+#### 1. 数据库文件权限（Linux/Podman）{/* #1-database-file-permissions-linuxpodman */}
 
 如果您以 `root` 用户身份恢复了文件，则容器内的应用程序可能没有读取或写入它的权限。
 

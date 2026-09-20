@@ -108,18 +108,18 @@ const response = await fetch('/api/servers/server-id', {
   }
   ```
 
-- **Réponses d'erreur** : toutes les réponses d'erreur incluent `error` (message en anglais) et `errorCode` (code stable pour la traduction côté client).
-  - `400` : nom d'utilisateur ou mot de passe manquant — `errorCode: "REQUIRED_CREDENTIALS"`
+- **Réponses d'erreur** : Toutes les réponses d'erreur incluent `error` (message en anglais) et `errorCode` (code stable pour la traduction côté client).
+  - `400` : Nom d'utilisateur ou mot de passe manquant — `errorCode: "REQUIRED_CREDENTIALS"`
   - `401` : Nom d'utilisateur ou mot de passe incorrect — `errorCode: "INVALID_CREDENTIALS"`
-  - `403` : compte verrouillé en raison d'un trop grand nombre de tentatives de connexion infructueuses — `errorCode: "ACCOUNT_LOCKED"` (inclut `lockedUntil`, `minutesRemaining`)
+  - `403` : Compte verrouillé en raison de trop nombreuses tentatives de connexion échouées — `errorCode: "ACCOUNT_LOCKED"` (inclut `lockedUntil`, `minutesRemaining`)
   - `500` : Erreur interne du serveur — `errorCode: "INTERNAL_ERROR"`
-  - `503` : base de données non prête — `errorCode: "DATABASE_NOT_READY"`
+  - `503` : Base de données non prête — `errorCode: "DATABASE_NOT_READY"`
 - **Remarques** :
-  - Le compte est verrouillé après 5 tentatives de connexion infructueuses pendant 15 minutes
-  - Les échecs de tentative de connexion sont suivis et journalisés
+  - Le compte est verrouillé après 5 tentatives de connexion échouées pendant 15 minutes
+  - Les tentatives de connexion échouées sont suivies et journalisées
   - Le cookie de session est automatiquement défini dans la réponse
-  - Si l'indicateur `mustChangePassword` de l'utilisateur est défini, celui-ci doit être redirigé vers la page de changement de mot de passe
-  - Toutes les tentatives de connexion (réussies et ayant échoué) sont enregistrées dans le journal d'audit
+  - Si l'utilisateur a le drapeau `mustChangePassword` activé, il doit être redirigé vers la page de changement de mot de passe
+  - Toutes les tentatives de connexion (réussies et échouées) sont enregistrées dans le journal d'audit
 
 ### Déconnexion - `/api/auth/logout` {/* #logout---apiauthlogout */}
 - **Point de terminaison** : `/api/auth/logout`
@@ -136,8 +136,8 @@ const response = await fetch('/api/servers/server-id', {
   }
   ```
 
-- **Réponses d'erreur** : incluent `error` et `errorCode` pour la traduction côté client.
-  - `400` : aucune session active — `errorCode: "NO_ACTIVE_SESSION"`
+- **Réponses d'erreur** : Inclut `error` et `errorCode` pour la traduction côté client.
+  - `400` : Aucune session active — `errorCode: "NO_ACTIVE_SESSION"`
   - `500` : Erreur interne du serveur — `errorCode: "INTERNAL_ERROR"`
 - **Remarques** :
   - Le cookie de session est effacé dans la réponse
@@ -172,11 +172,11 @@ const response = await fetch('/api/servers/server-id', {
   }
   ```
 
-- **Réponses d'erreur** : incluent `error` et `errorCode` pour la traduction côté client.
+- **Réponses d'erreur** : Inclut `error` et `errorCode` pour la traduction côté client.
   - `500` : Erreur interne du serveur — `errorCode: "INTERNAL_ERROR"`
 - **Remarques** :
-  - Peut être appelé sans utilisateur connecté (renvoie `authenticated: false`)
-  - Utile pour vérifier l'état d'authentification lors du chargement de la page
+  - Peut être appelé sans utilisateur connecté (retourne `authenticated: false`)
+  - Utile pour vérifier l'état d'authentification au chargement de la page
 
 ### Changer de mot de passe - `/api/auth/change-password` {/* #change-password---apiauthchange-password */}
 - **Point de terminaison** : `/api/auth/change-password`
@@ -204,18 +204,18 @@ const response = await fetch('/api/servers/server-id', {
   }
   ```
 
-- **Réponses d'erreur** : incluent `error` et `errorCode` pour la traduction côté client. Une violation de stratégie peut inclure `validationErrors` (tableau de chaînes).
-  - `400` : nouveau mot de passe manquant — `errorCode: "NEW_PASSWORD_REQUIRED"`
-  - `400` : violation de la stratégie de mot de passe — `errorCode: "POLICY_NOT_MET"` (peut inclure `validationErrors`)
-  - `400` : nouveau mot de passe identique au mot de passe actuel — `errorCode: "NEW_PASSWORD_SAME_AS_CURRENT"`
+- **Réponses d'erreur** : Inclut `error` et `errorCode` pour la traduction côté client. La violation de politique peut inclure `validationErrors` (tableau de chaînes).
+  - `400` : Nouveau mot de passe manquant — `errorCode: "NEW_PASSWORD_REQUIRED"`
+  - `400` : Violation de la politique de mot de passe — `errorCode: "POLICY_NOT_MET"` (peut inclure `validationErrors`)
+  - `400` : Nouveau mot de passe identique à l'actuel — `errorCode: "NEW_PASSWORD_SAME_AS_CURRENT"`
   - `401` : Le mot de passe actuel est incorrect — `errorCode: "CURRENT_PASSWORD_INCORRECT"`
   - `404` : Utilisateur introuvable — `errorCode: "USER_NOT_FOUND"`
   - `500` : Erreur interne du serveur — `errorCode: "INTERNAL_ERROR"`
 - **Remarques** :
   - Le nouveau mot de passe doit respecter les exigences de la politique de mot de passe (longueur, complexité, etc.)
-  - Si l'indicateur `mustChangePassword` est activé, la vérification du mot de passe actuel est ignorée
-  - Après un changement de mot de passe réussi, l'indicateur `mustChangePassword` est effacé
-  - Les changements de mot de passe sont enregistrés dans le journal d'audit
+  - Si le drapeau `mustChangePassword` est activé, la vérification du mot de passe actuel est ignorée
+  - Après un changement de mot de passe réussi, le drapeau `mustChangePassword` est désactivé
+  - Les modifications de mot de passe sont enregistrées dans le journal d'audit
   - Le nouveau mot de passe doit être différent du mot de passe actuel
 
 ### Vérifier Doit changer de mot de passe pour l'Admin - `/api/auth/admin-must-change-password` {/* #check-admin-must-change-password---apiauthadmin-must-change-password */}
@@ -231,12 +231,12 @@ const response = await fetch('/api/servers/server-id', {
   ```
 
 - **Réponses d'erreur** :
-  - `500` : Erreur interne du serveur (renvoie `mustChangePassword: false` en cas d'erreur pour éviter d'afficher le conseil en cas de problème de base de données)
+  - `500` : Erreur interne du serveur (retourne `mustChangePassword: false` en cas d'erreur pour éviter d'afficher l'astuce s'il y a un problème de base de données)
 - **Remarques** :
-  - Endpoint public, aucune authentification requise
-  - Renvoie `false` si l'utilisateur administrateur n'existe pas
-  - Utilisé pour déterminer si le conseil de changement de mot de passe doit être affiché
-  - En cas d'erreur, renvoie `false` pour éviter d'afficher le conseil en cas de problème de base de données
+  - Point de terminaison public, aucune authentification requise
+  - Retourne `false` si l'utilisateur administrateur n'existe pas
+  - Utilisé pour déterminer si l'astuce de changement de mot de passe doit être affichée
+  - En cas d'erreur, retourne `false` pour éviter d'afficher l'astuce s'il y a un problème de base de données
 
 ### Obtenir la politique de mot de passe - `/api/auth/password-policy` {/* #get-password-policy---apiauthpassword-policy */}
 - **Endpoint** : `/api/auth/password-policy`
@@ -254,13 +254,13 @@ const response = await fetch('/api/servers/server-id', {
   }
   ```
 
-- **Réponses d'erreur** : Incluent `error` et `errorCode` pour la traduction côté client.
+- **Réponses d'erreur** : Inclut `error` et `errorCode` pour la traduction côté client.
   - `500` : Échec de la récupération de la politique de mot de passe — `errorCode: "POLICY_RETRIEVE_FAILED"`
 - **Remarques** :
-  - Endpoint public, aucune authentification requise
-  - Utilisé par les composants du frontend pour afficher les exigences relatives aux mots de passe et valider les mots de passe avant l'envoi
+  - Point de terminaison public, aucune authentification requise
+  - Utilisé par les composants frontal pour afficher les exigences de mot de passe et valider les mots de passe avant soumission
   - La politique est configurée via des variables d'environnement (`PWD_ENFORCE`, `PWD_MIN_LEN`)
-  - La vérification du mot de passe par défaut (empêchant l'utilisation du mot de passe administrateur par défaut) est toujours appliquée, quels que soient les paramètres de la politique
+  - La vérification par défaut du mot de passe (empêchant l'utilisation du mot de passe administrateur par défaut) est toujours appliquée quelle que soit la configuration de la politique
 
 ### Codes d'erreur et de succès de l'API d'authentification (i18n) {/* #auth-api-error-and-success-codes-i18n */}
 

@@ -109,13 +109,13 @@ Le projet inclut des scripts pour tester les migrations de base de données à p
 
 Ce script génère des bases de données de test pour plusieurs versions historiques de l'application. Il :
 
-1. **Arrête et supprime** tout conteneur Docker existant
+1. **Arrête et supprime** tous les conteneurs Docker existants
 2. **Pour chaque version** (v0.4.0, v0.5.0, v0.6.1, 0.7.27, 0.8.21) :
    - Supprime les fichiers de base de données existants
-   - Crée un fichier d'étiquette de version
+   - Crée un fichier de balise de version
    - Démarre un conteneur Docker avec la version spécifique
    - Attend que le conteneur soit prêt
-   - Génère les données de test en utilisant `pnpm generate-test-data`
+   - Génère des données de test à l'aide de `pnpm generate-test-data`
    - Prend une capture d'écran de l'interface utilisateur avec les données de test
    - Arrête et supprime le conteneur
    - Vide les fichiers WAL et enregistre le schéma de la base de données
@@ -154,9 +154,9 @@ Ce script teste les migrations de base de données des anciennes versions vers l
 1. **Pour chaque version** (v0.4.0, v0.5.0, v0.6.1, 0.7.27, 0.8.21) :
    - Crée une copie temporaire de la base de données de test
    - Exécute le processus de migration à l'aide de `test-migration.ts`
-   - Valide la structure de la base de données migrée
+   - Valide la structure migrée de la base de données
    - Vérifie la présence des tables et colonnes requises
-   - Confirme que la version de la base de données est 4.0
+   - Vérifie que la version de la base de données est 4.0
    - Nettoie les fichiers temporaires
 
 **Conditions préalables :**
@@ -267,7 +267,7 @@ pnpm test-entrypoint
 - Tester l'arrêt gracieux et la gestion des signaux
 - Déboguer le comportement du script de point d'entrée dans un environnement local
 
-## Validation du Résumé quotidien {/* #daily-summary-validation */}
+## Validation du {/* #daily-summary-validation */} Résumé quotidien
 
 ```bash
 pnpm validate-daily-summary

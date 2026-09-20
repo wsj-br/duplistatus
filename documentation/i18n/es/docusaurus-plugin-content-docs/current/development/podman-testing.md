@@ -4,9 +4,9 @@ Copiar y ejecutar los scripts ubicados en `scripts/podman_testing` en el servido
 
 ## Configuración inicial y gestión {/* #initial-setup-and-management */}
 
-1. `copy.docker.duplistatus.local`: Copia la imagen de Docker del daemon de Docker local a Podman (para pruebas locales).
-2. `copy.docker.duplistatus.remote`: Copia la imagen de Docker de un servidor de desarrollo remoto a Podman (requiere acceso SSH).
-   - Crear la imagen en el servidor de desarrollo usando: `docker build . -t wsj-br/duplistatus:devel`
+1. `copy.docker.duplistatus.local`: Copia la imagen de Docker desde el daemon de Docker local a Podman (para pruebas locales).
+2. `copy.docker.duplistatus.remote`: Copia la imagen de Docker desde un servidor de desarrollo remoto a Podman (requiere acceso SSH).
+   - Cree la imagen en el servidor de desarrollo usando: `docker build . -t wsj-br/duplistatus:devel`
 3. `start.duplistatus`: Inicia el contenedor en modo sin raíz.
 4. `pod.testing`: Prueba el contenedor dentro de un pod de Podman (con privilegios de raíz).
 5. `stop.duplistatus`: Detiene el pod y elimina el contenedor.
@@ -16,14 +16,14 @@ Copiar y ejecutar los scripts ubicados en `scripts/podman_testing` en el servido
 
 Los scripts detectan y configuran automáticamente los parámetros de DNS del sistema host:
 
-- **Detección automática**: Utiliza `resolvectl status` (systemd-resolved) para extraer servidores DNS y dominios de búsqueda
-- **Soporte de reserva**: Recurre al análisis de `/etc/resolv.conf` en sistemas sin systemd
-- **Filtrado inteligente**: Filtra automáticamente direcciones localhost y servidores de nombres IPv6
-- **Compatible con**:
+- **Detección automática**: Usa `resolvectl status` (systemd-resolved) para extraer servidores DNS y dominios de búsqueda
+- **Soporte alternativo**: Recurre al análisis de `/etc/resolv.conf` en sistemas sin systemd
+- **Filtrado inteligente**: Filtra automáticamente direcciones de localhost y servidores de nombres IPv6
+- **Funciona con**:
   - Tailscale MagicDNS (100.100.100.100)
   - Servidores DNS corporativos
   - Configuraciones de red estándar
-  - Configuraciones de DNS personalizadas
+  - Configuraciones DNS personalizadas
 
 No se requiere configuración manual de DNS: ¡los scripts lo manejan automáticamente!
 
@@ -49,16 +49,16 @@ docker build . -t wsj-br/duplistatus:devel
 
 ### Servidor de Podman {/* #podman-server */}
 
-1. Transferir la imagen de Docker:
-   - Usar `./copy.docker.duplistatus.local` si Docker y Podman están en la misma máquina
-   - Usar `./copy.docker.duplistatus.remote` si se copia desde un servidor de desarrollo remoto (requiere archivo `.env` con `REMOTE_USER` y `REMOTE_HOST`)
-2. Iniciar el contenedor con `./start.duplistatus` (independiente, sin raíz)
-   - O usar `./pod.testing` para probar en modo pod (con raíz)
-3. Monitorear con `./check.duplistatus` y `./logs.duplistatus`
-4. Detener con `./stop.duplistatus` cuando termine
-5. Usar `./restart.duplistatus` para un ciclo de reinicio completo (detener, copiar imagen, iniciar)
-   - **Nota**: Este script actualmente hace referencia a `copy.docker.duplistatus` que debe reemplazarse con la variante `.local` o `.remote`
-6. Utiliza `./clean.duplistatus` para eliminar contenedores, pods e imágenes antiguas
+1. Transfiera la imagen de Docker:
+   - Use `./copy.docker.duplistatus.local` si Docker y Podman están en la misma máquina
+   - Use `./copy.docker.duplistatus.remote` si copia desde un servidor de desarrollo remoto (requiere archivo `.env` con `REMOTE_USER` y `REMOTE_HOST`)
+2. Inicie el contenedor con `./start.duplistatus` (independiente, sin raíz)
+   - O use `./pod.testing` para probar en modo pod (con raíz)
+3. Supervise con `./check.duplistatus` y `./logs.duplistatus`
+4. Detenga con `./stop.duplistatus` cuando haya terminado
+5. Use `./restart.duplistatus` para un ciclo completo de reinicio (detener, copiar imagen, iniciar)
+   - **Nota**: Este script actualmente hace referencia a `copy.docker.duplistatus` que debería sustituirse por la variante `.local` o `.remote`
+6. Use `./clean.duplistatus` para eliminar contenedores, pods e imágenes antiguas
 
 # Prueba de la aplicación {/* #testing-the-application */}
 

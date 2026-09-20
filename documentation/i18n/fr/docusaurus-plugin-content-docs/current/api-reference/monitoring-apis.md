@@ -44,13 +44,13 @@
   }
   ```
 
-- **Remarques** :
-  - Retourne 200 quand l'initialisation est terminée et `SELECT 1` réussit
-  - Retourne 503 quand l'initialisation ou la vérification de connexion échoue
-  - Ne liste pas les noms de tables ni n'exécute les requêtes du tableau de bord
+- **Notes**:
+  - Renvoie 200 lorsque l'initialisation est terminée et que `SELECT 1` réussit
+  - Renvoie 503 lorsque l'initialisation ou la vérification de la connexion échoue
+  - N'affiche pas les noms des tables ni n'exécute les requêtes du tableau de bord
   - Ne nécessite jamais une clé API
-  - Quand l'une ou l'autre liste d'adresses IP autorisées est activée, l'adresse IP du client doit être une boucle locale ou figurée sur la liste CIDR admin ou externe (`403` `IP_NOT_ALLOWED` sinon)
-  - Les clients non-boucle locale sont limités en débit (`429` `PROBE_RATE_LIMITED`, 30/minute et 120/heure). La boucle locale (`127.0.0.1`, `::1`) n'est jamais limitée
+  - Quand l'une ou l'autre liste d'adresses IP autorisées est activée, l'adresse IP du client doit être en boucle locale ou figurer sur la liste CIDR Admin ou externe (`403` `IP_NOT_ALLOWED` sinon)
+  - Les clients non en boucle locale sont limités en débit (`429` `PROBE_RATE_LIMITED`, 30 par minute et 120 par heure). La boucle locale (`127.0.0.1`, `::1`) n'est jamais limitée
 
 ## Sonde de connectivité - `/api/ping` {/* #connectivity-probe---apiping */}
 - **Point de terminaison** : `/api/ping`

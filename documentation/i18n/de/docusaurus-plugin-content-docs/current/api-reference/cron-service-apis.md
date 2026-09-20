@@ -15,11 +15,11 @@
   ```
 
 - **Fehlerantworten**:
-  - `500`: Cron-Konfiguration konnte nicht abgerufen werden
+  - `500`: Abrufen der Cron-Konfiguration fehlgeschlagen
 - **Hinweise**:
-  - Gibt die aktuelle Cron-Dienst-Konfiguration zurück
-  - Enthält Cron-Ausdruck und Aktiviert-Status
-  - Wird für die Cron-Dienstverwaltung verwendet
+  - Gibt die aktuelle Cron-Dienstkonfiguration zurück
+  - Enthält Cron-Ausdruck und aktivierten Status
+  - Wird für das Management des Cron-Dienstes verwendet
 
 ## Cron-Konfiguration aktualisieren - `/api/cron-config` {/* #update-cron-configuration---apicron-config */}
 - **Endpunkt**: `/api/cron-config`
@@ -45,20 +45,20 @@
 - **Verfügbare Intervalle**: `"disabled"`, `"1min"`, `"5min"`, `"10min"`, `"15min"`, `"20min"`, `"30min"`, `"1hour"`, `"2hours"`
 - **Fehlerantworten**:
   - `400`: Intervall ist erforderlich
-  - `500`: Cron-Konfiguration konnte nicht aktualisiert werden
+  - `500`: Aktualisierung der Cron-Konfiguration fehlgeschlagen
 - **Hinweise**:
-  - Aktualisiert die Cron-Dienst-Konfiguration
-  - Validiert das Intervall anhand der zulässigen Optionen
-  - Wirkt sich auf die Häufigkeit der Prüfung auf überfällige Sicherungen aus
+  - Aktualisiert die Cron-Dienstkonfiguration
+  - Validiert das Intervall gegen zulässige Optionen
+  - Beeinflusst die Häufigkeit der Überprüfung auf überfällige Sicherungen
 
 ## Cron-Dienst-Proxy - `/api/cron/*` {/* #cron-service-proxy---apicron */}
 - **Endpunkt**: `/api/cron/*`
 - **Methode**: GET, POST
 - **Beschreibung**: Leitet Anfragen an den Cron-Dienst weiter. Dieser Endpunkt leitet alle Anfragen an den Cron-Dienst weiter, der auf einem separaten Port ausgeführt wird.
-- **Authentifizierung**: Erfordert eine gültige Sitzung und ein CSRF-Token. GET ist für authentifizierte Benutzer zulässig; POST (Start/Stop/Trigger/Reload) erfordert einen Administrator.
+- **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token. GET ist für authentifizierte Benutzer erlaubt; POST (Start/Stop/Auslösen/Neu laden) erfordert einen Administrator.
 - **Parameter**:
-  - `*`: Beliebiger Pfad, der an den Cron-Dienst weitergeleitet wird
-- **Antwort**: Hängt vom aufgerufenen Endpunkt des Cron-Dienstes ab
+  - `*`: Jeder Pfad, der an den Cron-Dienst weitergeleitet wird
+- **Antwort**: Hängt vom abgerufenen Cron-Dienstendpunkt ab
 - **Fehlerantwort** (503):
 
   ```json
@@ -70,9 +70,9 @@
 
 - **Hinweise**:
   - Leitet Anfragen an den Cron-Dienst auf `127.0.0.1` weiter
-  - Leitet `CRON_SERVICE_SECRET` als `X-Cron-Service-Secret` weiter, wenn festgelegt
+  - Leitet `CRON_SERVICE_SECRET` als `X-Cron-Service-Secret` weiter, wenn gesetzt
   - Gibt 503 zurück, wenn der Cron-Dienst nicht verfügbar ist
   - Unterstützt sowohl GET- als auch POST-Methoden
-  - Wird für die Cron-Dienstverwaltung über die Weboberfläche verwendet
+  - Wird für das Management des Cron-Dienstes über die Weboberfläche verwendet
   - `POST /trigger/daily-summary-dispatch` wird vom Cron-Dienst abgelehnt; verwenden Sie stattdessen `/api/configuration/daily-summary/send`
-  - `POST /trigger/database-compact` führt die wöchentliche Bereinigung sofort aus (verwaiste Sicherungen/Server und Benachrichtigungseinstellungen sowie SQLite `VACUUM`)
+  - `POST /trigger/database-compact` führt die wöchentliche Komprimierung sofort aus (verwaiste Sicherungen/Server und Benachrichtigungseinstellungen sowie SQLite `VACUUM`)

@@ -13,11 +13,11 @@
   }
   ```
 
-- **Fehlerantworten**:
-  - `500`: Fehlgeschlagen, Sitzung konnte nicht erstellt werden
+- **Fehler-Antworten**:
+  - `500`: Sitzung konnte nicht erstellt werden
 - **Hinweise**:
-  - Erstellt eine neue Sitzung mit 24-Stunden-Gültigkeit
-  - Setzt ein HTTP-only-Sitzungscookie
+  - Erstellt eine neue Sitzung mit 24-Stunden-Ablauf
+  - Setzt ein HTTP-only-Sitzungs-Cookie
   - Erforderlich für den Zugriff auf geschützte Endpunkte
 
 ## Sitzung überprüfen - `/api/session` {/* #validate-session---apisession */}
@@ -42,12 +42,12 @@
   }
   ```
 
-- **Fehlerantworten**:
-  - `401`: Kein Sitzungscookie oder Sitzungs-ID
-  - `500`: Fehlgeschlagen, Sitzung konnte nicht überprüft werden
+- **Fehler-Antworten**:
+  - `401`: Kein Sitzungs-Cookie oder Sitzungs-ID vorhanden
+  - `500`: Sitzung konnte nicht validiert werden
 - **Hinweise**:
-  - Überprüft, ob der Sitzungscookie existiert und gültig ist
-  - Gibt die Sitzungs-ID zurück, wenn gültig
+  - Überprüft, ob das Sitzungs-Cookie existiert und gültig ist
+  - Gibt die Sitzungs-ID zurück, falls gültig
 
 ## Sitzung löschen - `/api/session` {/* #delete-session---apisession */}
 - **Endpoint**: `/api/session`
@@ -61,11 +61,11 @@
   }
   ```
 
-- **Fehlerantworten**:
-  - `500`: Fehlgeschlagen, Sitzung konnte nicht gelöscht werden
+- **Fehler-Antworten**:
+  - `500`: Sitzung konnte nicht gelöscht werden
 - **Hinweise**:
-  - Entfernt die Sitzung vom Server und dem Client
-  - Entfernt den Sitzungscookie
+  - Löscht die Sitzung vom Server und Client
+  - Entfernt das Sitzungs-Cookie
 
 ## CSRF-Token abrufen - `/api/csrf` {/* #get-csrf-token---apicsrf */}
 - **Endpoint**: `/api/csrf`
@@ -80,10 +80,10 @@
   }
   ```
 
-- **Fehlerantworten**:
+- **Fehler-Antworten**:
   - `401`: Keine Sitzung gefunden oder ungültige/abgelaufene Sitzung
-  - `500`: Fehlgeschlagen, CSRF-Token konnte nicht generiert werden
+  - `500`: CSRF-Token konnte nicht generiert werden
 - **Hinweise**:
   - Erfordert eine gültige Sitzung
-  - CSRF-Token ist für alle statusändernden Operationen erforderlich
-  - Das Token ist an die aktuelle Sitzung gebunden
+  - CSRF-Token ist für alle Zustandsänderungen erforderlich
+  - Token ist an die aktuelle Sitzung gebunden

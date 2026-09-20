@@ -13,11 +13,11 @@
   }
   ```
 
-- **Respostas de erro**:
+- **Respostas de Erro**:
   - `500`: Falha ao criar sessão
-- **Observações**:
+- **Notas**:
   - Cria uma nova sessão com expiração de 24 horas
-  - Define o cookie de sessão HTTP-only
+  - Define cookie de sessão somente HTTP
   - Necessário para acessar endpoints protegidos
 
 ## Validar sessão - `/api/session` {/* #validate-session---apisession */}
@@ -42,12 +42,12 @@
   }
   ```
 
-- **Respostas de erro**:
+- **Respostas de Erro**:
   - `401`: Nenhum cookie de sessão ou ID de sessão
   - `500`: Falha ao validar sessão
-- **Observações**:
+- **Notas**:
   - Verifica se o cookie de sessão existe e é válido
-  - Retorna o ID da sessão se for válido
+  - Retorna ID da sessão se válida
 
 ## Excluir sessão - `/api/session` {/* #delete-session---apisession */}
 - **Endpoint**: `/api/session`
@@ -61,10 +61,10 @@
   }
   ```
 
-- **Respostas de erro**:
+- **Respostas de Erro**:
   - `500`: Falha ao excluir sessão
-- **Observações**:
-  - Limpa a sessão do servidor e do cliente
+- **Notas**:
+  - Limpa a sessão do servidor e cliente
   - Remove o cookie de sessão
 
 ## Obter token CSRF - `/api/csrf` {/* #get-csrf-token---apicsrf */}
@@ -80,10 +80,10 @@
   }
   ```
 
-- **Respostas de erro**:
+- **Respostas de Erro**:
   - `401`: Nenhuma sessão encontrada ou sessão inválida/expirada
   - `500`: Falha ao gerar token CSRF
-- **Observações**:
+- **Notas**:
   - Requer uma sessão válida
-  - O token CSRF é obrigatório para todas as operações que alteram o estado
+  - O token CSRF é necessário para todas as operações que alteram estado
   - O token está vinculado à sessão atual

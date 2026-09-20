@@ -124,7 +124,7 @@ O conteúdo do e-mail de teste exibe:
 - **Respostas de Erro**:
   - `500`: Falha ao verificar backups atrasados
 - **Notas**:
-  - Dispara manualmente a verificação de backup atrasado
+  - Aciona manualmente a verificação de backups atrasados
   - Retorna estatísticas sobre o processo de verificação
   - Envia notificações para backups atrasados encontrados
 
@@ -141,9 +141,9 @@ O conteúdo do e-mail de teste exibe:
   }
   ```
 
-- **Respostas de erro**:
-  - `500`: Falha ao limpar registros de data/hora de Backup Atrasado
+- **Respostas de Erro**:
+  - `500`: Falha ao limpar os carimbos de data/hora dos backups atrasados
 - **Notas**:
-  - Limpar todos os registros de data/hora de Notificações de Backup Atrasado
-  - Permite que o alerta de Notificações seja enviado novamente
-  - Útil para testar o Sistema de Notificações
+  - Limpa todos os carimbos de data/hora das notificações de backups atrasados
+  - Permite que as notificações sejam enviadas novamente
+  - Útil para testar o sistema de notificações

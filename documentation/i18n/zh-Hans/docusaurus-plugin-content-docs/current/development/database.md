@@ -74,7 +74,7 @@ duplistatus 使用自动迁移系统来处理版本之间的数据库模式更�
 | `errors`           | INTEGER           | 错误数量                               |
 | `created_at`       | DATETIME          | 记录创建时间戳                      |
 
-#### 消息数组（JSON 存储） {/* #message-arrays-json-storage */}
+#### 消息数组（JSON 存储）{/* #message-arrays-json-storage */}
 
 | 字段                | 类型 | 描述                                  |
 |---------------------|------|---------------------------------------|

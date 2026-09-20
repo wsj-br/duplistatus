@@ -108,17 +108,17 @@ const response = await fetch('/api/servers/server-id', {
   }
   ```
 
-- **Respuestas de error**: Todas las respuestas de error incluyen `error` (mensaje en inglés) e `errorCode` (código estable para traducción del lado del cliente).
+- **Respuestas de Error**: Todas las respuestas de error incluyen `error` (mensaje en inglés) y `errorCode` (código estable para traducción del lado del cliente).
   - `400`: Falta nombre de usuario o contraseña — `errorCode: "REQUIRED_CREDENTIALS"`
   - `401`: Nombre de usuario o contraseña no válidos — `errorCode: "INVALID_CREDENTIALS"`
   - `403`: Cuenta bloqueada debido a demasiados intentos de inicio de sesión fallidos — `errorCode: "ACCOUNT_LOCKED"` (incluye `lockedUntil`, `minutesRemaining`)
   - `500`: Error interno del servidor — `errorCode: "INTERNAL_ERROR"`
-  - `503`: Base de datos no lista — `errorCode: "DATABASE_NOT_READY"`
+  - `503`: Base de datos no está lista — `errorCode: "DATABASE_NOT_READY"`
 - **Notas**:
   - La cuenta se bloquea después de 5 intentos de inicio de sesión fallidos durante 15 minutos
   - Los intentos de inicio de sesión fallidos se rastrean y registran
   - La cookie de sesión se establece automáticamente en la respuesta
-  - Si el usuario tiene la bandera `mustChangePassword` establecida, debe redirigirse a la página de cambio de contraseña
+  - Si el usuario tiene la bandera `mustChangePassword` activada, se debe redirigir al usuario a la página de cambio de contraseña
   - Todos los intentos de inicio de sesión (exitosos y fallidos) se registran en el registro de auditoría
 
 ### Cerrar sesión - `/api/auth/logout` {/* #logout---apiauthlogout */}
@@ -136,8 +136,8 @@ const response = await fetch('/api/servers/server-id', {
   }
   ```
 
-- **Respuestas de error**: Incluyen `error` e `errorCode` para traducción del lado del cliente.
-  - `400`: Sin sesión activa — `errorCode: "NO_ACTIVE_SESSION"`
+- **Respuestas de Error**: Incluye `error` y `errorCode` para traducción del lado del cliente.
+  - `400`: No hay sesión activa — `errorCode: "NO_ACTIVE_SESSION"`
   - `500`: Error interno del servidor — `errorCode: "INTERNAL_ERROR"`
 - **Notas**:
   - La cookie de sesión se borra en la respuesta
@@ -172,11 +172,11 @@ const response = await fetch('/api/servers/server-id', {
   }
   ```
 
-- **Respuestas de error**: Incluyen `error` e `errorCode` para traducción del lado del cliente.
+- **Respuestas de Error**: Incluye `error` y `errorCode` para traducción del lado del cliente.
   - `500`: Error interno del servidor — `errorCode: "INTERNAL_ERROR"`
 - **Notas**:
-  - Puede llamarse sin un usuario conectado (devuelve `authenticated: false`)
-  - Útil para verificar el estado de autenticación al cargar la página
+  - Se puede llamar sin un usuario conectado (devuelve `authenticated: false`)
+  - Útil para comprobar el estado de autenticación al cargar la página
 
 ### Cambiar contraseña - `/api/auth/change-password` {/* #change-password---apiauthchange-password */}
 - **Punto de conexión**: `/api/auth/change-password`
@@ -204,17 +204,17 @@ const response = await fetch('/api/servers/server-id', {
   }
   ```
 
-- **Respuestas de error**: Incluyen `error` e `errorCode` para traducción del lado del cliente. La violación de política puede incluir `validationErrors` (matriz de cadenas).
-  - `400`: Falta nueva contraseña — `errorCode: "NEW_PASSWORD_REQUIRED"`
-  - `400`: Violación de política de contraseña — `errorCode: "POLICY_NOT_MET"` (puede incluir `validationErrors`)
-  - `400`: Nueva contraseña igual a la actual — `errorCode: "NEW_PASSWORD_SAME_AS_CURRENT"`
+- **Respuestas de Error**: Incluye `error` y `errorCode` para traducción del lado del cliente. La violación de política puede incluir `validationErrors` (matriz de cadenas).
+  - `400`: Falta la nueva contraseña — `errorCode: "NEW_PASSWORD_REQUIRED"`
+  - `400`: Violación de la política de contraseñas — `errorCode: "POLICY_NOT_MET"` (puede incluir `validationErrors`)
+  - `400`: Nueva contraseña igual que la actual — `errorCode: "NEW_PASSWORD_SAME_AS_CURRENT"`
   - `401`: La contraseña actual es incorrecta — `errorCode: "CURRENT_PASSWORD_INCORRECT"`
   - `404`: Usuario no encontrado — `errorCode: "USER_NOT_FOUND"`
   - `500`: Error interno del servidor — `errorCode: "INTERNAL_ERROR"`
 - **Notas**:
-  - La nueva contraseña debe cumplir los requisitos de la directiva de contraseñas (longitud, complejidad, etc.)
-  - Si el indicador `mustChangePassword` está activado, se omite la verificación de la contraseña actual
-  - Tras cambiar la contraseña con éxito, el indicador `mustChangePassword` se borra
+  - La nueva contraseña debe cumplir con los requisitos de la política de contraseñas (longitud, complejidad, etc.)
+  - Si la bandera `mustChangePassword` está activada, se omite la verificación de la contraseña actual
+  - Después de un cambio de contraseña exitoso, la bandera `mustChangePassword` se desactiva
   - Los cambios de contraseña se registran en el registro de auditoría
   - La nueva contraseña debe ser diferente de la contraseña actual
 
@@ -230,13 +230,13 @@ const response = await fetch('/api/servers/server-id', {
   }
   ```
 
-- **Respuestas de error**:
-  - `500`: Error interno del servidor (devuelve `mustChangePassword: false` en caso de error para evitar mostrar la sugerencia si hay un problema con la base de datos)
+- **Respuestas de Error**:
+  - `500`: Error interno del servidor (devuelve `mustChangePassword: false` en caso de error para evitar mostrar el mensaje si hay un problema de base de datos)
 - **Notas**:
-  - Endpoint público, no requiere autenticación
-  - Devuelve `false` si el usuario administrador no existe
-  - Se utiliza para determinar si debe mostrarse la sugerencia de cambio de contraseña
-  - En caso de error, devuelve `false` para evitar mostrar la sugerencia si hay un problema con la base de datos
+  - Punto final público, no se requiere autenticación
+  - Devuelve `false` si no existe el usuario administrador
+  - Se utiliza para determinar si se debe mostrar el mensaje de cambio de contraseña
+  - En caso de error, devuelve `false` para evitar mostrar el mensaje si hay un problema de base de datos
 
 ### Obtener directiva de contraseñas - `/api/auth/password-policy` {/* #get-password-policy---apiauthpassword-policy */}
 - **Endpoint**: `/api/auth/password-policy`
@@ -254,13 +254,13 @@ const response = await fetch('/api/servers/server-id', {
   }
   ```
 
-- **Respuestas de error**: Incluyen `error` e `errorCode` para la traducción en el cliente.
-  - `500`: Fallo al recuperar la directiva de contraseñas — `errorCode: "POLICY_RETRIEVE_FAILED"`
+- **Respuestas de Error**: Incluye `error` y `errorCode` para traducción del lado del cliente.
+  - `500`: Error al recuperar la política de contraseñas — `errorCode: "POLICY_RETRIEVE_FAILED"`
 - **Notas**:
-  - Endpoint público, no requiere autenticación
-  - Utilizado por los componentes del frontend para mostrar los requisitos de contraseña y validar las contraseñas antes de enviarlas
-  - La directiva se configura mediante variables de entorno (`PWD_ENFORCE`, `PWD_MIN_LEN`)
-  - La comprobación de contraseña predeterminada (que evita el uso de la contraseña de administrador predeterminada) se aplica siempre, independientemente de la configuración de la directiva
+  - Punto final público, no se requiere autenticación
+  - Utilizado por componentes del frontend para mostrar los requisitos de contraseña y validar contraseñas antes del envío
+  - La política se configura mediante variables de entorno (`PWD_ENFORCE`, `PWD_MIN_LEN`)
+  - La verificación predeterminada de contraseña (para evitar el uso de la contraseña predeterminada de administrador) siempre se aplica independientemente de la configuración de la política
 
 ### Códigos de error y de éxito de la API de autenticación (i18n) {/* #auth-api-error-and-success-codes-i18n */}
 

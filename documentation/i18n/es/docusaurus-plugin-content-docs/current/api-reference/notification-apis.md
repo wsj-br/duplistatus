@@ -122,11 +122,11 @@ El contenido del correo de prueba muestra:
   ```
 
 - **Respuestas de error**:
-  - `500`: Error al comprobar copias de seguridad vencidas
+  - `500`: Error al comprobar las copias de seguridad vencidas
 - **Notas**:
-  - Activa manualmente la comprobación de copia de seguridad vencida
+  - Activa manualmente la comprobación de copias de seguridad vencidas
   - Devuelve estadísticas sobre el proceso de comprobación
-  - Envía notificaciones para copias de seguridad vencidas encontradas
+  - Envía notificaciones para las copias de seguridad vencidas encontradas
 
 ## Borrar marcas de tiempo de copias de seguridad vencidas - `/api/notifications/clear-overdue-timestamps` {/* #clear-overdue-timestamps---apinotificationsclear-overdue-timestamps */}
 - **Punto final**: `/api/notifications/clear-overdue-timestamps`
@@ -142,8 +142,8 @@ El contenido del correo de prueba muestra:
   ```
 
 - **Respuestas de error**:
-  - `500`: Error al borrar marcas de tiempo de copias de seguridad vencidas
+  - `500`: Error al borrar las marcas de tiempo de las copias de seguridad vencidas
 - **Notas**:
-  - Borra todas las marcas de tiempo de notificación de copia de seguridad vencida
-  - Permite que las notificaciones se envíen de nuevo
+  - Borra todas las marcas de tiempo de notificación de copias de seguridad vencidas
+  - Permite que las notificaciones se envíen nuevamente
   - Útil para probar el sistema de notificaciones

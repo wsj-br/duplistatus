@@ -363,5 +363,5 @@ docker inspect duplistatus --format '{{.Config.Image}}'
 - **एपीआई संदर्भ**: [एपीआई प्रलेखन](../api-reference/overview.md)
 - **एपीआई परिवर्तन**: [पिछड़े-असंगत एपीआई परिवर्तन](api-changes.md)
 - **रिलीज़ नोट्स**: विस्तृत परिवर्तनों के लिए संस्करण-विशिष्ट रिलीज़ नोट्स देखें
-- **समुदाय**: [GitHub चर्चा](https://github.com/wsj-br/duplistatus/discussions)
-- **मुद्दे**: [GitHub मुद्दे](https://github.com/wsj-br/duplistatus/issues)
+- **समुदाय**: [गिटहब चर्चा](https://github.com/wsj-br/duplistatus/discussions)
+- **मुद्दे**: [गिटहब मुद्दे](https://github.com/wsj-br/duplistatus/issues)

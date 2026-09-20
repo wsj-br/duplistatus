@@ -123,9 +123,9 @@ Le contenu de l'e-mail de test affiche :
 
 - **Réponses d'erreur** :
   - `500` : Échec de la vérification des sauvegardes en retard
-- **Remarques** :
+- **Notes** :
   - Déclenche manuellement la vérification des sauvegardes en retard
-  - Renvoie des statistiques sur le processus de vérification
+  - Retourne les statistiques sur le processus de vérification
   - Envoie des notifications pour les sauvegardes en retard trouvées
 
 ## Effacer les horodatages des retards - `/api/notifications/clear-overdue-timestamps` {/* #clear-overdue-timestamps---apinotificationsclear-overdue-timestamps */}
@@ -142,8 +142,8 @@ Le contenu de l'e-mail de test affiche :
   ```
 
 - **Réponses d'erreur** :
-  - `500` : Échec de l'effacement des horodatages de sauvegarde en retard
-- **Remarques** :
-  - Efface tous les horodatages de notification de sauvegarde en retard
-  - Permet d'envoyer à nouveau les notifications
+  - `500` : Échec de l'effacement des horodatages des sauvegardes en retard
+- **Notes** :
+  - Efface tous les horodatages de notification des sauvegardes en retard
+  - Permet l'envoi à nouveau des notifications
   - Utile pour tester le système de notification

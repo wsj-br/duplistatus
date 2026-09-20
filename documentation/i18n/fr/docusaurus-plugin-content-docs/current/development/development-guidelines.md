@@ -6,8 +6,8 @@
   - `ui/` - composants shadcn/ui et éléments d'interface réutilisables
   - `dashboard/` - composants spécifiques au tableau de bord
   - `settings/` - composants de la page Paramètres
-  - `server-details/` - composants de la page de détail du serveur
-- **Routes API** : `src/app/api/` avec structure d'endpoints RESTful (voir [Référence API](../api-reference/overview))
+  - `server-details/` - composants de la page de détails du serveur
+- **Routes API** : `src/app/api/` avec structure de points de terminaison RESTful (voir [Référence API](../api-reference/overview))
 - **Base de données** : SQLite avec better-sqlite3, utilitaires dans `src/lib/db-utils.ts`, migrations dans `src/lib/db-migrations.ts`
 - **Types** : interfaces TypeScript dans `src/lib/types.ts`
 - **Configuration** : configurations par défaut dans `src/lib/default-config.ts`

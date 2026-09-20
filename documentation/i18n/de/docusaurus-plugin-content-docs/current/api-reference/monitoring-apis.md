@@ -45,12 +45,12 @@
   ```
 
 - **Hinweise**:
-  - Gibt 200 zurück, wenn die Initialisierung abgeschlossen ist und `SELECT 1` erfolgreich verläuft
+  - Gibt 200 zurück, wenn die Initialisierung abgeschlossen ist und `SELECT 1` erfolgreich ist
   - Gibt 503 zurück, wenn die Initialisierung oder die Verbindungsprüfung fehlschlägt
-  - Listet keine Tabellennamen auf und führt keine Dashboard-Abfragen aus
-  - Erfordert niemals einen API-Schlüssel
-  - Wenn eine der beiden IP-Zulassungslisten aktiviert ist, muss die Client-IP die Loopback-Adresse sein oder in der Admin- bzw. externen CIDR-Liste aufgeführt sein (andernfalls `403` `IP_NOT_ALLOWED`)
-  - Für Nicht-Loopback-Clients gilt ein Rate-Limit (`429` `PROBE_RATE_LIMITED`, 30/Minute und 120/Stunde). Loopback (`127.0.0.1`, `::1`) wird nie gedrosselt
+  - Listet keine Tabellennamen auf oder führt Dashboard-Abfragen aus
+  - Benötigt niemals einen API-Schlüssel
+  - Wann immer eine der IP-Zulassungslisten aktiviert ist, muss die Client-IP eine Loopback-Adresse sein oder in der Admin- oder externen CIDR-Liste stehen (`403` `IP_NOT_ALLOWED` andernfalls)
+  - Nicht-Loopback-Clients sind ratenbegrenzt (`429` `PROBE_RATE_LIMITED`, 30 pro Minute und 120 pro Stunde). Loopback (`127.0.0.1`, `::1`) wird niemals gedrosselt
 
 ## Konnektivitätsprüfung – `/api/ping` {/* #connectivity-probe---apiping */}
 - **Endpunkt**: `/api/ping`

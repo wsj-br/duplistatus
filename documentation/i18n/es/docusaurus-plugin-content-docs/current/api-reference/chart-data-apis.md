@@ -26,11 +26,11 @@
 
 - **Respuestas de error**:
   - `400`: Parámetros de fecha no válidos
-  - `500`: Error del servidor al recuperar los datos del gráfico
+  - `500`: Error del servidor al obtener datos del gráfico
 - **Notas**:
-  - Admite filtrado por rango de tiempo con los parámetros startDate y endDate
-  - Valida el formato de fecha antes de procesar
-  - Devuelve datos agregados de todos los servidores
+  - Admite filtrado de rango de tiempo con parámetros startDate y endDate
+  - Valida el formato de fecha antes del procesamiento
+  - Devuelve datos agregados en todos los servidores
 
 ## Obtener datos del gráfico del servidor - `/api/chart-data/server/:serverId` {/* #get-server-chart-data---apichart-dataserverserverid */}
 - **Endpoint**: `/api/chart-data/server/:serverId`
@@ -39,8 +39,8 @@
 - **Parámetros**:
   - `serverId`: el identificador del servidor
 - **Parámetros de consulta**:
-  - `startDate` (opcional): Fecha de inicio para el filtrado (formato ISO)
-  - `endDate` (opcional): Fecha de finalización para el filtrado (formato ISO)
+  - `startDate` (opcional): Fecha de inicio para filtrado (formato ISO)
+  - `endDate` (opcional): Fecha de finalización para filtrado (formato ISO)
 - **Respuesta**:
 
   ```json
@@ -60,10 +60,10 @@
 
 - **Respuestas de error**:
   - `400`: Parámetros de fecha no válidos
-  - `500`: Error del servidor al recuperar los datos del gráfico
+  - `500`: Error del servidor al obtener datos del gráfico
 - **Notas**:
-  - Admite filtrado por rango de tiempo con los parámetros startDate y endDate
-  - Valida el formato de fecha antes de procesar
+  - Admite filtrado de rango de tiempo con parámetros startDate y endDate
+  - Valida el formato de fecha antes del procesamiento
   - Devuelve datos del gráfico para un servidor específico
 
 ## Obtener datos del gráfico de copia de seguridad del servidor - `/api/chart-data/server/:serverId/backup/:backupName` {/* #get-server-backup-chart-data---apichart-dataserverserveridbackupbackupname */}
@@ -74,8 +74,8 @@
   - `serverId`: el identificador del servidor
   - `backupName`: el nombre de la copia de seguridad (codificado en URL)
 - **Parámetros de consulta**:
-  - `startDate` (opcional): Fecha de inicio para el filtrado (formato ISO)
-  - `endDate` (opcional): Fecha de finalización para el filtrado (formato ISO)
+  - `startDate` (opcional): Fecha de inicio para filtrado (formato ISO)
+  - `endDate` (opcional): Fecha de finalización para filtrado (formato ISO)
 - **Respuesta**:
 
   ```json
@@ -95,9 +95,9 @@
 
 - **Respuestas de error**:
   - `400`: Parámetros de fecha no válidos
-  - `500`: Error del servidor al recuperar los datos del gráfico
+  - `500`: Error del servidor al obtener datos del gráfico
 - **Notas**:
-  - Admite filtrado por rango de tiempo con los parámetros startDate y endDate
-  - Valida el formato de fecha antes de procesar
+  - Admite filtrado de rango de tiempo con parámetros startDate y endDate
+  - Valida el formato de fecha antes del procesamiento
   - Devuelve datos del gráfico para una combinación específica de servidor y copia de seguridad
   - El nombre de la copia de seguridad debe estar codificado en URL

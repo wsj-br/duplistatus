@@ -16,7 +16,7 @@ pnpm cron:dev
 pnpm cron:start
 ```
 
-## 本地启动 cron 服务（用于测试） {/* #start-cron-service-locally-for-testing */}
+## 本地启动 cron 服务（用于测试）{/* #start-cron-service-locally-for-testing */}
 
 ```bash
 pnpm cron:start-local

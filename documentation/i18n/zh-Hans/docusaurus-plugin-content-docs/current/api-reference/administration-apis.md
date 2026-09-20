@@ -324,12 +324,12 @@
   }
   ```
 
-- **错误响应**：
-  - `401`：无效或过期的会话
-  - `500`：生成 CSRF 令牌失败
-- **备注**：
+- **错误响应**:
+  - `401`: 会话无效或已过期
+  - `500`: 生成 CSRF 令牌失败
+- **备注**:
   - 返回用于密码更新操作的 CSRF 令牌
-  - 必须会话有效才能生成令牌
+  - 会话必须有效才能生成令牌
 
 ## 更新服务器密码 - `/api/servers/:serverId/password` {/* #update-server-password---apiserversserveridpassword */}
 - **端点**：`/api/servers/:serverId/password`
@@ -817,13 +817,13 @@
 - **端点**：`/api/api-keys/:id`
 - **方法**：PATCH
 - **描述**：启用或禁用密钥。
-- **身份验证**：需要管理员权限、有效会话和 CSRF 令牌
+- **身份验证**: 需要管理员权限、有效会话和CSRF令牌
 
 ### 删除 API 密钥 - `/api/api-keys/:id` {/* #delete-api-key---apiapi-keysid */}
 - **端点**：`/api/api-keys/:id`
 - **方法**：DELETE
 - **描述**：删除密钥。使用该密钥的现有客户端立即失去访问权限。
-- **身份验证**：需要管理员权限、有效会话和 CSRF 令牌
+- **身份验证**: 需要管理员权限、有效会话和CSRF令牌
 
 ## 数据库管理 {/* #database-management */}
 

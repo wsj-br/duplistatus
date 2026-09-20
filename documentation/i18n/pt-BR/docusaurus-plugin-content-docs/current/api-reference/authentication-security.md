@@ -108,18 +108,18 @@ const response = await fetch('/api/servers/server-id', {
   }
   ```
 
-- **Respostas de erro**: Todas as respostas de erro incluem `error` (mensagem em inglês) e `errorCode` (código estável para tradução no lado do cliente).
+- **Respostas de Erro**: Todas as respostas de erro incluem `error` (mensagem em inglês) e `errorCode` (código estável para tradução no lado do cliente).
   - `400`: Nome de usuário ou senha ausente — `errorCode: "REQUIRED_CREDENTIALS"`
   - `401`: Nome de usuário ou senha inválidos — `errorCode: "INVALID_CREDENTIALS"`
-  - `403`: Conta bloqueada devido a muitas tentativas de login com falha — `errorCode: "ACCOUNT_LOCKED"` (inclui `lockedUntil`, `minutesRemaining`)
+  - `403`: Conta bloqueada devido a muitas tentativas de login falhas — `errorCode: "ACCOUNT_LOCKED"` (inclui `lockedUntil`, `minutesRemaining`)
   - `500`: Erro interno do servidor — `errorCode: "INTERNAL_ERROR"`
   - `503`: Banco de dados não está pronto — `errorCode: "DATABASE_NOT_READY"`
-- **Observações**:
-  - A conta é bloqueada após 5 tentativas de login com falha por 15 minutos
-  - Tentativas de login com falha são rastreadas e registradas em log
+- **Notas**:
+  - A conta é bloqueada após 5 tentativas de login falhas por 15 minutos
+  - Tentativas de login falhas são rastreadas e registradas
   - O cookie de sessão é definido automaticamente na resposta
-  - Se o usuário tiver a flag `mustChangePassword` definida, ele deverá ser redirecionado para a página de alteração de senha
-  - Todas as tentativas de login (bem-sucedidas e com falha) são registradas no Log de Auditoria
+  - Se o usuário tiver o sinalizador `mustChangePassword` definido, ele deve ser redirecionado para a página de alteração de senha
+  - Todas as tentativas de login (bem-sucedidas e falhas) são registradas no log de auditoria
 
 ### Logout - `/api/auth/logout` {/* #logout---apiauthlogout */}
 - **Endpoint**: `/api/auth/logout`
@@ -136,12 +136,12 @@ const response = await fetch('/api/servers/server-id', {
   }
   ```
 
-- **Respostas de erro**: Incluem `error` e `errorCode` para tradução no lado do cliente.
+- **Respostas de Erro**: Inclui `error` e `errorCode` para tradução no lado do cliente.
   - `400`: Nenhuma sessão ativa — `errorCode: "NO_ACTIVE_SESSION"`
   - `500`: Erro interno do servidor — `errorCode: "INTERNAL_ERROR"`
-- **Observações**:
+- **Notas**:
   - O cookie de sessão é limpo na resposta
-  - O logout é registrado no Log de Auditoria
+  - O logout é registrado no log de auditoria
   - A sessão é imediatamente invalidada
 
 ### Obter Usuário Atual - `/api/auth/me` {/* #get-current-user---apiauthme */}
@@ -172,11 +172,11 @@ const response = await fetch('/api/servers/server-id', {
   }
   ```
 
-- **Respostas de erro**: Incluem `error` e `errorCode` para tradução no lado do cliente.
+- **Respostas de Erro**: Inclui `error` e `errorCode` para tradução no lado do cliente.
   - `500`: Erro interno do servidor — `errorCode: "INTERNAL_ERROR"`
-- **Observações**:
-  - Pode ser chamado sem um usuário conectado (retorna `authenticated: false`)
-  - Útil para verificar o status de autenticação no carregamento da página
+- **Notas**:
+  - Pode ser chamado sem um usuário logado (retorna `authenticated: false`)
+  - Útil para verificar o status de autenticação ao carregar a página
 
 ### Alterar Senha - `/api/auth/change-password` {/* #change-password---apiauthchange-password */}
 - **Endpoint**: `/api/auth/change-password`
@@ -204,18 +204,18 @@ const response = await fetch('/api/servers/server-id', {
   }
   ```
 
-- **Respostas de erro**: Incluem `error` e `errorCode` para tradução no lado do cliente. Violação de política pode incluir `validationErrors` (array de strings).
+- **Respostas de Erro**: Inclui `error` e `errorCode` para tradução no lado do cliente. Violação de política pode incluir `validationErrors` (array de strings).
   - `400`: Nova senha ausente — `errorCode: "NEW_PASSWORD_REQUIRED"`
-  - `400`: Violação da política de senhas — `errorCode: "POLICY_NOT_MET"` (pode incluir `validationErrors`)
-  - `400`: Nova senha idêntica à atual — `errorCode: "NEW_PASSWORD_SAME_AS_CURRENT"`
+  - `400`: Violação da política de senha — `errorCode: "POLICY_NOT_MET"` (pode incluir `validationErrors`)
+  - `400`: Nova senha igual à atual — `errorCode: "NEW_PASSWORD_SAME_AS_CURRENT"`
   - `401`: Senha atual está incorreta — `errorCode: "CURRENT_PASSWORD_INCORRECT"`
   - `404`: Usuário não encontrado — `errorCode: "USER_NOT_FOUND"`
   - `500`: Erro interno do servidor — `errorCode: "INTERNAL_ERROR"`
-- **Observações**:
-  - A nova senha deve atender aos requisitos da política de senhas (comprimento, complexidade, etc.)
-  - Se a flag `mustChangePassword` estiver definida, a verificação da senha atual será ignorada
-  - Após a alteração de senha bem-sucedida, a flag `mustChangePassword` é limpa
-  - As alterações de senha são registradas no Log de Auditoria
+- **Notas**:
+  - A nova senha deve atender aos requisitos da política de senha (comprimento, complexidade, etc.)
+  - Se o sinalizador `mustChangePassword` estiver definido, a verificação da senha atual é ignorada
+  - Após a alteração bem-sucedida da senha, o sinalizador `mustChangePassword` é limpo
+  - Alterações de senha são registradas no log de auditoria
   - A nova senha deve ser diferente da senha atual
 
 ### Verificar se o Administrador Deve Alterar Senha - `/api/auth/admin-must-change-password` {/* #check-admin-must-change-password---apiauthadmin-must-change-password */}
@@ -230,13 +230,13 @@ const response = await fetch('/api/servers/server-id', {
   }
   ```
 
-- **Respostas de erro**:
-  - `500`: Erro interno do servidor (retorna `mustChangePassword: false` em caso de erro para evitar exibir a dica se houver um problema no banco de dados)
-- **Observações**:
+- **Respostas de Erro**:
+  - `500`: Erro interno do servidor (retorna `mustChangePassword: false` em caso de erro para evitar mostrar dica se houver problema no banco de dados)
+- **Notas**:
   - Endpoint público, nenhuma autenticação necessária
-  - Retorna `false` se o Usuário administrador não existir
-  - Usado para determinar se a dica de alteração de senha deve ser exibida
-  - Em caso de erro, retorna `false` para evitar exibir a dica se houver um problema no banco de dados
+  - Retorna `false` se o usuário administrador não existir
+  - Usado para determinar se a dica de alteração de senha deve ser mostrada
+  - Em caso de erro, retorna `false` para evitar mostrar dica se houver problema no banco de dados
 
 ### Obter política de senhas - `/api/auth/password-policy` {/* #get-password-policy---apiauthpassword-policy */}
 - **Endpoint**: `/api/auth/password-policy`
@@ -254,13 +254,13 @@ const response = await fetch('/api/servers/server-id', {
   }
   ```
 
-- **Respostas de erro**: Inclui `error` e `errorCode` para tradução no lado do cliente.
-  - `500`: Falha ao recuperar a política de senhas — `errorCode: "POLICY_RETRIEVE_FAILED"`
-- **Observações**:
+- **Respostas de Erro**: Inclui `error` e `errorCode` para tradução no lado do cliente.
+  - `500`: Falha ao recuperar política de senha — `errorCode: "POLICY_RETRIEVE_FAILED"`
+- **Notas**:
   - Endpoint público, nenhuma autenticação necessária
-  - Usado por componentes do frontend para exibir requisitos de senha e validar senhas antes do envio
+  - Usado pelos componentes frontend para exibir requisitos de senha e validar senhas antes do envio
   - A política é configurada por meio de variáveis de ambiente (`PWD_ENFORCE`, `PWD_MIN_LEN`)
-  - A verificação de senha padrão (impedindo o uso da senha de administrador padrão) é sempre aplicada, independentemente das configurações da política
+  - A verificação padrão de senha (impedindo o uso da senha padrão do administrador) é sempre aplicada independentemente das configurações de política
 
 ### Códigos de erro e sucesso da API de autenticação (i18n) {/* #auth-api-error-and-success-codes-i18n */}
 

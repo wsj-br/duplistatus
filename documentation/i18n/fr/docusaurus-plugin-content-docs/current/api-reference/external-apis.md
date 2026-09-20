@@ -10,7 +10,7 @@ Une [liste d'adresses IP autorisées](../user-guide/settings/ip-allowlist-settin
 - **Endpoint** : `/api/summary`
 - **Méthode** : GET
 - **Description** : Récupère un résumé de toutes les opérations de sauvegarde sur tous les serveurs.
-- **Response** :
+- **Réponse** :
 
   ```json
   {
@@ -26,17 +26,17 @@ Une [liste d'adresses IP autorisées](../user-guide/settings/ip-allowlist-settin
   ```
 
 - **Réponses d'erreur** :
-  - `401` : Clé API manquante ou non valide lorsque les clés sont requises
-  - `403` : La portée de la clé n'est pas `read`, ou l'IP du client ne figure pas sur la liste d'adresses IP autorisées externe
+  - `401` : Clé API manquante ou invalide lorsque les clés sont requises
+  - `403` : La portée de la clé n'est pas `read`, ou l'IP cliente n'est pas sur la liste blanche externe
   - `429` : Limite de débit de l'API de lecture dépassée
-  - `500` : Erreur du serveur lors de la récupération des données de résumé
+  - `500` : Erreur du serveur lors de la récupération des données récapitulatives
 - **Notes** :
   - Dans la version 0.5.x, le champ `totalBackupedSize` a été remplacé par `totalBackupSize`
   - Dans la version 0.7.x, le champ `totalMachines` a été remplacé par `totalServers`
-  - Le champ `overdueBackupsCount` indique le nombre de sauvegardes en retard actuelles
-  - Le champ `secondsSinceLastBackup` indique le temps en secondes écoulé depuis la dernière sauvegarde sur tous les serveurs
-  - Renvoie une réponse de repli avec des zéros si la récupération des données échoue
-  - **Note** : Pour une utilisation dans un tableau de bord interne, envisagez d'utiliser `/api/dashboard` qui inclut ces données ainsi que des informations supplémentaires
+  - Le champ `overdueBackupsCount` affiche le nombre de sauvegardes actuellement en retard
+  - Le champ `secondsSinceLastBackup` affiche la durée en secondes depuis la dernière sauvegarde sur tous les serveurs
+  - Renvoie une réponse de secours avec des zéros si la récupération des données échoue
+  - **Note** : Pour une utilisation interne du tableau de bord, envisagez d'utiliser `/api/dashboard` qui inclut ces données ainsi que des informations supplémentaires
 
 ## Obtenir la dernière sauvegarde - `/api/lastbackup/:serverId` {/* #get-latest-backup---apilastbackupserverid */}
 - **Endpoint** : `/api/lastbackup/:serverId`
@@ -49,7 +49,7 @@ Une [liste d'adresses IP autorisées](../user-guide/settings/ip-allowlist-settin
 L'identifiant du serveur doit être encodé pour l'URL.
 :::
 
-- **Response** :
+- **Réponse** :
 
   ```json
   {
@@ -87,16 +87,16 @@ L'identifiant du serveur doit être encodé pour l'URL.
   ```
 
 - **Réponses d'erreur** :
-  - `401` : Clé API manquante ou non valide lorsque les clés sont requises
-  - `403` : La portée de la clé n'est pas `read`, ou l'IP du client ne figure pas sur la liste d'adresses IP autorisées externe
+  - `401` : Clé API manquante ou invalide lorsque les clés sont requises
+  - `403` : La portée de la clé n'est pas `read`, ou l'IP cliente n'est pas sur la liste blanche externe
   - `404` : Serveur introuvable
   - `429` : Limite de débit de l'API de lecture dépassée
   - `500` : Erreur interne du serveur
 - **Notes** :
-  - Dans la version 0.7.x, la clé de l'objet de réponse est passée de `machine` à `server`
-  - L'identifiant du serveur peut être l'ID ou le nom
-  - Renvoie null pour latest_backup si aucune sauvegarde n'existe
-  - Inclut des en-têtes de contrôle du cache pour empêcher la mise en cache
+  - Dans la version 0.7.x, la clé d'objet de réponse est passée de `machine` à `server`
+  - L'identifiant du serveur peut être soit l'ID soit le nom
+  - Renvoie null pour latest_backup s'il n'existe aucune sauvegarde
+  - Inclut des en-têtes de contrôle de cache pour empêcher la mise en cache
 
 ## Obtenir les dernières sauvegardes - `/api/lastbackups/:serverId` {/* #get-latest-backups---apilastbackupsserverid */}
 - **Endpoint** : `/api/lastbackups/:serverId`
@@ -109,7 +109,7 @@ L'identifiant du serveur doit être encodé pour l'URL.
 L'identifiant du serveur doit être encodé pour l'URL.
 :::
 
-- **Response** :
+- **Réponse** :
 
   ```json
   {
@@ -173,17 +173,17 @@ L'identifiant du serveur doit être encodé pour l'URL.
   ```
 
 - **Réponses d'erreur** :
-  - `401` : Clé API manquante ou non valide lorsque les clés sont requises
-  - `403` : La portée de la clé n'est pas `read`, ou l'IP du client ne figure pas sur la liste d'adresses IP autorisées externe
+  - `401` : Clé API manquante ou invalide lorsque les clés sont requises
+  - `403` : La portée de la clé n'est pas `read`, ou l'IP cliente n'est pas sur la liste blanche externe
   - `404` : Serveur introuvable
   - `429` : Limite de débit de l'API de lecture dépassée
   - `500` : Erreur interne du serveur
 - **Notes** :
-  - Dans la version 0.7.x, la clé de l'objet de réponse est passée de `machine` à `server`, et le champ `backup_types_count` a été renommé en `backup_jobs_count`
-  - L'identifiant du serveur peut être l'ID ou le nom
-  - Renvoie la dernière sauvegarde pour chaque tâche de sauvegarde (backup_name) configurée sur le serveur
-  - Contrairement à `/api/lastbackup/:serverId` qui ne renvoie que la seule sauvegarde la plus récente du serveur (indépendamment de la tâche de sauvegarde)
-  - Inclut des en-têtes de contrôle du cache pour empêcher la mise en cache
+  - Dans la version 0.7.x, la clé d'objet de réponse est passée de `machine` à `server`, et le champ `backup_types_count` a été renommé en `backup_jobs_count`
+  - L'identifiant du serveur peut être soit l'ID soit le nom
+  - Renvoie la dernière sauvegarde pour chaque tâche de sauvegarde (backup_name) que possède le serveur
+  - Contrairement à `/api/lastbackup/:serverId` qui ne renvoie que la sauvegarde la plus récente du serveur (indépendamment de la tâche de sauvegarde)
+  - Inclut des en-têtes de contrôle de cache pour empêcher la mise en cache
 
 ## Télécharger les données de Sauvegarde - `/api/upload` {/* #upload-backup-data---apiupload */}
 - **Point de terminaison** : `/api/upload`
@@ -199,7 +199,7 @@ L'identifiant du serveur doit être encodé pour l'URL.
 
 Sur les versions de Duplicati antérieures à 2.0.9.106, utilisez `--send-http-url` avec `--send-http-result-output-format=Json`. Consultez [Configuration du Serveur Duplicati](../installation/duplicati-server-configuration.md).
 
-- **Response** :
+- **Réponse** :
 
   ```json
   {
@@ -207,19 +207,19 @@ Sur les versions de Duplicati antérieures à 2.0.9.106, utilisez `--send-http-u
   }
   ```
 
-- **Réponses d'Erreur** :
+- **Réponses d'erreur** :
   - `400` : Champs requis manquants dans les sections Extra ou Data, ou MainOperation invalide
-  - `401` : Clé API manquante ou invalide Quand des clés sont requises
-  - `403` : La Portée de la clé n'est pas `upload`, ou l'adresse IP du client n'est pas sur la liste d'autorisation externe
-  - `409` : Données de Sauvegarde en double (ignorées)
-  - `413` : Le corps de la requête dépasse la limite de Taille pour Télécharger configurée (Par défaut 5 Mo)
-  - `429` : Limite de taux dépassée pour Télécharger ou en cas d'Échec d'authentification (`Retry-After` est défini)
-  - `500` : Erreur de Serveur lors du traitement des données de Sauvegarde
-- **Remarques** :
-  - Traite uniquement les opérations de Sauvegarde (MainOperation doit être « Sauvegarde »)
+  - `401` : Clé API manquante ou invalide lorsque les clés sont requises
+  - `403` : La portée de la clé n'est pas `upload`, ou l'IP cliente n'est pas sur la liste blanche externe
+  - `409` : Données de sauvegarde en double (ignorées)
+  - `413` : Le corps de la requête dépasse la limite de taille de téléchargement configurée (5 Mo par défaut)
+  - `429` : Limite de débit de téléchargement ou d'échec d'authentification dépassée (`Retry-After` est défini)
+  - `500` : Erreur du serveur lors du traitement des données de sauvegarde
+- **Notes** :
+  - Traite uniquement les opérations de sauvegarde (MainOperation doit être "Backup")
   - Valide les champs requis dans la section Extra : machine-id, machine-name, backup-name, backup-id
-  - Valide les champs requis dans la section Data : ParsedResult, BeginTime, Durée
-  - Détecte automatiquement les exécutions de Sauvegarde en double et renvoie le code d'état 409
-  - Envoie des Notifications après l'insertion réussie de la Sauvegarde (si configuré)
-  - Enregistre les données de requête dans un fichier du répertoire `data` sur la racine du projet en mode développement pour le débogage
-  - Utilisations d'une transaction pour la cohérence des données
+  - Valide les champs requis dans la section Data : ParsedResult, BeginTime, Duration
+  - Détecte automatiquement les exécutions de sauvegarde en double et renvoie un statut 409
+  - Envoie des notifications après l'insertion réussie de la sauvegarde (si configuré)
+  - Enregistre les données de la requête dans un fichier du répertoire `data` à la racine du projet en mode développement pour le débogage
+  - Utilise une transaction pour la cohérence des données

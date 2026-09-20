@@ -16,7 +16,7 @@ pnpm dev
 
 - **备份删除**：在服务器详情页面，备份表中会出现一个删除按钮，允许您删除单个备份。此功能对于测试和调试过期备份功能特别有用。
 
-## 启动生产服务器（在开发环境中） {/* #start-the-production-server-in-development-environment */}
+## 启动生产服务器（在开发环境中）{/* #start-the-production-server-in-development-environment */}
 
 首先，为本地生产构建应用程序：
 
@@ -30,7 +30,7 @@ pnpm build-local
 pnpm start-local
 ```
 
-## 启动 Docker 堆栈（Docker Compose） {/* #start-a-docker-stack-docker-compose */}
+## 启动 Docker 堆栈（Docker Compose）{/* #start-a-docker-stack-docker-compose */}
 
 ```bash
 pnpm docker:up
@@ -42,7 +42,7 @@ pnpm docker:up
 docker compose up --build -d
 ```
 
-## 停止 Docker 堆栈（Docker Compose） {/* #stop-a-docker-stack-docker-compose */}
+## 停止 Docker 堆栈（Docker Compose）{/* #stop-a-docker-stack-docker-compose */}
 
 ```bash
 pnpm docker:down
@@ -72,7 +72,7 @@ pnpm docker:clean
 - 清理开发或测试会话后的环境
 - 维护干净的 Docker 环境
 
-## 创建开发镜像（用于本地测试或与 Podman 一起使用） {/* #create-a-development-image-to-test-locally-or-with-podman */}
+## 创建开发镜像（用于本地测试或与 Podman 一起使用）{/* #create-a-development-image-to-test-locally-or-with-podman */}
 
 ```bash
 export $(grep -v '^#' .env | xargs) && docker build . -t wsj-br/duplistatus:devel-$VERSION

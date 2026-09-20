@@ -4,11 +4,11 @@
 
 - **Komponenten**: `src/components/` mit Unterverzeichnissen:
   - `ui/` - shadcn/ui-Komponenten und wiederverwendbare UI-Elemente
-  - `dashboard/` - Dashboard-spezifische Komponenten
-  - `settings/` - Komponenten der Einstellungsseite
-  - `server-details/` - Komponenten der Serverdetailseite
-- **API-Routen**: `src/app/api/` mit RESTful-Endpunkt-Struktur (siehe [API-Referenz](../api-reference/overview))
-- **Datenbank**: SQLite mit better-sqlite3, Utilities in `src/lib/db-utils.ts`, Migrationen in `src/lib/db-migrations.ts`
+  - `dashboard/` - Komponenten für das Dashboard
+  - `settings/` - Komponenten für die Einstellungsseite
+  - `server-details/` - Komponenten für die Server-Detailseite
+- **API-Routen**: `src/app/api/` mit RESTful-Endpunktstruktur (siehe [API-Referenz](../api-reference/overview))
+- **Datenbank**: SQLite mit better-sqlite3, Dienstprogramme in `src/lib/db-utils.ts`, Migrationen in `src/lib/db-migrations.ts`
 - **Typen**: TypeScript-Schnittstellen in `src/lib/types.ts`
 - **Konfiguration**: Standard-Konfigurationen in `src/lib/default-config.ts`
 - **Cron-Service**: `src/cron-service/` (läuft auf Port 8667 Dev, 9667 Prod)

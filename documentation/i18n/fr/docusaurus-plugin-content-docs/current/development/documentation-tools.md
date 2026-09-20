@@ -199,10 +199,10 @@ Ce script prend automatiquement des captures d'écran de l'application à des fi
 - Enregistre les captures d'écran dans `documentation/static/assets/` (anglais) ou `documentation/i18n/{locale}/docusaurus-plugin-content-docs/current/assets` (autres locales)
 
 **Prérequis :**
-- Le serveur de développement doit s'exécuter sur `http://localhost:8666`
+- Le serveur de développement doit être en cours d'exécution sur `http://localhost:8666`
 - Les variables d'environnement doivent être définies, ajoutez-les à votre fichier `.env` ou exportez-les :
-  - `ADMIN_PASSWORD` : Mot de passe du compte administrateur
-  - `USER_PASSWORD` : Mot de passe du compte utilisateur régulier
+  - `ADMIN_PASSWORD` : Mot de passe pour le compte Admin
+  - `USER_PASSWORD` : Mot de passe pour le compte utilisateur ordinaire
 
 **Options :** `--locale` limite les captures d'écran à une ou plusieurs locales (séparées par des virgules). Si omis, toutes les locales sont capturées. Locales valides : `en-GB`, `de`, `fr`, `es`, `pt-BR`, `hi`, `zh-Hans`. Utilisez `-h` ou `--help` pour afficher l'utilisation.
 

@@ -363,5 +363,5 @@ docker inspect duplistatus --format '{{.Config.Image}}'
 - **Referencia de API**: [Documentación de API](../api-reference/overview.md)
 - **Cambios en la API**: [Cambios incompatibles hacia atrás en la API](api-changes.md)
 - **Notas de lanzamiento**: Consulte las notas de lanzamiento específicas de cada versión para obtener cambios detallados
-- **Comunidad**: [Discusiones de GitHub](https://github.com/wsj-br/duplistatus/discussions)
-- **Incidencias**: [Incidencias de GitHub](https://github.com/wsj-br/duplistatus/issues)
+- **Comunidad**: [Debates en GitHub](https://github.com/wsj-br/duplistatus/discussions)
+- **Incidencias**: [Incidencias en GitHub](https://github.com/wsj-br/duplistatus/issues)

@@ -34,12 +34,12 @@ Os endpoints de API externa são mantidos para compatibilidade com versões ante
 
 Versão 0.9.x introduz autenticação e requer que todos os usuários façam login. Quando atualizar da versão 0.8.x:
 
-1. **Autenticação Obrigatória**: Todas as páginas e endpoints de API interna agora exigem autenticação
+1. **Autenticação Necessária**: Todas as páginas e endpoints da API interna agora exigem autenticação
 2. **Conta de Administrador Padrão**: Uma conta de administrador padrão é criada automaticamente:
    - Nome de usuário: `admin`
-   - Senha: `Duplistatus09` (deve ser alterada no primeiro acesso)
+   - Senha: `Duplistatus09` (deve ser alterada no primeiro login)
 3. **Invalidação de Sessão**: Todas as sessões existentes são invalidadas
-4. **Acesso à API Externa**: Os endpoints da API externa (`/api/summary`, `/api/lastbackup`, `/api/lastbackups`, `/api/upload`) permanecem não autenticados para compatibilidade com integrações e Duplicati
+4. **Acesso à API Externa**: Os endpoints da API externa (`/api/summary`, `/api/lastbackup`, `/api/lastbackups`, `/api/upload`) permanecem sem autenticação para compatibilidade com integrações e Duplicati
 
 ### Versão 0.8.x {/* #version-08x */}
 

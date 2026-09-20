@@ -201,8 +201,8 @@ Este script captura automaticamente screenshots da aplicação para fins de docu
 **Requisitos:**
 - O servidor de desenvolvimento deve estar em execução em `http://localhost:8666`
 - As variáveis de ambiente devem ser definidas, adicione-as ao seu arquivo `.env` ou exporte-as:
-  - `ADMIN_PASSWORD`: Senha para conta de administrador
-  - `USER_PASSWORD`: Senha para conta de usuário regular
+  - `ADMIN_PASSWORD`: Senha para a conta de administrador
+  - `USER_PASSWORD`: Senha para a conta de usuário regular
 
 **Opções:** `--locale` limita screenshots a uma ou mais localidades (separadas por vírgula). Se omitido, todas as localidades são capturadas. Localidades válidas: `en-GB`, `de`, `fr`, `es`, `pt-BR`, `hi`, `zh-Hans`. Use `-h` ou `--help` para imprimir o uso.
 

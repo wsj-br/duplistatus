@@ -200,7 +200,7 @@ Este script toma automáticamente capturas de pantalla de la aplicación para fi
 
 **Requisitos:**
 - El servidor de desarrollo debe estar ejecutándose en `http://localhost:8666`
-- Las variables de entorno deben estar configuradas, añade estas a tu archivo `.env` o expórtalas:
+- Las variables de entorno deben estar configuradas, añádalas a su archivo `.env` o expórtelas:
   - `ADMIN_PASSWORD`: Contraseña para la cuenta de administrador
   - `USER_PASSWORD`: Contraseña para la cuenta de usuario regular
 

@@ -23,8 +23,8 @@ Utilisez la fonction de sauvegarde de base de données intégrée :
 
 1. Accédez à [Paramètres → Maintenance de la base de données](../user-guide/settings/database-maintenance.md) dans l'interface web
 2. Dans la section **Sauvegarde de la base de données**, sélectionnez un format de sauvegarde :
-   - **Fichier de base de données (.db)** : Format binaire - sauvegarde la plus rapide, préserve exactement toute la structure de la base de données
-   - **Dump SQL (.sql)** : Format texte - instructions SQL lisibles par l'homme
+   - **Fichier de base de données (.db)** : format binaire - sauvegarde la plus rapide, préserve exactement toute la structure de la base de données
+   - **Dump SQL (.sql)** : format texte - instructions SQL lisibles par un humain
 3. Cliquez sur **Télécharger la sauvegarde**
 4. Le fichier de sauvegarde sera téléchargé sur votre ordinateur avec un nom de fichier horodaté
 
@@ -172,13 +172,13 @@ Recherchez des messages comme :
 
 #### Ce que vous devez faire {/* #what-you-must-do */}
 
-1. **Connexion** avec les identifiants admin par défaut :
+1. **Connectez-vous** avec les identifiants administrateur par défaut :
    - Nom d'utilisateur : `admin`
    - Mot de passe : `Duplistatus09`
-2. **Modifier le mot de passe** quand vous y êtes invité (obligatoire à la première connexion)
-3. **Créer un utilisateur** pour les autres utilisateurs (Paramètres → Utilisateurs)
-4. **Mettre à jour les intégrations API externes** pour inclure l'authentification (voir [Modifications d'API incompatibles avec les versions antérieures](api-changes.md))
-5. **Configurer la conservation des journaux d'audit** si nécessaire (Paramètres → Journal d'audit)
+2. **Modifiez le mot de passe** lorsque vous y êtes invité (requis lors de la première connexion)
+3. **Créez des comptes d'utilisateurs** pour les autres utilisateurs (Paramètres → Utilisateurs)
+4. **Mettez à jour les intégrations API externes** pour inclure l'authentification (voir [Changements d'API incompatibles avec les versions antérieures](api-changes.md))
+5. **Configurez la conservation des journaux d'audit** si nécessaire (Paramètres → Journal d'audit)
 
 #### Si vous êtes verrouillé {/* #if-youre-locked-out */}
 
@@ -221,10 +221,10 @@ Voir [Guide de récupération Admin](../user-guide/admin-recovery.md) pour plus 
 #### Ce que vous devez faire {/* #what-you-must-do-2 */}
 
 1. **Mettez à jour les intégrations API externes** :
-   - Remplacez `totalMachines` → `totalServers` dans `/api/summary`
-   - Remplacez `machine` → `server` dans les objets de réponse API
-   - Remplacez `backup_types_count` → `backup_jobs_count` dans `/api/lastbackups/{serverId}`
-   - Mettez à jour les chemins des points de terminaison de `/api/machines/...` à `/api/servers/...`
+   - Remplacez `totalMachines` par `totalServers` dans `/api/summary`
+   - Remplacez `machine` par `server` dans les objets de réponse de l'API
+   - Remplacez `backup_types_count` par `backup_jobs_count` dans `/api/lastbackups/{serverId}`
+   - Mettez à jour les chemins de point de terminaison de `/api/machines/...` à `/api/servers/...`
 2. **Mettez à jour les modèles de notification** :
    - Remplacez `{machine_name}` par `{server_name}`
 
@@ -289,15 +289,15 @@ Si vous utilisez Podman et rencontrez des problèmes de connectivité réseau ap
 Si vous devez revenir à une version antérieure :
 
 1. **Arrêtez le conteneur** : `docker stop <container-name>` (ou `podman stop <container-name>`)
-2. **Trouvez votre sauvegarde** : 
-   - Si vous avez créé une sauvegarde via l'interface web (version 1.2.1+), utilisez ce fichier de sauvegarde téléchargé
+2. **Trouvez votre sauvegarde** :
+   - Si vous avez créé une sauvegarde à l'aide de l'interface web (version 1.2.1+), utilisez ce fichier de sauvegarde téléchargé
    - Si vous avez créé une sauvegarde manuelle de volume, extrayez-la d'abord
-   - Les sauvegardes de migration automatique se trouvent dans le répertoire des données (fichiers `.db` horodatés)
-3. **Restaurez la base de données** : 
-   - **Pour les sauvegardes de l'interface web (version 1.2.1+)** : Utilisez la fonction de restauration dans `Settings → Database Maintenance` (voir [Maintenance de la base de données](../user-guide/settings/database-maintenance.md#database-restore))
-   - **Pour les sauvegardes manuelles** : Remplacez `backups.db` dans votre répertoire de données/volume par le fichier de sauvegarde
-4. **Utilisez la version d'image précédente** : Extrayez et exécutez l'image de conteneur précédente
-5. **Démarrez le conteneur** : Démarrez avec la version précédente
+   - Les sauvegardes automatiques de migration se trouvent dans le répertoire de données (fichiers `.db` horodatés)
+3. **Restaurez la base de données** :
+   - **Pour les sauvegardes via l'interface web (version 1.2.1+)** : utilisez la fonction de restauration dans `Settings → Database Maintenance` (voir [Maintenance de la base de données](../user-guide/settings/database-maintenance.md#database-restore))
+   - **Pour les sauvegardes manuelles** : remplacez `backups.db` dans votre répertoire/volume de données par le fichier de sauvegarde
+4. **Utilisez la version précédente de l'image** : téléchargez et exécutez l'image du conteneur précédente
+5. **Démarrez le conteneur** : démarrez avec la version précédente
 
 :::warning
 La restauration peut entraîner une perte de données si le nouveau schéma est incompatible avec la version antérieure. Assurez-vous toujours d'avoir une sauvegarde récente avant de tenter une restauration.

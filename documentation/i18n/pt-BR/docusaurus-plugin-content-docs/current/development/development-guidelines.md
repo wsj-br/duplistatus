@@ -3,12 +3,12 @@
 ## Organização do Código {/* #code-organisation */}
 
 - **Componentes**: `src/components/` com subdiretórios:
-  - `ui/` - componentes shadcn/ui e elementos de UI reutilizáveis
-  - `dashboard/` - componentes específicos do Dashboard
+  - `ui/` - componentes e elementos de interface reutilizáveis do shadcn/ui
+  - `dashboard/` - componentes específicos do painel
   - `settings/` - componentes da página de Configurações
   - `server-details/` - componentes da página de detalhes do Servidor
-- **Rotas de API**: `src/app/api/` com estrutura de endpoints RESTful (veja [Referência de API](../api-reference/overview))
-- **Banco de Dados**: SQLite com better-sqlite3, utilitários em `src/lib/db-utils.ts`, migrações em `src/lib/db-migrations.ts`
+- **Rotas de API**: `src/app/api/` com estrutura de endpoint RESTful (consulte [Referência da API](../api-reference/overview))
+- **Banco de dados**: SQLite com better-sqlite3, utilitários em `src/lib/db-utils.ts`, migrações em `src/lib/db-migrations.ts`
 - **Tipos**: interfaces TypeScript em `src/lib/types.ts`
 - **Configuração**: configurações padrão em `src/lib/default-config.ts`
 - **Serviço Cron**: `src/cron-service/` (executa na porta 8667 dev, 9667 prod)

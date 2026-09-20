@@ -11,8 +11,8 @@
   "concurrency": 4,
   "batchConcurrency": 4,
   "batchSize": 20,
-  "fileConcurrency": 4,
-  "uiBatchConcurrency": 4,
+  "fileConcurrency": 2,
+  "uiBatchConcurrency": 2,
   "maxBatchChars": 4096,
   "provider": "openrouter",
   "providers": {
