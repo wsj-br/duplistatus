@@ -1,9 +1,9 @@
-# Operaciones Principales {/* #core-operations */}
+# Operaciones principales {/* #core-operations */}
 
-## Obtener Datos del Panel (Consolidado) - `/api/dashboard` {/* #get-dashboard-data-consolidated---apidashboard */}
+## Obtener datos del panel (consolidado) - `/api/dashboard` {/* #get-dashboard-data-consolidated---apidashboard */}
 - **Endpoint**: `/api/dashboard`
 - **Método**: GET
-- **Descripción**: Recupera todos los datos del panel en una sola respuesta consolidada, incluyendo resúmenes de servidores, resumen general y datos de gráficos.
+- **Descripción**: Recupera todos los datos del panel en una única respuesta consolidada, incluidos los resúmenes de los servidores, el resumen general y los datos de gráficos.
 - **Respuesta**:
 
   ```json
@@ -54,23 +54,23 @@
   }
   ```
 
-- **Respuestas de Error**:
-  - `500`: Error del servidor al obtener datos del panel
+- **Respuestas de error**:
+  - `500`: Error del servidor al recuperar los datos del panel
 - **Notas**:
-  - Este endpoint consolida el endpoint anterior `/api/servers-summary` (que ha sido eliminado)
+  - Este endpoint consolida el endpoint anterior `/api/servers-summary` (que se ha eliminado)
   - El campo `overallSummary` contiene los mismos datos que `/api/summary` (que se mantiene para aplicaciones externas)
-  - El campo `chartData` contiene los mismos datos que `/api/chart-data/aggregated` (que sigue existiendo para acceso directo)
-  - Proporciona mejor rendimiento al reducir múltiples llamadas a la API a una sola solicitud
-  - Todos los datos se obtienen en paralelo para un rendimiento óptimo
+  - El campo `chartData` contiene los mismos datos que `/api/chart-data/aggregated` (que todavía existe para acceso directo)
+  - Ofrece un mejor rendimiento al reducir múltiples llamadas a la API a una sola solicitud
+  - Todos los datos se recuperan en paralelo para un rendimiento óptimo
   - El campo `secondsSinceLastBackup` muestra el tiempo en segundos desde la última copia de seguridad en todos los servidores
 
-## Obtener Todos los Servidores - `/api/servers` {/* #get-all-servers---apiservers */}
+## Obtener todos los servidores - `/api/servers` {/* #get-all-servers---apiservers */}
 - **Endpoint**: `/api/servers`
 - **Método**: GET
-- **Descripción**: Recupera una lista de todos los servidores con su información básica. Opcionalmente incluye información de copia de seguridad.
-- **Autenticación**: Requiere una sesión válida y un token CSRF
-- **Parámetros de Consulta**:
-  - `includeBackups` (opcional): Establecer en `true` para incluir información de copia de seguridad para cada servidor
+- **Descripción**: Recupera una lista de todos los servidores con su información básica. De forma opcional, incluye información de copia de seguridad.
+- **Autenticación**: Requiere una sesión y un token CSRF válidos
+- **Parámetros de consulta**:
+  - `includeBackups` (opcional): Establézcalo en `true` para incluir información de copia de seguridad de cada servidor
 - **Respuesta** (sin parámetros):
 
   ```json
@@ -100,26 +100,26 @@
   ]
   ```
 
-- **Respuestas de Error**:
-  - `401`: No autorizado - Sesión o token CSRF inválido
-  - `500`: Error del servidor al obtener servidores
+- **Respuestas de error**:
+  - `401`: No autorizado: sesión o token CSRF no válidos
+  - `500`: Error del servidor al recuperar los servidores
 - **Notas**:
-  - Devuelve información del servidor incluyendo los campos alias y nota
-  - Cuando `includeBackups=true`, devuelve combinaciones de servidor-copia de seguridad con URLs y estado de contraseña
-  - Consolida el endpoint anterior `/api/servers-with-backups` (que ha sido eliminado)
-  - Utilizado para la selección, visualización y configuración de servidores
+  - Devuelve información del servidor, incluidos los campos de alias y nota
+  - Cuándo `includeBackups=true`, devuelve combinaciones de servidor y copia de seguridad con URL y el estado de la contraseña
+  - Consolida el endpoint anterior `/api/servers-with-backups` (que se ha eliminado)
+  - Se utiliza para la selección, visualización y configuración de servidores
   - Incluye el campo `hasPassword` para indicar si el servidor tiene una contraseña almacenada
 
-## Obtener Detalles del Servidor - `/api/servers/:id` {/* #get-server-details---apiserversid */}
+## Obtener detalles del servidor - `/api/servers/:id` {/* #get-server-details---apiserversid */}
 - **Endpoint**: `/api/servers/:id`
 - **Método**: GET
-- **Descripción**: Recupera información sobre un servidor específico. Puede devolver información básica del servidor o información detallada incluyendo copias de seguridad y datos de gráficos.
-- **Autenticación**: Requiere una sesión válida y un token CSRF
+- **Descripción**: Recupera información sobre un servidor específico. Puede devolver información básica del servidor o información detallada, incluidas copias de seguridad y datos de gráficos.
+- **Autenticación**: Requiere una sesión y un token CSRF válidos
 - **Parámetros**:
   - `id`: el identificador del servidor
-- **Parámetros de Consulta**:
-  - `includeBackups` (opcional): Establecer en `true` para incluir datos de copia de seguridad
-  - `includeChartData` (opcional): Establecer en `true` para incluir datos de gráficos
+- **Parámetros de consulta**:
+  - `includeBackups` (opcional): Establézcalo en `true` para incluir datos de copia de seguridad
+  - `includeChartData` (opcional): Establézcalo en `true` para incluir datos de gráficos
 - **Respuesta** (sin parámetros):
 
   ```json
@@ -150,23 +150,23 @@
   }
   ```
 
-- **Respuestas de Error**:
-  - `401`: No autorizado - Sesión o token CSRF inválido
+- **Respuestas de error**:
+  - `401`: No autorizado: sesión o token CSRF no válidos
   - `404`: Servidor no encontrado
-  - `500`: Error del servidor al obtener detalles del servidor
+  - `500`: Error del servidor al recuperar los detalles del servidor
 - **Notas**:
   - Devuelve información básica del servidor cuando no se proporcionan parámetros de consulta
-  - Establecer `includeBackups` o `includeChartData` en `true` devuelve datos completos del servidor incluyendo copias de seguridad y chartData
-  - Utilizado para vistas de configuración y detalles del servidor
+  - Establecer `includeBackups` o `includeChartData` en `true` devuelve los datos completos del servidor, incluidas las copias de seguridad y chartData
+  - Se utiliza para la configuración del servidor y las vistas de detalles
 
-## Actualizar Servidor - `/api/servers/:id` {/* #update-server---apiserversid */}
+## Actualizar servidor - `/api/servers/:id` {/* #update-server---apiserversid */}
 - **Endpoint**: `/api/servers/:id`
 - **Método**: PATCH
-- **Descripción**: Actualiza los detalles del servidor incluyendo alias, nota y URL del servidor.
-- **Autenticación**: Requiere una sesión válida y un token CSRF
+- **Descripción**: Actualiza los detalles del servidor, incluidos el alias, la nota y la URL del servidor.
+- **Autenticación**: Requiere una sesión y un token CSRF válidos
 - **Parámetros**:
   - `id`: el identificador del servidor
-- **Cuerpo de la Solicitud**:
+- **Cuerpo de la solicitud**:
 
   ```json
   {
@@ -188,17 +188,17 @@
   }
   ```
 
-- **Respuestas de Error**:
-  - `401`: No autorizado - Sesión o token CSRF inválido
+- **Respuestas de error**:
+  - `401`: No autorizado: sesión o token CSRF no válidos
   - `404`: Servidor no encontrado
   - `500`: Error del servidor durante la actualización
 - **Notas**:
   - Actualiza el alias del servidor, la nota y la URL del servidor
   - Todos los campos son opcionales
-  - Las cadenas vacías están permitidas para todos los campos
+  - Se permiten cadenas vacías para todos los campos
 
 ## Eliminar servidor - `/api/servers/:id` {/* #delete-server---apiserversid */}
-- **Punto final**: `/api/servers/:id`
+- **Punto de conexión**: `/api/servers/:id`
 - **Método**: DELETE
 - **Descripción**: Elimina un servidor y todas sus copias de seguridad asociadas.
 - **Autenticación**: Requiere una sesión válida y un token CSRF
@@ -219,19 +219,19 @@
   ```
 
 - **Respuestas de error**:
-  - `401`: No autorizado - Sesión o token CSRF no válido
+  - `401`: No autorizado: sesión o token CSRF no válidos
   - `404`: Servidor no encontrado
   - `500`: Error del servidor durante la eliminación
 - **Notas**: 
   - Esta operación es irreversible
-  - Todos los datos de copia de seguridad asociados con el servidor se eliminarán permanentemente
-  - El registro del servidor también se eliminará
+  - Todos los datos de las copias de seguridad asociados con el servidor se eliminarán de forma permanente
+  - El propio registro del servidor también se eliminará
   - Devuelve el recuento de copias de seguridad y servidores eliminados
 
-## Obtener datos del servidor con información de copia de seguridad vencida - `/api/detail/:serverId` {/* #get-server-data-with-overdue-info---apidetailserverid */}
-- **Punto final**: `/api/detail/:serverId`
+## Obtener datos del servidor con información de vencimiento - `/api/detail/:serverId` {/* #get-server-data-with-overdue-info---apidetailserverid */}
+- **Punto de conexión**: `/api/detail/:serverId`
 - **Método**: GET
-- **Descripción**: Recupera información detallada del servidor, incluyendo el estado de la copia de seguridad vencida.
+- **Descripción**: Recupera información detallada del servidor, incluido el estado de copia de seguridad vencida.
 - **Parámetros**:
   - `serverId`: el identificador del servidor
 
@@ -261,16 +261,16 @@
 
 - **Respuestas de error**:
   - `404`: Servidor no encontrado
-  - `500`: Error del servidor al obtener los detalles del servidor
+  - `500`: Error del servidor al recuperar los detalles del servidor
 - **Notas**:
-  - Devuelve los datos del servidor con información de copia de seguridad vencida
-  - Incluye detalles de copia de seguridad vencida y marcas de tiempo
+  - Devuelve datos del servidor con información de copia de seguridad vencida
+  - Incluye detalles y marcas de tiempo de las copias de seguridad vencidas
   - Se utiliza para la gestión y supervisión de copias de seguridad vencidas
 
 ## Obtener servidores duplicados - `/api/servers/duplicates` {/* #get-duplicate-servers---apiserversduplicates */}
-- **Punto final**: `/api/servers/duplicates`
+- **Punto de conexión**: `/api/servers/duplicates`
 - **Método**: GET
-- **Descripción**: Recupera una lista de servidores duplicados basados en el ID de la máquina. Los servidores duplicados son servidores que comparten el mismo ID de máquina pero se almacenan como registros separados en la base de datos.
+- **Descripción**: Recupera una lista de servidores duplicados según el ID de la máquina. Los servidores duplicados son servidores que comparten el mismo ID de máquina pero se almacenan como registros independientes en la base de datos.
 - **Autenticación**: Requiere una sesión válida, un token CSRF y acceso de administrador
 - **Respuesta**:
 
@@ -299,21 +299,21 @@
   ```
 
 - **Respuestas de error**:
-  - `401`: No autorizado - Sesión o token CSRF no válido
+  - `401`: No autorizado: sesión o token CSRF no válidos
   - `403`: Se requiere acceso de administrador
-  - `500`: Error del servidor al obtener servidores duplicados
+  - `500`: Error del servidor al recuperar los servidores duplicados
 - **Notas**:
-  - Solo los administradores pueden acceder a este punto final
+  - Solo los administradores pueden acceder a este punto de conexión
   - Devuelve grupos de servidores que comparten el mismo ID de máquina
   - Cada grupo contiene todos los servidores con el mismo ID de máquina
-  - Se utiliza para identificar y fusionar registros de servidores duplicados
-  - Incluye detalles del servidor y recuentos de copias de seguridad para cada duplicado
+  - Se utiliza para identificar y combinar registros de servidores duplicados
+  - Incluye los detalles del servidor y los recuentos de copias de seguridad de cada duplicado
 
 ## Combinar servidores - `/api/servers/merge` {/* #merge-servers---apiserversmerge */}
-- **Punto final**: `/api/servers/merge`
+- **Punto de conexión**: `/api/servers/merge`
 - **Método**: POST
-- **Descripción**: Combina múltiples servidores en un servidor de destino. Todas las copias de seguridad de los servidores de origen se transfieren al servidor de destino, y los servidores de origen se eliminan.
-- **Autenticación**: Requiere una sesión válida, un token CSRF y acceso de administrador
+- **Descripción**: Combina varios servidores en un servidor de destino. Todas las copias de seguridad de los servidores de origen se transfieren al servidor de destino y los servidores de origen se eliminan.
+- **Autenticación**: Requiere una sesión válida, token CSRF y acceso de administrador
 - **Cuerpo de la solicitud**:
 
   ```json
@@ -334,17 +334,17 @@
   ```
 
 - **Respuestas de error**:
-  - `400`: Cuerpo de solicitud no válido, campos obligatorios faltantes o el servidor de destino está en la lista de servidores para combinar
-  - `401`: No autorizado - Sesión o token CSRF no válido
+  - `400`: Cuerpo de la solicitud no válido, faltan campos obligatorios o el servidor de destino está en la lista de servidores a fusionar
+  - `401`: No autorizado: sesión o token CSRF no válidos
   - `403`: Se requiere acceso de administrador
-  - `500`: Error del servidor durante la operación de combinación
+  - `500`: Error del servidor durante la operación de fusión
 - **Notas**:
-  - Solo los administradores pueden realizar operaciones de combinación
-  - El servidor de destino no debe estar en la lista de servidores para combinar
+  - Solo los administradores pueden realizar operaciones de fusión
+  - El servidor de destino no debe estar en la lista de servidores a fusionar
   - Todas las copias de seguridad de los servidores de origen se transfieren al servidor de destino
-  - Los valores duplicados de `backup_id` para el mismo `backup_name` en el servidor combinado se normalizan al ID de la fila de copia de seguridad más reciente
-  - Los servidores de origen se eliminan después de una combinación exitosa
+  - Los valores duplicados de `backup_id` para el mismo `backup_name` en el servidor fusionado se normalizan al ID de la fila de copia de seguridad más reciente
+  - Los servidores de origen se eliminan tras una fusión correcta
   - Esta operación es irreversible
   - Se utiliza para consolidar registros de servidores duplicados
-  - Valida que oldServerIds sea una matriz no vacía
-  - Valida que targetServerId se proporcione y sea una cadena
+  - Valida que oldServerIds sea un array no vacío
+  - Valida que targetServerId se proporcione y sea una cadena de texto

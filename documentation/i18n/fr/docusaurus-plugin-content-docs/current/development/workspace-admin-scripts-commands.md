@@ -1,4 +1,4 @@
-# Scripts et commandes d'administration de l'espace de travail {/* #workspace-admin-scripts--commands */}
+# Scripts et commandes Admin de l'espace de travail {/* #workspace-admin-scripts--commands */}
 
 ## Nettoyer la base de données {/* #clean-database */}
 
@@ -6,42 +6,42 @@
 ./scripts/clean-db.sh
 ```
 
-Nettoie la base de données en supprimant toutes les données tout en conservant le schéma et la structure de la base de données.
+Nettoie la base de données en supprimant toutes les données tout en préservant le schéma et la structure de la base de données.
 
 >[!CAUTION]
-> Utilisez avec prudence car cela supprimera toutes les données existantes.
+> À utiliser avec prudence car cela supprimera toutes les données existantes.
 
-## Nettoyer les artefacts de construction et les dépendances {/* #clean-build-artefacts-and-dependencies */}
+## Nettoyer les artefacts de compilation et les dépendances {/* #clean-build-artefacts-and-dependencies */}
 
 ```bash
 scripts/clean-workspace.sh
 ```
 
-Supprime tous les artefacts de construction, le répertoire node_modules et autres fichiers générés pour garantir un état propre. Cela est utile lorsque vous devez effectuer une nouvelle installation ou résoudre des problèmes de dépendances. La commande supprimera :
-- Répertoire `node_modules/`
-- Répertoire de construction `.next/`
-- Répertoire `dist/`
-- Répertoire `out/`
-- Répertoire `.turbo/`
-- Répertoire `pnpm-lock.yaml`
-- Répertoire `data/*.json` (fichiers de sauvegarde JSON de développement)
+Supprime tous les artefacts de compilation, le répertoire node_modules et les autres fichiers générés pour assurer un état propre. Cela est utile quand vous devez effectuer une installation complète ou résoudre des problèmes de dépendances. La commande supprimera :
+- répertoire `node_modules/`
+- répertoire de compilation `.next/`
+- répertoire `dist/`
+- répertoire `out/`
+- répertoire `.turbo/`
+- `pnpm-lock.yaml`
+- `data/*.json` (fichiers de sauvegarde JSON de développement)
 - `public/documentation`
 - `documentation/.docusaurus`, `.cache`, `.cache-*`, `build`, `node_modules`, `pnpm-lock.yaml`
-- Répertoire `.genkit/`
-- Fichiers `*.tsbuildinfo`
-- Cache du magasin pnpm (via `pnpm store prune`)
-- Cache de construction Docker et purge du système (images, réseaux, volumes)
+- répertoire `.genkit/`
+- fichiers `*.tsbuildinfo`
+- cache du magasin pnpm (via `pnpm store prune`)
+- cache de compilation Docker et nettoyage système (images, réseaux, volumes)
 
-## Nettoyer l'environnement Docker Compose et Docker {/* #clean-docker-compose-and-docker-environment */}
+## Nettoyer Docker Compose et l'environnement Docker {/* #clean-docker-compose-and-docker-environment */}
 
 ```bash
 scripts/clean-docker.sh
 ```
 
-Effectue un nettoyage complet de Docker, ce qui est utile pour :
+Effectuer un nettoyage complet de Docker, utile pour :
 - Libérer de l'espace disque
-- Supprimer les artefacts Docker anciens/inutilisés
-- Nettoyer après des sessions de développement ou de test
+- Supprimer les anciens artefacts Docker inutilisés
+- Nettoyer après les sessions de développement ou de test
 - Maintenir un environnement Docker propre
 
 ## Mettre à jour les packages vers la dernière version {/* #update-the-packages-to-the-latest-version */}
@@ -53,23 +53,23 @@ ncu --upgrade
 pnpm update
 ```
 
-Ou utilisez le script automatisé (préférez `source` afin que **nvm** s'applique à votre shell actuel ; pour **CI** ou les exécutions non interactives, utilisez `CI=1` ou `UPGRADE_ALLOW_EXEC=1`):
+Ou utilisez le script automatisé (préférez `source` pour que **nvm** s'applique à votre shell actuel ; pour les exécutions **CI** ou non-interactives, utilisez `CI=1` ou `UPGRADE_ALLOW_EXEC=1`) :
 
 ```bash
 source ./scripts/upgrade-dependencies.sh
 ```
 
-Le script `upgrade-dependencies.sh` automatise l'ensemble du processus de mise à niveau des dépendances. Il est agnostique du projet : le gestionnaire de paquets, les packages de l'espace de travail et la commande de vérification de chaque package sont auto-détectés (ainsi, les packages racine et `documentation/` sont tous deux mis à jour, sans chemins codés en dur). Il :
-- Configure les outils via `upgrade-tools.sh` (nvm / Node LTS, `pnpm` global, `npm-check-updates`, `doctoc`)
-- Effectue des mises à niveau **sûres pour la construction** pour chaque package : `npm-check-updates` résout les dernières versions, puis installe et `typecheck`/`lint` s'exécutent à partir de la racine de l'espace de travail. Les mises à niveau qui échouent à la vérification sont bisectées en éditant `package.json` (pas `pnpm add`, que pnpm rejette à la racine de l'espace de travail). Les portes de pairs intégrées fixent `eslint` et `typescript` lorsque `eslint-plugin-react` / `typescript-eslint` ne permettent pas encore la dernière version majeure.
+Le script `upgrade-dependencies.sh` automatise l'ensemble du processus de mise à niveau des dépendances. Il est indépendant du projet : le gestionnaire de packages, les packages de l'espace de travail et la commande de vérification de chaque package sont détectés automatiquement (ainsi les packages racine et `documentation/` sont tous deux mis à niveau, sans chemins codés en dur). Il :
+- Source la configuration des outils via `upgrade-tools.sh` (nvm / Node LTS, `pnpm` global, `npm-check-updates`, `doctoc`)
+- Effectue des mises à niveau **sûres pour la compilation** pour chaque package : `npm-check-updates` résout les dernières versions, puis installe et `typecheck`/`lint` s'exécutent à partir de la racine de l'espace de travail. Les mises à niveau qui échouent la vérification sont bisectées en modifiant `package.json` (pas `pnpm add`, que pnpm rejette à la racine de l'espace de travail). Les portes de pairs intégrées épinglent `eslint` et `typescript` quand `eslint-plugin-react` / `typescript-eslint` ne permettent pas encore la dernière version majeure.
 - Met à jour le fichier de verrouillage pnpm de l'espace de travail et installe les dépendances
 - Met à jour la base de données browserslist
-- Vérifie les vulnérabilités (`pnpm audit`) et applique les correctifs non cassants (`pnpm audit --fix`)
-- **Priorise la sécurité** : si une dépendance directe vulnérable ne peut être corrigée que par une mise à niveau cassante, la version sûre est appliquée de force et les erreurs de construction sont rapportées afin que le code puisse être mis à jour pour la compatibilité
-- Affiche un résumé (packages mis à jour vs. packages sautés cassants, vulnérabilités corrigées/restantes, et un chemin de snapshot de manifeste pour le rollback manuel)
-- Copie `package.json` et les fichiers de verrouillage avec `/usr/bin/cp` afin qu'un alias `cp` interactif (par exemple `cp -i`) ne demande pas de remplacer ces fichiers
+- Vérifie les vulnérabilités (`pnpm audit`) et applique les correctifs non-cassants (`pnpm audit --fix`)
+- **Priorise la sécurité** : si une dépendance directe vulnérable ne peut être corrigée que par une mise à niveau cassante pour la compilation, la version sûre est forcément appliquée et les erreurs de compilation sont signalées pour que le code puisse être mis à jour pour la compatibilité
+- Affiche un résumé (packages mis à niveau vs. packages cassants ignorés, vulnérabilités corrigées/restantes, et un chemin d'instantané du manifeste pour un retour en arrière manuel)
+- Copie `package.json` et les fichiers de verrouillage avec `/usr/bin/cp` pour qu'un alias `cp` interactif sourcé (par exemple `cp -i`) ne demande pas de confirmer le remplacement de ces fichiers
 
-Ce script fournit un workflow complet pour garder les dépendances à jour et sécurisées.
+Ce script fournit un flux de travail complet pour maintenir les dépendances à jour et sécurisées.
 
 ## Vérifier les packages inutilisés {/* #check-for-unused-packages */}
 
@@ -83,52 +83,52 @@ pnpm depcheck
 ./scripts/update-version.sh
 ```
 
-Ce script met automatiquement à jour les informations de version dans plusieurs fichiers pour les maintenir synchronisés. Il:
+Ce script met à jour automatiquement les informations de version dans plusieurs fichiers pour les maintenir synchronisés. Il :
 - Extrait la version de `package.json`
-- Met à jour le fichier `.env` avec la variable `VERSION` (le crée s'il n'existe pas)
-- Met à jour le `Dockerfile` avec la variable `VERSION` (si elle existe)
-- Met à jour le champ de version de `documentation/package.json` (si elle existe)
-- Ne met à jour que si la version a changé
-- Fournit des commentaires sur chaque opération
+- Met à jour le fichier `.env` avec la variable `VERSION` (la crée si elle n'existe pas)
+- Met à jour `Dockerfile` avec la variable `VERSION` (si elle existe)
+- Met à jour le champ de version `documentation/package.json` (s'il existe)
+- Met à jour uniquement si la version a changé
+- Fournit un retour sur chaque opération
 
-## Script de vérification préalable {/* #pre-checks-script */}
+## Script de pré-vérifications {/* #pre-checks-script */}
 
 ```bash
 ./scripts/pre-checks.sh
 ```
 
-Ce script exécute des vérifications préalables avant de démarrer le serveur de développement, la construction ou le serveur de production. Il:
-- S'assure que le fichier `.duplistatus.key` existe (via `ensure-key-file.sh`)
+Ce script exécute des pré-vérifications avant de démarrer le serveur de développement, de compiler ou de démarrer le serveur de production. Il :
+- Vérifie que le fichier `.duplistatus.key` existe (via `ensure-key-file.sh`)
 - Met à jour les informations de version (via `update-version.sh`)
 
-Ce script est automatiquement appelé par `pnpm dev`, `pnpm build`, et `pnpm start-local`.
+Ce script est appelé automatiquement par `pnpm dev`, `pnpm build` et `pnpm start-local`.
 
-## Assurer l'existence du fichier clé {/* #ensure-key-file-exists */}
+## Vérifier l'existence du fichier clé {/* #ensure-key-file-exists */}
 
 ```bash
 ./scripts/ensure-key-file.sh
 ```
 
-Ce script s'assure que le fichier `.duplistatus.key` existe dans le répertoire `data`. Il:
+Ce script vérifie que le fichier `.duplistatus.key` existe dans le répertoire `data`. Il :
 - Crée le répertoire `data` s'il n'existe pas
 - Génère un nouveau fichier de clé aléatoire de 32 octets s'il est manquant
-- Définit les permissions de fichier à 0400 (lecture seule pour le propriétaire)
+- Définit les permissions du fichier à 0400 (lecture seule pour le propriétaire)
 - Corrige les permissions si elles sont incorrectes
 
 Le fichier de clé est utilisé pour les opérations cryptographiques dans l'application.
 
-## Récupération du compte administrateur {/* #admin-account-recovery */}
+## Récupération du compte Admin {/* #admin-account-recovery */}
 
 ```bash
 ./admin-recovery <username> <new-password>
 ```
 
-Ce script permet la récupération des comptes administrateurs si verrouillés ou mot de passe oublié. Il:
-- Réinitialise le mot de passe de l'utilisateur spécifié
+Ce script permet la récupération des comptes Admin en cas de verrouillage ou d'oubli de mot de passe. Il :
+- Réinitialise le mot de passe pour l'utilisateur spécifié
 - Déverrouille le compte s'il était verrouillé
 - Réinitialise le compteur de tentatives de connexion échouées
-- Efface le drapeau "doit changer de mot de passe"
-- Valide que le mot de passe répond aux exigences de sécurité
+- Efface l'indicateur « Doit changer de mot de passe »
+- Valide que le mot de passe respecte les exigences de sécurité
 - Enregistre l'action dans le journal d'audit
 
 **Exemple :**
@@ -138,7 +138,7 @@ Ce script permet la récupération des comptes administrateurs si verrouillés o
 ```
 
 >[!CAUTION]
-> Ce script modifie directement la base de données. Utilisez-le uniquement lorsque nécessaire pour la récupération de compte.
+> Ce script modifie directement la base de données. À utiliser uniquement si nécessaire pour la récupération de compte.
 
 ## Copier les images {/* #copy-images */}
 
@@ -146,31 +146,42 @@ Ce script permet la récupération des comptes administrateurs si verrouillés o
 ./scripts/copy-images.sh
 ```
 
-Copie les fichiers d'images de `documentation/static/img` vers leurs emplacements appropriés dans l'application:
+Copie les fichiers image de `documentation/static/img` vers leurs emplacements appropriés dans l'application :
 - Copie `favicon.ico` vers `src/app/`
 - Copie `duplistatus_logo.png` vers `public/images/`
 - Copie `duplistatus_banner.png` vers `public/images/`
 
-Utile pour maintenir les images de l'application synchronisées avec les images de documentation.
+Utile pour maintenir les images de l'application synchronisées avec les images de la documentation.
 
-## Comparer les versions entre développement et Docker {/* #compare-versions-between-development-and-docker */}
+## Basculer entre local ou npm ai-i18n-tools {/* #switch-local-or-npm-ai-i18n-tools */}
+
+```bash
+./scripts/link-ai-i18n-tools.sh --local
+./scripts/link-ai-i18n-tools.sh --remote
+pnpm i18n:tools --local
+pnpm i18n:tools --remote
+```
+
+Pointe ce dépôt vers un [ai-i18n-tools](https://github.com/wsj-br/ai-i18n-tools) frère ou retourne vers le package npm publié, puis imprime la version résolue. `--local` écrit `link:../ai-i18n-tools` (remplacez le chemin par `--path` ou `AI_I18N_TOOLS_PATH`) afin que `pnpm i18n:*` et `ai-i18n-tools/runtime` utilisent tous deux cet arbre. `--remote` installe la dernière version npm en tant que `^x.y.z`. Ne pas valider le spécificateur `link:`.
+
+## Comparer les versions entre le développement et Docker {/* #compare-versions-between-development-and-docker */}
 
 ```bash
 ./scripts/compare-versions.sh
 ```
 
-Ce script compare les versions entre votre environnement de développement et un conteneur Docker en cours d'exécution. Il:
-- Compare les versions de SQLite par version majeure uniquement (par exemple, 3.45.1 vs 3.51.1 sont considérés comme compatibles, affichés comme "✅ (majeure)")
+Ce script compare les versions entre votre environnement de développement et un conteneur Docker en cours d'exécution. Il :
+- Compare les versions SQLite par version majeure uniquement (par exemple, 3.45.1 vs 3.51.1 sont considérées comme compatibles, affichées comme « ✅ (major) »)
 - Compare exactement les versions de Node, npm et Duplistatus (doivent correspondre exactement)
-- Affiche un tableau formaté montrant toutes les comparaisons de versions
-- Fournit un résumé avec des résultats codés en couleur (✅ pour les correspondances, ❌ pour les incompatibilités)
-- Quitte avec le code 0 si toutes les versions correspondent, 1 s'il y a des incompatibilités
+- Affiche un tableau formaté montrant toutes les comparaisons de version
+- Fournit un résumé avec des résultats codés par couleur (✅ pour les correspondances, ❌ pour les non-correspondances)
+- Quitte avec le code 0 si toutes les versions correspondent, 1 s'il y a des non-correspondances
 
-**Exigences:**
+**Prérequis :**
 - Le conteneur Docker nommé `duplistatus` doit être en cours d'exécution
 - Le script lit les informations de version à partir des journaux du conteneur Docker
 
-**Exemple de sortie :**
+**Exemple de résultat :**
 
 ```
 ┌─────────────────────────┬──────────────────────────────┬──────────────────────────────┬──────────────┐
@@ -183,7 +194,7 @@ Ce script compare les versions entre votre environnement de développement et un
 └─────────────────────────┴──────────────────────────────┴──────────────────────────────┴──────────────┘
 ```
 
-**Remarque :** Les versions de SQLite sont comparées uniquement par version majeure car les différentes versions de patch au sein de la même version majeure sont généralement compatibles. Le script indiquera si les versions de SQLite correspondent au niveau majeur mais diffèrent en versions de patch.
+**Remarque :** Les versions de SQLite sont comparées par version majeure uniquement, car les différentes versions de correctif au sein d'une même version majeure sont généralement compatibles. Le script indiquera si les versions de SQLite correspondent au niveau majeur mais diffèrent dans les versions de correctif.
 
 ## Affichage des configurations dans la base de données {/* #viewing-the-configurations-in-the-database */}
 
@@ -207,4 +218,4 @@ sqlite3 /var/lib/docker/volumes/duplistatus_data/_data/backups.db "SELECT key, v
 ./scripts/show-backup-settings.sh [database_path]
 ```
 
-Affiche le contenu de la valeur `backup_settings` dans la table des configurations sous forme de tableau formaté. Utile pour le débogage des configurations de notification. Chemin de la base de données par défaut : `data/backups.db`.
+Affiche le contenu de la valeur `backup_settings` dans la table des configurations dans un tableau formaté. Utile pour déboguer les configurations de notification. Chemin de base de données par défaut : `data/backups.db`.

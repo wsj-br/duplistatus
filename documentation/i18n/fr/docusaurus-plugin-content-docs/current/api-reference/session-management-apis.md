@@ -1,9 +1,9 @@
 # Gestion des sessions {/* #session-management */}
 
 ## Créer une session - `/api/session` {/* #create-session---apisession */}
-- **Point de terminaison**: `/api/session`
-- **Méthode**: POST
-- **Description**: Crée une nouvelle session pour l'utilisateur.
+- **Point de terminaison** : `/api/session`
+- **Méthode** : POST
+- **Description** : Crée une nouvelle session pour l'utilisateur.
 - **Réponse** :
 
   ```json
@@ -13,18 +13,18 @@
   }
   ```
 
-- **Réponses d'erreur**:
-  - `500`: Échec de création de la session
-- **Notes**:
+- **Réponses d'erreur** :
+  - `500` : Échec de la création de la session
+- **Notes** :
   - Crée une nouvelle session avec une expiration de 24 heures
   - Définit un cookie de session HTTP-only
   - Requis pour accéder aux points de terminaison protégés
 
 ## Valider la session - `/api/session` {/* #validate-session---apisession */}
-- **Point de terminaison**: `/api/session`
-- **Méthode**: GET
-- **Description**: Valide une session existante.
-- **Réponse** (valide):
+- **Point de terminaison** : `/api/session`
+- **Méthode** : GET
+- **Description** : Valide une session existante.
+- **Réponse** (valide) :
 
   ```json
   {
@@ -33,7 +33,7 @@
   }
   ```
 
-- **Réponse** (invalide):
+- **Réponse** (invalide) :
 
   ```json
   {
@@ -42,17 +42,17 @@
   }
   ```
 
-- **Réponses d'erreur**:
-  - `401`: Aucun cookie de session ou ID de session
-  - `500`: Échec de validation de la session
-- **Notes**:
+- **Réponses d'erreur** :
+  - `401` : Aucun cookie de session ou ID de session
+  - `500` : Échec de la validation de la session
+- **Notes** :
   - Vérifie si le cookie de session existe et est valide
-  - Retourne l'ID de session si valide
+  - Renvoie l'ID de session si valide
 
 ## Supprimer la session - `/api/session` {/* #delete-session---apisession */}
-- **Point de terminaison**: `/api/session`
-- **Méthode**: DELETE
-- **Description**: Supprime la session actuelle (déconnexion).
+- **Point de terminaison** : `/api/session`
+- **Méthode** : DELETE
+- **Description** : Supprime la session actuelle (déconnexion).
 - **Réponse** :
 
   ```json
@@ -61,16 +61,16 @@
   }
   ```
 
-- **Réponses d'erreur**:
-  - `500`: Échec de suppression de la session
-- **Notes**:
+- **Réponses d'erreur** :
+  - `500` : Échec de la suppression de la session
+- **Notes** :
   - Efface la session du serveur et du client
   - Supprime le cookie de session
 
-## Obtenir le jeton CSRF - `/api/csrf` {/* #get-csrf-token---apicsrf */}
-- **Point de terminaison**: `/api/csrf`
-- **Méthode**: GET
-- **Description**: Génère un jeton CSRF pour la session actuelle.
+## Obtenir un jeton CSRF - `/api/csrf` {/* #get-csrf-token---apicsrf */}
+- **Point de terminaison** : `/api/csrf`
+- **Méthode** : GET
+- **Description** : Génère un jeton CSRF pour la session actuelle.
 - **Réponse** :
 
   ```json
@@ -80,10 +80,10 @@
   }
   ```
 
-- **Réponses d'erreur**:
-  - `401`: Aucune session trouvée ou session invalide/expirée
-  - `500`: Échec de génération du jeton CSRF
-- **Notes**:
-  - Requiert une session valide
+- **Réponses d'erreur** :
+  - `401` : Aucune session trouvée ou session invalide/expirée
+  - `500` : Échec de la génération du jeton CSRF
+- **Notes** :
+  - Nécessite une session valide
   - Le jeton CSRF est requis pour toutes les opérations modifiant l'état
   - Le jeton est lié à la session actuelle

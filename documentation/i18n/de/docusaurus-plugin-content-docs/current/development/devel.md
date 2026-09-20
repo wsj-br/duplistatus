@@ -1,4 +1,4 @@
-# Meistgenutzte Befehle {/* #most-used-commands */}
+# Am häufigsten verwendete Befehle {/* #most-used-commands */}
 
 ## Im Entwicklungsmodus ausführen {/* #run-in-dev-mode */}
 
@@ -6,31 +6,31 @@
 pnpm dev
 ```
 
-Dies startet sowohl die Next.js-Anwendung (Port 8666) als auch den Cron-Dienst (Port 8667). STRG-C stoppt beide. Verwenden Sie `pnpm dev:next` oder `pnpm cron:dev`, um entweder Prozess einzeln auszuführen.
+Dies startet sowohl die Next.js-App (Port 8666) als auch den Cron-Service (Port 8667). STRG+C beendet beide. Verwenden Sie `pnpm dev:next` oder `pnpm cron:dev`, um jeden Prozess einzeln auszuführen.
 
-- **JSON-Dateispeicher**: Alle empfangenen Sicherungsdaten werden als JSON-Dateien im Verzeichnis `data` gespeichert. Diese Dateien werden mit dem Zeitstempel benannt, zu dem sie empfangen wurden, im Format `YYYY-MM-DDTHH-mm-ss-sssZ.json` (UTC-Zeit). Diese Funktion ist nur im Entwicklungsmodus aktiv und hilft beim Debugging, indem sie die rohen Daten aufbewahrt, die von Duplicati empfangen wurden.
+- **JSON-Dateispeicher**: Alle empfangenen Sicherungsdaten werden als JSON-Dateien im Verzeichnis `data` gespeichert. Diese Dateien werden mit dem Zeitstempel benannt, zu dem sie empfangen wurden, im Format `YYYY-MM-DDTHH-mm-ss-sssZ.json` (UTC-Zeit). Diese Funktion ist nur im Entwicklungsmodus aktiv und hilft beim Debuggen, indem die empfangenen Rohdaten von Duplicati beibehalten werden.
 
-- **Ausführliche Protokollierung**: Die Anwendung protokolliert detailliertere Informationen zu Datenbankoperationen und API-Anfragen, wenn sie im Entwicklungsmodus ausgeführt wird.
+- **Ausführliches Logging**: Die Anwendung protokolliert detailliertere Informationen über Datenbankoperationen und API-Anfragen, wenn sie im Entwicklungsmodus ausgeführt wird.
 
-- **Versionsaktualisierung**: Der Entwicklungsserver aktualisiert die Versionsinformationen automatisch vor dem Start, um sicherzustellen, dass die neueste Version in der Anwendung angezeigt wird.
+- **Versionsaktualisierung**: Der Entwicklungsserver aktualisiert automatisch die Versionsinformationen vor dem Start und stellt sicher, dass die aktuelle Version in der Anwendung angezeigt wird.
 
-- **Sicherungslöschung**: Auf der Serverdetailseite erscheint eine Löschschaltfläche in der Sicherungstabelle, mit der Sie einzelne Sicherungen löschen können. Diese Funktion ist besonders nützlich für das Testen und Debuggen der Funktion für überfällige Sicherungen.
+- **Sicherungslöschung**: Auf der Serverdetailseite wird eine Schaltfläche zum Löschen in der Sicherungstabelle angezeigt, mit der Sie einzelne Sicherungen löschen können. Diese Funktion ist besonders nützlich zum Testen und Debuggen der Funktionalität für überfällige Sicherungen.
 
-## Starten Sie den Produktionsserver (in der Entwicklungsumgebung) {/* #start-the-production-server-in-development-environment */}
+## Produktionsserver starten (in Entwicklungsumgebung) {/* #start-the-production-server-in-development-environment */}
 
-Zuerst die Anwendung für die lokale Produktion erstellen:
+Erstellen Sie zunächst die Anwendung für die lokale Produktion:
 
 ```bash
 pnpm build-local
 ```
 
-Dann starten Sie den Produktionsserver:
+Starten Sie dann den Produktionsserver:
 
 ```bash
 pnpm start-local
 ```
 
-## Starten Sie einen Docker-Stack (Docker Compose) {/* #start-a-docker-stack-docker-compose */}
+## Docker-Stack starten (Docker Compose) {/* #start-a-docker-stack-docker-compose */}
 
 ```bash
 pnpm docker:up
@@ -42,7 +42,7 @@ Oder manuell:
 docker compose up --build -d
 ```
 
-## Stoppen Sie einen Docker-Stack (Docker Compose) {/* #stop-a-docker-stack-docker-compose */}
+## Docker-Stack stoppen (Docker Compose) {/* #stop-a-docker-stack-docker-compose */}
 
 ```bash
 pnpm docker:down
@@ -67,12 +67,12 @@ Oder manuell:
 ```
 
 Dieses Skript führt eine vollständige Docker-Bereinigung durch, die nützlich ist für:
-- Freigabe von Festplattenspeicherplatz
-- Entfernen alter/ungebrauchter Docker-Artefakte
-- Bereinigung nach Entwicklungs- oder Test-Sitzungen
+- Freigabe von Speicherplatz
+- Entfernen alter/ungenutzter Docker-Artefakte
+- Bereinigung nach Entwicklungs- oder Testsitzungen
 - Aufrechterhaltung einer sauberen Docker-Umgebung
 
-## Erstellen Sie ein Entwicklungsimage (zum lokalen Testen oder mit Podman) {/* #create-a-development-image-to-test-locally-or-with-podman */}
+## Entwicklungsimage erstellen (zum lokalen Testen oder mit Podman) {/* #create-a-development-image-to-test-locally-or-with-podman */}
 
 ```bash
 export $(grep -v '^#' .env | xargs) && docker build . -t wsj-br/duplistatus:devel-$VERSION

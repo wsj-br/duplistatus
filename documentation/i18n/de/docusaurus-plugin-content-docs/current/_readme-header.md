@@ -1,27 +1,27 @@
 ![duplistatus](documentation/static/img/duplistatus_banner.png)
 
-# duplistatus - Überwachen Sie mehrere [Duplicati](https://github.com/duplicati/duplicati) Server {/* #duplistatus----monitor-multiple-duplicatishttpsgithubcomduplicatiduplicati-servers */}
+# duplistatus -  Mehrere [Duplicati](https://github.com/duplicati/duplicati)-Server überwachen {/* #duplistatus----monitor-multiple-duplicatishttpsgithubcomduplicatiduplicati-servers */}
 
-![version](https://img.shields.io/badge/version-{VERSION}-blue) 
+![Version](https://img.shields.io/badge/version-{VERSION}-blue) 
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?logo=github)](https://github.com/wsj-br/duplistatus)
 
 <br/>
 
-Diese Webanwendung überwacht und visualisiert die Sicherungsvorgänge von [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** bietet ein umfassendes Dashboard zur Überwachung des Sicherungsstatus, zur Benachrichtigung über überfällige Sicherungen, zur Anzeige der Auftragsverlaufs,
+Diese Webanwendung überwacht und visualisiert Sicherungsvorgänge von [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** bietet ein umfassendes Dashboard zur Verfolgung von Sicherungsstatus, Benachrichtigungen über überfällige Backups, Auftragsverlauf,
 Metriken und Leistung über mehrere Server hinweg.
 
-Einfache Bereitstellung mit Docker, Podman oder Portainer und verfügbar in 7 Sprachen (Englisch, Deutsch, Französisch, Spanisch, Portugiesisch, Hindi und Chinesisch), mit vollständiger Dokumentation in jeder Sprache.
+Einfach mit Docker, Podman oder Portainer bereitzustellen und in 7 Sprachen verfügbar (Englisch, Deutsch, Französisch, Spanisch, Portugiesisch, Hindi und vereinfachtes Chinesisch), mit vollständiger Dokumentation in jeder Sprache.
 
-[Mehr Informationen](https://wsj-br.github.io/duplistatus)        |
-[More information](https://wsj-br.github.io/duplistatus/de/)  | 
+[More information](https://wsj-br.github.io/duplistatus)        |
+[Mehr informationen](https://wsj-br.github.io/duplistatus/de/)  | 
 [Plus d'informations](https://wsj-br.github.io/duplistatus/fr/) | 
 [Más información](https://wsj-br.github.io/duplistatus/es/)     |
 [Mais informações](https://wsj-br.github.io/duplistatus/pt-BR/) |
 [Adhik jaankari](https://wsj-br.github.io/duplistatus/hi/) |
 [更多信息](https://wsj-br.github.io/duplistatus/zh-Hans/)
 
-[Installationsleitfaden](https://wsj-br.github.io/duplistatus/installation)        |
-[Install guide](https://wsj-br.github.io/duplistatus/de/installation)  | 
+[Install guide](https://wsj-br.github.io/duplistatus/installation)        |
+[Installationsleitfaden](https://wsj-br.github.io/duplistatus/de/installation)  | 
 [Guide d'Installation](https://wsj-br.github.io/duplistatus/fr/installation) | 
 [Guía de Instalación](https://wsj-br.github.io/duplistatus/es/installation)     |
 [Guia de Instalação](https://wsj-br.github.io/duplistatus/pt-BR/installation) |

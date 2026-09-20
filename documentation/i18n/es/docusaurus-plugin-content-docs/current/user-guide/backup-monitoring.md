@@ -1,22 +1,22 @@
 import { ZoomMermaid } from '@site/src/components/ZoomMermaid';
 
-# Monitoreo de Copias de Seguridad {/* #backup-monitoring */}
+# Monitoreo de copias de seguridad {/* #backup-monitoring */}
 
-La función de monitoreo de copias de seguridad le permite rastrear y alertar sobre las copias de seguridad que están vencidas. Las notificaciones pueden ser a través de NTFY o Correo electrónico.
+La función de monitoreo de copias de seguridad le permite hacer un seguimiento y recibir alertas sobre las copias de seguridad que están vencidas. Las notificaciones pueden realizarse mediante NTFY o correo electrónico.
 
-En la interfaz de usuario, las copias de seguridad vencidas se muestran con un icono de advertencia. Al pasar el cursor sobre el icono, se muestran los detalles de la copia de seguridad vencida, incluyendo la hora de la última copia de seguridad, la hora esperada de la copia de seguridad, el período de tolerancia y la hora esperada de la próxima copia de seguridad.
+En la interfaz de usuario, las copias de seguridad vencidas se muestran con un icono de advertencia . Al pasar el cursor sobre el icono se muestran los detalles de la copia de seguridad vencida, incluyendo la hora de la última copia de seguridad, la hora prevista para la copia de seguridad, el período de tolerancia y la hora prevista para la próxima copia de seguridad.
 
-## Proceso de Comprobación de Vencimiento {/* #overdue-check-process */}
+## Proceso de comprobación de vencimientos {/* #overdue-check-process */}
 
 **Cómo funciona:**
 
 | **Paso** | **Valor**                  | **Descripción**                                   | **Ejemplo**        |
 |:--------:|:---------------------------|:--------------------------------------------------|:-------------------|
-|    1     | **Última Copia de Seguridad**            | La marca de tiempo de la última copia de seguridad exitosa.      | `2024-01-01 08:00` |
-|    2     | **Intervalo esperado**      | La frecuencia de copia de seguridad configurada.                  | `1 day`            |
+|    1     | **Última Copia de Seguridad**            | La marca de tiempo de la última copia de seguridad correcta.      | `2024-01-01 08:00` |
+|    2     | **Intervalo esperado**      | La frecuencia configurada de la copia de seguridad.                  | `1 day`            |
 |    3     | **Próxima copia de seguridad calculada** | `Last Backup` + `Expected Interval`               | `2024-01-02 08:00` |
 |    4     | **Tolerancia**              | El período de gracia configurado (tiempo adicional permitido). | `1 hour`           |
-|    5     | **Próxima copia de seguridad esperada**   | `Calculated Next Backup` + `Tolerance`            | `2024-01-02 09:00` |
+|    5     | **Próxima copia de seguridad prevista**   | `Calculated Next Backup` + `Tolerance`            | `2024-01-02 09:00` |
 
 Una copia de seguridad se considera **vencida** si la hora actual es posterior a la hora de `Expected Next Backup`.
 
@@ -46,25 +46,25 @@ gantt
 
 **Ejemplos basados en la línea de tiempo anterior:**
 
-- A las `2024-01-01 21:00` (🔹Comprobación 1), la copia de seguridad está **a tiempo**.
-- A las `2024-01-02 08:30` (🔹Comprobación 2), la copia de seguridad está **a tiempo**, ya que aún está dentro del período de tolerancia.
-- A las `2024-01-02 10:00` (🔹Comprobación 3), la copia de seguridad está **vencida**, ya que esto es después de la hora de `Expected Next Backup`.
+- A las `2024-01-01 21:00` (🔹Comprobar 1), la copia de seguridad está **en hora**.
+- A las `2024-01-02 08:30` (🔹Comprobar 2), la copia de seguridad está **en hora**, ya que aún está dentro del período de tolerancia.
+- A las `2024-01-02 10:00` (🔹Comprobar 3), la copia de seguridad está **vencida**, ya que es posterior a la hora de `Expected Next Backup`.
 
-## Comprobaciones Periódicas {/* #periodic-checks */}
+## Comprobaciones periódicas {/* #periodic-checks */}
 
-**duplistatus** realiza comprobaciones periódicas de copias de seguridad vencidas en intervalos configurables. El intervalo predeterminado es de 20 minutos, pero puede configurarlo en [Configuración → Monitoreo de Copias de Seguridad](settings/backup-monitoring-settings.md).
+**duplistatus** realiza comprobaciones periódicas de copias de seguridad vencidas a intervalos configurables. El intervalo predeterminado es de 20 minutos, pero puede configurarlo en [Configuración → Monitoreo de copias de seguridad](settings/backup-monitoring-settings.md).
 
-## Configuración Automática {/* #automatic-configuration */}
+## Configuración automática {/* #automatic-configuration */}
 
-Cuando recopila registros de copia de seguridad de un servidor Duplicati, **duplistatus** automáticamente:
+Cuando recopila registros de copias de seguridad desde un servidor Duplicati, **duplistatus** hace automáticamente lo siguiente:
 
-- Extrae el horario de copia de seguridad de la configuración de Duplicati
-- Actualiza los intervalos de monitoreo de copia de seguridad para que coincidan exactamente
-- Sincroniza los días permitidos de la semana y los horarios programados
-- Conserva sus preferencias de notificación
+- Extrae la programación de la copia de seguridad de la configuración de Duplicati
+- Actualiza los intervalos de monitoreo de copias de seguridad para que coincidan exactamente
+- Sincroniza los días permitidos y las horas programadas
+- Mantiene sus preferencias de notificación
 
 :::tip
-Para obtener los mejores resultados, recopile los registros de copia de seguridad después de cambiar los intervalos de trabajo de copia de seguridad en su servidor Duplicati. Esto asegura que **duplistatus** esté sincronizado con su configuración actual.
+Para obtener los mejores resultados, recopile los registros de copias de seguridad después de cambiar los intervalos de trabajo de copia de seguridad en su servidor Duplicati. Esto garantiza que **duplistatus** permanezca sincronizado con su configuración actual.
 :::
 
-Revise la sección [Configuración de monitoreo de copias de seguridad](settings/backup-monitoring-settings.md) para obtener opciones de configuración detalladas.
+Revise la sección [Configuración de monitoreo de copias de seguridad](settings/backup-monitoring-settings.md) para ver opciones detalladas de configuración.

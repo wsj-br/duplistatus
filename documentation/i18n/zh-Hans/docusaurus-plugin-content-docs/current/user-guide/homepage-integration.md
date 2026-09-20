@@ -1,10 +1,10 @@
-# 主页集成（可选）{/* #homepage-integration-optional */}
+# 主页集成（可选） {/* #homepage-integration-optional */}
 
-[主页](https://gethomepage.dev/)是一个可定制的仪表板应用程序。要将**duplistatus**与主页集成，请使用[自定义API小部件类型](https://gethomepage.dev/widgets/services/customapi/)向您的`services.yaml`文件添加小部件。
+[Homepage](https://gethomepage.dev/) 是一个可自定义的仪表板应用程序。要将 **duplistatus** 与 Homepage 集成，请使用 [自定义 API 小组件类型](https://gethomepage.dev/widgets/services/customapi/) 向您的 `services.yaml` 文件中添加一个小组件。
 
-## 摘要小部件{/* #summary-widget */}
+## 摘要小组件 {/* #summary-widget */}
 
-此小部件在您的主页仪表板上显示整体备份统计信息。
+此小组件在您的 Homepage 仪表板上显示整体备份统计信息。
 
 ```yaml
 - Dashboard:
@@ -40,13 +40,13 @@
           suffix: GB
 ```
 
-**小部件显示：**
+**小组件显示：**
 
-![主页摘要小部件](/img/homepage-summary.png)
+![Homepage 摘要小组件](/img/homepage-summary.png)
 
-## 最后备份信息小部件{/* #last-backup-information-widget */}
+## 最后备份信息小组件 {/* #last-backup-information-widget */}
 
-此小部件显示特定机器的最新备份信息。
+此小组件显示特定机器的最新备份信息。
 
 ```yaml
 - Test Machine 1:
@@ -75,15 +75,15 @@
           label: Versions
 ```
 
-**小部件显示：**
+**小组件显示：**
 
-![主页最后备份小部件](/img/homepage-lastbackup.png)
+![Homepage 最后备份小组件](/img/homepage-lastbackup.png)
 
-## 配置说明{/* #configuration-notes */}
+## 配置说明 {/* #configuration-notes */}
 
-- 将`your-server`替换为您的服务器IP地址或主机名。
-- 根据需要调整`refreshInterval`（以毫秒为单位）。
-- 在URL中，将机器名称中的空格替换为`%20`（例如，`Test Machine 1`变为`Test%20Machine%201`）。
-- `scale`值将字节转换为更易读的单位（GB、MB）。
-- 当需要[API密钥](settings/api-keys-settings.md)时，使用**读取**范围的API密钥。当密钥为可选时，删除`?api_key=`。
-- 如果启用了[外部API IP白名单](settings/ip-allowlist-settings.md)，请包含主页主机。
+- 将 `your-server` 替换为您的服务器 IP 地址或主机名。
+- 根据需要调整 `refreshInterval`（以毫秒为单位）。
+- 在 URL 中用 `%20` 替换机器名称中的空格（例如，`Test Machine 1` 变为 `Test%20Machine%201`）。
+- `scale` 值将字节转换为更易读的单位（GB、MB）。
+- 当需要 [API 密钥](settings/api-keys-settings.md) 时，请使用具有 **读取** 范围的 API 密钥。当密钥为可选项时，请删除 `?api_key=`。
+- 如果启用了 [外部 API IP 白名单](settings/ip-allowlist-settings.md)，请包含 Homepage 主机。

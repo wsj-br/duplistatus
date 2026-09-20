@@ -1,6 +1,6 @@
 # 概述 {/* #overview */}
 
-设置页面提供了一个统一的界面来配置**duplistatus**的所有方面。您可以通过点击[应用程序工具栏](../overview.md#application-toolbar)中的<IconButton icon="lucide:settings" /> **设置**按钮来访问它。请注意，普通用户将看到一个简化的菜单，选项比管理员少。
+设置页面提供了一个统一的界面，用于配置 **duplistatus** 的所有方面。您可以通过单击 [应用程序工具栏](../overview.md#application-toolbar) 中的 <IconButton icon="lucide:settings" /> **设置** 按钮来访问它。请注意，普通用户将看到一个简化的菜单，选项比管理员少。
 
 ## 管理员视图 {/* #administrator-view */}
 
@@ -18,27 +18,27 @@
           <ul>
             <li><a href="backup-notifications-settings.md">备份通知</a>：配置每个备份的通知设置</li>
             <li><a href="backup-monitoring-settings.md">备份监控</a>：配置过期备份检测和警报</li>
-            <li><a href="daily-summary-settings.md">每日摘要</a>：可选的每日快照，替换发送到默认收件人的电子邮件（其他目标继续）</li>
+            <li><a href="daily-summary-settings.md">每日摘要</a>：可选的每日快照，替换发送给默认收件人的电子邮件（其他目标继续）</li>
             <li><a href="notification-templates.md">模板</a>：自定义通知消息模板</li>
           </ul>
         </li><br/>
         <li>
           <strong>集成</strong>
           <ul>
-            <li><a href="ntfy-settings.md">NTFY</a>：配置NTFY推送通知服务</li>
-            <li><a href="email-settings.md">电子邮件</a>：配置SMTP电子邮件通知</li>
+            <li><a href="ntfy-settings.md">NTFY</a>：配置 NTFY 推送通知服务</li>
+            <li><a href="email-settings.md">电子邮件</a>：配置 SMTP 电子邮件通知</li>
           </ul>
         </li><br/>
         <li>
           <strong id="system">系统</strong>
           <ul>
-            <li><a href="server-settings.md">服务器</a>：管理Duplicati服务器配置</li>
-            <li><a href="display-settings.md">显示设置</a>：配置主题、图表时间范围、图表样式、格式区域、自动刷新间隔、卡片排序顺序和周开始</li>
-            <li><a href="duplicati-versions.md">Duplicati版本</a>：查看缓存的Duplicati发布版本并配置版本检查计划</li>
+            <li><a href="server-settings.md">服务器</a>：管理 Duplicati 服务器配置</li>
+            <li><a href="display-settings.md">显示设置</a>：配置主题、图表时间范围、图表样式、格式区域、自动刷新间隔、卡片排序顺序和周开始日期</li>
+            <li><a href="duplicati-versions.md">Duplicati 版本</a>：查看缓存的 Duplicati 发布版本并配置版本检查计划</li>
             <li><a href="database-maintenance.md">数据库维护</a>：执行数据库清理（仅限管理员）</li>
-            <li><a href="api-keys-settings.md">API密钥</a>：管理范围密钥和外部API保护（仅限管理员）</li>
-            <li><a href="ip-allowlist-settings.md">IP白名单</a>：限制管理界面和外部API（仅限管理员）</li>
-            <li><a href="user-management-settings.md">用户</a>：管理用户帐户（仅限管理员）</li>
+            <li><a href="api-keys-settings.md">API 密钥</a>：管理作用域密钥和外部 API 保护（仅限管理员）</li>
+            <li><a href="ip-allowlist-settings.md">IP 白名单</a>：限制管理界面和外部 API（仅限管理员）</li>
+            <li><a href="user-management-settings.md">用户</a>：管理用户账户（仅限管理员）</li>
             <li><a href="audit-logs-viewer.md">审计日志</a>：查看系统审计日志</li>
             <li><a href="audit-logs-retention.md">审计日志保留</a>：配置审计日志保留（仅限管理员）</li>
             <li><a href="application-logs-settings.md">应用程序日志</a>：查看和导出应用程序日志（仅限管理员）</li>
@@ -51,7 +51,7 @@
 
 ## 非管理员视图 {/* #non-administrator-view */}
 
-普通用户只能看到一组有限的设置。
+普通用户只能看到有限的设置选项。
 
 <table>
   <tr>
@@ -63,26 +63,26 @@
         <li>
           <strong>通知</strong>
           <ul>
-            <li><a href="backup-notifications-settings.md">备份通知</a>：查看每个备份的通知设置（仅限查看）</li>
-            <li><a href="backup-monitoring-settings.md">备份监控</a>：查看过期备份设置（仅限查看）</li>
-            <li><a href="daily-summary-settings.md">每日摘要</a>：查看每日摘要设置（仅限查看）</li>
-            <li><a href="notification-templates.md">模板</a>：查看通知模板（仅限查看）</li>
+            <li><a href="backup-notifications-settings.md">备份通知</a>：查看每个备份的通知设置（只读）</li>
+            <li><a href="backup-monitoring-settings.md">备份监控</a>：查看过期备份设置（只读）</li>
+            <li><a href="daily-summary-settings.md">每日摘要</a>：查看每日摘要设置（只读）</li>
+            <li><a href="notification-templates.md">模板</a>：查看通知模板（只读）</li>
           </ul>
         </li><br/>
         <li>
           <strong>集成</strong>
           <ul>
-            <li><a href="ntfy-settings.md">NTFY</a>：查看 NTFY 设置（仅限查看）</li>
-            <li><a href="email-settings.md">电子邮件</a>：查看电子邮件设置（仅限查看）</li>
+            <li><a href="ntfy-settings.md">NTFY</a>：查看 NTFY 设置（只读）</li>
+            <li><a href="email-settings.md">电子邮件</a>：查看电子邮件设置（只读）</li>
           </ul>
         </li><br/>
         <li>
           <strong id="system">系统</strong>
           <ul>
-            <li><a href="server-settings.md">服务器</a>：查看服务器配置（仅限查看）</li>
-            <li><a href="display-settings.md">显示</a>：配置主题、图表时间范围、图表样式、格式区域、自动刷新间隔、卡片排序顺序和周开始</li>
-            <li><a href="duplicati-versions.md">Duplicati 版本</a>：查看缓存的 Duplicati 发布版本（计划更改仅限管理员）</li>
-            <li><a href="audit-logs-viewer.md">审计日志</a>：查看系统审计日志（仅限查看）</li>
+            <li><a href="server-settings.md">服务器</a>：查看服务器配置（只读）</li>
+            <li><a href="display-settings.md">显示</a>：配置主题、图表时间范围、图表样式、格式区域、自动刷新间隔、卡片排序顺序和周开始日期</li>
+            <li><a href="duplicati-versions.md">Duplicati 版本</a>：查看缓存的 Duplicati 发布版本（计划更改仅限管理员操作）</li>
+            <li><a href="audit-logs-viewer.md">审计日志</a>：查看系统审计日志（只读）</li>
           </ul>
         </li>
       </ul>
@@ -96,12 +96,12 @@
 - <IIcon2 icon="lucide:message-square" color="green"/> <IIcon2 icon="lucide:mail" color="green"/> **绿色图标**：您的设置有效且配置正确
 - <IIcon2 icon="lucide:message-square" color="yellow"/> <IIcon2 icon="lucide:mail" color="yellow"/> **黄色图标**：您的设置无效或未配置
 
-当配置无效时，[备份通知](backup-notifications-settings.md) 选项卡中的相应复选框将被置灰并禁用。有关更多详细信息，请参阅 [NTFY 设置](ntfy-settings.md) 和 [电子邮件设置](email-settings.md) 页面。
+当配置无效时，[备份通知](backup-notifications-settings.md) 选项卡中的相应复选框将变为灰色并禁用。有关详细信息，请参阅 [NTFY 设置](ntfy-settings.md) 和 [电子邮件设置](email-settings.md) 页面。
 
 <br/>
 
 :::important
-绿色图标并不意味着通知功能正常。在依赖通知之前，请始终使用可用的测试功能确认您的通知是否正常工作。
+绿色图标并不一定意味着通知功能正常工作。在依赖通知之前，请始终使用可用的测试功能确认您的通知正在正常工作。
 :::
 
 <br/>

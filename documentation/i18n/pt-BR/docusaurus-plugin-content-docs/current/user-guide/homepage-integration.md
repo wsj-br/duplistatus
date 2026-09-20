@@ -1,10 +1,10 @@
 # Integração com a Página Inicial (Opcional) {/* #homepage-integration-optional */}
 
-[Página Inicial](https://gethomepage.dev/) é um aplicativo de painel personalizável. Para integrar o **duplistatus** com a Página Inicial, adicione um widget ao seu arquivo `services.yaml` usando o [tipo de widget de API personalizado](https://gethomepage.dev/widgets/services/customapi/).
+[Página Inicial](https://gethomepage.dev/) é um aplicativo de painel personalizável. Para integrar o **duplistatus** com a Página Inicial, adicione um widget ao seu arquivo `services.yaml` usando o [tipo de widget de API personalizada](https://gethomepage.dev/widgets/services/customapi/).
 
 ## Widget de Resumo {/* #summary-widget */}
 
-Este widget exibe as estatísticas gerais de backup no painel da Página Inicial.
+Este widget exibe estatísticas gerais de backup no seu painel da Página Inicial.
 
 ```yaml
 - Dashboard:
@@ -84,6 +84,6 @@ Este widget exibe as informações do último backup para uma máquina específi
 - Substitua `your-server` pelo endereço IP ou nome do host do seu servidor.
 - Ajuste o `refreshInterval` conforme necessário (em milissegundos).
 - Substitua espaços nos nomes das máquinas por `%20` na URL (por exemplo, `Test Machine 1` torna-se `Test%20Machine%201`).
-- Os valores `scale` convertem bytes em unidades mais legíveis (GB, MB).
-- Use uma chave de API com escopo de **leitura** quando [chaves de API](settings/api-keys-settings.md) forem necessárias. Remova `?api_key=` quando as chaves forem opcionais.
+- Os valores `scale` convertem bytes para unidades mais legíveis (GB, MB).
+- Utilize uma chave de API com escopo de **leitura** quando [chaves de API](settings/api-keys-settings.md) forem necessárias. Remova `?api_key=` quando as chaves forem opcionais.
 - Se a [lista de permissões de IP da API externa](settings/ip-allowlist-settings.md) estiver habilitada, inclua o host da Página Inicial.

@@ -149,6 +149,17 @@ Copies image files from `documentation/static/img` to their appropriate location
 
 Useful for keeping application images synchronized with documentation images.
 
+## Switch local or npm ai-i18n-tools {/* #switch-local-or-npm-ai-i18n-tools */}
+
+```bash
+./scripts/link-ai-i18n-tools.sh --local
+./scripts/link-ai-i18n-tools.sh --remote
+pnpm i18n:tools --local
+pnpm i18n:tools --remote
+```
+
+Points this repo at a sibling [ai-i18n-tools](https://github.com/wsj-br/ai-i18n-tools) checkout or back at the published npm package, then prints the resolved version. `--local` writes `link:../ai-i18n-tools` (override the path with `--path` or `AI_I18N_TOOLS_PATH`) so `pnpm i18n:*` and `ai-i18n-tools/runtime` both use that tree. `--remote` installs the latest npm version as `^x.y.z`. Do not commit the `link:` specifier.
+
 ## Compare versions between development and Docker {/* #compare-versions-between-development-and-docker */}
 
 ```bash

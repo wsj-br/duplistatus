@@ -2,23 +2,23 @@ import { ZoomMermaid } from '@site/src/components/ZoomMermaid';
 
 # Backup-Überwachung {/* #backup-monitoring */}
 
-Die Backup-Überwachungsfunktion ermöglicht es Ihnen, überfällige Backups zu verfolgen und zu benachrichtigen. Die Benachrichtigungen können per NTFY oder E-Mail erfolgen.
+Die Funktion zur Backup-Überwachung ermöglicht es Ihnen, überfällige Backups zu verfolgen und Warnungen dafür zu erhalten. Die Benachrichtigungen können über NTFY oder E-Mail erfolgen.
 
-In der Benutzeroberfläche werden überfällige Backups mit einem Warnungssymbol angezeigt. Bei der Überfahrt über das Symbol werden die Details der überfälligen Sicherung angezeigt, einschließlich der letzten Sicherungszeit, der erwarteten Sicherungszeit, der Toleranzzeit und der erwarteten nächsten Sicherungszeit.
+In der Benutzeroberfläche werden überfällige Backups mit einem Warndreieck angezeigt. Beim Überfahren des Symbols mit der Maus werden die Details des überfälligen Backups angezeigt, einschließlich der Zeitpunkt der letzten Sicherung, der erwarteten Sicherungszeit, der Toleranzperiode und der erwarteten nächsten Sicherungszeit.
 
 ## Überprüfungsprozess für überfällige Backups {/* #overdue-check-process */}
 
-**So funktioniert es:**
+**So funktioniert's:**
 
-| **Schritt** | **Wert**                  | **Beschreibung**                                   | **Beispiel**        |
-|:--------:|:---------------------------|:--------------------------------------------------|:-------------------|
-|    1     | **Letzte Sicherung**            | Der Zeitstempel der letzten erfolgreichen Sicherung.      | `2024-01-01 08:00` |
-|    2     | **Erwartetes Intervall**      | Die konfigurierte Sicherungsfrequenz.                  | `1 day`            |
-|    3     | **Berechnete nächste Sicherung** | `Last Backup` + `Expected Interval`               | `2024-01-02 08:00` |
-|    4     | **Toleranz**              | Der konfigurierte Gnadenzuschlag (zusätzliche Zeit). | `1 hour`           |
-|    5     | **Erwartete nächste Sicherung**   | `Calculated Next Backup` + `Tolerance`            | `2024-01-02 09:00` |
+| **Schritt** | **Wert**                   | **Beschreibung**                                  | **Beispiel**       |
+|:------------:|:---------------------------|:--------------------------------------------------|:-------------------|
+|      1       | **Letzte Sicherung**       | Der Zeitstempel der letzten erfolgreichen Sicherung. | `2024-01-01 08:00` |
+|      2       | **Erwartetes Intervall**   | Die konfigurierte Backup-Häufigkeit.              | `1 day`            |
+|      3       | **Berechnete nächste Sicherung** | `Last Backup` + `Expected Interval`               | `2024-01-02 08:00` |
+|      4       | **Toleranz**               | Die konfigurierte Karenzzeit (zusätzliche erlaubte Zeit). | `1 hour`           |
+|      5       | **Erwartete nächste Sicherung** | `Calculated Next Backup` + `Tolerance`            | `2024-01-02 09:00` |
 
-Eine Sicherung gilt als **überfällig**, wenn die aktuelle Zeit später als die `Expected Next Backup` Zeit ist.
+Ein Backup wird als **überfällig** betrachtet, wenn die aktuelle Zeit später ist als die `Expected Next Backup` Zeit.
 
 <ZoomMermaid>
 
@@ -44,27 +44,27 @@ gantt
 
 </ZoomMermaid>
 
-**Beispiele basierend auf der obigen Zeitachse:**
+**Beispiele basierend auf der obigen Zeitleiste:**
 
-- Bei `2024-01-01 21:00` (🔹Check 1) ist die Sicherung **pünktlich**.
-- Bei `2024-01-02 08:30` (🔹Check 2) ist die Sicherung **pünktlich**, da sie noch innerhalb des Toleranzzeitraums liegt.
-- Bei `2024-01-02 10:00` (🔹Check 3) ist die Sicherung **überfällig**, da dies nach der `Expected Next Backup` Zeit liegt.
+- Um `2024-01-01 21:00` (🔹Prüfung 1) ist das Backup **pünktlich**.
+- Um `2024-01-02 08:30` (🔹Prüfung 2) ist das Backup **pünktlich**, da es sich immer noch innerhalb der Toleranzperiode befindet.
+- Um `2024-01-02 10:00` (🔹Prüfung 3) ist das Backup **überfällig**, da dies nach der `Expected Next Backup` Zeit ist.
 
-## Periodische Überprüfungen {/* #periodic-checks */}
+## Regelmäßige Prüfungen {/* #periodic-checks */}
 
-**duplistatus** führt periodische Überprüfungen auf überfällige Backups in konfigurierbaren Intervallen durch. Das Standardintervall beträgt 20 Minuten, kann aber in [Einstellungen → Backup-Überwachung](settings/backup-monitoring-settings.md) konfiguriert werden.
+**duplistatus** führt regelmäßig Prüfungen auf überfällige Backups in konfigurierbaren Intervallen durch. Das Standardintervall beträgt 20 Minuten, Sie können es jedoch unter [Einstellungen → Backup-Überwachung](settings/backup-monitoring-settings.md) konfigurieren.
 
 ## Automatische Konfiguration {/* #automatic-configuration */}
 
-Wenn Sie Backup-Protokolle von einem Duplicati-Server sammeln, konfiguriert **duplistatus** automatisch:
+Wenn Sie Backup-Protokolle von einem Duplicati-Server sammeln, führt **duplistatus** automatisch Folgendes aus:
 
 - Extrahiert den Backup-Zeitplan aus der Duplicati-Konfiguration
-- Aktualisiert die Backup-Überwachungsintervalle entsprechend
-- Synchronisiert die erlaubten Wochentage und geplanten Zeiten
+- Aktualisiert die Backup-Überwachungsintervalle exakt passend
+- Synchronisiert erlaubte Wochentage und geplante Zeiten
 - Behält Ihre Benachrichtigungseinstellungen bei
 
 :::tip
-Für die besten Ergebnisse sollten Sie nach der Änderung der Backup-Job-Intervalle in Ihrem Duplicati-Server die Backup-Protokolle sammeln. Dies stellt sicher, dass **duplistatus** mit Ihrer aktuellen Konfiguration synchronisiert bleibt.
+Für optimale Ergebnisse sollten Sie die Backup-Protokolle sammeln, nachdem Sie die Intervalle der Sicherungsaufträge in Ihrem Duplicati-Server geändert haben. Dadurch wird sichergestellt, dass **duplistatus** mit Ihrer aktuellen Konfiguration synchron bleibt.
 :::
 
-Überprüfen Sie den Abschnitt [Einstellungen für die Backup-Überwachung](settings/backup-monitoring-settings.md) für detaillierte Konfigurationsoptionen.
+Lesen Sie den Abschnitt [Einstellungen zur Backup-Überwachung](settings/backup-monitoring-settings.md) für detaillierte Konfigurationsoptionen.

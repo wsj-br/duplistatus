@@ -1,162 +1,162 @@
-# So habe ich diese Anwendung mit AI-Tools erstellt {/* #how-i-build-this-application-using-ai-tools */}
+# Wie ich diese Anwendung mit KI-Tools baue {/* #how-i-build-this-application-using-ai-tools */}
 
 # Motivation {/* #motivation */}
 
-Ich begann, Duplicati als Backup-Tool für meine Heimserver zu verwenden. Ich probierte die offizielle [Duplicati-Dashboard](https://app.duplicati.com/) und [Duplicati-Monitoring](https://www.duplicati-monitoring.com/) aus, hatte aber zwei Hauptanforderungen: (1) selbst gehostet; und (2) eine API für die Integration mit [Homepage](https://gethomepage.dev/), da ich sie für die Homepage meines Home Labs verwende.
+Ich begann, Duplicati als Sicherungstool für meine Heimserver zu verwenden. Ich habe das offizielle [Duplicati-Dashboard](https://app.duplicati.com/) und [Duplicati Monitoring](https://www.duplicati-monitoring.com/) ausprobiert, aber ich hatte zwei Hauptanforderungen: (1) selbst gehostet; und (2) eine API, die für die Integration mit [Homepage](https://gethomepage.dev/) verfügbar ist, da ich sie für die Homepage meines Heimlabors benutze.
 
-Ich versuchte auch, direkt mit jedem Duplicati-Server im Netzwerk zu verbinden, aber die Authentifizierungsmethode war nicht kompatibel mit Homepage (oder ich konnte sie nicht richtig konfigurieren).
+Ich habe auch versucht, direkt mit jedem Duplicati-Server im Netzwerk zu verbinden, aber die Authentifizierungsmethode war nicht mit der Homepage kompatibel (oder ich konnte sie nicht richtig konfigurieren).
 
-Da ich auch mit AI-Code-Tools experimentierte, beschloss ich, AI zu verwenden, um dieses Tool zu erstellen. Hier ist der Prozess, den ich verwendet habe...
+Da ich auch mit KI-Code-Tools experimentierte, beschloss ich, KI zu verwenden, um dieses Tool zu erstellen. Hier ist der Prozess, den ich verwendet habe...
 
 # Verwendete Tools {/* #tools-used */}
 
-1. Für die Benutzeroberfläche: [Google's Firebase Studio](https://firebase.studio/)
+1. Für die UI: [Google's Firebase Studio](https://firebase.studio/)
 2. Für die Implementierung: Cursor (https://www.cursor.com/)
 
 :::note
-Ich verwendete Firebase für die Benutzeroberfläche, aber Sie können auch [v0.app](https://v0.app/) oder ein anderes Tool verwenden, um das Prototyp zu erstellen. Ich verwendete Cursor für die Implementierung, aber Sie können andere Tools wie VS Code/Copilot, Windsurf, ... verwenden.
+Ich habe Firebase für die UI verwendet, aber Sie können auch [v0.app](https://v0.app/) oder ein anderes Tool verwenden, um den Prototyp zu erstellen. Ich habe Cursor verwendet, um die Implementierung zu generieren, aber Sie können auch andere Tools wie VS Code/Copilot, Windsurf usw. verwenden.
 :::
 
-# Benutzeroberfläche {/* #ui */}
+# UI {/* #ui */}
 
-Ich erstellte ein neues Projekt in [Firebase Studio](https://studio.firebase.google.com/) und verwendete diesen Prompt im Feature "Prototyp einer App mit KI":
+Ich habe ein neues Projekt in [Firebase Studio](https://studio.firebase.google.com/) erstellt und diesen Prompt in der Funktion "Prototype an app with AI" verwendet:
 
-> Eine Web-Dashboard-Anwendung mit Tailwind/React zur Konsolidierung der Backup-Ergebnisse in einer SQLite3-Datenbank, die von der Duplicati-Backup-Lösung gesendet werden, die die Option --send-http-url (JSON-Format) für mehrere Maschinen verwendet. Verfolgen Sie den Status des Backups, die Größe, die hochgeladenen Größen.
+> Eine Web-Dashboard-Anwendung, die tailwind/react verwendet, um die Sicherungsergebnisse, die von der Duplicati-Sicherungslösung mit der Option --send-http-url (JSON-Format) von mehreren Maschinen gesendet werden, in einer sqllite3-Datenbank zu konsolidieren, den Status der Sicherung, die Größe und die Upload-Größen zu verfolgen.
 > 
-> Die erste Seite des Dashboards sollte eine Tabelle mit dem letzten Backup jeder Maschine enthalten, einschließlich des Maschinennamens, der Anzahl der in der Datenbank gespeicherten Backups, des Status des letzten Backups, der Dauer (hh:mm:ss), der Anzahl der Warnungen und Fehler.
+> Die erste Seite des Dashboards sollte eine Tabelle mit der letzten Sicherung jeder Maschine auf der ersten Seite enthalten, einschließlich des Maschinen-Namens, der Anzahl der in der Datenbank gespeicherten Sicherungen, dem Status der letzten Sicherung, der Dauer (hh:mm:ss), der Anzahl der Warnungen und Fehler.
 > 
-> Wenn Sie auf eine Maschinenzeile klicken, zeigen Sie eine Detailseite der ausgewählten Maschine mit einer Liste der gespeicherten Backups (seitenweise), einschließlich des Backup-Namens, des Datums und der Uhrzeit des Backups, einschließlich der Zeit, die seit dem Backup vergangen ist, des Status, der Anzahl der Warnungen und Fehler, der Anzahl der Dateien, der Größe der Dateien, der hochgeladenen Größe und der Gesamtgröße des Speichers. Fügen Sie auch auf der Detailseite ein Diagramm mit der Entwicklung der Felder: hochgeladene Größe; Dauer in Minuten, Anzahl der untersuchten Dateien, Größe der untersuchten Dateien ein. Das Diagramm sollte ein Feld auf einmal darstellen, mit einem Dropdown-Menü zur Auswahl des gewünschten Feldes zur Darstellung. Das Diagramm sollte auch alle in der Datenbank gespeicherten Backups darstellen, nicht nur die in der seitenweisen Tabelle angezeigten.
+> Wenn man auf eine Maschinenzeile klickt, sollte eine Detailseite der ausgewählten Maschine mit einer Liste der gespeicherten Sicherungen (paginiert) angezeigt werden, einschließlich des Sicherungsnamens, des Datums und der Uhrzeit der Sicherung, einschließlich wie lange es her ist, dem Status, der Anzahl der Warnungen und Fehler, der Anzahl der Dateien, der Größe der Dateien, der hochgeladenen Größe und der gesamten Größe des Speichers. Außerdem sollte die Detailseite ein Diagramm mit Tremor enthalten, das die Entwicklung der Felder zeigt: hochgeladene Größe; Dauer in Minuten, Anzahl der geprüften Dateien, Größe der geprüften Dateien. Das Diagramm sollte jeweils ein Feld darstellen, mit einem Dropdown-Menü zur Auswahl des gewünschten Feldes. Außerdem muss das Diagramm alle in der Datenbank gespeicherten Sicherungen anzeigen, nicht nur die, die in der paginierten Tabelle angezeigt werden.
 > 
-> Die Anwendung muss einen API-Endpunkt zur Verfügung stellen, um die POST-Anfragen des Duplicati-Servers zu empfangen und einen anderen API-Endpunkt zur Abfrage aller Details des letzten Backups einer Maschine als JSON.
+> Die Anwendung muss einen API-Endpunkt bereitstellen, um die POST-Anfrage vom Duplicati-Server zu empfangen, und einen weiteren API-Endpunkt, um alle Details der letzten Sicherung einer Maschine als JSON abzurufen.
 > 
-> Das Design sollte modern, responsiv und mit Symbolen und anderen visuellen Hilfen ausgestattet sein, um es leicht lesbar zu machen. Der Code sollte sauber, prägnant und einfach zu warten sein. Verwenden Sie moderne Tools wie pnpm zur Verwaltung der Abhängigkeiten.
+> Das Design sollte modern, responsiv sein und Icons sowie andere visuelle Hilfen enthalten, um die Lesbarkeit zu erleichtern. Der Code muss sauber, prägnant und leicht wartbar sein. Verwenden Sie moderne Tools wie pnpm, um mit Abhängigkeiten umzugehen.
 > 
-> Die Anwendung sollte ein wählbares dunkles und helles Design haben.
+> Die Anwendung muss ein wählbares dunkles und helles Design haben.
 > 
-> Die Datenbank sollte diese Felder speichern, die von der Duplicati-JSON empfangen werden:
+> Die Datenbank sollte diese von Duplicati empfangenen Felder speichern:
 
 ```json
 "{ "Data": { "DeletedFiles": 0, "DeletedFolders": 0, "ModifiedFiles": 0, "ExaminedFiles": 15399, "OpenedFiles": 1861, "AddedFiles": 1861, "SizeOfModifiedFiles": 0, "SizeOfAddedFiles": 13450481, "SizeOfExaminedFiles": 11086692615, "SizeOfOpenedFiles": 13450481, "NotProcessedFiles": 0, "AddedFolders": 419, "TooLargeFiles": 0, "FilesWithError": 0, "ModifiedFolders": 0, "ModifiedSymlinks": 0, "AddedSymlinks": 0, "DeletedSymlinks": 0, "PartialBackup": false, "Dryrun": false, "MainOperation": "Backup", "ParsedResult": "Success", "Interrupted": false, "Version": "2.1.0.5 (2.1.0.5_stable_2025-03-04)", "EndTime": "2025-04-21T23:46:38.3568274Z", "BeginTime": "2025-04-21T23:45:46.9712217Z", "Duration": "00:00:51.3856057", "WarningsActualLength": 0, "ErrorsActualLength": 0, "BackendStatistics": { "BytesUploaded": 8290314, "BytesDownloaded": 53550393, "KnownFileSize": 9920312634, "LastBackupDate": "2025-04-22T00:45:46+01:00", "BackupListCount": 6, "ReportedQuotaError": false, "ReportedQuotaWarning": false, "MainOperation": "Backup", "ParsedResult": "Success", "Interrupted": false, "Version": "2.1.0.5 (2.1.0.5_stable_2025-03-04)", "BeginTime": "2025-04-21T23:45:46.9712252Z", "Duration": "00:00:00", "WarningsActualLength": 0, "ErrorsActualLength": 0 } }, "Extra": { "OperationName": "Backup", "machine-id": "66f5ffc7ff474a73a3c9cba4ac7bfb65", "machine-name": "WSJ-SER5", "backup-name": "WSJ-SER5 Local files", "backup-id": "DB-2" } } "
 ```
 
-dies generierte ein App-Blueprint, den ich dann leicht angepasst habe (wie unten) bevor ich auf `Prototype this App` klickte:
+dies erzeugte einen App-Blueprint, den ich dann leicht modifizierte (wie unten), bevor ich auf `Prototype this App` klickte:
 
 ![appblueprint](/img/app-blueprint.png)
 
 Ich verwendete später diese Prompts, um das Design und das Verhalten anzupassen und zu verfeinern:
 
-> Entfernen Sie die Schaltfläche "Details anzeigen" von der Übersichtsseite des Dashboards und den Link beim Maschinenname. Wenn der Benutzer irgendwo auf der Zeile klickt, wird die Detailseite angezeigt.
+> Entfernen Sie die Schaltfläche "Details anzeigen" von der Dashboard-Übersichtsseite und den Link auf dem Maschinen-Namen. Wenn der Benutzer irgendwo in der Zeile klickt, wird die Detailseite angezeigt.
 
-> Wenn Größen in Bytes angezeigt werden, verwenden Sie eine automatische Skalierung (KB, MB, GB, TB).
+> Verwenden Sie beim Anzeigen von Größen in Bytes eine automatische Skalierung (KB, MB, GB, TB).
 
-> Auf der Detailseite, verschieben Sie das Diagramm nach der Tabelle. Ändern Sie die Farbe des Balkendiagramms in eine andere Farbe, die mit hellen und dunklen Designs kompatibel ist.
+> Verschieben Sie auf der Detailseite das Diagramm nach der Tabelle. Ändern Sie die Farbe des Balkendiagramms in eine andere Farbe, die mit hellen und dunklen Designs kompatibel ist.
 
-> Auf der Detailseite, reduzieren Sie die Anzahl der Zeilen auf 5 Backups pro Seite.
+> Reduzieren Sie auf der Detailseite die Anzahl der Zeilen, um 5 Sicherungen pro Seite anzuzeigen.
 
-> Auf der Übersichtsseite des Dashboards, fügen Sie eine Zusammenfassung oben ein mit der Anzahl der Maschinen in der Datenbank, der Gesamtzahl der Backups aller Maschinen, der gesamten hochgeladenen Größe aller Backups und der gesamten Speichernutzung durch alle Maschinen. Fügen Sie Symbole hinzu, um die Visualisierung zu erleichtern.
+> Fügen Sie in der Dashboard-Übersicht oben eine Zusammenfassung mit der Anzahl der Maschinen in der Datenbank, der Gesamtanzahl der Sicherungen aller Maschinen, der gesamten hochgeladenen Größe aller Sicherungen und dem gesamten genutzten Speicher aller Maschinen hinzu. Fügen Sie Icons hinzu, um die Visualisierung zu erleichtern.
 
-> Bitte speichern Sie das vom Benutzer ausgewählte Design. Fügen Sie auch einige seitliche Ränder hinzu und lassen Sie die Benutzeroberfläche 90% der verfügbaren Breite verwenden.
+> Bitte speichern Sie das vom Benutzer ausgewählte Design. Fügen Sie außerdem einige seitliche Abstände hinzu und lassen Sie die UI 90% der verfügbaren Breite nutzen.
 
-> in the machine detail header card, include a summary with the total number of backups stored for this machine, a statistic of the backup status, the number of warnings and errors of the last backup, the average duration in hh:mm:ss, the total uploaded size of all backups and the storage size used based on the last backup information received.
+> Im Maschinen-Detailkopfkarte, fügen Sie eine Zusammenfassung mit der Gesamtzahl der für diese Maschine gespeicherten Sicherungen, einer Statistik zum Sicherungsstatus, der Anzahl der Warnungen und Fehler der letzten Sicherung, der durchschnittlichen Dauer in hh:mm:ss, der gesamten hochgeladenen Größe aller Sicherungen und der verwendeten Speichergröße basierend auf den zuletzt erhaltenen Sicherungsinformationen hinzu.
 
-> make the summary smaller and more compact to reduce the footprint used.
+> Machen Sie die Zusammenfassung kleiner und kompakter, um den verwendeten Platz zu reduzieren.
 
-> when presenting the last backup date, show in the same cell, in a small gray font, the time ago the backup happened (for instance, x minute ago, x hours ago, x days ago, x weeks ago, x months ago, x years ago).
+> Wenn das Datum der letzten Sicherung angezeigt wird, zeigen Sie in derselben Zelle, in einer kleinen grauen Schrift, die Zeit an, die seit der Sicherung vergangen ist (zum Beispiel, vor x Minuten, vor x Stunden, vor x Tagen, vor x Wochen, vor x Monaten, vor x Jahren).
 
-> in the dashboard overview put last backup date before last backup status
+> In der Dashboard-Übersicht setzen Sie das Datum der letzten Sicherung vor den Status der letzten Sicherung.
 
-After iterating through these prompts, Firebase generated the prototype as shown in the screenshots below:
+Nachdem ich diese Aufforderungen durchlaufen hatte, generierte Firebase den Prototyp, wie in den Screenshots unten gezeigt:
 
-![prototype](/img/screen-prototype.png)
+![Prototyp](/img/screen-prototype.png)
 
-![prototype-detail](/img/screen-prototype-detail.png)
+![Prototyp-Detail](/img/screen-prototype-detail.png)
 
 :::note
-One interesting point was that, since the first interaction, Firebase Studio generated random data to populate the pages/charts, making the prototype function like a live application.
+Ein interessanter Punkt war, dass Firebase Studio seit der ersten Interaktion zufällige Daten generierte, um die Seiten/Diagramme zu füllen, wodurch der Prototyp wie eine Live-Anwendung funktionierte.
 :::
 
-After completing the initial prototype, I accessed the source code by clicking the `</>` button in the interface. I then used the Git extension to export the code and push it to a private repository on [GitHub](https://www.github.com).
+Nachdem ich den ersten Prototyp abgeschlossen hatte, griff ich auf den Quellcode zu, indem ich auf die `</>`-Schaltfläche in der Benutzeroberfläche klickte. Ich verwendete dann die Git-Erweiterung, um den Code zu exportieren und in ein privates Repository auf [GitHub](https://www.github.com) zu pushen.
 
 # Backend {/* #backend */}
 
-## Setup {/* #setup */}
+## Einrichtung {/* #setup */}
 
-I downloaded the code from GitHub (using the `git clone` command) to a local folder (in my case, a Raspberry Pi 5 running Linux) and installed the dependencies Node.js, npm, and pnpm. See more details in [DEVELOPMENT.md](../development/setup.md).
+Ich lud den Code von GitHub (unter Verwendung des `git clone`-Befehls) in einen lokalen Ordner herunter (in meinem Fall ein Raspberry Pi 5 mit Linux) und installierte die Abhängigkeiten Node.js, npm und pnpm. Weitere Details finden Sie in [DEVELOPMENT.md](../development/setup.md).
 
-I set up Cursor to access the code folder from my Windows machine using an SSH connection.
+Ich richtete Cursor ein, um von meinem Windows-Rechner über eine SSH-Verbindung auf den Code-Ordner zuzugreifen.
 
-I copied a sample of the JSON sent by Duplicati into a file (see the [sample backup report](../api-reference/database-values) document), clearing some unwanted fields.
+Ich kopierte ein Beispiel des von Duplicati gesendeten JSON in eine Datei (siehe das [Beispiel-Sicherungsbericht](../api-reference/database-values)-Dokument) und entfernte einige unerwünschte Felder.
 
-## Implementation {/* #implementation */}
+## Implementierung {/* #implementation */}
 
-I used an initial prompt to begin the implementation, focusing on persistence, fixes, and new features. It was a long but very interesting process.
+Ich verwendete eine anfängliche Aufforderung, um mit der Implementierung zu beginnen, wobei ich mich auf Persistenz, Fehlerbehebungen und neue Funktionen konzentrierte. Es war ein langer, aber sehr interessanter Prozess.
 
-### Using AI to generate the prompt {/* #using-ai-to-generate-the-prompt */}
+### Verwendung von KI zur Generierung der Aufforderung {/* #using-ai-to-generate-the-prompt */}
 
-I created a detailed prompt using Cursor Chat (`Manual` mode, `Auto` model):
+Ich erstellte eine detaillierte Aufforderung mit Cursor Chat (`Manual`-Modus, `Auto`-Modell):
 
-> improve this text as a prompt to cursor ai tool to generate the implementation of an applicaiton prototype:
+> Verbessern Sie diesen Text als Aufforderung an das Cursor-KI-Tool, um die Implementierung eines Anwendungsprototyps zu generieren:
 > 
-> please create a plan generate the full implementation of a Next.js application prototype from this codebase. Your implementation should thoroughly analyse the provided codebase to maintain the exact visual aesthetics, user experience, and navigation flow. For data storage, utilise SQLite3. Generate the database and populate it using the structure and content found in the [sample backup report](../api-reference/database-values) document, ensuring every field from the JSON is fully integrated and persisted.
+> Bitte erstellen Sie einen Plan zur vollständigen Implementierung eines Next.js-Anwendungsprototyps aus diesem Codebase. Ihre Implementierung sollte den bereitgestellten Code gründlich analysieren, um die genauen visuellen Ästhetiken, die Benutzererfahrung und den Navigationsfluss beizubehalten. Für die Datenspeicherung verwenden Sie SQLite3. Erstellen Sie die Datenbank und füllen Sie sie mit der Struktur und dem Inhalt aus dem [Beispiel-Sicherungsbericht](../api-reference/database-values)-Dokument, wobei sichergestellt wird, dass jedes Feld aus dem JSON vollständig integriert und persistent ist.
 
-The AI generated the following prompt:
+Die KI generierte die folgende Aufforderung:
 
->Erstellen Sie einen umfassenden Implementierungsplan für ein Next.js Anwendungsprototyp mit den folgenden Anforderungen:
+>Erstellen Sie einen umfassenden Implementierungsplan für einen Next.js-Anwendungsprototyp mit den folgenden Anforderungen:
 >
->1. Technologie-Stack:
+>1. Technologiestack:
 >   - Next.js 14+ mit App Router
 >   - TypeScript für Typsicherheit
->   - SQLite3 für die Datenpersistenz
+>   - SQLite3 für Datenpersistenz
 >   - TailwindCSS für das Styling
->   - React Server Components, wo sinnvoll
+>   - React Server Components, wo es angebracht ist
 >   - Client-Komponenten für interaktive Elemente
 >
->2. Datenbank-Design:
+>2. Datenbankdesign:
 >   - Analysieren Sie das Beispiel-Sicherungsberichts-Dokument, um ein optimales SQLite-Schema zu erstellen
->   - Entwerfen Sie Tabellen zur effizienten Speicherung aller Sicherungsdaten
+>   - Entwerfen Sie Tabellen, um alle Sicherungsdaten effizient zu speichern
 >   - Fügen Sie Indizes für häufige Abfragen hinzu
 >   - Implementieren Sie Datenvalidierung und Typsicherheit
 >
 >3. Anwendungsstruktur:
->   - Implementieren Sie das exakte UI/UX aus dem bereitgestellten Codebase
->   - Erstellen Sie wiederverwendbare Komponenten für häufige Elemente
->   - Richten Sie die Routing mit dem App Router ein
->   - Implementieren Sie responsives Layout
->   - Fügen Sie Dark/Light Theme-Unterstützung hinzu
+>   - Implementieren Sie das genaue UI/UX aus dem bereitgestellten Code
+>   - Erstellen Sie wiederverwendbare Komponenten für gemeinsame Elemente
+>   - Richten Sie eine ordnungsgemäße Routenführung mit dem App Router ein
+>   - Implementieren Sie responsive Layouts
+>   - Fügen Sie Unterstützung für dunkle/helle Designs hinzu
 >
 >4. Kernfunktionen:
 >   - Dashboard-Übersicht mit Maschinenstatus-Tabelle
 >   - Detaillierte Maschinenansicht mit Sicherungsverlauf
 >   - Datenvisualisierung mit Diagrammen
->   - Echtzeit-Sicherungsstatus-Updates
->   - Fehlerbehandlung und Ladezustände
+>   - Echtzeit-Updates zum Sicherungsstatus
+>   - Ordentliche Fehlerbehandlung und Ladezustände
 >
->5. Datenverwaltung:
+>5. Datenmanagement:
 >   - Erstellen Sie API-Routen für Datenoperationen
 >   - Implementieren Sie effiziente Datenabrufstrategien
->   - Fügen Sie korrekte Datenvalidierung hinzu
->   - Schließen Sie Fehlerbehandlung für Datenbankoperationen ein
+>   - Fügen Sie ordentliche Datenvalidierung hinzu
+>   - Behandeln Sie Fehler bei Datenbankoperationen
 >
->Bitte geben Sie einen detaillierten Implementierungsplan, der alle diese Aspekte abdeckt und gleichzeitig das bestehende visuelle Design und die Benutzererfahrung beibehält.
+>Bitte stellen Sie einen detaillierten Implementierungsplan zur Verfügung, der all diese Aspekte abdeckt und dabei das bestehende visuelle Design und die Benutzererfahrung beibehält.
 
 Ich habe die generierte Eingabeaufforderung in die Zwischenablage kopiert.
 
-### Starten Sie die Implementierungsreise {/* #start-the-implementation-journey */}
+### Beginnen Sie die Implementierungsreise {/* #start-the-implementation-journey */}
 
-Ich habe einen neuen Chat erstellt, indem ich auf die `+`-Schaltfläche geklickt habe, auf `Agent`-Modus umgestellt und die Eingabeaufforderung mit Strg+Umschalt+V (als Text) eingefügt habe.
+Ich habe einen neuen Chat erstellt, indem ich auf die `+`-Schaltfläche geklickt habe, bin in den `Agent`-Modus gewechselt und habe die Eingabeaufforderung mit Ctrl+Shift+V (als Text) eingefügt.
 
-Nachdem der Plan generiert wurde, habe ich `please, implement this plan` in den Chat eingegeben, um mit der Implementierung zu beginnen.
+Nachdem der Plan erstellt wurde, habe ich `please, implement this plan` im Chat eingegeben, um mit der Implementierung zu beginnen.
 
 :::note
-Ich habe nur den Startpunkt aufgenommen, da ich nicht alle verwendeten Eingabeaufforderungen aufgezeichnet habe. Es gab viele davon.
+Ich habe nur den Ausgangspunkt aufgenommen, da ich nicht alle verwendeten Eingabeaufforderungen aufgezeichnet habe. Es gab viele davon.
 :::
 
-# Hinweise {/* #notes */}
+# Notizen {/* #notes */}
 
-- Einige Modelle können bei der Fehlerbehebung stecken bleiben. "claude-3.5" und "claude-4" sind normalerweise besser, aber manchmal muss man ein anderes Modell ausprobieren (GPT, Gemini, etc.).
-Für komplexe Fehler oder Fehler verwenden Sie eine Eingabeaufforderung, um mögliche Ursachen des Fehlers zu analysieren, anstatt einfach zu fragen, ob der Fehler behoben werden soll.
-- Bei komplexen Änderungen verwenden Sie eine Eingabeaufforderung, um einen Plan zu erstellen, und bitten Sie den KI-Agenten, ihn umzusetzen. Dies funktioniert immer besser.
-- Seien Sie spezifisch, wenn Sie den Quellcode ändern. Wenn möglich, wählen Sie den relevanten Teil des Codes im Editor aus und drücken Sie Strg+L, um ihn als Kontext in den Chat einzufügen.
-- Fügen Sie auch einen Verweis auf die Datei ein, die Sie im Chat erwähnen, um dem KI-Agenten zu helfen, sich auf den relevanten Teil des Codes zu konzentrieren und Änderungen an anderen Teilen des Codes zu vermeiden.
-- Ich habe die Tendenz, den KI-Agenten anthropomorph zu sehen, da er beständig 'wir', 'unser Code' und 'würden Sie gerne...' verwendet. Dies dient auch dazu, meine Überlebenschancen zu verbessern, falls (oder [wenn](https://ai-2027.com/)) Skynet Bewusstsein entwickelt und der Terminator erfunden wird.
-- Gelegentlich verwenden Sie [Gemini](https://gemini.google.com/app), [Deepseek](https://chat.deepseek.com/), [ChatGPT](https://chat.openai.com/), [Manus](https://manus.im/app),... um Eingabeaufforderungen mit besseren Anweisungen für den KI-Agenten zu generieren.
+- Einige Modelle können beim Beheben von Fehlern stecken bleiben. "claude-3.5" und "claude-4" sind normalerweise besser, aber manchmal muss man ein anderes Modell (GPT, Gemini usw.) ausprobieren.
+Für komplexe Fehler oder Bugs verwenden Sie eine Eingabeaufforderung, um mögliche Ursachen des Fehlers zu analysieren, anstatt einfach zu fragen, ob er behoben werden kann.
+- Bei komplexen Änderungen verwenden Sie eine Eingabeaufforderung, um einen Plan zu erstellen, und bitten Sie dann den KI-Agenten, ihn umzusetzen. Das funktioniert immer besser.
+- Seien Sie spezifisch, wenn Sie den Quellcode ändern. Wenn möglich, wählen Sie den relevanten Teil des Codes im Editor aus und drücken Sie Ctrl+L, um ihn als Kontext in den Chat einzufügen.
+- Fügen Sie auch einen Verweis auf die Datei hinzu, die Sie im Chat erwähnen, um dem KI-Agenten zu helfen, sich auf den relevanten Teil des Codes zu konzentrieren und zu vermeiden, Änderungen in anderen Teilen des Codes vorzunehmen.
+- Ich habe die Tendenz, den KI-Agenten zu vermenschlichen, da er beständig "wir", "unser Code" und "möchten Sie, dass ich..." verwendet. Dies dient auch dazu, meine Überlebenschancen zu verbessern, falls (oder [wenn](https://ai-2027.com/)) Skynet empfindungsfähig wird und der Terminator erfunden wird.
+- Manchmal verwenden Sie [Gemini](https://gemini.google.com/app), [Deepseek](https://chat.deepseek.com/), [ChatGPT](https://chat.openai.com/), [Manus](https://manus.im/app),... um Eingabeaufforderungen mit besseren Anweisungen für den KI-Agenten zu generieren.

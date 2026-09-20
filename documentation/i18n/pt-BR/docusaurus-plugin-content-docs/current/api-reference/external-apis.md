@@ -1,14 +1,14 @@
-# APIs Externas {/* #external-apis */}
+# APIs externas {/* #external-apis */}
 
-Esses endpoints são projetados para uso por outros aplicativos e integrações, por exemplo [Página Inicial](../user-guide/homepage-integration.md). Eles são isentos de CSRF e não usam cookies de sessão.
+Esses endpoints são projetados para uso por outros aplicativos e integrações, por exemplo [Página Inicial](../user-guide/homepage-integration.md). Eles estão isentos de CSRF e não usam cookies de sessão.
 
-A autenticação é opcional e desativada por padrão. Embora as chaves sejam opcionais, os clientes podem omitir a chave ou enviar uma: uma chave válida com escopo correspondente é aceita e registrada; uma chave inválida é ignorada e a solicitação ainda prossegue. Quando **Exigir chaves de API** está habilitado em [Chaves de API](../user-guide/settings/api-keys-settings.md), envie a chave como `?api_key=`, `X-Api-Key`, ou `Authorization: Bearer`. Chaves de upload funcionam apenas em `POST /api/upload`. Chaves de leitura funcionam apenas em `/api/summary` e `/api/lastbackup*`. Chaves de consulta de string aparecem nos logs de acesso do proxy reverso.
+A autenticação é opcional e desativada por padrão. Embora as chaves sejam opcionais, os clientes podem omitir a chave ou enviar uma: uma chave válida de escopo correspondente é aceita e registrada; uma chave inválida é ignorada e a solicitação ainda prossegue. Quando **Requerer chaves de API** está habilitado em [Chaves de API](../user-guide/settings/api-keys-settings.md), envie a chave como `?api_key=`, `X-Api-Key` ou `Authorization: Bearer`. Chaves de upload funcionam apenas em `POST /api/upload`. Chaves de leitura funcionam apenas em `/api/summary` e `/api/lastbackup*`. Chaves de string de consulta aparecem nos logs de acesso do proxy reverso.
 
-Uma [lista de permissões de IP](../user-guide/settings/ip-allowlist-settings.md) também pode restringir essas rotas. `/api/health` e `/api/ping` permanecem públicas enquanto ambas as listas estão desativadas; quando qualquer lista está habilitada, elas aceitam loopback e CIDRs das listas de administrador ou externas, e clientes não-loopback são limitados por taxa.
+Uma [lista de permissões de IP](../user-guide/settings/ip-allowlist-settings.md) também pode restringir essas rotas. `/api/health` e `/api/ping` permanecem públicos enquanto ambas as listas estiverem desativadas; quando qualquer lista é habilitada, elas aceitam loopback e CIDRs da lista de administrador ou externa, e clientes não-loopback têm limite de taxa.
 
 ## Obter Resumo Geral - `/api/summary` {/* #get-overall-summary---apisummary */}
 - **Endpoint**: `/api/summary`
-- **Method**: GET
+- **Método**: GET
 - **Descrição**: Recupera um resumo de todas as operações de backup em todos os servidores.
 - **Resposta**:
 
@@ -26,21 +26,21 @@ Uma [lista de permissões de IP](../user-guide/settings/ip-allowlist-settings.md
   ```
 
 - **Respostas de Erro**:
-  - `401`: Chave de API ausente ou inválida quando as chaves são exigidas
-  - `403`: Escopo da chave não é `read`, ou o IP do cliente não está na lista de permissões externas
+  - `401`: Chave de API ausente ou inválida quando as chaves são necessárias
+  - `403`: O escopo da chave não é `read`, ou o IP do cliente não está na lista de permissões externa
   - `429`: Limite de taxa da API de leitura excedido
-  - `500`: Erro do servidor ao buscar dados do resumo
+  - `500`: Erro do servidor ao buscar dados de resumo
 - **Notas**:
   - Na versão 0.5.x, o campo `totalBackupedSize` foi substituído por `totalBackupSize`
   - Na versão 0.7.x, o campo `totalMachines` foi substituído por `totalServers`
   - O campo `overdueBackupsCount` mostra o número de backups atualmente atrasados
   - O campo `secondsSinceLastBackup` mostra o tempo em segundos desde o último backup em todos os servidores
   - Retorna resposta de fallback com zeros se a busca de dados falhar
-  - **Nota**: Para uso no painel interno, considere usar `/api/dashboard` que inclui esses dados mais informações adicionais
+  - **Nota**: Para uso interno do painel, considere usar `/api/dashboard` que inclui esses dados mais informações adicionais
 
 ## Obter Último Backup - `/api/lastbackup/:serverId` {/* #get-latest-backup---apilastbackupserverid */}
 - **Endpoint**: `/api/lastbackup/:serverId`
-- **Method**: GET
+- **Método**: GET
 - **Descrição**: Recupera as informações do último backup para um servidor específico.
 - **Parâmetros**:
   - `serverId`: o identificador do servidor (ID ou nome)
@@ -87,20 +87,20 @@ O identificador do servidor deve ser codificado em URL.
   ```
 
 - **Respostas de Erro**:
-  - `401`: Chave de API ausente ou inválida quando as chaves são exigidas
-  - `403`: Escopo da chave não é `read`, ou o IP do cliente não está na lista de permissões externas
+  - `401`: Chave de API ausente ou inválida quando as chaves são necessárias
+  - `403`: O escopo da chave não é `read`, ou o IP do cliente não está na lista de permissões externa
   - `404`: Servidor não encontrado
   - `429`: Limite de taxa da API de leitura excedido
   - `500`: Erro interno do servidor
 - **Notas**:
   - Na versão 0.7.x, a chave do objeto de resposta mudou de `machine` para `server`
   - O identificador do servidor pode ser ID ou nome
-  - Retorna nulo para latest_backup se nenhum backup existir
-  - Inclui cabeçalhos de controle de cache para evitar o cache
+  - Retorna nulo para latest_backup se não existirem backups
+  - Inclui cabeçalhos de controle de cache para evitar cache
 
 ## Obter Últimos Backups - `/api/lastbackups/:serverId` {/* #get-latest-backups---apilastbackupsserverid */}
 - **Endpoint**: `/api/lastbackups/:serverId`
-- **Method**: GET
+- **Método**: GET
 - **Descrição**: Recupera as informações do último backup para todos os backups configurados (por exemplo, 'Arquivos', 'Bancos de Dados') em um servidor específico.
 - **Parâmetros**:
   - `serverId`: o identificador do servidor (ID ou nome)
@@ -173,8 +173,8 @@ O identificador do servidor deve ser codificado em URL.
   ```
 
 - **Respostas de Erro**:
-  - `401`: Chave de API ausente ou inválida quando as chaves são exigidas
-  - `403`: Escopo da chave não é `read`, ou o IP do cliente não está na lista de permissões externas
+  - `401`: Chave de API ausente ou inválida quando as chaves são necessárias
+  - `403`: O escopo da chave não é `read`, ou o IP do cliente não está na lista de permissões externa
   - `404`: Servidor não encontrado
   - `429`: Limite de taxa da API de leitura excedido
   - `500`: Erro interno do servidor
@@ -182,14 +182,14 @@ O identificador do servidor deve ser codificado em URL.
   - Na versão 0.7.x, a chave do objeto de resposta mudou de `machine` para `server`, e o campo `backup_types_count` foi renomeado para `backup_jobs_count`
   - O identificador do servidor pode ser ID ou nome
   - Retorna o último backup para cada trabalho de backup (backup_name) que o servidor possui
-  - Ao contrário de `/api/lastbackup/:serverId` que retorna apenas o backup mais recente do servidor (independente do trabalho de backup)
-  - Inclui cabeçalhos de controle de cache para evitar o cache
+  - Diferente de `/api/lastbackup/:serverId` que retorna apenas o backup mais recente do servidor (independente do trabalho de backup)
+  - Inclui cabeçalhos de controle de cache para evitar cache
 
 ## Carregar Dados de Backup - `/api/upload` {/* #upload-backup-data---apiupload */}
 - **Endpoint**: `/api/upload`
 - **Método**: POST
-- **Descrição**: Carrega dados de operação de backup para um servidor. Suporta detecção de execução de backup duplicada e envia notificações.
-- **Corpo da Requisição**: JSON enviado pelo Duplicati com as seguintes opções:
+- **Descrição**: Carrega dados da operação de backup para um servidor. Suporta detecção de execução de backup duplicado e envia notificações.
+- **Corpo da Solicitação**: JSON enviado pelo duplicati com as seguintes opções:
 
   ```bash
   --send-http-json-urls=http://my.local.server:9666/api/upload?api_key=YOUR_UPLOAD_KEY
@@ -197,7 +197,7 @@ O identificador do servidor deve ser codificado em URL.
   --send-http-max-log-lines=500
 ```
 
-No Duplicati mais antigo que 2.0.9.106, use `--send-http-url` com `--send-http-result-output-format=Json`. Veja [Configuração do Servidor Duplicati](../installation/duplicati-server-configuration.md).
+Em Duplicati anterior a 2.0.9.106, use `--send-http-url` com `--send-http-result-output-format=Json`. Veja [Configuração do Servidor Duplicati](../installation/duplicati-server-configuration.md).
 
 - **Resposta**:
 
@@ -208,18 +208,18 @@ No Duplicati mais antigo que 2.0.9.106, use `--send-http-url` com `--send-http-r
   ```
 
 - **Respostas de Erro**:
-  - `400`: Campos obrigatórios ausentes nas seções Extra ou Data, ou MainOperation inválido
-  - `401`: Chave de API ausente ou inválida quando as chaves são obrigatórias
-  - `403`: Escopo da chave não é `upload`, ou o IP do cliente não está na lista de permissões externas
+  - `400`: Campos obrigatórios ausentes nas seções Extra ou Dados, ou MainOperation inválido
+  - `401`: Chave API ausente ou inválida quando chaves são necessárias
+  - `403`: Escopo da chave não é `upload`, ou o IP do cliente não está na lista de permissão externa
   - `409`: Dados de backup duplicados (ignorados)
-  - `413`: Corpo da requisição excede o limite de tamanho de upload configurado (padrão 5 MB)
+  - `413`: O corpo da solicitação excede o limite de tamanho de upload configurado (padrão 5 MB)
   - `429`: Limite de taxa de falha de upload ou autenticação excedido (`Retry-After` está definido)
-  - `500`: Erro no servidor ao processar dados de backup
+  - `500`: Erro do servidor ao processar dados de backup
 - **Notas**:
-  - Processa apenas operações de backup (MainOperation deve ser "Backup")
+  - Apenas processa operações de backup (MainOperation deve ser "Backup")
   - Valida campos obrigatórios na seção Extra: machine-id, machine-name, backup-name, backup-id
-  - Valida campos obrigatórios na seção Data: ParsedResult, BeginTime, Duration
+  - Valida campos obrigatórios na seção Dados: ParsedResult, BeginTime, Duração
   - Detecta automaticamente execuções de backup duplicadas e retorna status 409
   - Envia notificações após a inserção bem-sucedida do backup (se configurado)
-  - Registra dados da requisição em um arquivo no diretório `data` na raiz do projeto no modo de desenvolvimento para depuração
+  - Registra dados da solicitação em um arquivo no diretório `data` na raiz do projeto em modo de desenvolvimento para depuração
   - Usa transação para consistência de dados

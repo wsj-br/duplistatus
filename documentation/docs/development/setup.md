@@ -133,6 +133,7 @@ The project includes several npm scripts for different development tasks:
 - `pnpm typecheck` - Run TypeScript type checking
 - `scripts/upgrade-dependencies.sh` — Build-safe upgrade of every workspace package (auto-detected). Resolves latest versions with `npm-check-updates`, installs from the workspace root, and keeps only upgrades that pass each package's `typecheck`/`lint` (peer gates pin `eslint` / `typescript` when the lint stack does not allow the latest major). Then runs `pnpm audit` / `audit --fix` and force-applies (and reports) any security fix that needs code changes. Refreshes the workspace lockfile and browserslist. Prefer `source ./scripts/upgrade-dependencies.sh` so **nvm** applies to your shell; in CI or automation use `CI=1` or `UPGRADE_ALLOW_EXEC=1` when executing the file directly. See also `scripts/upgrade-tools.sh` for Node/pnpm tooling only.
 - `scripts/clean-workspace.sh` - Clean the workspace
+- `pnpm i18n:tools --local` / `--remote` — Link a sibling `ai-i18n-tools` checkout or restore the latest npm package (`scripts/link-ai-i18n-tools.sh`). Do not commit the `link:` specifier.
 
 **Note:** The `preinstall` script automatically enforces pnpm as the package manager.
 

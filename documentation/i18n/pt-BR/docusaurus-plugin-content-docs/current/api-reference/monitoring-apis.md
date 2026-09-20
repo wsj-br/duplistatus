@@ -1,10 +1,10 @@
-# Monitoramento e Saúde {/* #monitoring--health */}
+# Monitoramento e integridade {/* #monitoring--health */}
 
-## Verificação de Saúde - `/api/health` {/* #health-check---apihealth */}
+## Verificação de integridade - `/api/health` {/* #health-check---apihealth */}
 - **Endpoint**: `/api/health`
-- **Method**: GET
-- **Descrição**: Verificação de vitalidade barata para a aplicação e conexão SQLite. O Docker `HEALTHCHECK` e o loop de entrada usam esta URL no localhost.
-- **Resposta** (saudável):
+- **Método**: GET
+- **Descrição**: Verificação de atividade de baixo custo para o aplicativo e a conexão SQLite. O `HEALTHCHECK` do Docker e o loop de espera do ponto de entrada usam esta URL no localhost.
+- **Resposta** (íntegro):
 
   ```json
   {
@@ -44,18 +44,18 @@
   }
   ```
 
-- **Notas**:
-  - Retorna 200 quando a inicialização é concluída e `SELECT 1` é bem-sucedido
+- **Observações**:
+  - Retorna 200 quando a inicialização é concluída e o `SELECT 1` é bem-sucedido
   - Retorna 503 quando a inicialização ou a verificação de conexão falha
-  - Não lista nomes de tabelas ou executa consultas de painel
+  - Não lista nomes de tabelas nem executa consultas do painel
   - Nunca requer uma chave de API
-  - Quando qualquer lista de permissões de IP está habilitada, o IP do cliente deve ser loopback ou listado na lista de CIDR do administrador ou externo (`403` `IP_NOT_ALLOWED` caso contrário)
-  - Clientes não loopback são limitados por taxa (`429` `PROBE_RATE_LIMITED`, 30/minuto e 120/hora). Loopback (`127.0.0.1`, `::1`) nunca é limitado
+  - Quando qualquer lista de permissões de IP estiver habilitada, o IP do cliente deve ser loopback ou estar listado na lista CIDR de administrador ou externa (caso contrário, `403` `IP_NOT_ALLOWED`)
+  - Clientes que não sejam de loopback têm taxa limitada (`429` `PROBE_RATE_LIMITED`, 30/minuto e 120/hora). O loopback (`127.0.0.1`, `::1`) nunca é limitado
 
-## Verificação de Conectividade - `/api/ping` {/* #connectivity-probe---apiping */}
+## Sonda de conectividade - `/api/ping` {/* #connectivity-probe---apiping */}
 - **Endpoint**: `/api/ping`
-- **Method**: GET
-- **Descrição**: Resposta pequena `{ "ok": true }` usada pela verificação de conectividade do painel (a cada 30 segundos).
+- **Método**: GET
+- **Descrição**: Resposta `{ "ok": true }` mínima usada pela verificação de conectividade do painel (a cada 30 segundos).
 - **Resposta**:
 
   ```json
@@ -64,7 +64,7 @@
   }
   ```
 
-- **Notas**:
+- **Observações**:
   - Nunca requer uma chave de API ou um cookie de sessão
-  - Mesmas regras de lista de permissões e loopback que `/api/health`
-  - Clientes não loopback são limitados por taxa (`429` `PROBE_RATE_LIMITED`, 60/minuto e 600/hora)
+  - Mesma união de lista de permissões e regras de loopback que `/api/health`
+  - Clientes que não sejam de loopback têm taxa limitada (`429` `PROBE_RATE_LIMITED`, 60/minuto e 600/hora)

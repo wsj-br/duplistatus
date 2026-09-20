@@ -1,10 +1,10 @@
-# Überwachung & Gesundheit {/* #monitoring--health */}
+# Überwachung und Integrität {/* #monitoring--health */}
 
-## Gesundheitsprüfung - `/api/health` {/* #health-check---apihealth */}
+## Health-Check – `/api/health` {/* #health-check---apihealth */}
 - **Endpunkt**: `/api/health`
 - **Methode**: GET
-- **Beschreibung**: Einfache Lebensprüfung für die Anwendung und die SQLite-Verbindung. Docker `HEALTHCHECK` und die Einstiegsschleife verwenden diese URL auf localhost.
-- **Antwort** (gesund):
+- **Beschreibung**: Ressourcenoptimierter Liveness-Check für die Anwendung und die SQLite-Verbindung. Docker `HEALTHCHECK` und die Entrypoint-Warteschleife verwenden diese URL auf localhost.
+- **Antwort** (fehlerfrei):
 
   ```json
   {
@@ -18,7 +18,7 @@
   }
   ```
 
-- **Antwort** (abgestuft):
+- **Antwort** (beeinträchtigt):
 
   ```json
   {
@@ -45,17 +45,17 @@
   ```
 
 - **Hinweise**:
-  - Gibt 200 zurück, wenn die Initialisierung abgeschlossen ist und `SELECT 1` erfolgreich ist
+  - Gibt 200 zurück, wenn die Initialisierung abgeschlossen ist und `SELECT 1` erfolgreich verläuft
   - Gibt 503 zurück, wenn die Initialisierung oder die Verbindungsprüfung fehlschlägt
-  - Listet keine Tabellennamen auf oder führt Dashboard-Abfragen aus
+  - Listet keine Tabellennamen auf und führt keine Dashboard-Abfragen aus
   - Erfordert niemals einen API-Schlüssel
-  - Wenn eine der IP-Zulassungslisten aktiviert ist, muss die Client-IP eine Schleife sein oder in der Admin- oder externen CIDR-Liste aufgeführt sein (`403` `IP_NOT_ALLOWED` andernfalls)
-  - Nicht-Schleifen-Clients werden drosselnd (`429` `PROBE_RATE_LIMITED`, 30 pro Minute und 120 pro Stunde). Schleifen (`127.0.0.1`, `::1`) werden nie gedrosselt
+  - Wenn eine der beiden IP-Zulassungslisten aktiviert ist, muss die Client-IP die Loopback-Adresse sein oder in der Admin- bzw. externen CIDR-Liste aufgeführt sein (andernfalls `403` `IP_NOT_ALLOWED`)
+  - Für Nicht-Loopback-Clients gilt ein Rate-Limit (`429` `PROBE_RATE_LIMITED`, 30/Minute und 120/Stunde). Loopback (`127.0.0.1`, `::1`) wird nie gedrosselt
 
-## Verbindungsprüfung - `/api/ping` {/* #connectivity-probe---apiping */}
+## Konnektivitätsprüfung – `/api/ping` {/* #connectivity-probe---apiping */}
 - **Endpunkt**: `/api/ping`
 - **Methode**: GET
-- **Beschreibung**: Kleine `{ "ok": true }` Antwort, die vom Dashboard-Verbindungsprüfung verwendet wird (alle 30 Sekunden).
+- **Beschreibung**: Sehr kleine `{ "ok": true }`-Antwort, die für die Konnektivitätsprüfung des Dashboards verwendet wird (alle 30 Sekunden).
 - **Antwort**:
 
   ```json
@@ -65,6 +65,6 @@
   ```
 
 - **Hinweise**:
-  - Erfordert niemals einen API-Schlüssel oder ein Sitzungs-Cookie
-  - Selbe Zulassungslisten-Vereinigung und Schleifen-Regeln wie `/api/health`
-  - Nicht-Schleifen-Clients werden drosselnd (`429` `PROBE_RATE_LIMITED`, 60 pro Minute und 600 pro Stunde)
+  - Erfordert niemals einen API-Schlüssel oder ein Sitzungscookie
+  - Gleiche Zulassungslisten-Vereinigung und Loopback-Regeln wie bei `/api/health`
+  - Für Nicht-Loopback-Clients gilt ein Rate-Limit (`429` `PROBE_RATE_LIMITED`, 60/Minute und 600/Stunde)

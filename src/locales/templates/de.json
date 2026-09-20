@@ -1,26 +1,26 @@
 {
   "success": {
     "title": "✅ {status} - {backup_name} @ {server_alias}",
-    "message": "## ✅ Sicherung abgeschlossen\n\n**{backup_name}** auf **{server_alias}** wurde mit dem Status **{status}** abgeschlossen.\n\n🕐 Datum: **{backup_date}**\n⏰ Dauer: **{duration}**\n🔍 Hinweis: **{server_note}**\n\n### 📈 Übersicht\n\n| Metrik | Wert |\n| --- | ---: |\n| ☁️ Hochgeladen | {uploaded_size} |\n| 💾 Speichernutzung | {storage_size} |\n| 🔃 Verfügbare Versionen | {available_versions} |\n",
+    "message": "## ✅ Sicherung abgeschlossen\n\n**{backup_name}** auf **{server_alias}** wurde mit Status **{status}** abgeschlossen.\n\n🕐 Datum: **{backup_date}**\n⏰ Dauer: **{duration}**\n🔍 Hinweis: **{server_note}**\n\n### 📈 Übersicht\n\n| Metrik | Wert |\n| --- | ---: |\n| ☁️ Hochgeladen | {uploaded_size} |\n| 💾 Speichernutzung | {storage_size} |\n| 🔃 Verfügbare Versionen | {available_versions} |\n",
     "priority": "default",
     "tags": "duplicati, duplistatus, success"
   },
   "warning": {
     "title": "⚠️ {status} - {backup_name} @ {server_alias}",
-    "message": "## ⚠️ Sicherung benötigt Aufmerksamkeit\n\n**{backup_name}** auf **{server_alias}** wurde mit dem Status **{status}** abgeschlossen.\n\n🕐 Datum: **{backup_date}**\n⏰ Dauer: **{duration}**\n🔍 Hinweis: **{server_note}**\n\n### 📈 Übersicht\n\n| Metrik | Wert |\n| --- | ---: |\n| ☁️ Hochgeladen | {uploaded_size} |\n| 🚨 Warnungen | {warnings_count} |\n| 🛑 Fehler | {errors_count} |\n\n### 📄 Protokollnachrichten\n\n{log_text}\n\n⚠️ Überprüfen Sie den Duplicati-Server sofort: {server_url}\n",
+    "message": "## ⚠️ Sicherung benötigt Aufmerksamkeit\n\n**{backup_name}** auf **{server_alias}** wurde mit Status **{status}** abgeschlossen.\n\n🕐 Datum: **{backup_date}**\n⏰ Dauer: **{duration}**\n🔍 Hinweis: **{server_note}**\n\n### 📈 Übersicht\n\n| Metrik | Wert |\n| --- | ---: |\n| ☁️ Hochgeladen | {uploaded_size} |\n| 🚨 Warnungen | {warnings_count} |\n| 🛑 Fehler | {errors_count} |\n\n### 📄 Protokollnachrichten\n\n{log_text}\n\n⚠️ Prüfen Sie den Duplicati-Server sofort: {server_url}\n",
     "priority": "high",
     "tags": "duplicati, duplistatus, warning, error"
   },
   "overdueBackup": {
     "title": "🕑 Überfällig - {backup_name} @ {server_alias}",
-    "message": "## 🕑 Überfällige Sicherung\n\n**{backup_name}** auf **{server_alias}** ist überfällig.\n\n🔍 Hinweis: **{server_note}**\n\n### 📈 Übersicht\n\n| Metrik | Wert |\n| --- | ---: |\n| 🚨 Letzte Sicherung empfangen | {last_backup_date} ({last_elapsed}) |\n| ⏰ Erwartete Sicherungszeit | {expected_date} ({expected_elapsed}) |\n| 📅 Erwartetes Intervall | {backup_interval} |\n| ⏳ Toleranz | {overdue_tolerance} |\n\n⚠️ Überprüfen Sie den Duplicati-Server sofort: {server_url}\n",
+    "message": "## 🕑 Überfällige Sicherung\n\n**{backup_name}** auf **{server_alias}** ist überfällig.\n\n🔍 Hinweis: **{server_note}**\n\n### 📈 Übersicht\n\n| Metrik | Wert |\n| --- | ---: |\n| 🚨 Letzte Sicherung erhalten | {last_backup_date} ({last_elapsed}) |\n| ⏰ Erwartete Sicherungszeit | {expected_date} ({expected_elapsed}) |\n| 📅 Erwartetes Intervall | {backup_interval} |\n| ⏳ Toleranz | {overdue_tolerance} |\n\n⚠️ Prüfen Sie den Duplicati-Server sofort: {server_url}\n",
     "priority": "default",
     "tags": "duplicati, duplistatus, overdue"
   },
   "dailySummary": {
     "email": {
-      "title": "Tägliche Sicherungszusammenfassung — {summary_date} — ✅ {success_count} Erfolg, ⚠️ {warning_count} Warnung, 🕑 {overdue_count} Überfällig, 🛑 {error_count} Fehler, ❌ {fatal_count} Fatal",
-      "message": "## 📊 Tägliche Sicherungszusammenfassung\n\n🕐 Generiert: **{generated_at}** ({time_zone})\n\n### 📈 Übersicht\n\n| Metrik | Anzahl |\n| --- | ---: |\n| 🖥️ Server | {server_count} |\n| 💼 Sicherungsjobs / ✅ Erfolg | {job_count} / {success_count} |\n| ⚠️ Warnungen / 🛑 Fehler / 💀 Fatal / ❓ Unbekannt | {warning_count} / {error_count} / {fatal_count} / {unknown_count} |\n| ❓ Kein Bericht empfangen | {no_report_count} |\n| 🕑 Überfällig | {overdue_count} |\n\n### 🚨 Aufmerksamkeit erforderlich\n\n{problem_table}\n\n### 📋 Alle neuesten Sicherungsergebnisse\n\n{all_jobs_table}\n\n{duplistatus_link}\n"
+      "title": "Tägliche Sicherungszusammenfassung — {summary_date} — ✅ {success_count} Erfolgreich, ⚠️ {warning_count} Warnung, 🕑 {overdue_count} Überfällig, 🛑 {error_count} Fehler, ❌ {fatal_count} Fatal",
+      "message": "## 📊 Tägliche Sicherungszusammenfassung\n\n🕐 Generiert: **{generated_at}** ({time_zone})\n\n### 📈 Übersicht\n\n| Metrik | Anzahl |\n| --- | ---: |\n| 🖥️ Server | {server_count} |\n| 💼 Sicherungsaufträge / ✅ Erfolgreich | {job_count} / {success_count} |\n| ⚠️ Warnungen / 🛑 Fehler / 💀 Fatal / ❓ Unbekannt | {warning_count} / {error_count} / {fatal_count} / {unknown_count} |\n| ❓ Kein Bericht empfangen | {no_report_count} |\n| 🕑 Überfällig | {overdue_count} |\n\n### 🚨 Aufmerksamkeit erforderlich\n\n{problem_table}\n\n### 📋 Alle neuesten Sicherungsergebnisse\n\n{all_jobs_table}\n\n{duplistatus_link}\n"
     }
   }
 }

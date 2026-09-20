@@ -1,9 +1,9 @@
 # Scripts de test {/* #test-scripts */}
 
-Le projet inclut plusieurs scripts de test pour aider au développement et aux tests :
+Le projet inclut plusieurs scripts de test pour faciliter le développement et les tests :
 
 > [!NOTE]
-> Les aides `pnpm` pour le débogage des sauvegardes en retard, les tests de matrice SMTP et les vérifications de port cron ont été supprimées de la racine du dépôt. Utilisez l'interface utilisateur de l'application (**Paramètres → Surveillance des sauvegardes**), les API HTTP authentifiées et `curl` contre le service cron comme documenté ci-dessous.
+> Les assistants du répertoire racine hérité `pnpm` pour le débogage des sauvegardes en retard, les tests de matrice SMTP et les vérifications de port cron ont été supprimés. Utilisez l'interface utilisateur de l'application (**Paramètres → Surveillance des sauvegardes**), les API HTTP authentifiées et `curl` contre le service cron comme documenté ci-dessous.
 
 ## Générer des données de test {/* #generate-test-data */}
 
@@ -15,14 +15,14 @@ Ce script génère des données de sauvegarde de test pour plusieurs serveurs et
 
 Le paramètre `--servers=N` est **obligatoire** et spécifie le nombre de serveurs à générer (1-30).
 
-Utilisez l'option `--upload` pour envoyer les données générées à `/api/upload`
+Utilisez l'option `--upload` pour envoyer les données générées au `/api/upload`
 
 ```bash
 pnpm generate-test-data --servers=N --upload
 pnpm generate-test-data --servers=N --upload --api-key=YOUR_UPLOAD_KEY
 ```
 
-`--api-key` est requis lorsque Paramètres → Clés API est configuré pour exiger des clés. Le script réessaye une fois en cas de HTTP 429 afin qu'un grand `--upload` reste dans les limites de débit par défaut.
+`--api-key` est requis quand Paramètres → Clés API est défini pour exiger des clés. Le script réessaie une fois sur HTTP 429 afin qu'une grande exécution `--upload` reste dans les limites de débit par défaut.
 
 **Exemples :**
 
@@ -37,36 +37,36 @@ pnpm generate-test-data --upload --servers=1
 pnpm generate-test-data --servers=30
 ```
 
-Le script attribue des versions de Duplicati **par serveur** (la même chaîne de rapport est écrite dans chaque sauvegarde pour ce serveur) :
+Le script attribue les versions de Duplicati **par serveur** (la même chaîne de rapport est écrite dans chaque sauvegarde pour ce serveur) :
 
-- **70–80% actuel** : utilise la dernière version stable en cache disponible à partir de `configurations.duplicati_versions`, sinon une version de secours épinglée (`2.1.0.5_stable`).
-- **Reste plus ancien** : une version stable strictement précédente afin que le badge du tableau de bord s'affiche comme obsolète (jaune).
-- Le mode Direct-DB efface d'abord `configurations`, puis restaure ou seme le cache de version afin que la comparaison actuel/obsolète fonctionne immédiatement.
+- **70–80% actuel** : utilise la dernière version stable en cache disponible depuis `configurations.duplicati_versions`, sinon un secours épinglé (`2.1.0.5_stable`).
+- **Reste plus ancien** : une version stable strictement précédente afin que le badge du tableau de bord se compare comme obsolète (jaune).
+- Le mode Direct-DB efface `configurations` en premier, puis restaure ou amorce le cache de version afin que la comparaison actuel/obsolète fonctionne immédiatement.
 - Les petits nombres ne peuvent pas toujours atteindre 70–80% : `--servers=1` est 100% actuel ; `--servers=2` ou `3` conserve au moins un serveur plus ancien ; `--servers=6` est 5 actuels (83%). `--servers=12` (utilisé par `pnpm take-screenshots`) est **9 actuels / 3 plus anciens**.
-- Lorsque `pnpm take-screenshots` réduit ultérieurement le jeu de données à trois serveurs, il conserve le serveur protégé en retard et **au moins un serveur de version plus ancienne**.
+- Quand `pnpm take-screenshots` réduit ultérieurement l'ensemble de données à trois serveurs, il conserve le serveur en retard protégé et **au moins un serveur avec une version plus ancienne**.
 
 >[!CAUTION]
 > Ce script supprime toutes les données précédentes dans la base de données et les remplace par des données de test.
 > Sauvegardez votre base de données avant d'exécuter ce script.
 
-## Vérifications des sauvegardes en retard et connectivité cron (développement) {/* #overdue-checks-and-cron-connectivity-development */}
+## Vérifications en retard et connectivité cron (développement) {/* #overdue-checks-and-cron-connectivity-development */}
 
 ### Exécuter une vérification de sauvegarde en retard {/* #run-an-overdue-backup-check */}
 
-Tant que l'application est en cours d'exécution :
+Pendant que l'application est en cours d'exécution :
 
-- **UI (recommandé) :** ouvrez **Paramètres → Surveillance des sauvegardes** et utilisez **Tester les sauvegardes en retard**. Cela exécute la même logique que le travail planifié via `POST /api/notifications/check-overdue` authentifié.
+- **Interface utilisateur (recommandé) :** ouvrez **Paramètres → Surveillance des sauvegardes** et utilisez **Tester les sauvegardes en retard**. Cela exécute la même logique que la tâche planifiée via `POST /api/notifications/check-overdue` authentifié.
 
-### Santé du service cron {/* #cron-service-health */}
+### Santé du service Cron {/* #cron-service-health */}
 
 ```bash
 curl http://localhost:8667/health
 curl http://localhost:8666/api/cron/health
 ```
 
-### Simulation d'une date ou d'une heure spécifique {/* #simulating-a-specific-date-or-time */}
+### Simuler une date ou une heure spécifique {/* #simulating-a-specific-date-or-time */}
 
-Il n'y a pas de CLI intégré pour injecter une heure “actuelle” simulée. Pour l'algorithme et les idées de test manuel, consultez le fichier du dépôt `dev/OVERDUE_DETECTION_ALGORITHM.md` et l'implémentation dans `src/lib/overdue-backup-checker.ts`.
+Il n'y a pas d'interface de ligne de commande fournie pour injecter un temps "actuel" simulé. Pour l'algorithme et les idées de test manuel, consultez le fichier du répertoire `dev/OVERDUE_DETECTION_ALGORITHM.md` et l'implémentation dans `src/lib/overdue-backup-checker.ts`.
 
 ## Valider l'export CSV {/* #validate-csv-export */}
 
@@ -77,7 +77,7 @@ pnpm validate-csv-export
 Ce script valide la fonctionnalité d'export CSV. Il :
 - Teste la génération d'export CSV
 - Vérifie le format et la structure des données
-- Vérifie l'intégrité des données dans les fichiers exportés
+- Contrôle l'intégrité des données dans les fichiers exportés
 
 Utile pour s'assurer que les exports CSV fonctionnent correctement avant les versions.
 
@@ -87,21 +87,21 @@ Utile pour s'assurer que les exports CSV fonctionnent correctement avant les ver
 sudo ./scripts/temporary_ntfy.sh_block.sh
 ```
 
-Ce script bloque temporairement l'accès réseau sortant vers le serveur NTFY (`ntfy.sh`) pour tester le mécanisme de réessai des notifications. Il :
+Ce script bloque temporairement l'accès réseau sortant au serveur `ntfy.sh` pour tester le mécanisme de nouvelle tentative de notification. Il :
 - Résout l'adresse IP du serveur NTFY
 - Ajoute une règle iptables pour bloquer le trafic sortant
 - Bloque pendant 10 secondes (configurable)
 - Supprime automatiquement la règle de blocage à la sortie
-- Exige des privilèges root (sudo)
+- Nécessite les privilèges root (sudo)
 
 >[!CAUTION]
-> Ce script modifie les règles iptables et exige des privilèges root. Utilisez-le uniquement pour tester les mécanismes de réessai des notifications.
+> Ce script modifie les règles iptables et nécessite les privilèges root. À utiliser uniquement pour tester les mécanismes de nouvelle tentative de notification.
 
-## Test de migration de base de données {/* #database-migration-testing */}
+## Tests de migration de base de données {/* #database-migration-testing */}
 
-Le projet inclut des scripts pour tester les migrations de base de données des anciennes versions vers la version actuelle. Ces scripts garantissent que les migrations de base de données fonctionnent correctement et préservent l'intégrité des données.
+Le projet inclut des scripts pour tester les migrations de base de données à partir de versions antérieures vers la version actuelle. Ces scripts garantissent que les migrations de base de données fonctionnent correctement et préservent l'intégrité des données.
 
-### Générer des données de test de migration {/* #generate-migration-test-data */}
+### Générer les données de test de migration {/* #generate-migration-test-data */}
 
 ```bash
 ./scripts/generate-migration-test-data.sh
@@ -112,16 +112,16 @@ Ce script génère des bases de données de test pour plusieurs versions histori
 1. **Arrête et supprime** tout conteneur Docker existant
 2. **Pour chaque version** (v0.4.0, v0.5.0, v0.6.1, 0.7.27, 0.8.21) :
    - Supprime les fichiers de base de données existants
-   - Crée un fichier de balise de version
+   - Crée un fichier d'étiquette de version
    - Démarre un conteneur Docker avec la version spécifique
    - Attend que le conteneur soit prêt
-   - Génère des données de test en utilisant `pnpm generate-test-data`
+   - Génère les données de test en utilisant `pnpm generate-test-data`
    - Prend une capture d'écran de l'interface utilisateur avec les données de test
    - Arrête et supprime le conteneur
-   - Vide les fichiers WAL et sauvegarde le schéma de la base de données
+   - Vide les fichiers WAL et enregistre le schéma de la base de données
    - Copie le fichier de base de données vers `scripts/migration_test_data/`
 
-**Exigences :**
+**Prérequis :**
 - Docker doit être installé et configuré
 - Chromium (via Playwright) doit être installé
 - Accès root/sudo pour les opérations Docker
@@ -138,10 +138,10 @@ Ce script génère des bases de données de test pour plusieurs versions histori
 - Port : 9666 (port du conteneur Docker)
 
 >[!CAUTION]
-> Ce script nécessite Docker et arrêtera/supprimera les conteneurs existants. Il exige également un accès sudo pour les opérations Docker et l'accès au système de fichiers. Exécutez `pnpm take-screenshots:install` en premier pour installer le navigateur Chromium de Playwright si vous ne l'avez pas déjà fait.
+> Ce script nécessite Docker et arrêtera/supprimera les conteneurs existants. Il nécessite également un accès sudo pour les opérations Docker et l'accès au système de fichiers. Exécutez `pnpm take-screenshots:install` en premier pour installer le navigateur Chromium de Playwright si vous ne l'avez pas déjà fait.
 
 >[!IMPORTANT]
-> Ce script était censé s'exécuter une seule fois, car pour les nouvelles versions, le développeur peut copier directement le fichier de base de données et les captures d'écran vers le répertoire `scripts/migration_test_data/`. Pendant le développement, exécutez simplement le script `./scripts/test-migrations.sh` pour tester les migrations.
+> Ce script était censé s'exécuter une seule fois, car pour les nouvelles versions, le développeur peut copier directement le fichier de base de données et les captures d'écran dans le répertoire `scripts/migration_test_data/`. Pendant le développement, exécutez simplement le script `./scripts/test-migrations.sh` pour tester les migrations.
 
 ### Tester les migrations de base de données {/* #test-database-migrations */}
 
@@ -153,29 +153,29 @@ Ce script teste les migrations de base de données des anciennes versions vers l
 
 1. **Pour chaque version** (v0.4.0, v0.5.0, v0.6.1, 0.7.27, 0.8.21) :
    - Crée une copie temporaire de la base de données de test
-   - Exécute le processus de migration en utilisant `test-migration.ts`
+   - Exécute le processus de migration à l'aide de `test-migration.ts`
    - Valide la structure de la base de données migrée
-   - Vérifie les tables et colonnes requises
-   - Vérifie que la version de la base de données est 4.0
+   - Vérifie la présence des tables et colonnes requises
+   - Confirme que la version de la base de données est 4.0
    - Nettoie les fichiers temporaires
 
-**Exigences :**
+**Conditions préalables :**
 - Les bases de données de test doivent exister dans `scripts/migration_test_data/`
-- Générées en exécutant `generate-migration-test-data.sh` en premier
+- Générées en exécutant d'abord `generate-migration-test-data.sh`
 
-**Sortie :**
-- Résultats de test colorés (vert pour réussite, rouge pour échec)
+**Résultat :**
+- Résultats de test codés par couleur (vert pour réussi, rouge pour échoué)
 - Résumé des versions réussies et échouées
 - Messages d'erreur détaillés pour les migrations échouées
-- Code de sortie 0 si tous les tests réussissent, 1 si un échec survient
+- Code de sortie 0 si tous les tests réussissent, 1 si l'un d'eux échoue
 
-**Ce que cela valide :**
+**Ce qu'il valide :**
 - La version de la base de données est 4.0 après la migration
 - Toutes les tables requises existent : `servers`, `backups`, `configurations`, `users`, `sessions`, `audit_log`, `db_version`
 - Les colonnes requises existent dans chaque table
 - La structure de la base de données est correcte
 
-**Exemple de sortie :**
+**Exemple de résultat :**
 
 ```
 ==========================================
@@ -218,26 +218,26 @@ echo $?  # 0 = all passed, 1 = some failed
 ```
 
 >[!NOTE]
-> Ce script utilise le script de test de migration TypeScript (`test-migration.ts`) en interne. Le script de test valide la structure de la base de données après la migration et garantit l'intégrité des données.
+> Ce script utilise en interne le script de test de migration TypeScript (`test-migration.ts`). Le script de test valide la structure de la base de données après la migration et garantit l'intégrité des données.
 
 ## SMTP et e-mail (développement) {/* #smtp-and-email-development */}
 
-Configurer SMTP sous **Paramètres → E-mail** et utiliser les flux de test et de notification par e-mail dans l'application. Les scripts d'aide `pnpm set-smtp-test-config` et `pnpm test-smtp-connections` supprimés du dépôt.
+Configurez SMTP sous **Paramètres → E-mail** et utilisez le test d'e-mail intégré à l'application et les flux de notification. Les anciens scripts d'assistance `pnpm set-smtp-test-config` et `pnpm test-smtp-connections` ont été supprimés du référentiel.
 
-## Tester le script d'entrée Docker {/* #test-docker-entrypoint-script */}
+## Tester le script de point d'entrée Docker {/* #test-docker-entrypoint-script */}
 
 ```bash
 pnpm test-entrypoint
 ```
 
-Ce script fournit un wrapper de test pour `docker-entrypoint.sh` en développement local. Il configure l'environnement pour tester la fonctionnalité de journalisation de l'entrée et garantit que les journaux sont écrits dans `data/logs/` afin que l'application puisse y accéder.
+Ce script fournit un wrapper de test pour `docker-entrypoint.sh` dans le développement local. Il configure l'environnement pour tester la fonctionnalité de journalisation du point d'entrée et garantit que les journaux sont écrits dans `data/logs/` afin que l'application puisse y accéder.
 
 **Ce qu'il fait :**
 
-1. **Toujours construit une version fraîche** : Exécute automatiquement `pnpm build-local` pour créer une version fraîche avant le test (pas besoin de construire manuellement d'abord)
+1. **Crée toujours une version nouvelle** : Exécute automatiquement `pnpm build-local` pour créer une version nouvelle avant le test (pas besoin de construire manuellement en premier)
 2. **Construit le service cron** : Garantit que le service cron est construit (`dist/cron-service.cjs`)
-3. **Configure une structure Docker-like** : Crée les liens symboliques et la structure de répertoire nécessaires pour imiter l'environnement Docker
-4. **Exécute le script d'entrée** : Exécute `docker-entrypoint.sh` avec les variables d'environnement appropriées
+3. **Configure la structure de type Docker** : Crée les liens symboliques et la structure de répertoires nécessaires pour imiter l'environnement Docker
+4. **Exécute le script de point d'entrée** : Exécute `docker-entrypoint.sh` avec les variables d'environnement appropriées
 5. **Nettoie** : Supprime automatiquement les fichiers temporaires à la sortie
 
 **Utilisation :**
@@ -253,19 +253,19 @@ pnpm test-entrypoint
 - `VERSION` - Défini automatiquement au format `test-YYYYMMDD-HHMMSS`
 
 **Sortie :**
-- Les logs sont écrits dans `data/logs/application.log` (accessibles par l'application)
-- La sortie console affiche l'exécution du script d'entrée
-- Appuyez sur Ctrl+C pour arrêter et tester le vidage des logs
+- Les journaux sont écrits dans `data/logs/application.log` (accessible par l'application)
+- La sortie console affiche l'exécution du script de point d'entrée
+- Appuyez sur Ctrl+C pour arrêter et tester le vidage des journaux
 
 **Prérequis :**
-- Le script doit être exécuté depuis le répertoire racine du dépôt (pnpm gère cela automatiquement)
+- Le script doit être exécuté à partir du répertoire racine du dépôt (pnpm gère cela automatiquement)
 - Le script gère automatiquement tous les prérequis (build, service cron, etc.)
 
 **Cas d'utilisation :**
-- Tester les modifications du script d'entrée localement avant le déploiement Docker
-- Vérifier la rotation des logs et la fonctionnalité de journalisation
+- Tester les modifications du script de point d'entrée localement avant le déploiement Docker
+- Vérifier la rotation des journaux et la fonctionnalité de journalisation
 - Tester l'arrêt gracieux et la gestion des signaux
-- Déboguer le comportement du script d'entrée dans un environnement local
+- Déboguer le comportement du script de point d'entrée dans un environnement local
 
 ## Validation du Résumé quotidien {/* #daily-summary-validation */}
 
@@ -273,4 +273,4 @@ pnpm test-entrypoint
 pnpm validate-daily-summary
 ```
 
-Exécute des vérifications déterministes pour la planification du Résumé quotidien (y compris l'heure d'été), l'agrégation des snapshots (tâches de sauvegarde les plus récentes uniquement), l'élimination des paramètres de notification résiduels, les lignes de sauvegarde/serveur orphelines, la sanitisation Markdown, les réclamations du registre de livraison, et la migration du schéma 4.1 → 4.2 avec des modèles personnalisés. N'envoie pas d'e-mail ou de NTFY.
+Exécute des vérifications déterministes pour la planification du Résumé quotidien (y compris l'heure d'été), l'agrégation des snapshots (dernières Tâches de Sauvegarde uniquement), le nettoyage des paramètres de notification restants, les lignes Sauvegarde/Serveur orphelines, l'assainissement Markdown, les réclamations du journal de livraison et la migration du schéma 4.1 → 4.2 avec Modèles personnalisés. N'envoie pas d'E-mail ni NTFY.

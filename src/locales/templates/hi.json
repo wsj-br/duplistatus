@@ -1,26 +1,26 @@
 {
   "success": {
     "title": "✅ {status} - {backup_name} @ {server_alias}",
-    "message": "## ✅ बैकअप पूरा हुआ\n\n**{backup_name}** **{server_alias}** पर **{status}** स्थिति के साथ पूरा हुआ।\n\n🕐 तिथि: **{backup_date}**\n⏰ अवधि: **{duration}**\n🔍 नोट: **{server_note}**\n\n### 📈 अवलोकन\n\n| मीट्रिक | मान |\n| --- | ---: |\n| ☁️ अपलोड किया गया | {uploaded_size} |\n| 💾 स्टोर उपयोग | {storage_size} |\n| 🔃 उपलब्ध संस्करण | {available_versions} |\n",
+    "message": "## ✅ बैकअप पूर्ण हुआ\n\n**{backup_name}** on **{server_alias}** स्थिति **{status}** के साथ पूर्ण हुआ।\n\n🕐 तिथि: **{backup_date}**\n⏰ अवधि: **{duration}**\n🔍 नोट: **{server_note}**\n\n### 📈 अवलोकन\n\n| मेट्रिक | मान |\n| --- | ---: |\n| ☁️ अपलोड किया गया | {uploaded_size} |\n| 💾 स्टोर उपयोग | {storage_size} |\n| 🔃 उपलब्ध संस्करण | {available_versions} |\n",
     "priority": "default",
     "tags": "duplicati, duplistatus, success"
   },
   "warning": {
     "title": "⚠️ {status} - {backup_name} @ {server_alias}",
-    "message": "## ⚠️ बैकअप को ध्यान देने की आवश्यकता है\n\n**{backup_name}** **{server_alias}** पर **{status}** स्थिति के साथ पूरा हुआ।\n\n🕐 तिथि: **{backup_date}**\n⏰ अवधि: **{duration}**\n🔍 नोट: **{server_note}**\n\n### 📈 अवलोकन\n\n| मीट्रिक | मान |\n| --- | ---: |\n| ☁️ अपलोड किया गया | {uploaded_size} |\n| 🚨 चेतावनियाँ | {warnings_count} |\n| 🛑 त्रुटियाँ | {errors_count} |\n\n### 📄 लॉग संदेश\n\n{log_text}\n\n⚠️ Duplicati सर्वर को तुरंत जांचें: {server_url}\n",
+    "message": "## ⚠️ बैकअप को ध्यान देने की आवश्यकता है\n\n**{backup_name}** on **{server_alias}** स्थिति **{status}** के साथ पूर्ण हुआ।\n\n🕐 तिथि: **{backup_date}**\n⏰ अवधि: **{duration}**\n🔍 नोट: **{server_note}**\n\n### 📈 अवलोकन\n\n| मेट्रिक | मान |\n| --- | ---: |\n| ☁️ अपलोड किया गया | {uploaded_size} |\n| 🚨 चेतावनियाँ | {warnings_count} |\n| 🛑 त्रुटियाँ | {errors_count} |\n\n### 📄 लॉग संदेश\n\n{log_text}\n\n⚠️ तुरंत duplicati सर्वर की जांच करें: {server_url}\n",
     "priority": "high",
     "tags": "duplicati, duplistatus, warning, error"
   },
   "overdueBackup": {
     "title": "🕑 अतिदेय - {backup_name} @ {server_alias}",
-    "message": "## 🕑 अतिदेय बैकअप\n\n**{backup_name}** **{server_alias}** पर अतिदेय है।\n\n🔍 नोट: **{server_note}**\n\n### 📈 अवलोकन\n\n| मीट्रिक | मान |\n| --- | ---: |\n| 🚨 अंतिम बैकअप प्राप्त हुआ | {last_backup_date} ({last_elapsed}) |\n| ⏰ अपेक्षित बैकअप समय | {expected_date} ({expected_elapsed}) |\n| 📅 अपेक्षित अंतराल | {backup_interval} |\n| ⏳ सहनशीलता | {overdue_tolerance} |\n\n⚠️ Duplicati सर्वर को तुरंत जांचें: {server_url}\n",
+    "message": "## 🕑 अतिदेय बैकअप\n\n**{backup_name}** on **{server_alias}** अतिदेय है।\n\n🔍 नोट: **{server_note}**\n\n### 📈 अवलोकन\n\n| मेट्रिक | मान |\n| --- | ---: |\n| 🚨 अंतिम बैकअप प्राप्त | {last_backup_date} ({last_elapsed}) |\n| ⏰ अपेक्षित बैकअप समय | {expected_date} ({expected_elapsed}) |\n| 📅 अपेक्षित अंतराल | {backup_interval} |\n| ⏳ सहिष्णुता | {overdue_tolerance} |\n\n⚠️ तुरंत duplicati सर्वर की जांच करें: {server_url}\n",
     "priority": "default",
     "tags": "duplicati, duplistatus, overdue"
   },
   "dailySummary": {
     "email": {
-      "title": "दैनिक बैकअप सारांश — {summary_date} — ✅ {success_count} सफल, ⚠️ {warning_count} चेतावनी, 🕑 {overdue_count} अतिदेय, 🛑 {error_count} त्रुटि, ❌ {fatal_count} Fatal",
-      "message": "## 📊 दैनिक बैकअप सारांश\n\n🕐 उत्पन्न: **{generated_at}** ({time_zone})\n\n### 📈 अवलोकन\n\n| मीट्रिक | गणना |\n| --- | ---: |\n| 🖥️ सर्वर | {server_count} |\n| 💼 बैकअप जॉब्स / ✅ सफल | {job_count} / {success_count} |\n| ⚠️ चेतावनियाँ / 🛑 त्रुटियाँ / 💀 Fatal / ❓ अज्ञात | {warning_count} / {error_count} / {fatal_count} / {unknown_count} |\n| ❓ कोई रिपोर्ट प्राप्त नहीं हुई | {no_report_count} |\n| 🕑 अतिदेय | {overdue_count} |\n\n### 🚨 ध्यान देने की आवश्यकता है\n\n{problem_table}\n\n### 📋 सभी नवीनतम बैकअप परिणाम\n\n{all_jobs_table}\n\n{duplistatus_link}\n"
+      "title": "दैनिक बैकअप सारांश — {summary_date} — ✅ {success_count} सफलता, ⚠️ {warning_count} चेतावनी, 🕑 {overdue_count} अतिदेय, 🛑 {error_count} त्रुटि, ❌ {fatal_count} Fatal",
+      "message": "## 📊 दैनिक बैकअप सारांश\n\n🕐 उत्पन्न: **{generated_at}** ({time_zone})\n\n### 📈 अवलोकन\n\n| मेट्रिक | गणना |\n| --- | ---: |\n| 🖥️ सर्वर | {server_count} |\n| 💼 बैकअप जॉब्स / ✅ सफलता | {job_count} / {success_count} |\n| ⚠️ चेतावनियाँ / 🛑 त्रुटियाँ / 💀 Fatal / ❓ अज्ञात | {warning_count} / {error_count} / {fatal_count} / {unknown_count} |\n| ❓ कोई रिपोर्ट प्राप्त नहीं हुई | {no_report_count} |\n| 🕑 अतिदेय | {overdue_count} |\n\n### 🚨 ध्यान आवश्यक\n\n{problem_table}\n\n### 📋 सभी नवीनतम बैकअप परिणाम\n\n{all_jobs_table}\n\n{duplistatus_link}\n"
     }
   }
 }

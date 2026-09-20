@@ -1,12 +1,12 @@
-# Sistema de Notificaciones {/* #notification-system */}
+# Sistema de notificaciones {/* #notification-system */}
 
-## Probar Notificación - `/api/notifications/test` {/* #test-notification---apinotificationstest */}
+## Notificación de prueba - `/api/notifications/test` {/* #test-notification---apinotificationstest */}
 - **Punto final**: `/api/notifications/test`
 - **Método**: POST
-- **Descripción**: Envía notificaciones de prueba (sencillas, basadas en plantillas o por correo electrónico) para verificar la configuración de notificaciones.
+- **Descripción**: Envía notificaciones de prueba (simples, basadas en plantillas o correo electrónico) para verificar la configuración de notificaciones.
 - **Autenticación**: Requiere sesión de administrador y token CSRF
 - **Cuerpo de la solicitud**:
-  Para prueba sencilla:
+  Para prueba simple:
 
     ```json
     {
@@ -47,7 +47,7 @@ Para prueba de correo electrónico:
     ```
 
 - **Respuesta**:
-  Para prueba sencilla:
+  Para prueba simple:
 
   ```json
   {
@@ -73,39 +73,39 @@ Para prueba de correo electrónico:
   }
   ```
 
-El contenido del correo electrónico de prueba muestra:
+El contenido del correo de prueba muestra:
   - Nombre de host y puerto del servidor SMTP
   - Tipo de conexión (SMTP simple, STARTTLS o SSL/TLS directo)
-  - Estado de la autenticación SMTP
+  - Estado del requisito de autenticación SMTP
   - Nombre de usuario SMTP (solo se muestra cuando se requiere autenticación)
-  - Dirección de correo electrónico del destinatario
+  - Correo electrónico del destinatario
   - Dirección de origen y nombre del remitente utilizados para el correo electrónico
   - Marca de tiempo de la prueba
 - **Respuestas de error**:
-  - `401`: No autorizado - Sesión o token CSRF no válido
-  - `400`: Se requiere configuración de NTFY, configuración no válida o correo electrónico no configurado
+  - `401`: No autorizado - Sesión inválida o token CSRF incorrecto
+  - `400`: Se requiere configuración de NTFY, configuración inválida o correo electrónico no configurado
   - `500`: Error al enviar notificación de prueba con detalles del error
 - **Notas**:
-  - Soporta mensajes de prueba simples, notificaciones basadas en plantillas y pruebas de correo electrónico
-  - La prueba de plantillas utiliza datos de muestra para reemplazar variables de plantilla
+  - Admite mensajes de prueba simples, notificaciones basadas en plantillas y pruebas de correo electrónico
+  - Las pruebas de plantilla utilizan datos de ejemplo para reemplazar variables de plantilla
   - Incluye marca de tiempo en el mensaje de prueba
   - Las pruebas de NTFY utilizan la configuración de NTFY almacenada; no se utiliza una URL de NTFY proporcionada por el cliente
-  - Utiliza el campo `accessToken` para autenticación cuando está almacenado
-  - Para pruebas de plantillas, envía notificaciones a NTFY y correo electrónico (si está configurado)
+  - Utiliza el campo `accessToken` para autenticación cuando se almacena
+  - Para pruebas de plantilla, envía notificaciones tanto a NTFY como a correo electrónico (si está configurado)
   - Las pruebas de correo electrónico requieren que la configuración SMTP esté configurada
-  - El punto final del correo electrónico de prueba borra la caché de solicitudes antes de leer la configuración SMTP, asegurando que los scripts externos puedan actualizar la configuración y reflejarla inmediatamente en los correos electrónicos de prueba
-  - Las pruebas de plantillas y el Resumen Diario envían ahora sin tener en cuenta la supresión por copia de seguridad
+  - El punto final de prueba de correo electrónico borra la caché de solicitud antes de leer la configuración SMTP, lo que garantiza que los scripts externos puedan actualizar la configuración y que se refleje inmediatamente en los correos de prueba
+  - Las pruebas de plantilla y el envío inmediato de Resumen Diario omiten la supresión por copia de seguridad
 
 ## Vista previa de plantilla de notificación - `/api/notifications/preview` {/* #preview-notification-template---apinotificationspreview */}
 - **Punto final**: `/api/notifications/preview`
 - **Método**: POST
-- **Descripción**: Representa una plantilla de notificación con el renderizador de Markdown de producción sin enviar. El cuerpo incluye `kind` (`success`, `warning`, `overdueBackup`, o `dailySummaryEmail`) y la plantilla que se está editando. Las vistas previas del Resumen Diario utilizan la instantánea real actual; otros tipos utilizan valores de muestra deterministas. El HTML del correo electrónico está destinado a un iframe sandboxed. Éxito, Advertencia/Error y Vencida también devuelven la carga útil de NTFY (`ntfyMessage`); cualquier encabezado de tabla GFM se omite y las filas del cuerpo son texto plano.
-- **Autenticación**: Requiere sesión y token CSRF válidos
+- **Descripción**: Representa una plantilla de notificación con el procesador Markdown de producción sin enviar. El cuerpo incluye `kind` (`success`, `warning`, `overdueBackup` o `dailySummaryEmail`) y la plantilla que se está editando. Las vistas previas de Resumen Diario utilizan la instantánea real actual; otros tipos utilizan valores de ejemplo deterministas. El HTML del correo electrónico está destinado a un iframe aislado. Éxito, Advertencia/Error y Vencida también devuelven la carga útil de NTFY (`ntfyMessage`);  se omite cualquier encabezado de tabla GFM y las filas del cuerpo son texto plano.
+- **Autenticación**: Requiere sesión válida y token CSRF
 
 ## Comprobar copias de seguridad vencidas - `/api/notifications/check-overdue` {/* #check-overdue-backups---apinotificationscheck-overdue */}
 - **Punto final**: `/api/notifications/check-overdue`
 - **Método**: POST
-- **Descripción**: Activa manualmente la comprobación de copias de seguridad vencidas y envía notificaciones.
+- **Descripción**: Activa manualmente la comprobación de copia de seguridad vencida y envía notificaciones.
 - **Autenticación**: Requiere sesión válida y token CSRF
 - **Respuesta**:
 
@@ -122,16 +122,16 @@ El contenido del correo electrónico de prueba muestra:
   ```
 
 - **Respuestas de error**:
-  - `500`: Error al comprobar las copias de seguridad vencidas
+  - `500`: Error al comprobar copias de seguridad vencidas
 - **Notas**:
-  - Activa manualmente la comprobación de copias de seguridad vencidas
+  - Activa manualmente la comprobación de copia de seguridad vencida
   - Devuelve estadísticas sobre el proceso de comprobación
-  - Envía notificaciones para las copias de seguridad vencidas encontradas
+  - Envía notificaciones para copias de seguridad vencidas encontradas
 
 ## Borrar marcas de tiempo de copias de seguridad vencidas - `/api/notifications/clear-overdue-timestamps` {/* #clear-overdue-timestamps---apinotificationsclear-overdue-timestamps */}
 - **Punto final**: `/api/notifications/clear-overdue-timestamps`
 - **Método**: POST
-- **Descripción**: Borra todas las marcas de tiempo de notificación de copias de seguridad vencidas, permitiendo que se envíen notificaciones nuevamente.
+- **Descripción**: Borra todas las marcas de tiempo de notificación de copia de seguridad vencida, permitiendo que se envíen notificaciones nuevamente.
 - **Autenticación**: Requiere sesión válida y token CSRF
 - **Respuesta**:
 
@@ -142,8 +142,8 @@ El contenido del correo electrónico de prueba muestra:
   ```
 
 - **Respuestas de error**:
-  - `500`: Error al borrar las marcas de tiempo de copias de seguridad vencidas
+  - `500`: Error al borrar marcas de tiempo de copias de seguridad vencidas
 - **Notas**:
-  - Borra todas las marcas de tiempo de notificación de copias de seguridad vencidas
-  - Permite reenviar notificaciones
+  - Borra todas las marcas de tiempo de notificación de copia de seguridad vencida
+  - Permite que las notificaciones se envíen de nuevo
   - Útil para probar el sistema de notificaciones

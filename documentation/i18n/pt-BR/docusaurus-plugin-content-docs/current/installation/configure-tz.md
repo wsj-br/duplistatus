@@ -1,6 +1,6 @@
 # Fuso Horário {/* #timezone */}
 
-A interface do usuário do aplicativo exibirá data e hora de acordo com as configurações do navegador. O registro ainda usa a variável de ambiente `TZ`. As notificações de Resumo Diário usam o fuso horário IANA salvo em [Configurações → Resumo Diário](../user-guide/settings/daily-summary-settings.md), não `TZ`. Outras marcas de tempo de notificação que não são Resumo Diário ainda seguem `TZ`.
+A interface do usuário da aplicação exibirá data e hora de acordo com as configurações do navegador. O registro ainda usa a variável de ambiente `TZ`. As notificações de Resumo Diário usam o fuso horário IANA salvo em [Configurações → Resumo Diário](../user-guide/settings/daily-summary-settings.md), não `TZ`. Outros carimbos de data/hora de notificações que não são Resumo Diário ainda seguem `TZ`.
 
 O valor padrão é `TZ=Europe/London` se esta variável de ambiente não estiver definida.
 
@@ -10,7 +10,7 @@ As configurações de idioma e localidade (formatos de número e data) para noti
 
 ## Configurando o Fuso Horário {/* #configuring-the-timezone */}
 
-A interface do usuário do aplicativo exibirá data e hora de acordo com as configurações do navegador. O registro ainda usa a variável de ambiente `TZ`. As notificações de Resumo Diário usam o fuso horário IANA salvo em [Configurações → Resumo Diário](../user-guide/settings/daily-summary-settings.md), não `TZ`. Outras marcas de tempo de notificação que não são Resumo Diário ainda seguem `TZ`.
+A interface do usuário da aplicação exibirá data e hora de acordo com as configurações do navegador. O registro ainda usa a variável de ambiente `TZ`. As notificações de Resumo Diário usam o fuso horário IANA salvo em [Configurações → Resumo Diário](../user-guide/settings/daily-summary-settings.md), não `TZ`. Outros carimbos de data/hora de notificações que não são Resumo Diário ainda seguem `TZ`.
 
 O valor padrão é `TZ=Europe/London` se esta variável de ambiente não estiver definida.
 
@@ -37,4 +37,4 @@ echo TZ=\"$(</etc/timezone)\"
 
 ### Lista de Fusos Horários {/* #list-of-timezones */}
 
-Você pode encontrar uma lista de fusos horários aqui: [Wikipedia: Lista de fusos horários do banco de dados tz](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List)
+Você pode encontrar uma lista de fusos horários aqui: [Wikipedia: List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List)

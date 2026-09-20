@@ -1,11 +1,11 @@
-# Sistema de Notificação {/* #notification-system */}
+# Sistema de Notificações {/* #notification-system */}
 
-## Testar Notificação - `/api/notifications/test` {/* #test-notification---apinotificationstest */}
+## Notificação de Teste - `/api/notifications/test` {/* #test-notification---apinotificationstest */}
 - **Endpoint**: `/api/notifications/test`
 - **Método**: POST
-- **Descrição**: Envia notificações de teste (simples, baseadas em modelo ou e-mail) para verificar a configuração de notificação.
+- **Descrição**: Enviar notificações de teste (simples, baseadas em modelo ou e-mail) para verificar a configuração de notificações.
 - **Autenticação**: Requer sessão de administrador e token CSRF
-- **Corpo da Requisição**:
+- **Corpo da Solicitação**:
   Para teste simples:
 
     ```json
@@ -76,36 +76,36 @@ Para teste de e-mail:
 O conteúdo do e-mail de teste exibe:
   - Nome do servidor SMTP e porta
   - Tipo de conexão (SMTP Simples, STARTTLS ou SSL/TLS Direto)
-  - Status de autenticação SMTP
-  - Nome de usuário SMTP (apenas mostrado quando a autenticação é requerida)
-  - Endereço de e-mail do destinatário
-  - Endereço de origem e nome do remetente usados no e-mail
+  - Status de requisito de autenticação SMTP
+  - Nome de usuário SMTP (mostrado apenas quando a autenticação é necessária)
+  - E-mail do destinatário
+  - Endereço de origem e nome do remetente usado para o e-mail
   - Timestamp do teste
 - **Respostas de Erro**:
-  - `401`: Não autorizado - Sessão ou token CSRF inválido
+  - `401`: Não autorizado - Sessão inválida ou token CSRF inválido
   - `400`: Configuração do NTFY é necessária, configuração inválida ou e-mail não configurado
   - `500`: Falha ao enviar notificação de teste com detalhes do erro
 - **Notas**:
   - Suporta mensagens de teste simples, notificações baseadas em modelo e testes de e-mail
-  - Teste de modelo usa dados de amostra para substituir variáveis de modelo
+  - Testes de modelo usam dados de amostra para substituir variáveis de modelo
   - Inclui timestamp na mensagem de teste
-  - Testes NTFY usam a configuração NTFY armazenada; uma URL NTFY fornecida pelo cliente não é usada
-  - Usa o campo `accessToken` para autenticação quando armazenado
+  - Testes do NTFY usam a configuração do NTFY armazenada; uma URL do NTFY fornecida pelo cliente não é usada
+  - Usa campo `accessToken` para autenticação quando armazenado
   - Para testes de modelo, envia notificações para NTFY e e-mail (se configurado)
-  - Testes de e-mail requerem configuração SMTP
-  - O endpoint de e-mail de teste limpa o cache da requisição antes de ler a configuração SMTP, garantindo que scripts externos possam atualizar a configuração e ela seja refletida imediatamente nos e-mails de teste
-  - Testes de modelo e Envio Imediato de Resumo Diário ignoram a supressão por backup
+  - Testes de e-mail requerem que a configuração SMTP seja definida
+  - O endpoint de e-mail de teste limpa o cache de solicitação antes de ler a configuração SMTP, garantindo que scripts externos possam atualizar a configuração e tê-la imediatamente refletida em e-mails de teste
+  - Testes de modelo e envio imediato de Resumo Diário contornam a supressão por backup
 
-## Visualizar Modelo de Notificação - `/api/notifications/preview` {/* #preview-notification-template---apinotificationspreview */}
+## Visualização de Modelo de Notificação - `/api/notifications/preview` {/* #preview-notification-template---apinotificationspreview */}
 - **Endpoint**: `/api/notifications/preview`
 - **Método**: POST
-- **Descrição**: Renderiza um modelo de notificação com o renderizador Markdown de produção sem enviar. O corpo inclui `kind` (`success`, `warning`, `overdueBackup`, ou `dailySummaryEmail`) e o modelo sendo editado. Visualizações de Resumo Diário usam o snapshot real atual; outros tipos usam valores de amostra determinísticos. E-mail HTML é destinado a um iframe sandboxed. Sucesso, Aviso/Erro e Atrasado também retornam o payload NTFY (`ntfyMessage`); qualquer cabeçalho de tabela GFM é omitido e as linhas do corpo são texto simples.
-- **Autenticação**: Requer sessão e token CSRF válidos
+- **Descrição**: Renderiza um modelo de notificação com o renderizador Markdown de produção sem enviar. O corpo inclui `kind` (`success`, `warning`, `overdueBackup` ou `dailySummaryEmail`) e o modelo sendo editado. Visualizações de Resumo Diário usam o snapshot real atual; outros tipos usam valores de amostra determinísticos. E-mail HTML é destinado a um iframe em sandbox. Sucesso, Aviso/Erro e Atrasado também retornam o payload do NTFY (`ntfyMessage`); qualquer cabeçalho de tabela GFM é omitido e linhas de corpo são texto simples.
+- **Autenticação**: Requer sessão válida e token CSRF
 
 ## Verificar Backups Atrasados - `/api/notifications/check-overdue` {/* #check-overdue-backups---apinotificationscheck-overdue */}
 - **Endpoint**: `/api/notifications/check-overdue`
 - **Método**: POST
-- **Descrição**: Aciona manualmente a verificação de backups atrasados e envia notificações.
+- **Descrição**: Dispara manualmente a verificação de backup atrasado e envia notificações.
 - **Autenticação**: Requer sessão válida e token CSRF
 - **Resposta**:
 
@@ -124,14 +124,14 @@ O conteúdo do e-mail de teste exibe:
 - **Respostas de Erro**:
   - `500`: Falha ao verificar backups atrasados
 - **Notas**:
-  - Aciona manualmente a verificação de backups atrasados
+  - Dispara manualmente a verificação de backup atrasado
   - Retorna estatísticas sobre o processo de verificação
   - Envia notificações para backups atrasados encontrados
 
 ## Limpar Timestamps de Backups Atrasados - `/api/notifications/clear-overdue-timestamps` {/* #clear-overdue-timestamps---apinotificationsclear-overdue-timestamps */}
 - **Endpoint**: `/api/notifications/clear-overdue-timestamps`
 - **Método**: POST
-- **Descrição**: Limpa todos os timestamps de notificação de backups atrasados, permitindo que notificações sejam enviadas novamente.
+- **Descrição**: Limpa todos os timestamps de notificação de backup atrasado, permitindo que as notificações sejam enviadas novamente.
 - **Autenticação**: Requer sessão válida e token CSRF
 - **Resposta**:
 
@@ -141,9 +141,9 @@ O conteúdo do e-mail de teste exibe:
   }
   ```
 
-- **Respostas de Erro**:
-  - `500`: Falha ao limpar timestamps de backups atrasados
+- **Respostas de erro**:
+  - `500`: Falha ao limpar registros de data/hora de Backup Atrasado
 - **Notas**:
-  - Limpa todos os timestamps de notificação de backups atrasados
-  - Permite reenviar notificações
-  - Útil para testar o sistema de notificações
+  - Limpar todos os registros de data/hora de Notificações de Backup Atrasado
+  - Permite que o alerta de Notificações seja enviado novamente
+  - Útil para testar o Sistema de Notificações

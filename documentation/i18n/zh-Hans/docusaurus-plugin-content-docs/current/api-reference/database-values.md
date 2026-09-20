@@ -1,6 +1,6 @@
-# 示例备份报告（数据库值）{/* #sample-backup-report-database-values */}
+# 备份报告示例（数据库值） {/* #sample-backup-report-database-values */}
 
-本文档包含 Duplicati 使用 `--send-http-json-urls`（或旧版 `--send-http-url` 选项与 `--send-http-result-output-format=Json`）时发送的 JSON 有效载荷的示例。它说明了 duplistatus 接收和持久化的结构和字段。某些字段可能在此示例中被清除或编辑。
+本文档包含使用 `--send-http-json-urls`（或带有 `--send-http-result-output-format=Json` 的旧版 `--send-http-url` 选项）时由 duplicati 发送的 JSON 负载示例。它说明了 duplistatus 接收并持久化的结构和字段。在此示例中，某些字段可能被清除或删除。
 
 ```json
 {

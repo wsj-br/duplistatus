@@ -8,6 +8,8 @@ The documentation uses Docusaurus i18n with English as the default locale. Sourc
 
 **AI translation** for the app UI, Docusaurus markdown/JSON, SVG assets, and **default notification templates** is handled by [**ai-i18n-tools**](https://www.npmjs.com/package/ai-i18n-tools) from the **repository root**, configured in `ai-i18n-tools.config.json` (not inside `documentation/`). Set `OPENROUTER_API_KEY` when running translate commands.
 
+To try an unpublished checkout on the same machine (default `../ai-i18n-tools`), switch the dependency with `pnpm i18n:tools --local` or `./scripts/link-ai-i18n-tools.sh --local`. That links both the CLI (`pnpm i18n:*`) and the `ai-i18n-tools/runtime` import. Rebuild the tools package after source changes (`pnpm build` in that checkout). Restore the latest npm package with `--remote`. Do not commit the `link:` specifier.
+
 ## When English documentation changes {/* #when-english-documentation-changes */}
 
 1. **Edit source** in `documentation/docs/` (English only).

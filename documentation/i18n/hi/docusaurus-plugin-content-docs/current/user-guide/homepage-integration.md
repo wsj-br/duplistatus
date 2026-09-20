@@ -1,10 +1,10 @@
-# Homepage एकीकरण (वैकल्पिक) {/* #homepage-integration-optional */}
+# मुखपृष्ठ एकीकरण (वैकल्पिक) {/* #homepage-integration-optional */}
 
-[Homepage](https://gethomepage.dev/) एक कस्टमाइज़ करने योग्य डैशबोर्ड एप्लिकेशन है। **duplistatus** को Homepage के साथ एकीकृत करने के लिए, [कस्टम API विजेट प्रकार](https://gethomepage.dev/widgets/services/customapi/) का उपयोग करके अपनी `services.yaml` फ़ाइल में एक विजेट जोड़ें।
+[मुखपृष्ठ](https://gethomepage.dev/) एक अनुकूलन योग्य डैशबोर्ड एप्लिकेशन है। मुखपृष्ठ के साथ **duplistatus** को एकीकृत करने के लिए, [कस्टम एपीआई विजेट प्रकार](https://gethomepage.dev/widgets/services/customapi/) का उपयोग करके अपनी `services.yaml` फ़ाइल में एक विजेट जोड़ें।
 
 ## सारांश विजेट {/* #summary-widget */}
 
-यह विजेट आपके Homepage डैशबोर्ड पर समग्र बैकअप सांख्यिकी प्रदर्शित करता है।
+यह विजेट आपके मुखपृष्ठ डैशबोर्ड पर समग्र बैकअप सांख्यिकी प्रदर्शित करता है।
 
 ```yaml
 - Dashboard:
@@ -42,7 +42,7 @@
 
 **विजेट प्रदर्शन:**
 
-![Homepage सारांश विजेट](/img/homepage-summary.png)
+![मुखपृष्ठ सारांश विजेट](/img/homepage-summary.png)
 
 ## अंतिम बैकअप जानकारी विजेट {/* #last-backup-information-widget */}
 
@@ -77,13 +77,13 @@
 
 **विजेट प्रदर्शन:**
 
-![Homepage अंतिम बैकअप विजेट](/img/homepage-lastbackup.png)
+![मुखपृष्ठ अंतिम बैकअप विजेट](/img/homepage-lastbackup.png)
 
 ## कॉन्फ़िगरेशन नोट्स {/* #configuration-notes */}
 
-- `your-server` को अपने सर्वर के आईपी पता या होस्टनाम से बदलें।
+- अपने सर्वर के आईपी पते या होस्टनाम के साथ `your-server` को प्रतिस्थापित करें।
 - आवश्यकतानुसार `refreshInterval` को समायोजित करें (मिलीसेकंड में)।
-- URL में मशीन के नामों में मौजूद स्पेस को `%20` से बदलें (उदाहरण के लिए, `Test Machine 1`, `Test%20Machine%201` बन जाता है)।
-- `scale` मान बाइट्स को अधिक पठनीय इकाइयों (GB, MB) में बदलते हैं।
-- जब [API कुंजियाँ](settings/api-keys-settings.md) आवश्यक हों, तो **read**-स्कोप API कुंजी का उपयोग करें। कुंजियाँ वैकल्पिक होने पर `?api_key=` को हटा दें।
-- यदि [बाहरी API IP अनुमति सूची](settings/ip-allowlist-settings.md) सक्षम है, तो Homepage होस्ट को शामिल करें।
+- यूआरएल में मशीन नामों में रिक्त स्थान को `%20` के साथ प्रतिस्थापित करें (उदाहरण के लिए, `Test Machine 1` `Test%20Machine%201` बन जाता है)।
+- `scale` मान बाइट्स को अधिक पठनीय इकाइयों (जीबी, एमबी) में परिवर्तित करते हैं।
+- जब [एपीआई कुंजियाँ](settings/api-keys-settings.md) की आवश्यकता हो तो **पढ़ें**-स्कोप एपीआई कुंजी का उपयोग करें। जब कुंजियाँ वैकल्पिक हों तो `?api_key=` को छोड़ दें।
+- यदि [बाहरी एपीआई आईपी अनुमति सूची](settings/ip-allowlist-settings.md) सक्षम है, तो मुखपृष्ठ होस्ट को शामिल करें।

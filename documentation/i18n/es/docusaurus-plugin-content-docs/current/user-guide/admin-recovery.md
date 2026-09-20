@@ -1,12 +1,12 @@
-# Recuperación de la cuenta de Administrador {/* #admin-account-recovery */}
+# Recuperación de Cuenta de Administrador {/* #admin-account-recovery */}
 
-Recupera el acceso de administrador a **duplistatus** cuando hayas perdido tu contraseña o hayas sido bloqueado de tu cuenta. Esta guía cubre el uso del script de recuperación de administrador en entornos Docker.
+Recupere el acceso de administrador a **duplistatus** cuando haya perdido su contraseña o haya sido bloqueado fuera de su cuenta. Esta guía cubre el uso del script de recuperación de administrador en entornos Docker.
 
-Si el navegador muestra **Acceso denegado** (HTTP 403) antes del formulario de inicio de sesión, la [lista de IPs permitidas de administrador](settings/ip-allowlist-settings.md) está bloqueando la solicitud. Usa [Bloqueado por la lista de IPs permitidas](troubleshooting.md#locked-out-by-ip-allowlist) en lugar de este script.
+Si el navegador muestra **Acceso denegado** (HTTP 403) antes del formulario de inicio de sesión, la [lista de IPs permitidas de administrador](settings/ip-allowlist-settings.md) está bloqueando la solicitud. Utilice [Bloqueado por Lista de IPs Permitidas](troubleshooting.md#locked-out-by-ip-allowlist) en lugar de este script.
 
-## Usando el script en Docker {/* #using-the-script-in-docker */}
+## Uso del Script en Docker {/* #using-the-script-in-docker */}
 
-El Dockerfile incluye el directorio `scripts` y un conveniente envoltorio de shell.
+El Dockerfile incluye el directorio `scripts` y un práctico contenedor de shell.
 
 ```bash
 # Execute inside the running container using the wrapper
@@ -21,12 +21,12 @@ docker exec -it duplistatus /app/admin-recovery admin NewPassword123
 
 ## Solución de problemas {/* #troubleshooting */}
 
-Si encuentras problemas con el script de recuperación:
+Si encuentra problemas con el script de recuperación:
 
-1. **Verificar que el contenedor está en ejecución**: Comprueba que el contenedor está en ejecución con `docker ps`
-2. **Comprobar la disponibilidad del script**: Verifica que el script existe en el contenedor con `docker exec -it duplistatus ls -la /app/admin-recovery`
-3. **Revisar los registros del contenedor**: Busca errores con `docker logs duplistatus`
-4. **Verificar el nombre de usuario**: Asegúrate de que el nombre de usuario existe en la base de datos
-5. **Comprobar el formato de la contraseña**: Asegúrate de que la nueva contraseña cumple todos los requisitos
+1. **Verifique que el Contenedor esté en Ejecución**: Compruebe que el contenedor se esté ejecutando con `docker ps`
+2. **Verifique la Disponibilidad del Script**: Verifique que el script exista en el contenedor con `docker exec -it duplistatus ls -la /app/admin-recovery`
+3. **Revise los Registros del Contenedor**: Compruebe si hay errores con `docker logs duplistatus`
+4. **Verifique el Nombre de Usuario**: Asegúrese de que el nombre de usuario exista en la base de datos
+5. **Verifique el Formato de Contraseña**: Asegúrese de que la nueva contraseña cumpla con todos los requisitos
 
-Si los problemas persisten, consulta la guía de [Solución de problemas](troubleshooting.md) para obtener más ayuda.
+Si los problemas persisten, consulte la guía de [Solución de Problemas](troubleshooting.md) para obtener más ayuda.

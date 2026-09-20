@@ -1,56 +1,56 @@
 # Tägliche Zusammenfassung {/* #daily-summary */}
 
-Tägliche Zusammenfassung ist ein optionaler Benachrichtigungsmodus, der **eine** lokalisierte Momentaufnahme aller bekannten Backup-Jobs zu einer exakten lokalen Uhrzeit sendet. Solange er aktiviert ist, werden Backup- und überfällige E-Mails an den Standard-E-Mail-Empfänger (Einstellungen → E-Mail → Empfänger-E-Mail) ausgesetzt. Zusätzliche E-Mail-Ziele, die in [Backup-Benachrichtigungen](backup-notifications-settings.md) konfiguriert sind, erhalten weiterhin entsprechende Ereignisse. Per-Job NTFY-Benachrichtigungen bleiben aktiv. Diese Einstellungen bleiben gespeichert und werden wieder aktiv, sobald die Tägliche Zusammenfassung deaktiviert wird.
+Die tägliche Zusammenfassung ist ein optionaler Benachrichtigungsmodus, der **einen** lokalisierten Schnappschuss aller bekannten Sicherungsaufträge zu einer exakten lokalen Uhrzeit sendet. Während dieser aktiviert ist, werden Sicherungs- und überfällige E-Mails an den Standard-Empfänger (Einstellungen → E-Mail → Empfänger-E-Mail) pausiert. Zusätzliche E-Mail-Ziele, die in [Backup-Benachrichtigungen](backup-notifications-settings.md) konfiguriert sind, erhalten weiterhin passende Ereignisse. Pro-Job NTFY-Benachrichtigungen werden fortgesetzt. Diese Einstellungen bleiben gespeichert und werden wieder aktiv, sobald die tägliche Zusammenfassung deaktiviert wird.
 
-Die Momentaufnahme ist der **aktuelle** Status zum Sendezeitpunkt (das neueste Ergebnis für jeden Job). Es handelt sich nicht um eine Historie der vorherigen Tagesläufe.
+Der Schnappschuss ist der **aktuelle** Status zum Sendezeitpunkt (das neueste Ergebnis für jeden Job). Es handelt sich nicht um eine Historie der Läufe des vorhergehenden Tages.
 
-![Einstellungen für die Tägliche Zusammenfassung](../../assets/screen-settings-daily-summary.png)
+![Einstellungen zur täglichen Zusammenfassung](../../assets/screen-settings-daily-summary.png)
 
-## Anforderungen {/* #requirements */}
+## Voraussetzungen {/* #requirements */}
 
-- SMTP muss konfiguriert sein. Die E-Mail wird einmal gesendet, an den **SMTP-Empfänger überschreiben**, falls einer gespeichert ist, sonst an den SMTP-Empfänger aus den [E-Mail-Einstellungen](/user-guide/settings/email-settings).
-- Überprüfen Sie Ihre SMTP-Konfiguration und stellen Sie sicher, dass sie funktioniert, bevor Sie sich auf die Tägliche Zusammenfassung verlassen.
-- Die geplante Lieferung erfordert den cron-Dienst. Der Dispatcher feuert einmal pro Tag zur gespeicherten UTC-Sendezeit.
+- SMTP muss konfiguriert sein. Die E-Mail wird einmalig gesendet, an den **SMTP-Empfänger überschreiben**, falls einer gespeichert ist, andernfalls an den SMTP-Empfänger aus [E-Mail-Einstellungen](/user-guide/settings/email-settings).
+- Überprüfen Sie Ihre SMTP-Konfiguration und stellen Sie sicher, dass sie funktioniert, bevor Sie sich auf die tägliche Zusammenfassung verlassen.
+- Der geplante Versand erfordert den Cron-Dienst. Der Dispatcher wird einmal täglich zur gespeicherten UTC-Sendezeit ausgeführt.
 
 ## Was ist enthalten {/* #what-is-included */}
 
-Bekannte Jobs sind die **neuesten beobachteten Backups** für jeden Server und Backup-Name — dieselbe Menge wie das Dashboard und Einstellungen → Backup-Überwachung.
+Bekannte Jobs sind die **zuletzt beobachtete Sicherung** für jeden Server und jeden Sicherungsnamen — dieselbe Menge wie im Dashboard und unter Einstellungen → Backup-Überwachung.
 
-Status-Buckets (Erfolgreich, Warnung, Fehler, Fatal, Unbekannt) sind gegenseitig ausschließend und addieren sich zur Job-Anzahl. **Überfällig** wird separat gezählt: ein überfälliger erfolgreicher Job ist immer noch Erfolgreich und auch überfällig.
+Statuskategorien (Erfolgreich, Warnung, Fehler, Fatal, Unbekannt) schließen sich gegenseitig aus und summieren sich zur Auftragsanzahl. **Überfällig** wird separat gezählt: Ein erfolgreicher, aber überfälliger Auftrag zählt immer noch als Erfolgreich und zusätzlich als überfällig.
 
 ## Zeitplan {/* #schedule */}
 
-Wählen Sie eine exakte `HH:mm` Uhrzeit in Ihrer **Browser-Zeitzone**. duplistatus speichert den Zeitplan als UTC und zeigt beide Werte auf der Seite an (selbes Muster wie **Duplicati-Versionen**). Änderungen auf dieser Seite werden automatisch gespeichert. Die Standard-Sendezeit für neue Installationen ist **01:00 UTC**.
+Wählen Sie eine genaue `HH:mm` Uhrzeit in Ihrer **Browser-Zeitzone**. duplistatus speichert den Zeitplan als UTC und zeigt beide Werte auf der Seite an (gleiches Muster wie bei **Duplicati-Versionen**). Änderungen auf dieser Seite werden automatisch gespeichert. Die Standard-Sendezeit für neue Installationen ist **01:00 UTC**.
 
-- Das Aktivieren oder Ändern des Zeitplans beginnt bei der **nächsten zukünftigen** Gelegenheit, nie mit einer sofortigen Überraschungssendung.
-- Die geplante Uhrzeit sendet immer, wenn der cron-Job ausgelöst wird. **Zusammenfassung jetzt senden**, ein Wiederholungsversuch oder eine frühere Sendung am selben Tag überspringt sie nicht.
+- Das Aktivieren oder Ändern des Zeitplans beginnt mit dem **nächsten zukünftigen** Vorkommen, niemals mit einem unmittelbaren unerwarteten Senden.
+- Die geplante Uhrzeit wird immer dann gesendet, wenn der Cron-Job ausgelöst wird. **Zusammenfassung jetzt senden**, ein Wiederholungsversuch oder ein früherer Versand am gleichen Tag lässt es nicht aus.
 
 ## Öffentliche Dashboard-URL {/* #public-dashboard-url */}
 
-Optionale **Öffentliche Dashboard-URL** auf dieser Seite füttert den `{duplistatus_link}` Platzhalter in E-Mails der Täglichen Zusammenfassung. Verwenden Sie eine `http://` oder `https://` URL ohne abschließenden Schrägstrich. Lassen Sie es leer, um den Link auszublenden.
+Optionale **öffentliche Dashboard-URL** auf dieser Seite füttert den `{duplistatus_link}` Platzhalter in täglichen Zusammenfassungs-E-Mails. Verwenden Sie eine `http://` oder `https://` URL ohne abschließenden Schrägstrich. Lassen Sie das Feld leer, um den Link wegzulassen.
 
-Wenn `DUPLISTATUS_PUBLIC_URL` in der Umgebung gesetzt ist, überschreibt es die gespeicherte Einstellung (siehe [Umgebungsvariablen](/installation/environment-variables)).
+Wenn `DUPLISTATUS_PUBLIC_URL` in der Umgebung gesetzt ist, überschreibt dies die gespeicherte Einstellung (siehe [Umgebungsvariablen](/installation/environment-variables)).
 
 ## SMTP-Empfänger überschreiben {/* #override-smtp-recipient */}
 
-Optional **SMTP-Empfänger überschreiben** sendet die Tägliche Zusammenfassung an eine andere Adresse als der Empfänger in den E-Mail-Einstellungen. Lassen Sie es leer, um den Standard zu verwenden. Der Wert wird im `daily_summary` Konfigurationsschlüssel (`smtpRecipient`) gespeichert und für geplante Sendevorgänge, **Zusammenfassung jetzt senden** und Wiederholungsversuche verwendet. Die Sende-APIs akzeptieren immer noch keinen Empfänger in der Anfrage.
+Optionaler **SMTP-Empfänger überschreiben** sendet die tägliche Zusammenfassung an eine andere Adresse als den Empfänger in den E-Mail-Einstellungen. Lassen Sie das Feld leer, um den Standard weiterzuverwenden. Der Wert wird im `daily_summary` Konfigurationsschlüssel (`smtpRecipient`) gespeichert und wird für geplante Sendungen, **Zusammenfassung jetzt senden** und Wiederholungen verwendet. Die Send-APIs akzeptieren weiterhin keinen Empfänger in der Anfrage.
 
 ## Ersetzungsverhalten {/* #replacement-behaviour */}
 
-Wenn die Tägliche Zusammenfassung aktiviert ist:
+Wenn die tägliche Zusammenfassung aktiv ist:
 
-- Upload- und überfällige E-Mails an den Standard-E-Mail-Empfänger werden nicht gesendet
-- zusätzliche E-Mail-Ziele in Backup-Benachrichtigungen erhalten weiterhin entsprechende Ereignisse (überfällig zählt als Warnung für diesen Filter)
-- per-Job NTFY-Benachrichtigungen bleiben aktiv
-- überfällige Zeitstempel werden nicht vorgerückt, wenn nichts gesendet wurde, sodass überfällige Warnungen sofort fortgesetzt werden können, wenn der Modus deaktiviert wird
-- Vorschau der Vorlage, Transporttests und **Zusammenfassung jetzt senden** funktionieren weiterhin
+- Hochlade- und überfällige E-Mails an den Standard-Empfänger werden nicht gesendet
+- Zusätzliche E-Mail-Ziele in Backup-Benachrichtigungen erhalten weiterhin passende Ereignisse (überfällig zählt für diesen Filter als Warnung)
+- Pro-Job NTFY-Benachrichtigungen werden fortgesetzt
+- Überfällige Zeitstempel werden nicht aktualisiert, wenn nichts gesendet wurde, sodass überfällige Warnungen sofort nach Abschalten des Modus wieder eintreten können
+- Vorlagen-Vorschau, Transporttests und **Zusammenfassung jetzt senden** funktionieren weiterhin
 
-**Zusammenfassung jetzt senden** ist eine zusätzliche Lieferung. Sie verbraucht nicht die nächste geplante Ausführung.
+**Zusammenfassung jetzt senden** ist eine zusätzliche Zustellung. Sie verbraucht nicht den nächsten geplanten Vorgang.
 
-Geplante, **Zusammenfassung jetzt senden** und Wiederholungslieferungen werden im [Audit-Protokoll](audit-logs-viewer.md) als `daily_summary_sent` (Systemoperationen) aufgezeichnet. Das Speichern der Einstellungen wird als `daily_summary_updated` (Konfiguration) aufgezeichnet.
+Geplante Zustellungen, **Zusammenfassung jetzt senden** und Wiederholungsversuche werden im [Audit-Protokoll](audit-logs-viewer.md) als `daily_summary_sent` (Systemvorgänge) aufgezeichnet. Das Speichern von Einstellungen ist `daily_summary_updated` (Konfiguration).
 
 ## Vorlagen {/* #templates */}
 
-Bearbeiten Sie die E-Mail-Vorlage für die tägliche Zusammenfassung (Markdown) unter [Einstellungen → Vorlagen](/user-guide/settings/notification-templates). Der Standardbetreff enthält `{summary_date}` plus die Anzahl der erfolgreichen, warnhaltigen, überfälligen, fehlerhaften und fatalen Einträge, sodass die Zeile im Posteingang die Zusammenfassung des Snapshots zusammenfasst. Überfällig kann sich mit den Statuszahlen überschneiden. E-Mail-Körper für Erfolg, Warnung/Fehler, Überfällig und Tägliche Zusammenfassung verwenden alle Markdown. Die Standardvorlage enthält `{duplistatus_link}` am Ende, wenn eine öffentliche Dashboard-URL auf dieser Seite oder über `DUPLISTATUS_PUBLIC_URL` konfiguriert ist.
+Bearbeiten Sie die E-Mail-Vorlage für die tägliche Zusammenfassung (Markdown) unter [Einstellungen → Vorlagen](/user-guide/settings/notification-templates). Der Standard-Betreff enthält `{summary_date}` sowie Anzahlen für Erfolg, Warnung, Überfällig, Fehler und Fatal, sodass die Betreffzeile im Posteingang die Momentaufnahme zusammenfasst. „Überfällig“ kann sich mit den Statusanzahlen überschneiden. E-Mail-Inhalte für Erfolg, Warnung/Fehler, Überfällig und Tägliche Zusammenfassung verwenden alle Markdown. Die Standardvorlage enthält am Ende `{duplistatus_link}`, wenn eine öffentliche Dashboard-URL auf dieser Seite oder über `DUPLISTATUS_PUBLIC_URL` konfiguriert ist.
 
-**Vorschau generieren** auf dieser Seite öffnet denselben Vorschau-Dialog wie [Einstellungen → Vorlagen](/user-guide/settings/notification-templates): E-Mail-Betreff plus E-Mail HTML und Klartext. E-Mail HTML folgt dem aktuellen hellen oder dunklen Design.
+**Vorschau generieren** auf dieser Seite öffnet denselben Vorschaudialog wie [Einstellungen → Vorlagen](/user-guide/settings/notification-templates): E-Mail-Betreff sowie E-Mail-HTML und Klartext. Das E-Mail-HTML folgt dem aktuellen hellen oder dunklen Design.

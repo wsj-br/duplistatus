@@ -1,10 +1,10 @@
-# Monitoreo y salud {/* #monitoring--health */}
+# Monitoreo y Salud {/* #monitoring--health */}
 
-## Comprobación de salud - `/api/health` {/* #health-check---apihealth */}
-- **Punto final**: `/api/health`
+## Comprobación de Salud - `/api/health` {/* #health-check---apihealth */}
+- **Endpoint**: `/api/health`
 - **Método**: GET
-- **Descripción**: Comprobación de vitalidad económica para la aplicación y la conexión SQLite. Docker `HEALTHCHECK` y el bucle de entrada de espera usan esta URL en localhost.
-- **Respuesta** (sano):
+- **Descripción**: Comprobación de disponibilidad económica para la aplicación y la conexión SQLite. Docker `HEALTHCHECK` y el bucle de punto de entrada utilizan esta URL en localhost.
+- **Respuesta** (saludable):
 
   ```json
   {
@@ -18,7 +18,7 @@
   }
   ```
 
-- **Respuesta** (degradado):
+- **Respuesta** (degradada):
 
   ```json
   {
@@ -33,7 +33,7 @@
   }
   ```
 
-- **Respuesta de error** (503):
+- **Respuesta de Error** (503):
 
   ```json
   {
@@ -45,17 +45,17 @@
   ```
 
 - **Notas**:
-  - Devuelve 200 cuando la inicialización se completa y `SELECT 1` tiene éxito
+  - Devuelve 200 cuando la inicialización se completó y `SELECT 1` tiene éxito
   - Devuelve 503 cuando la inicialización o la comprobación de conexión falla
-  - No enumera los nombres de las tablas ni ejecuta consultas del panel
+  - No enumera nombres de tablas ni ejecuta consultas del panel de control
   - Nunca requiere una clave de API
-  - Cuando cualquiera de las listas de IPs permitidas está habilitada, la IP del cliente debe ser de bucle o estar en la lista de CIDR de administrador o externa (`403` `IP_NOT_ALLOWED` de lo contrario)
-  - Los clientes que no son de bucle están limitados por tasa (`429` `PROBE_RATE_LIMITED`, 30/minuto y 120/hora). El bucle (`127.0.0.1`, `::1`) nunca se limita
+  - Cuando se habilita la lista de IPs permitidas, la IP del cliente debe ser loopback o estar listada en la lista CIDR de administrador o externa (`403` `IP_NOT_ALLOWED` en caso contrario)
+  - Los clientes que no son loopback tienen límite de velocidad (`429` `PROBE_RATE_LIMITED`, 30/minuto y 120/hora). Loopback (`127.0.0.1`, `::1`) nunca se acelera
 
-## Sonda de conectividad - `/api/ping` {/* #connectivity-probe---apiping */}
-- **Punto final**: `/api/ping`
+## Sonda de Conectividad - `/api/ping` {/* #connectivity-probe---apiping */}
+- **Endpoint**: `/api/ping`
 - **Método**: GET
-- **Descripción**: Respuesta `{ "ok": true }` pequeña utilizada por la comprobación de conectividad del panel (cada 30 segundos).
+- **Descripción**: Respuesta `{ "ok": true }` diminuta utilizada por la comprobación de conectividad del panel de control (cada 30 segundos).
 - **Respuesta**:
 
   ```json
@@ -66,5 +66,5 @@
 
 - **Notas**:
   - Nunca requiere una clave de API o una cookie de sesión
-  - Misma unión de lista de permisos y reglas de bucle que `/api/health`
-  - Los clientes que no son de bucle están limitados por tasa (`429` `PROBE_RATE_LIMITED`, 60/minuto y 600/hora)
+  - Las mismas reglas de unión de lista de permitidos y loopback que `/api/health`
+  - Los clientes que no son loopback tienen límite de velocidad (`429` `PROBE_RATE_LIMITED`, 60/minuto y 600/hora)

@@ -119,6 +119,8 @@ pnpm i18n:translate:json
 pnpm i18n:status
 pnpm i18n:editor          # ai-i18n-tools editor (if used)
 pnpm i18n:glossary-generate
+pnpm i18n:tools --local   # Link sibling ../ai-i18n-tools (do not commit)
+pnpm i18n:tools --remote  # Restore latest npm ai-i18n-tools
 
 # Documentation package (delegates to root for translate)
 cd documentation && pnpm translate   # same as pnpm i18n:translate at root

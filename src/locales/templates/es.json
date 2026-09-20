@@ -7,20 +7,20 @@
   },
   "warning": {
     "title": "⚠️ {status} - {backup_name} @ {server_alias}",
-    "message": "## ⚠️ Copia de seguridad requiere atención\n\n**{backup_name}** en **{server_alias}** completada con estado **{status}**.\n\n🕐 Fecha: **{backup_date}**\n⏰ Duración: **{duration}**\n🔍 Nota: **{server_note}**\n\n### 📈 Vista general\n\n| Métrica | Valor |\n| --- | ---: |\n| ☁️ Subido | {uploaded_size} |\n| 🚨 Advertencias | {warnings_count} |\n| 🛑 Errores | {errors_count} |\n\n### 📄 Mensajes de registro\n\n{log_text}\n\n⚠️ Compruebe el servidor Duplicati inmediatamente: {server_url}\n",
+    "message": "## ⚠️ La copia de seguridad requiere atención\n\n**{backup_name}** en **{server_alias}** completada con estado **{status}**.\n\n🕐 Fecha: **{backup_date}**\n⏰ Duración: **{duration}**\n🔍 Nota: **{server_note}**\n\n### 📈 Vista general\n\n| Métrica | Valor |\n| --- | ---: |\n| ☁️ Subido | {uploaded_size} |\n| 🚨 Advertencias | {warnings_count} |\n| 🛑 Errores | {errors_count} |\n\n### 📄 Mensajes de registro\n\n{log_text}\n\n⚠️ Compruebe inmediatamente el servidor Duplicati: {server_url}\n",
     "priority": "high",
     "tags": "duplicati, duplistatus, warning, error"
   },
   "overdueBackup": {
     "title": "🕑 Vencida - {backup_name} @ {server_alias}",
-    "message": "## 🕑 Copia de seguridad vencida\n\n**{backup_name}** en **{server_alias}** está vencida.\n\n🔍 Nota: **{server_note}**\n\n### 📈 Vista general\n\n| Métrica | Valor |\n| --- | ---: |\n| 🚨 Última copia de seguridad recibida | {last_backup_date} ({last_elapsed}) |\n| ⏰ Hora esperada de copia de seguridad | {expected_date} ({expected_elapsed}) |\n| 📅 Intervalo esperado | {backup_interval} |\n| ⏳ Tolerancia | {overdue_tolerance} |\n\n⚠️ Compruebe el servidor Duplicati inmediatamente: {server_url}\n",
+    "message": "## 🕑 Copia de seguridad vencida\n\n**{backup_name}** en **{server_alias}** está vencida.\n\n🔍 Nota: **{server_note}**\n\n### 📈 Vista general\n\n| Métrica | Valor |\n| --- | ---: |\n| 🚨 Última copia de seguridad recibida | {last_backup_date} ({last_elapsed}) |\n| ⏰ Hora prevista de copia de seguridad | {expected_date} ({expected_elapsed}) |\n| 📅 Intervalo esperado | {backup_interval} |\n| ⏳ Tolerancia | {overdue_tolerance} |\n\n⚠️ Compruebe inmediatamente el servidor Duplicati: {server_url}\n",
     "priority": "default",
     "tags": "duplicati, duplistatus, overdue"
   },
   "dailySummary": {
     "email": {
       "title": "Resumen diario de copias de seguridad — {summary_date} — ✅ {success_count} Éxito, ⚠️ {warning_count} Advertencia, 🕑 {overdue_count} Vencida, 🛑 {error_count} Error, ❌ {fatal_count} Fatal",
-      "message": "## 📊 Resumen diario de copias de seguridad\n\n🕐 Generado: **{generated_at}** ({time_zone})\n\n### 📈 Vista general\n\n| Métrica | Conteo |\n| --- | ---: |\n| 🖥️ Servidores | {server_count} |\n| 💼 Trabajos de copia de seguridad / ✅ Éxito | {job_count} / {success_count} |\n| ⚠️ Advertencias / 🛑 Errores / 💀 Fatal / ❓ Desconocido | {warning_count} / {error_count} / {fatal_count} / {unknown_count} |\n| ❓ No se recibió informe | {no_report_count} |\n| 🕑 Vencida | {overdue_count} |\n\n### 🚨 Atención requerida\n\n{problem_table}\n\n### 📋 Todos los resultados de las últimas copias de seguridad\n\n{all_jobs_table}\n\n{duplistatus_link}\n"
+      "message": "## 📊 Resumen diario de copias de seguridad\n\n🕐 Generado: **{generated_at}** ({time_zone})\n\n### 📈 Vista general\n\n| Métrica | Cuenta |\n| --- | ---: |\n| 🖥️ Servidores | {server_count} |\n| 💼 Trabajos de copia de seguridad / ✅ Éxito | {job_count} / {success_count} |\n| ⚠️ Advertencias / 🛑 Errores / 💀 Fatal / ❓ Desconocido | {warning_count} / {error_count} / {fatal_count} / {unknown_count} |\n| ❓ No se recibió informe | {no_report_count} |\n| 🕑 Vencida | {overdue_count} |\n\n### 🚨 Requiere atención\n\n{problem_table}\n\n### 📋 Todos los resultados más recientes de copias de seguridad\n\n{all_jobs_table}\n\n{duplistatus_link}\n"
     }
   }
 }

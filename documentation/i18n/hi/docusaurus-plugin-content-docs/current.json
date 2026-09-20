@@ -4,7 +4,7 @@
     "description": "The label for version current"
   },
   "sidebar.mainSidebar.category.Installation": {
-    "message": "इंस्टॉलेशन",
+    "message": "स्थापना",
     "description": "The label for category 'Installation' in sidebar 'mainSidebar'"
   },
   "sidebar.mainSidebar.category.User Guide": {
@@ -20,11 +20,11 @@
     "description": "The label for category 'Migration' in sidebar 'mainSidebar'"
   },
   "sidebar.mainSidebar.category.API Reference": {
-    "message": "API संदर्भ",
+    "message": "एपीआई संदर्भ",
     "description": "The label for category 'API Reference' in sidebar 'mainSidebar'"
   },
   "sidebar.mainSidebar.category.Development": {
-    "message": "डेवलपमेंट",
+    "message": "विकास",
     "description": "The label for category 'Development' in sidebar 'mainSidebar'"
   },
   "sidebar.mainSidebar.category.Release Notes": {

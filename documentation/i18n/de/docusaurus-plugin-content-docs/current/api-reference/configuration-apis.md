@@ -3,7 +3,7 @@
 ## E-Mail-Konfiguration abrufen - `/api/configuration/email` {/* #get-email-configuration---apiconfigurationemail */}
 - **Endpunkt**: `/api/configuration/email`
 - **Methode**: GET
-- **Beschreibung**: Ruft die aktuelle E-Mail-Benachrichtigungs-Konfiguration ab und ob E-Mail-Benachrichtigungen aktiviert/konfiguriert sind.
+- **Beschreibung**: Ruft die aktuelle Konfiguration der E-Mail-Benachrichtigungen ab und gibt an, ob E-Mail-Benachrichtigungen aktiviert/konfiguriert sind.
 - **Authentifizierung**: Erfordert eine gültige Sitzung und ein CSRF-Token
 - **Antwort** (konfiguriert):
 
@@ -36,22 +36,22 @@
   ```
 
 - **Fehlerantworten**:
-  - `400`: Master-Schlüssel ist ungültig - Alle verschlüsselten Passwörter und Einstellungen müssen neu konfiguriert werden
-  - `401`: Unautorisiert - Ungültige Sitzung oder CSRF-Token
-  - `500`: Fehler beim Abrufen der E-Mail-Konfiguration
+  - `400`: Hauptschlüssel ist ungültig - Alle verschlüsselten Passwörter und Einstellungen müssen neu konfiguriert werden
+  - `401`: Nicht autorisiert - Ungültige Sitzung oder ungültiges CSRF-Token
+  - `500`: E-Mail-Konfiguration konnte nicht abgerufen werden
 - **Hinweise**:
-  - Gibt die Konfiguration ohne Passwort zurück, um die Sicherheit zu gewährleisten
-  - Enthält das Feld `hasPassword`, um anzuzeigen, ob ein Passwort gesetzt ist
+  - Gibt die Konfiguration aus Sicherheitsgründen ohne Passwort zurück
+  - Enthält das Feld `hasPassword`, um anzuzeigen, ob ein Passwort festgelegt ist
   - Enthält die Felder `connectionType` (plain|starttls|ssl), `senderName`, `fromAddress` und `requireAuth`
-  - Gibt an, ob E-Mail-Benachrichtigungen für Test- und Produktionszwecke verfügbar sind
-  - Behandelt Fehler bei der Master-Schlüssel-Validierung elegant
+  - Gibt an, ob E-Mail-Benachrichtigungen für Test- und Produktiveinsatz verfügbar sind
+  - Behandelt Validierungsfehler des Hauptschlüssels fehlerverzeihend
 
 ## E-Mail-Konfiguration aktualisieren - `/api/configuration/email` {/* #update-email-configuration---apiconfigurationemail */}
 - **Endpunkt**: `/api/configuration/email`
 - **Methode**: POST
-- **Beschreibung**: Aktualisiert die SMTP-E-Mail-Benachrichtigungs-Konfiguration.
+- **Beschreibung**: Aktualisiert die SMTP-E-Mail-Benachrichtigungskonfiguration.
 - **Authentifizierung**: Erfordert eine gültige Sitzung und ein CSRF-Token
-- **Anfragekörper**:
+- **Anforderungstext**:
 
   ```json
   {
@@ -74,20 +74,20 @@
   ```
 
 - **Fehlerantworten**:
-  - `400`: Fehlende erforderliche Felder oder ungültige Portnummer
-  - `401`: Unautorisiert - Ungültige Sitzung oder CSRF-Token
-  - `500`: Fehler beim Speichern der SMTP-Konfiguration
+  - `400`: Erforderliche Felder fehlen oder ungültige Port-Nummer
+  - `401`: Nicht autorisiert - Ungültige Sitzung oder ungültiges CSRF-Token
+  - `500`: SMTP-Konfiguration konnte nicht gespeichert werden
 - **Hinweise**:
   - Alle Felder (Host, Port, Benutzername, Passwort, Mailto) sind erforderlich
   - Der Port muss eine gültige Zahl zwischen 1 und 65535 sein
-  - Das sichere Feld ist ein boolescher Wert (true für SSL/TLS)
+  - Das Feld Secure ist ein boolescher Wert (true für SSL/TLS)
   - Das Passwort wird separat über den Passwort-Endpunkt verwaltet
 
 ## E-Mail-Konfiguration löschen - `/api/configuration/email` {/* #delete-email-configuration---apiconfigurationemail */}
 - **Endpunkt**: `/api/configuration/email`
 - **Methode**: DELETE
-- **Beschreibung**: Löscht die SMTP-E-Mail-Benachrichtigungs-Konfiguration.
-- **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
+- **Beschreibung**: Löscht die SMTP-E-Mail-Benachrichtigungskonfiguration.
+- **Authentifizierung**: Erfordert eine gültige Sitzung und ein CSRF-Token
 - **Antwort**:
 
   ```json
@@ -98,20 +98,20 @@
   ```
 
 - **Fehlerantworten**:
-  - `401`: Unautorisiert - Ungültige Sitzung oder CSRF-Token
+  - `401`: Nicht autorisiert - Ungültige Sitzung oder ungültiges CSRF-Token
   - `404`: Keine SMTP-Konfiguration zum Löschen gefunden
-  - `500`: Fehler beim Löschen der SMTP-Konfiguration
+  - `500`: SMTP-Konfiguration konnte nicht gelöscht werden
 - **Hinweise**:
   - Dieser Vorgang entfernt die SMTP-Konfiguration dauerhaft
-  - Gibt 404 zurück, wenn keine Konfiguration zum Löschen existiert
-  - Gibt 400 zurück, wenn der Tägliche Zusammenfassungsmodus aktiviert ist, da dieser Modus SMTP erfordert
+  - Gibt 404 zurück, wenn keine Konfiguration zum Löschen vorhanden ist
+  - Gibt 400 zurück, solange der Modus „Tägliche Zusammenfassung“ aktiviert ist, da dieser Modus SMTP erfordert
 
 ## E-Mail-Passwort aktualisieren - `/api/configuration/email/password` {/* #update-email-password---apiconfigurationemailpassword */}
 - **Endpunkt**: `/api/configuration/email/password`
 - **Methode**: PATCH
 - **Beschreibung**: Aktualisiert das E-Mail-Passwort für die SMTP-Authentifizierung.
 - **Authentifizierung**: Erfordert eine gültige Sitzung und ein CSRF-Token
-- **Anfragekörper**:
+- **Anforderungstext**:
 
   ```json
   {
@@ -136,13 +136,13 @@
 
 - **Fehlerantworten**:
   - `400`: Passwort muss eine Zeichenkette sein oder erforderliche Konfigurationsfelder fehlen
-  - `401`: Unautorisiert - Ungültige Sitzung oder CSRF-Token
-  - `500`: Fehler beim Aktualisieren des E-Mail-Passworts
+  - `401`: Nicht autorisiert - Ungültige Sitzung oder ungültiges CSRF-Token
+  - `500`: E-Mail-Passwort konnte nicht aktualisiert werden
 - **Hinweise**:
-  - Das Passwort kann eine leere Zeichenkette sein, um das Passwort zu löschen
-  - Wenn keine SMTP-Konfiguration existiert, wird eine minimale Konfiguration aus den bereitgestellten Konfigurationsdaten erstellt
-  - Das Konfigurationsparameter ist erforderlich, wenn keine bestehende SMTP-Konfiguration existiert
-  - Das Passwort wird sicher mit Verschlüsselung gespeichert
+  - Passwort kann eine leere Zeichenkette sein, um das Passwort zu löschen
+  - Wenn keine SMTP-Konfiguration vorhanden ist, wird eine minimale Konfiguration aus den angegebenen Werten erstellt
+  - Der Konfigurationsparameter ist erforderlich, wenn keine bestehende SMTP-Konfiguration existiert
+  - Das Passwort wird sicher mittels Verschlüsselung gespeichert
 
 ## E-Mail-Passwort-CSRF-Token abrufen - `/api/configuration/email/password` {/* #get-email-password-csrf-token---apiconfigurationemailpassword */}
 - **Endpunkt**: `/api/configuration/email/password`
@@ -159,16 +159,16 @@
 
 - **Fehlerantworten**:
   - `401`: Ungültige oder abgelaufene Sitzung
-  - `500`: CSRF-Token konnte nicht generiert werden
+  - `500`: Generierung des CSRF-Tokens fehlgeschlagen
 - **Hinweise**:
-  - Gibt das CSRF-Token für die Verwendung mit Passwort-Aktualisierungsoperationen zurück
+  - Gibt ein CSRF-Token zur Verwendung bei Passwort-Aktualisierungsvorgängen zurück
   - Die Sitzung muss gültig sein, um das Token zu generieren
 
-## Holen Sie sich die vereinheitlichte Konfiguration - `/api/configuration/unified` {/* #get-unified-configuration---apiconfigurationunified */}
-- **Endpunkt**: `/api/configuration/unified`
+## Einheitliche Konfiguration abrufen - `/api/configuration/unified` {/* #get-unified-configuration---apiconfigurationunified */}
+- **Endpoint**: `/api/configuration/unified`
 - **Methode**: GET
-- **Beschreibung**: Ruft ein vereinheitlichtes Konfigurationsobjekt ab, das alle Konfigurationsdaten einschließlich der Cron-Einstellungen, Benachrichtigungshäufigkeit und Server mit Sicherungen enthält.
-- **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
+- **Beschreibung**: Ruft ein einheitliches Konfigurationsobjekt ab, das alle Konfigurationsdaten einschließlich Cron-Einstellungen, Benachrichtigungshäufigkeit und Server mit Sicherungen enthält.
+- **Authentifizierung**: Erfordert eine gültige Sitzung und ein CSRF-Token
 - **Antwort**:
 
   ```json
@@ -256,18 +256,18 @@
   ```
 
 - **Fehlerantworten**:
-  - `500`: Serverfehler beim Abrufen der vereinheitlichten Konfiguration
+  - `500`: Serverfehler beim Abrufen der einheitlichen Konfiguration
 - **Hinweise**:
   - Gibt alle Konfigurationsdaten in einer einzigen Antwort zurück
   - Enthält Cron-Einstellungen, Benachrichtigungshäufigkeit und Server mit Sicherungen
-  - Die E-Mail-Konfiguration enthält das `hasPassword`-Feld, aber nicht das tatsächliche Passwort
-  - Ruft alle Daten parallel ab, um die Leistung zu verbessern
+  - Die E-Mail-Konfiguration enthält das Feld `hasPassword`, aber nicht das eigentliche Passwort
+  - Ruft alle Daten parallel ab, um eine bessere Leistung zu erreichen
 
-## Holen Sie sich die NTFY-Konfiguration - `/api/configuration/ntfy` {/* #get-ntfy-configuration---apiconfigurationntfy */}
-- **Endpunkt**: `/api/configuration/ntfy`
+## NTFY-Konfiguration abrufen - `/api/configuration/ntfy` {/* #get-ntfy-configuration---apiconfigurationntfy */}
+- **Endpoint**: `/api/configuration/ntfy`
 - **Methode**: GET
 - **Beschreibung**: Ruft die aktuellen NTFY-Konfigurationseinstellungen ab.
-- **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
+- **Authentifizierung**: Erfordert eine gültige Sitzung und ein CSRF-Token
 - **Antwort**:
 
   ```json
@@ -281,18 +281,18 @@
   ```
 
 - **Fehlerantworten**:
-  - `401`: Unautorisiert - Ungültige Sitzung oder CSRF-Token
+  - `401`: Nicht autorisiert – Ungültige Sitzung oder CSRF-Token
   - `500`: Fehler beim Abrufen der NTFY-Konfiguration
 - **Hinweise**:
-  - Gibt die aktuellen NTFY-Konfigurationseinstellungen zurück
+  - Gibt aktuelle NTFY-Konfigurationseinstellungen zurück
   - Wird für die Verwaltung des Benachrichtigungssystems verwendet
   - Erfordert Authentifizierung für den Zugriff auf Konfigurationsdaten
 
-## Holen Sie sich die Benachrichtigungskonfiguration - `/api/configuration/notifications` {/* #get-notification-configuration---apiconfigurationnotifications */}
-- **Endpunkt**: `/api/configuration/notifications`
+## Benachrichtigungskonfiguration abrufen - `/api/configuration/notifications` {/* #get-notification-configuration---apiconfigurationnotifications */}
+- **Endpoint**: `/api/configuration/notifications`
 - **Methode**: GET
-- **Beschreibung**: Ruft die aktuelle Konfiguration der Benachrichtigungshäufigkeit ab.
-- **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
+- **Beschreibung**: Ruft die aktuelle Benachrichtigungshäufigkeitskonfiguration ab.
+- **Authentifizierung**: Erfordert eine gültige Sitzung und ein CSRF-Token
 - **Antwort**:
 
   ```json
@@ -302,20 +302,20 @@
   ```
 
 - **Fehlerantworten**:
-  - `401`: Unautorisiert - Ungültige Sitzung oder CSRF-Token
+  - `401`: Nicht autorisiert – Ungültige Sitzung oder CSRF-Token
   - `500`: Fehler beim Abrufen der Konfiguration
 - **Hinweise**:
-  - Ruft die aktuelle Konfiguration der Benachrichtigungshäufigkeit ab
-  - Wird für die Verwaltung von Benachrichtigungen über überfällige Sicherungen verwendet
+  - Ruft die aktuelle Benachrichtigungshäufigkeitskonfiguration ab
+  - Wird für die Verwaltung von Benachrichtigungen für überfällige Sicherungen verwendet
   - Gibt einen der folgenden Werte zurück: `"onetime"`, `"every_day"`, `"every_week"`, `"every_month"`
 
-## Aktualisieren Sie die Benachrichtigungskonfiguration - `/api/configuration/notifications` {/* #update-notification-configuration---apiconfigurationnotifications */}
-- **Endpunkt**: `/api/configuration/notifications`
+## Benachrichtigungskonfiguration aktualisieren - `/api/configuration/notifications` {/* #update-notification-configuration---apiconfigurationnotifications */}
+- **Endpoint**: `/api/configuration/notifications`
 - **Methode**: POST
 - **Beschreibung**: Aktualisiert die Benachrichtigungskonfiguration (NTFY-Einstellungen oder Benachrichtigungshäufigkeit).
-- **Authentifizierung**: Erfordert eine gültige Sitzung und ein CSRF-Token
-- **Anfragekörper**:
-  Für die NTFY-Konfiguration:
+- **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
+- **Anforderungstext**:
+  Für NTFY-Konfiguration:
 
   ```json
   {
@@ -328,7 +328,7 @@
   }
   ```
 
-Für die Benachrichtigungshäufigkeit:
+Für Benachrichtigungshäufigkeit:
 
   ```json
   {
@@ -337,7 +337,7 @@ Für die Benachrichtigungshäufigkeit:
   ```
 
 - **Antwort**:
-  Für die NTFY-Konfiguration:
+  Für NTFY-Konfiguration:
 
   ```json
   {
@@ -351,7 +351,7 @@ Für die Benachrichtigungshäufigkeit:
   }
   ```
 
-Für die Benachrichtigungshäufigkeit:
+Für Benachrichtigungshäufigkeit:
 
   ```json
   {
@@ -361,25 +361,25 @@ Für die Benachrichtigungshäufigkeit:
 
 - **Verfügbare Werte**: `"onetime"`, `"every_day"`, `"every_week"`, `"every_month"`
 - **Fehlerantworten**:
-  - `401`: Unautorisiert - Ungültige Sitzung oder CSRF-Token
+  - `401`: Nicht autorisiert – Ungültige Sitzung oder CSRF-Token
   - `400`: NTFY-Konfiguration ist erforderlich oder ungültiger Wert
   - `500`: Serverfehler beim Aktualisieren der Benachrichtigungskonfiguration
 - **Hinweise**:
-  - Unterstützt sowohl die Aktualisierung der NTFY-Konfiguration als auch der Benachrichtigungshäufigkeit
-  - Aktualisiert nur die NTFY-Konfiguration, wenn das ntfy-Feld bereitgestellt wird
-  - Aktualisiert die Benachrichtigungshäufigkeit, wenn das value-Feld bereitgestellt wird
-  - Generiert ein Standardthema, wenn keines bereitgestellt wird
-  - Behält die bestehenden Konfigurationseinstellungen bei
-  - Verwendet das `accessToken`-Feld anstelle separater Benutzername/Passwort-Felder
-  - Validiert den Wert der Benachrichtigungshäufigkeit gegen die zulässigen Optionen
-  - Beeinflusst, wie oft Benachrichtigungen über überfällige Sicherungen gesendet werden
+  - Unterstützt sowohl NTFY-Konfiguration als auch Aktualisierungen der Benachrichtigungshäufigkeit
+  - Aktualisiert nur die NTFY-Konfiguration, wenn das Feld ntfy bereitgestellt wird
+  - Aktualisiert die Benachrichtigungshäufigkeit, wenn das Feld value bereitgestellt wird
+  - Generiert ein Standard-Topic, wenn keines bereitgestellt wird
+  - Behält vorhandene Konfigurationseinstellungen bei
+  - Verwendet das Feld `accessToken` anstelle separater Felder für Benutzername/Passwort
+  - Validiert den Benachrichtigungshäufigkeitswert gegen zulässige Optionen
+  - Beeinflusst, wie oft Benachrichtigungen für überfällige Sicherungen gesendet werden
 
-## Aktualisieren Sie die Sicherungseinstellungen - `/api/configuration/backup-settings` {/* #update-backup-settings---apiconfigurationbackup-settings */}
-- **Endpunkt**: `/api/configuration/backup-settings`
+## Sicherungseinstellungen aktualisieren - `/api/configuration/backup-settings` {/* #update-backup-settings---apiconfigurationbackup-settings */}
+- **Endpoint**: `/api/configuration/backup-settings`
 - **Methode**: POST
-- **Beschreibung**: Aktualisiert die Sicherungsbenachrichtigungseinstellungen für bestimmte Server/Sicherungen.
+- **Beschreibung**: Aktualisiert die Benachrichtigungseinstellungen für Sicherungen auf bestimmten Servern.
 - **Authentifizierung**: Erfordert eine gültige Sitzung und ein CSRF-Token
-- **Anfragekörper**:
+- **Anforderungstext**:
 
   ```json
   {
@@ -403,20 +403,20 @@ Für die Benachrichtigungshäufigkeit:
   ```
 
 - **Fehlerantworten**:
-  - `401`: Unautorisiert - Ungültige Sitzung oder CSRF-Token
+  - `401`: Nicht autorisiert – Ungültige Sitzung oder CSRF-Token
   - `400`: backupSettings ist erforderlich
   - `500`: Serverfehler beim Aktualisieren der Sicherungseinstellungen
 - **Hinweise**:
-  - Aktualisiert die Backup-Benachrichtigungseinstellungen für bestimmte Server/Sicherungen
-  - Bereinigt überfällige Backup-Benachrichtigungen für deaktivierte Sicherungen
-  - Löscht Benachrichtigungen, wenn die Timeout-Einstellungen geändert werden
+  - Aktualisiert die Einstellungen für Backup-Benachrichtigungen für bestimmte Server/Sicherungen
+  - Bereinigt Benachrichtigungen über überfällige Sicherungen für deaktivierte Sicherungen
+  - Löscht Benachrichtigungen, wenn sich Zeitüberschreitungseinstellungen ändern
 
-## Benachrichtigungsvorlagen aktualisieren - `/api/configuration/templates` {/* #update-notification-templates---apiconfigurationtemplates */}
+## Vorlagen für Benachrichtigungen aktualisieren - `/api/configuration/templates` {/* #update-notification-templates---apiconfigurationtemplates */}
 - **Endpunkt**: `/api/configuration/templates`
 - **Methode**: POST
-- **Beschreibung**: Aktualisiert die Benachrichtigungsvorlagen.
+- **Beschreibung**: Aktualisiert die Vorlagen für Benachrichtigungen.
 - **Authentifizierung**: Erfordert eine gültige Sitzung und ein CSRF-Token
-- **Anfragekörper**:
+- **Anforderungstext**:
 
   ```json
   {
@@ -440,44 +440,44 @@ Für die Benachrichtigungshäufigkeit:
   ```
 
 - **Fehlerantworten**:
-  - `401`: Unautorisiert - Ungültige Sitzung oder CSRF-Token
+  - `401`: Nicht autorisiert - Ungültige Sitzung oder ungültiges CSRF-Token
   - `400`: Vorlagen sind erforderlich
   - `500`: Serverfehler beim Aktualisieren der Benachrichtigungsvorlagen
 - **Hinweise**:
-  - Aktualisiert Benachrichtigungsvorlagen für verschiedene Backup-Status
+  - Aktualisiert Benachrichtigungsvorlagen für verschiedene Sicherungsstatus
   - Behält bestehende Konfigurationseinstellungen bei
-  - Vorlagen unterstützen Markdown-E-Mail-Körper und `{placeholder}`-Ersetzung
-  - Eine `dailySummary`-E-Mail-Vorlage (Betreff und Markdown-Körper) ist erforderlich
+  - Vorlagen unterstützen Markdown-E-Mail-Texte und Ersetzung von `{placeholder}`
+  - Eine E-Mail-Vorlage für `dailySummary` (Betreff und Markdown-Text) ist erforderlich
 
 ## Tägliche Zusammenfassung - `/api/configuration/daily-summary` {/* #daily-summary---apiconfigurationdaily-summary */}
 - **Endpunkt**: `/api/configuration/daily-summary`
 - **Methode**: GET, POST
-- **Beschreibung**: Liest oder aktualisiert den Zusammenfassungsmodus. GET gibt bereinigte Einstellungen, Dispatcher-Status, nächstes Vorkommen und Zustellstatus zurück. POST speichert `enabled`, `utcTime` (`HH:mm` UTC), `timeZone` (Browser IANA Zeitzone aus der letzten Speicherung), optionale `publicUrl`, und optionale `smtpRecipient` (leer verwendet den SMTP-Empfänger der E-Mail-Einstellungen). Die Aktivierung erfordert gültige SMTP-Einstellungen. Das Ändern von `utcTime` aktualisiert `daily-summary-dispatch` auf `minute hour * * *` UTC und lädt den Cron-Dienst neu. Das Ändern des Zeitplans setzt das nächste **zukünftige** Vorkommen.
-- **Authentifizierung**: GET erfordert eine gültige Sitzung und CSRF-Token. POST erfordert eine Administrator-Sitzung und CSRF-Token.
+- **Beschreibung**: Liest oder aktualisiert den Modus „Tägliche Zusammenfassung“. GET gibt bereinigte Einstellungen, den Dispatcher-Zustand, das nächste Vorkommen und den E-Mail-Zustellstatus zurück. POST speichert `enabled`, `utcTime` (`HH:mm` UTC), `timeZone` (Browser-IANA-Zeitzone von der letzten Speicherung), optionales `publicUrl` und optionales `smtpRecipient` (wenn leer, wird der SMTP-Empfänger aus den E-Mail-Einstellungen verwendet). Das Aktivieren erfordert gültiges SMTP. Das Ändern von `utcTime` aktualisiert `daily-summary-dispatch` auf `minute hour * * *` UTC und lädt den Cron-Dienst neu. Das Ändern des Zeitplans legt das nächste **zukünftige** Vorkommen fest.
+- **Authentifizierung**: GET erfordert eine gültige Sitzung und ein CSRF-Token. POST erfordert eine Administratorsitzung und ein CSRF-Token.
 - **Fehlerantworten**:
-  - `400`: Ungültige Zeit/Zeitzone, ungültige öffentliche URL, ungültiger SMTP-Empfänger oder fehlender SMTP
-  - `401`: Unautorisiert
+  - `400`: Ungültige Zeit/Zeitzone, ungültige öffentliche URL, ungültiger SMTP-Empfänger oder fehlendes SMTP
+  - `401`: Nicht autorisiert
   - `500`: Fehler beim Lesen oder Aktualisieren der täglichen Zusammenfassung
 
 ## Tägliche Zusammenfassung senden - `/api/configuration/daily-summary/send` {/* #send-daily-summary---apiconfigurationdaily-summarysend */}
 - **Endpunkt**: `/api/configuration/daily-summary/send`
 - **Methode**: POST
-- **Beschreibung**: Sendet eine zusätzliche Momentaufnahme des aktuellen Status sofort. Verbraucht nicht das nächste geplante Vorkommen. Verwendet gespeicherte SMTP-Einstellungen. Sendet an `daily_summary.smtpRecipient`, wenn gesetzt, sonst an den SMTP-Empfänger der E-Mail-Einstellungen. Akzeptiert keine Empfängeradressen in der Anfrage. Protokolliert `daily_summary_sent` im Audit-Protokoll (System).
-- **Authentifizierung**: Erfordert Administrator-Sitzung und CSRF-Token
+- **Beschreibung**: Sendet sofort eine zusätzliche Snapshot-Aufnahme des aktuellen Status. Verbraucht nicht das nächste geplante Vorkommen. Verwendet gespeichertes SMTP. Sendet an `daily_summary.smtpRecipient`, wenn festgelegt, andernfalls an den Empfänger aus den E-Mail-Einstellungen. Akzeptiert keine Empfängeradressen in der Anfrage. Erfasst `daily_summary_sent` im Audit-Protokoll (System).
+- **Authentifizierung**: Erfordert eine Administratorsitzung und ein CSRF-Token
 
 ## Tägliche Zusammenfassung wiederholen - `/api/configuration/daily-summary/retry` {/* #retry-daily-summary---apiconfigurationdaily-summaryretry */}
 - **Endpunkt**: `/api/configuration/daily-summary/retry`
 - **Methode**: POST
-- **Beschreibung**: Wiederholt fehlgeschlagene Kanäle aus dem persistierten Payload. Optionaler Körper `{ "occurrenceKey": "..." }`; andernfalls wird die letzte fehlgeschlagene E-Mail-Zustellung wiederholt.
-- **Authentifizierung**: Erfordert Administrator-Sitzung und CSRF-Token
+- **Beschreibung**: Wiederholt fehlgeschlagene Kanäle aus der persistenten Nutzlast. Optionaler Text `{ "occurrenceKey": "..." }`; andernfalls wird die letzte fehlgeschlagene E-Mail-Zustellung wiederholt.
+- **Authentifizierung**: Erfordert eine Administratorsitzung und ein CSRF-Token
 
-## Tägliche Zusammenfassung Vorschau - `/api/configuration/daily-summary/preview` {/* #preview-daily-summary---apiconfigurationdaily-summarypreview */}
+## Vorschau der täglichen Zusammenfassung - `/api/configuration/daily-summary/preview` {/* #preview-daily-summary---apiconfigurationdaily-summarypreview */}
 - **Endpunkt**: `/api/configuration/daily-summary/preview`
 - **Methode**: POST
-- **Beschreibung**: Rendert die aktuelle Momentaufnahme ohne Senden und ohne Schreiben von Zustellungszeilen.
-- **Authentifizierung**: Erfordert gültige Sitzung und CSRF-Token
+- **Beschreibung**: Rendert den aktuellen Snapshot ohne Versand und ohne Schreiben von Zustellungs-Ledger-Zeilen.
+- **Authentifizierung**: Erfordert eine gültige Sitzung und ein CSRF-Token
 
-## Überfällige Toleranz abrufen - `/api/configuration/overdue-tolerance` {/* #get-overdue-tolerance---apiconfigurationoverdue-tolerance */}
+## Überfälligkeitstoleranz abrufen - `/api/configuration/overdue-tolerance` {/* #get-overdue-tolerance---apiconfigurationoverdue-tolerance */}
 - **Endpunkt**: `/api/configuration/overdue-tolerance`
 - **Methode**: GET
 - **Beschreibung**: Ruft die aktuelle Einstellung für die Überfälligkeitstoleranz ab.
@@ -493,14 +493,14 @@ Für die Benachrichtigungshäufigkeit:
   - `500`: Fehler beim Abrufen der Überfälligkeitstoleranz
 - **Hinweise**:
   - Gibt die aktuelle Einstellung für die Überfälligkeitstoleranz zurück
-  - Wird für die Anzeige der aktuellen Konfiguration verwendet
+  - Wird zum Anzeigen der aktuellen Konfiguration verwendet
 
-## Überfällige Toleranz aktualisieren - `/api/configuration/overdue-tolerance` {/* #update-overdue-tolerance---apiconfigurationoverdue-tolerance */}
+## Überfälligkeitstoleranz aktualisieren - `/api/configuration/overdue-tolerance` {/* #update-overdue-tolerance---apiconfigurationoverdue-tolerance */}
 - **Endpunkt**: `/api/configuration/overdue-tolerance`
 - **Methode**: POST
 - **Beschreibung**: Aktualisiert die Einstellung für die Überfälligkeitstoleranz.
 - **Authentifizierung**: Erfordert eine gültige Sitzung und ein CSRF-Token
-- **Anfragekörper**:
+- **Anforderungstext**:
 
   ```json
   {
@@ -517,19 +517,19 @@ Für die Benachrichtigungshäufigkeit:
   ```
 
 - **Fehlerantworten**:
-  - `401`: Unautorisiert - Ungültige Sitzung oder CSRF-Token
+  - `401`: Nicht autorisiert - Ungültige Sitzung oder ungültiges CSRF-Token
   - `400`: overdue_tolerance ist erforderlich
   - `500`: Serverfehler beim Aktualisieren der Überfälligkeitstoleranz
 - **Hinweise**:
-  - Aktualisiert die Einstellung für die Überfälligkeitstoleranz (akzeptiert String-Format wie `"1h"`, `"2h"`, etc.; Standard für neue Installationen ist `2h`)
-  - Beeinflusst, wann Sicherungen als überfällig betrachtet werden
-  - Wird vom Überfälligen Backup-Checker verwendet
+  - Aktualisiert die Einstellung für die Überfälligkeitstoleranz (akzeptiert Zeichenfolgenformat wie `"1h"`, `"2h"` usw.; Standard bei Neuinstallationen ist `2h`)
+  - Beeinflusst, wann Sicherungen als überfällig gelten
+  - Wird von der Prüfung für überfällige Sicherungen verwendet
 
 ## Externe API-Sicherheit - `/api/configuration/external-api-security` {/* #external-api-security---apiconfigurationexternal-api-security */}
 - **Endpunkt**: `/api/configuration/external-api-security`
 - **Methoden**: GET, PATCH
-- **Beschreibung**: Liest oder aktualisiert, ob externe APIs einen Schlüssel erfordern, sowie die `/api/upload` Größe und die Rate Limits.
-- **Authentifizierung**: Erfordert Admin-Rechte, gültige Sitzung und CSRF-Token
+- **Beschreibung**: Liest oder aktualisiert, ob Externe APIs einen Schlüssel erfordern, sowie die `/api/upload`-Größe und Ratenbegrenzungen.
+- **Authentifizierung**: Erfordert Admin-Berechtigungen, eine gültige Sitzung und ein CSRF-Token
 - **PATCH-Body**:
 
   ```json
@@ -547,5 +547,5 @@ Für die Benachrichtigungshäufigkeit:
 ## IP-Zulassungsliste - `/api/configuration/ip-allowlist` {/* #ip-allowlist---apiconfigurationip-allowlist */}
 - **Endpunkt**: `/api/configuration/ip-allowlist`
 - **Methoden**: GET, PATCH
-- **Beschreibung**: Liest oder aktualisiert vertrauenswürdige Proxies und die Admin- / Externe-API-CIDR-Zulassungslisten. Die Aktivierung der Admin-Liste schlägt fehl, wenn die aktuelle Client-IP nicht bereits in der Liste enthalten ist (Loopback ist ausgenommen).
-- **Authentifizierung**: Erfordert Admin-Rechte, gültige Sitzung und CSRF-Token
+- **Beschreibung**: Liest oder aktualisiert Vertrauenswürdige Proxies und die CIDR-Zulassungslisten für Admin / Externe APIs. Das Aktivieren der Admin-Liste schlägt fehl, es sei denn, die aktuelle Client-IP ist bereits aufgeführt (Loopback ist ausgenommen).
+- **Authentifizierung**: Erfordert Admin-Berechtigungen, eine gültige Sitzung und ein CSRF-Token

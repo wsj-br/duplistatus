@@ -36415,12 +36415,6 @@
       "zh-Hans": "上周",
       "hi": "पिछले सप्ताह"
     },
-    "locations": [
-      {
-        "file": "src/lib/chart-utils.ts",
-        "line": 50
-      }
-    ],
     "models": {
       "fr": "qwen/qwen-2.5-72b-instruct",
       "es": "qwen/qwen-2.5-72b-instruct",
@@ -36428,7 +36422,13 @@
       "de": "qwen/qwen-2.5-72b-instruct",
       "zh-Hans": "qwen/qwen-2.5-72b-instruct",
       "hi": "qwen/qwen-2.5-72b-instruct"
-    }
+    },
+    "locations": [
+      {
+        "file": "src/lib/chart-utils.ts",
+        "line": 50
+      }
+    ]
   },
   "1e937283": {
     "source": "Last 2 weeks",
@@ -36440,12 +36440,6 @@
       "zh-Hans": "过去2周",
       "hi": "पिछले 2 सप्ताह"
     },
-    "locations": [
-      {
-        "file": "src/lib/chart-utils.ts",
-        "line": 52
-      }
-    ],
     "models": {
       "fr": "qwen/qwen-2.5-72b-instruct",
       "es": "qwen/qwen-2.5-72b-instruct",
@@ -36453,7 +36447,13 @@
       "de": "qwen/qwen-2.5-72b-instruct",
       "zh-Hans": "qwen/qwen-2.5-72b-instruct",
       "hi": "qwen/qwen-2.5-72b-instruct"
-    }
+    },
+    "locations": [
+      {
+        "file": "src/lib/chart-utils.ts",
+        "line": 52
+      }
+    ]
   },
   "80cbddde": {
     "source": "Last month",
@@ -36465,12 +36465,6 @@
       "zh-Hans": "上月",
       "hi": "पिछले महीने"
     },
-    "locations": [
-      {
-        "file": "src/lib/chart-utils.ts",
-        "line": 54
-      }
-    ],
     "models": {
       "fr": "qwen/qwen-2.5-72b-instruct",
       "es": "qwen/qwen-2.5-72b-instruct",
@@ -36478,7 +36472,13 @@
       "de": "qwen/qwen-2.5-72b-instruct",
       "zh-Hans": "qwen/qwen-2.5-72b-instruct",
       "hi": "qwen/qwen-2.5-72b-instruct"
-    }
+    },
+    "locations": [
+      {
+        "file": "src/lib/chart-utils.ts",
+        "line": 54
+      }
+    ]
   },
   "2f33528a": {
     "source": "Last quarter",
@@ -36490,12 +36490,6 @@
       "zh-Hans": "上个季度",
       "hi": "पिछले त्रैमासिक"
     },
-    "locations": [
-      {
-        "file": "src/lib/chart-utils.ts",
-        "line": 56
-      }
-    ],
     "models": {
       "fr": "qwen/qwen-2.5-72b-instruct",
       "es": "qwen/qwen-2.5-72b-instruct",
@@ -36503,7 +36497,13 @@
       "de": "qwen/qwen-2.5-72b-instruct",
       "zh-Hans": "qwen/qwen-2.5-72b-instruct",
       "hi": "qwen/qwen-2.5-72b-instruct"
-    }
+    },
+    "locations": [
+      {
+        "file": "src/lib/chart-utils.ts",
+        "line": 56
+      }
+    ]
   },
   "93cba074": {
     "source": "Yes",

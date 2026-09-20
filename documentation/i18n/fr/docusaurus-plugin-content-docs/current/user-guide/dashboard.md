@@ -7,152 +7,152 @@ Cette section affiche les statistiques agrégées pour toutes les sauvegardes.
 ![Résumé du tableau de bord - aperçu](../assets/screen-dashboard-summary.png)
 ![Résumé du tableau de bord - tableau](../assets/screen-dashboard-summary-table.png)
 
-- **Total des serveurs**: Le nombre de serveurs surveillés.                                                                                                             
-- **Total des tâches de sauvegarde**: Le nombre total de tâches de sauvegarde (types) configurées pour tous les serveurs.                                                                                
-- **Total des exécutions de sauvegarde**: Le nombre total de journaux de sauvegarde des exécutions reçues ou collectées pour tous les serveurs.                                                                   
-- **Taille totale de sauvegarde**: La taille combinée de toutes les données sources, basée sur les derniers journaux de sauvegarde reçus.                                                                    
-- **Stockage total utilisé**: L'espace de stockage total utilisé par les sauvegardes sur la destination de sauvegarde (par exemple, stockage cloud, serveur FTP, disque local), basé sur les derniers journaux de sauvegarde.                
-- **Taille totale téléchargée**: Le montant total de données téléchargées du serveur Duplicati vers la destination (par exemple, stockage local, FTP, fournisseur cloud).                                       
-- **Sauvegardes en retard** (tableau): Le nombre de sauvegardes en retard. Voir [Paramètres des notifications de sauvegarde](settings/backup-notifications-settings.md)                          
-- **Basculer la disposition**: Bascule entre la disposition Cartes (par défaut) et la disposition Tableau.
+- **Total des serveurs** : Le nombre de serveurs surveillés.                                                                                                             
+- **Total des tâches de sauvegarde** : Le nombre total de tâches de sauvegarde (types) configurées pour tous les serveurs.                                                                                
+- **Total des exécutions de sauvegarde** : Le nombre total de journaux de sauvegarde provenant des exécutions reçus ou collectés pour tous les serveurs.                                                                   
+- **Taille totale de sauvegarde** : La taille combinée de toutes les données sources, basée sur les derniers journaux de sauvegarde reçus.                                                                    
+- **Stockage total utilisé** : L'espace de stockage total utilisé par les sauvegardes sur la destination de sauvegarde (par exemple, stockage cloud, serveur FTP, disque local), basé sur les derniers journaux de sauvegarde.                
+- **Taille totale téléchargée** : La quantité totale de données téléchargées depuis le serveur Duplicati vers la destination (par exemple, stockage local, FTP, fournisseur cloud).                                       
+- **Sauvegardes en retard** (tableau) : Le nombre de sauvegardes qui sont en retard. Voir [Paramètres des notifications de sauvegarde](settings/backup-notifications-settings.md)                          
+- **Basculer l'agencement** : Bascule entre l'agencement Cartes (par défaut) et l'agencement Tableau.
 
-:::tip Voir des serveurs en double?
-Si le même serveur apparaît plus d'une fois sur le tableau de bord, utilisez [Paramètres → Maintenance de la base de données → Fusionner les serveurs en double](settings/database-maintenance.md#merge-duplicate-servers) pour les consolider. Les doublons peuvent survenir lorsque vous réinstallez ou mettez à niveau Duplicati, car l'`machine_id` du serveur peut changer et **duplistatus** le traite alors comme un nouveau serveur.
+:::tip Vous voyez des serveurs en double ?
+Si le même serveur apparaît plusieurs fois sur le tableau de bord, utilisez [Paramètres → Maintenance de la base de données → Fusionner les serveurs en double](settings/database-maintenance.md#merge-duplicate-servers) pour les regrouper. Les doublons peuvent survenir lorsque vous réinstallez ou mettez à niveau Duplicati, car l'`machine_id` du serveur peut changer et **duplistatus** le traite alors comme un nouveau serveur.
 :::
 
 ## Filtrage des serveurs {/* #server-filtering */}
 
-Vous pouvez filtrer les serveurs et les sauvegardes affichés sur le tableau de bord à l'aide du champ de recherche dans la barre d'outils de l'application. Cliquez sur l'icône de filtre <IconButton icon="lucide:search" /> pour révéler le champ de recherche.
+Vous pouvez filtrer les serveurs et les sauvegardes affichés sur le tableau de bord à l'aide du champ de recherche dans la barre d'outils de l'application. Cliquez sur l'icône de filtre <IconButton icon="lucide:search" /> pour afficher le champ de recherche.
 
-**Correspondances de filtre:**
+**Correspondances du filtre :**
 - ID du serveur
 - URL du serveur
 - Noms des tâches de sauvegarde
 
-**Portée:**
-- Filtre les vues en cartes et en tableau sur le tableau de bord
-- L'état de la session est maintenu via le fournisseur de filtre de serveur du tableau de bord
-- Efface lorsque vous actualisez ou quittez le tableau de bord
+**Portée :**
+- Filtre à la fois les vues cartes et tableau sur le tableau de bord
+- L'état de session est maintenu via le fournisseur de filtre de serveur du tableau de bord
+- S'efface lorsque vous actualisez ou quittez le tableau de bord
 
-Cela facilite la localisation rapide de serveurs ou de sauvegardes spécifiques parmi de nombreux systèmes surveillés.
+Cela permet de localiser rapidement des serveurs ou des sauvegardes spécifiques parmi de nombreux systèmes surveillés.
 
-## Disposition en cartes {/* #cards-layout */}
+## Agencement des cartes {/* #cards-layout */}
 
-La disposition en cartes affiche le statut du dernier journal de sauvegarde reçu pour chaque sauvegarde.
+L'agencement des cartes montre l'état du dernier journal de sauvegarde reçu pour chaque sauvegarde.
 
-![Disposition en cartes](../assets/duplistatus_dash-cards.svg)
+![Agencement des cartes](../assets/duplistatus_dash-cards.svg)
 
-- **Nom du serveur**: Nom du serveur Duplicati (ou l'alias)
-  - Survoler le **Nom du serveur** affichera le nom du serveur et la note
-- **Statut global**: Le statut du serveur. Les sauvegardes en retard s'afficheront comme un statut **Avertissement**
-- **Version**: La version de Duplicati du dernier journal de sauvegarde, affichée à gauche de l'indicateur de statut. Voir [Version du serveur Duplicati](#duplicati-server-version).
-- **Informations de résumé**: Le nombre consolidé de fichiers, de taille et d'espace de stockage utilisé pour toutes les sauvegardes de ce serveur. Affiche également le temps écoulé de la dernière sauvegarde reçue (survolez pour afficher l'horodatage)
-- **Liste des sauvegardes**: Un tableau avec toutes les sauvegardes configurées pour ce serveur, avec 3 colonnes:
-  - **Nom de la sauvegarde**: Nom de la sauvegarde sur le serveur Duplicati
-  - **Historique des statuts**: Statut des 10 dernières sauvegardes reçues.
-  - **Dernière sauvegarde reçue**: Le temps écoulé depuis l'heure actuelle de la dernière sauvegarde reçue. Il affichera une icône d'avertissement si la sauvegarde est en retard.
-    - Le temps est affiché au format abrégé: `m` pour les minutes, `h` pour les heures, `d` pour les jours, `w` pour les semaines, `mo` pour les mois, `y` pour les années.
+- **Nom du serveur** : Nom du serveur Duplicati (ou l'alias)
+  - Passer la souris sur le **Nom du serveur** affichera le nom du serveur et la note
+- **Statut global** : Le statut du serveur. Les sauvegardes en retard s'afficheront avec le statut **Avertissement**
+- **Version** : La version Duplicati issue du dernier journal de sauvegarde, affichée à gauche de l'indicateur de statut. Voir [Version du serveur Duplicati](#duplicati-server-version).
+- **Informations récapitulatives** : Le nombre consolidé de fichiers, la taille et le stockage utilisé pour toutes les sauvegardes de ce serveur. Affiche également le temps écoulé depuis la dernière sauvegarde reçue (passez la souris dessus pour voir l'horodatage)
+- **Liste des sauvegardes** : Un tableau avec toutes les sauvegardes configurées pour ce serveur, avec 3 colonnes :
+  - **Nom de la sauvegarde** : Nom de la sauvegarde dans le serveur Duplicati
+  - **Historique du statut** : Statut des 10 dernières sauvegardes reçues.
+  - **Dernière sauvegarde reçue** : Le temps écoulé depuis l'heure actuelle du dernier journal reçu. Affichera une icône d'avertissement si la sauvegarde est en retard.
+    - L'heure est indiquée au format abrégé : `m` pour les minutes, `h` pour les heures, `d` pour les jours, `w` pour les semaines, `mo` pour les mois, `y` pour les années.
 
-L'ordre de tri des cartes et d'autres configurations peuvent être définis dans les [Paramètres d'affichage](settings/display-settings.md).
+L'ordre de tri des cartes et autres configurations peuvent être définis dans les [Paramètres d'affichage](settings/display-settings.md).
 
-La vue en panneau offre deux affichages informatifs, accessibles en cliquant sur le bouton en haut à droite du panneau latéral:
+La vue panneau propose deux affichages d'informations, accessibles en cliquant sur le bouton en haut à droite du panneau latéral :
 
-- Statut : Afficher les statistiques des tâches de sauvegarde par statut, avec une liste des sauvegardes en retard et des tâches de sauvegarde avec des statuts d'avertissement/erreurs.
+- Statut : Affiche les statistiques des tâches de sauvegarde par statut, avec une liste des sauvegardes en retard et des tâches de sauvegarde avec des statuts d'avertissements/erreurs.
 
-![panneau de statut](../assets/screen-overview-side-status.png)
+![panneau d'état](../assets/screen-overview-side-status.png)
 
-- Métriques : Afficher des graphiques avec la durée, la taille de fichier et la taille de stockage au fil du temps pour le serveur agrégé ou sélectionné.
+- Métriques : Affiche des graphiques avec la durée, la taille des fichiers et la taille de stockage au fil du temps pour le serveur agrégé ou sélectionné.
 
 ![panneau de graphiques](../assets/screen-overview-side-charts.png)
 
 ### Détails de la sauvegarde {/* #backup-details */}
 
-Survoler une sauvegarde dans la liste affiche les détails du dernier journal de sauvegarde reçu et toute information en retard.
+Le survol d'une sauvegarde dans la liste affiche les détails du dernier journal de sauvegarde reçu ainsi que toute information relative aux retards.
 
 ![Détails du retard](../assets/screen-backup-tooltip.png)
 
 - **Nom du serveur : Sauvegarde** : Le nom ou l'alias du serveur Duplicati et de la sauvegarde, affichera également le nom du serveur et la note.
   - L'alias et la note peuvent être configurés dans [Paramètres → Paramètres du serveur](settings/server-settings.md).
-- **Notification** : Une icône affichant le [paramètre de notification](#notifications-icons) configuré pour les nouveaux journaux de sauvegarde.
-- **Date** : L'horodatage de la sauvegarde et le temps écoulé depuis le dernier actualisation de l'écran.
+- **Notification** : Une icône indiquant le paramètre de [notification configuré](#notifications-icons) pour les nouveaux journaux de sauvegarde.
+- **Date** : L'horodatage de la sauvegarde et le temps écoulé depuis le dernier rafraîchissement de l'écran.
 - **Statut** : Le statut de la dernière sauvegarde reçue (Succès, Avertissement, Erreur, Fatal).
 - **Durée, Nombre de fichiers, Taille de fichier, Taille de stockage, Taille téléchargée** : Valeurs telles que rapportées par le serveur Duplicati.
 - **Versions disponibles** : Le nombre de versions de sauvegarde stockées sur la destination de sauvegarde au moment de la sauvegarde.
 
 Si cette sauvegarde est en retard, l'infobulle affiche également :
 
-- **Sauvegarde attendue** : L'heure à laquelle la sauvegarde était attendue, y compris la période de grâce configurée (temps supplémentaire autorisé avant de marquer comme en retard).
+- **Sauvegarde attendue** : L'heure à laquelle la sauvegarde était attendue, incluant la période de grâce configurée (temps supplémentaire autorisé avant de marquer comme en retard).
 
-Vous pouvez également cliquer sur les boutons en bas pour ouvrir [Paramètres → Notifications de sauvegarde](settings/backup-notifications-settings.md) pour configurer les paramètres de surveillance ou ouvrir l'interface web du serveur Duplicati.
+Vous pouvez également cliquer sur les boutons en bas pour ouvrir [Paramètres → Notifications de sauvegarde](settings/backup-notifications-settings.md) afin de configurer les paramètres de surveillance ou ouvrir l'interface web du serveur Duplicati.
 
-## Tableau de mise en page {/* #table-layout */}
+## Mise en page du tableau {/* #table-layout */}
 
-La mise en page du tableau liste les derniers journaux de sauvegarde reçus pour tous les serveurs et sauvegardes.
+La mise en page du tableau répertorie les journaux de sauvegarde les plus récents reçus pour tous les serveurs et sauvegardes.
 
 ![Mode tableau du tableau de bord](../assets/screen-main-dashboard-table-mode.png)
 
 - **Nom du serveur** : Le nom du serveur Duplicati (ou alias)
-  - Sous le nom se trouve la note du serveur
+  - Sous le nom figure la note du serveur
 - **Nom de la sauvegarde** : Le nom de la sauvegarde dans le serveur Duplicati.
-- **Version** : La version de Duplicati du dernier journal de sauvegarde pour cette tâche de sauvegarde. Voir [Version du serveur Duplicati](#duplicati-server-version).
-- **Versions disponibles** : Le nombre de versions de sauvegarde stockées sur la destination de sauvegarde. Si l'icône est grisée, des informations détaillées n'ont pas été reçues dans le journal. Voir les [instructions de configuration de Duplicati](../installation/duplicati-server-configuration.md) pour plus de détails.
-- **Nombre de sauvegardes** : Le nombre de sauvegardes rapportées par le serveur Duplicati.
+- **Version** : La version de Duplicati issue du dernier journal de sauvegarde pour cette tâche de sauvegarde. Voir [Version du serveur Duplicati](#duplicati-server-version).
+- **Versions disponibles** : Le nombre de versions de sauvegarde stockées sur la destination de sauvegarde. Si l'icône est grisée, les informations détaillées n'ont pas été reçues dans le journal. Reportez-vous aux [instructions de configuration de Duplicati](../installation/duplicati-server-configuration.md) pour plus de détails.
+- **Nombre de sauvegardes** : Le nombre de sauvegardes signalées par le serveur Duplicati.
 - **Date de dernière sauvegarde** : L'horodatage du dernier journal de sauvegarde reçu et le temps écoulé depuis le dernier rafraîchissement de l'écran.
 - **Statut de dernière sauvegarde** : Le statut de la dernière sauvegarde reçue (Succès, Avertissement, Erreur, Fatal).
-- **Durée** : La durée de la sauvegarde en HH:MM:SS.
-- **Avertissements/Erreurs** : Le nombre d'avertissements et d'erreurs rapportés dans le journal de sauvegarde, affichés sous la forme `warnings/errors` (par exemple `0/0`).
+- **Durée** : La durée de la sauvegarde au format HH:MM:SS.
+- **Avertissements/Erreurs** : Le nombre d'avertissements et d'erreurs signalés dans le journal de sauvegarde, affiché sous la forme `warnings/errors` (par exemple `0/0`).
 - **Paramètres** :
-  - **Notification** : Une icône montrant le paramètre de notification configuré pour les nouveaux journaux de sauvegarde.
+  - **Notification** : Une icône indiquant le paramètre de notification configuré pour les nouveaux journaux de sauvegarde.
   - **Configuration de Duplicati** : Un bouton pour ouvrir l'interface web du serveur Duplicati
 
-Vous pouvez utiliser les [Paramètres d'affichage](settings/display-settings.md) pour configurer la taille du tableau et d'autres configurations.
+Vous pouvez utiliser les [Paramètres d'affichage](settings/display-settings.md) pour configurer la taille du tableau et d'autres paramètres.
 
 ### Icônes de notifications {/* #notifications-icons */}
 
-| Icône                                                                                                                               | Option de notification | Description                                                                                         |
-|------------------------------------------------------------------------------------------------------------------------------------|---------------------|-----------------------------------------------------------------------------------------------------|
-| <IconButton icon="lucide:message-square-off" style={{border: 'none', padding: 0, color: '#9ca3af', background: 'transparent'}} />  | Désactivé                 | Aucune notification ne sera envoyée lorsqu'un nouveau journal de sauvegarde est reçu                                     |
-| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#60a5fa', background: 'transparent'}} /> | Tout                 | Des notifications seront envoyées pour chaque nouveau journal de sauvegarde, indépendamment de son statut.                      |
-| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#fbbf24', background: 'transparent'}} /> | Avertissements            | Des notifications seront envoyées uniquement pour les journaux de sauvegarde avec un statut d'Avertissement, Inconnu, Erreur ou Fatal. |
-| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#f87171', background: 'transparent'}} /> | Erreurs              | Des notifications seront envoyées uniquement pour les journaux de sauvegarde avec un statut d'Erreur ou Fatal.                    |
+| Icône                                                                                                                              | Option de notification | Description                                                                                         |
+|------------------------------------------------------------------------------------------------------------------------------------|------------------------|-----------------------------------------------------------------------------------------------------|
+| <IconButton icon="lucide:message-square-off" style={{border: 'none', padding: 0, color: '#9ca3af', background: 'transparent'}} />  | Désactivé              | Aucune notification ne sera envoyée lorsqu'un nouveau journal de sauvegarde est reçu                |
+| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#60a5fa', background: 'transparent'}} /> | Tout                   | Des notifications seront envoyées pour chaque nouveau journal de sauvegarde, quel que soit son statut. |
+| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#fbbf24', background: 'transparent'}} /> | Avertissements        | Les notifications seront envoyées uniquement pour les journaux de sauvegarde ayant un statut d'Avertissement, Inconnu, Erreur ou Fatal. |
+| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#f87171', background: 'transparent'}} /> | Erreurs               | Les notifications seront envoyées uniquement pour les journaux de sauvegarde ayant un statut d'Erreur ou Fatal.                   |
 
 :::note
-Ce paramètre de notification ne s'applique que lorsque **duplistatus** reçoit un nouveau journal de sauvegarde d'un serveur Duplicati. Les notifications en retard sont configurées séparément et seront envoyées indépendamment de ce paramètre.
+Ce paramètre de notification ne s'applique que lorsque **duplistatus** reçoit un nouveau journal de sauvegarde d'un serveur Duplicati. Les notifications de retard sont configurées séparément et seront envoyées indépendamment de ce paramètre.
 :::
 
 ### Détails du retard {/* #overdue-details */}
 
-Survoler l'icône d'avertissement en retard affiche des détails sur la sauvegarde en retard.
+Le survol de l'icône d'avertissement de retard affiche les détails concernant la sauvegarde en retard.
 
 ![Détails du retard](../assets/screen-overdue-backup-hover-card.png)
 
-- **Vérifié**: Quand la dernière vérification en retard a été effectuée. Configurez la fréquence dans [Paramètres des notifications de sauvegarde](settings/backup-notifications-settings.md).
-- **Dernière sauvegarde**: Quand le dernier journal de sauvegarde a été reçu.
-- **Sauvegarde attendue**: L'heure à laquelle la sauvegarde était attendue, y compris le délai de grâce configuré (temps supplémentaire autorisé avant de marquer comme en retard).
-- **Dernière notification**: Quand la dernière notification en retard a été envoyée.
+- **Vérifié** : Date à laquelle la dernière vérification de retard a été effectuée. Configurez la fréquence dans [Paramètres des notifications de sauvegarde](settings/backup-notifications-settings.md).
+- **Dernière sauvegarde** : Date à laquelle le dernier journal de sauvegarde a été reçu.
+- **Sauvegarde prévue** : Heure à laquelle la sauvegarde était attendue, incluant la période de grâce configurée (temps supplémentaire autorisé avant de marquer comme en retard).
+- **Dernière notification** : Date à laquelle la dernière notification de retard a été envoyée.
 
 ## Version du serveur Duplicati {/* #duplicati-server-version */}
 
-Le tableau de bord affiche la version de Duplicati rapportée dans le dernier journal de sauvegarde pour chaque serveur (vue carte) ou tâche de sauvegarde (vue tableau).
+Le tableau de bord affiche la version Duplicati indiquée dans le dernier journal de sauvegarde pour chaque serveur (vue carte) ou tâche de sauvegarde (vue tableau).
 
-- **Où il apparaît** : À gauche de l'indicateur de statut sur les cartes, et dans la colonne **Version** du tableau (après **En retard / Prochaine exécution**). Vous pouvez masquer le badge de la carte dans les [Paramètres d'affichage](settings/display-settings.md) ou [Versions de Duplicati](settings/duplicati-versions.md). La colonne du tableau reste toujours visible.
-- **Couleur** : Le texte gris signifie que la version correspond à la dernière version pour cette chaîne (ou que la comparaison est indisponible). Le jaune d'avertissement signifie que la version est plus ancienne que la dernière version pour cette chaîne.
-- **Info-bulle** : Survolez ou cliquez sur le numéro de version pour voir la chaîne de mise à jour (`stable`, `beta`, `experimental`, ou `canary`), la version du serveur, et la dernière version disponible pour cette chaîne.
+- **Où cela apparaît** : À gauche de l'indicateur d'état sur les cartes, et dans la colonne **Version** sur le tableau (après **En retard / Prochaine exécution**). Vous pouvez masquer le badge de la carte depuis [Paramètres d'affichage](settings/display-settings.md) ou [Versions de Duplicati](settings/duplicati-versions.md). La colonne du tableau reste toujours visible.
+- **Couleur** : Le texte gris signifie que la version correspond à la dernière version publiée pour cette chaîne (ou la comparaison n'est pas disponible). Le jaune d'avertissement signifie que la version est plus ancienne que la dernière version publiée pour cette chaîne.
+- **Infobulle** : Survolez ou cliquez sur le numéro de version pour voir la chaîne de mise à jour (`stable`, `beta`, `experimental` ou `canary`), la version du serveur et la dernière version disponible pour cette chaîne.
 
-**duplistatus** compare la version du journal de sauvegarde avec les dernières versions de Duplicati publiées sur GitHub. Les administrateurs peuvent voir les versions de canal en cache et configurer l'intervalle de vérification et l'heure de début dans [Paramètres → Versions de Duplicati](settings/duplicati-versions.md). Le cache est également actualisé au démarrage s'il est plus ancien que l'intervalle sélectionné. Les mises à jour réussies et échouées de GitHub sont enregistrées dans le [journal d'audit](settings/audit-logs-viewer.md) comme `duplicati_version_refresh` (démarré par `startup`, `cron`, ou `manual`).
+**duplistatus** compare la version provenant du journal de sauvegarde avec les dernières versions Duplicati publiées sur GitHub. Les administrateurs peuvent consulter les versions de chaîne mises en cache et configurer l'intervalle de vérification et l'heure de début dans [Paramètres → Versions de Duplicati](settings/duplicati-versions.md). Le cache est également actualisé au démarrage lorsqu'il est plus ancien que l'intervalle sélectionné. Les mises à jour GitHub réussies et échouées sont enregistrées dans le [journal d'audit](settings/audit-logs-viewer.md) sous forme de `duplicati_version_refresh` (démarré par `startup`, `cron` ou `manual`).
 
 :::important
-**duplistatus** ne interroge pas le serveur Duplicati pour la version actuellement en cours d'exécution. Il utilise la version stockée dans le dernier journal de sauvegarde reçu ou [collecté](collect-backup-logs.md). Après avoir mis à jour Duplicati, le tableau de bord continue d'afficher la version précédente jusqu'à ce qu'un nouveau journal de sauvegarde arrive.
+**duplistatus** n'interroge pas le serveur Duplicati pour obtenir la version actuellement en cours d'exécution. Il utilise la version stockée dans le dernier journal de sauvegarde reçu ou [collecté](collect-backup-logs.md). Après avoir mis à jour Duplicati, le tableau de bord continue d'afficher la version précédente jusqu'à l'arrivée d'un nouveau journal de sauvegarde.
 :::
 
 ### Versions de sauvegarde disponibles {/* #available-backup-versions */}
 
-Cliquer sur l'icône de l'horloge bleue ouvre une liste des versions de sauvegarde disponibles au moment de la sauvegarde, comme rapportées par le serveur Duplicati.
+Cliquer sur l'icône bleue de l'horloge ouvre une liste des versions de sauvegarde disponibles au moment de la sauvegarde, telles qu'indiquées par le serveur Duplicati.
 
 ![Versions disponibles](../assets/screen-available-backups-modal.png)
 
-- **Détails de la sauvegarde**: Affiche le nom du serveur et l'alias, la note du serveur, le nom de la sauvegarde, et quand la sauvegarde a été exécutée.
-- **Détails de la version**: Affiche le numéro de version, la date de création et l'âge.
+- **Détails de la sauvegarde** : Affiche le nom du serveur et l'alias, la note du serveur, le nom de la sauvegarde et quand la sauvegarde a été exécutée.
+- **Détails de la version** : Affiche le numéro de version, la date de création et l'âge.
 
 :::note
 Si l'icône est grisée, cela signifie qu'aucune information détaillée n'a été reçue dans les journaux de messages.

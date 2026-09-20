@@ -1,11 +1,11 @@
 # Retenção de Log de Auditoria {/* #audit-log-retention */}
 
-Configurar por quanto tempo os logs de auditoria são mantidos antes da limpeza automática.
+Configurar por quanto tempo os logs de auditoria são retidos antes da limpeza automática.
 
 ![Retenção de Log de Auditoria](../../assets/screen-settings-audit-retention.png)
 
 | Configuração | Descrição | Valor Padrão |
-|:-----------|:-----------|:-------------|
+|:-------|:-----------|:-------------|
 | **Retenção (dias)** | Número de dias para manter os logs de auditoria antes da exclusão automática | **90 dias** |
 
 ## Configurações de Retenção {/* #retention-settings */}

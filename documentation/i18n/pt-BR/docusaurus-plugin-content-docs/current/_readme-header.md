@@ -1,28 +1,29 @@
 ![duplistatus](documentation/static/img/duplistatus_banner.png)
 
-# duplistatus - Monitorar Múltiplos Servidores [Duplicati](https://github.com/duplicati/duplicati) {/* #duplistatus----monitor-multiple-duplicatishttpsgithubcomduplicatiduplicati-servers */}
+# duplistatus - Monitore Vários Servidores do [Duplicati](https://github.com/duplicati/duplicati) {/* #duplistatus----monitor-multiple-duplicatishttpsgithubcomduplicatiduplicati-servers */}
 
-![version](https://img.shields.io/badge/version-{VERSION}-blue) 
+![versão](https://img.shields.io/badge/version-{VERSION}-blue) 
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?logo=github)](https://github.com/wsj-br/duplistatus)
 
 <br/>
 
-Este aplicativo web monitora e visualiza operações de backup do [Duplicati](https://github.com/duplicati/duplicati). O **duplistatus** fornece um painel abrangente para rastrear status de backups, notificar backups atrasados, histórico de tarefas, métricas e desempenho em múltiplos servidores.
+Esta aplicação web monitora e visualiza operações de backup do [Duplicati](https://github.com/duplicati/duplicati). O **duplistatus** oferece um painel abrangente para acompanhar status de backup, notificar backups atrasados, histórico de tarefas,
+métricas e desempenho em múltiplos servidores.
 
-Fácil de implantar com Docker, Podman ou Portainer e disponível em 7 idiomas (Inglês, Alemão, Francês, Espanhol, Português, Hindi e Chinês Simplificado), com documentação completa em cada idioma.
+Fácil de implantar com Docker, Podman ou Portainer e disponível em 7 idiomas (inglês, alemão, francês, espanhol, português, híndi e chinês simplificado), com documentação completa em cada idioma.
 
-[Mais informações](https://wsj-br.github.io/duplistatus)        |
-[Mehr informationen](https://wsj-br.github.io/duplistatus/de/)  | 
+[More information](https://wsj-br.github.io/duplistatus) |
+[Mehr informationen](https://wsj-br.github.io/duplistatus/de/) | 
 [Plus d'informations](https://wsj-br.github.io/duplistatus/fr/) | 
-[Más información](https://wsj-br.github.io/duplistatus/es/)     |
+[Más información](https://wsj-br.github.io/duplistatus/es/) |
 [Mais informações](https://wsj-br.github.io/duplistatus/pt-BR/) |
 [Adhik jaankari](https://wsj-br.github.io/duplistatus/hi/) |
 [更多信息](https://wsj-br.github.io/duplistatus/zh-Hans/)
 
-[Guia de instalação](https://wsj-br.github.io/duplistatus/installation)        |
-[Installationsleitfaden](https://wsj-br.github.io/duplistatus/de/installation)  | 
+[Install guide](https://wsj-br.github.io/duplistatus/installation) |
+[Installationsleitfaden](https://wsj-br.github.io/duplistatus/de/installation) | 
 [Guide d'Installation](https://wsj-br.github.io/duplistatus/fr/installation) | 
-[Guía de Instalación](https://wsj-br.github.io/duplistatus/es/installation)     |
+[Guía de Instalación](https://wsj-br.github.io/duplistatus/es/installation) |
 [Guia de Instalação](https://wsj-br.github.io/duplistatus/pt-BR/installation) |
 [Sthaapana gaaid](https://wsj-br.github.io/duplistatus/hi/installation) |
 [安装指南](https://wsj-br.github.io/duplistatus/zh-Hans/installation)
@@ -31,7 +32,7 @@ Fácil de implantar com Docker, Podman ou Portainer e disponível em 7 idiomas (
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Sumário**
+**Índice**
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 

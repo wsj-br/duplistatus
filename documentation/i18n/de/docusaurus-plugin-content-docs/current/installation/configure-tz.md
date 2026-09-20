@@ -1,20 +1,20 @@
 # Zeitzone {/* #timezone */}
 
-Das Benutzerinterface der Anwendung zeigt Datum und Uhrzeit entsprechend den Browsereinstellungen an. Logging verwendet weiterhin die `TZ` Umgebungsvariable. Tägliche Zusammenfassung Benachrichtigungen verwenden die IANA Zeitzone, die in [Einstellungen → Tägliche Zusammenfassung](../user-guide/settings/daily-summary-settings.md) gespeichert ist, nicht `TZ`. Andere Benachrichtigungszeitstempel, die keine Tägliche Zusammenfassung sind, folgen weiterhin `TZ`.
+Das Datum und die Uhrzeit der Anwendungsbenutzeroberfläche werden gemäß den Browsereinstellungen angezeigt. Die Protokollierung verwendet weiterhin die Umgebungsvariable `TZ`. Tägliche-Zusammenfassungs-Benachrichtigungen verwenden die in [Einstellungen → Tägliche Zusammenfassung](../user-guide/settings/daily-summary-settings.md) gespeicherte IANA-Zeitzone, nicht `TZ`. Andere Benachrichtigungszeitstempel, die keine Tägliche Zusammenfassung sind, folgen weiterhin `TZ`.
 
 Der Standardwert ist `TZ=Europe/London`, wenn diese Umgebungsvariable nicht festgelegt ist.
 
 :::note
-Die Sprache und Gebietsschema-Einstellungen (Zahlen- und Datumsformate) für Benachrichtigungen können in den [Einstellungen → Vorlagen](../user-guide/settings/notification-templates.md) konfiguriert werden.
+Die Sprach- und Ländereinstellungen (Zahlen- und Datumsformate) für Benachrichtigungen können in [Einstellungen → Vorlagen](../user-guide/settings/notification-templates.md) konfiguriert werden.
 :::
 
 ## Konfigurieren der Zeitzone {/* #configuring-the-timezone */}
 
-Das Benutzerinterface der Anwendung zeigt Datum und Uhrzeit entsprechend den Browsereinstellungen an. Logging verwendet weiterhin die `TZ` Umgebungsvariable. Tägliche Zusammenfassung Benachrichtigungen verwenden die IANA Zeitzone, die in [Einstellungen → Tägliche Zusammenfassung](../user-guide/settings/daily-summary-settings.md) gespeichert ist, nicht `TZ`. Andere Benachrichtigungszeitstempel, die keine Tägliche Zusammenfassung sind, folgen weiterhin `TZ`.
+Das Datum und die Uhrzeit der Anwendungsbenutzeroberfläche werden gemäß den Browsereinstellungen angezeigt. Die Protokollierung verwendet weiterhin die Umgebungsvariable `TZ`. Tägliche-Zusammenfassungs-Benachrichtigungen verwenden die in [Einstellungen → Tägliche Zusammenfassung](../user-guide/settings/daily-summary-settings.md) gespeicherte IANA-Zeitzone, nicht `TZ`. Andere Benachrichtigungszeitstempel, die keine Tägliche Zusammenfassung sind, folgen weiterhin `TZ`.
 
 Der Standardwert ist `TZ=Europe/London`, wenn diese Umgebungsvariable nicht festgelegt ist.
 
-Zum Beispiel, um die Zeitzone auf São Paulo zu ändern, fügen Sie diese Zeilen zur `compose.yml` im Verzeichnis `duplistatus` hinzu:
+Um beispielsweise die Zeitzone auf São Paulo zu ändern, fügen Sie diese Zeilen zu `compose.yml` im Verzeichnis `duplistatus` hinzu:
 
 ```yaml
 environment:
@@ -29,7 +29,7 @@ oder übergeben Sie die Umgebungsvariable in der Befehlszeile (Docker oder Podma
 
 ### Verwendung Ihrer Linux-Konfiguration {/* #using-your-linux-configuration */}
 
-Um die Konfiguration Ihres Linux-Hosts zu erhalten, können Sie ausführen:
+Um Ihre Linux-Host-Konfiguration zu erhalten, können Sie Folgendes ausführen:
 
 ```bash
 echo TZ=\"$(</etc/timezone)\"
@@ -37,4 +37,4 @@ echo TZ=\"$(</etc/timezone)\"
 
 ### Liste der Zeitzonen {/* #list-of-timezones */}
 
-Sie können eine Liste der Zeitzonen hier finden: [Wikipedia: Liste der tz-Datenbank Zeitzonen](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List)
+Sie finden eine Liste der Zeitzonen hier: [Wikipedia: List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List)
