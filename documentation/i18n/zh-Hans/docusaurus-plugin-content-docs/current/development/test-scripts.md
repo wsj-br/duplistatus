@@ -81,7 +81,7 @@ pnpm validate-csv-export
 
 在发布前用于确保 CSV 导出正常工作。
 
-## 临时阻止 NTFY 服务器（用于测试）{/* #temporarily-block-ntfy-server-for-testing */}
+## 临时阻止 NTFY 服务器（用于测试） {/* #temporarily-block-ntfy-server-for-testing */}
 
 ```bash
 sudo ./scripts/temporary_ntfy.sh_block.sh
@@ -220,7 +220,7 @@ echo $?  # 0 = all passed, 1 = some failed
 >[!NOTE]
 > 此脚本在内部使用 TypeScript 迁移测试脚本（`test-migration.ts`）。测试脚本验证迁移后的数据库结构并确保数据完整性。
 
-## SMTP 和电子邮件（开发）{/* #smtp-and-email-development */}
+## SMTP 和电子邮件（开发） {/* #smtp-and-email-development */}
 
 在 **设置 → 电子邮件** 下配置 SMTP 并使用应用内电子邮件测试和通知流程。以前的 `pnpm set-smtp-test-config` 和 `pnpm test-smtp-connections` 辅助脚本已从仓库中移除。
 

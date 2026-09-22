@@ -1,6 +1,6 @@
-# Endurecimento de segurança {/* #security-hardening */}
+# Reforço de Segurança {/* #security-hardening */}
 
-O endurecimento de produção para **duplistatus** é em camadas e opcional. Todos os recursos descritos aqui estão desativados por padrão, portanto uma instalação nova continua funcionando até você optar por ativá-los. Existem três camadas independentes:
+O reforço de segurança em produção para o **duplistatus** é em camadas e opcional. Cada recurso descrito aqui está desativado por padrão, então uma nova instalação continua funcionando até que você escolha ativar. Há três camadas independentes:
 
 - **Chaves de API** — segredos com escopo para as APIs externas de carregamento e leitura; geralmente o primeiro passo mais fácil em um homelab
 - **Listas de permissões de IP** — restrições CIDR na interface de administração, nas APIs externas ou em ambas
@@ -77,9 +77,9 @@ server {
     listen 80;
     server_name your-domain.com;
 
-    # Nginx defaults to 1 MB, which is below the upload limit on
-    # Settings → API Keys (5 MB by default). Keep this at or above it.
-    client_max_body_size 10m;
+    # Nginx defaults to 1 MB. Keep this at or above database restore (200 MB)
+    # and the upload limit on Settings → API Keys (5 MB by default).
+    client_max_body_size 256m;
 
     location / {
         proxy_pass http://localhost:9666;

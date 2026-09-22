@@ -1,4 +1,4 @@
-# 主页集成（可选）{/* #homepage-integration-optional */}
+# 主页集成（可选） {/* #homepage-integration-optional */}
 
 [Homepage](https://gethomepage.dev/) 是一个可自定义的仪表板应用程序。要将 **duplistatus** 与 Homepage 集成，请使用 [自定义 API 小组件类型](https://gethomepage.dev/widgets/services/customapi/) 向您的 `services.yaml` 文件中添加一个小组件。
 

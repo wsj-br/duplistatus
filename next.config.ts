@@ -92,7 +92,10 @@ const nextConfig: NextConfig = {
   devIndicators: false,
   turbopack: {},
   experimental: {
-    optimizePackageImports: ["@radix-ui/react-icons", "lucide-react"]
+    optimizePackageImports: ["@radix-ui/react-icons", "lucide-react"],
+    // Proxy buffers every request body. Default is 10MB, which truncates
+    // database restore uploads. 256MB covers a 200MB backup plus multipart framing.
+    proxyClientMaxBodySize: "256mb",
   },
   pageExtensions: ["ts", "tsx", "js", "jsx", "md", "mdx"],
   distDir: ".next",

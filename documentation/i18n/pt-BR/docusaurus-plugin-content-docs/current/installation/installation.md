@@ -261,4 +261,4 @@ podman pod rm -f duplistatus-pod
 6. Configure as definições de e-mail – configure notificações por e-mail em [Configurações → E-mail](../user-guide/settings/email-settings.md).
 7. Configure notificações de backup – configure notificações por backup ou por servidor em [Configurações → Notificações de Backup](../user-guide/settings/backup-notifications-settings.md).
 
-Veja as seções a seguir para configurar definições opcionais, como fuso horário, formato de número e [endurecimento de segurança](security-hardening.md).
+Consulte as seções a seguir para configurar as configurações opcionais, como fuso horário, formato de número e [reforço de segurança](security-hardening.md).

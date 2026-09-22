@@ -857,8 +857,8 @@ Avec erreurs :
 - **Description** : Restaure la base de données à partir d'un fichier de sauvegarde (au format .db ou .sql). Crée une sauvegarde de sécurité avant la restauration et efface toutes les sessions après la restauration pour des raisons de sécurité.
 - **Authentification** : Nécessite des privilèges Admin, une session valide et un jeton CSRF
 - **Corps de la requête** : FormData avec un champ de fichier nommé `database`
-  - Le fichier doit être soit `.db`, `.sqlite`, `.sqlite3` (format binaire) ou `.sql` (format SQL)
-  - Taille maximale du fichier : 100 Mo
+  - Le fichier doit être au format `.db`, `.sqlite`, `.sqlite3` (format binaire) ou `.sql` (format SQL)
+  - Taille maximale du fichier : 200 Mo
 - **Réponse** :
 
   ```json

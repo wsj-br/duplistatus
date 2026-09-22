@@ -77,9 +77,9 @@ server {
     listen 80;
     server_name your-domain.com;
 
-    # Nginx defaults to 1 MB, which is below the upload limit on
-    # Settings → API Keys (5 MB by default). Keep this at or above it.
-    client_max_body_size 10m;
+    # Nginx defaults to 1 MB. Keep this at or above database restore (200 MB)
+    # and the upload limit on Settings → API Keys (5 MB by default).
+    client_max_body_size 256m;
 
     location / {
         proxy_pass http://localhost:9666;

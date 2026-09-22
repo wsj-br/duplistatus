@@ -35,9 +35,9 @@ Crie um backup de todo o seu banco de dados para segurança ou fins de migraçã
 Restaure seu banco de dados a partir de um arquivo de backup criado anteriormente.
 
 1.  Navegue até [Configurações → Manutenção do Banco de Dados](database-maintenance.md).
-2.  Na seção **Restauração do Banco de Dados**, clique na entrada de arquivo e selecione um arquivo de backup:
+2.  Na seção **Restauração do Banco de Dados**, clique no campo de arquivo e selecione um arquivo de Backup:
     - Formatos suportados: `.db`, `.sql`, `.sqlite`, `.sqlite3`
-    - Tamanho máximo de arquivo: 100MB
+    - Tamanho máximo do arquivo: 200MB
 3.  Clique em <IconButton icon="lucide:upload" label="Restaurar Banco de Dados" />.
 4.  Confirme a ação na caixa de diálogo.
 

@@ -267,7 +267,7 @@ pnpm test-entrypoint
 - Tester l'arrêt gracieux et la gestion des signaux
 - Déboguer le comportement du script de point d'entrée dans un environnement local
 
-## Validation du {/* #daily-summary-validation */} Résumé quotidien
+## Validation du Résumé quotidien {/* #daily-summary-validation */}
 
 ```bash
 pnpm validate-daily-summary

@@ -789,7 +789,7 @@
 - **Authentication**: Requires admin privileges, valid session and CSRF token
 - **Request Body**: FormData with a file field named `database`
   - File must be either `.db`, `.sqlite`, `.sqlite3` (binary format) or `.sql` (SQL format)
-  - Maximum file size: 100MB
+  - Maximum file size: 200MB
 - **Response**:
   ```json
   {

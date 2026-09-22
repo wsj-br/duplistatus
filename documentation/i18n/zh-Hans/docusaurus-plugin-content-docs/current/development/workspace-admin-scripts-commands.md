@@ -196,7 +196,7 @@ pnpm i18n:tools --remote
 
 **注意：** SQLite 版本仅按主版本进行比较，因为同一主版本内的不同补丁版本通常兼容。脚本将指示 SQLite 版本在主版本级别是否匹配但补丁版本存在差异。
 
-## 查看数据库 {/* #viewing-the-configurations-in-the-database */} 中的配置
+## 查看数据库 中的配置 {/* #viewing-the-configurations-in-the-database */}
 
 ```bash
 sqlite3 data/backups.db "SELECT key, value FROM configurations;" | awk -F'|' '

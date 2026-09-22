@@ -34,10 +34,10 @@ Cree una copia de seguridad de toda su base de datos para resguardo o con fines 
 
 Restaure su base de datos desde un archivo de copia de seguridad creado previamente.
 
-1.  Navegue a [Configuración → Mantenimiento de base de datos](database-maintenance.md).
-2.  En la sección **Restauración de base de datos**, haga clic en la entrada de archivo y seleccione un archivo de copia de seguridad:
+1.  Vaya a [Configuración → Mantenimiento de base de datos](database-maintenance.md).
+2.  En la sección **Restauración de base de datos**, haga clic en el campo de entrada y seleccione una copia de seguridad:
     - Formatos admitidos: `.db`, `.sql`, `.sqlite`, `.sqlite3`
-    - Tamaño máximo de archivo: 100MB
+    - Tamaño de Archivos: máximo 200MB
 3.  Haga clic en <IconButton icon="lucide:upload" label="Restaurar base de datos" />.
 4.  Confirme la acción en el cuadro de diálogo.
 

@@ -45,7 +45,7 @@ Duplicati अपने अनुरोधों में कस्टम हे
 
 यदि **duplistatus** एक रिवर्स प्रॉक्सी के पीछे स्थित है, तो पहले **विश्वसनीय प्रॉक्सी** कॉन्फ़िगर करें (नीचे देखें [IP अनुमति सूची के लिए विश्वसनीय प्रॉक्सी](#trusted-proxies-for-ip-allowlists))। इसके बिना, अनुमति सूची के निर्णय क्लाइंट के बजाय प्रॉक्सी के पते के खिलाफ लिए जाते हैं।
 
-## रिवर्स प्रॉक्सी {/* #https-with-a-reverse-proxy */} के साथ HTTPS
+## रिवर्स प्रॉक्सी के साथ HTTPS {/* #https-with-a-reverse-proxy */}
 
 उत्पादन डिप्लॉइमेंट के लिए, रिवर्स प्रॉक्सी के पीछे HTTPS के माध्यम से **duplistatus** को सर्व करें। नीचे दिए गए उदाहरण दो लोकप्रिय विकल्पों को शामिल करते हैं।
 
@@ -77,9 +77,9 @@ server {
     listen 80;
     server_name your-domain.com;
 
-    # Nginx defaults to 1 MB, which is below the upload limit on
-    # Settings → API Keys (5 MB by default). Keep this at or above it.
-    client_max_body_size 10m;
+    # Nginx defaults to 1 MB. Keep this at or above database restore (200 MB)
+    # and the upload limit on Settings → API Keys (5 MB by default).
+    client_max_body_size 256m;
 
     location / {
         proxy_pass http://localhost:9666;

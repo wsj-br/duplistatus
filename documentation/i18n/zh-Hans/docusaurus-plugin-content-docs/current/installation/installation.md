@@ -45,7 +45,7 @@ docker compose -f duplistatus.yml up -d
 
 查看[时区](./configure-tz.md)部分了解如何调整时区和数字/日期/时间格式的更多详细信息。
 
-### 选项 2：使用 Portainer 堆栈（Docker Compose）{/* #option-2-using-portainer-stacks-docker-compose */}
+### 选项 2：使用 Portainer 堆栈（Docker Compose） {/* #option-2-using-portainer-stacks-docker-compose */}
 
 1. 在您的 [Portainer](https://docs.portainer.io/user/docker/stacks) 服务器中转到“堆栈”并单击“添加堆栈”。
 2. 为您的堆栈命名（例如，“duplistatus”）。
@@ -82,7 +82,7 @@ volumes:
 5. 查看[时区](./configure-tz.md)部分了解如何调整时区和数字/日期/时间格式的更多详细信息。
 6. 单击“部署堆栈”。
 
-### 选项 3：使用 Portainer 堆栈（GitHub 仓库）{/* #option-3-using-portainer-stacks-github-repository */}
+### 选项 3：使用 Portainer 堆栈（GitHub 仓库） {/* #option-3-using-portainer-stacks-github-repository */}
 
 1. 在 [Portainer](https://docs.portainer.io/user/docker/stacks) 中，转到“堆栈”并单击“添加堆栈”。
 2. 为您的堆栈命名（例如，“duplistatus”）。

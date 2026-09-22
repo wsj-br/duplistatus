@@ -34,12 +34,12 @@
 
 从先前创建的备份文件恢复数据库。
 
-1.  导航至 [设置 → 数据库维护](database-maintenance.md)。
-2.  在 **数据库恢复** 部分，单击文件输入框并选择一个备份文件：
-    - 支持的格式：`.db`, `.sql`, `.sqlite`, `.sqlite3`
-    - 最大文件大小：100MB
-3.  单击 <IconButton icon="lucide:upload" label="恢复数据库" />。
-4.  在对话框中确认操作。
+1. 前往[设置 → 数据库维护](database-maintenance.md)。
+2. 在**数据库恢复**部分，点击文件输入框并选择备份文件：
+    - 支持的格式：`.db`、`.sql`、`.sqlite`、`.sqlite3`
+    - 最大文件大小: 200MB
+3. 点击<IconButton icon="lucide:upload" label="恢复数据库" />。
+4. 在对话框中确认该操作。
 
 **恢复过程：**
 

@@ -153,7 +153,7 @@ Dieses Skript:
 - Generiert `README_dockerhub.md` mit Docker Hub-kompatibler Formatierung (konvertiert Bilder und Links in absolute URLs, konvertiert GitHub-Alerts in emoji-basierte Formate)
 - Generiert GitHub-Release-Notizen (`RELEASE_NOTES_github_VERSION.md`) aus `documentation/docs/release-notes/VERSION.md` (konvertiert Links und Bilder in absolute URLs)
 
-## README für Docker Hub {/* #update-readme-for-docker-hub */} aktualisieren
+## README für Docker Hub aktualisieren {/* #update-readme-for-docker-hub */}
 
 Das `generate-readme-from-intro.sh`-Skript generiert automatisch `README_dockerhub.md` mit Docker Hub-kompatibler Formatierung. Es:
 - Kopiert `README.md` nach `README_dockerhub.md`

@@ -35,10 +35,10 @@ Erstellen Sie eine Sicherung Ihrer gesamten Datenbank zu Aufbewahrungs- oder Mig
 Stellen Sie Ihre Datenbank aus einer zuvor erstellten Sicherungsdatei wieder her.
 
 1.  Navigieren Sie zu [Einstellungen → Datenbankverwaltung](database-maintenance.md).
-2.  Klicken Sie im Abschnitt **Datenbankwiederherstellung** auf das Dateieingabefeld und wählen Sie eine Sicherungsdatei aus:
+2.  Klicken Sie im Abschnitt **Datenbankwiederherstellung** auf das Dateiauswahlfeld und wählen Sie eine Sicherung aus:
     - Unterstützte Formate: `.db`, `.sql`, `.sqlite`, `.sqlite3`
-    - Maximale Dateigröße: 100 MB
-3.  Klicken Sie auf <IconButton icon="lucide:upload" label="Datenbank wiederherstellen" />.
+    - Maximale Dateigröße: 200 MB
+3.  Klicken Sie auf <IconButton icon="lucide:upload" label="Datenbankwiederherstellung" />.
 4.  Bestätigen Sie die Aktion im Dialogfeld.
 
 **Wiederherstellungsprozess:**

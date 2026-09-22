@@ -855,10 +855,10 @@ Mit Fehlern:
 - **Endpunkt**: `/api/database/restore`
 - **Methode**: POST
 - **Beschreibung**: Stellt die Datenbank aus einer Sicherungsdatei (.db- oder .sql-Format) wieder her. Erstellt vor der Wiederherstellung eine Sicherung zur Absicherung und löscht nach der Wiederherstellung aus Sicherheitsgründen alle Sitzungen.
-- **Authentifizierung**: Erfordert Administratorrechte, gültige Sitzung und CSRF-Token
-- **Anforderungstext**: FormData mit einem Dateifeld namens `database`
-  - Die Datei muss entweder `.db`, `.sqlite`, `.sqlite3` (binäres Format) oder `.sql` (SQL-Format) sein
-  - Maximale Dateigröße: 100 MB
+- **Authentifizierung**: Erfordert Admin-Rechte, eine gültige Sitzung und ein CSRF-Token
+- **Request-Body**: FormData mit einem Dateifeld namens `database`
+  - Die Datei muss entweder `.db`, `.sqlite`, `.sqlite3` (Binärformat) oder `.sql` (SQL-Format) sein
+  - Maximale Dateigröße: 200MB
 - **Antwort**:
 
   ```json

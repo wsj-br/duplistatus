@@ -8,10 +8,10 @@
 - **Painel Unificado**: Visualize status de backup, histórico, versão do Duplicati e detalhes de todos os servidores em um único lugar.
 - **Monitoramento de Backup**: Verificação automatizada e alertas para backups agendados atrasados.
 - **Visualização de Dados e Logs**: Gráficos interativos e coleta automática de logs dos servidores Duplicati.
-- **Notificações e Alertas**: Suporte integrado a NTFY e e-mail SMTP para alertas de backup, incluindo notificações de backup atrasado.
+- **Notificações e Alertas**: Suporte integrado a NTFY e E-mail SMTP para alertas de backup, incluindo notificações de backup atrasado.
 - **Gerenciamento de Usuários**: Login com funções de Administrador e Usuário, políticas de senha configuráveis, bloqueio de conta e administração de usuários.
-- **Endurecimento de Segurança**: Proteção extra opcional, chaves de API para uploads do Duplicati e widgets da Homepage (com limites de tamanho de upload e taxa), listas de permissão de IP independentes para a interface de administração e as APIs externas, proteção anti-spoofing e orientação de proxy reverso HTTPS.
-- **Trilha de Auditoria**: Trilha de auditoria completa de todas as alterações do sistema e ações do usuário com filtragem avançada, capacidades de exportação e períodos de retenção configuráveis.
+- **Reforço de Segurança**: Proteção extra opcional, Chaves de API para carregamentos do Duplicati e widgets da página inicial (com limites de tamanho e taxa de carregamento), listas de permissão de IP independentes para a Interface de administração e as APIs externas, proteção contra falsificação e orientações para proxy reverso HTTPS.
+- **Registro de Auditoria**: Trilha de auditoria completa de todas as alterações do sistema e ações do usuário com filtragem avançada, recursos de exportação e períodos de retenção configuráveis.
 - **Visualizador de Logs do Aplicativo**: Interface exclusiva para administrador para visualizar, pesquisar e exportar logs do aplicativo diretamente da interface web com capacidades de monitoramento em tempo real.
 - **Suporte Multilíngue**: Interface e documentação disponíveis em inglês, francês, alemão, espanhol, português brasileiro, hindi e chinês simplificado.
 

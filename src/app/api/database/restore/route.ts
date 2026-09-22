@@ -19,7 +19,7 @@ import path from 'path';
 import fs from 'fs';
 import { getDataTempDir } from '@/lib/paths';
 
-const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
+const MAX_FILE_SIZE = 200 * 1024 * 1024; // 200MB
 
 /** Delay after closing DB so the OS releases file handles (e.g. in Docker). */
 const RESTORE_CLOSE_DELAY_MS = 500;

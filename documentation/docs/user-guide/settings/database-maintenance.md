@@ -41,7 +41,7 @@ Restore your database from a previously created backup file.
 1.  Navigate to [Settings → Database Maintenance](database-maintenance.md).
 2.  In the **Database Restore** section, click the file input and select a backup file:
     - Supported formats: `.db`, `.sql`, `.sqlite`, `.sqlite3`
-    - Maximum file size: 100MB
+    - Maximum file size: 200MB
 3.  Click <IconButton icon="lucide:upload" label="Restore Database" />.
 4.  Confirm the action in the dialogue box.
 

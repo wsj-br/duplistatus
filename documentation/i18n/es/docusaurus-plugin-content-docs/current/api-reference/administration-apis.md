@@ -856,9 +856,9 @@ Con errores:
 - **Método**: POST
 - **Descripción**: Restaura la base de datos desde un archivo de copia de seguridad (formato .db o .sql). Crea una copia de seguridad de seguridad antes de restaurar y borra todas las sesiones después de restaurar por seguridad.
 - **Autenticación**: Requiere privilegios de administrador, sesión válida y token CSRF
-- **Cuerpo de solicitud**: FormData con un campo de archivo llamado `database`
+- **Cuerpo de la solicitud**: FormData con un campo de archivo llamado `database`
   - El archivo debe ser `.db`, `.sqlite`, `.sqlite3` (formato binario) o `.sql` (formato SQL)
-  - Tamaño máximo de archivo: 100MB
+  - Tamaño máximo de archivo: 200MB
 - **Respuesta**:
 
   ```json

@@ -3,7 +3,7 @@
 ## Coletar Backups - `/api/backups/collect` {/* #collect-backups---apibackupscollect */}
 - **Endpoint**: `/api/backups/collect`
 - **Método**: POST
-- **Descrição**: Coleta dados de backup diretamente de um servidor Duplicati por meio de sua API. Este endpoint detecta automaticamente o melhor protocolo de conexão (HTTPS com validação SSL, HTTPS com certificados autoassinados ou HTTP como fallback) e se conecta ao servidor Duplicati para recuperar informações de backup e processá-las no banco de dados local.
+- **Descrição**: Coleta dados de backup diretamente de um servidor Duplicati por meio de sua API. Este endpoint detecta automaticamente o melhor protocolo de conexão (HTTPS com validação SSL, HTTPS com certificados autoassinados ou HTTP como fallback) e se conecta ao servidor Duplicati para recuperar as informações do backup e processá-las no banco de dados local.
 - **Autenticação**: Requer sessão válida e token CSRF
 - **Corpo da Requisição**:
 
@@ -36,24 +36,24 @@
   ```
 
 - **Respostas de Erro**:
-  - `400`: Parâmetros de requisição inválidos ou falha na conexão
-  - `500`: Erro do servidor durante a coleta do backup
+  - `400`: Parâmetros de solicitação inválidos ou Falha na Conexão
+  - `500`: Erro do servidor durante a coleta de backup
 - **Notas**: 
-  - O endpoint detecta automaticamente o protocolo de conexão ideal (HTTPS → HTTPS com certificado autoassinado → HTTP)
+  - O endpoint detecta automaticamente o protocolo de conexão ideal (HTTPS → HTTPS com autoassinado → HTTP)
   - As tentativas de detecção de protocolo são feitas em ordem de preferência de segurança
-  - Os timeouts de conexão são configuráveis por meio de variáveis de ambiente
-  - Registra dados coletados em modo de desenvolvimento para depuração
-  - Garante que as configurações de backup estejam completas para todos os servidores e backups
-  - Usa a porta padrão 8200 se não especificada
+  - Os tempos limite de conexão são configuráveis por meio de variáveis de ambiente
+  - Registra os dados coletados no modo de desenvolvimento para depuração
+  - Garante que as configurações de backup estejam completas para todos os servidores e todos os backups
+  - Usa a porta padrão 8200 se não for especificada
   - O protocolo detectado e a URL do servidor são armazenados automaticamente no banco de dados
   - `serverAlias` é recuperado do banco de dados e pode estar vazio se nenhum alias estiver definido
-  - A interface deve usar `serverAlias || serverName` para fins de exibição
-  - Suporta métodos de download JSON e coleta direta da API
+  - O frontend deve usar `serverAlias || serverName` para fins de exibição
+  - Suporta os métodos de download de JSON e coleta direta por API
 
-## Limpeza de Backups - `/api/backups/cleanup` {/* #cleanup-backups---apibackupscleanup */}
+## Limpar Backups - `/api/backups/cleanup` {/* #cleanup-backups---apibackupscleanup */}
 - **Endpoint**: `/api/backups/cleanup`
 - **Método**: POST
-- **Descrição**: Exclui dados antigos de backup com base no período de retenção. Este endpoint ajuda a gerenciar o tamanho do banco de dados removendo registros de backup desatualizados e preservando dados recentes e importantes.
+- **Descrição**: Exclui dados de backup antigos com base no período de retenção. Este endpoint ajuda a gerenciar o tamanho do banco de dados removendo registros de backup desatualizados, preservando dados recentes e importantes.
 - **Autenticação**: Requer sessão válida e token CSRF
 - **Corpo da Requisição**:
 
@@ -63,7 +63,7 @@
   }
   ```
 
-- **Períodos de retenção**: `"6 months"`, `"1 year"`, `"2 years"`, `"Delete all data"`
+- **Períodos de Retenção**: `"6 months"`, `"1 year"`, `"2 years"`, `"Delete all data"`
 - **Resposta**:
 
   ```json
@@ -83,21 +83,21 @@ Para a opção "Excluir todos os dados":
   ```
 
 - **Respostas de Erro**:
-  - `401`: Não autorizado - Sessão inválida ou token CSRF inválido
-  - `400`: Período de retenção especificado é inválido
-  - `500`: Erro do servidor durante operação de limpeza com informações detalhadas de erro
+  - `401`: Não autorizado - Sessão ou token CSRF inválido
+  - `400`: Período de retenção especificado inválido
+  - `500`: Erro do servidor durante a operação de limpeza com informações detalhadas do erro
 - **Notas**: 
   - A operação de limpeza é irreversível
-  - Dados de backup são excluídos permanentemente do banco de dados
-  - Registros de máquinas são preservados mesmo que todos os backups sejam excluídos
+  - Os dados de backup são excluídos permanentemente do banco de dados
+  - Os registros da máquina são preservados mesmo se todos os backups forem excluídos
   - Quando "Excluir todos os dados" é selecionado, todas as máquinas e backups são removidos e a configuração é limpa
-  - Relatório de erros aprimorado inclui detalhes e rastreamento de pilha no modo de desenvolvimento
+  - O relatório de erros aprimorado inclui detalhes e rastreamento de pilha no modo de desenvolvimento
   - Suporta retenção baseada em tempo e exclusão completa de dados
 
 ## Excluir Tarefa de Backup - `/api/backups/delete-job` {/* #delete-backup-job---apibackupsdelete-job */}
 - **Endpoint**: `/api/backups/delete-job`
 - **Método**: DELETE
-- **Descrição**: Exclui todos os registros de backup para uma combinação específica de servidor-backup. Este endpoint está disponível apenas no modo de desenvolvimento.
+- **Descrição**: Exclui todos os registros de backup para uma combinação específica de servidor e backup. Este endpoint está disponível apenas no modo de desenvolvimento.
 - **Autenticação**: Requer sessão válida e token CSRF
 - **Corpo da Requisição**:
 
@@ -121,22 +121,22 @@ Para a opção "Excluir todos os dados":
   ```
 
 - **Respostas de Erro**:
-  - `401`: Não autorizado - Sessão inválida ou token CSRF inválido
-  - `403`: Exclusão de tarefa de backup está disponível apenas no modo de desenvolvimento
-  - `400`: ID do servidor e nome do backup são obrigatórios
-  - `404`: Nenhum backup encontrado para exclusão
-  - `500`: Erro do servidor durante exclusão com informações detalhadas de erro
+  - `401`: Não autorizado - Sessão ou token CSRF inválido
+  - `403`: A exclusão da tarefa de backup está disponível apenas no modo de desenvolvimento
+  - `400`: O ID do Servidor e o Nome do Backup são obrigatórios
+  - `404`: Nenhum backup encontrado para excluir
+  - `500`: Erro do servidor durante a exclusão com informações detalhadas do erro
 - **Notas**: 
   - Esta operação está disponível apenas no modo de desenvolvimento
   - Esta operação é irreversível
-  - Todos os registros de backup para a combinação servidor-backup especificada serão permanentemente excluídos
-  - Retorna contagem de backups excluídos e informações do servidor
-  - Usa alias do servidor para exibição se disponível, caso contrário retorna ao nome do servidor
+  - Todos os registros de backup para a combinação especificada de servidor e backup serão excluídos permanentemente
+  - Retorna a contagem de backups excluídos e informações do servidor
+  - Usa o Alias do servidor para exibição, se disponível, caso contrário, usa o Nome do Servidor
 
 ## Sincronizar Agendamentos de Backup - `/api/backups/sync-schedule` {/* #sync-backup-schedules---apibackupssync-schedule */}
 - **Endpoint**: `/api/backups/sync-schedule`
 - **Método**: POST
-- **Descrição**: Sincroniza informações de agendamento de backup de um servidor Duplicati. Este endpoint se conecta ao servidor, recupera informações de agendamento para todos os backups e atualiza as configurações locais de backup com detalhes de agendamento, incluindo intervalos de repetição, dias da semana permitidos e horários de agendamento.
+- **Descrição**: Sincroniza informações de agendamento de backup de um servidor Duplicati. Este endpoint se conecta ao servidor, recupera informações de agendamento para todos os backups e atualiza as configurações de backup locais com detalhes do agendamento, incluindo intervalos de repetição, dias da semana permitidos e horários agendados.
 - **Autenticação**: Requer sessão válida e token CSRF
 - **Corpo da Requisição**:
 
@@ -149,7 +149,7 @@ Para a opção "Excluir todos os dados":
   }
   ```
 
-Ou apenas com serverId (usa senha armazenada):
+Ou apenas com serverId (usa a senha armazenada):
 
   ```json
   {
@@ -199,27 +199,27 @@ Com erros:
   ```
 
 - **Respostas de Erro**:
-  - `400`: Parâmetros de requisição inválidos, hostname/senha ausentes quando serverId não fornecido, ou falha na conexão
-  - `404`: Servidor não encontrado (quando serverId fornecido) ou nenhuma senha armazenada para o servidor
-  - `500`: Erro do servidor durante sincronização de agendamento
+  - `400`: Parâmetros de solicitação inválidos, nome do host/senha ausentes quando serverId não é fornecido, ou falha na conexão
+  - `404`: Servidor não encontrado (quando serverId é fornecido) ou nenhuma senha armazenada para o servidor
+  - `500`: Erro no servidor durante a sincronização de agendamento
 - **Notas**: 
   - O endpoint detecta automaticamente o protocolo de conexão ideal (HTTPS → HTTPS com certificado autoassinado → HTTP)
-  - Pode ser chamado apenas com serverId para usar credenciais armazenadas do servidor
-  - Pode ser chamado com serverId e novas credenciais para atualizar detalhes de conexão do servidor
-  - Pode ser chamado com hostname/porta/senha sem serverId para novos servidores
-  - Atualiza configurações de backup com informações de agendamento incluindo:
-    - `expectedInterval`: O intervalo de repetição (por exemplo, "Diariamente", "Semanalmente", "Mensalmente")
-    - `allowedWeekDays`: Array de dias da semana permitidos (0=Domingo, 1=Segunda, etc.)
-    - `time`: A hora programada para o backup
+  - Pode ser chamado apenas com serverId para usar as credenciais armazenadas do servidor
+  - Pode ser chamado com serverId e novas credenciais para atualizar os detalhes de conexão do servidor
+  - Pode ser chamado com nome do host/porta/senha sem serverId para novos servidores
+  - Atualiza as configurações de backup com informações de agendamento, incluindo:
+    - `expectedInterval`: O intervalo de repetição (por exemplo, "Diário", "Semanal", "Mensal")
+    - `allowedWeekDays`: Array de dias da semana permitidos (0=Domingo, 1=Segunda-feira, etc.)
+    - `time`: A hora agendada para o backup
   - Processa todos os backups encontrados no servidor
-  - Retorna estatísticas sobre backups processados e quaisquer erros encontrados
+  - Retorna estatísticas sobre os backups processados e quaisquer erros encontrados
   - Registra eventos de auditoria para operações de sincronização bem-sucedidas e com falha
-  - Usa porta padrão 8200 se não especificada
+  - Usa a porta padrão 8200 se não for especificada
 
 ## Testar Conexão do Servidor - `/api/servers/test-connection` {/* #test-server-connection---apiserverstest-connection */}
 - **Endpoint**: `/api/servers/test-connection`
 - **Método**: POST
-- **Descrição**: Testa a conexão com um servidor Duplicati para verificar se está acessível.
+- **Descrição**: Testa a conexão com um servidor duplicati para verificar se está acessível.
 - **Corpo da Requisição**:
 
   ```json
@@ -239,13 +239,13 @@ Com erros:
 
 - **Respostas de Erro**:
   - `400`: Formato de URL inválido ou URL do servidor ausente
-  - `500`: Erro do servidor durante teste de conexão
+  - `500`: Erro no servidor durante o teste de conexão
 - **Notas**: 
-  - O endpoint valida formato de URL e testa conectividade
-  - Retorna sucesso se o servidor responder com status 401 (esperado para endpoint de login sem credenciais)
-  - Testa conexão com endpoint de login do servidor Duplicati
-  - Suporta protocolos HTTP e HTTPS
-  - Usa configuração de timeout para testes de conexão
+  - O endpoint valida o formato da URL e testa a conectividade
+  - Retorna sucesso se o servidor responder com um status 401 (esperado para o endpoint de login sem credenciais)
+  - Testa a conexão com o endpoint de login do servidor duplicati
+  - Suporta os protocolos HTTP e HTTPS
+  - Usa a configuração de tempo limite para o teste de conexão
 
 ## Obter URL do Servidor - `/api/servers/:serverId/server-url` {/* #get-server-url---apiserversserveridserver-url */}
 - **Endpoint**: `/api/servers/:serverId/server-url`
@@ -265,11 +265,11 @@ Com erros:
 
 - **Respostas de Erro**:
   - `404`: Servidor não encontrado
-  - `500`: Erro do servidor
+  - `500`: Erro no servidor
 - **Notas**:
-  - Retorna URL do servidor específico
+  - Retorna a URL do servidor para um servidor específico
   - Usado para gerenciamento de conexão do servidor
-  - Retorna string vazia se nenhuma URL de servidor estiver definida
+  - Retorna uma string vazia se nenhuma URL do servidor estiver definida
 
 ## Atualizar URL do Servidor - `/api/servers/:serverId/server-url` {/* #update-server-url---apiserversserveridserver-url */}
 - **Endpoint**: `/api/servers/:serverId/server-url`
@@ -278,7 +278,7 @@ Com erros:
 - **Autenticação**: Requer sessão válida e token CSRF
 - **Parâmetros**:
   - `serverId`: o identificador do servidor
-- **Corpo da requisição**:
+- **Corpo da Requisição**:
 
   ```json
   {
@@ -301,17 +301,17 @@ Com erros:
   - `401`: Não autorizado - Sessão ou token CSRF inválido
   - `400`: Formato de URL inválido
   - `404`: Servidor não encontrado
-  - `500`: Erro do servidor durante a atualização
+  - `500`: Erro no servidor durante a atualização
 - **Notas**: 
-  - O endpoint valida o formato da URL antes da atualização
+  - O endpoint valida o formato da URL antes de atualizar
   - URLs de servidor vazias ou nulas são permitidas
-  - Suporta ambos os protocolos HTTP e HTTPS
-  - Retorna informações atualizadas do servidor
+  - Suporta os protocolos HTTP e HTTPS
+  - Retorna as informações atualizadas do servidor
 
 ## Obter Senha do Servidor - `/api/servers/:serverId/password` {/* #get-server-password---apiserversserveridpassword */}
 - **Endpoint**: `/api/servers/:serverId/password`
 - **Método**: GET
-- **Descrição**: Recupera um token CSRF para operações com a senha do servidor.
+- **Descrição**: Recupera um token CSRF para operações de senha do servidor.
 - **Autenticação**: Requer sessão válida
 - **Parâmetros**:
   - `serverId`: o identificador do servidor
@@ -334,11 +334,11 @@ Com erros:
 ## Atualizar Senha do Servidor - `/api/servers/:serverId/password` {/* #update-server-password---apiserversserveridpassword */}
 - **Endpoint**: `/api/servers/:serverId/password`
 - **Método**: PATCH
-- **Descrição**: Atualiza a senha de um servidor específico.
+- **Descrição**: Atualiza a senha para um servidor específico.
 - **Autenticação**: Requer sessão válida e token CSRF
 - **Parâmetros**:
   - `serverId`: o identificador do servidor
-- **Corpo da requisição**:
+- **Corpo da Requisição**:
 
   ```json
   {
@@ -405,17 +405,17 @@ Com erros:
   - `401`: Não autorizado - Sessão ou token CSRF inválido
   - `403`: Proibido - Privilégios de administrador necessários
   - `500`: Erro interno do servidor
-- **Notas**:
-  - Apenas acessível para usuários administradores
+- **Observações**:
+  - Acessível apenas para usuários administradores
   - Suporta paginação e filtragem de pesquisa
-  - Retorna o status da conta de usuário incluindo status de bloqueio
+  - Retorna o status da conta do usuário, incluindo o status de bloqueio
 
 ### Criar Usuário - `/api/users` {/* #create-user---apiusers */}
 - **Endpoint**: `/api/users`
 - **Método**: POST
-- **Descrição**: Cria uma nova conta de usuário. Pode gerar uma Senha Temporária ou usar uma Senha fornecida.
-- **Authentication**: Requer privilégios de administrador, sessão válida e token CSRF
-- **Request Body**:
+- **Descrição**: Cria uma nova conta de usuário. Pode gerar uma senha temporária ou usar uma senha fornecida.
+- **Autenticação**: Requer privilégios de administrador, sessão válida e token CSRF
+- **Corpo da Requisição**:
 
   ```json
   {
@@ -426,10 +426,10 @@ Com erros:
   }
   ```
 
-- `username`: Obrigatório, deve ter 3-50 caracteres, único
-  - `password`: Opcional, se não fornecido uma senha temporária segura será gerada
-  - `isAdmin`: Opcional, padrão falso
-  - `requirePasswordChange`: Opcional, padrão verdadeiro
+- `username`: Obrigatório, deve ter de 3 a 50 caracteres, único
+  - `password`: Opcional, se não fornecido, uma senha temporária segura é gerada
+  - `isAdmin`: Opcional, padrão false
+  - `requirePasswordChange`: Opcional, padrão true
 - **Resposta**:
 
   ```json
@@ -444,27 +444,27 @@ Com erros:
   }
   ```
 
-- `temporaryPassword` está incluído apenas se uma senha foi gerada automaticamente
+- `temporaryPassword` só é incluído se uma senha foi gerada automaticamente
 - **Respostas de Erro**:
-  - `400`: Formato de nome de usuário inválido, violação de política de senha ou erros de validação
+  - `400`: Formato de nome de usuário inválido, violação da política de senha ou erros de validação
   - `401`: Não autorizado - Sessão ou token CSRF inválido
   - `403`: Proibido - Privilégios de administrador necessários
   - `409`: Nome de usuário já existe
   - `500`: Erro interno do servidor
-- **Notas**:
-  - Apenas acessível para usuários administradores
-  - O nome de usuário é insensível a maiúsculas e minúsculas e armazenado em letras minúsculas
-  - Se a senha não for fornecida, uma senha segura de 12 caracteres será gerada
+- **Observações**:
+  - Acessível apenas para usuários administradores
+  - O nome de usuário não diferencia maiúsculas de minúsculas e é armazenado em minúsculas
+  - Se a senha não for fornecida, uma senha segura de 12 caracteres é gerada
   - As senhas temporárias geradas são retornadas apenas uma vez na resposta
   - A criação do usuário é registrada no log de auditoria
 
 ### Atualizar Usuário - `/api/users/:id` {/* #update-user---apiusersid */}
 - **Endpoint**: `/api/users/:id`
 - **Método**: PATCH
-- **Descrição**: Atualiza as informações do usuário, incluindo Nome de usuário, Status de Administrador, exigência de alteração de senha e Redefinição de Senha.
-- **Autenticação**: Requer privilégios de Administrador, sessão válida e token CSRF
+- **Descrição**: Atualiza as informações do usuário, incluindo nome de usuário, status de administrador, exigência de alteração de senha e redefinição de senha.
+- **Autenticação**: Requer privilégios de administrador, sessão válida e token CSRF
 - **Parâmetros**:
-  - `id`: ID do Usuário a ser atualizado
+  - `id`: ID do usuário a ser atualizado
 - **Corpo da Requisição**:
 
   ```json
@@ -477,8 +477,8 @@ Com erros:
   ```
 
 - Todos os campos são opcionais
-  - `resetPassword`: Se for true, gera uma nova Senha Temporária e define `requirePasswordChange` como true
-- **Resposta** (com Redefinição de Senha):
+  - `resetPassword`: Se true, gera uma nova senha temporária e define `requirePasswordChange` como true
+- **Resposta** (com redefinição de senha):
 
   ```json
   {
@@ -492,7 +492,7 @@ Com erros:
   }
   ```
 
-- **Resposta** (sem Redefinição de Senha):
+- **Resposta** (sem redefinição de senha):
 
   ```json
   {
@@ -512,19 +512,19 @@ Com erros:
   - `404`: Usuário não encontrado
   - `409`: Nome de usuário já existe (se estiver alterando o nome de usuário)
   - `500`: Erro interno do servidor
-- **Notas**:
-  - Apenas acessível para usuários administradores
-  - Alterações de nome de usuário são validadas quanto à unicidade
+- **Observações**:
+  - Acessível apenas para usuários administradores
+  - As alterações de nome de usuário são validadas quanto à unicidade
   - A redefinição de senha gera uma senha temporária segura de 12 caracteres
   - Todas as alterações são registradas no log de auditoria
 
 ### Excluir Usuário - `/api/users/:id` {/* #delete-user---apiusersid */}
 - **Endpoint**: `/api/users/:id`
 - **Método**: DELETE
-- **Descrição**: Exclui uma conta de Usuário. Impede a exclusão de si mesmo ou da última conta de Administrador.
-- **Autenticação**: Requer privilégios de Administrador, sessão válida e token CSRF
+- **Descrição**: Exclui uma conta de usuário. Impede a exclusão da sua própria conta ou do último usuário administrador.
+- **Autenticação**: Requer privilégios de administrador, sessão válida e token CSRF
 - **Parâmetros**:
-  - `id`: ID do Usuário a Excluir
+  - `id`: ID do usuário a ser excluído
 - **Resposta**:
 
   ```json
@@ -540,27 +540,27 @@ Com erros:
   - `403`: Proibido - Privilégios de administrador necessários
   - `404`: Usuário não encontrado
   - `500`: Erro interno do servidor
-- **Notas**:
-  - Apenas acessível para usuários administradores
+- **Observações**:
+  - Acessível apenas para usuários administradores
   - Não é possível excluir sua própria conta
   - Não é possível excluir o último usuário administrador (pelo menos um administrador deve permanecer)
   - A exclusão do usuário é registrada no log de auditoria
-  - Sessões associadas são excluídas automaticamente (em cascata)
+  - As sessões associadas são excluídas automaticamente (cascata)
 
-## Gerenciamento de Log de Auditoria {/* #audit-log-management */}
+## Gerenciamento do Log de Auditoria {/* #audit-log-management */}
 
-### Listar logs de auditoria - `/api/audit-log` {/* #list-audit-logs---apiaudit-log */}
+### Listar Logs de Auditoria - `/api/audit-log` {/* #list-audit-logs---apiaudit-log */}
 - **Endpoint**: `/api/audit-log`
 - **Método**: GET
-- **Descrição**: Recupera entradas do log de auditoria com recursos de filtragem, paginação e pesquisa. Suporta tanto paginação baseada em página quanto baseada em deslocamento (offset).
-- **Autenticação**: Requer sessão válida e token CSRF (usuário autenticado necessário)
+- **Descrição**: Recupera entradas do log de auditoria com recursos de filtragem, paginação e pesquisa. Suporta paginação baseada em página e baseada em deslocamento.
+- **Autenticação**: Requer sessão válida e token CSRF (usuário conectado obrigatório)
 - **Parâmetros de Consulta**:
-  - `page` (opcional): Número da página para paginação baseada em páginas
+  - `page` (opcional): Número da página para paginação baseada em página
   - `offset` (opcional): Deslocamento para paginação baseada em deslocamento (tem precedência sobre a página)
   - `limit` (opcional): Itens por página (padrão: 50)
   - `startDate` (opcional): Filtrar logs a partir desta data (formato ISO)
   - `endDate` (opcional): Filtrar logs até esta data (formato ISO)
-  - `userId` (opcional): Filtrar por ID do usuário
+  - `userId` (opcional): Filtrar por ID de usuário
   - `username` (opcional): Filtrar por nome de usuário
   - `action` (opcional): Filtrar por nome da ação
   - `category` (opcional): Filtrar por categoria (`auth`, `user_management`, `config`, `backup`, `server`)
@@ -598,18 +598,18 @@ Com erros:
   ```
 
 - **Respostas de Erro**:
-  - `401`: Não autorizado - Sessão inválida ou token CSRF
+  - `401`: Não autorizado - Sessão ou token CSRF inválido
   - `500`: Erro interno do servidor
 - **Observações**:
   - Suporta paginação baseada em página (`page`) e baseada em deslocamento (`offset`)
   - O campo `details` contém JSON analisado com contexto adicional
   - Todas as consultas de log de auditoria são registradas
 
-### Obter valores de filtro do log de auditoria - `/api/audit-log/filters` {/* #get-audit-log-filter-values---apiaudit-logfilters */}
+### Obter Valores de Filtro do Log de Auditoria - `/api/audit-log/filters` {/* #get-audit-log-filter-values---apiaudit-logfilters */}
 - **Endpoint**: `/api/audit-log/filters`
 - **Método**: GET
-- **Descrição**: Recupera valores de filtro exclusivos disponíveis para filtrar logs de auditoria. Retorna todas as ações, categorias e status distintos existentes no banco de dados do log de auditoria. Útil para preencher menus suspensos de filtro na interface.
-- **Autenticação**: Requer sessão válida e token CSRF (necessário usuário conectado)
+- **Descrição**: Recupera valores de filtro exclusivos disponíveis para filtrar logs de auditoria. Retorna todas as ações, categorias e status distintos que existem no banco de dados de log de auditoria. Útil para preencher menus suspensos de filtro na interface do usuário.
+- **Autenticação**: Requer sessão válida e token CSRF (usuário conectado obrigatório)
 - **Resposta**:
 
   ```json
@@ -637,24 +637,24 @@ Com erros:
   ```
 
 - **Respostas de Erro**:
-  - `401`: Não autorizado - Sessão inválida ou token CSRF
+  - `401`: Não autorizado - Sessão ou token CSRF inválido
   - `500`: Erro interno do servidor
 - **Observações**:
-  - Retorna arrays de valores únicos do banco de dados de log de auditoria
+  - Retorna arrays de valores exclusivos do banco de dados de log de auditoria
   - Os valores são ordenados alfabeticamente
   - Arrays vazios são retornados se não houver dados ou em caso de erro
-  - Utilizado pelo visualizador de log de auditoria para preencher dinamicamente os menus suspensos de filtro
+  - Usado pelo Visualizador de Log de Auditoria para preencher menus suspensos de filtro dinamicamente
 
-### Baixar logs de auditoria - `/api/audit-log/download` {/* #download-audit-logs---apiaudit-logdownload */}
+### Baixar Logs de Auditoria - `/api/audit-log/download` {/* #download-audit-logs---apiaudit-logdownload */}
 - **Endpoint**: `/api/audit-log/download`
 - **Método**: GET
-- **Descrição**: Baixa logs de auditoria no formato CSV ou JSON com filtragem opcional. Útil para análises externas e relatórios.
-- **Autenticação**: Requer sessão válida e token CSRF (usuário autenticado necessário)
+- **Descrição**: Baixa logs de auditoria no formato CSV ou JSON com filtragem opcional. Útil para análise externa e geração de relatórios.
+- **Autenticação**: Requer sessão válida e token CSRF (usuário conectado obrigatório)
 - **Parâmetros de Consulta**:
   - `format` (opcional): Formato de exportação - `csv` ou `json` (padrão: `csv`)
   - `startDate` (opcional): Filtrar logs a partir desta data (formato ISO)
   - `endDate` (opcional): Filtrar logs até esta data (formato ISO)
-  - `userId` (opcional): Filtrar por ID do usuário
+  - `userId` (opcional): Filtrar por ID de usuário
   - `username` (opcional): Filtrar por nome de usuário
   - `action` (opcional): Filtrar por nome da ação
   - `category` (opcional): Filtrar por categoria
@@ -662,27 +662,27 @@ Com erros:
 - **Resposta** (CSV):
   - Content-Type: `text/csv`
   - Content-Disposition: `attachment; filename="audit-log-YYYY-MM-DD.csv"`
-  - Arquivo CSV com cabeçalhos: ID, Timestamp, ID do Usuário, Nome de Usuário, Ação, Categoria, Tipo de Destino, ID do Destino, Status, Endereço IP, Agente do Usuário, Detalhes, Mensagem de Erro
+  - Arquivo CSV com cabeçalhos: ID, Timestamp, ID do Usuário, Nome de usuário, Ação, Categoria, Tipo de Destino, ID do Destino, Status, Endereço IP, Agente do Usuário, Detalhes, Mensagem de Erro
 - **Resposta** (JSON):
   - Content-Type: `application/json`
   - Content-Disposition: `attachment; filename="audit-log-YYYY-MM-DD.json"`
-  - Array JSON de entradas de log de auditoria
+  - Array JSON de entradas do log de auditoria
 - **Respostas de Erro**:
   - `400`: Nenhum log para exportar
-  - `401`: Não autorizado - Sessão inválida ou token CSRF
+  - `401`: Não autorizado - Sessão ou token CSRF inválido
   - `500`: Erro interno do servidor
 - **Observações**:
-  - Limite de exportação é 10.000 registros
-  - O formato CSV escapa corretamente caracteres especiais
-  - O campo Detalhes no CSV é convertido em string JSON
+  - O limite de exportação é de 10.000 registros
+  - O formato CSV escapa caracteres especiais corretamente
+  - O campo Detalhes no CSV é formatado como string JSON
   - O nome do arquivo inclui a data atual
 
-### Limpeza de Logs de Auditoria - `/api/audit-log/cleanup` {/* #cleanup-audit-logs---apiaudit-logcleanup */}
+### Limpar Logs de Auditoria - `/api/audit-log/cleanup` {/* #cleanup-audit-logs---apiaudit-logcleanup */}
 - **Endpoint**: `/api/audit-log/cleanup`
-- **Method**: POST
-- **Descrição**: Aciona manualmente a limpeza de logs de auditoria antigos com base no período de retenção. Suporta o modo de simulação (dry-run) para visualizar o que seria excluído.
-- **Authentication**: Requer privilégios de administrador, sessão válida e token CSRF
-- **Request Body**:
+- **Método**: POST
+- **Descrição**: Aciona manualmente a limpeza de logs de auditoria antigos com base no período de retenção. Suporta modo de simulação para visualização do que seria excluído.
+- **Autenticação**: Requer privilégios de administrador, sessão válida e token CSRF
+- **Corpo da Requisição**:
 
   ```json
   {
@@ -691,9 +691,9 @@ Com erros:
   }
   ```
 
-- `retentionDays` (opcional): Substitui os dias de retenção (30-365); caso contrário, usa o valor configurado
-  - `dryRun` (opcional): Se verdadeiro, retorna apenas o que seria excluído sem realmente excluir
-- **Response** (simulação):
+- `retentionDays` (opcional): Substituir dias de retenção (30-365), caso contrário, usa o valor configurado
+  - `dryRun` (opcional): Se verdadeiro, retorna apenas o que seria excluído sem excluir de fato
+- **Resposta** (simulação):
 
   ```json
   {
@@ -705,7 +705,7 @@ Com erros:
   }
   ```
 
-- **Response** (limpeza real):
+- **Resposta** (limpeza real):
 
   ```json
   {
@@ -717,22 +717,22 @@ Com erros:
   ```
 
 - **Respostas de Erro**:
-  - `400`: Dias de retenção inválidos (devem ser entre 30-365)
-  - `401`: Não autorizado - Sessão inválida ou token CSRF
-  - `403`: Proibido - Privilégios de administrador necessários
+  - `400`: Dias de retenção inválidos (deve ser 30-365)
+  - `401`: Não autorizado - Sessão ou token CSRF inválido
+  - `403`: Proibido - Privilégios de Administrador necessários
   - `500`: Erro interno do servidor
 - **Observações**:
-  - Apenas acessível para usuários administradores
+  - Acessível apenas para usuários administradores
   - A retenção padrão é de 90 dias se não configurado
-  - A operação de limpeza é registrada no log de auditoria
+  - A operação de limpeza é registrada no Log de Auditoria
   - O modo de simulação é útil para visualizar o impacto da limpeza
 
 ### Obter Retenção de Log de Auditoria - `/api/audit-log/retention` {/* #get-audit-log-retention---apiaudit-logretention */}
 - **Endpoint**: `/api/audit-log/retention`
-- **Method**: GET
-- **Descrição**: Recupera a configuração atual de retenção de log de auditoria em dias.
-- **Authentication**: Requer sessão válida e token CSRF (nenhum usuário conectado é necessário)
-- **Response**:
+- **Método**: GET
+- **Descrição**: Recupera a configuração atual de retenção do Log de Auditoria em dias.
+- **Autenticação**: Requer sessão válida e token CSRF (nenhum usuário conectado necessário)
+- **Resposta**:
 
   ```json
   {
@@ -748,10 +748,10 @@ Com erros:
 
 ### Atualizar Retenção de Log de Auditoria - `/api/audit-log/retention` {/* #update-audit-log-retention---apiaudit-logretention */}
 - **Endpoint**: `/api/audit-log/retention`
-- **Method**: PATCH
-- **Descrição**: Atualiza o período de retenção do log de auditoria em dias. Esta configuração determina por quanto tempo os logs de auditoria são mantidos antes da limpeza automática.
-- **Authentication**: Requer privilégios de administrador, sessão válida e token CSRF
-- **Request Body**:
+- **Método**: PATCH
+- **Descrição**: Atualiza o período de retenção do Log de Auditoria em dias. Esta configuração determina por quanto tempo os logs de auditoria são mantidos antes da limpeza automática.
+- **Autenticação**: Requer privilégios de administrador, sessão válida e token CSRF
+- **Corpo da Requisição**:
 
   ```json
   {
@@ -759,8 +759,8 @@ Com erros:
   }
   ```
 
-- `retentionDays`: Obrigatório, deve ser entre 30 e 365 dias
-- **Response**:
+- `retentionDays`: Obrigatório, deve estar entre 30 e 365 dias
+- **Resposta**:
 
   ```json
   {
@@ -770,33 +770,33 @@ Com erros:
   ```
 
 - **Respostas de Erro**:
-  - `400`: Dias de retenção inválidos (devem ser entre 30-365)
-  - `401`: Não autorizado - Sessão inválida ou token CSRF
-  - `403`: Proibido - Privilégios de administrador necessários
+  - `400`: Dias de retenção inválidos (deve ser 30-365)
+  - `401`: Não autorizado - Sessão ou token CSRF inválido
+  - `403`: Proibido - Privilégios de Administrador necessários
   - `500`: Erro interno do servidor
 - **Observações**:
-  - Apenas acessível para usuários administradores
-  - A alteração de configuração é registrada no log de auditoria
-  - O período de retenção afeta operações automáticas e manuais de limpeza
+  - Acessível apenas para usuários administradores
+  - A alteração de configuração é registrada no Log de Auditoria
+  - O período de retenção afeta as operações de limpeza automática e manual
 
 ## Chaves de API {/* #api-keys */}
 
-### List API Keys - `/api/api-keys` {/* #list-api-keys---apiapi-keys */}
+### Listar Chaves de API - `/api/api-keys` {/* #list-api-keys---apiapi-keys */}
 - **Endpoint**: `/api/api-keys`
-- **Method**: GET
-- **Descrição**: Lista todas as chaves de API. Os segredos nunca são retornados; cada chave inclui uma impressão digital (`Qk7v…3xTa`).
+- **Método**: GET
+- **Descrição**: Lista todas as Chaves de API. Os segredos nunca são retornados; cada chave inclui uma impressão digital (`Qk7v…3xTa`).
 - **Autenticação**: Requer privilégios de administrador, sessão válida e token CSRF
 - **Respostas de Erro**:
-  - `401`: Não autorizado - Sessão inválida ou token CSRF
-  - `403`: Proibido - Privilégios de administrador necessários
+  - `401`: Não autorizado - Sessão ou token CSRF inválido
+  - `403`: Proibido - Privilégios de Administrador necessários
   - `500`: Erro interno do servidor
 
 ### Criar chave de API - `/api/api-keys` {/* #create-api-key---apiapi-keys */}
 - **Endpoint**: `/api/api-keys`
-- **Method**: POST
-- **Descrição**: Cria uma chave de API com escopo definido. O segredo em texto simples é retornado apenas nesta resposta.
-- **Authentication**: Requer privilégios de administrador, sessão válida e token CSRF
-- **Request Body**:
+- **Método**: POST
+- **Descrição**: Cria uma chave de API com escopo. O segredo em texto simples é retornado apenas nesta resposta.
+- **Autenticação**: Requer privilégios de administrador, sessão válida e token CSRF
+- **Corpo da Requisição**:
 
   ```json
   {
@@ -810,30 +810,30 @@ Com erros:
 - **Respostas de Erro**:
   - `400`: Nome ausente ou escopo inválido (`upload` ou `read`)
   - `401`: Não autorizado - Sessão ou token CSRF inválido
-  - `403`: Proibido - Privilégios de administrador necessários
+  - `403`: Proibido - Privilégios de Administrador necessários
   - `500`: Erro interno do servidor
 
-### Update API Key - `/api/api-keys/:id` {/* #update-api-key---apiapi-keysid */}
+### Atualizar chave de API - `/api/api-keys/:id` {/* #update-api-key---apiapi-keysid */}
 - **Endpoint**: `/api/api-keys/:id`
-- **Method**: PATCH
+- **Método**: PATCH
 - **Descrição**: Habilita ou desabilita uma chave.
 - **Autenticação**: Requer privilégios de administrador, sessão válida e token CSRF
 
 ### Excluir chave de API - `/api/api-keys/:id` {/* #delete-api-key---apiapi-keysid */}
 - **Endpoint**: `/api/api-keys/:id`
-- **Method**: DELETE
-- **Descrição**: Exclui uma chave. Clientes existentes que usam esse segredo perdem o acesso imediatamente.
+- **Método**: DELETE
+- **Descrição**: Exclui uma chave. Os clientes existentes que usam esse segredo perdem o acesso imediatamente.
 - **Autenticação**: Requer privilégios de administrador, sessão válida e token CSRF
 
 ## Gerenciamento de Banco de Dados {/* #database-management */}
 
-### Fazer Backup do Banco de Dados - `/api/database/backup` {/* #backup-database---apidatabasebackup */}
+### Backup do Banco de Dados - `/api/database/backup` {/* #backup-database---apidatabasebackup */}
 - **Endpoint**: `/api/database/backup`
-- **Method**: GET
-- **Descrição**: Cria um backup do banco de dados no formato binário (.db) ou SQL (.sql). O download do arquivo de backup é feito automaticamente com um nome contendo timestamp.
+- **Método**: GET
+- **Descrição**: Cria um Backup do banco de dados em formato binário (.db) ou SQL (.sql). O arquivo de backup é baixado automaticamente com um nome de arquivo com carimbo de data/hora.
 - **Autenticação**: Requer privilégios de administrador, sessão válida e token CSRF
 - **Parâmetros de Consulta**:
-  - `format` (opcional): Formato de backup - `db` (binário) ou `sql` (despejo SQL). Padrão: `db`
+  - `format` (opcional): Formato de Backup - `db` (binário) ou `sql` (dump SQL). Padrão: `db`
 - **Resposta**:
   - Content-Type: `application/octet-stream` (para .db) ou `text/plain` (para .sql)
   - Content-Disposition: `attachment; filename="duplistatus-backup-YYYY-MM-DDTHH-MM-SS.db"` ou `.sql`
@@ -841,24 +841,24 @@ Com erros:
 - **Respostas de Erro**:
   - `400`: Formato inválido (deve ser "db" ou "sql")
   - `401`: Não autorizado - Sessão ou token CSRF inválido
-  - `403`: Proibido - Privilégios de administrador necessários
-  - `500`: Falha ao criar backup do banco de dados
+  - `403`: Proibido - Privilégios de Administrador necessários
+  - `500`: Falha ao criar o Backup do Banco de Dados
 - **Notas**:
   - Acessível apenas para usuários administradores
-  - O formato binário usa o método de backup do SQLite para integridade
-  - O formato SQL cria um despejo de texto de todo o conteúdo do banco de dados
-  - O timestamp no nome do arquivo usa o fuso horário local do servidor
-  - A operação de backup é registrada no log de auditoria
+  - O formato binário utiliza o método de Backup do SQLite para integridade
+  - O formato SQL cria um dump de texto de todo o conteúdo do banco de dados
+  - O Timestamp no nome do arquivo usa o fuso horário local do servidor
+  - A operação de Backup é registrada no Log de Auditoria
   - Arquivos temporários são limpos automaticamente após o download
 
 ### Restaurar Banco de Dados - `/api/database/restore` {/* #restore-database---apidatabaserestore */}
 - **Endpoint**: `/api/database/restore`
-- **Method**: POST
-- **Descrição**: Restaura o banco de dados a partir de um arquivo de backup (formato .db ou .sql). Cria um backup de segurança antes da restauração e limpa todas as sessões após a restauração por motivos de segurança.
+- **Método**: POST
+- **Descrição**: Restaura o banco de dados a partir de um arquivo de Backup (formato .db ou .sql). Cria um Backup de segurança antes da restauração e limpa todas as sessões após a restauração por motivos de segurança.
 - **Autenticação**: Requer privilégios de administrador, sessão válida e token CSRF
-- **Corpo da Requisição**: FormData com um campo de arquivo chamado `database`
+- **Corpo da requisição**: FormData com um campo de arquivo chamado `database`
   - O arquivo deve ser `.db`, `.sqlite`, `.sqlite3` (formato binário) ou `.sql` (formato SQL)
-  - Tamanho máximo do arquivo: 100MB
+  - Tamanho máximo do arquivo: 200MB
 - **Resposta**:
 
   ```json
@@ -871,29 +871,29 @@ Com erros:
   ```
 
 - **Respostas de Erro**:
-  - `400`: Nenhum arquivo fornecido, tamanho do arquivo excede o limite, formato de arquivo inválido ou verificação de integridade do banco de dados falhou
+  - `400`: Nenhum arquivo fornecido, o Tamanho do Arquivo excede o limite, formato de arquivo inválido ou falha na verificação de integridade do banco de dados
   - `401`: Não autorizado - Sessão ou token CSRF inválido
-  - `403`: Proibido - Privilégios de administrador necessários
-  - `500`: Falha ao restaurar banco de dados (banco de dados original restaurado do backup de segurança se a restauração falhar)
+  - `403`: Proibido - Privilégios de Administrador necessários
+  - `500`: Falha ao restaurar o banco de dados (o banco de dados original é restaurado a partir do Backup de segurança se a restauração falhar)
 - **Notas**:
   - Acessível apenas para usuários administradores
-  - Cria automaticamente um backup de segurança antes da restauração
-  - Suporta ambos os formatos binário (.db) e SQL (.sql)
+  - Cria automaticamente um Backup de segurança antes da restauração
+  - Suporta os formatos binário (.db) e SQL (.sql)
   - Valida a integridade do banco de dados após a restauração
-  - Se a restauração falhar, restaura automaticamente do backup de segurança
-  - Todas as sessões são limpas após a restauração bem-sucedida por segurança
-  - Retorna `requiresReauth: true` para indicar que o usuário precisa fazer login novamente
-  - A operação de restauração é registrada no log de auditoria
+  - Se a restauração falhar, restaura automaticamente a partir do Backup de segurança
+  - Todas as sessões são limpas após uma restauração bem-sucedida por motivos de segurança
+  - Retorna `requiresReauth: true` para indicar que o usuário precisa Entrar novamente
+  - A operação de restauração é registrada no Log de Auditoria
   - Para o formato SQL, valida o conteúdo SQL antes da execução
   - A conexão com o banco de dados é reinicializada após a restauração
   - Todos os caches são invalidados após a restauração
 
-## Timestamps de backup {/* #backup-timestamps */}
+## Timestamps de Backup {/* #backup-timestamps */}
 
-### Obter timestamps do último backup - `/api/backups/last-timestamps` {/* #get-last-backup-timestamps---apibackupslast-timestamps */}
+### Obter Timestamps do Último Backup - `/api/backups/last-timestamps` {/* #get-last-backup-timestamps---apibackupslast-timestamps */}
 - **Endpoint**: `/api/backups/last-timestamps`
 - **Método**: GET
-- **Descrição**: recupera o timestamp do último backup para cada combinação de servidor-backup. Retorna um mapa para facilitar a consulta.
+- **Descrição**: Recupera o Timestamp do Último Backup para cada combinação de Servidor e Backup. Retorna um mapa para consulta fácil.
 - **Autenticação**: Requer sessão válida e token CSRF
 - **Resposta**:
 
@@ -917,23 +917,23 @@ Com erros:
 
 - **Respostas de Erro**:
   - `401`: Não autorizado - Sessão ou token CSRF inválido
-  - `500`: Falha ao buscar timestamps do último backup
+  - `500`: Falha ao buscar os Timestamps do Último Backup
 - **Notas**:
-  - Retorna tanto um mapa (para fácil busca por `server_id:backup_name`) quanto formato de array bruto
+  - Retorna tanto um mapa (para consulta fácil por `server_id:backup_name`) quanto o formato de array bruto
   - Inclui cabeçalhos de controle de cache para evitar armazenamento em cache
-  - Útil para rastrear os tempos do último backup em todas as combinações servidor-backup
-  - Os timestamps estão no formato ISO
+  - Útil para rastrear os horários do Último Backup em todas as combinações de Servidor e Backup
+  - Os Timestamps estão no formato ISO
 
-## Gerenciamento de logs do aplicativo {/* #application-logs-management */}
+## Gerenciamento de Logs do Aplicativo {/* #application-logs-management */}
 
-### Obter logs do aplicativo - `/api/application-logs` {/* #get-application-logs---apiapplication-logs */}
+### Obter Logs do Aplicativo - `/api/application-logs` {/* #get-application-logs---apiapplication-logs */}
 - **Endpoint**: `/api/application-logs`
 - **Método**: GET
-- **Descrição**: recupera entradas de log do aplicativo a partir de arquivos de log. Suporta a leitura de arquivos de log atuais e rotacionados com funcionalidade de tail.
+- **Descrição**: Recupera entradas de log dos arquivos de log. Suporta a Leitura de arquivos de log atuais e rotacionados com funcionalidade de tail.
 - **Autenticação**: Requer privilégios de administrador, sessão válida e token CSRF
 - **Parâmetros de Consulta**:
-  - `file` (opcional): Nome do arquivo de log para leitura - `application.log`, `application.log.1`, `application.log.2`, etc. Se não for fornecido, retorna lista de arquivos disponíveis
-  - `tail` (opcional): Número de linhas a retornar do final do arquivo (padrão: 1000, mín: 1, máx: 10000)
+  - `file` (opcional): Nome do arquivo de log para Leitura - `application.log`, `application.log.1`, `application.log.2`, etc. Se não fornecido, retorna a lista de Arquivos disponíveis
+  - `tail` (opcional): Número de linhas a retornar do final do arquivo (Padrão: 1000, Mín: 1, máx: 10000)
 - **Resposta** (com parâmetro de arquivo):
 
   ```json
@@ -963,17 +963,17 @@ Com erros:
 - **Respostas de Erro**:
   - `400`: Parâmetro tail inválido (deve ser 1-10000) ou formato de parâmetro de arquivo inválido
   - `401`: Não autorizado - Sessão ou token CSRF inválido
-  - `403`: Proibido - Privilégios de administrador necessários
+  - `403`: Proibido - Privilégios de Administrador necessários
   - `404`: Arquivo de log não encontrado
-  - `500`: Falha ao ler arquivo de log
+  - `500`: Falha ao ler o arquivo de log
 - **Notas**:
   - Acessível apenas para usuários administradores
-  - Suporta leitura do arquivo de log atual e arquivos de log rotacionados (até 10 arquivos rotacionados)
+  - Suporta a Leitura do arquivo de log Atual e arquivos de log rotacionados (até 10 arquivos rotacionados)
   - Retorna as últimas N linhas (tail) do arquivo de log especificado
-  - O nome do arquivo de log é determinado pela variável de ambiente (padrão: `application.log`)
-  - Retorna lista de arquivos de log disponíveis quando o parâmetro de arquivo não é fornecido
-  - Nomes de arquivos são validados para prevenir ataques de travessia de diretório
-  - Arquivos rotacionados são numerados sequencialmente (`.1`, `.2`, etc.)
+  - O nome do arquivo de log é determinado pela variável de ambiente (Padrão: `application.log`)
+  - Retorna a lista de arquivos de log disponíveis quando o parâmetro de arquivo não é fornecido
+  - Os nomes dos arquivos são validados para evitar ataques de travessia de diretório
+  - Os arquivos rotacionados são numerados sequencialmente (`.1`, `.2`, etc.)
 
 ### Exportar Logs do Aplicativo - `/api/application-logs/export` {/* #export-application-logs---apiapplication-logsexport */}
 - **Endpoint**: `/api/application-logs/export`
@@ -981,25 +981,25 @@ Com erros:
 - **Descrição**: Exporta entradas de log do aplicativo em formato de texto filtrado. Suporta filtragem por nível de log e string de pesquisa.
 - **Autenticação**: Requer privilégios de administrador, sessão válida e token CSRF
 - **Parâmetros de Consulta**:
-  - `file` (obrigatório): Nome do arquivo de log para exportar - `application.log`, `application.log.1`, `application.log.2`, etc.
-  - `logLevels` (opcional): Lista separada por vírgulas dos níveis de log para incluir - `INFO`, `WARN`, `ERROR` (padrão: `INFO,WARN,ERROR`)
+  - `file` (obrigatório): Nome do arquivo de log a ser exportado - `application.log`, `application.log.1`, `application.log.2`, etc.
+  - `logLevels` (opcional): Lista separada por vírgulas de níveis de log a serem incluídos - `INFO`, `WARN`, `ERROR` (padrão: `INFO,WARN,ERROR`)
   - `search` (opcional): String de pesquisa para filtrar linhas de log (não diferencia maiúsculas de minúsculas)
 - **Resposta**:
   - Content-Type: `text/plain`
   - Content-Disposition: `attachment; filename="duplistatus-logs-YYYY-MM-DDTHH-MM-SS.txt"`
   - Conteúdo de log filtrado como texto simples
 - **Respostas de Erro**:
-  - `400`: Parâmetro de arquivo é obrigatório ou formato inválido de parâmetro de arquivo
-  - `401`: Não autorizado - Sessão inválida ou token CSRF
-  - `403`: Proibido - Privilégios de administrador obrigatórios
+  - `400`: O parâmetro de arquivo é obrigatório ou o formato do parâmetro de arquivo é inválido
+  - `401`: Não autorizado - Sessão ou token CSRF inválido
+  - `403`: Proibido - Privilégios de administrador necessários
   - `500`: Falha ao exportar logs
 - **Observações**:
-  - Apenas acessível para usuários administradores
-  - Exporta entradas de log filtradas com base no nível de log e critérios de pesquisa
+  - Acessível apenas para usuários administradores
+  - Exporta entradas de log filtradas com base no nível de log e nos critérios de pesquisa
   - Suporta filtragem por níveis de log: `INFO`, `WARN`, `ERROR`
-  - Filtragem por string de pesquisa não diferencia maiúsculas de minúsculas
-  - Linhas vazias são automaticamente filtradas
-  - Nome do arquivo de log é determinado pela variável de ambiente (padrão: `application.log`)
-  - Nomes de arquivos são validados para prevenir ataques de travessia de diretório
-  - Arquivo exportado inclui timestamp no nome do arquivo
+  - A filtragem por string de pesquisa não diferencia maiúsculas de minúsculas
+  - Linhas vazias são filtradas automaticamente
+  - O nome do arquivo de log é determinado pela variável de ambiente (padrão: `application.log`)
+  - Os nomes dos arquivos são validados para evitar ataques de travessia de diretório
+  - O arquivo exportado inclui um timestamp no nome do arquivo
   - Útil para análise externa e solução de problemas

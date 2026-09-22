@@ -12,40 +12,29 @@
   "batchConcurrency": 4,
   "batchSize": 20,
   "fileConcurrency": 2,
-  "uiBatchConcurrency": 2,
+  "uiBatchConcurrency": 4,
   "maxBatchChars": 4096,
   "provider": "openrouter",
   "providers": {
     "openrouter": {
       "translationModels": [
-        "qwen/qwen3-coder-plus",
-        "openai/gpt-4o-mini",
-        "~anthropic/claude-haiku-latest",
-        "google/gemini-2.5-flash-lite",
-        "deepseek/deepseek-v4-flash",
+        "qwen/qwen3.7-max",
         "~anthropic/claude-sonnet-latest",
-        "openai/gpt-5.3-codex"
+        "openai/gpt-5.4",
+        "google/gemini-3.5-flash",
+        "tencent/hy-mt2-30b-a3b",
+        "mistralai/mistral-large",
+        "cohere/command-r-plus-08-2024",
+        "openai/gpt-4o-mini",
+        "qwen/qwen-2.5-72b-instruct"
       ],
       "uiModels": [
-        "qwen/qwen-2.5-72b-instruct",
+        "qwen/qwen3.7-max",
         "~anthropic/claude-sonnet-latest"
       ],
       "maxTokens": 8192,
       "temperature": 0.2,
       "requestTimeoutMs": 240000
-    },
-    "nvidia": {
-      "translationModels": [
-        "qwen/qwen3-next-80b-a3b-instruct",
-        "stepfun-ai/step-3.7-flash",
-        "google/gemma-4-31b-it",
-        "meta/llama-3.3-70b-instruct",
-        "z-ai/glm-5.1",
-        "moonshotai/kimi-k2.6",
-        "qwen/qwen3.5-122b-a10b"
-      ],
-      "maxTokens": 8192,
-      "temperature": 0.2
     }
   },
   "features": {

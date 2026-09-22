@@ -35,10 +35,10 @@ Créez une sauvegarde de l'ensemble de votre base de données à des fins de con
 Restaurez votre base de données à partir d'un fichier de sauvegarde créé précédemment.
 
 1.  Accédez à [Paramètres → Maintenance de la base de données](database-maintenance.md).
-2.  Dans la section **Restauration de la base de données**, cliquez sur l'entrée de fichier et sélectionnez un fichier de sauvegarde :
+2.  Dans la section **Restauration de la base de données**, cliquez sur le champ de sélection de fichier et sélectionnez un fichier de sauvegarde :
     - Formats pris en charge : `.db`, `.sql`, `.sqlite`, `.sqlite3`
-    - Taille maximale du fichier : 100 Mo
-3.  Cliquez sur <IconButton icon="lucide:upload" label="Restaurer la base de données" />.
+    - Taille maximale du fichier : 200 Mo
+3.  Cliquez sur <IconButton icon="lucide:upload" label="Restauration de la base de données" />.
 4.  Confirmez l'action dans la boîte de dialogue.
 
 **Processus de restauration :**

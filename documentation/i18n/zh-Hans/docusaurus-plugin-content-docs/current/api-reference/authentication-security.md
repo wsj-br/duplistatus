@@ -49,7 +49,7 @@
 
 当**需要 API 密钥**处于关闭状态时，前四个路由接受带或不带密钥的请求：记录有效的匹配作用域密钥；忽略错误密钥。当开关打开时，它们在没有有效密钥时返回 `401`，在密钥作用域不匹配时返回 `403`。`/api/health` 和 `/api/ping` 从不使用密钥。请参阅 [API 密钥](../user-guide/settings/api-keys-settings.md) 和 [IP 白名单](../user-guide/settings/ip-allowlist-settings.md)。
 
-### 使用示例（会话 + CSRF）{/* #usage-example-session--csrf */}
+### 使用示例（会话 + CSRF） {/* #usage-example-session--csrf */}
 
 ```typescript
 // 1. Create session
@@ -262,7 +262,7 @@ const response = await fetch('/api/servers/server-id', {
   - 策略通过环境变量配置（`PWD_ENFORCE`，`PWD_MIN_LEN`）
   - 默认密码检查（防止使用默认管理员密码）始终强制执行，无论策略设置如何
 
-### 认证 API 错误和成功代码（国际化）{/* #auth-api-error-and-success-codes-i18n */}
+### 认证 API 错误和成功代码（国际化） {/* #auth-api-error-and-success-codes-i18n */}
 
 认证端点除了返回人类可读的 `error` 或 `message` 字段外，还会返回一个稳定的 `errorCode`（成功时为 `successCode`）。`error` 和 `message` 值为英文。客户端应使用这些代码查找本地化字符串，以便 UI 以用户选择的语言显示消息。
 
@@ -274,7 +274,7 @@ const response = await fetch('/api/servers/server-id', {
 | `/api/auth/change-password` | `PASSWORD_CHANGED` | `NEW_PASSWORD_REQUIRED`，`POLICY_NOT_MET`，`USER_NOT_FOUND`，`CURRENT_PASSWORD_INCORRECT`，`NEW_PASSWORD_SAME_AS_CURRENT`，`INTERNAL_ERROR` |
 | `/api/auth/password-policy` | — | `POLICY_RETRIEVE_FAILED` |
 
-### 错误响应{/* #error-responses */}
+### 错误响应 {/* #error-responses */}
 - `401 Unauthorized`：无效或缺少会话、会话已过期，或 CSRF 令牌验证失败
 - `403 Forbidden`：CSRF 令牌验证失败或操作不被允许
 
