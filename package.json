@@ -45,7 +45,9 @@
     "i18n:tools": "./scripts/link-ai-i18n-tools.sh",
     "take-screenshots": "sh -c 'tsx --env-file=.env scripts/take-screenshots.ts \"$@\" ' _",
     "take-screenshots:install": "playwright install chromium",
-    "notices:write": "node scripts/write-third-party-notices.js"
+    "notices:write": "node scripts/write-third-party-notices.js",
+    "release:github": "node scripts/release.mjs",
+    "release:github:dry": "node scripts/release.mjs --dry-run"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.20",

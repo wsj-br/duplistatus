@@ -72,7 +72,16 @@ Una vez completada la fusión, crea un lanzamiento de GitHub:
 
 ## Método 2: Línea de comandos (Alternativa) {/* #method-2-command-line-alternative */}
 
-Si prefieres usar la línea de comandos, sigue estos pasos:
+Desde el commit que se debe publicar (normalmente `master`, ya subido), con un árbol de trabajo limpio y `documentation/docs/release-notes/VERSION.md` en su lugar:
+
+```bash
+pnpm release:github:dry   # print the planned tag, notes file, and gh command
+pnpm release:github       # generate GitHub notes, tag vVERSION at HEAD, publish the release, and deploy the docs
+```
+
+`scripts/release.mjs` lee la versión de `package.json`, ejecuta `scripts/generate-readme-from-intro.sh` (para que `RELEASE_NOTES_github_VERSION.md` tenga enlaces absolutos) y crea la release de GitHub. Al publicarla, se inicia el flujo de trabajo de la imagen de Docker. A continuación, el script ejecuta `pnpm run deploy` en `documentation/` para compilar el sitio de Docusaurus y subirlo a `gh-pages`. Si la etiqueta `vVERSION` o esa release de GitHub ya existen, el script las elimina y vuelve a crear la etiqueta en el HEAD actual. Pase `--verify-clean=false` para omitir las comprobaciones de árbol limpio.
+
+Los pasos siguientes son las mismas operaciones ejecutadas manualmente.
 
 ### Paso 1: Actualizar rama maestra local {/* #step-1-update-local-master-branch */}
 
@@ -144,7 +153,7 @@ Para activar manualmente el flujo de trabajo de compilación de imagen Docker si
 
 ## Publicación de Documentación {/* #releasing-documentation */}
 
-La documentación se aloja en [GitHub Pages](https://wsj-br.github.io/duplistatus/) y se implementa de forma independiente de la versión de la aplicación. Sigue estos pasos para publicar la documentación actualizada:
+La documentación está alojada en [GitHub Pages](https://wsj-br.github.io/duplistatus/). `pnpm release:github` la despliega después de publicar la release de GitHub. Para actualizar el sitio entre versiones de la aplicación, siga estos pasos:
 
 ### Requisitos previos {/* #prerequisites */}
 

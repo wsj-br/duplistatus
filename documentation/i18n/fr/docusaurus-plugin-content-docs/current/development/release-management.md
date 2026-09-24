@@ -72,7 +72,16 @@ Une fois la fusion terminée, créez une version GitHub :
 
 ## Méthode 2 : Ligne de commande (Alternative) {/* #method-2-command-line-alternative */}
 
-Si vous préférez utiliser la ligne de commande, suivez ces étapes :
+À partir du commit qui doit être publié (généralement `master`, déjà poussé), avec un arbre de travail propre et `documentation/docs/release-notes/VERSION.md` en place :
+
+```bash
+pnpm release:github:dry   # print the planned tag, notes file, and gh command
+pnpm release:github       # generate GitHub notes, tag vVERSION at HEAD, publish the release, and deploy the docs
+```
+
+`scripts/release.mjs` lit la version depuis `package.json`, exécute `scripts/generate-readme-from-intro.sh` (afin que `RELEASE_NOTES_github_VERSION.md` contienne des liens absolus) et crée la release GitHub. Sa publication démarre le workflow de l'image Docker. Le script exécute ensuite `pnpm run deploy` dans `documentation/` pour compiler le site Docusaurus et le pousser vers `gh-pages`. Si le tag `vVERSION` ou cette release GitHub existe déjà, le script les supprime et recrée le tag sur le HEAD actuel. Transmettez `--verify-clean=false` pour ignorer les vérifications de l'arbre propre.
+
+Les étapes ci-dessous correspondent aux mêmes opérations exécutées manuellement.
 
 ### Étape 1 : Mettre à jour la branche principale locale {/* #step-1-update-local-master-branch */}
 
@@ -144,7 +153,7 @@ Pour déclencher manuellement le workflow de construction d'une image Docker san
 
 ## Publication de la documentation {/* #releasing-documentation */}
 
-La documentation est hébergée sur [GitHub Pages](https://wsj-br.github.io/duplistatus/) et est déployée indépendamment de la version de l'application. Suivez ces étapes pour publier la documentation mise à jour :
+La documentation est hébergée sur [GitHub Pages](https://wsj-br.github.io/duplistatus/). `pnpm release:github` la déploie après la publication de la release GitHub. Pour mettre à jour le site entre les releases de l'application, suivez ces étapes :
 
 ### Conditions préalables {/* #prerequisites */}
 

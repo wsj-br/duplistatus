@@ -91,6 +91,15 @@ pnpm depcheck
 - 仅在版本已更改时更新
 - 提供每个操作的反馈
 
+## 发布 GitHub Release {/* #publish-a-github-release */}
+
+```bash
+pnpm release:github:dry
+pnpm release:github
+```
+
+`scripts/release.mjs` 会在 HEAD 处为 `v<package.json version>` 打上标签，发布 GitHub Release（其发布说明来自 `documentation/docs/release-notes/<version>.md`，并重写为 `RELEASE_NOTES_github_<version>.md`），然后部署 Docusaurus 站点。请参阅[发布管理](./release-management.md)。
+
 ## 预检查脚本 {/* #pre-checks-script */}
 
 ```bash

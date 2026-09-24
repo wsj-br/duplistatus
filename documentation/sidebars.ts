@@ -142,6 +142,7 @@ const sidebars: SidebarsConfig = {
         icon: 'history',
       },
       items: [
+        'release-notes/1.5.0',
         'release-notes/1.4.2',
         'release-notes/1.4.1',
         'release-notes/1.3.2',

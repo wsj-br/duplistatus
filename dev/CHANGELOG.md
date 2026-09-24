@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+- **GitHub release script**: `pnpm release:github` publishes `v<package.json version>` from `documentation/docs/release-notes/<version>.md`, generating `RELEASE_NOTES_github_<version>.md` first, then deploys the Docusaurus site to GitHub Pages. An existing tag or release for that version is replaced at HEAD (`scripts/release.mjs`).
+
+## [1.5.0] - 2026-09-24
+
 ### Security
 - **Health and ping flood protection**: `GET /api/health` no longer lists SQLite tables or runs dashboard queries. `/api/health` and `/api/ping` are per-IP rate-limited for non-loopback clients (`PROBE_RATE_LIMITED`). When either IP allowlist is enabled, those probes accept loopback plus CIDRs from the admin **or** external list rather than staying fully public (`src/app/api/health/route.ts`, `src/proxy.ts`, `src/lib/ip-allowlist.ts`).
 - **API keys and IP allowlists for external APIs (issue #79)**: Administrators can create scoped `upload` / `read` API keys (optional, off by default) and two independent CIDR allowlists (admin UI vs `/api/upload`, `/api/summary`, `/api/lastbackup*`). Keys are SHA-256 hashed; the secret is shown once and later identified by a `Qk7v…3xTa` fingerprint in Settings and the audit log. `/api/upload` also has a configurable body-size cap (default 5 MB) and per-IP rate limits. TCP peer addresses come from `scripts/peer-ip.cjs` so `X-Forwarded-For` cannot be spoofed unless the peer is a trusted proxy. Credits [henmohr](https://github.com/henmohr) / LibreCodeCoop ([`1c5d46a`](https://github.com/LibreCodeCoop/duplistatus/commit/1c5d46ab0c9c7e2224714a7aa9dfed37cc3d2555)), rewritten for 1.5.0 rather than cherry-picked.

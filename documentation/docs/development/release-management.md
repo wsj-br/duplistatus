@@ -73,7 +73,16 @@ Once the merge is complete, create a GitHub release:
 
 ## Method 2: Command Line (Alternative) {/* #method-2-command-line-alternative */}
 
-If you prefer using the command line, follow these steps:
+From the commit that should be released (typically `master`, already pushed), with a clean working tree and `documentation/docs/release-notes/VERSION.md` in place:
+
+```bash
+pnpm release:github:dry   # print the planned tag, notes file, and gh command
+pnpm release:github       # generate GitHub notes, tag vVERSION at HEAD, publish the release, and deploy the docs
+```
+
+`scripts/release.mjs` reads the version from `package.json`, runs `scripts/generate-readme-from-intro.sh` (so `RELEASE_NOTES_github_VERSION.md` has absolute links), and creates the GitHub release. Publishing it starts the Docker image workflow. The script then runs `pnpm run deploy` in `documentation/` to build the Docusaurus site and push it to `gh-pages`. If tag `vVERSION` or that GitHub release already exists, the script deletes them and recreates the tag at the current HEAD. Pass `--verify-clean=false` to skip the clean-tree checks.
+
+The steps below are the same operations run by hand.
 
 ### Step 1: Update Local Master Branch {/* #step-1-update-local-master-branch */}
 
@@ -145,7 +154,7 @@ To manually trigger the Docker image build workflow without creating a release:
 
 ## Releasing Documentation {/* #releasing-documentation */}
 
-The documentation is hosted on [GitHub Pages](https://wsj-br.github.io/duplistatus/) and is deployed separately from the application release. Follow these steps to release updated documentation:
+The documentation is hosted on [GitHub Pages](https://wsj-br.github.io/duplistatus/). `pnpm release:github` deploys it after publishing the GitHub release. To update the site between application releases, follow these steps:
 
 ### Prerequisites {/* #prerequisites */}
 

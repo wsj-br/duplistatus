@@ -72,7 +72,16 @@
 
 ## विधि 2: कमांड लाइन (वैकल्पिक) {/* #method-2-command-line-alternative */}
 
-यदि आप कमांड लाइन का उपयोग करना पसंद करते हैं, तो इन चरणों का पालन करें:
+उस कमिट से जिसे रिलीज़ किया जाना चाहिए (आमतौर पर `master`, जो पहले ही पुश किया जा चुका है), एक साफ़ वर्किंग ट्री और `documentation/docs/release-notes/VERSION.md` के अपनी जगह पर होने के साथ:
+
+```bash
+pnpm release:github:dry   # print the planned tag, notes file, and gh command
+pnpm release:github       # generate GitHub notes, tag vVERSION at HEAD, publish the release, and deploy the docs
+```
+
+`scripts/release.mjs`, `package.json` से संस्करण पढ़ता है, `scripts/generate-readme-from-intro.sh` चलाता है (ताकि `RELEASE_NOTES_github_VERSION.md` में एब्सोल्यूट लिंक हों), और GitHub रिलीज़ बनाता है। इसे पब्लिश करने से Docker इमेज वर्कफ़्लो शुरू होता है। फिर स्क्रिप्ट Docusaurus साइट बनाने और उसे `gh-pages` पर पुश करने के लिए `documentation/` में `pnpm run deploy` चलाती है। यदि टैग `vVERSION` या वह GitHub रिलीज़ पहले से मौजूद है, तो स्क्रिप्ट उन्हें हटा देती है और वर्तमान HEAD पर टैग फिर से बना देती है। क्लीन-ट्री जाँचों को छोड़ने के लिए `--verify-clean=false` पास करें।
+
+नीचे दिए गए चरण वही ऑपरेशन हैं जो मैन्युअल रूप से चलाए जाते हैं।
 
 ### चरण 1: स्थानीय मास्टर शाखा अद्यतन करें {/* #step-1-update-local-master-branch */}
 
@@ -144,7 +153,7 @@ git push origin vMAJOR.MINOR.PATCH
 
 ## दस्तावेज़ीकरण रिलीज़ {/* #releasing-documentation */}
 
-दस्तावेज़ीकरण [GitHub पेजेस](https://wsj-br.github.io/duplistatus/) पर होस्ट किया गया है और एप्लिकेशन रिलीज़ से अलग तौर पर तैनात किया गया है। अपडेट किए गए दस्तावेज़ीकरण को रिलीज़ करने के लिए इन चरणों का पालन करें:
+दस्तावेज़ीकरण [GitHub Pages](https://wsj-br.github.io/duplistatus/) पर होस्ट किया गया है। `pnpm release:github` GitHub रिलीज़ पब्लिश करने के बाद इसे डिप्लॉय करता है। एप्लिकेशन रिलीज़ के बीच साइट को अपडेट करने के लिए, इन चरणों का पालन करें:
 
 ### पूर्वापेक्षाएँ {/* #prerequisites */}
 

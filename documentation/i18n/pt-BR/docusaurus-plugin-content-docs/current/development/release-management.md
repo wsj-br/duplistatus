@@ -72,7 +72,16 @@ Após a mesclagem ser concluída, crie um lançamento do GitHub:
 
 ## Método 2: Linha de Comando (Alternativa) {/* #method-2-command-line-alternative */}
 
-Se preferir usar a linha de comando, siga estas etapas:
+A partir do commit que deve ser lançado (normalmente `master`, já enviado via push), com uma árvore de trabalho limpa e `documentation/docs/release-notes/VERSION.md` no devido lugar:
+
+```bash
+pnpm release:github:dry   # print the planned tag, notes file, and gh command
+pnpm release:github       # generate GitHub notes, tag vVERSION at HEAD, publish the release, and deploy the docs
+```
+
+O `scripts/release.mjs` lê a versão de `package.json`, executa `scripts/generate-readme-from-intro.sh` (para que `RELEASE_NOTES_github_VERSION.md` tenha links absolutos) e cria a release do GitHub. A sua publicação inicia o fluxo de trabalho da imagem Docker. Em seguida, o script executa `pnpm run deploy` em `documentation/` para compilar o site Docusaurus e enviá-lo via push para `gh-pages`. Se a tag `vVERSION` ou essa release do GitHub já existir, o script as excluirá e recriará a tag no HEAD atual. Passe `--verify-clean=false` para ignorar as verificações de árvore limpa.
+
+As etapas abaixo são as mesmas operações executadas manualmente.
 
 ### Etapa 1: Atualizar Ramo Master Local {/* #step-1-update-local-master-branch */}
 
@@ -144,7 +153,7 @@ Para disparar manualmente o fluxo de trabalho de compilação da imagem Docker s
 
 ## Lançamento da Documentação {/* #releasing-documentation */}
 
-A documentação é hospedada no [GitHub Pages](https://wsj-br.github.io/duplistatus/) e é implantada separadamente do lançamento da aplicação. Siga estas etapas para lançar a documentação atualizada:
+A documentação é hospedada no [GitHub Pages](https://wsj-br.github.io/duplistatus/). O `pnpm release:github` faz a implantação dela após a publicação da release do GitHub. Para atualizar o site entre as versões da aplicação, siga estas etapas:
 
 ### Pré-requisitos {/* #prerequisites */}
 

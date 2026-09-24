@@ -88,6 +88,15 @@ This script automatically updates version information across multiple files to k
 - Only updates if the version has changed
 - Provides feedback on each operation
 
+## Publish a GitHub release {/* #publish-a-github-release */}
+
+```bash
+pnpm release:github:dry
+pnpm release:github
+```
+
+`scripts/release.mjs` tags `v<package.json version>` at HEAD, publishes a GitHub release whose notes come from `documentation/docs/release-notes/<version>.md` (rewritten to `RELEASE_NOTES_github_<version>.md`), then deploys the Docusaurus site. See [Release Management](./release-management.md).
+
 ## Pre-checks script {/* #pre-checks-script */}
 
 ```bash

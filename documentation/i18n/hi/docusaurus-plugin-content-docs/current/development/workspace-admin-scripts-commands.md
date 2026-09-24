@@ -91,6 +91,15 @@ pnpm depcheck
 - केवल तभी अद्यतन करता है जब संस्करण बदल गया हो
 - प्रत्येक संचालन पर प्रतिक्रिया प्रदान करता है
 
+## GitHub रिलीज़ प्रकाशित करें {/* #publish-a-github-release */}
+
+```bash
+pnpm release:github:dry
+pnpm release:github
+```
+
+`scripts/release.mjs` HEAD पर `v<package.json version>` को टैग करता है, एक GitHub रिलीज़ प्रकाशित करता है जिसके नोट्स `documentation/docs/release-notes/<version>.md` (`RELEASE_NOTES_github_<version>.md` में रीराइट किए गए) से आते हैं, फिर Docusaurus साइट को डिप्लॉय करता है। [रिलीज़ मैनेजमेंट](./release-management.md) देखें।
+
 ## प्री-चेक स्क्रिप्ट {/* #pre-checks-script */}
 
 ```bash

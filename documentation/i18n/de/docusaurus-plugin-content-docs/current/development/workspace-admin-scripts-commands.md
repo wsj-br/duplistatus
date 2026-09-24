@@ -91,6 +91,15 @@ Dieses Skript aktualisiert automatisch Versionsinformationen in mehreren Dateien
 - Aktualisiert nur, wenn sich die Version geändert hat
 - Zeigt Rückmeldung zu jeder Operation an
 
+## GitHub-Release veröffentlichen {/* #publish-a-github-release */}
+
+```bash
+pnpm release:github:dry
+pnpm release:github
+```
+
+`scripts/release.mjs` versieht `v<package.json version>` bei HEAD mit einem Tag, veröffentlicht ein GitHub-Release, dessen Versionshinweise aus `documentation/docs/release-notes/<version>.md` stammen (umgeschrieben zu `RELEASE_NOTES_github_<version>.md`), und stellt anschließend die Docusaurus-Website bereit. Siehe [Release-Management](./release-management.md).
+
 ## Pre-checks Skript {/* #pre-checks-script */}
 
 ```bash

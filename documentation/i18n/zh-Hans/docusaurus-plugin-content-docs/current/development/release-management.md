@@ -72,7 +72,16 @@
 
 ## 方法 2：命令行（替代方案） {/* #method-2-command-line-alternative */}
 
-如果您更喜欢使用命令行，请执行以下步骤：
+从应发布的提交（通常为已推送的 `master`）开始，保持干净的工作树和就绪的 `documentation/docs/release-notes/VERSION.md`：
+
+```bash
+pnpm release:github:dry   # print the planned tag, notes file, and gh command
+pnpm release:github       # generate GitHub notes, tag vVERSION at HEAD, publish the release, and deploy the docs
+```
+
+`scripts/release.mjs` 从 `package.json` 中读取版本，运行 `scripts/generate-readme-from-intro.sh`（以便 `RELEASE_NOTES_github_VERSION.md` 包含绝对链接），并创建 GitHub release。发布该 release 会启动 Docker 镜像工作流。随后脚本会在 `documentation/` 中运行 `pnpm run deploy` 以构建 Docusaurus 站点并推送到 `gh-pages`。如果标签 `vVERSION` 或该 GitHub release 已存在，脚本将删除它们并在当前 HEAD 重新创建标签。传入 `--verify-clean=false` 可跳过工作树干净状态检查。
+
+以下步骤为手动执行的相同操作。
 
 ### 步骤 1：更新本地主分支 {/* #step-1-update-local-master-branch */}
 
@@ -144,7 +153,7 @@ git push origin vMAJOR.MINOR.PATCH
 
 ## 发布文档 {/* #releasing-documentation */}
 
-文档托管在 [GitHub Pages](https://wsj-br.github.io/duplistatus/) 上，并且与应用程序发布独立部署。请按照以下步骤发布更新的文档：
+文档托管在 [GitHub Pages](https://wsj-br.github.io/duplistatus/) 上。`pnpm release:github` 会在发布 GitHub release 后对其进行部署。如需在两次应用程序版本发布之间更新站点，请按以下步骤操作：
 
 ### 先决条件 {/* #prerequisites */}
 

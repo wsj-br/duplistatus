@@ -28,7 +28,7 @@ THE SOFTWARE.
 
 ---
 
-@ai-sdk/gateway 4.0.80
+@ai-sdk/gateway 4.0.90
 Unknown
 Copyright 2023 Vercel, Inc.
 
@@ -46,7 +46,7 @@ limitations under the License.
 
 ---
 
-@ai-sdk/openai-compatible 3.0.48
+@ai-sdk/openai-compatible 3.0.54
 Unknown
 Copyright 2023 Vercel, Inc.
 
@@ -64,13 +64,13 @@ limitations under the License.
 
 ---
 
-@ai-sdk/provider-utils 5.0.40
+@ai-sdk/provider-utils 5.0.46
 Unknown
 
 
 ---
 
-@ai-sdk/provider 4.0.14
+@ai-sdk/provider 4.0.18
 Unknown
 Copyright 2023 Vercel, Inc.
 
@@ -102,7 +102,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---
 
-@babel/helper-string-parser 8.0.0
+@babel/helper-string-parser 8.0.6
 Unknown
 MIT License
 
@@ -129,7 +129,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ---
 
-@babel/helper-validator-identifier 8.0.4
+@babel/helper-validator-identifier 8.0.6
 Unknown
 MIT License
 
@@ -156,7 +156,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ---
 
-@babel/parser 8.0.5
+@babel/parser 8.0.6
 Unknown
 Copyright (C) 2012-2014 by various contributors (see AUTHORS)
 
@@ -207,7 +207,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ---
 
-@babel/types 8.0.5
+@babel/types 8.0.6
 Unknown
 MIT License
 
@@ -565,7 +565,7 @@ SOFTWARE.
 
 ---
 
-@next/env 16.3.5
+@next/env 16.3.6
 Unknown
 
 
@@ -2545,7 +2545,7 @@ Unknown
 
 ---
 
-@types/node 26.5.1
+@types/node 26.6.2
 Unknown
     MIT License
 
@@ -3088,7 +3088,7 @@ THE SOFTWARE.
 
 ---
 
-ai-i18n-tools 1.8.9
+ai-i18n-tools 1.9.0
 Unknown
 MIT License
 
@@ -3114,7 +3114,7 @@ SOFTWARE.
 
 ---
 
-ai 7.0.99
+ai 7.0.112
 Unknown
 Copyright 2023 Vercel, Inc.
 
@@ -3750,7 +3750,7 @@ SOFTWARE.
 
 ---
 
-autoprefixer 10.6.0
+autoprefixer 10.6.1
 Unknown
 The MIT License (MIT)
 
@@ -4241,7 +4241,7 @@ THE SOFTWARE.
 
 ---
 
-baseline-browser-mapping 2.11.23
+baseline-browser-mapping 2.11.25
 Unknown
                                  Apache License
                            Version 2.0, January 2004
@@ -4549,7 +4549,7 @@ Unknown
 
 ---
 
-brace-expansion 5.0.9
+brace-expansion 5.0.12
 Unknown
 MIT License
 
@@ -4577,7 +4577,7 @@ SOFTWARE.
 
 ---
 
-browserslist 4.28.9
+browserslist 4.29.0
 Unknown
 The MIT License (MIT)
 
@@ -6891,7 +6891,7 @@ THE SOFTWARE.
 
 ---
 
-electron-to-chromium 1.5.427
+electron-to-chromium 1.5.438
 Unknown
 Copyright 2018 Kilian Valkhof
 
@@ -7922,7 +7922,7 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 
 ---
 
-get-east-asian-width 1.6.0
+get-east-asian-width 1.7.0
 Unknown
 MIT License
 
@@ -8470,7 +8470,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 ---
 
-ignore 7.0.9
+ignore 7.0.10
 Unknown
 Copyright (c) 2013 Kael Zhang <i@kael.me>, contributors
 http://kael.me/
@@ -9716,7 +9716,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ---
 
-lucide-react 1.45.0
+lucide-react 1.47.0
 Unknown
 ISC License
 
@@ -11225,7 +11225,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ---
 
-next 16.3.5
+next 16.3.6
 Unknown
 The MIT License (MIT)
 
@@ -11303,7 +11303,7 @@ THE SOFTWARE.
 
 ---
 
-node-releases 2.0.55
+node-releases 2.0.57
 Unknown
 The MIT License
 
@@ -11329,7 +11329,7 @@ THE SOFTWARE.
 
 ---
 
-nodemailer 10.0.9
+nodemailer 10.0.10
 Unknown
 Copyright (c) 2011-2023 Andris Reinman
 
@@ -12024,7 +12024,7 @@ SOFTWARE.**
 
 ---
 
-proxy-addr 2.0.7
+proxy-addr 2.0.8
 Unknown
 (The MIT License)
 
@@ -12283,7 +12283,7 @@ SOFTWARE.
 
 ---
 
-react-i18next 17.0.14
+react-i18next 17.0.15
 Unknown
 The MIT License (MIT)
 
@@ -13035,7 +13035,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ---
 
-serialize-javascript 7.1.1
+serialize-javascript 7.1.2
 Unknown
 Copyright 2014 Yahoo! Inc.
 All rights reserved.

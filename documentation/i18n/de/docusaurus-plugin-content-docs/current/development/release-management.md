@@ -72,7 +72,16 @@ Sobald das Merging abgeschlossen ist, erstellen Sie einen GitHub-Release:
 
 ## Methode 2: Befehlszeile (Alternative) {/* #method-2-command-line-alternative */}
 
-Wenn Sie lieber die Befehlszeile verwenden, befolgen Sie diese Schritte:
+Ausgehend von dem Commit, der veröffentlicht werden soll (typischerweise `master`, bereits gepusht), mit einem sauberen Working Tree und vorhandenem `documentation/docs/release-notes/VERSION.md`:
+
+```bash
+pnpm release:github:dry   # print the planned tag, notes file, and gh command
+pnpm release:github       # generate GitHub notes, tag vVERSION at HEAD, publish the release, and deploy the docs
+```
+
+`scripts/release.mjs` liest die Version aus `package.json`, führt `scripts/generate-readme-from-intro.sh` aus (sodass `RELEASE_NOTES_github_VERSION.md` absolute Links enthält) und erstellt das GitHub-Release. Durch die Veröffentlichung wird der Docker-Image-Workflow gestartet. Das Skript führt dann `pnpm run deploy` in `documentation/` aus, um die Docusaurus-Site zu erstellen und nach `gh-pages` zu pushen. Falls das Tag `vVERSION` oder dieses GitHub-Release bereits existiert, löscht das Skript diese und erstellt das Tag am aktuellen HEAD neu. Übergeben Sie `--verify-clean=false`, um die Prüfungen auf einen sauberen Working Tree zu überspringen.
+
+Die nachfolgenden Schritte sind dieselben Vorgänge, manuell ausgeführt.
 
 ### Schritt 1: Lokalen Master-Branch aktualisieren {/* #step-1-update-local-master-branch */}
 
@@ -144,7 +153,7 @@ Um den Workflow zum Erstellen des Docker-Images manuell auszulösen, ohne eine V
 
 ## Dokumentation veröffentlichen {/* #releasing-documentation */}
 
-Die Dokumentation wird auf [GitHub Pages](https://wsj-br.github.io/duplistatus/) gehostet und separat von der Anwendungsversion bereitgestellt. Befolgen Sie diese Schritte, um aktualisierte Dokumentation zu veröffentlichen:
+Die Dokumentation wird auf [GitHub Pages](https://wsj-br.github.io/duplistatus/) gehostet. `pnpm release:github` stellt sie nach der Veröffentlichung des GitHub-Releases bereit. Um die Site zwischen Releases der Anwendung zu aktualisieren, befolgen Sie diese Schritte:
 
 ### Voraussetzungen {/* #prerequisites */}
 
