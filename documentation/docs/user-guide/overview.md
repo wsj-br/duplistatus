@@ -63,18 +63,56 @@ The application toolbar provides convenient access to key functions and settings
 
 ![Application toolbar](../assets/duplistatus_toolbar.svg)
 
-| Button                                                                                                                                           | Description                                                                                                                                                                                |
-|--------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| <IconButton icon="lucide:search" /> &nbsp; Filter                                                                                                | Search and filter servers by ID, URL, or backup job name.                                                                                                                                  |
-| <IconButton icon="lucide:rotate-ccw" /> &nbsp; Refresh screen                                                                                    | Execute an immediate manual screen refresh of all data                                                                                                                                     |
-| <IconButton label="Auto-refresh" />                                                                                                              | Enable or disable automatic refresh functionality. Configure in [Display Settings](settings/display-settings.md) <br/> _Right-click_ to open Display Settings page                         |
-| <SvgButton svgFilename="ntfy.svg" /> &nbsp; Open NTFY                                                                                            | Access the ntfy.sh website for your configured notification topic. <br/> _Right-click_ to show a QR code to configure your device to receive notifications from duplistatus.               |
-| <SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Duplicati configuration](duplicati-configuration.md)       | Open the selected Duplicati server's web interface <br/> _Right-click_ to open the Duplicati legacy UI (`/ngax`) in a new tab                                                              |
-| <IconButton icon="lucide:download" href="collect-backup-logs" /> &nbsp; [Collect logs](collect-backup-logs.md)                                   | Connect to Duplicati servers and retrieve backup logs <br/> _Right-click_ to collect logs for all configured servers                                                                       |
-| <IconButton icon="lucide:siren" tone="alert" href="delivery-failures" /> &nbsp; [Delivery failures](delivery-failures.md)                         | Shown to administrators while email or ntfy delivery is failing. See [Delivery failures](delivery-failures.md).                                                                            |
-| <IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [Settings](settings/backup-notifications-settings.md) | Configure notifications, monitoring, SMTP server, and notification templates                                                                                                               |
-| <IconButton icon="lucide:user" label="username" />                                                                                               | Show the connected user, user type (`Admin`, `User`), click for user menu (includes language selection). See more in [User Management](settings/user-management-settings.md)               |
-| <IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; User Guide                                                                    | Open the [User Guide](overview.md) to the section relevant to the page you are currently viewing. The tooltip shows "Help for [Page Name]" to indicate which documentation will be opened. |
+<table>
+  <thead>
+    <tr>
+      <th style={{whiteSpace: 'nowrap'}}>Button</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:search" /> &nbsp; Filter</td>
+      <td>Search and filter servers by ID, URL, or backup job name.</td>
+    </tr>
+    <tr>
+      <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:rotate-ccw" /> &nbsp; Refresh screen</td>
+      <td>Execute an immediate manual screen refresh of all data</td>
+    </tr>
+    <tr>
+      <td style={{whiteSpace: 'nowrap'}}><IconButton label="Auto-refresh" /></td>
+      <td>Enable or disable automatic refresh functionality. Configure in [Display Settings](settings/display-settings.md) <br/> _Right-click_ to open Display Settings page</td>
+    </tr>
+    <tr>
+      <td style={{whiteSpace: 'nowrap'}}><SvgButton svgFilename="ntfy.svg" /> &nbsp; Open NTFY</td>
+      <td>Access the ntfy.sh website for your configured notification topic. <br/> _Right-click_ to show a QR code to configure your device to receive notifications from duplistatus.</td>
+    </tr>
+    <tr>
+      <td style={{whiteSpace: 'nowrap'}}><SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Duplicati configuration](duplicati-configuration.md)</td>
+      <td>Open the selected Duplicati server's web interface <br/> _Right-click_ to open the Duplicati legacy UI (`/ngax`) in a new tab</td>
+    </tr>
+    <tr>
+      <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:download" href="collect-backup-logs" /> &nbsp; [Collect logs](collect-backup-logs.md)</td>
+      <td>Connect to Duplicati servers and retrieve backup logs <br/> _Right-click_ to collect logs for all configured servers</td>
+    </tr>
+    <tr>
+      <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:siren" tone="alert" href="delivery-failures" /> &nbsp; [Delivery failures](delivery-failures.md)</td>
+      <td>Shown to administrators while email or ntfy delivery is failing. See [Delivery failures](delivery-failures.md).</td>
+    </tr>
+    <tr>
+      <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [Settings](settings/backup-notifications-settings.md)</td>
+      <td>Configure notifications, monitoring, SMTP server, and notification templates</td>
+    </tr>
+    <tr>
+      <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:user" label="username" /></td>
+      <td>Show the connected user, user type (`Admin`, `User`), click for user menu (includes language selection). See more in [User Management](settings/user-management-settings.md)</td>
+    </tr>
+    <tr>
+      <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; User Guide</td>
+      <td>Open the [User Guide](overview.md) to the section relevant to the page you are currently viewing. The tooltip shows "Help for [Page Name]" to indicate which documentation will be opened.</td>
+    </tr>
+  </tbody>
+</table>
 
 ### User Menu {/* #user-menu */}
 

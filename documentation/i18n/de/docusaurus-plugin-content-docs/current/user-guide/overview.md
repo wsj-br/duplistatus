@@ -59,18 +59,56 @@ Die Anwendungssymbolleiste bietet bequemen Zugriff auf wichtige Funktionen und E
 
 ![Anwendungssymbolleiste](../assets/duplistatus_toolbar.svg)
 
-| Taste                                                                                                                                            | Beschreibung                                                                                                                                                                               |
-|--------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| <IconButton icon="lucide:search" /> &nbsp; Filter                                                                                          | Server nach ID, URL oder Name des Sicherungsauftrags suchen und filtern.                                                        |
-| <IconButton icon="lucide:rotate-ccw" /> &nbsp; Bildschirm aktualisieren                                                                               | Sofortige manuelle Aktualisierung aller Daten durchführen                                                                                                                                |
-| <IconButton label="Auto-Aktualisierung" />                                                                                                              | Automatische Aktualisierungsfunktion aktivieren oder deaktivieren. Konfigurieren in [Anzeigeeinstellungen](settings/display-settings.md) <br/> _Rechtsklick_, um die Seite mit den Anzeigeeinstellungen zu öffnen |
-| <SvgButton svgFilename="ntfy.svg" /> &nbsp; NTFY öffnen                                                                                           | Auf die Website ntfy.sh für Ihr konfiguriertes Benachrichtigungsthema zugreifen. <br/> _Rechtsklick_, um einen QR-Code anzuzeigen, mit dem Sie Ihr Gerät zur Empfang von Benachrichtigungen von duplistatus einrichten können. |
-| <SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Duplicati-Konfiguration](duplicati-configuration.md)      | Öffnet die Web-Oberfläche des ausgewählten Duplicati-Servers <br/> _Rechtsklick_, um die Duplicati-Legacy-Benutzeroberfläche (`/ngax`) in einem neuen Tab zu öffnen                                                         |
-| <IconButton icon="lucide:download" href="collect-backup-logs" /> &nbsp; [Protokolle sammeln](collect-backup-logs.md)                                  | Verbindung zu Duplicati-Servern herstellen und Sicherungsprotokolle abrufen <br/> _Rechtsklick_, um Protokolle für alle konfigurierten Server zu sammeln                                                                      |
-| <IconButton icon="lucide:siren" tone="alert" href="delivery-failures" /> &nbsp; [Zustellungsfehler](delivery-failures.md)                         | Wird Administratoren angezeigt, während die E-Mail- oder NTFY-Zustellung fehlschlägt. Siehe [Zustellungsfehler](delivery-failures.md).                                                                            |
-| <IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [Einstellungen](settings/backup-notifications-settings.md) | Benachrichtigungen, Überwachung, SMTP-Server und Benachrichtigungsvorlagen konfigurieren                                                                                                              |
-| <IconButton icon="lucide:user" label="Benutzername" />                                                                                              | Den verbundenen Benutzer anzeigen, Benutzertyp (`Admin`, `User`), klicken Sie für das Benutzermenü (enthält Sprachauswahl). Weitere Informationen finden Sie unter [Benutzerverwaltung](settings/user-management-settings.md)              |
-| <IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; Benutzerhandbuch                                                                   | Öffnen Sie das [Benutzerhandbuch](overview.md) zum Abschnitt, der für die aktuell angezeigte Seite relevant ist. Die QuickInfo zeigt "Hilfe für [Seitenname]" an, um anzugeben, welche Dokumentation geöffnet wird. |
+<table>
+  <thead>
+    <tr>
+      <th style={{whiteSpace: 'nowrap'}}>Schaltfläche</th>
+      <th>Beschreibung</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:search" /> &nbsp; Filter</td>
+      <td>Server nach ID, URL oder Sicherungsauftragsname suchen und filtern.</td>
+    </tr>
+    <tr>
+      <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:rotate-ccw" /> &nbsp; Bildschirm aktualisieren</td>
+      <td>Alle Daten sofort manuell aktualisieren</td>
+    </tr>
+    <tr>
+      <td style={{whiteSpace: 'nowrap'}}><IconButton label="Automatische Aktualisierung" /></td>
+      <td>Automatische Aktualisierungsfunktion aktivieren oder deaktivieren. In [Anzeigeeinstellungen](settings/display-settings.md) konfigurieren. <br/> _Rechtsklick_, um die Seite Anzeigeeinstellungen zu öffnen</td>
+    </tr>
+    <tr>
+      <td style={{whiteSpace: 'nowrap'}}><SvgButton svgFilename="ntfy.svg" /> &nbsp; NTFY öffnen</td>
+      <td>Zugriff auf die ntfy.sh-Website für Ihr konfiguriertes Benachrichtigungsthema. <br/> _Rechtsklick_, um einen QR-Code anzuzeigen. Gerät konfigurieren, um Benachrichtigungen von duplistatus zu empfangen.</td>
+    </tr>
+    <tr>
+      <td style={{whiteSpace: 'nowrap'}}><SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Duplicati-Konfiguration](duplicati-configuration.md)</td>
+      <td>Weboberfläche des ausgewählten duplicati-Servers öffnen <br/> _Rechtsklick_, um die alte duplicati-Benutzeroberfläche (`/ngax`) in einem neuen Tab zu öffnen</td>
+    </tr>
+    <tr>
+      <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:download" href="collect-backup-logs" /> &nbsp; [Protokolle sammeln](collect-backup-logs.md)</td>
+      <td>Mit duplicati-Servern verbinden und Sicherungsprotokolle abrufen <br/> _Rechtsklick_, um Protokolle für alle konfigurierten Server zu sammeln</td>
+    </tr>
+    <tr>
+      <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:siren" tone="alert" href="delivery-failures" /> &nbsp; [Zustellungsfehler](delivery-failures.md)</td>
+      <td>Wird Administratoren angezeigt, während die E-Mail- oder NTFY-Zustellung fehlschlägt. Siehe [Zustellungsfehler](delivery-failures.md).</td>
+    </tr>
+    <tr>
+      <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [Einstellungen](settings/backup-notifications-settings.md)</td>
+      <td>Benachrichtigungen, Überwachung, SMTP-Server und Benachrichtigungsvorlagen konfigurieren</td>
+    </tr>
+    <tr>
+      <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:user" label="Benutzername" /></td>
+      <td>Verbundenen Benutzer und Benutzertyp (`Admin`, `User`) anzeigen, für Benutzermenü klicken (inklusive Sprachauswahl). Mehr dazu in [Benutzerverwaltung](settings/user-management-settings.md)</td>
+    </tr>
+    <tr>
+      <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; Benutzerhandbuch</td>
+      <td>Öffnet das [Benutzerhandbuch](overview.md) im Abschnitt, der für die aktuell angezeigte Seite relevant ist. Der Tooltip zeigt "Hilfe für [Seitenname]", um anzugeben, welche Dokumentation geöffnet wird.</td>
+    </tr>
+  </tbody>
+</table>
 
 ### Benutzermenü {/* #user-menu */}
 

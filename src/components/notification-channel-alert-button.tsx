@@ -30,6 +30,189 @@ interface NotificationChannelAlert {
 
 const ORIGINAL_ERROR_MARKER = '\n\nOriginal error: ';
 
+type DeliveryErrorTranslator = (key: string, options?: Record<string, string>) => string;
+
+type DeliveryErrorMessage =
+  | { kind: 'smtp-auth' }
+  | { kind: 'smtp-tls' }
+  | { kind: 'smtp-plain'; host: string; port: string }
+  | { kind: 'smtp-starttls'; host: string; port: string }
+  | { kind: 'smtp-ssl'; host: string; port: string }
+  | { kind: 'smtp-connect'; host: string; port: string }
+  | { kind: 'smtp-generic'; host: string; port: string }
+  | { kind: 'email-not-configured' }
+  | { kind: 'email-config-missing' }
+  | { kind: 'master-key' }
+  | { kind: 'plain-from-required' }
+  | { kind: 'from-invalid' }
+  | { kind: 'ntfy-required' }
+  | { kind: 'ntfy-dns' }
+  | { kind: 'ntfy-connect' }
+  | { kind: 'ntfy-timeout' }
+  | { kind: 'ntfy-certificate' }
+  | { kind: 'ntfy-rate-limit' }
+  | { kind: 'ntfy-network'; detail: string }
+  | { kind: 'ntfy-http'; detail: string }
+  | { kind: 'ntfy-service'; detail: string }
+  | { kind: 'unknown' };
+
+function hostPort(text: string, pattern: RegExp): { host: string; port: string } | null {
+  const match = text.match(pattern);
+  if (!match?.[1] || !match[2]) {
+    return null;
+  }
+  return { host: match[1], port: match[2] };
+}
+
+function prefixedDetail(text: string, prefix: string): string | null {
+  if (!text.startsWith(prefix)) {
+    return null;
+  }
+  return text.slice(prefix.length);
+}
+
+function classifyDeliveryError(summary: string): DeliveryErrorMessage {
+  const text = summary.trim();
+  if (text === 'SMTP authentication failed. Please verify your username and password are correct.') {
+    return { kind: 'smtp-auth' };
+  }
+  if (text === 'SSL/TLS version mismatch. The server may require a different TLS version or connection type. Try using "STARTTLS" if currently using "Direct SSL/TLS", or vice versa.') {
+    return { kind: 'smtp-tls' };
+  }
+  const plain = hostPort(
+    text,
+    /^Failed to connect to SMTP server at (.+):(\d+) using Plain SMTP\. Please verify the server address and port are correct\.$/,
+  );
+  if (plain) {
+    return { kind: 'smtp-plain', ...plain };
+  }
+  const starttls = hostPort(
+    text,
+    /^The SMTP server at (.+):(\d+) does not support STARTTLS\. Please change the connection type to "Plain SMTP" or use "Direct SSL\/TLS" if your server supports it\.$/,
+  );
+  if (starttls) {
+    return { kind: 'smtp-starttls', ...starttls };
+  }
+  const ssl = hostPort(
+    text,
+    /^Cannot establish SSL\/TLS connection to (.+):(\d+)\. The server may not support direct SSL\/TLS on this port\. Try using "STARTTLS" or "Plain SMTP" instead, or use port 465 for SSL\/TLS\.$/,
+  );
+  if (ssl) {
+    return { kind: 'smtp-ssl', ...ssl };
+  }
+  const generic = hostPort(
+    text,
+    /^Failed to connect to SMTP server at (.+):(\d+)\. Please verify your SMTP configuration\.$/,
+  );
+  if (generic) {
+    return { kind: 'smtp-generic', ...generic };
+  }
+  const connect = hostPort(text, /^Failed to connect to SMTP server at (.+):(\d+)\.$/);
+  if (connect) {
+    return { kind: 'smtp-connect', ...connect };
+  }
+  if (text === 'Email is not configured. Please check environment variables.') {
+    return { kind: 'email-not-configured' };
+  }
+  if (text === 'Email configuration not found') {
+    return { kind: 'email-config-missing' };
+  }
+  if (text === 'Cannot send email: Master key is invalid. SMTP settings must be reconfigured.') {
+    return { kind: 'master-key' };
+  }
+  if (text.startsWith('Invalid email configuration for Plain SMTP connection:')) {
+    return { kind: 'plain-from-required' };
+  }
+  if (text.startsWith('Invalid email configuration: From address is missing or invalid.')) {
+    return { kind: 'from-invalid' };
+  }
+  if (text === 'NTFY URL and topic are required') {
+    return { kind: 'ntfy-required' };
+  }
+  if (text === 'Failed to resolve NTFY server hostname. Please check your NTFY URL configuration.') {
+    return { kind: 'ntfy-dns' };
+  }
+  if (text === 'Cannot connect to NTFY server. Please verify the server is running and accessible.') {
+    return { kind: 'ntfy-connect' };
+  }
+  if (text === 'Connection to NTFY server timed out. Please check your network connection and server status.') {
+    return { kind: 'ntfy-timeout' };
+  }
+  if (text === 'SSL/TLS certificate error when connecting to NTFY server. Please check your server certificate configuration.') {
+    return { kind: 'ntfy-certificate' };
+  }
+  if (text === 'Notification service is temporarily unavailable due to rate limiting. Please try again later or upgrade your notification service plan.') {
+    return { kind: 'ntfy-rate-limit' };
+  }
+  const network = prefixedDetail(text, 'Network error when sending notification: ');
+  if (network !== null) {
+    return { kind: 'ntfy-network', detail: network };
+  }
+  const httpStatus = prefixedDetail(text, 'Failed to send notification to NTFY: ');
+  if (httpStatus !== null) {
+    return { kind: 'ntfy-http', detail: httpStatus };
+  }
+  const service = prefixedDetail(text, 'Notification service error: ');
+  if (service !== null) {
+    return { kind: 'ntfy-service', detail: service };
+  }
+  return { kind: 'unknown' };
+}
+
+function translateDeliveryError(summary: string, t: DeliveryErrorTranslator): string {
+  const message = classifyDeliveryError(summary);
+  switch (message.kind) {
+    case 'smtp-auth':
+      return t('SMTP authentication failed. Please verify your username and password are correct.');
+    case 'smtp-tls':
+      return t('SSL/TLS version mismatch. The server may require a different TLS version or connection type. Try using "STARTTLS" if currently using "Direct SSL/TLS", or vice versa.');
+    case 'smtp-plain':
+      return t('Failed to connect to SMTP server at {{host}}:{{port}} using Plain SMTP. Please verify the server address and port are correct.', { host: message.host, port: message.port });
+    case 'smtp-starttls':
+      return t('The SMTP server at {{host}}:{{port}} does not support STARTTLS. Please change the connection type to "Plain SMTP" or use "Direct SSL/TLS" if your server supports it.', { host: message.host, port: message.port });
+    case 'smtp-ssl':
+      return t('Cannot establish SSL/TLS connection to {{host}}:{{port}}. The server may not support direct SSL/TLS on this port. Try using "STARTTLS" or "Plain SMTP" instead, or use port 465 for SSL/TLS.', { host: message.host, port: message.port });
+    case 'smtp-connect':
+      return t('Failed to connect to SMTP server at {{host}}:{{port}}.', { host: message.host, port: message.port });
+    case 'smtp-generic':
+      return t('Failed to connect to SMTP server at {{host}}:{{port}}. Please verify your SMTP configuration.', { host: message.host, port: message.port });
+    case 'email-not-configured':
+      return t('Email is not configured. Please check environment variables.');
+    case 'email-config-missing':
+      return t('Email configuration not found');
+    case 'master-key':
+      return t('Cannot send email: Master key is invalid. SMTP settings must be reconfigured.');
+    case 'plain-from-required':
+      return t('Invalid email configuration for Plain SMTP connection: From Address is required. Please configure a From Address in the email settings. Plain SMTP connections require a valid From Address to comply with RFC 5322 email standards.');
+    case 'from-invalid':
+      return t('Invalid email configuration: From address is missing or invalid. Please configure either a From Address or SMTP Username in the email settings.');
+    case 'ntfy-required':
+      return t('NTFY URL and topic are required');
+    case 'ntfy-dns':
+      return t('Failed to resolve NTFY server hostname. Please check your NTFY URL configuration.');
+    case 'ntfy-connect':
+      return t('Cannot connect to NTFY server. Please verify the server is running and accessible.');
+    case 'ntfy-timeout':
+      return t('Connection to NTFY server timed out. Please check your network connection and server status.');
+    case 'ntfy-certificate':
+      return t('SSL/TLS certificate error when connecting to NTFY server. Please check your server certificate configuration.');
+    case 'ntfy-rate-limit':
+      return t('Notification service is temporarily unavailable due to rate limiting. Please try again later or upgrade your notification service plan.');
+    case 'ntfy-network':
+      return t('Network error when sending notification: {{detail}}', { detail: message.detail });
+    case 'ntfy-http':
+      return t('Failed to send notification to NTFY: {{detail}}', { detail: message.detail });
+    case 'ntfy-service':
+      return t('Notification service error: {{detail}}', { detail: message.detail });
+    case 'unknown':
+      return summary.trim() || t('Delivery failed');
+    default: {
+      const exhaustive: never = message;
+      return exhaustive;
+    }
+  }
+}
+
 function splitDeliveryError(error: string): { summary: string; original?: string } {
   const index = error.indexOf(ORIGINAL_ERROR_MARKER);
   if (index === -1) {
@@ -242,7 +425,7 @@ export function NotificationChannelAlertButton() {
                     {settingsLabel}
                   </Link>
                   <p className="text-sm leading-relaxed break-words">
-                    {summary || t("Delivery failed")}
+                    {translateDeliveryError(summary, t)}
                   </p>
                   {original ? (
                     <div className="space-y-1.5">

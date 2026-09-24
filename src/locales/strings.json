@@ -654,6 +654,31 @@
       }
     ]
   },
+  "70892876": {
+    "source": "Failed to resolve NTFY server hostname. Please check your NTFY URL configuration.",
+    "translated": {
+      "es": "No se pudo resolver el nombre de host del servidor NTFY. Compruebe la configuración de la URL de NTFY.",
+      "de": "Hostname des NTFY-Servers konnte nicht aufgelöst werden. Bitte überprüfen Sie die NTFY-URL-Konfiguration.",
+      "pt-BR": "Falha ao resolver o nome de host do servidor NTFY. Verifique a configuração da URL do NTFY.",
+      "fr": "Impossible de résoudre le nom d'hôte du serveur NTFY. Veuillez vérifier la configuration de l'URL NTFY.",
+      "zh-Hans": "无法解析 NTFY 服务器主机名。请检查 NTFY URL 配置。",
+      "hi": "NTFY सर्वर होस्टनाम को रिज़ॉल्व करने में विफल। कृपया अपना NTFY URL कॉन्फ़िगरेशन जाँचें।"
+    },
+    "models": {
+      "es": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 192
+      }
+    ]
+  },
   "72720141": {
     "source": "Failed to remove additional destinations: {{error}}",
     "translated": {
@@ -5666,7 +5691,6 @@
       "pt-BR": "Fechar",
       "fr": "Fermer",
       "es": "Cerrar",
-      "zh-CN": "关闭",
       "zh-Hans": "关闭",
       "hi": "बंद करें"
     },
@@ -5675,9 +5699,8 @@
       "pt-BR": "anthropic/claude-3.5-haiku",
       "fr": "anthropic/claude-3.5-haiku",
       "es": "anthropic/claude-3.5-haiku",
-      "zh-CN": "manual",
-      "zh-Hans": "meta-llama/llama-3.3-70b-instruct",
-      "hi": "~anthropic/claude-sonnet-latest"
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
     },
     "locations": [
       {
@@ -5686,7 +5709,7 @@
       },
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 296
+        "line": 479
       },
       {
         "file": "src/components/settings/api-keys-form.tsx",
@@ -9030,15 +9053,515 @@
       }
     ]
   },
-  "d3d979fd": {
-    "source": "Could not clear notification alerts",
+  "d2885b4f": {
+    "source": "SMTP authentication failed. Please verify your username and password are correct.",
     "translated": {
-      "pt-BR": "Não foi possível limpar os alertas de notificação",
-      "fr": "Impossible d'effacer les alertes de notification",
-      "de": "Benachrichtigungen konnten nicht gelöscht werden",
-      "es": "No se pudieron borrar las alertas de notificación",
-      "zh-Hans": "无法清除通知提醒",
-      "hi": "सूचना अलर्ट साफ़ नहीं हो सके"
+      "es": "Error de autenticación SMTP. Compruebe que su nombre de usuario y contraseña sean correctos.",
+      "de": "SMTP-Authentifizierung fehlgeschlagen. Bitte überprüfen Sie, ob Benutzername und Passwort korrekt sind.",
+      "pt-BR": "Falha na autenticação SMTP. Verifique se o nome de usuário e a senha estão corretos.",
+      "fr": "Échec de l'authentification SMTP. Veuillez vérifier que votre nom d'utilisateur et votre mot de passe sont corrects.",
+      "zh-Hans": "SMTP 身份验证失败。请检查用户名和密码是否正确。",
+      "hi": "SMTP प्रमाणीकरण विफल। कृपया सत्यापित करें कि आपका उपयोगकर्ता नाम और पासवर्ड सही हैं।"
+    },
+    "models": {
+      "es": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 166
+      }
+    ]
+  },
+  "36c8108d": {
+    "source": "SSL/TLS version mismatch. The server may require a different TLS version or connection type. Try using \"STARTTLS\" if currently using \"Direct SSL/TLS\", or vice versa.",
+    "translated": {
+      "es": "La versión de SSL/TLS no coincide. Es posible que el servidor requiera una versión de TLS o un tipo de conexión diferente. Intente usar \"STARTTLS\" si actualmente usa \"SSL/TLS directo\", o viceversa.",
+      "de": "SSL/TLS-Versionskonflikt. Der Server erfordert möglicherweise eine andere TLS-Version oder einen anderen Verbindungstyp. Versuchen Sie, \"STARTTLS\" zu verwenden, wenn aktuell \"Direktes SSL/TLS\" genutzt wird, oder umgekehrt.",
+      "pt-BR": "Incompatibilidade de versão SSL/TLS. O servidor pode exigir uma versão TLS ou tipo de conexão diferente. Tente usar \"STARTTLS\" se estiver usando \"SSL/TLS direto\", ou vice-versa.",
+      "fr": "Incompatibilité de version SSL/TLS. Le serveur peut requérir une autre version de TLS ou un autre type de connexion. Essayez d'utiliser \"STARTTLS\" si vous utilisez actuellement \"SSL/TLS direct\", ou inversement.",
+      "zh-Hans": "SSL/TLS 版本不匹配。服务器可能需要其他 TLS 版本或连接类型。若当前使用“Direct SSL/TLS”，请尝试改用“STARTTLS”，反之亦然。",
+      "hi": "SSL/TLS संस्करण मेल नहीं खाता। सर्वर को किसी भिन्न TLS संस्करण या कनेक्शन प्रकार की आवश्यकता हो सकती है। यदि आप वर्तमान में \"Direct SSL/TLS\" का उपयोग कर रहे हैं, तो \"STARTTLS\" आज़माएँ, या इसके विपरीत।"
+    },
+    "models": {
+      "es": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 168
+      }
+    ]
+  },
+  "ffe70241": {
+    "source": "Failed to connect to SMTP server at {{host}}:{{port}} using Plain SMTP. Please verify the server address and port are correct.",
+    "translated": {
+      "es": "No se pudo conectar al servidor SMTP en {{host}}:{{port}} mediante SMTP simple. Compruebe que la dirección y el puerto del servidor sean correctos.",
+      "de": "Verbindung zum SMTP-Server unter {{host}}:{{port}} über Plain SMTP fehlgeschlagen. Bitte überprüfen Sie, ob Serveradresse und Port korrekt sind.",
+      "pt-BR": "Falha ao conectar-se ao servidor SMTP em {{host}}:{{port}} usando SMTP simples. Verifique se o endereço e a porta do servidor estão corretos.",
+      "fr": "Échec de connexion au serveur SMTP sur {{host}}:{{port}} en SMTP clair. Veuillez vérifier que l'adresse du serveur et le port sont corrects.",
+      "zh-Hans": "无法使用普通 SMTP 连接到 {{host}}:{{port}} 的 SMTP 服务器。请检查服务器地址和端口是否正确。",
+      "hi": "Plain SMTP का उपयोग करके {{host}}:{{port}} पर SMTP सर्वर से कनेक्ट करने में विफल। कृपया सत्यापित करें कि सर्वर पता और पोर्ट सही हैं।"
+    },
+    "models": {
+      "es": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 170
+      }
+    ]
+  },
+  "e13b434a": {
+    "source": "The SMTP server at {{host}}:{{port}} does not support STARTTLS. Please change the connection type to \"Plain SMTP\" or use \"Direct SSL/TLS\" if your server supports it.",
+    "translated": {
+      "es": "El servidor SMTP en {{host}}:{{port}} no admite STARTTLS. Cambie el tipo de conexión a \"SMTP simple\" o use \"SSL/TLS directo\" si su servidor lo admite.",
+      "de": "Der SMTP-Server unter {{host}}:{{port}} unterstützt kein STARTTLS. Bitte ändern Sie den Verbindungstyp in \"Plain SMTP\" oder verwenden Sie \"Direktes SSL/TLS\", falls Ihr Server dies unterstützt.",
+      "pt-BR": "O servidor SMTP em {{host}}:{{port}} não é compatível com STARTTLS. Altere o tipo de conexão para \"SMTP simples\" ou use \"SSL/TLS direto\" se o seu servidor for compatível.",
+      "fr": "Le serveur SMTP sur {{host}}:{{port}} ne prend pas en charge STARTTLS. Veuillez remplacer le type de connexion par \"SMTP clair\" ou utiliser \"SSL/TLS direct\" si votre serveur le prend en charge.",
+      "zh-Hans": "{{host}}:{{port}} 处的 SMTP 服务器不支持 STARTTLS。请将连接类型更改为“Plain SMTP”，若服务器支持也可使用“Direct SSL/TLS”。",
+      "hi": "{{host}}:{{port}} पर SMTP सर्वर STARTTLS का समर्थन नहीं करता है। कृपया कनेक्शन प्रकार को \"Plain SMTP\" में बदलें या यदि आपका सर्वर इसका समर्थन करता है तो \"Direct SSL/TLS\" का उपयोग करें।"
+    },
+    "models": {
+      "es": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 172
+      }
+    ]
+  },
+  "c0a385ec": {
+    "source": "Cannot establish SSL/TLS connection to {{host}}:{{port}}. The server may not support direct SSL/TLS on this port. Try using \"STARTTLS\" or \"Plain SMTP\" instead, or use port 465 for SSL/TLS.",
+    "translated": {
+      "es": "No se puede establecer una conexión SSL/TLS con {{host}}:{{port}}. Es posible que el servidor no admita SSL/TLS directo en este puerto. Intente usar \"STARTTLS\" o \"SMTP simple\" en su lugar, o use el puerto 465 para SSL/TLS.",
+      "de": "SSL/TLS-Verbindung zu {{host}}:{{port}} kann nicht hergestellt werden. Der Server unterstützt möglicherweise kein direktes SSL/TLS auf diesem Port. Versuchen Sie stattdessen, \"STARTTLS\" oder \"Plain SMTP\" zu verwenden, oder nutzen Sie Port 465 für SSL/TLS.",
+      "pt-BR": "Não foi possível estabelecer uma conexão SSL/TLS com {{host}}:{{port}}. O servidor pode não ser compatível com SSL/TLS direto nesta porta. Tente usar \"STARTTLS\" ou \"SMTP simples\", ou use a porta 465 para SSL/TLS.",
+      "fr": "Impossible d'établir une connexion SSL/TLS avec {{host}}:{{port}}. Le serveur peut ne pas prendre en charge le SSL/TLS direct sur ce port. Essayez plutôt d'utiliser \"STARTTLS\" ou \"SMTP clair\", ou utilisez le port 465 pour le SSL/TLS.",
+      "zh-Hans": "无法建立到 {{host}}:{{port}} 的 SSL/TLS 连接。服务器可能不支持此端口上的直接 SSL/TLS。请尝试改用“STARTTLS”或“Plain SMTP”，或使用端口 465 进行 SSL/TLS 连接。",
+      "hi": "{{host}}:{{port}} से SSL/TLS कनेक्शन स्थापित नहीं किया जा सकता। सर्वर इस पोर्ट पर प्रत्यक्ष SSL/TLS का समर्थन नहीं कर सकता है। इसके बजाय \"STARTTLS\" या \"Plain SMTP\" का उपयोग करने का प्रयास करें, या SSL/TLS के लिए पोर्ट 465 का उपयोग करें।"
+    },
+    "models": {
+      "es": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 174
+      }
+    ]
+  },
+  "c3e7018e": {
+    "source": "Failed to connect to SMTP server at {{host}}:{{port}}.",
+    "translated": {
+      "es": "No se pudo conectar al servidor SMTP en {{host}}:{{port}}.",
+      "de": "Verbindung zum SMTP-Server unter {{host}}:{{port}} fehlgeschlagen.",
+      "pt-BR": "Falha ao conectar-se ao servidor SMTP em {{host}}:{{port}}.",
+      "fr": "Échec de connexion au serveur SMTP sur {{host}}:{{port}}.",
+      "zh-Hans": "无法连接到 {{host}}:{{port}} 的 SMTP 服务器。",
+      "hi": "{{host}}:{{port}} पर SMTP सर्वर से कनेक्ट करने में विफल।"
+    },
+    "models": {
+      "es": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 176
+      }
+    ]
+  },
+  "0fd2abe5": {
+    "source": "Failed to connect to SMTP server at {{host}}:{{port}}. Please verify your SMTP configuration.",
+    "translated": {
+      "es": "No se pudo conectar al servidor SMTP en {{host}}:{{port}}. Compruebe su configuración SMTP.",
+      "de": "Verbindung zum SMTP-Server unter {{host}}:{{port}} fehlgeschlagen. Bitte überprüfen Sie Ihre SMTP-Konfiguration.",
+      "pt-BR": "Falha ao conectar-se ao servidor SMTP em {{host}}:{{port}}. Verifique a sua configuração SMTP.",
+      "fr": "Échec de connexion au serveur SMTP sur {{host}}:{{port}}. Veuillez vérifier votre configuration SMTP.",
+      "zh-Hans": "无法连接到 {{host}}:{{port}} 的 SMTP 服务器。请检查您的 SMTP 配置。",
+      "hi": "{{host}}:{{port}} पर SMTP सर्वर से कनेक्ट करने में विफल। कृपया अपना SMTP कॉन्फ़िगरेशन सत्यापित करें।"
+    },
+    "models": {
+      "es": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 178
+      }
+    ]
+  },
+  "d0ba4df1": {
+    "source": "Email is not configured. Please check environment variables.",
+    "translated": {
+      "es": "El correo electrónico no está configurado. Compruebe las variables de entorno.",
+      "de": "E-Mail ist nicht konfiguriert. Bitte überprüfen Sie die Umgebungsvariablen.",
+      "pt-BR": "O e-mail não está configurado. Verifique as variáveis de ambiente.",
+      "fr": "Les e-mails ne sont pas configurés. Veuillez vérifier les variables d'environnement.",
+      "zh-Hans": "未配置邮件。请检查环境变量。",
+      "hi": "ईमेल कॉन्फ़िगर नहीं किया गया है। कृपया एन्वायरनमेंट वेरिएबल्स जाँचें।"
+    },
+    "models": {
+      "es": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 180
+      }
+    ]
+  },
+  "23e96f27": {
+    "source": "Email configuration not found",
+    "translated": {
+      "es": "Configuración de correo electrónico no encontrada",
+      "de": "E-Mail-Konfiguration nicht gefunden",
+      "pt-BR": "Configuração de e-mail não encontrada",
+      "fr": "Configuration de messagerie introuvable",
+      "zh-Hans": "未找到邮件配置",
+      "hi": "ईमेल कॉन्फ़िगरेशन नहीं मिला"
+    },
+    "models": {
+      "es": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 182
+      }
+    ]
+  },
+  "d46195e8": {
+    "source": "Cannot send email: Master key is invalid. SMTP settings must be reconfigured.",
+    "translated": {
+      "es": "No se puede enviar el correo electrónico: la clave maestra no es válida. Los ajustes SMTP deben reconfigurarse.",
+      "de": "E-Mail kann nicht gesendet werden: Hauptschlüssel ist ungültig. SMTP-Einstellungen müssen neu konfiguriert werden.",
+      "pt-BR": "Não é possível enviar e-mail: chave mestra inválida. As configurações SMTP devem ser reconfiguradas.",
+      "fr": "Impossible d'envoyer l'e-mail : la clé principale est invalide. Les paramètres SMTP doivent être reconfigurés.",
+      "zh-Hans": "无法发送邮件：主密钥无效。请重新配置 SMTP 设置。",
+      "hi": "ईमेल भेजने में असमर्थ: मास्टर कुंजी अमान्य है। SMTP सेटिंग्स को पुनः कॉन्फ़िगर करना होगा।"
+    },
+    "models": {
+      "es": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 184
+      }
+    ]
+  },
+  "4b31af96": {
+    "source": "Invalid email configuration for Plain SMTP connection: From Address is required. Please configure a From Address in the email settings. Plain SMTP connections require a valid From Address to comply with RFC 5322 email standards.",
+    "translated": {
+      "es": "Configuración de correo electrónico no válida para conexión SMTP simple: se requiere la dirección del remitente. Configure una dirección de remitente en los ajustes de correo electrónico. Las conexiones SMTP simples requieren una dirección de remitente válida para cumplir con los estándares de correo electrónico RFC 5322.",
+      "de": "Ungültige E-Mail-Konfiguration für Plain-SMTP-Verbindung: Absenderadresse ist erforderlich. Bitte konfigurieren Sie eine Absenderadresse in den E-Mail-Einstellungen. Plain-SMTP-Verbindungen erfordern eine gültige Absenderadresse, um dem E-Mail-Standard RFC 5322 zu entsprechen.",
+      "pt-BR": "Configuração de e-mail inválida para conexão SMTP simples: o Endereço de Origem é obrigatório. Configure um Endereço de Origem nas configurações de e-mail. Conexões SMTP simples exigem um Endereço de Origem válido para cumprir os padrões de e-mail da RFC 5322.",
+      "fr": "Configuration de messagerie invalide pour une connexion SMTP clair : l'adresse de l'expéditeur est requise. Veuillez configurer une adresse d'expéditeur dans les paramètres de messagerie. Les connexions SMTP clair nécessitent une adresse d'expéditeur valide pour respecter la norme RFC 5322.",
+      "zh-Hans": "Plain SMTP 连接的邮件配置无效：必须提供发件人地址。请在邮件设置中配置发件人地址。Plain SMTP 连接需要有效的发件人地址以符合 RFC 5322 邮件标准。",
+      "hi": "Plain SMTP कनेक्शन के लिए अमान्य ईमेल कॉन्फ़िगरेशन: प्रेषक पता आवश्यक है। कृपया ईमेल सेटिंग्स में एक प्रेषक पता कॉन्फ़िगर करें। Plain SMTP कनेक्शन को RFC 5322 ईमेल मानकों का अनुपालन करने के लिए एक मान्य प्रेषक पते की आवश्यकता होती है।"
+    },
+    "models": {
+      "es": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 186
+      }
+    ]
+  },
+  "1caa1d68": {
+    "source": "Invalid email configuration: From address is missing or invalid. Please configure either a From Address or SMTP Username in the email settings.",
+    "translated": {
+      "es": "Configuración de correo electrónico no válida: la dirección del remitente falta o no es válida. Configure una dirección de remitente o un nombre de usuario SMTP en los ajustes de correo electrónico.",
+      "de": "Ungültige E-Mail-Konfiguration: Absenderadresse fehlt oder ist ungültig. Bitte konfigurieren Sie entweder eine Absenderadresse oder einen SMTP-Benutzernamen in den E-Mail-Einstellungen.",
+      "pt-BR": "Configuração de e-mail inválida: o Endereço de Origem está ausente ou inválido. Configure um Endereço de Origem ou Nome de Usuário SMTP nas configurações de e-mail.",
+      "fr": "Configuration de messagerie invalide : l'adresse de l'expéditeur est manquante ou invalide. Veuillez configurer une adresse d'expéditeur ou un nom d'utilisateur SMTP dans les paramètres de messagerie.",
+      "zh-Hans": "邮件配置无效：发件人地址缺失或无效。请在邮件设置中配置发件人地址或 SMTP 用户名。",
+      "hi": "अमान्य ईमेल कॉन्फ़िगरेशन: प्रेषक पता मौजूद नहीं है या अमान्य है। कृपया ईमेल सेटिंग्स में प्रेषक पता या SMTP उपयोगकर्ता नाम कॉन्फ़िगर करें।"
+    },
+    "models": {
+      "es": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 188
+      }
+    ]
+  },
+  "12d21a63": {
+    "source": "NTFY URL and topic are required",
+    "translated": {
+      "es": "La URL y el tema de NTFY son obligatorios",
+      "de": "NTFY-URL und Thema sind erforderlich",
+      "pt-BR": "A URL e o tópico do NTFY são obrigatórios",
+      "fr": "L'URL NTFY et le sujet sont requis",
+      "zh-Hans": "NTFY URL 和主题为必填项",
+      "hi": "NTFY URL और टॉपिक आवश्यक हैं"
+    },
+    "models": {
+      "es": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 190
+      }
+    ]
+  },
+  "314e4244": {
+    "source": "Cannot connect to NTFY server. Please verify the server is running and accessible.",
+    "translated": {
+      "es": "No se puede conectar al servidor NTFY. Compruebe que el servidor esté en ejecución y accesible.",
+      "de": "Verbindung zum NTFY-Server nicht möglich. Bitte überprüfen Sie, ob der Server läuft und erreichbar ist.",
+      "pt-BR": "Não foi possível conectar-se ao servidor NTFY. Verifique se o servidor está em execução e acessível.",
+      "fr": "Impossible de se connecter au serveur NTFY. Veuillez vérifier que le serveur est en cours d'exécution et accessible.",
+      "zh-Hans": "无法连接到 NTFY 服务器。请检查服务器是否正在运行且可访问。",
+      "hi": "NTFY सर्वर से कनेक्ट करने में असमर्थ। कृपया सत्यापित करें कि सर्वर चालू है और एक्सेस करने योग्य है।"
+    },
+    "models": {
+      "es": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 194
+      }
+    ]
+  },
+  "8b4afe1d": {
+    "source": "Connection to NTFY server timed out. Please check your network connection and server status.",
+    "translated": {
+      "es": "Se agotó el tiempo de espera de la conexión al servidor NTFY. Compruebe su conexión de red y el estado del servidor.",
+      "de": "Zeitüberschreitung bei der Verbindung zum NTFY-Server. Bitte überprüfen Sie Ihre Netzwerkverbindung und den Serverstatus.",
+      "pt-BR": "A conexão com o servidor NTFY expirou. Verifique sua conexão de rede e o status do servidor.",
+      "fr": "La connexion au serveur NTFY a expiré. Veuillez vérifier votre connexion réseau et l'état du serveur.",
+      "zh-Hans": "连接 NTFY 服务器超时。请检查网络连接和服务器状态。",
+      "hi": "NTFY सर्वर से कनेक्शन टाइम आउट हो गया। कृपया अपना नेटवर्क कनेक्शन और सर्वर स्थिति जाँचें।"
+    },
+    "models": {
+      "es": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 196
+      }
+    ]
+  },
+  "104b17f8": {
+    "source": "SSL/TLS certificate error when connecting to NTFY server. Please check your server certificate configuration.",
+    "translated": {
+      "es": "Error de certificado SSL/TLS al conectar con el servidor NTFY. Compruebe la configuración del certificado del servidor.",
+      "de": "SSL/TLS-Zertifikatsfehler beim Verbindungsaufbau zum NTFY-Server. Bitte überprüfen Sie die Konfiguration Ihres Serverzertifikats.",
+      "pt-BR": "Erro de certificado SSL/TLS ao conectar-se ao servidor NTFY. Verifique a configuração do certificado do servidor.",
+      "fr": "Erreur de certificat SSL/TLS lors de la connexion au serveur NTFY. Veuillez vérifier la configuration du certificat de votre serveur.",
+      "zh-Hans": "连接 NTFY 服务器时出现 SSL/TLS 证书错误。请检查服务器证书配置。",
+      "hi": "NTFY सर्वर से कनेक्ट करते समय SSL/TLS प्रमाणपत्र त्रुटि। कृपया अपना सर्वर प्रमाणपत्र कॉन्फ़िगरेशन जाँचें।"
+    },
+    "models": {
+      "es": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 198
+      }
+    ]
+  },
+  "ee2b9d8c": {
+    "source": "Notification service is temporarily unavailable due to rate limiting. Please try again later or upgrade your notification service plan.",
+    "translated": {
+      "es": "El servicio de notificaciones no está disponible temporalmente debido a la limitación de solicitudes. Inténtelo de nuevo más tarde o actualice su plan de servicio de notificaciones.",
+      "de": "Der Benachrichtigungsdienst ist aufgrund von Ratenbegrenzung vorübergehend nicht verfügbar. Bitte versuchen Sie es später erneut oder erweitern Sie Ihren Tarif für den Benachrichtigungsdienst.",
+      "pt-BR": "O serviço de notificação está temporariamente indisponível devido ao limite de requisições. Tente novamente mais tarde ou atualize seu plano do serviço de notificação.",
+      "fr": "Le service de notification est temporairement indisponible en raison d'une limitation de fréquence. Veuillez réessayer plus tard ou mettre à niveau votre abonnement au service de notification.",
+      "zh-Hans": "因触发速率限制，通知服务暂时不可用。请稍后重试或升级通知服务方案。",
+      "hi": "अधिसूचना सेवा रेट लिमिटिंग के कारण अस्थायी रूप से अनुपलब्ध है। कृपया बाद में पुनः प्रयास करें या अपनी अधिसूचना सेवा योजना अपग्रेड करें।"
+    },
+    "models": {
+      "es": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 200
+      }
+    ]
+  },
+  "85cece47": {
+    "source": "Network error when sending notification: {{detail}}",
+    "translated": {
+      "es": "Error de red al enviar la notificación: {{detail}}",
+      "de": "Netzwerkfehler beim Senden der Benachrichtigung: {{detail}}",
+      "pt-BR": "Erro de rede ao enviar a notificação: {{detail}}",
+      "fr": "Erreur réseau lors de l'envoi de la notification : {{detail}}",
+      "zh-Hans": "发送通知时出现网络错误：{{detail}}",
+      "hi": "अधिसूचना भेजते समय नेटवर्क त्रुटि: {{detail}}"
+    },
+    "models": {
+      "es": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 202
+      }
+    ]
+  },
+  "dc88666d": {
+    "source": "Failed to send notification to NTFY: {{detail}}",
+    "translated": {
+      "es": "No se pudo enviar la notificación a NTFY: {{detail}}",
+      "de": "Benachrichtigung konnte nicht an NTFY gesendet werden: {{detail}}",
+      "pt-BR": "Falha ao enviar a notificação para o NTFY: {{detail}}",
+      "fr": "Échec de l'envoi de la notification à NTFY : {{detail}}",
+      "zh-Hans": "发送通知到 NTFY 失败：{{detail}}",
+      "hi": "NTFY को अधिसूचना भेजने में विफल: {{detail}}"
+    },
+    "models": {
+      "es": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 204
+      }
+    ]
+  },
+  "7bee2e70": {
+    "source": "Notification service error: {{detail}}",
+    "translated": {
+      "es": "Error del servicio de notificaciones: {{detail}}",
+      "de": "Fehler im Benachrichtigungsdienst: {{detail}}",
+      "pt-BR": "Erro do serviço de notificação: {{detail}}",
+      "fr": "Erreur du service de notification : {{detail}}",
+      "zh-Hans": "通知服务错误：{{detail}}",
+      "hi": "अधिसूचना सेवा त्रुटि: {{detail}}"
+    },
+    "models": {
+      "es": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 206
+      }
+    ]
+  },
+  "c3ccaf6b": {
+    "source": "Delivery failed",
+    "translated": {
+      "pt-BR": "Falha na entrega",
+      "fr": "Échec de la remise",
+      "de": "Zustellung fehlgeschlagen",
+      "es": "Error de entrega",
+      "zh-Hans": "投递失败",
+      "hi": "डिलीवरी विफल"
     },
     "models": {
       "pt-BR": "qwen/qwen3.7-max",
@@ -9051,11 +9574,36 @@
     "locations": [
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 169
+        "line": 208
+      }
+    ]
+  },
+  "d3d979fd": {
+    "source": "Could not clear notification alerts",
+    "translated": {
+      "pt-BR": "Não foi possível limpar os alertas de notificação",
+      "fr": "Impossible d'effacer les alertes de notification",
+      "de": "Benachrichtigungen konnten nicht gelöscht werden",
+      "es": "No se pudieron borrar las alertas de notificación",
+      "zh-Hans": "无法清除通知警报",
+      "hi": "अधिसूचना अलर्ट साफ़ करने में असमर्थ"
+    },
+    "models": {
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "es": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 352
       },
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 183
+        "line": 366
       }
     ]
   },
@@ -9066,8 +9614,8 @@
       "fr": "Réessayez dans un instant.",
       "de": "Versuchen Sie es in Kürze erneut.",
       "es": "Vuelva a intentarlo en un momento.",
-      "zh-Hans": "请稍后再试。",
-      "hi": "थोड़ी देर बाद पुनः प्रयास करें।"
+      "zh-Hans": "请稍后重试。",
+      "hi": "कुछ क्षणों में पुनः प्रयास करें।"
     },
     "models": {
       "pt-BR": "qwen/qwen3.7-max",
@@ -9080,11 +9628,11 @@
     "locations": [
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 170
+        "line": 353
       },
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 184
+        "line": 367
       }
     ]
   },
@@ -9095,7 +9643,7 @@
       "es": "Errores de entrega",
       "fr": "Échecs de livraison",
       "de": "Zustellungsfehler",
-      "zh-Hans": "发送失败",
+      "zh-Hans": "投递失败",
       "hi": "डिलीवरी विफलताएँ"
     },
     "models": {
@@ -9109,15 +9657,15 @@
     "locations": [
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 204
+        "line": 387
       },
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 205
+        "line": 388
       },
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 217
+        "line": 400
       }
     ]
   },
@@ -9128,7 +9676,7 @@
       "fr": "Ouvrir les paramètres de messagerie",
       "de": "E-Mail-Einstellungen öffnen",
       "es": "Abrir configuración de correo electrónico",
-      "zh-Hans": "打开电子邮件设置",
+      "zh-Hans": "打开邮件设置",
       "hi": "ईमेल सेटिंग्स खोलें"
     },
     "models": {
@@ -9142,7 +9690,7 @@
     "locations": [
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 224
+        "line": 407
       }
     ]
   },
@@ -9167,7 +9715,7 @@
     "locations": [
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 224
+        "line": 407
       }
     ]
   },
@@ -9178,8 +9726,7 @@
       "es": "Correo electrónico",
       "de": "E-Mail",
       "fr": "E-mail",
-      "zh-CN": "邮件",
-      "zh-Hans": "电子邮件",
+      "zh-Hans": "邮件",
       "hi": "ईमेल"
     },
     "models": {
@@ -9187,14 +9734,13 @@
       "es": "anthropic/claude-3.5-haiku",
       "de": "anthropic/claude-3.5-haiku",
       "fr": "anthropic/claude-3.5-haiku",
-      "zh-CN": "manual",
-      "zh-Hans": "meta-llama/llama-3.3-70b-instruct",
-      "hi": "~anthropic/claude-sonnet-latest"
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
     },
     "locations": [
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 234
+        "line": 417
       },
       {
         "file": "src/components/settings/daily-summary-form.tsx",
@@ -9217,7 +9763,6 @@
       "es": "NTFY",
       "de": "NTFY",
       "fr": "NTFY",
-      "zh-CN": "NTFY",
       "zh-Hans": "NTFY",
       "hi": "NTFY"
     },
@@ -9226,14 +9771,13 @@
       "es": "anthropic/claude-3.5-haiku",
       "de": "anthropic/claude-3.5-haiku",
       "fr": "anthropic/claude-3.5-haiku",
-      "zh-CN": "manual",
-      "zh-Hans": "meta-llama/llama-3.3-70b-instruct",
-      "hi": "~anthropic/claude-sonnet-latest"
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
     },
     "locations": [
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 234
+        "line": 417
       },
       {
         "file": "src/components/settings/email-preview-dialog.tsx",
@@ -9246,31 +9790,6 @@
       {
         "file": "src/components/settings/settings-page-client.tsx",
         "line": 429
-      }
-    ]
-  },
-  "c3ccaf6b": {
-    "source": "Delivery failed",
-    "translated": {
-      "pt-BR": "Falha na entrega",
-      "fr": "Échec de la remise",
-      "de": "Zustellung fehlgeschlagen",
-      "es": "Error de entrega",
-      "zh-Hans": "发送失败",
-      "hi": "वितरण विफल"
-    },
-    "models": {
-      "pt-BR": "qwen/qwen3.7-max",
-      "fr": "qwen/qwen3.7-max",
-      "de": "qwen/qwen3.7-max",
-      "es": "qwen/qwen3.7-max",
-      "zh-Hans": "qwen/qwen3.7-max",
-      "hi": "qwen/qwen3.7-max"
-    },
-    "locations": [
-      {
-        "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 245
       }
     ]
   },
@@ -9295,7 +9814,7 @@
     "locations": [
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 249
+        "line": 432
       }
     ]
   },
@@ -9320,7 +9839,7 @@
     "locations": [
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 269
+        "line": 452
       }
     ]
   },
@@ -9332,7 +9851,7 @@
       "de": "NTFY-Topic",
       "es": "Tema NTFY",
       "zh-Hans": "NTFY 主题",
-      "hi": "NTFY विषय"
+      "hi": "NTFY टॉपिक"
     },
     "models": {
       "pt-BR": "qwen/qwen3.7-max",
@@ -9345,7 +9864,7 @@
     "locations": [
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 275
+        "line": 458
       }
     ]
   },
@@ -9370,7 +9889,7 @@
     "locations": [
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 280
+        "line": 463
       }
     ]
   },
@@ -9417,7 +9936,7 @@
     "locations": [
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 284
+        "line": 467
       }
     ]
   },
@@ -9428,7 +9947,6 @@
       "pt-BR": "Limpar",
       "fr": "Effacer",
       "es": "Borrar",
-      "zh-CN": "清除",
       "zh-Hans": "清除",
       "hi": "साफ़ करें"
     },
@@ -9437,14 +9955,13 @@
       "pt-BR": "anthropic/claude-3.5-haiku",
       "fr": "anthropic/claude-3.5-haiku",
       "es": "anthropic/claude-3.5-haiku",
-      "zh-CN": "manual",
-      "zh-Hans": "meta-llama/llama-3.3-70b-instruct",
-      "hi": "~anthropic/claude-sonnet-latest"
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
     },
     "locations": [
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 306
+        "line": 489
       },
       {
         "file": "src/components/settings/backup-notifications-form.tsx",
@@ -9460,7 +9977,7 @@
       "de": "Löschen blendet diese Meldungen aus, bis ein neuer Fehler protokolliert wird.",
       "es": "Limpiar oculta estos mensajes hasta que se registre un fallo más reciente.",
       "zh-Hans": "清除将隐藏这些消息，直到出现新的失败记录。",
-      "hi": "साफ़ करने पर ये संदेश तब तक छिपे रहेंगे जब तक कोई नई विफलता लॉग नहीं की जाती।"
+      "hi": "साफ़ करने से ये संदेश तब तक छिप जाते हैं जब तक कि कोई नई विफलता लॉग नहीं की जाती।"
     },
     "models": {
       "pt-BR": "qwen/qwen3.7-max",
@@ -9473,7 +9990,7 @@
     "locations": [
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 310
+        "line": 493
       }
     ]
   },

@@ -59,18 +59,56 @@ duplistatus 提供了一个直观的仪表板，用于监控整个基础架构�
 
 ![应用程序工具栏](../assets/duplistatus_toolbar.svg)
 
-| 按钮                                                                                                                                           | 描述                                                                                                                                                                                |
-|--------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| <IconButton icon="lucide:search" /> &nbsp; 过滤                                                                                            | 按 ID、URL 或备份作业名称搜索和过滤服务器。                                                      |
-| <IconButton icon="lucide:rotate-ccw" /> &nbsp; 刷新屏幕                                                                                    | 立即手动刷新所有数据                                                                                                                                     |
-| <IconButton label="自动刷新" />                                                                                                              | 启用或禁用自动刷新功能。在[显示设置](settings/display-settings.md)中进行配置 <br/> _右键单击_ 打开显示设置页面                         |
-| <SvgButton svgFilename="ntfy.svg" /> &nbsp; 打开 NTFY                                                                                            | 访问您配置的通知主题的 ntfy.sh 网站。 <br/> _右键单击_ 显示二维码以配置您的设备从 duplistatus 接收通知。               |
-| <SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Duplicati 配置](duplicati-configuration.md)       | 打开所选 Duplicati 服务器的 Web 界面 <br/> _右键单击_ 在新标签页中打开 Duplicati 传统 UI (`/ngax`)                                                              |
-| <IconButton icon="lucide:download" href="collect-backup-logs" /> &nbsp; [收集日志](collect-backup-logs.md)                                   | 连接到 Duplicati 服务器并检索备份日志 <br/> _右键单击_ 收集所有已配置服务器的日志                                                                       |
-| <IconButton icon="lucide:siren" tone="alert" href="delivery-failures" /> &nbsp; [发送失败](delivery-failures.md)                         | 在电子邮件或 NTFY 发送失败时向管理员显示。请参阅[发送失败](delivery-failures.md)。                                                                            |
-| <IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [设置](settings/backup-notifications-settings.md) | 配置通知、监控、SMTP 服务器和通知模板                                                                                                               |
-| <IconButton icon="lucide:user" label="用户名" />                                                                                               | 显示连接的用户、用户类型 (`Admin`, `User`)，点击打开用户菜单（包括语言选择）。更多信息请参见[用户管理](settings/user-management-settings.md)               |
-| <IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; 用户指南                                                                    | 打开[用户指南](overview.md)到您当前查看页面的相关章节。工具提示显示"[页面名称]帮助"以指示将打开哪个文档。 |
+<table>
+  <thead>
+    <tr>
+      <th style={{whiteSpace: 'nowrap'}}>按钮</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:search" /> &nbsp; 筛选</td>
+      <td>按 ID、URL 或备份作业名称搜索和筛选服务器。</td>
+    </tr>
+    <tr>
+      <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:rotate-ccw" /> &nbsp; 刷新屏幕</td>
+      <td>立即手动刷新所有数据</td>
+    </tr>
+    <tr>
+      <td style={{whiteSpace: 'nowrap'}}><IconButton label="自动刷新" /></td>
+      <td>启用或禁用自动刷新功能。在[显示设置](settings/display-settings.md)中配置 <br/> _右键单击_ 打开显示设置页面</td>
+    </tr>
+    <tr>
+      <td style={{whiteSpace: 'nowrap'}}><SvgButton svgFilename="ntfy.svg" /> &nbsp; 打开 NTFY</td>
+      <td>访问 ntfy.sh 网站以查看您配置的通知主题。 <br/> _右键单击_ 显示二维码，以配置您的设备接收来自 duplistatus 的通知。</td>
+    </tr>
+    <tr>
+      <td style={{whiteSpace: 'nowrap'}}><SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Duplicati 配置](duplicati-configuration.md)</td>
+      <td>打开所选 Duplicati 服务器的 Web 界面 <br/> _右键单击_ 在新标签页中打开 Duplicati 旧版 UI (`/ngax`)</td>
+    </tr>
+    <tr>
+      <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:download" href="collect-backup-logs" /> &nbsp; [收集日志](collect-backup-logs.md)</td>
+      <td>连接到 Duplicati 服务器和检索备份日志 <br/> _右键单击_ 收集所有已配置服务器的日志</td>
+    </tr>
+    <tr>
+      <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:siren" tone="alert" href="delivery-failures" /> &nbsp; [发送失败](delivery-failures.md)</td>
+      <td>当电子邮件或 ntfy 发送失败时向管理员显示。请参阅[发送失败](delivery-failures.md)。</td>
+    </tr>
+    <tr>
+      <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [设置](settings/backup-notifications-settings.md)</td>
+      <td>配置通知、监控、SMTP 服务器和通知模板</td>
+    </tr>
+    <tr>
+      <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:user" label="用户名" /></td>
+      <td>显示已连接的用户、用户类型（`Admin`、`User`），单击打开用户菜单（包含语言选择）。在[用户管理](settings/user-management-settings.md)中查看更多信息</td>
+    </tr>
+    <tr>
+      <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; 用户指南</td>
+      <td>打开[用户指南](overview.md)并跳转到与您当前查看的页面相关的部分。工具提示显示“[页面名称]的帮助”，以指示将打开哪个文档。</td>
+    </tr>
+  </tbody>
+</table>
 
 ### 用户菜单 {/* #user-menu */}
 
