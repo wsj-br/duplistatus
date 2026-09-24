@@ -41,6 +41,10 @@ RELEASE_NOTES_github_*.md
 *.diff
 *.tmp
 temp-prompts.md
+*.zip
+*.tar*
+*.tgz
+
 
 # documentation
 documentation/node_modules

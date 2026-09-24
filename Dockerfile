@@ -109,6 +109,9 @@ COPY --chown=node:node --from=builder /app/scripts/peer-ip.cjs /app/scripts/peer
 # Use node:node to match existing volume ownership (UID 1000)
 RUN mkdir -p /app/data && chown -R node:node /app/data
 
+## create a build timestamp file
+RUN echo "$(date +'%Y-%m-%d %H:%M:%S%z')" > /app/build-timestamp.txt
+
 # Labels
 LABEL org.opencontainers.image.source=https://github.com/wsj-br/duplistatus
 LABEL org.opencontainers.image.description="duplistatus Container Image"

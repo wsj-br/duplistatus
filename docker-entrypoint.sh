@@ -167,7 +167,7 @@ echo "[Entrypoint] SQLite version: $(sqlite3 --version|cut -d ' ' -f 1-3)"
 echo "[Entrypoint] Node version: $(node -v)"
 echo "[Entrypoint] npm version: $(npm -v)"
 echo "[Entrypoint] Duplistatus Version: $VERSION"
-echo "[Entrypoint] Build Date: $(date -r "$0" '+%Y-%m-%d %H:%M:%S %Z')"
+echo "[Entrypoint] Build Date: $(cat /app/build-timestamp.txt)"
 echo "[Entrypoint] ----------------------------------------"
 
 # Ensure key file exists and is locked down (0400)
