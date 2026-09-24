@@ -23,6 +23,32 @@
     border-color: var(--ifm-color-primary-dark);
     text-decoration: none;
   }
+
+  /* Soft red wash used by the app toolbar notification-problem button. */
+  .iconButtonAlert {
+    color: #b91c1c;
+    background-color: #fef2f2;
+    border-color: #fca5a5;
+  }
+
+  .iconButtonAlert:hover {
+    color: #991b1b;
+    background-color: #fee2e2;
+    border-color: #f87171;
+    text-decoration: none;
+  }
+
+  :global([data-theme='dark']) .iconButtonAlert {
+    color: #f87171;
+    background-color: rgb(69 10 10 / 0.4);
+    border-color: #991b1b;
+  }
+
+  :global([data-theme='dark']) .iconButtonAlert:hover {
+    color: #fca5a5;
+    background-color: rgb(69 10 10 / 0.7);
+    border-color: #b91c1c;
+  }
   
   .label {
     font-size: var(--ifm-font-size-base);

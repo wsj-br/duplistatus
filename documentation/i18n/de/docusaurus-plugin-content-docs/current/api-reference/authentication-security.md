@@ -21,7 +21,7 @@ Alle Endpunkte, die Datenbankdaten ändern, erfordern eine Sitzungsauthentifizie
 
 - **Serververwaltung**: `/api/servers/:id` (PATCH, DELETE), `/api/servers/:id/server-url` (PATCH), `/api/servers/:id/password` (PATCH, GET)
 - **Konfigurationsverwaltung**: `/api/configuration/email` (GET, POST, DELETE), `/api/configuration/unified` (GET), `/api/configuration/ntfy` (GET), `/api/configuration/notifications` (GET, POST), `/api/configuration/backup-settings` (POST), `/api/configuration/templates` (POST), `/api/configuration/overdue-tolerance` (GET, POST), `/api/configuration/daily-summary` (GET, POST), `/api/configuration/daily-summary/send` (POST), `/api/configuration/daily-summary/retry` (POST), `/api/configuration/daily-summary/preview` (POST)
-- **Benachrichtigungssystem**: `/api/notifications/test` (POST), `/api/notifications/preview` (POST)
+- **Benachrichtigungssystem**: `/api/notifications/test` (POST), `/api/notifications/preview` (POST), `/api/notification-channel-alerts` (GET, POST) - Administrator erforderlich; POST erfordert zudem ein CSRF-Token
 - **Cron-Konfiguration**: `/api/cron-config` (GET, POST)
 - **Cron-Proxy**: `/api/cron/*` (GET, POST) – leitet Anfragen an den Cron-Dienst weiter. POST erfordert einen Administrator. Der Cron-Prozess bindet standardmäßig an `127.0.0.1`; mutierende Cron-Dienst-Routen erfordern `X-Cron-Service-Secret`, wenn `CRON_SERVICE_SECRET` festgelegt ist.
 - **Sitzungsverwaltung**: `/api/session` (POST, GET, DELETE), `/api/csrf` (GET)

@@ -116,6 +116,45 @@
   - Returns statistics about the check process
   - Sends notifications for overdue backups found
 
+## Notification Channel Alerts - `/api/notification-channel-alerts` {/* #notification-channel-alerts---apinotification-channel-alerts */}
+
+- **Endpoint**: `/api/notification-channel-alerts`
+- **Method**: GET, POST
+- **Description**: Lists open email and ntfy delivery failures for the signed-in administrator, or clears the listed channels until a newer failure is logged.
+- **Authentication**: Requires an administrator session. POST also requires a CSRF token in the `X-CSRF-Token` header.
+- **Request Body** (POST):
+  ```json
+  {
+    "channels": ["email", "ntfy"]
+  }
+  ```
+  `channels` must contain one or both of `email` and `ntfy`.
+- **Response**:
+  ```json
+  {
+    "alerts": [
+      {
+        "channel": "email",
+        "error": "SMTP authentication failed",
+        "latestTimestamp": "2026-09-23 22:10:00",
+        "failureCount": 3,
+        "settingsTab": "email",
+        "host": "smtp.gmail.com"
+      }
+    ]
+  }
+  ```
+  Each alert includes `channel`, `error` (at most 500 characters), `latestTimestamp`, `failureCount`, and `settingsTab` (`email` or `ntfy`). Email alerts may include `host`. NTFY alerts may include `topic`.
+- **Error Responses**:
+  - `400` `INVALID_CONFIGURATION`: POST body is missing, or `channels` is empty or contains an unknown value
+  - `500` `INTERNAL_ERROR`: Failed to read or clear the alerts
+- **Notes**:
+  - GET returns the channels that are still failing for this administrator
+  - POST records a per-administrator clear for each listed channel that is currently open, then returns the remaining alerts
+  - A later failure shows the channel again, even when the error text is unchanged
+  - A later successful delivery for that channel keeps it hidden
+  - The clear marker is stored in configuration and does not include secrets
+
 ## Clear Overdue Timestamps - `/api/notifications/clear-overdue-timestamps` {/* #clear-overdue-timestamps---apinotificationsclear-overdue-timestamps */}
 - **Endpoint**: `/api/notifications/clear-overdue-timestamps`
 - **Method**: POST

@@ -8,10 +8,10 @@
 - **Einheitliches Dashboard**: Anzeige des Sicherungsstatus, Verlaufs, der Duplicati-Version und Details aller Server an einem Ort.
 - **Backup-Überwachung**: Automatische Prüfung und Benachrichtigung bei überfälligen geplanten Backups.
 - **Datenvisualisierung & Protokolle**: Interaktive Diagramme und automatische Protokollerfassung von Duplicati-Servern.
-- **Benachrichtigungen & Warnungen**: Integrierte NTFY- und SMTP-E-Mail-Unterstützung für Backup-Benachrichtigungen, einschließlich Benachrichtigungen über überfällige Backups.
-- **Benutzerverwaltung**: Anmeldung mit Administrator- und Benutzerrollen, konfigurierbare Passwortrichtlinien, Kontosperrung und Benutzerverwaltung.
-- **Sicherheitsverbesserung**: Optionaler zusätzlicher Schutz, API-Schlüssel für Duplicati-Uploads und Homepage-Widgets (mit Upload-Größen- und Ratenbeschränkungen), separate IP-Zulassungslisten für das Administrationsinterface und die externen APIs, Spoofing-Schutz und Anleitung für HTTPS-Reverse-Proxy.
-- **Audit-Protokollierung**: Vollständige Audit-Trail aller Systemänderungen und Benutzeraktionen mit erweiterter Filterung, Exportfunktionen und konfigurierbaren Aufbewahrungszeiträumen.
+- **Benachrichtigungen & Warnmeldungen**: Integrierte NTFY- und SMTP-E-Mail-Unterstützung für Sicherungswarnungen, einschließlich Benachrichtigungen über überfällige Sicherungen.
+- **Benutzerverwaltung**: Anmeldung mit Admin- und Benutzerrollen, konfigurierbare Passwortrichtlinien, Kontosperrung und Benutzerverwaltung.
+- **Sicherheitskonfiguration**: Optionaler zusätzlicher Schutz, API-Schlüssel für Duplicati-Uploads und Homepage-Widgets (mit Uploadgröße und Ratenbegrenzung), unabhängige IP-Allowlists für das Administrationsinterface und die externen APIs, Anti-Spoofing-Schutz und HTTPS-Reverse-Proxy-Anleitung.
+- **Audit-Logging**: Vollständiges Audit-Protokoll aller Systemänderungen und Benutzeraktionen mit erweiterten Filtermöglichkeiten, Exportfunktionen und konfigurierbaren Aufbewahrungsfristen.
 - **Anwendungsprotokolle-Viewer**: Nur für Administratoren zugängliches Interface zur Ansicht, Suche und zum Export von Anwendungsprotokollen direkt über die Weboberfläche mit Echtzeitüberwachungsfunktionen.
 - **Mehrsprachigkeit**: Oberfläche und Dokumentation verfügbar in Englisch, Französisch, Deutsch, Spanisch, Brasilianisches Portugiesisch, Hindi und Vereinfachtes Chinesisch.
 

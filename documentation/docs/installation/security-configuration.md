@@ -1,7 +1,7 @@
 
-# Security Hardening {/* #security-hardening */}
+# Security Configuration {/* #security-configuration */}
 
-Production hardening for **duplistatus** is layered and optional. Every feature described here is off by default, so a fresh install keeps working until you choose to enable it. There are three independent layers:
+Securing **duplistatus** in production is done in layers, and every layer is optional. Every feature described here is off by default, so a fresh install keeps working until you choose to enable it. There are three independent layers:
 
 - **API keys** — scoped secrets for the external upload and read APIs; usually the easiest first step in a homelab
 - **IP allowlists** — CIDR restrictions on the admin interface, the external APIs, or both
@@ -10,10 +10,10 @@ Production hardening for **duplistatus** is layered and optional. Every feature 
 ## Recommended order {/* #recommended-order */}
 
 1. Keep port `9666` off the public internet: bind the application to localhost or to a private network.
-2. Create [API keys](#api-keys) and enable **Require API keys for external APIs**. This works without a reverse proxy and is the quickest win.
+2. Create [API keys](#api-keys) and enable **Require API keys for external APIs**. This works without a reverse proxy and is the easiest first step.
 3. Serve **duplistatus** through a [reverse proxy with HTTPS](#https-with-a-reverse-proxy).
-4. Add the proxy's TCP peer address to **Trusted proxies** (or `IP_TRUSTED_PROXIES`) if you intend to use allowlists.
-5. Optionally enable the admin and external [IP allowlists](#ip-allowlist), using **Detected IP** and the recent-IP suggestions to avoid locking yourself out.
+4. Add the proxy's connecting address to **Trusted proxies** (or `IP_TRUSTED_PROXIES`) if you intend to use allowlists.
+5. Optionally enable the admin and external [IP allowlists](#ip-allowlist), using **Detected IP** and the recent-IP suggestions to avoid blocking your own access.
 
 ## Restrict access with API keys and IP allowlists {/* #restrict-access-with-api-keys-and-ip-allowlists */}
 
@@ -141,7 +141,7 @@ your-domain.com {
 }
 ```
 
-Caddy's `reverse_proxy` directive sets the client IP headers for you. You still have to list the proxy's TCP peer address under **Trusted proxies** when using IP allowlists (see [below](#trusted-proxies-for-ip-allowlists)).
+Caddy's `reverse_proxy` directive sets the client IP headers for you. You still have to list the proxy's connecting address under **Trusted proxies** when using IP allowlists (see [below](#trusted-proxies-for-ip-allowlists)).
 
 **Step 3: Start or reload Caddy**
 
@@ -168,7 +168,7 @@ Caddy obtains the certificate the first time it serves the site and renews it be
 
 Bind **duplistatus** to localhost or to a private network so that the reverse proxy is the only public listener. Port `9666` should never be reachable from the internet.
 
-When [IP allowlists](../user-guide/settings/ip-allowlist-settings.md) are enabled, list the proxy under **Trusted proxies** (or set `IP_TRUSTED_PROXIES`). The application honours `X-Forwarded-For` and `X-Real-IP` only when the TCP peer is a trusted proxy; otherwise it ignores them.
+When [IP allowlists](../user-guide/settings/ip-allowlist-settings.md) are enabled, list the proxy under **Trusted proxies** (or set `IP_TRUSTED_PROXIES`). The application honours `X-Forwarded-For` and `X-Real-IP` only when the connecting address is a trusted proxy; otherwise it ignores them.
 
 - Configure the proxy to **overwrite** those headers with the connecting client's address, as in the Nginx sample above. Do not append.
 - When the proxy runs on the host and **duplistatus** runs in a container, the **Peer IP** is usually the Docker bridge gateway (for example `172.17.0.1`). Put that address or CIDR in **Trusted proxies**, and put the real client CIDRs in the admin or external allowlist.

@@ -261,4 +261,4 @@ podman pod rm -f duplistatus-pod
 6. Configurez les paramètres de messagerie – configurez les notifications par courriel dans [Paramètres → E-mail](../user-guide/settings/email-settings.md).
 7. Configurez les notifications de sauvegarde – configurez les notifications par sauvegarde ou par serveur dans [Paramètres → Notifications de sauvegarde](../user-guide/settings/backup-notifications-settings.md).
 
-Consultez les sections suivantes pour configurer les paramètres facultatifs tels que le fuseau horaire, le format des nombres et le [renforcement de la sécurité](security-hardening.md).
+Consultez les sections suivantes pour configurer les paramètres facultatifs tels que le fuseau horaire, le format de nombre et la [configuration de sécurité](security-configuration.md).

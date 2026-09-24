@@ -261,4 +261,4 @@ podman pod rm -f duplistatus-pod
 6. 配置电子邮件设置 – 在 [设置 → 电子邮件](../user-guide/settings/email-settings.md) 中设置电子邮件通知。
 7. 配置备份通知 – 在 [设置 → 备份通知](../user-guide/settings/backup-notifications-settings.md) 中设置每个备份或每个服务器的通知。
 
-请参阅以下章节以配置可选设置，如时区、数字格式和 [安全加固](security-hardening.md)。
+请参阅以下章节以配置可选设置，例如时区、数字格式和[安全配置](security-configuration.md)。

@@ -19,10 +19,10 @@
 ### 受保护的端点 {/* #protected-endpoints */}
 所有修改数据库数据的端点都需要会话身份验证和 CSRF 令牌：
 
-- **服务器管理**：`/api/servers/:id` (PATCH, DELETE), `/api/servers/:id/server-url` (PATCH), `/api/servers/:id/password` (PATCH, GET)
-- **配置管理**：`/api/configuration/email` (GET, POST, DELETE), `/api/configuration/unified` (GET), `/api/configuration/ntfy` (GET), `/api/configuration/notifications` (GET, POST), `/api/configuration/backup-settings` (POST), `/api/configuration/templates` (POST), `/api/configuration/overdue-tolerance` (GET, POST), `/api/configuration/daily-summary` (GET, POST), `/api/configuration/daily-summary/send` (POST), `/api/configuration/daily-summary/retry` (POST), `/api/configuration/daily-summary/preview` (POST)
-- **通知系统**：`/api/notifications/test` (POST), `/api/notifications/preview` (POST)
-- **Cron 配置**：`/api/cron-config` (GET, POST)
+- **服务器管理**：`/api/servers/:id` (PATCH, DELETE)，`/api/servers/:id/server-url` (PATCH)，`/api/servers/:id/password` (PATCH, GET)
+- **配置管理**：`/api/configuration/email` (GET, POST, DELETE)，`/api/configuration/unified` (GET)，`/api/configuration/ntfy` (GET)，`/api/configuration/notifications` (GET, POST)，`/api/configuration/backup-settings` (POST)，`/api/configuration/templates` (POST)，`/api/configuration/overdue-tolerance` (GET, POST)，`/api/configuration/daily-summary` (GET, POST)，`/api/configuration/daily-summary/send` (POST)，`/api/configuration/daily-summary/retry` (POST)，`/api/configuration/daily-summary/preview` (POST)
+- **通知系统**：`/api/notifications/test` (POST)，`/api/notifications/preview` (POST)，`/api/notification-channel-alerts` (GET, POST) - 需要管理员权限；POST 还需要 CSRF 令牌
+- **定时任务配置**：`/api/cron-config` (GET, POST)
 - **Cron 代理**：`/api/cron/*` (GET, POST) - 代理对 cron 服务的请求。POST 需要管理员权限。cron 进程默认绑定到 `127.0.0.1`；当设置 `CRON_SERVICE_SECRET` 时，变更 cron 服务路由需要 `X-Cron-Service-Secret`。
 - **会话管理**：`/api/session` (POST, GET, DELETE), `/api/csrf` (GET)
 - **图表数据**：`/api/chart-data/*` (GET)

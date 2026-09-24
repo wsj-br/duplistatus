@@ -261,4 +261,4 @@ podman pod rm -f duplistatus-pod
 6. Configure la configuración de correo electrónico: configure notificaciones por correo electrónico en [Configuración → Correo electrónico](../user-guide/settings/email-settings.md).
 7. Configure notificaciones de copia de seguridad: configure notificaciones por copia de seguridad o por servidor en [Configuración → Notificaciones de Copia de Seguridad](../user-guide/settings/backup-notifications-settings.md).
 
-Consulte las siguientes secciones para configurar ajustes opcionales como zona horaria, formato de número y [refuerzo de seguridad](security-hardening.md).
+Consulte las siguientes secciones para configurar la configuración opcional, como la zona horaria, el formato de número y la [configuración de seguridad](security-configuration.md).

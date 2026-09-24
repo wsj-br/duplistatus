@@ -262,4 +262,4 @@ podman pod rm -f duplistatus-pod
 6. Configure email settings – set up email notifications in [Settings → Email](../user-guide/settings/email-settings.md).
 7. Configure backup notifications – set up per-backup or per-server notifications in [Settings → Backup Notifications](../user-guide/settings/backup-notifications-settings.md).
 
-See the following sections to configure optional settings such as timezone, number format, and [security hardening](security-hardening.md).
+See the following sections to configure optional settings such as timezone, number format, and [security configuration](security-configuration.md).

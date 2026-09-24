@@ -23,7 +23,7 @@ All endpoints that modify database data require session authentication and CSRF 
 
 - **Server Management**: `/api/servers/:id` (PATCH, DELETE), `/api/servers/:id/server-url` (PATCH), `/api/servers/:id/password` (PATCH, GET)
 - **Configuration Management**: `/api/configuration/email` (GET, POST, DELETE), `/api/configuration/unified` (GET), `/api/configuration/ntfy` (GET), `/api/configuration/notifications` (GET, POST), `/api/configuration/backup-settings` (POST), `/api/configuration/templates` (POST), `/api/configuration/overdue-tolerance` (GET, POST), `/api/configuration/daily-summary` (GET, POST), `/api/configuration/daily-summary/send` (POST), `/api/configuration/daily-summary/retry` (POST), `/api/configuration/daily-summary/preview` (POST)
-- **Notification System**: `/api/notifications/test` (POST), `/api/notifications/preview` (POST)
+- **Notification System**: `/api/notifications/test` (POST), `/api/notifications/preview` (POST), `/api/notification-channel-alerts` (GET, POST) - administrator required; POST also requires a CSRF token
 - **Cron Configuration**: `/api/cron-config` (GET, POST)
 - **Cron Proxy**: `/api/cron/*` (GET, POST) - proxies requests to the cron service. POST requires an administrator. The cron process binds to `127.0.0.1` by default; mutating cron-service routes require `X-Cron-Service-Secret` when `CRON_SERVICE_SECRET` is set.
 - **Session Management**: `/api/session` (POST, GET, DELETE), `/api/csrf` (GET)

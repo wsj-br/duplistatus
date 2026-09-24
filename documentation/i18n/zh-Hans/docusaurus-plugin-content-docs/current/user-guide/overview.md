@@ -10,8 +10,8 @@ duplistatus 是一个专为 Duplicati 备份系统设计的强大监控仪表板
 - 实时跟踪所有备份操作的状态
 - 具有可配置警报的自动过期备份检测
 - 备份性能的综合指标和可视化
-- 通过 NTFY 和电子邮件的灵活通知系统
-- 可选的[安全加固](../installation/security-hardening.md)功能
+- 通过 NTFY 和电子邮件提供灵活的通知系统
+- 可选的[安全配置](../installation/security-configuration.md)功能
 - 多语言支持（英语、法语、德语、西班牙语、巴西葡萄牙语、印地语和简体中文）。
 
 ## 安装 {/* #installation */}
@@ -67,9 +67,27 @@ duplistatus 提供了一个直观的仪表板，用于监控整个基础架构�
 | <SvgButton svgFilename="ntfy.svg" /> &nbsp; 打开 NTFY                                                                                            | 访问您配置的通知主题的 ntfy.sh 网站。 <br/> _右键单击_ 显示二维码以配置您的设备从 duplistatus 接收通知。               |
 | <SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Duplicati 配置](duplicati-configuration.md)       | 打开所选 Duplicati 服务器的 Web 界面 <br/> _右键单击_ 在新标签页中打开 Duplicati 传统 UI (`/ngax`)                                                              |
 | <IconButton icon="lucide:download" href="collect-backup-logs" /> &nbsp; [收集日志](collect-backup-logs.md)                                   | 连接到 Duplicati 服务器并检索备份日志 <br/> _右键单击_ 收集所有已配置服务器的日志                                                                       |
+| <IconButton icon="lucide:siren" tone="alert" /> &nbsp; [发送失败](#delivery-failures)                                                   | 在电子邮件或 ntfy 发送失败时向管理员显示。请参阅[发送失败](#delivery-failures)。                                                                              |
 | <IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [设置](settings/backup-notifications-settings.md) | 配置通知、监控、SMTP 服务器和通知模板                                                                                                               |
 | <IconButton icon="lucide:user" label="用户名" />                                                                                               | 显示连接的用户、用户类型 (`Admin`, `User`)，点击打开用户菜单（包括语言选择）。更多信息请参见[用户管理](settings/user-management-settings.md)               |
 | <IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; 用户指南                                                                    | 打开[用户指南](overview.md)到您当前查看页面的相关章节。工具提示显示"[页面名称]帮助"以指示将打开哪个文档。 |
+
+### 发送失败 {/* #delivery-failures */}
+
+当电子邮件或 ntfy 投递失败时，工具栏中会为管理员显示一个带有浅红色调的 <IconButton icon="lucide:siren" tone="alert" /> 按钮。当两个渠道均正常时，该按钮保持隐藏状态，并且不会在登录页面上显示。普通用户看不到此按钮。
+
+打开该按钮会为每个失败的通道（电子邮件、ntfy）显示一张卡片，而不是为每条审计记录显示一行。每张卡片显示：
+
+- 错误信息，以及记录了 SMTP 回复时显示的等宽 **原始错误**
+- SMTP 主机或 NTFY 主题
+- 上次失败时间
+- 自上次成功或自您上次清除该通道以来投递失败的次数
+
+**打开电子邮件设置**会跳转到[设置 → 电子邮件](settings/email-settings.md)。**打开 NTFY 设置**会跳转到[设置 → NTFY](settings/ntfy-settings.md)。
+
+**关闭**仅用于关闭面板。**清除**会隐藏列出的通道，直到记录新的失败，即使错误文本相同也是如此。后续成功的投递会使按钮保持隐藏状态。这包括 `email_sent`、`notification_sent` 以及该通道成功发送的[每日摘要](settings/daily-summary-settings.md)。
+
+该列表随页面一起加载，并在浏览器标签页可见时大约每分钟刷新一次。
 
 ### 用户菜单 {/* #user-menu */}
 

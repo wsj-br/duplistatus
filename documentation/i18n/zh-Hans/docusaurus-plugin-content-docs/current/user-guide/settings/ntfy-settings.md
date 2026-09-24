@@ -23,6 +23,8 @@
 | <IconButton icon="lucide:send-horizontal" label="发送测试消息"/> | 向您的 NTFY 服务器发送测试消息以检查您的配置。                                                               |
 | <IconButton icon="lucide:qr-code" label="配置设备"/>          | 显示一个二维码，允许您快速为移动设备或桌面配置 NTFY 通知。                                                 |
 
+如果后续的 ntfy 发送失败，管理员将在工具栏中看到红色警报图标。请参阅[发送失败](../overview.md#delivery-failures)。
+
 ## 设备配置 {/* #device-configuration */}
 
 在配置之前，您应该在设备上安装 NTFY 应用程序（[请参见此处](https://ntfy.sh/)）。点击 <IconButton icon="lucide:qr-code" label="配置设备"/> 按钮，或右键单击应用程序工具栏中的 <SvgButton svgFilename="ntfy.svg" /> 图标，将显示一个二维码。扫描此二维码将自动使用正确的 NTFY 主题配置您的设备进行通知。

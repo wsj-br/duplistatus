@@ -128,6 +128,49 @@
   - जांच प्रक्रिया के बारे में आँकड़े लौटाता है
   - पाए गए बकाया बैकअप के लिए सूचनाएं भेजता है
 
+## सूचना चैनल अलर्ट - `/api/notification-channel-alerts` {/* #notification-channel-alerts---apinotification-channel-alerts */}
+
+- **एंडपॉइंट**: `/api/notification-channel-alerts`
+- **विधि**: GET, POST
+- **विवरण**: साइन-इन किए गए व्यवस्थापक के लिए खुली ईमेल और ntfy डिलीवरी विफलताओं को सूचीबद्ध करता है, या किसी नई विफलता के लॉग होने तक सूचीबद्ध चैनलों पर 'साफ़ करें' लागू करता है।
+- **प्रमाणीकरण**: व्यवस्थापक सत्र की आवश्यकता है। POST के लिए `X-CSRF-Token` हेडर में CSRF टोकन की भी आवश्यकता होती है।
+- **अनुरोध बॉडी** (POST):
+
+  ```json
+  {
+    "channels": ["email", "ntfy"]
+  }
+  ```
+
+`channels` में `email` और `ntfy` में से एक या दोनों होने चाहिए।
+- **प्रतिक्रिया**:
+
+  ```json
+  {
+    "alerts": [
+      {
+        "channel": "email",
+        "error": "SMTP authentication failed",
+        "latestTimestamp": "2026-09-23 22:10:00",
+        "failureCount": 3,
+        "settingsTab": "email",
+        "host": "smtp.gmail.com"
+      }
+    ]
+  }
+  ```
+
+प्रत्येक अलर्ट में `channel`, `error` (अधिकतम 500 अक्षर), `latestTimestamp`, `failureCount`, और `settingsTab` (`email` या `ntfy`) शामिल होते हैं। ईमेल अलर्ट में `host` शामिल हो सकता है। NTFY अलर्ट में `topic` शामिल हो सकता है।
+- **त्रुटि प्रतिक्रियाएँ**:
+  - `400` `INVALID_CONFIGURATION`: POST बॉडी मौजूद नहीं है, या `channels` खाली है या इसमें कोई अज्ञात मान शामिल है
+  - `500` `INTERNAL_ERROR`: अलर्ट पढ़ने या साफ़ करने में विफलता
+- **नोट्स**:
+  - GET उन चैनलों को लौटाता है जो इस व्यवस्थापक के लिए अभी भी विफल हो रहे हैं
+  - POST वर्तमान में खुले प्रत्येक सूचीबद्ध चैनल के लिए प्रति-व्यवस्थापक 'साफ़ करें' रिकॉर्ड करता है, फिर शेष अलर्ट लौटाता है
+  - बाद की विफलता चैनल को फिर से दिखाती है, भले ही त्रुटि टेक्स्ट अपरिवर्तित हो
+  - उस चैनल के लिए बाद की सफल डिलीवरी इसे छिपा हुआ रखती है
+  - 'साफ़ करें' मार्कर कॉन्फ़िगरेशन में संग्रहीत होता है और इसमें सीक्रेट शामिल नहीं होते हैं
+
 ## बकाया टाइमस्टैम्प साफ़ करें - `/api/notifications/clear-overdue-timestamps` {/* #clear-overdue-timestamps---apinotificationsclear-overdue-timestamps */}
 - **एंडपॉइंट**: `/api/notifications/clear-overdue-timestamps`
 - **विधि**: POST

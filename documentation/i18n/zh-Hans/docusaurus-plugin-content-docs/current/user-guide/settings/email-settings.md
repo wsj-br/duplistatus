@@ -35,11 +35,13 @@
 <br/>
 
 :::info[重要]
-  您必须使用 <IconButton icon="lucide:mail" label="发送测试邮件"/> 按钮确保您的电子邮件设置正常工作，然后才能依赖它进行通知。
+  在依赖电子邮件发送通知之前，您必须使用<IconButton icon="lucide:mail" label="发送测试电子邮件"/>按钮确保电子邮件设置正常工作。
 
- 即使您看到绿色的 <IIcon2 icon="lucide:mail" color="green"/> 图标且一切看起来都已配置，电子邮件可能仍无法发送。
+ 即使您看到绿色的<IIcon2 icon="lucide:mail" color="green"/>图标和一切看似已配置完毕，电子邮件也可能无法发送。
  
- **duplistatus** 只检查您的 SMTP 设置是否已填写，而不检查电子邮件是否实际可以投递。
+ **duplistatus**仅检查您的SMTP设置是否已填写，而不检查电子邮件是否真正能够送达。
+
+ 如果后续发送失败，管理员会在工具栏中看到红色警报图标。请参阅[发送失败](../overview.md#delivery-failures)。
 :::
 
 <br/>

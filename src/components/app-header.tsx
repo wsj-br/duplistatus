@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { LayoutDashboard, Settings, BookOpenText, LogOut, User, KeyRound, Users, ChevronDown, ArrowLeft, ScrollText, Languages } from 'lucide-react';
 import { BackupCollectMenu } from '@/components/backup-collect-menu';
 import { GlobalRefreshControls } from '@/components/global-refresh-controls';
+import { NotificationChannelAlertButton } from '@/components/notification-channel-alert-button';
 import { NtfyMessagesButton } from '@/components/ntfy-messages-button';
 import { OpenServerConfigButton } from '@/components/open-server-config-button';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -160,6 +161,7 @@ export function AppHeader() {
           <NtfyMessagesButton />
           <OpenServerConfigButton />
           <BackupCollectMenu />
+          <NotificationChannelAlertButton />
           <Link href={`/settings`} className="ml-4">
             <Button variant="outline" size="icon" title={t("Settings")}>
               <Settings className="h-4 w-4" />

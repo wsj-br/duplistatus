@@ -35,11 +35,13 @@ Wenn die Konfiguration nicht vollständig eingerichtet ist, wird ein gelbes Warn
 <br/>
 
 :::info[WICHTIG]
-  Sie müssen die <IconButton icon="lucide:mail" label="Test-E-Mail senden"/>-Taste verwenden, um sicherzustellen, dass Ihre E-Mail-Einrichtung funktioniert, bevor Sie sich auf sie für Benachrichtigungen verlassen.
+  Sie müssen die Schaltfläche <IconButton icon="lucide:mail" label="Test-E-Mail senden"/> verwenden, um sicherzustellen, dass Ihre E-Mail-Konfiguration funktioniert, bevor Sie sich für Benachrichtigungen darauf verlassen.
 
- Auch wenn Sie ein grünes <IIcon2 icon="lucide:mail" color="green"/>-Symbol sehen und alles eingerichtet aussieht, werden möglicherweise keine E-Mails gesendet.
+ Selbst wenn ein grünes <IIcon2 icon="lucide:mail" color="green"/>-Symbol angezeigt wird und alles konfiguriert aussieht, werden E-Mails möglicherweise nicht gesendet.
  
- **duplistatus** prüft nur, ob Ihre SMTP-Einstellungen ausgefüllt sind, nicht, ob E-Mails tatsächlich zugestellt werden können.
+ **duplistatus** prüft nur, ob Ihre SMTP-Einstellungen ausgefüllt sind, und nicht, ob E-Mails tatsächlich zugestellt werden können.
+
+ Wenn die Zustellung später fehlschlägt, sehen Administratoren eine rote Sirene in der Symbolleiste. Siehe [Zustellungsfehler](../overview.md#delivery-failures).
 :::
 
 <br/>

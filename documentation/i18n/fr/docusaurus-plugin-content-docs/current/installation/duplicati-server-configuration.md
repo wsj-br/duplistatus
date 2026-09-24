@@ -100,9 +100,9 @@ Si une cible HTTP échoue (panne ou HTTP 500), Duplicati peut ne pas envoyer les
 
 L'URL de téléchargement doit être accessible **depuis le processus Duplicati**, pas depuis votre navigateur.
 
-- **Duplicati sur l'hôte, duplistatus dans Docker avec le port `9666` publié :** `http://127.0.0.1:9666/api/upload` (ou l'IP LAN de l'hôte).
-- **Les deux dans Docker sur un réseau partagé :** `http://duplistatus:9666/api/upload` (le nom du service Compose ou du conteneur). `localhost` à l'intérieur du conteneur Duplicati est ce conteneur, pas **duplistatus**.
-- **Proxy inverse HTTPS sur le même hôte :** utilisez l'URL HTTPS publique comme dans [Renforcement de la sécurité](security-hardening.md).
+- **duplicati sur l'hôte, duplistatus dans Docker avec le port `9666` publié :** `http://127.0.0.1:9666/api/upload` (ou l'IP LAN de l'hôte).
+- **Les deux dans Docker sur un réseau partagé :** `http://duplistatus:9666/api/upload` (le nom du service Compose ou du conteneur). `localhost` dans le conteneur duplicati correspond à ce conteneur, et non à **duplistatus**.
+- **Proxy inverse HTTPS sur le même hôte :** utilisez l'URL HTTPS publique comme dans [Configuration de la sécurité](security-configuration.md).
 
 Collecter les journaux de sauvegarde est la direction inverse : depuis le conteneur **duplistatus**, `localhost:8200` n'est pas Duplicati sur l'hôte. Utilisez l'IP de l'hôte, `host.docker.internal` (Docker Desktop, ou un hôte supplémentaire que vous avez configuré), ou le nom du conteneur Duplicati.
 

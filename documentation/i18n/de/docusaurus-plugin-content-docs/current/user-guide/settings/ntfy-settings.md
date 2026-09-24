@@ -23,6 +23,8 @@ Wenn die Konfiguration nicht gültig ist, werden die NTFY-Kontrollkästchen im [
 | <IconButton icon="lucide:send-horizontal" label="Testnachricht senden"/> | Eine Testnachricht an Ihren NTFY-Server senden, um Ihre Konfiguration zu überprüfen.                          |
 | <IconButton icon="lucide:qr-code" label="Gerät konfigurieren"/>          | Einen QR-Code anzeigen, mit dem Sie Ihr mobiles Gerät oder Desktop schnell für NTFY-Benachrichtigungen konfigurieren können. |
 
+Wenn eine spätere ntfy-Zustellung fehlschlägt, sehen Administratoren ein rotes Sirenensymbol in der Symbolleiste. Siehe [Zustellungsfehler](../overview.md#delivery-failures).
+
 ## Gerätekonfiguration {/* #device-configuration */}
 
 Sie sollten die NTFY-Anwendung auf Ihrem Gerät installieren, bevor Sie sie konfigurieren ([siehe hier](https://ntfy.sh/)). Durch Klicken auf die <IconButton icon="lucide:qr-code" label="Gerät konfigurieren"/>-Taste oder Rechtsklick auf das <SvgButton svgFilename="ntfy.svg" />-Symbol in der Anwendungsleiste wird ein QR-Code angezeigt. Durch Scannen dieses QR-Codes wird Ihr Gerät automatisch mit dem richtigen NTFY-Thema für Benachrichtigungen konfiguriert.

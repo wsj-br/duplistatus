@@ -20,9 +20,9 @@ API सत्र-आधारित प्रमाणीकरण और CSRF �
 डेटाबेस डेटा को संशोधित करने वाले सभी एंडपॉइंट को सत्र प्रमाणीकरण और CSRF टोकन की आवश्यकता होती है:
 
 - **सर्वर प्रबंधन**: `/api/servers/:id` (PATCH, DELETE), `/api/servers/:id/server-url` (PATCH), `/api/servers/:id/password` (PATCH, GET)
-- **विन्यास प्रबंधन**: `/api/configuration/email` (GET, POST, DELETE), `/api/configuration/unified` (GET), `/api/configuration/ntfy` (GET), `/api/configuration/notifications` (GET, POST), `/api/configuration/backup-settings` (POST), `/api/configuration/templates` (POST), `/api/configuration/overdue-tolerance` (GET, POST), `/api/configuration/daily-summary` (GET, POST), `/api/configuration/daily-summary/send` (POST), `/api/configuration/daily-summary/retry` (POST), `/api/configuration/daily-summary/preview` (POST)
-- **अधिसूचना प्रणाली**: `/api/notifications/test` (POST), `/api/notifications/preview` (POST)
-- **Cron विन्यास**: `/api/cron-config` (GET, POST)
+- **कॉन्फ़िगरेशन प्रबंधन**: `/api/configuration/email` (GET, POST, DELETE), `/api/configuration/unified` (GET), `/api/configuration/ntfy` (GET), `/api/configuration/notifications` (GET, POST), `/api/configuration/backup-settings` (POST), `/api/configuration/templates` (POST), `/api/configuration/overdue-tolerance` (GET, POST), `/api/configuration/daily-summary` (GET, POST), `/api/configuration/daily-summary/send` (POST), `/api/configuration/daily-summary/retry` (POST), `/api/configuration/daily-summary/preview` (POST)
+- **सूचना सिस्टम**: `/api/notifications/test` (POST), `/api/notifications/preview` (POST), `/api/notification-channel-alerts` (GET, POST) - व्यवस्थापक आवश्यक; POST के लिए CSRF टोकन भी आवश्यक है
+- **क्रॉन कॉन्फ़िगरेशन**: `/api/cron-config` (GET, POST)
 - **Cron प्रॉक्सी**: `/api/cron/*` (GET, POST) - cron सेवा के लिए अनुरोधों को प्रॉक्सी करता है। POST को एक एडमिनिस्ट्रेटर की आवश्यकता होती है। cron प्रक्रिया डिफ़ॉल्ट रूप से `127.0.0.1` से बाइंड होती है; जब `CRON_SERVICE_SECRET` सेट होता है तो बदलाव वाले cron-सेवा मार्गों को `X-Cron-Service-Secret` की आवश्यकता होती है।
 - **सत्र प्रबंधन**: `/api/session` (POST, GET, DELETE), `/api/csrf` (GET)
 - **चार्ट डेटा**: `/api/chart-data/*` (GET)

@@ -23,6 +23,8 @@ Cuando la configuración no es válida, las casillas de verificación NTFY en la
 | <IconButton icon="lucide:send-horizontal" label="Enviar mensaje de prueba"/> | Enviar un mensaje de prueba a su servidor NTFY para comprobar su configuración.                                |
 | <IconButton icon="lucide:qr-code" label="Configurar dispositivo"/>          | Mostrar un código QR que le permite configurar rápidamente su dispositivo móvil o escritorio para notificaciones NTFY. |
 
+Si falla una entrega posterior de ntfy, los administradores verán una sirena roja en la barra de herramientas. Consulte [Errores de entrega](../overview.md#delivery-failures).
+
 ## Configuración del dispositivo {/* #device-configuration */}
 
 Debe instalar la aplicación NTFY en su dispositivo antes de configurarlo ([ver aquí](https://ntfy.sh/)). Al hacer clic en el botón <IconButton icon="lucide:qr-code" label="Configurar dispositivo"/>, o al hacer clic derecho en el icono <SvgButton svgFilename="ntfy.svg" /> en la barra de herramientas de la aplicación, se mostrará un código QR. Escanear este código QR configurará automáticamente su dispositivo con el tema NTFY correcto para las notificaciones.

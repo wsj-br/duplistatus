@@ -175,8 +175,8 @@ const config: Config = {
       {
         redirects: [
           {
-            from: ['/installation/https-setup', '/installation/harden-duplistatus-security'],
-            to: '/installation/security-hardening',
+            from: ['/installation/https-setup', '/installation/harden-duplistatus-security', '/installation/security-hardening'],
+            to: '/installation/security-configuration',
           },
         ],
       },

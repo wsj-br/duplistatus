@@ -734,6 +734,42 @@ async function processTemplate(
   };
 }
 
+function rejectionMessage(reason: unknown): string {
+  return reason instanceof Error ? reason.message : String(reason);
+}
+
+/**
+ * Wait for primary notification channels.
+ * A partial delivery counts as success so notification frequency can be recorded.
+ * Throws only when every channel failed.
+ */
+async function settlePrimaryNotificationChannels(
+  notifications: Promise<void>[],
+  deliveredTypes: readonly string[],
+): Promise<string[]> {
+  if (notifications.length === 0) {
+    return [];
+  }
+
+  const results = await Promise.allSettled(notifications);
+  const failureMessages: string[] = [];
+  let firstRejection: unknown;
+  for (const result of results) {
+    if (result.status === 'rejected') {
+      if (firstRejection === undefined) {
+        firstRejection = result.reason;
+      }
+      failureMessages.push(rejectionMessage(result.reason));
+    }
+  }
+
+  if (deliveredTypes.length === 0 && failureMessages.length > 0) {
+    throw firstRejection instanceof Error ? firstRejection : new Error(failureMessages[0]);
+  }
+
+  return failureMessages;
+}
+
 export async function sendBackupNotification(
   backup: Backup,
   serverId: string,
@@ -998,14 +1034,15 @@ export async function sendBackupNotification(
       );
     }
 
-    // Wait for all standard notifications to complete
+    // A delivered channel counts even when another primary channel fails, so a later
+    // frequency window can be recorded and additional destinations still run.
     if (notifications.length > 0) {
-      try {
-        await Promise.all(notifications);
+      const failureMessages = await settlePrimaryNotificationChannels(notifications, standardNotificationTypes);
+      if (standardNotificationTypes.length > 0) {
         console.log(`Standard notifications sent (${standardNotificationTypes.join(', ')}) for backup ${backup.name} on server ${serverName}, status: ${status}, notification config: ${notificationConf}`);
-      } catch (error) {
-        console.error(`Failed to send standard notifications for backup ${backup.name} on server ${serverName}:`, error instanceof Error ? error.message : String(error));
-        throw error;
+      }
+      if (failureMessages.length > 0) {
+        console.error(`Some standard notifications failed for backup ${backup.name} on server ${serverName}:`, failureMessages.join('; '));
       }
     } else {
       console.log(`No standard notification channels enabled for backup ${backup.name} on server ${serverName}, skipping`);
@@ -1393,14 +1430,15 @@ export async function sendOverdueBackupNotification(
       );
     }
 
-    // Wait for all notifications to complete
+    // A delivered channel counts even when another primary channel fails, so the
+    // overdue frequency window is recorded instead of repeating every check.
     if (notifications.length > 0) {
-      try {
-        await Promise.all(notifications);
+      const failureMessages = await settlePrimaryNotificationChannels(notifications, notificationTypes);
+      if (notificationTypes.length > 0) {
         console.log(`Overdue notifications sent (${notificationTypes.join(', ')}) for backup ${context.backup_name} on server ${context.server_name}`);
-      } catch (error) {
-        console.error(`Failed to send overdue notifications for backup ${context.backup_name} on server ${context.server_name}:`, error instanceof Error ? error.message : String(error));
-        throw error;
+      }
+      if (failureMessages.length > 0) {
+        console.error(`Some overdue notifications failed for backup ${context.backup_name} on server ${context.server_name}:`, failureMessages.join('; '));
       }
     } else {
       console.log(`No notification channels enabled for overdue backup ${context.backup_name} on server ${context.server_name}, skipping`);

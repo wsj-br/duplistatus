@@ -25,7 +25,8 @@ When the configuration is not valid, the NTFY checkboxes in the [`Backup Notific
 | <IconButton label="Save Settings" />                                  | Save any changes made to the NTFY settings.                                                                  |
 | <IconButton icon="lucide:send-horizontal" label="Send Test Message"/> | Send a test message to your NTFY server to check your configuration.                                         |
 | <IconButton icon="lucide:qr-code" label="Configure Device"/>          | Display a QR code that allows you to quickly configure your mobile device or desktop for NTFY notifications. |
-    
+
+If a later ntfy delivery fails, administrators see a red siren in the toolbar. See [Delivery failures](../overview.md#delivery-failures).
 
 ## Device Configuration {/* #device-configuration */}
 

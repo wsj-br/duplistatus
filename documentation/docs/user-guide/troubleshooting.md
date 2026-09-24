@@ -21,6 +21,7 @@
 - Verify NTFY server connectivity (if using NTFY)
 - Test notification settings
 - Check notification logs
+- If you are an administrator, look for the red siren in the toolbar and open the linked Email or NTFY settings page. See [Delivery failures](overview.md#delivery-failures).
 
 ### New Backups Not Showing {/* #new-backups-not-showing */}
 

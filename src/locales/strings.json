@@ -2343,7 +2343,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 73
+        "line": 74
       }
     ]
   },
@@ -2370,7 +2370,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 74
+        "line": 75
       }
     ]
   },
@@ -2397,7 +2397,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 133
+        "line": 134
       }
     ]
   },
@@ -2424,7 +2424,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 143
+        "line": 144
       },
       {
         "file": "src/components/ui/back-button.tsx",
@@ -2455,7 +2455,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 155
+        "line": 156
       }
     ]
   },
@@ -2482,7 +2482,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 164
+        "line": 166
       },
       {
         "file": "src/components/dashboard/dashboard-table.tsx",
@@ -2517,7 +2517,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 194
+        "line": 196
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
@@ -2548,7 +2548,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 203
+        "line": 205
       },
       {
         "file": "src/components/change-password-modal.tsx",
@@ -2595,7 +2595,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 210
+        "line": 212
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
@@ -2630,7 +2630,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 217
+        "line": 219
       },
       {
         "file": "src/components/settings/settings-page-client.tsx",
@@ -2665,7 +2665,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 223
+        "line": 225
       }
     ]
   },
@@ -2692,7 +2692,7 @@
     "locations": [
       {
         "file": "src/components/app-header.tsx",
-        "line": 238
+        "line": 240
       }
     ]
   },
@@ -5597,6 +5597,10 @@
       {
         "file": "src/components/backup-collect-menu.tsx",
         "line": 1427
+      },
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 294
       },
       {
         "file": "src/components/settings/api-keys-form.tsx",
@@ -8929,6 +8933,453 @@
       {
         "file": "src/components/server-details/server-backup-table.tsx",
         "line": 375
+      }
+    ]
+  },
+  "d3d979fd": {
+    "source": "Could not clear notification alerts",
+    "translated": {
+      "pt-BR": "Não foi possível limpar os alertas de notificação",
+      "fr": "Impossible d'effacer les alertes de notification",
+      "de": "Benachrichtigungen konnten nicht gelöscht werden",
+      "es": "No se pudieron borrar las alertas de notificación",
+      "zh-Hans": "无法清除通知提醒",
+      "hi": "सूचना अलर्ट साफ़ नहीं हो सके"
+    },
+    "models": {
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "es": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 169
+      },
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 183
+      }
+    ]
+  },
+  "1cde2e7a": {
+    "source": "Try again in a moment.",
+    "translated": {
+      "pt-BR": "Tente novamente em instantes.",
+      "fr": "Réessayez dans un instant.",
+      "de": "Versuchen Sie es in Kürze erneut.",
+      "es": "Vuelva a intentarlo en un momento.",
+      "zh-Hans": "请稍后再试。",
+      "hi": "थोड़ी देर बाद पुनः प्रयास करें।"
+    },
+    "models": {
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "es": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 170
+      },
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 184
+      }
+    ]
+  },
+  "dd909fef": {
+    "source": "Delivery failures",
+    "translated": {
+      "pt-BR": "Falhas de entrega",
+      "es": "Errores de entrega",
+      "fr": "Échecs de livraison",
+      "de": "Zustellungsfehler",
+      "zh-Hans": "发送失败",
+      "hi": "डिलीवरी विफलताएँ"
+    },
+    "models": {
+      "pt-BR": "qwen/qwen3.7-max",
+      "es": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 204
+      },
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 205
+      },
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 215
+      }
+    ]
+  },
+  "daaf9464": {
+    "source": "Open Email settings",
+    "translated": {
+      "pt-BR": "Abrir configurações de e-mail",
+      "fr": "Ouvrir les paramètres de messagerie",
+      "de": "E-Mail-Einstellungen öffnen",
+      "es": "Abrir configuración de correo electrónico",
+      "zh-Hans": "打开电子邮件设置",
+      "hi": "ईमेल सेटिंग्स खोलें"
+    },
+    "models": {
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "es": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 222
+      }
+    ]
+  },
+  "8e5ce908": {
+    "source": "Open NTFY settings",
+    "translated": {
+      "pt-BR": "Abrir configurações do NTFY",
+      "fr": "Ouvrir les paramètres NTFY",
+      "de": "NTFY-Einstellungen öffnen",
+      "es": "Abrir configuración de NTFY",
+      "zh-Hans": "打开 NTFY 设置",
+      "hi": "NTFY सेटिंग्स खोलें"
+    },
+    "models": {
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "es": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 222
+      }
+    ]
+  },
+  "ce8ae9da": {
+    "source": "Email",
+    "translated": {
+      "pt-BR": "E-mail",
+      "es": "Correo electrónico",
+      "de": "E-Mail",
+      "fr": "E-mail",
+      "zh-CN": "邮件",
+      "zh-Hans": "电子邮件",
+      "hi": "ईमेल"
+    },
+    "models": {
+      "pt-BR": "anthropic/claude-3.5-haiku",
+      "es": "anthropic/claude-3.5-haiku",
+      "de": "anthropic/claude-3.5-haiku",
+      "fr": "anthropic/claude-3.5-haiku",
+      "zh-CN": "manual",
+      "zh-Hans": "meta-llama/llama-3.3-70b-instruct",
+      "hi": "~anthropic/claude-sonnet-latest"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 232
+      },
+      {
+        "file": "src/components/settings/daily-summary-form.tsx",
+        "line": 425
+      },
+      {
+        "file": "src/components/settings/settings-page-client.tsx",
+        "line": 438
+      },
+      {
+        "file": "src/components/settings/settings-page-client.tsx",
+        "line": 441
+      }
+    ]
+  },
+  "948bed37": {
+    "source": "NTFY",
+    "translated": {
+      "pt-BR": "NTFY",
+      "es": "NTFY",
+      "de": "NTFY",
+      "fr": "NTFY",
+      "zh-CN": "NTFY",
+      "zh-Hans": "NTFY",
+      "hi": "NTFY"
+    },
+    "models": {
+      "pt-BR": "anthropic/claude-3.5-haiku",
+      "es": "anthropic/claude-3.5-haiku",
+      "de": "anthropic/claude-3.5-haiku",
+      "fr": "anthropic/claude-3.5-haiku",
+      "zh-CN": "manual",
+      "zh-Hans": "meta-llama/llama-3.3-70b-instruct",
+      "hi": "~anthropic/claude-sonnet-latest"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 232
+      },
+      {
+        "file": "src/components/settings/email-preview-dialog.tsx",
+        "line": 102
+      },
+      {
+        "file": "src/components/settings/settings-page-client.tsx",
+        "line": 426
+      },
+      {
+        "file": "src/components/settings/settings-page-client.tsx",
+        "line": 429
+      }
+    ]
+  },
+  "c3ccaf6b": {
+    "source": "Delivery failed",
+    "translated": {
+      "pt-BR": "Falha na entrega",
+      "fr": "Échec de la remise",
+      "de": "Zustellung fehlgeschlagen",
+      "es": "Error de entrega",
+      "zh-Hans": "发送失败",
+      "hi": "वितरण विफल"
+    },
+    "models": {
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "es": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 243
+      }
+    ]
+  },
+  "a8678d28": {
+    "source": "Original error",
+    "translated": {
+      "pt-BR": "Erro original",
+      "fr": "Erreur d'origine",
+      "de": "Ursprünglicher Fehler",
+      "es": "Error original",
+      "zh-Hans": "原始错误",
+      "hi": "मूल त्रुटि"
+    },
+    "models": {
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "es": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 247
+      }
+    ]
+  },
+  "00f8c8a3": {
+    "source": "SMTP host",
+    "translated": {
+      "pt-BR": "Host SMTP",
+      "fr": "Hôte SMTP",
+      "de": "SMTP-Host",
+      "es": "Host SMTP",
+      "zh-Hans": "SMTP 主机",
+      "hi": "SMTP होस्ट"
+    },
+    "models": {
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "es": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 267
+      }
+    ]
+  },
+  "0dc8df86": {
+    "source": "NTFY topic",
+    "translated": {
+      "pt-BR": "Tópico NTFY",
+      "fr": "Sujet NTFY",
+      "de": "NTFY-Topic",
+      "es": "Tema NTFY",
+      "zh-Hans": "NTFY 主题",
+      "hi": "NTFY विषय"
+    },
+    "models": {
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "es": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 273
+      }
+    ]
+  },
+  "35a58c1e": {
+    "source": "Last failure",
+    "translated": {
+      "pt-BR": "Últ. falha",
+      "fr": "Dernier échec",
+      "de": "Letzter Fehler",
+      "es": "Últ. fallo",
+      "zh-Hans": "上次失败",
+      "hi": "अंतिम विफलता"
+    },
+    "models": {
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "es": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 278
+      }
+    ]
+  },
+  "8ec440ab": {
+    "plural": true,
+    "source": "{{count}} failed deliveries",
+    "translated": {
+      "en-GB": {
+        "one": "{{count}} failed delivery",
+        "other": "{{count}} failed deliveries"
+      },
+      "de": {
+        "one": "{{count}} fehlgeschlagene Lieferung",
+        "other": "{{count}} fehlgeschlagene Lieferungen"
+      },
+      "es": {
+        "one": "{{count}} entrega fallida",
+        "other": "{{count}} entregas fallidas"
+      },
+      "pt-BR": {
+        "one": "{{count}} entrega com falha",
+        "other": "{{count}} entregas com falha"
+      },
+      "fr": {
+        "one": "{{count}} livraison échouée",
+        "other": "{{count}} livraisons échouées"
+      },
+      "zh-Hans": {
+        "other": "{{count}} 次配送失败"
+      },
+      "hi": {
+        "one": "{{count}} विफल डिलीवरी",
+        "other": "{{count}} विफल डिलीवरियाँ"
+      }
+    },
+    "models": {
+      "de": "qwen/qwen3.7-max",
+      "es": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 282
+      }
+    ]
+  },
+  "dc30bc0c": {
+    "source": "Clear",
+    "translated": {
+      "de": "Löschen",
+      "pt-BR": "Limpar",
+      "fr": "Effacer",
+      "es": "Borrar",
+      "zh-CN": "清除",
+      "zh-Hans": "清除",
+      "hi": "साफ़ करें"
+    },
+    "models": {
+      "de": "anthropic/claude-3.5-haiku",
+      "pt-BR": "anthropic/claude-3.5-haiku",
+      "fr": "anthropic/claude-3.5-haiku",
+      "es": "anthropic/claude-3.5-haiku",
+      "zh-CN": "manual",
+      "zh-Hans": "meta-llama/llama-3.3-70b-instruct",
+      "hi": "~anthropic/claude-sonnet-latest"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 304
+      },
+      {
+        "file": "src/components/settings/backup-notifications-form.tsx",
+        "line": 4890
+      }
+    ]
+  },
+  "47170b54": {
+    "source": "Clear hides these messages until a newer failure is logged.",
+    "translated": {
+      "pt-BR": "Limpar oculta estas mensagens até que uma nova falha seja registrada.",
+      "fr": "Effacer masque ces messages jusqu'à ce qu'un nouvel échec soit enregistré.",
+      "de": "Löschen blendet diese Meldungen aus, bis ein neuer Fehler protokolliert wird.",
+      "es": "Limpiar oculta estos mensajes hasta que se registre un fallo más reciente.",
+      "zh-Hans": "清除将隐藏这些消息，直到出现新的失败记录。",
+      "hi": "साफ़ करने पर ये संदेश तब तक छिपे रहेंगे जब तक कोई नई विफलता लॉग नहीं की जाती।"
+    },
+    "models": {
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "es": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/notification-channel-alert-button.tsx",
+        "line": 308
       }
     ]
   },
@@ -20489,33 +20940,6 @@
       }
     ]
   },
-  "dc30bc0c": {
-    "source": "Clear",
-    "translated": {
-      "de": "Löschen",
-      "pt-BR": "Limpar",
-      "fr": "Effacer",
-      "es": "Borrar",
-      "zh-CN": "清除",
-      "zh-Hans": "清除",
-      "hi": "साफ़ करें"
-    },
-    "models": {
-      "de": "anthropic/claude-3.5-haiku",
-      "pt-BR": "anthropic/claude-3.5-haiku",
-      "fr": "anthropic/claude-3.5-haiku",
-      "es": "anthropic/claude-3.5-haiku",
-      "zh-CN": "manual",
-      "zh-Hans": "meta-llama/llama-3.3-70b-instruct",
-      "hi": "~anthropic/claude-sonnet-latest"
-    },
-    "locations": [
-      {
-        "file": "src/components/settings/backup-notifications-form.tsx",
-        "line": 4890
-      }
-    ]
-  },
   "4a4ddde0": {
     "source": "Set Additional Destinations",
     "translated": {
@@ -21618,41 +22042,6 @@
       {
         "file": "src/components/settings/daily-summary-form.tsx",
         "line": 419
-      }
-    ]
-  },
-  "ce8ae9da": {
-    "source": "Email",
-    "translated": {
-      "pt-BR": "E-mail",
-      "es": "Correo electrónico",
-      "de": "E-Mail",
-      "fr": "E-mail",
-      "zh-CN": "邮件",
-      "zh-Hans": "电子邮件",
-      "hi": "ईमेल"
-    },
-    "models": {
-      "pt-BR": "anthropic/claude-3.5-haiku",
-      "es": "anthropic/claude-3.5-haiku",
-      "de": "anthropic/claude-3.5-haiku",
-      "fr": "anthropic/claude-3.5-haiku",
-      "zh-CN": "manual",
-      "zh-Hans": "meta-llama/llama-3.3-70b-instruct",
-      "hi": "~anthropic/claude-sonnet-latest"
-    },
-    "locations": [
-      {
-        "file": "src/components/settings/daily-summary-form.tsx",
-        "line": 425
-      },
-      {
-        "file": "src/components/settings/settings-page-client.tsx",
-        "line": 438
-      },
-      {
-        "file": "src/components/settings/settings-page-client.tsx",
-        "line": 441
       }
     ]
   },
@@ -28464,41 +28853,6 @@
       {
         "file": "src/components/settings/email-preview-dialog.tsx",
         "line": 98
-      }
-    ]
-  },
-  "948bed37": {
-    "source": "NTFY",
-    "translated": {
-      "pt-BR": "NTFY",
-      "es": "NTFY",
-      "de": "NTFY",
-      "fr": "NTFY",
-      "zh-CN": "NTFY",
-      "zh-Hans": "NTFY",
-      "hi": "NTFY"
-    },
-    "models": {
-      "pt-BR": "anthropic/claude-3.5-haiku",
-      "es": "anthropic/claude-3.5-haiku",
-      "de": "anthropic/claude-3.5-haiku",
-      "fr": "anthropic/claude-3.5-haiku",
-      "zh-CN": "manual",
-      "zh-Hans": "meta-llama/llama-3.3-70b-instruct",
-      "hi": "~anthropic/claude-sonnet-latest"
-    },
-    "locations": [
-      {
-        "file": "src/components/settings/email-preview-dialog.tsx",
-        "line": 102
-      },
-      {
-        "file": "src/components/settings/settings-page-client.tsx",
-        "line": 426
-      },
-      {
-        "file": "src/components/settings/settings-page-client.tsx",
-        "line": 429
       }
     ]
   },

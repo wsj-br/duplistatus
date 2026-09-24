@@ -65,6 +65,8 @@
 | [`/api/ping`](monitoring-apis#connectivity-probe---apiping)                                                                                         | GET    | 连接性探测                        | 监控与健康                |
 | [`/api/lastbackup/:serverId`](external-apis#get-latest-backup---apilastbackupserverid)                                                              | GET    | 获取最新备份                      | 外部API                   |
 | [`/api/lastbackups/:serverId`](external-apis#get-latest-backups---apilastbackupsserverid)                                                           | GET    | 获取最新备份列表                  | 外部API                   |
+| [`/api/notification-channel-alerts`](notification-apis#notification-channel-alerts---apinotification-channel-alerts)                               | GET    | 列出通知渠道告警  | 通知系统       |
+| [`/api/notification-channel-alerts`](notification-apis#notification-channel-alerts---apinotification-channel-alerts)                               | POST   | 清除通知渠道告警 | 通知系统       |
 | [`/api/notifications/check-overdue`](notification-apis#check-overdue-backups---apinotificationscheck-overdue)                                       | POST   | 检查过期备份                      | 通知系统                  |
 | [`/api/notifications/clear-overdue-timestamps`](notification-apis#clear-overdue-timestamps---apinotificationsclear-overdue-timestamps)              | POST   | 清除过期时间戳                    | 通知系统                  |
 | [`/api/notifications/preview`](notification-apis#preview-notification-template---apinotificationspreview)                                           | POST   | 预览通知模板                      | 通知系统                  |

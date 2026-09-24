@@ -128,6 +128,49 @@ O conteúdo do e-mail de teste exibe:
   - Retorna estatísticas sobre o processo de verificação
   - Envia notificações para backups atrasados encontrados
 
+## Alertas do Canal de Notificação - `/api/notification-channel-alerts` {/* #notification-channel-alerts---apinotification-channel-alerts */}
+
+- **Endpoint**: `/api/notification-channel-alerts`
+- **Método**: GET, POST
+- **Descrição**: Lista as falhas de entrega de e-mail e NTFY em aberto para o administrador conectado, ou limpa os canais listados até que uma nova falha seja registrada.
+- **Autenticação**: Requer uma sessão de administrador. O POST também requer um token CSRF no cabeçalho `X-CSRF-Token`.
+- **Corpo da Requisição** (POST):
+
+  ```json
+  {
+    "channels": ["email", "ntfy"]
+  }
+  ```
+
+`channels` deve conter um ou ambos: `email` e `ntfy`.
+- **Resposta**:
+
+  ```json
+  {
+    "alerts": [
+      {
+        "channel": "email",
+        "error": "SMTP authentication failed",
+        "latestTimestamp": "2026-09-23 22:10:00",
+        "failureCount": 3,
+        "settingsTab": "email",
+        "host": "smtp.gmail.com"
+      }
+    ]
+  }
+  ```
+
+Cada alerta inclui `channel`, `error` (no máximo 500 caracteres), `latestTimestamp`, `failureCount` e `settingsTab` (`email` ou `ntfy`). Alertas de e-mail podem incluir `host`. Alertas do NTFY podem incluir `topic`.
+- **Respostas de Erro**:
+  - `400` `INVALID_CONFIGURATION`: O corpo do POST está ausente, ou `channels` está vazio ou contém um valor desconhecido
+  - `500` `INTERNAL_ERROR`: Falha na Leitura ou ao Limpar os alertas
+- **Observações**:
+  - O GET retorna os canais que ainda estão com falha para este administrador
+  - O POST registra uma limpeza por administrador para cada canal listado que esteja atualmente aberto e, em seguida, retorna os alertas restantes
+  - Uma falha posterior mostra o canal novamente, mesmo quando o texto do erro permanece inalterado
+  - Uma entrega bem-sucedida posterior para esse canal o mantém oculto
+  - O marcador de limpeza é armazenado na configuração e não inclui segredos
+
 ## Limpar Timestamps de Backups Atrasados - `/api/notifications/clear-overdue-timestamps` {/* #clear-overdue-timestamps---apinotificationsclear-overdue-timestamps */}
 - **Endpoint**: `/api/notifications/clear-overdue-timestamps`
 - **Método**: POST

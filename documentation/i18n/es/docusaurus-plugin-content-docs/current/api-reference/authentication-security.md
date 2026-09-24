@@ -20,8 +20,8 @@ Todas las operaciones que modifican el estado requieren un token CSRF válido qu
 Todos los endpoints que modifican datos de la base de datos requieren autenticación de sesión y token CSRF:
 
 - **Gestión del servidor**: `/api/servers/:id` (PATCH, DELETE), `/api/servers/:id/server-url` (PATCH), `/api/servers/:id/password` (PATCH, GET)
-- **Gestión de la configuración**: `/api/configuration/email` (GET, POST, DELETE), `/api/configuration/unified` (GET), `/api/configuration/ntfy` (GET), `/api/configuration/notifications` (GET, POST), `/api/configuration/backup-settings` (POST), `/api/configuration/templates` (POST), `/api/configuration/overdue-tolerance` (GET, POST), `/api/configuration/daily-summary` (GET, POST), `/api/configuration/daily-summary/send` (POST), `/api/configuration/daily-summary/retry` (POST), `/api/configuration/daily-summary/preview` (POST)
-- **Sistema de notificaciones**: `/api/notifications/test` (POST), `/api/notifications/preview` (POST)
+- **Gestión de configuración**: `/api/configuration/email` (GET, POST, DELETE), `/api/configuration/unified` (GET), `/api/configuration/ntfy` (GET), `/api/configuration/notifications` (GET, POST), `/api/configuration/backup-settings` (POST), `/api/configuration/templates` (POST), `/api/configuration/overdue-tolerance` (GET, POST), `/api/configuration/daily-summary` (GET, POST), `/api/configuration/daily-summary/send` (POST), `/api/configuration/daily-summary/retry` (POST), `/api/configuration/daily-summary/preview` (POST)
+- **Sistema de notificaciones**: `/api/notifications/test` (POST), `/api/notifications/preview` (POST), `/api/notification-channel-alerts` (GET, POST) - se requiere administrador; POST también requiere un token CSRF
 - **Configuración de Cron**: `/api/cron-config` (GET, POST)
 - **Proxy de Cron**: `/api/cron/*` (GET, POST): redirige solicitudes al servicio cron. POST requiere un administrador. El proceso cron se vincula a `127.0.0.1` de forma predeterminada; las rutas mutables del servicio cron requieren `X-Cron-Service-Secret` cuando `CRON_SERVICE_SECRET` está configurado.
 - **Gestión de sesiones**: `/api/session` (POST, GET, DELETE), `/api/csrf` (GET)

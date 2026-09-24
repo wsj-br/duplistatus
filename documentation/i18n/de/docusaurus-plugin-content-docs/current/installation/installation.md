@@ -261,4 +261,4 @@ podman pod rm -f duplistatus-pod
 6. Konfigurieren Sie E-Mail-Einstellungen – richten Sie E-Mail-Benachrichtigungen unter [Einstellungen → E-Mail](../user-guide/settings/email-settings.md) ein.
 7. Konfigurieren Sie Backup-Benachrichtigungen – richten Sie pro-Sicherung oder pro-Server-Benachrichtigungen unter [Einstellungen → Backup-Benachrichtigungen](../user-guide/settings/backup-notifications-settings.md) ein.
 
-Siehe folgende Abschnitte zur Konfiguration optionaler Einstellungen wie Zeitzone, Zahlenformat und [Sicherheitsabschirmung](security-hardening.md).
+Weitere Informationen zum Konfigurieren optionaler Einstellungen wie Zeitzone, Zahlenformat und [Sicherheitskonfiguration](security-configuration.md) finden Sie in den folgenden Abschnitten.

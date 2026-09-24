@@ -100,9 +100,9 @@ Wenn ein HTTP-Ziel ausfällt (Ausfall oder HTTP 500), sendet Duplicati mögliche
 
 Die Upload-URL muss **vom Duplicati-Prozess aus** erreichbar sein, nicht von Ihrem Browser aus.
 
-- **Duplicati auf dem Host, duplistatus in Docker mit Port `9666` veröffentlicht:** `http://127.0.0.1:9666/api/upload` (oder die LAN-IP des Hosts).
-- **Beide in Docker in einem gemeinsamen Netzwerk:** `http://duplistatus:9666/api/upload` (der Compose-Dienst oder Containername). `localhost` innerhalb des Duplicati-Containers ist dieser Container, nicht **duplistatus**.
-- **HTTPS-Reverse-Proxy auf dem gleichen Host:** Verwenden Sie die öffentliche HTTPS-URL wie in [Sicherheitsabsicherung](security-hardening.md).
+- **Duplicati auf dem Host, duplistatus in Docker mit veröffentlichtem Port `9666`:** `http://127.0.0.1:9666/api/upload` (oder die LAN-IP des Hosts).
+- **Beide in Docker in einem gemeinsamen Netzwerk:** `http://duplistatus:9666/api/upload` (der Name des Compose-Services oder Containers). `localhost` innerhalb des Duplicati-Containers ist dieser Container, nicht **duplistatus**.
+- **HTTPS-Reverse-Proxy auf demselben Host:** Verwenden Sie die öffentliche HTTPS-URL wie in [Sicherheitskonfiguration](security-configuration.md).
 
 Backup-Protokolle sammeln ist die umgekehrte Richtung: Vom **duplistatus**-Container aus ist `localhost:8200` nicht Duplicati auf dem Host. Verwenden Sie die Host-IP, `host.docker.internal` (Docker Desktop oder ein zusätzlicher von Ihnen konfigurierter Host) oder den Duplicati-Containernamen.
 

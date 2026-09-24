@@ -103,7 +103,7 @@ The upload URL must be reachable **from the Duplicati process**, not from your b
 
 - **Duplicati on the host, duplistatus in Docker with port `9666` published:** `http://127.0.0.1:9666/api/upload` (or the host LAN IP).
 - **Both in Docker on a shared network:** `http://duplistatus:9666/api/upload` (the Compose service or container name). `localhost` inside the Duplicati container is that container, not **duplistatus**.
-- **HTTPS reverse proxy on the same host:** use the public HTTPS URL as in [Security Hardening](security-hardening.md).
+- **HTTPS reverse proxy on the same host:** use the public HTTPS URL as in [Security Configuration](security-configuration.md).
 
 Collect Backup Logs is the reverse direction: from the **duplistatus** container, `localhost:8200` is not Duplicati on the host. Use the host IP, `host.docker.internal` (Docker Desktop, or an extra host you configured), or the Duplicati container name.
 

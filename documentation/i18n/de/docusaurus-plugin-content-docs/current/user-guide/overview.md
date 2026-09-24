@@ -11,8 +11,8 @@ duplistatus ist ein leistungsstarkes Überwachungsdashboard, das speziell für D
 - Automatische Erkennung überfälliger Sicherungen mit konfigurierbaren Warnungen
 - Umfassende Metriken und Visualisierung der Sicherungsleistung
 - Flexibles Benachrichtigungssystem über NTFY und E-Mail
-- Optionale [Sicherheitsverbesserungen](../installation/security-hardening.md)
-- Unterstützung mehrerer Sprachen (Englisch, Französisch, Deutsch, Spanisch, Brasilianisches Portugiesisch, Hindi und Vereinfachtes Chinesisch).
+- Optionale Funktionen zur [Sicherheitskonfiguration](../installation/security-configuration.md)
+- Mehrsprachige Unterstützung (Englisch, Französisch, Deutsch, Spanisch, brasilianisches Portugiesisch, Hindi und vereinfachtes Chinesisch).
 
 ## Installation {/* #installation */}
 
@@ -67,9 +67,27 @@ Die Anwendungssymbolleiste bietet bequemen Zugriff auf wichtige Funktionen und E
 | <SvgButton svgFilename="ntfy.svg" /> &nbsp; NTFY öffnen                                                                                           | Auf die Website ntfy.sh für Ihr konfiguriertes Benachrichtigungsthema zugreifen. <br/> _Rechtsklick_, um einen QR-Code anzuzeigen, mit dem Sie Ihr Gerät zur Empfang von Benachrichtigungen von duplistatus einrichten können. |
 | <SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Duplicati-Konfiguration](duplicati-configuration.md)      | Öffnet die Web-Oberfläche des ausgewählten Duplicati-Servers <br/> _Rechtsklick_, um die Duplicati-Legacy-Benutzeroberfläche (`/ngax`) in einem neuen Tab zu öffnen                                                         |
 | <IconButton icon="lucide:download" href="collect-backup-logs" /> &nbsp; [Protokolle sammeln](collect-backup-logs.md)                                  | Verbindung zu Duplicati-Servern herstellen und Sicherungsprotokolle abrufen <br/> _Rechtsklick_, um Protokolle für alle konfigurierten Server zu sammeln                                                                      |
+| <IconButton icon="lucide:siren" tone="alert" /> &nbsp; [Zustellungsfehler](#delivery-failures)                                                   | Wird Administratoren angezeigt, während die E-Mail- oder NTFY-Zustellung fehlschlägt. Siehe [Zustellungsfehler](#delivery-failures).                                                                              |
 | <IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [Einstellungen](settings/backup-notifications-settings.md) | Benachrichtigungen, Überwachung, SMTP-Server und Benachrichtigungsvorlagen konfigurieren                                                                                                              |
 | <IconButton icon="lucide:user" label="Benutzername" />                                                                                              | Den verbundenen Benutzer anzeigen, Benutzertyp (`Admin`, `User`), klicken Sie für das Benutzermenü (enthält Sprachauswahl). Weitere Informationen finden Sie unter [Benutzerverwaltung](settings/user-management-settings.md)              |
 | <IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; Benutzerhandbuch                                                                   | Öffnen Sie das [Benutzerhandbuch](overview.md) zum Abschnitt, der für die aktuell angezeigte Seite relevant ist. Die QuickInfo zeigt "Hilfe für [Seitenname]" an, um anzugeben, welche Dokumentation geöffnet wird. |
+
+### Zustellungsfehler {/* #delivery-failures */}
+
+Eine <IconButton icon="lucide:siren" tone="alert" />-Schaltfläche mit einem leichten Rotton erscheint in der Symbolleiste für Administratoren, während die E-Mail- oder NTFY-Zustellung fehlschlägt. Sie bleibt ausgeblendet, wenn beide Kanäle fehlerfrei sind, und wird auf der Anmeldeseite nicht angezeigt. Standardbenutzer sehen sie nicht.
+
+Öffnen Sie den Button, um eine Karte pro fehlschlagendem Kanal (E-Mail, NTFY) anzuzeigen, nicht eine Zeile für jeden Audit-Eintrag. Jede Karte zeigt:
+
+- Der Fehler und ein **Ursprünglicher Fehler** in Monospace, wenn die SMTP-Antwort protokolliert wurde
+- Der SMTP-Host oder das NTFY-Thema
+- Die Zeit des letzten Fehlers
+- Wie viele Zustellungen seit dem letzten Erfolg oder seit dem letzten Löschen dieses Kanals fehlgeschlagen sind
+
+**E-Mail-Einstellungen öffnen** führt zu [Einstellungen → E-Mail](settings/email-settings.md). **NTFY-Einstellungen öffnen** führt zu [Einstellungen → NTFY](settings/ntfy-settings.md).
+
+**Schließen** blendet nur das Panel aus. **Löschen** blendet die aufgelisteten Kanäle aus, bis ein neuerer Fehler protokolliert wird, selbst wenn der Fehlertext derselbe ist. Eine spätere erfolgreiche Zustellung hält den Button ausgeblendet. Dazu gehören `email_sent`, `notification_sent` und eine erfolgreiche Zustellung der [Tägliche Zusammenfassung](settings/daily-summary-settings.md) für diesen Kanal.
+
+Die Liste wird mit der Seite geladen und etwa einmal pro Minute aktualisiert, solange der Browser-Tab sichtbar ist.
 
 ### Benutzermenü {/* #user-menu */}
 

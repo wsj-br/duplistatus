@@ -21,8 +21,8 @@ Tous les points de terminaison modifiant les données de la base de données né
 
 - **Gestion du serveur** : `/api/servers/:id` (PATCH, DELETE), `/api/servers/:id/server-url` (PATCH), `/api/servers/:id/password` (PATCH, GET)
 - **Gestion de la configuration** : `/api/configuration/email` (GET, POST, DELETE), `/api/configuration/unified` (GET), `/api/configuration/ntfy` (GET), `/api/configuration/notifications` (GET, POST), `/api/configuration/backup-settings` (POST), `/api/configuration/templates` (POST), `/api/configuration/overdue-tolerance` (GET, POST), `/api/configuration/daily-summary` (GET, POST), `/api/configuration/daily-summary/send` (POST), `/api/configuration/daily-summary/retry` (POST), `/api/configuration/daily-summary/preview` (POST)
-- **Système de notification** : `/api/notifications/test` (POST), `/api/notifications/preview` (POST)
-- **Configuration Cron** : `/api/cron-config` (GET, POST)
+- **Système de notification** : `/api/notifications/test` (POST), `/api/notifications/preview` (POST), `/api/notification-channel-alerts` (GET, POST) - administrateur requis ; POST nécessite également un jeton CSRF
+- **Configuration de Cron** : `/api/cron-config` (GET, POST)
 - **Proxy Cron** : `/api/cron/*` (GET, POST) - relaie les requêtes vers le service cron. POST nécessite un administrateur. Le processus cron écoute sur `127.0.0.1` par défaut ; les routes de modification du service cron nécessitent `X-Cron-Service-Secret` lorsque `CRON_SERVICE_SECRET` est défini.
 - **Gestion des sessions** : `/api/session` (POST, GET, DELETE), `/api/csrf` (GET)
 - **Données graphiques** : `/api/chart-data/*` (GET)

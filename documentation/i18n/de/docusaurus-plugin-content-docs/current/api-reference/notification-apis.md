@@ -128,6 +128,49 @@ Der Inhalt der Test-E-Mail zeigt an:
   - Gibt Statistiken über den Überprüfungsprozess zurück
   - Sendet Benachrichtigungen für gefundene überfällige Backups
 
+## Warnungen zu Benachrichtigungskanälen - `/api/notification-channel-alerts` {/* #notification-channel-alerts---apinotification-channel-alerts */}
+
+- **Endpunkt**: `/api/notification-channel-alerts`
+- **Methode**: GET, POST
+- **Beschreibung**: Listet offene E-Mail- und NTFY-Zustellungsfehler für den angemeldeten Administrator auf oder löscht die aufgeführten Kanäle, bis ein neuerer Fehler protokolliert wird.
+- **Authentifizierung**: Erfordert eine Administratorsitzung. POST erfordert außerdem ein CSRF-Token im `X-CSRF-Token`-Header.
+- **Request Body** (POST):
+
+  ```json
+  {
+    "channels": ["email", "ntfy"]
+  }
+  ```
+
+`channels` muss einen oder beide Werte von `email` und `ntfy` enthalten.
+- **Antwort**:
+
+  ```json
+  {
+    "alerts": [
+      {
+        "channel": "email",
+        "error": "SMTP authentication failed",
+        "latestTimestamp": "2026-09-23 22:10:00",
+        "failureCount": 3,
+        "settingsTab": "email",
+        "host": "smtp.gmail.com"
+      }
+    ]
+  }
+  ```
+
+Jede Warnung enthält `channel`, `error` (höchstens 500 Zeichen), `latestTimestamp`, `failureCount` und `settingsTab` (`email` oder `ntfy`). E-Mail-Warnungen können `host` enthalten. NTFY-Warnungen können `topic` enthalten.
+- **Fehlerantworten**:
+  - `400` `INVALID_CONFIGURATION`: POST-Body fehlt oder `channels` ist leer oder enthält einen unbekannten Wert
+  - `500` `INTERNAL_ERROR`: Lesen oder Löschen der Warnungen fehlgeschlagen
+- **Hinweise**:
+  - GET gibt die Kanäle zurück, für die bei diesem Administrator weiterhin Fehler auftreten
+  - POST protokolliert einen administratorbezogenen Löschvorgang für jeden aufgeführten Kanal, der derzeit offen ist, und gibt dann die verbleibenden Warnungen zurück
+  - Ein späterer Fehler zeigt den Kanal wieder an, selbst wenn der Fehlertext unverändert ist
+  - Eine spätere erfolgreiche Zustellung für diesen Kanal lässt ihn verborgen
+  - Die Löschmarkierung wird in der Konfiguration gespeichert und enthält keine Secrets
+
 ## Überfällige Zeitstempel löschen - `/api/notifications/clear-overdue-timestamps` {/* #clear-overdue-timestamps---apinotificationsclear-overdue-timestamps */}
 - **Endpoint**: `/api/notifications/clear-overdue-timestamps`
 - **Methode**: POST

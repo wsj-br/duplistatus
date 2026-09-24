@@ -19,9 +19,9 @@ Todas as operações que alteram o estado exigem um token CSRF válido que corre
 ### Endpoints Protegidos {/* #protected-endpoints */}
 Todos os endpoints que modificam dados do banco de dados exigem autenticação de sessão e token CSRF:
 
-- **Gerenciamento do Servidor**: `/api/servers/:id` (PATCH, DELETE), `/api/servers/:id/server-url` (PATCH), `/api/servers/:id/password` (PATCH, GET)
-- **Gerenciamento de Configurações**: `/api/configuration/email` (GET, POST, DELETE), `/api/configuration/unified` (GET), `/api/configuration/ntfy` (GET), `/api/configuration/notifications` (GET, POST), `/api/configuration/backup-settings` (POST), `/api/configuration/templates` (POST), `/api/configuration/overdue-tolerance` (GET, POST), `/api/configuration/daily-summary` (GET, POST), `/api/configuration/daily-summary/send` (POST), `/api/configuration/daily-summary/retry` (POST), `/api/configuration/daily-summary/preview` (POST)
-- **Sistema de Notificação**: `/api/notifications/test` (POST), `/api/notifications/preview` (POST)
+- **Gerenciamento de Servidor**: `/api/servers/:id` (PATCH, DELETE), `/api/servers/:id/server-url` (PATCH), `/api/servers/:id/password` (PATCH, GET)
+- **Gerenciamento de Configuração**: `/api/configuration/email` (GET, POST, DELETE), `/api/configuration/unified` (GET), `/api/configuration/ntfy` (GET), `/api/configuration/notifications` (GET, POST), `/api/configuration/backup-settings` (POST), `/api/configuration/templates` (POST), `/api/configuration/overdue-tolerance` (GET, POST), `/api/configuration/daily-summary` (GET, POST), `/api/configuration/daily-summary/send` (POST), `/api/configuration/daily-summary/retry` (POST), `/api/configuration/daily-summary/preview` (POST)
+- **Sistema de Notificações**: `/api/notifications/test` (POST), `/api/notifications/preview` (POST), `/api/notification-channel-alerts` (GET, POST) - requer administrador; POST também requer um token CSRF
 - **Configuração do Cron**: `/api/cron-config` (GET, POST)
 - **Proxy do Cron**: `/api/cron/*` (GET, POST) - encaminha requisições para o serviço do cron. O método POST requer um administrador. O processo do cron vincula-se a `127.0.0.1` por padrão; rotas mutantes do serviço do cron exigem `X-Cron-Service-Secret` quando `CRON_SERVICE_SECRET` estiver definido.
 - **Gerenciamento de Sessão**: `/api/session` (POST, GET, DELETE), `/api/csrf` (GET)

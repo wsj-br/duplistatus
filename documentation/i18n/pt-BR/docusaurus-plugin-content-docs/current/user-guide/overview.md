@@ -10,9 +10,9 @@ duplistatus é um painel de monitoramento poderoso projetado especificamente par
 - Rastreamento em tempo real do status de todas as operações de backup
 - Detecção automatizada de backups atrasados com alertas configuráveis
 - Métricas abrangentes e visualização do desempenho do backup
-- Sistema de notificação flexível via NTFY e e-mail
-- Recursos opcionais de [hardening de segurança](../installation/security-hardening.md)
-- Suporte multilíngue (Inglês, Francês, Alemão, Espanhol, Português Brasileiro, Hindi e Chinês Simplificado).
+- Sistema de notificações flexível via NTFY e e-mail
+- Recursos opcionais de [configuração de segurança](../installation/security-configuration.md)
+- Suporte a vários idiomas (inglês, francês, alemão, espanhol, português do Brasil, hindi e chinês simplificado).
 
 ## Instalação {/* #installation */}
 
@@ -67,9 +67,27 @@ A barra de ferramentas do aplicativo fornece acesso conveniente às funções e 
 | <SvgButton svgFilename="ntfy.svg" /> &nbsp; Abrir NTFY                                                                                            | Acesse o site ntfy.sh para o tópico de notificação configurado. <br/> _Clique com o botão direito_ para mostrar um código QR para configurar seu dispositivo para receber notificações do duplistatus.               |
 | <SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Configuração do Duplicati](duplicati-configuration.md)       | Abra a interface web do servidor Duplicati selecionado <br/> _Clique com o botão direito_ para abrir a interface legada do Duplicati (`/ngax`) em uma nova aba                                                              |
 | <IconButton icon="lucide:download" href="collect-backup-logs" /> &nbsp; [Coletar logs](collect-backup-logs.md)                                   | Conecte-se aos servidores Duplicati e recupere logs de backup <br/> _Clique com o botão direito_ para coletar logs de todos os servidores configurados                                                                       |
+| <IconButton icon="lucide:siren" tone="alert" /> &nbsp; [Falhas de entrega](#delivery-failures)                                                   | Exibido para administradores enquanto a entrega de e-mail ou NTFY estiver falhando. Consulte [Falhas de entrega](#delivery-failures).                                                                              |
 | <IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [Configurações](settings/backup-notifications-settings.md) | Configure notificações, monitoramento, servidor SMTP e modelos de notificação                                                                                                               |
 | <IconButton icon="lucide:user" label="nome de usuário" />                                                                                               | Mostre o usuário conectado, tipo de usuário (`Admin`, `User`), clique para abrir o menu de usuário (inclui seleção de idioma). Veja mais em [Gerenciamento de Usuários](settings/user-management-settings.md)               |
 | <IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; Guia do Usuário                                                                    | Abra o [Guia do Usuário](overview.md) na seção relevante à página que você está visualizando no momento. A dica de ferramenta mostra "Ajuda para [Nome da Página]" para indicar qual documentação será aberta. |
+
+### Falhas de entrega {/* #delivery-failures */}
+
+Um botão <IconButton icon="lucide:siren" tone="alert" /> com um tom de vermelho suave aparece na barra de ferramentas para administradores enquanto a entrega de e-mail ou do ntfy estiver falhando. Ele permanece oculto quando ambos os canais estão saudáveis, e não é exibido na página de login. Usuários comuns não o veem.
+
+Abra o botão para ver um cartão por canal com falha (E-mail, ntfy), e não uma linha para cada entrada de auditoria. Cada cartão mostra:
+
+- O erro e um **Erro original** em espaçamento monoespaçado quando a resposta SMTP foi registrada
+- O Host SMTP ou o tópico do NTFY
+- A hora da últ. falha
+- Quantas entregas falharam desde o último sucesso ou desde a última vez que você limpou esse canal
+
+**Abrir configurações de e-mail** vai para [Configurações → E-mail](settings/email-settings.md). **Abrir configurações do NTFY** vai para [Configurações → NTFY](settings/ntfy-settings.md).
+
+**Fechar** apenas dispensa o painel. **Limpar** oculta os canais listados até que uma nova falha seja registrada, mesmo quando o texto do erro for o mesmo. Uma entrega bem-sucedida posterior mantém o botão oculto. Isso inclui `email_sent`, `notification_sent` e um envio bem-sucedido do [Resumo Diário](settings/daily-summary-settings.md) para esse canal.
+
+A lista é carregada com a página e atualiza cerca de uma vez por minuto enquanto a guia do navegador estiver visível.
 
 ### Menu do Usuário {/* #user-menu */}
 

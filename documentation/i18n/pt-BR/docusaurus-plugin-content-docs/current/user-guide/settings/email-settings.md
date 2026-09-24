@@ -35,11 +35,13 @@ Quando a configuração não está totalmente configurada, uma caixa de alerta a
 <br/>
 
 :::info[IMPORTANTE]
-  Você deve usar o botão <IconButton icon="lucide:mail" label="Enviar E-mail de Teste"/> para garantir que sua configuração de e-mail funcione antes de confiar nela para notificações.
+  Você deve usar o botão <IconButton icon="lucide:mail" label="Enviar Teste de E-mail"/> para garantir que a configuração de e-mail funcione antes de depender dela para notificações.
 
- Mesmo que você veja um ícone <IIcon2 icon="lucide:mail" color="green"/> verde e tudo pareça configurado, os e-mails podem não ser enviados.
+ Mesmo que você veja um ícone verde <IIcon2 icon="lucide:mail" color="green"/> e tudo pareça configurado, os e-mails podem não ser enviados.
  
- **duplistatus** apenas verifica se suas configurações SMTP estão preenchidas, não se os e-mails realmente podem ser entregues.
+ O **duplistatus** apenas verifica se as suas configurações SMTP estão preenchidas, e não se os e-mails podem realmente ser entregues.
+
+ Se a entrega falhar posteriormente, os administradores verão uma sirene vermelha na barra de ferramentas. Consulte [Falhas de entrega](../overview.md#delivery-failures).
 :::
 
 <br/>

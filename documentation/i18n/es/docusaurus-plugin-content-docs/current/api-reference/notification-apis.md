@@ -128,6 +128,49 @@ El contenido del correo de prueba muestra:
   - Devuelve estadísticas sobre el proceso de comprobación
   - Envía notificaciones para las copias de seguridad vencidas encontradas
 
+## Alertas de canales de notificación - `/api/notification-channel-alerts` {/* #notification-channel-alerts---apinotification-channel-alerts */}
+
+- **Endpoint**: `/api/notification-channel-alerts`
+- **Método**: GET, POST
+- **Descripción**: Enumera los errores de entrega de correo electrónico y ntfy abiertos para el administrador que ha iniciado sesión, o borra los canales enumerados hasta que se registre un error más reciente.
+- **Autenticación**: Requiere una sesión de administrador. POST también requiere un token CSRF en el encabezado `X-CSRF-Token`.
+- **Cuerpo de la solicitud** (POST):
+
+  ```json
+  {
+    "channels": ["email", "ntfy"]
+  }
+  ```
+
+`channels` debe contener uno o ambos de `email` y `ntfy`.
+- **Respuesta**:
+
+  ```json
+  {
+    "alerts": [
+      {
+        "channel": "email",
+        "error": "SMTP authentication failed",
+        "latestTimestamp": "2026-09-23 22:10:00",
+        "failureCount": 3,
+        "settingsTab": "email",
+        "host": "smtp.gmail.com"
+      }
+    ]
+  }
+  ```
+
+Cada alerta incluye `channel`, `error` (como máximo 500 caracteres), `latestTimestamp`, `failureCount` y `settingsTab` (`email` o `ntfy`). Las alertas de correo electrónico pueden incluir `host`. Las alertas de NTFY pueden incluir `topic`.
+- **Respuestas de error**:
+  - `400` `INVALID_CONFIGURATION`: Falta el cuerpo del POST, o `channels` está vacío o contiene un valor desconocido
+  - `500` `INTERNAL_ERROR`: Intento fallido de leer o borrar las alertas
+- **Notas**:
+  - GET devuelve los canales que siguen fallando para este administrador
+  - POST registra una acción de borrar por administrador para cada canal enumerado que esté abierto actualmente, y luego devuelve las alertas restantes
+  - Un error posterior muestra el canal de nuevo, incluso cuando el texto del error no ha cambiado
+  - Una entrega posterior con éxito para ese canal lo mantiene oculto
+  - El marcador de borrar se almacena en la configuración y no incluye secretos
+
 ## Borrar marcas de tiempo de copias de seguridad vencidas - `/api/notifications/clear-overdue-timestamps` {/* #clear-overdue-timestamps---apinotificationsclear-overdue-timestamps */}
 - **Punto final**: `/api/notifications/clear-overdue-timestamps`
 - **Método**: POST

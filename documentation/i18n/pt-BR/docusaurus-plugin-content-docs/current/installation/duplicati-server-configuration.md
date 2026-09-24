@@ -101,8 +101,8 @@ Se um destino HTTP falhar (indisponibilidade ou HTTP 500), o Duplicati pode não
 A URL de carregamento deve ser acessível **a partir do processo Duplicati**, não do seu navegador.
 
 - **Duplicati no host, duplistatus no Docker com a porta `9666` publicada:** `http://127.0.0.1:9666/api/upload` (ou o IP da LAN do host).
-- **Ambos no Docker em uma rede compartilhada:** `http://duplistatus:9666/api/upload` (o serviço do Compose ou o nome do contêiner). `localhost` dentro do contêiner do Duplicati é o próprio contêiner, não o **duplistatus**.
-- **Proxy reverso HTTPS no mesmo host:** use a URL HTTPS pública como em [Reforço de Segurança](security-hardening.md).
+- **Ambos no Docker em uma rede compartilhada:** `http://duplistatus:9666/api/upload` (o nome do serviço ou contêiner do Compose). `localhost` dentro do contêiner do Duplicati é o próprio contêiner, não o **duplistatus**.
+- **Proxy reverso HTTPS no mesmo host:** use a URL HTTPS pública conforme em [Configuração de Segurança](security-configuration.md).
 
 Coletar Logs de Backup é a direção inversa: a partir do container **duplistatus**, `localhost:8200` não é Duplicati no host. Use o IP do host, `host.docker.internal` (Docker Desktop, ou um host extra que você configurou), ou o nome do container Duplicati.
 

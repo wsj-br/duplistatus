@@ -19,6 +19,7 @@
 - 验证 NTFY 服务器连接（如果使用 NTFY）
 - 测试通知设置
 - 检查通知日志
+- 如果您是管理员，请在工具栏中查找红色警报图标，并打开关联的电子邮件或 NTFY 设置页面。请参阅[发送失败](overview.md#delivery-failures)。
 
 ### 新备份未显示 {/* #new-backups-not-showing */}
 

@@ -100,9 +100,9 @@ Duplicati 无法设置自定义 HTTP 标头。查询参数是发送密钥的受�
 
 上传 URL 必须可以从**Duplicati 进程**访问，而不是从您的浏览器访问。
 
-- **Duplicati 在主机上，duplistatus 在 Docker 中并发布端口 `9666`：** `http://127.0.0.1:9666/api/upload` （或主机局域网 IP）。
-- **都在共享网络上的 Docker 中：** `http://duplistatus:9666/api/upload` （Compose 服务或容器名称）。`localhost` 在 Duplicati 容器内部是指该容器，而不是 **duplistatus**。
-- **同一主机上的 HTTPS 反向代理：** 使用公共 HTTPS URL，如 [安全强化](security-hardening.md) 中所述。
+- **Duplicati 在宿主机上运行，duplistatus 在 Docker 中运行并映射端口 `9666`：** `http://127.0.0.1:9666/api/upload`（或宿主机局域网 IP）。
+- **两者均在 Docker 中且处于同一共享网络：** `http://duplistatus:9666/api/upload`（Compose 服务或容器名称）。Duplicati 容器内的 `localhost` 指向该容器，而不是 **duplistatus**。
+- **同一宿主机上的 HTTPS 反向代理：** 使用[安全配置](security-configuration.md)中的公网 HTTPS URL。
 
 收集备份日志是相反方向：从 **duplistatus** 容器来看，`localhost:8200` 不是主机上的 Duplicati。使用主机 IP、`host.docker.internal` （Docker Desktop 或您配置的额外主机）或 Duplicati 容器名称。
 

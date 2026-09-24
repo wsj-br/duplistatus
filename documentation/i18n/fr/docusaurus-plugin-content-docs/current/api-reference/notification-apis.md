@@ -128,6 +128,49 @@ Le contenu de l'e-mail de test affiche :
   - Retourne les statistiques sur le processus de vérification
   - Envoie des notifications pour les sauvegardes en retard trouvées
 
+## Alertes des chaînes de notification - `/api/notification-channel-alerts` {/* #notification-channel-alerts---apinotification-channel-alerts */}
+
+- **Point de terminaison** : `/api/notification-channel-alerts`
+- **Méthode** : GET, POST
+- **Description** : Répertorie les échecs de distribution d'E-mail et NTFY ouverts pour l'administrateur connecté, ou efface les chaînes répertoriées jusqu'à ce qu'un nouvel échec soit enregistré.
+- **Authentification** : Nécessite une session d'administrateur. POST nécessite également un jeton CSRF dans l'en-tête `X-CSRF-Token`.
+- **Corps de la requête** (POST) :
+
+  ```json
+  {
+    "channels": ["email", "ntfy"]
+  }
+  ```
+
+`channels` doit contenir l'un ou les deux éléments `email` et `ntfy`.
+- **Réponse** :
+
+  ```json
+  {
+    "alerts": [
+      {
+        "channel": "email",
+        "error": "SMTP authentication failed",
+        "latestTimestamp": "2026-09-23 22:10:00",
+        "failureCount": 3,
+        "settingsTab": "email",
+        "host": "smtp.gmail.com"
+      }
+    ]
+  }
+  ```
+
+Chaque alerte comprend `channel`, `error` (500 caractères maximum), `latestTimestamp`, `failureCount` et `settingsTab` (`email` ou `ntfy`). Les alertes par E-mail peuvent inclure `host`. Les alertes NTFY peuvent inclure `topic`.
+- **Réponses d'erreur** :
+  - `400` `INVALID_CONFIGURATION` : Le corps POST est manquant, ou `channels` est vide ou contient une valeur inconnue
+  - `500` `INTERNAL_ERROR` : Échec de la lecture ou de l'effacement des alertes
+- **Remarques** :
+  - GET renvoie les chaînes qui sont toujours en échec pour cet administrateur
+  - POST enregistre un effacement par administrateur pour chaque chaîne répertoriée actuellement ouverte, puis renvoie les alertes restantes
+  - Un échec ultérieur réaffiche la chaîne, même quand le texte de l'erreur est inchangé
+  - Une distribution ultérieure réussie pour cette chaîne la maintient masquée
+  - Le marqueur d'effacement est stocké dans la configuration et n'inclut pas de secrets
+
 ## Effacer les horodatages des retards - `/api/notifications/clear-overdue-timestamps` {/* #clear-overdue-timestamps---apinotificationsclear-overdue-timestamps */}
 - **Endpoint** : `/api/notifications/clear-overdue-timestamps`
 - **Méthode** : POST

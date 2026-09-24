@@ -48,6 +48,8 @@
  Even if you see a green <IIcon2 icon="lucide:mail" color="green"/> icon and everything looks configured, emails may not be sent.
  
  **duplistatus** only checks if your SMTP settings are filled in, not if emails can actually be delivered.
+
+ If delivery later fails, administrators see a red siren in the toolbar. See [Delivery failures](../overview.md#delivery-failures).
 :::
 
 <br/>

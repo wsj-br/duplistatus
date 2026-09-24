@@ -18,7 +18,8 @@
 - Compruebe la configuración de notificaciones
 - Verifique la conectividad con el servidor NTFY (si usa NTFY)
 - Pruebe la configuración de notificaciones
-- Consulte los registros de notificaciones
+- Comprobar los registros de notificaciones
+- Si es administrador, busque la sirena roja en la barra de herramientas y abra la página de configuración de Correo electrónico o NTFY vinculada. Consulte [Errores de entrega](overview.md#delivery-failures).
 
 ### Nuevas copias de seguridad no aparecen {/* #new-backups-not-showing */}
 

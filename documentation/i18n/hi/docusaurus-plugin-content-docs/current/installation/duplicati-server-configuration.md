@@ -100,9 +100,9 @@ Duplicati कस्टम HTTP हेडर सेट नहीं कर सक
 
 अपलोड URL **Duplicati प्रक्रिया** से पहुंच योग्य होना चाहिए, आपके ब्राउज़र से नहीं।
 
-- **होस्ट पर Duplicati, पोर्ट `9666` के साथ Docker में duplistatus प्रकाशित:** `http://127.0.0.1:9666/api/upload` (या होस्ट LAN IP)।
-- **एक साझा नेटवर्क पर Docker में दोनों:** `http://duplistatus:9666/api/upload` (कम्पोज़ सेवा या कंटेनर नाम)। Duplicati कंटेनर के अंदर `localhost` वह कंटेनर है, न कि **duplistatus**।
-- **एक ही होस्ट पर HTTPS रिवर्स प्रॉक्सी:** [Security Hardening](security-hardening.md) में जैसे सार्वजनिक HTTPS URL का उपयोग करें।
+- **होस्ट पर duplicati, पोर्ट `9666` प्रकाशित के साथ Docker में duplistatus:** `http://127.0.0.1:9666/api/upload` (या होस्ट LAN IP)।
+- **साझा नेटवर्क पर Docker में दोनों:** `http://duplistatus:9666/api/upload` (Compose सेवा या कंटेनर नाम)। duplicati कंटेनर के अंदर `localhost` वह कंटेनर है, **duplistatus** नहीं।
+- **समान होस्ट पर HTTPS रिवर्स प्रॉक्सी:** [सुरक्षा कॉन्फ़िगरेशन](security-configuration.md) में दिए अनुसार सार्वजनिक HTTPS URL का उपयोग करें।
 
 Collect Backup Logs विपरीत दिशा है: **duplistatus** कंटेनर से, `localhost:8200` होस्ट पर Duplicati नहीं है। होस्ट IP, `host.docker.internal` (Docker Desktop, या एक अतिरिक्त होस्ट जिसे आपने कॉन्फ़िगर किया है), या Duplicati कंटेनर नाम का उपयोग करें।
 

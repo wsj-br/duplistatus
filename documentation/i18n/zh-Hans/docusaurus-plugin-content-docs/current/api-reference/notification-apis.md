@@ -128,6 +128,49 @@
   - 返回检查过程的统计信息
   - 为发现的过期备份发送通知
 
+## 通知渠道警报 - `/api/notification-channel-alerts` {/* #notification-channel-alerts---apinotification-channel-alerts */}
+
+- **端点**：`/api/notification-channel-alerts`
+- **方法**：GET、POST
+- **描述**：列出已登录管理员未解决的电子邮件和 NTFY 投递失败记录，或清除所列渠道的警报，直到记录新的失败为止。
+- **身份验证**：需要管理员会话。POST 还需要在 `X-CSRF-Token` 标头中包含 CSRF 令牌。
+- **请求体** (POST)：
+
+  ```json
+  {
+    "channels": ["email", "ntfy"]
+  }
+  ```
+
+`channels` 必须包含 `email` 和 `ntfy` 中的一个或两个。
+- **响应**：
+
+  ```json
+  {
+    "alerts": [
+      {
+        "channel": "email",
+        "error": "SMTP authentication failed",
+        "latestTimestamp": "2026-09-23 22:10:00",
+        "failureCount": 3,
+        "settingsTab": "email",
+        "host": "smtp.gmail.com"
+      }
+    ]
+  }
+  ```
+
+每条警报包含 `channel`、`error`（最多 500 个字符）、`latestTimestamp`、`failureCount` 和 `settingsTab`（`email` 或 `ntfy`）。电子邮件警报可能包含 `host`。NTFY 警报可能包含 `topic`。
+- **错误响应**：
+  - `400` `INVALID_CONFIGURATION`：POST 请求体缺失，或 `channels` 为空或包含未知值
+  - `500` `INTERNAL_ERROR`：读取或清除警报失败
+- **注意事项**：
+  - GET 返回对该管理员仍处于失败状态的渠道
+  - POST 为当前未解决的每个所列渠道记录一次针对该管理员的清除操作，然后返回剩余的警报
+  - 后续的失败会再次显示该渠道，即使错误文本未更改
+  - 后续该渠道的成功投递会使其保持隐藏状态
+  - 清除标记存储在配置中，且不包含机密信息
+
 ## 清除过期时间戳 - `/api/notifications/clear-overdue-timestamps` {/* #clear-overdue-timestamps---apinotificationsclear-overdue-timestamps */}
 - **端点**: `/api/notifications/clear-overdue-timestamps`
 - **方法**: POST

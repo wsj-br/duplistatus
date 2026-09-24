@@ -8,10 +8,10 @@
 - **Panel Unificado**: Vea el estado de las copias de seguridad, historial, versión de Duplicati y detalles de todos los servidores en un solo lugar.
 - **Monitoreo de Copias de Seguridad**: Verificación automatizada y alertas para copias de seguridad programadas vencidas.
 - **Visualización de Datos y Registros**: Gráficos interactivos y recopilación automática de registros desde servidores Duplicati.
-- **Notificaciones y Alertas**: Soporte integrado para NTFY y correo electrónico SMTP para alertas de copias de seguridad, incluyendo notificaciones de copias de seguridad vencidas.
-- **Gestión de Usuarios**: Acceso con roles de Administrador y Usuario, políticas de contraseña configurables, bloqueo de cuentas y administración de usuarios.
-- **Refuerzo de Seguridad**: Protección adicional opcional, claves de API para subidas a Duplicati y widgets de Homepage (con límites de tamaño y tasa de subida), listas blancas de IP independientes para la interfaz de administración y las APIs externas, protección contra suplantación y guía para proxy inverso HTTPS.
-- **Registro de Auditoría**: Registro completo de todos los cambios en el sistema y acciones de usuario con filtros avanzados, capacidades de exportación y períodos de retención configurables.
+- **Notificaciones y alertas**: Soporte integrado de NTFY y correo electrónico SMTP para alertas de copias de seguridad, incluidas las Notificaciones de Copia de Seguridad vencidas.
+- **Gestión de usuarios**: Inicio de sesión con roles de Administrador y Usuario, políticas de contraseña configurables, bloqueo de cuenta y administración de usuarios.
+- **Configuración de seguridad**: Protección adicional opcional, claves de API para subidas de duplicati y widgets de la página principal (con límites de tamaño de subida y tasa), listas de permitidos de IP independientes para la interfaz de administración y las APIs externas, protección contra suplantación y guía para proxy inverso HTTPS.
+- **Registro de auditoría**: Registro de auditoría completo de todos los cambios del sistema y acciones de usuario con filtrado avanzado, capacidades de exportación y períodos de retención configurables.
 - **Visor de Registros de Aplicación**: Interfaz exclusiva para administradores para ver, buscar y exportar registros de aplicación directamente desde la interfaz web con capacidades de monitoreo en tiempo real.
 - **Soporte Multilingüe**: Interfaz y documentación disponibles en inglés, francés, alemán, español, portugués brasileño, hindi y chino simplificado.
 

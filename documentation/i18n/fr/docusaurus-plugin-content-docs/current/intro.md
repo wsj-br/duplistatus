@@ -8,10 +8,10 @@
 - **Tableau de bord unifié** : consultez l'état des sauvegardes, l'historique, la version de Duplicati et les détails de tous les serveurs en un seul endroit.
 - **Surveillance des sauvegardes** : vérification automatisée et alertes pour les sauvegardes planifiées en retard.
 - **Visualisation des données et journaux** : graphiques interactifs et collecte automatique des journaux à partir des serveurs Duplicati.
-- **Notifications et alertes** : support intégré de NTFY et SMTP pour les alertes de sauvegarde, y compris les notifications de sauvegardes en retard.
-- **Gestion des utilisateurs** : connexion avec rôles Admin et Utilisateur, stratégies de mot de passe configurables, verrouillage de compte et administration des utilisateurs.
-- **Renforcement de la sécurité** : protection supplémentaire optionnelle, clés API pour les téléchargements Duplicati et les widgets Homepage (avec limites de taille et de débit de téléchargement), listes d'adresses IP indépendantes pour l'interface d'administration et les API externes, protection anti-usurpation d'identité et conseils de proxy inverse HTTPS.
-- **Journalisation d'audit** : piste d'audit complète de tous les changements système et actions utilisateur avec filtrage avancé, capacités d'exportation et périodes de rétention configurables.
+- **Notifications et alertes** : Prise en charge intégrée de NTFY et des e-mails SMTP pour les alertes de sauvegarde, y compris les notifications de sauvegarde en retard.
+- **Gestion des utilisateurs** : Connexion avec les rôles Admin et Utilisateur, politiques de mot de passe configurables, verrouillage de compte et administration des utilisateurs.
+- **Configuration de la sécurité** : Protection supplémentaire optionnelle, Clés API pour les téléchargements duplicati et les widgets de la page d'accueil (avec des limites de taille de téléchargement et de débit), listes d'autorisation IP indépendantes pour l'Interface d'administration et les API externes, protection contre l'usurpation d'identité et directives pour le proxy inverse HTTPS.
+- **Journalisation d'audit** : Journal d'audit complet de tout changement du système et des actions des utilisateurs avec un filtrage avancé, des capacités d'exportation et des périodes de rétention configurables.
 - **Visionneuse de journaux d'application** : interface réservée aux administrateurs pour afficher, rechercher et exporter les journaux d'application directement depuis l'interface web avec capacités de surveillance en temps réel.
 - **Support multilingue** : interface et documentation disponibles en anglais, français, allemand, espagnol, portugais brésilien, hindi et chinois simplifié.
 

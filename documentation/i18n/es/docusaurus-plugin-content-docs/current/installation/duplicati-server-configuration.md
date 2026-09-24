@@ -100,9 +100,9 @@ Si falla un destino HTTP (interrupción o HTTP 500), Duplicati puede no enviar l
 
 La URL de subida debe ser accesible **desde el proceso Duplicati**, no desde su navegador.
 
-- **Duplicati en el host, duplistatus en Docker con puerto `9666` publicado:** `http://127.0.0.1:9666/api/upload` (o la IP LAN del host).
-- **Ambos en Docker en una red compartida:** `http://duplistatus:9666/api/upload` (el nombre del servicio Compose o contenedor). `localhost` dentro del contenedor Duplicati es ese contenedor, no **duplistatus**.
-- **Proxy inverso HTTPS en el mismo host:** use la URL HTTPS pública como en [Fortalecimiento de Seguridad](security-hardening.md).
+- **Duplicati en el host, duplistatus en Docker con el puerto `9666` publicado:** `http://127.0.0.1:9666/api/upload` (o la IP de LAN del host).
+- **Ambos en Docker en una red compartida:** `http://duplistatus:9666/api/upload` (el nombre del servicio de Compose o del contenedor). `localhost` dentro del contenedor de Duplicati es ese contenedor, no **duplistatus**.
+- **Proxy inverso HTTPS en el mismo host:** use la URL HTTPS pública como en [Configuración de seguridad](security-configuration.md).
 
 Recopilar Registros de Copia de Seguridad es la dirección inversa: desde el contenedor **duplistatus**, `localhost:8200` no es Duplicati en el host. Use la IP del host, `host.docker.internal` (Docker Desktop, o un host adicional que haya configurado), o el nombre del contenedor Duplicati.
 
