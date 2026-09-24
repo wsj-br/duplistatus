@@ -1,13 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { dbUtils } from '@/lib/db-utils';
 import { withCSRF } from '@/lib/csrf-middleware';
+import { denyHiddenServer, requireServerAccess } from '@/lib/server-access-http';
 
 export const GET = withCSRF(async (
   request: NextRequest,
   { params }: { params: Promise<{ serverId: string; backupName: string }> }
 ) => {
   try {
+    const accessResult = await requireServerAccess(request);
+    if (accessResult instanceof NextResponse) {
+      return accessResult;
+    }
     const { serverId, backupName: encodedBackupName } = await params;
+    const hidden = denyHiddenServer(accessResult.access, serverId);
+    if (hidden) {
+      return hidden;
+    }
     const backupName = decodeURIComponent(encodedBackupName);
     
     const searchParams = request.nextUrl.searchParams;

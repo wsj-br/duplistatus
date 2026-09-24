@@ -495,11 +495,22 @@ if (!isNextProductionBuild()) {
         last_login_at DATETIME,
         last_login_ip TEXT,
         failed_login_attempts INTEGER DEFAULT 0,
-        locked_until DATETIME
+        locked_until DATETIME,
+        access_all_servers INTEGER NOT NULL DEFAULT 1
       );
 
       CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
       CREATE INDEX IF NOT EXISTS idx_users_last_login ON users(last_login_at);
+
+      CREATE TABLE IF NOT EXISTS user_servers (
+        user_id TEXT NOT NULL,
+        server_id TEXT NOT NULL,
+        PRIMARY KEY (user_id, server_id),
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (server_id) REFERENCES servers(id) ON DELETE CASCADE
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_user_servers_server_id ON user_servers(server_id);
 
       CREATE TABLE IF NOT EXISTS sessions (
         id TEXT PRIMARY KEY,
@@ -1561,32 +1572,36 @@ function createDbOps() {
   // User operations
   getUserById: safePrepare(`
     SELECT id, username, is_admin, must_change_password, created_at, updated_at, 
-           last_login_at, last_login_ip, failed_login_attempts, locked_until
+           last_login_at, last_login_ip, failed_login_attempts, locked_until,
+           access_all_servers
     FROM users WHERE id = ?
   `, 'getUserById'),
 
   getUserByIdWithPassword: safePrepare(`
     SELECT id, username, password_hash, is_admin, must_change_password, created_at, updated_at, 
-           last_login_at, last_login_ip, failed_login_attempts, locked_until
+           last_login_at, last_login_ip, failed_login_attempts, locked_until,
+           access_all_servers
     FROM users WHERE id = ?
   `, 'getUserByIdWithPassword'),
 
   getUserByUsername: safePrepare(`
     SELECT id, username, password_hash, is_admin, must_change_password, created_at, 
-           updated_at, last_login_at, last_login_ip, failed_login_attempts, locked_until
+           updated_at, last_login_at, last_login_ip, failed_login_attempts, locked_until,
+           access_all_servers
     FROM users WHERE username = ?
   `, 'getUserByUsername'),
 
   getAllUsers: safePrepare(`
     SELECT id, username, is_admin, must_change_password, created_at, updated_at, 
-           last_login_at, last_login_ip, failed_login_attempts, locked_until
+           last_login_at, last_login_ip, failed_login_attempts, locked_until,
+           access_all_servers
     FROM users ORDER BY username
   `, 'getAllUsers'),
 
   createUser: safePrepare(`
     INSERT INTO users (
-      id, username, password_hash, is_admin, must_change_password
-    ) VALUES (?, ?, ?, ?, ?)
+      id, username, password_hash, is_admin, must_change_password, access_all_servers
+    ) VALUES (?, ?, ?, ?, ?, ?)
   `, 'createUser'),
 
   updateUser: safePrepare(`
@@ -1632,6 +1647,37 @@ function createDbOps() {
   countAdminUsers: safePrepare(`
     SELECT COUNT(*) as count FROM users WHERE is_admin = 1
   `, 'countAdminUsers'),
+
+  updateUserServerAccessFlag: safePrepare(`
+    UPDATE users
+    SET access_all_servers = ?, updated_at = CURRENT_TIMESTAMP
+    WHERE id = ?
+  `, 'updateUserServerAccessFlag'),
+
+  deleteUserServers: safePrepare(`
+    DELETE FROM user_servers WHERE user_id = ?
+  `, 'deleteUserServers'),
+
+  insertUserServer: safePrepare(`
+    INSERT INTO user_servers (user_id, server_id) VALUES (?, ?)
+  `, 'insertUserServer'),
+
+  getUserServerIds: safePrepare(`
+    SELECT server_id FROM user_servers WHERE user_id = ? ORDER BY server_id
+  `, 'getUserServerIds'),
+
+  getAllUserServerAssignments: safePrepare(`
+    SELECT user_id, server_id FROM user_servers
+  `, 'getAllUserServerAssignments'),
+
+  copyUserServersToTarget: safePrepare(`
+    INSERT OR IGNORE INTO user_servers (user_id, server_id)
+    SELECT user_id, ? FROM user_servers WHERE server_id = ?
+  `, 'copyUserServersToTarget'),
+
+  deleteUserServersByServer: safePrepare(`
+    DELETE FROM user_servers WHERE server_id = ?
+  `, 'deleteUserServersByServer'),
 
   // Session operations
   createSession: safePrepare(`

@@ -55,7 +55,7 @@ Administrators see all available settings.
 
 ## Non-Administrator View {/* #non-administrator-view */}
 
-Regular users see a limited set of settings.
+Regular users see a limited set of settings. Server names and backup data in those pages follow the server grant from [Users](user-management-settings.md#server-visibility).
 
 <table>
   <tr>

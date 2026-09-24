@@ -4,7 +4,7 @@
 
 ## Dashboard Summary {/* #dashboard-summary */}
 
-This section displays aggregated statistics for all backups.
+This section displays aggregated statistics for the servers the signed-in user can see. Administrators see every server. A non-admin user sees every server unless an administrator limits that account in [Users](settings/user-management-settings.md#server-visibility).
 
 ![Dashboard summary - overview](../assets/screen-dashboard-summary.png)
 ![Dashboard summary - table](../assets/screen-dashboard-summary-table.png)

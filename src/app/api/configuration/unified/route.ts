@@ -1,12 +1,19 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getConfigBackupSettings, getOverdueToleranceConfig, getNtfyConfig, getAllServerAddresses, getCronConfig, getNotificationFrequencyConfig, getSMTPConfig, clearRequestCache, getNotificationTemplates } from '@/lib/db-utils';
 import type { NtfyConfig, EmailConfig, NotificationTemplate, SupportedTemplateLanguage, DailySummaryPublicStatus, DailySummaryTemplateSet } from '@/lib/types';
 import { dbUtils } from '@/lib/db-utils';
 import { withCSRF } from '@/lib/csrf-middleware';
 import { getDailySummaryPublicStatus } from '@/lib/daily-summary';
+import { filterBackupSettings } from '@/lib/server-access';
+import { requireServerAccess } from '@/lib/server-access-http';
 
-export const GET = withCSRF(async () => {
+export const GET = withCSRF(async (request: NextRequest) => {
   try {
+    const accessResult = await requireServerAccess(request);
+    if (accessResult instanceof NextResponse) {
+      return accessResult;
+    }
+    const { access } = accessResult;
     // Clear request cache to ensure fresh data on each request
     clearRequestCache();
     
@@ -17,7 +24,7 @@ export const GET = withCSRF(async () => {
       getNtfyConfig(),
       Promise.resolve(getCronConfig()),
       Promise.resolve(getNotificationFrequencyConfig()),
-      Promise.resolve(dbUtils.getServersBackupNames()),
+      Promise.resolve(dbUtils.getServersBackupNames(access)),
       Promise.resolve(getSMTPConfig()),
       Promise.resolve(getNotificationTemplates()),
       Promise.resolve(getDailySummaryPublicStatus()),
@@ -94,8 +101,8 @@ export const GET = withCSRF(async () => {
       ...base,
       overdue_tolerance: overdueToleranceEnum,
       // keep these independent of notification config shape
-      backup_settings: backupSettings,
-      serverAddresses: getAllServerAddresses(),
+      backup_settings: filterBackupSettings(access, backupSettings),
+      serverAddresses: getAllServerAddresses(access),
       cronConfig: {
         cronExpression: cronConfig.tasks['overdue-backup-check'].cronExpression,
         enabled: cronConfig.tasks['overdue-backup-check'].enabled

@@ -23,7 +23,7 @@ Cuando la configuración no es válida, las casillas de verificación NTFY en la
 | <IconButton icon="lucide:send-horizontal" label="Enviar mensaje de prueba"/> | Enviar un mensaje de prueba a su servidor NTFY para comprobar su configuración.                                |
 | <IconButton icon="lucide:qr-code" label="Configurar dispositivo"/>          | Mostrar un código QR que le permite configurar rápidamente su dispositivo móvil o escritorio para notificaciones NTFY. |
 
-Si falla una entrega posterior de ntfy, los administradores verán una sirena roja en la barra de herramientas. Consulte [Errores de entrega](../overview.md#delivery-failures).
+Si falla una entrega posterior de ntfy, los administradores verán una sirena roja en la barra de herramientas. Consulte [Errores de entrega](../delivery-failures.md).
 
 ## Configuración del dispositivo {/* #device-configuration */}
 

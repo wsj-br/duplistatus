@@ -19,7 +19,7 @@
 - Vérifiez la connectivité au serveur NTFY (si NTFY est utilisé)
 - Testez les paramètres de notification
 - Vérifier les journaux de notifications
-- Si vous êtes administrateur, recherchez la sirène rouge dans la barre d'outils et ouvrez la page des paramètres E-mail ou NTFY associée. Voir [Échecs de livraison](overview.md#delivery-failures).
+- Si vous êtes administrateur, recherchez la sirène rouge dans la barre d'outils et ouvrez la page des paramètres E-mail ou NTFY associée. Voir [Échecs de livraison](delivery-failures.md).
 
 ### Nouvelles sauvegardes ne s'affichant pas {/* #new-backups-not-showing */}
 

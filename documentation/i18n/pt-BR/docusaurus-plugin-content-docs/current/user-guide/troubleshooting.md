@@ -18,8 +18,8 @@
 - Verifique a configuração das notificações
 - Verifique a conectividade com o servidor NTFY (se estiver usando NTFY)
 - Teste as configurações de notificação
-- Verificar os logs de notificação
-- Se você for um administrador, procure a sirene vermelha na barra de ferramentas e abra a página de configurações de E-mail ou NTFY vinculada. Consulte [Falhas de entrega](overview.md#delivery-failures).
+- Verificar logs de notificação
+- Se você for administrador, procure a sirene vermelha na barra de ferramentas e abra a página de configurações de E-mail ou NTFY vinculada. Consulte [Falhas de entrega](delivery-failures.md).
 
 ### Novos Backups Não Aparecendo {/* #new-backups-not-showing */}
 

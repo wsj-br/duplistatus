@@ -383,6 +383,8 @@ Con errores:
         "id": "user-id",
         "username": "admin",
         "isAdmin": true,
+        "accessAllServers": true,
+        "serverIds": [],
         "mustChangePassword": false,
         "createdAt": "2024-01-01T00:00:00Z",
         "lastLoginAt": "2024-01-15T10:30:00Z",
@@ -422,14 +424,18 @@ Con errores:
     "username": "newuser",
     "password": "optional-password",
     "isAdmin": false,
-    "requirePasswordChange": true
+    "requirePasswordChange": true,
+    "accessAllServers": false,
+    "serverIds": ["server-id"]
   }
   ```
 
 - `username`: Obligatorio, debe tener entre 3 y 50 caracteres, único
-  - `password`: Opcional, si no se proporciona se genera una contraseña temporal segura
-  - `isAdmin`: Opcional, predeterminado falso
-  - `requirePasswordChange`: Opcional, predeterminado verdadero
+  - `password`: Opcional, si no se proporciona, se genera una contraseña temporal segura
+  - `isAdmin`: Opcional, valor predeterminado false. Los usuarios administradores siempre reciben todos los servidores
+  - `requirePasswordChange`: Opcional, valor predeterminado true
+  - `accessAllServers`: Opcional, valor predeterminado true. Cuando es false, `serverIds` es el único conjunto de servidores que el usuario puede ver
+  - `serverIds`: Matriz opcional de identificadores de servidores existentes. Los identificadores desconocidos son rechazados. Se ignora cuando el usuario es un administrador o `accessAllServers` no es false
 - **Respuesta**:
 
   ```json
@@ -438,7 +444,9 @@ Con errores:
       "id": "user-id",
       "username": "newuser",
       "isAdmin": false,
-      "mustChangePassword": true
+      "mustChangePassword": true,
+      "accessAllServers": true,
+      "serverIds": []
     },
     "temporaryPassword": "generated-password-123"
   }
@@ -472,12 +480,17 @@ Con errores:
     "username": "updated-username",
     "isAdmin": true,
     "requirePasswordChange": false,
-    "resetPassword": true
+    "resetPassword": true,
+    "password": "optional-custom-password",
+    "accessAllServers": false,
+    "serverIds": ["server-id"]
   }
   ```
 
 - Todos los campos son opcionales
-  - `resetPassword`: Si es verdadero, genera una nueva contraseña temporal y establece `requirePasswordChange` en verdadero
+  - `accessAllServers` y `serverIds`: Mismas reglas que para crear. Promover un usuario a administrador almacena acceso a todos los servidores. Degradar a un administrador comienza de nuevo en todos los servidores a menos que se envíe una lista personalizada en la misma solicitud
+  - `resetPassword`: Si es true, establece una nueva contraseña. `password`, cuando se proporciona, se utiliza después de las comprobaciones de política. Cuando se omite `password`, se genera una contraseña temporal
+  - `requirePasswordChange`: Con `resetPassword`, el valor predeterminado es true. Envíe `false` para borrar el indicador de cambio obligatorio de contraseña
 - **Respuesta** (con restablecimiento de contraseña):
 
   ```json
@@ -486,7 +499,9 @@ Con errores:
       "id": "user-id",
       "username": "updated-username",
       "isAdmin": true,
-      "mustChangePassword": true
+      "mustChangePassword": true,
+      "accessAllServers": true,
+      "serverIds": []
     },
     "temporaryPassword": "new-temp-password-456"
   }
@@ -500,22 +515,25 @@ Con errores:
       "id": "user-id",
       "username": "updated-username",
       "isAdmin": true,
-      "mustChangePassword": false
+      "mustChangePassword": false,
+      "accessAllServers": true,
+      "serverIds": []
     }
   }
   ```
 
 - **Respuestas de error**:
-  - `400`: Entrada inválida o errores de validación
-  - `401`: No autorizado - Sesión o token CSRF inválido
-  - `403`: Prohibido - Se requieren privilegios de administrador
+  - `400`: Entrada no válida o errores de validación
+  - `401`: No autorizado: sesión o token CSRF no válido
+  - `403`: Prohibido: se requieren privilegios de administrador
   - `404`: Usuario no encontrado
   - `409`: El nombre de usuario ya existe (si se cambia el nombre de usuario)
   - `500`: Error interno del servidor
 - **Notas**:
   - Solo accesible para usuarios administradores
-  - Los cambios de nombre de usuario se validan para garantizar unicidad
-  - El restablecimiento de contraseña genera una contraseña temporal segura de 12 caracteres
+  - Los cambios de nombre de usuario se validan para garantizar su unicidad
+  - Si se omite la contraseña de restablecimiento, se genera una contraseña temporal segura de 12 caracteres, que se devuelve una sola vez
+  - Una contraseña de restablecimiento proporcionada debe cumplir con la política de contraseñas y no se devuelve
   - Todos los cambios se registran en el registro de auditoría
 
 ### Eliminar usuario - `/api/users/:id` {/* #delete-user---apiusersid */}

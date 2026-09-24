@@ -383,6 +383,8 @@ Com erros:
         "id": "user-id",
         "username": "admin",
         "isAdmin": true,
+        "accessAllServers": true,
+        "serverIds": [],
         "mustChangePassword": false,
         "createdAt": "2024-01-01T00:00:00Z",
         "lastLoginAt": "2024-01-15T10:30:00Z",
@@ -422,14 +424,18 @@ Com erros:
     "username": "newuser",
     "password": "optional-password",
     "isAdmin": false,
-    "requirePasswordChange": true
+    "requirePasswordChange": true,
+    "accessAllServers": false,
+    "serverIds": ["server-id"]
   }
   ```
 
-- `username`: Obrigatório, deve ter de 3 a 50 caracteres, único
-  - `password`: Opcional, se não fornecido, uma senha temporária segura é gerada
-  - `isAdmin`: Opcional, padrão false
-  - `requirePasswordChange`: Opcional, padrão true
+- `username`: Obrigatório, deve ter de 3 a 50 caracteres e ser único
+  - `password`: Opcional; se não for fornecido, uma senha temporária segura será gerada
+  - `isAdmin`: Opcional, padrão falso. Usuários administradores sempre recebem todos os servidores
+  - `requirePasswordChange`: Opcional, padrão verdadeiro
+  - `accessAllServers`: Opcional, padrão verdadeiro. Quando falso, `serverIds` é o único conjunto de servidores que o usuário pode ver
+  - `serverIds`: Array opcional de IDs de servidores existentes. IDs desconhecidos são rejeitados. Ignorado quando o usuário é um administrador ou `accessAllServers` não é falso
 - **Resposta**:
 
   ```json
@@ -438,7 +444,9 @@ Com erros:
       "id": "user-id",
       "username": "newuser",
       "isAdmin": false,
-      "mustChangePassword": true
+      "mustChangePassword": true,
+      "accessAllServers": true,
+      "serverIds": []
     },
     "temporaryPassword": "generated-password-123"
   }
@@ -472,12 +480,17 @@ Com erros:
     "username": "updated-username",
     "isAdmin": true,
     "requirePasswordChange": false,
-    "resetPassword": true
+    "resetPassword": true,
+    "password": "optional-custom-password",
+    "accessAllServers": false,
+    "serverIds": ["server-id"]
   }
   ```
 
 - Todos os campos são opcionais
-  - `resetPassword`: Se true, gera uma nova senha temporária e define `requirePasswordChange` como true
+  - `accessAllServers` e `serverIds`: Mesmas regras da criação. Promover um usuário a administrador armazena o acesso a todos os servidores. Rebaixar um administrador reinicia o acesso a todos os servidores, a menos que uma lista personalizada seja enviada na mesma requisição
+  - `resetPassword`: Se verdadeiro, define uma nova senha. `password`, quando fornecido, é usado após as verificações de política. Quando `password` é omitido, uma senha temporária é gerada
+  - `requirePasswordChange`: Com `resetPassword`, o padrão é verdadeiro. Envie `false` para limpar a sinalização de alteração obrigatória de senha
 - **Resposta** (com redefinição de senha):
 
   ```json
@@ -486,7 +499,9 @@ Com erros:
       "id": "user-id",
       "username": "updated-username",
       "isAdmin": true,
-      "mustChangePassword": true
+      "mustChangePassword": true,
+      "accessAllServers": true,
+      "serverIds": []
     },
     "temporaryPassword": "new-temp-password-456"
   }
@@ -500,7 +515,9 @@ Com erros:
       "id": "user-id",
       "username": "updated-username",
       "isAdmin": true,
-      "mustChangePassword": false
+      "mustChangePassword": false,
+      "accessAllServers": true,
+      "serverIds": []
     }
   }
   ```
@@ -508,15 +525,16 @@ Com erros:
 - **Respostas de Erro**:
   - `400`: Entrada inválida ou erros de validação
   - `401`: Não autorizado - Sessão ou token CSRF inválido
-  - `403`: Proibido - Privilégios de administrador necessários
+  - `403`: Proibido - Privilégios de Administrador necessários
   - `404`: Usuário não encontrado
-  - `409`: Nome de usuário já existe (se estiver alterando o nome de usuário)
+  - `409`: Nome de usuário já existe (se estiver alterando o Nome de usuário)
   - `500`: Erro interno do servidor
 - **Observações**:
   - Acessível apenas para usuários administradores
-  - As alterações de nome de usuário são validadas quanto à unicidade
-  - A redefinição de senha gera uma senha temporária segura de 12 caracteres
-  - Todas as alterações são registradas no log de auditoria
+  - As alterações de Nome de usuário são validadas quanto à unicidade
+  - Uma redefinição de senha omitida gera uma Senha Temporária segura de 12 caracteres, retornada apenas uma vez
+  - Uma senha de redefinição fornecida deve atender à política de senhas e não é retornada
+  - Todas as alterações são registradas no Log de Auditoria
 
 ### Excluir Usuário - `/api/users/:id` {/* #delete-user---apiusersid */}
 - **Endpoint**: `/api/users/:id`

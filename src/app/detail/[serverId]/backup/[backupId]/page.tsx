@@ -21,6 +21,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { requireServerAuth } from "@/lib/auth-server";
+import { getServerAccess, serverAllowed } from "@/lib/server-access";
 import { getServerI18n, getServerLocalePreference } from "@/lib/i18n-server";
 import type { TFunction } from "i18next";
 
@@ -218,7 +219,8 @@ const AvailableBackupsTable = ({ availableBackups, currentBackupDate, t, locale 
 
 export default async function BackupLogPage({ params }: BackupLogPageProps) {
   // Require authentication - redirects to login if not authenticated
-  await requireServerAuth();
+  const auth = await requireServerAuth();
+  const access = getServerAccess(auth);
   
   const { serverId, backupId } = await params;
 
@@ -252,7 +254,7 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
     );
   }
   
-  if (!server) {
+  if (!server || !serverAllowed(access, serverId)) {
     notFound();
   }
 

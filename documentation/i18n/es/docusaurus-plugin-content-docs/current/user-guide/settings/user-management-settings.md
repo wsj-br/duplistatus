@@ -33,23 +33,27 @@ Puede acceder a la sección de Gestión de usuarios de dos maneras:
 ## Editar un usuario {/* #editing-a-user */}
 
 1. Haga clic en el icono de edición <IconButton icon="lucide:edit" /> junto al usuario
-2. Modifique cualquiera de los siguientes elementos:
+2. Modifique cualquiera de las siguientes opciones:
    - **Nombre de usuario**: Cambie el nombre de usuario (debe ser único)
-   - **Administrador**: Alternar privilegios de administrador
-   - **Requerir cambio de contraseña**: Alternar requisito de cambio de contraseña
+   - **Administrador**: Active o desactive los privilegios de administrador. Al activarla, se otorga acceso a todos los servidores y se borra la lista de servidores personalizada. Al desactivarla, se restablece el acceso a todos los servidores
+   - **Requerir cambio de contraseña**: Active o desactive el requisito de cambio de contraseña
 3. Haga clic en <IconButton icon="lucide:check" label="Guardar cambios" />.
 
 ## Restablecer la contraseña de un usuario {/* #resetting-a-user-password */}
 
 1. Haga clic en el icono de llave <IconButton icon="lucide:key-round" /> junto al usuario
-2. Confirme el restablecimiento de la contraseña
-3. Se generará y mostrará una nueva contraseña temporal
-4. Copie la contraseña y proporciónesela al usuario de forma segura
+2. Una contraseña sugerida ya está completada y es visible. Editarla oculta la contraseña; use el icono de visualización para mostrarla de nuevo y luego copiarla
+3. **Requerir cambio de contraseña en el próximo inicio de sesión** está marcada de forma predeterminada. Desmárquela si el usuario debe conservar esta contraseña
+4. Haga clic en **Restablecer contraseña**. La contraseña no se volverá a mostrar
 
 ## Eliminar un usuario {/* #deleting-a-user */}
 
 1. Haga clic en el icono de eliminación <IconButton icon="lucide:trash-2" /> junto al usuario
 2. Confirme la eliminación en el cuadro de diálogo. **La eliminación de usuarios es permanente y no se puede deshacer.**
+
+## Visibilidad del servidor {/* #server-visibility */}
+
+Los administradores siempre ven todos los servidores. En la lista de usuarios, **Todos los servidores** es un interruptor. Manténgalo activado para cada servidor actual y futuro. Desactívelo para expandir una fila y elegir servidores. La casilla de verificación del encabezado selecciona o desmarca las filas visibles. Guardar muestra cada servidor seleccionado como alias (nombre), con un icono de edición para cambiar la lista. Un nuevo servidor permanece oculto hasta que se marca. No seleccionar ninguno significa que el usuario no ve ningún servidor. El panel de control, el detalle del servidor, el Historial de Copias de Seguridad, los gráficos y la Configuración solo incluirán entonces dichos servidores. Un enlace directo o una solicitud de API para otro servidor se trata como no encontrado. Las claves de API externas no están limitadas por esta concesión.
 
 ## Bloqueo de cuenta {/* #account-lockout */}
 

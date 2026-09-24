@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import type { Server } from "@/lib/types";
 import { BackupSelectionProvider } from "@/contexts/backup-selection-context";
 import { requireServerAuth } from "@/lib/auth-server";
+import { getServerAccess, serverAllowed } from "@/lib/server-access";
 
 import { getLocaleCodeList } from "@/lib/locales";
 import { isNextProductionBuild } from "@/lib/next-build-phase";
@@ -45,7 +46,8 @@ export default async function ServerDetailsPage({
   params,
   searchParams,
 }: PageProps) {
-  await requireServerAuth();
+  const auth = await requireServerAuth();
+  const access = getServerAccess(auth);
 
   // Ensure fresh data on initial load (same as /api/detail/[serverId]); avoids stale
   // requestCache so overdue message and other data show immediately, not only after auto-refresh.
@@ -56,7 +58,7 @@ export default async function ServerDetailsPage({
   const resolvedSearchParams = await searchParams;
   const server = await getServerById(serverId);
 
-  if (!server) {
+  if (!server || !serverAllowed(access, serverId)) {
     notFound();
   }
 

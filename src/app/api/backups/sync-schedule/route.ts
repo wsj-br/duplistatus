@@ -4,6 +4,7 @@ import { defaultAPIConfig } from '@/lib/default-config';
 import { getServerPassword } from '@/lib/secrets';
 import { withCSRF } from '@/lib/csrf-middleware';
 import { requireAuth } from '@/lib/auth-middleware';
+import { getServerAccess, serverAllowed } from '@/lib/server-access';
 import { getClientIpAddress } from '@/lib/ip-utils';
 import { AuditLogger } from '@/lib/audit-logger';
 import {
@@ -315,6 +316,10 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
     } = requestBody;
     
     providedServerId = serverId;
+    const access = getServerAccess(authContext);
+    if (serverId && !serverAllowed(access, serverId)) {
+      return NextResponse.json({ error: 'Server not found' }, { status: 404 });
+    }
 
     let finalHostname: string;
     let finalPort: number;
@@ -493,6 +498,13 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
     
     // Use detectedServerId for schedule updates
     const serverIdForSchedule = providedServerId || detectedServerId;
+
+    if (serverIdForSchedule && !serverAllowed(access, serverIdForSchedule)) {
+      const existingServer = getServerInfoById(serverIdForSchedule);
+      if (existingServer) {
+        return NextResponse.json({ error: 'Server not found' }, { status: 404 });
+      }
+    }
 
     if (!serverIdForSchedule) {
       console.error('Could not determine Duplicati machine-id from systeminfo or serversettings');

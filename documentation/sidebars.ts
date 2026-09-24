@@ -43,6 +43,7 @@ const sidebars: SidebarsConfig = {
         'user-guide/server-details',
         'user-guide/backup-metrics',
         'user-guide/collect-backup-logs',
+        'user-guide/delivery-failures',
         'user-guide/backup-monitoring',
         'user-guide/duplicati-configuration',
         {

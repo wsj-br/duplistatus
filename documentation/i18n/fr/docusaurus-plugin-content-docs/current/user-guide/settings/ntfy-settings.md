@@ -23,7 +23,7 @@ Lorsque la configuration n'est pas valide, les cases à cocher NTFY dans l'ongle
 | <IconButton icon="lucide:send-horizontal" label="Envoyer un message de test"/> | Envoyer un message de test à votre serveur NTFY pour vérifier votre configuration.                                         |
 | <IconButton icon="lucide:qr-code" label="Configurer l'appareil"/>          | Afficher un code QR qui vous permet de configurer rapidement votre appareil mobile ou votre ordinateur pour les notifications NTFY. |
 
-Si une livraison ntfy ultérieure échoue, les administrateurs voient une sirène rouge dans la barre d'outils. Voir [Échecs de livraison](../overview.md#delivery-failures).
+Si une livraison ntfy ultérieure échoue, les administrateurs voient une sirène rouge dans la barre d'outils. Voir [Échecs de livraison](../delivery-failures.md).
 
 ## Configuration de l'appareil {/* #device-configuration */}
 

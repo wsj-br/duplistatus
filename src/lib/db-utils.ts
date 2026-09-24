@@ -18,6 +18,7 @@ import { SOURCE_LOCALE, parseLocaleTag } from './locales';
 import { isValidIanaTimeZone, isValidLocalTime, legacyLocalScheduleToUtcTime, buildDailySummaryDispatchCronExpression } from './daily-summary-schedule';
 import { isValidHttpPublicUrl, normalizePublicUrl } from '@/lib/public-url-utils';
 import { isNextProductionBuild } from './next-build-phase';
+import type { ServerAccess } from './server-access';
 import {
   buildDuplicatiVersionCronExpression,
   compareServerVersionToCache,
@@ -778,11 +779,45 @@ interface ServerRow {
   note: string;
 }
 
-export function getAllServerAddresses() {
+export function setUserServerAccess(
+  userId: string,
+  accessAllServers: boolean,
+  serverIds: string[]
+): void {
+  withDb(() => {
+    const transaction = db.transaction(() => {
+      if (accessAllServers) {
+        safeDbOperation(() => dbOps.updateUserServerAccessFlag.run(1, userId), 'updateUserServerAccessFlag');
+        safeDbOperation(() => dbOps.deleteUserServers.run(userId), 'deleteUserServers');
+        return;
+      }
+
+      const uniqueIds = [...new Set(serverIds)];
+      for (const serverId of uniqueIds) {
+        const server = safeDbOperation(() => dbOps.getServerById.get(serverId), 'getServerById') as { id: string } | undefined;
+        if (!server) {
+          throw new Error('UNKNOWN_SERVER');
+        }
+      }
+
+      safeDbOperation(() => dbOps.updateUserServerAccessFlag.run(0, userId), 'updateUserServerAccessFlag');
+      safeDbOperation(() => dbOps.deleteUserServers.run(userId), 'deleteUserServers');
+      for (const serverId of uniqueIds) {
+        safeDbOperation(() => dbOps.insertUserServer.run(userId, serverId), 'insertUserServer');
+      }
+    });
+    transaction();
+  });
+}
+
+export function getAllServerAddresses(access?: ServerAccess) {
   return withDb(() => {
     const servers = safeDbOperation(() => dbOps.getAllServers.all(), 'getAllServers', []) as Array<ServerRow & { has_password: number }>;
+    const visibleServers = !access || access.unrestricted
+      ? servers
+      : servers.filter((server) => access.serverIds.has(server.id));
     const versionCache = getDuplicatiVersionCache();
-    return servers.map(server => {
+    return visibleServers.map(server => {
       const latestBackup = safeDbOperation(
         () => dbOps.getLatestBackup.get(server.id),
         'getLatestBackup',
@@ -802,10 +837,13 @@ export function getAllServerAddresses() {
   });
 }
 
-export function getAllServers() {
+export function getAllServers(access?: ServerAccess) {
   return withDb(() => {
     const servers = safeDbOperation(() => dbOps.getAllServers.all(), 'getAllServers', []) as ServerRow[];
-    return servers.map(server => {
+    const visibleServers = !access || access.unrestricted
+      ? servers
+      : servers.filter((server) => access.serverIds.has(server.id));
+    return visibleServers.map(server => {
       const backups = safeDbOperation(() => dbOps.getServerBackups.all(server.id), 'getServerBackups', []) as BackupRecord[];
       
       const formattedBackups = backups.map(backup => ({
@@ -1158,12 +1196,62 @@ export function getServerById(serverId: string) {
   });
 }
 
-export async function getAggregatedChartData() {
+export async function getAggregatedChartData(access?: ServerAccess) {
   // Wait for database initialization before accessing operations
   await waitForDatabaseReady();
   
   try {
     return withDb(() => {
+      if (access && !access.unrestricted) {
+        const perServer = safeDbOperation(() => dbOps.getAllServersChartData.all(), 'getAllServersChartData', []) as Array<{
+          date: string;
+          isoDate: string;
+          serverId: string;
+          uploadedSize: number;
+          duration: number;
+          fileCount: number;
+          fileSize: number;
+          storageSize: number;
+          backupVersions: number;
+        }>;
+        const byDate = new Map<string, {
+          date: string;
+          isoDate: string;
+          uploadedSize: number;
+          duration: number;
+          fileCount: number;
+          fileSize: number;
+          storageSize: number;
+          backupVersions: number;
+        }>();
+        for (const row of perServer) {
+          if (!access.serverIds.has(row.serverId)) {
+            continue;
+          }
+          const existing = byDate.get(row.date);
+          if (!existing) {
+            byDate.set(row.date, {
+              date: row.date,
+              isoDate: row.isoDate,
+              uploadedSize: Number(row.uploadedSize) || 0,
+              duration: Number(row.duration) || 0,
+              fileCount: Number(row.fileCount) || 0,
+              fileSize: Number(row.fileSize) || 0,
+              storageSize: Number(row.storageSize) || 0,
+              backupVersions: Number(row.backupVersions) || 0,
+            });
+          } else {
+            existing.uploadedSize += Number(row.uploadedSize) || 0;
+            existing.duration += Number(row.duration) || 0;
+            existing.fileCount += Number(row.fileCount) || 0;
+            existing.fileSize += Number(row.fileSize) || 0;
+            existing.storageSize += Number(row.storageSize) || 0;
+            existing.backupVersions += Number(row.backupVersions) || 0;
+          }
+        }
+        return [...byDate.values()];
+      }
+
       const result = safeDbOperation(() => dbOps.getAggregatedChartData.all(), 'getAggregatedChartData', []) as {
         date: string;
         isoDate: string;
@@ -1296,7 +1384,7 @@ export function getServerBackupChartDataWithTimeRange(serverId: string, backupNa
 }
 
 // New function to get server summary for the new dashboard
-export async function getServersSummary() {
+export async function getServersSummary(access?: ServerAccess) {
   // Wait for database initialization before accessing operations
   await waitForDatabaseReady();
   
@@ -1326,6 +1414,9 @@ export async function getServersSummary() {
         backend_version: string | null;
         status_history: string | null;
       }>;
+      const visibleRows = !access || access.unrestricted
+        ? rows
+        : rows.filter((row) => access.serverIds.has(row.server_id));
       
       // Group by server to create the structure needed for server cards/table
       const serverMap = new Map<string, {
@@ -1379,7 +1470,7 @@ export async function getServersSummary() {
       
       const versionCache = getDuplicatiVersionCache();
 
-      rows.forEach(row => {
+      visibleRows.forEach(row => {
         const serverId = row.server_id;
         
         if (!serverMap.has(serverId)) {
@@ -1620,10 +1711,10 @@ export const dbUtils = {
   getLatestBackup: (serverId: string) => withDb(() => safeDbOperation(() => dbOps.getLatestBackup.get(serverId), 'getLatestBackup')),
   getLatestBackupByName: (serverId: string, backupName: string) => withDb(() => safeDbOperation(() => dbOps.getLatestBackupByName.get(serverId, backupName), 'getLatestBackupByName')),
   getServerBackups: (serverId: string) => withDb(() => safeDbOperation(() => dbOps.getServerBackups.all(serverId), 'getServerBackups', [])),
-  getAllServers: () => getAllServers(),
+  getAllServers: (access?: ServerAccess) => getAllServers(access),
   getOverallSummary: () => getOverallSummary(),
   getLatestBackupDate: () => withDb(() => safeDbOperation(() => dbOps.getLatestBackupDate.get(), 'getLatestBackupDate')),
-  getAggregatedChartData: () => getAggregatedChartData(),
+  getAggregatedChartData: (access?: ServerAccess) => getAggregatedChartData(access),
   getAggregatedChartDataWithTimeRange: (startDate: Date, endDate: Date) => getAggregatedChartDataWithTimeRange(startDate, endDate),
   getAllServersChartData: () => getAllServersChartData(),
   getServerChartData: (serverId: string) => getServerChartData(serverId),
@@ -1634,7 +1725,7 @@ export const dbUtils = {
   getServerBackupChartDataWithTimeRange: (serverId: string, backupName: string, startDate: Date, endDate: Date) => 
     getServerBackupChartDataWithTimeRange(serverId, backupName, startDate, endDate),
   getServersSummary: () => getServersSummary(),
-  getServersBackupNames: () => getServersBackupNames(),
+  getServersBackupNames: (access?: ServerAccess) => getServersBackupNames(access),
   getAllLatestBackups: () => getAllLatestBackups(),
   
   insertBackup: (data: Parameters<typeof dbOps.insertBackup.run>[0]) => {
@@ -1671,6 +1762,7 @@ export const dbUtils = {
           
           // First delete all backups for the server
           const backupResult = safeDbOperation(() => dbOps.deleteServerBackups.run(serverId), 'deleteServerBackups');
+          safeDbOperation(() => dbOps.deleteUserServersByServer.run(serverId), 'deleteUserServersByServer');
           // Then delete the server itself
           const serverResult = safeDbOperation(() => dbOps.deleteServer.run(serverId), 'deleteServer');
           
@@ -1963,6 +2055,13 @@ export async function mergeServers(
             targetServerId
           ), 'updateServerWithPassword');
           
+          // Move per-user server grants onto the kept server before the old row is removed
+          safeDbOperation(
+            () => dbOps.copyUserServersToTarget.run(targetServerId, oldServerId),
+            'copyUserServersToTarget'
+          );
+          safeDbOperation(() => dbOps.deleteUserServersByServer.run(oldServerId), 'deleteUserServersByServer');
+
           // Delete old server entry
           safeDbOperation(() => dbOps.deleteServer.run(oldServerId), 'deleteServer');
         });
@@ -2770,10 +2869,13 @@ export async function getOverdueBackupsForServer(serverIdentifier: string): Prom
 // Removed async alias; use getNtfyConfig() directly
 
 // Function to get all server and their respective backup names
-export function getServersBackupNames() {
+export function getServersBackupNames(access?: ServerAccess) {
   return withDb(() => safeDbOperation(() => {
     const results = dbOps.getServersBackupNames.all() as Array<{ server_id: string; server_name: string; backup_name: string; server_url: string; alias: string; note: string; has_password: number }>;
-    return results.map(row => ({
+    const visibleResults = !access || access.unrestricted
+      ? results
+      : results.filter((row) => access.serverIds.has(row.server_id));
+    return visibleResults.map(row => ({
       id: `${row.server_id}:${row.backup_name}`,
       server_id: row.server_id,
       server_name: row.server_name,

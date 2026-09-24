@@ -2,7 +2,7 @@
 
 ## Dashboard-Zusammenfassung {/* #dashboard-summary */}
 
-Dieser Abschnitt zeigt aggregierte Statistiken für alle Sicherungen.
+Dieser Abschnitt zeigt aggregierte Statistiken für die Server an, die der angemeldete Benutzer sehen kann. Administratoren sehen jeden Server. Ein Nicht-Administrator-Benutzer sieht jeden Server, es sei denn, ein Administrator schränkt dieses Konto unter [Benutzer](settings/user-management-settings.md#server-visibility) ein.
 
 ![Dashboard-Zusammenfassung - Übersicht](../assets/screen-dashboard-summary.png)
 ![Dashboard-Zusammenfassung - Tabelle](../assets/screen-dashboard-summary-table.png)

@@ -2,7 +2,7 @@
 
 ## Resumo do Painel {/* #dashboard-summary */}
 
-Esta seção exibe estatísticas agregadas para todos os backups.
+Esta seção exibe estatísticas agregadas dos servidores que o usuário conectado pode ver. Os administradores veem todos os servidores. Um usuário não administrador vê todos os servidores, a menos que um administrador limite essa conta em [Usuários](settings/user-management-settings.md#server-visibility).
 
 ![Resumo do painel - visão geral](../assets/screen-dashboard-summary.png)
 ![Resumo do painel - tabela](../assets/screen-dashboard-summary-table.png)

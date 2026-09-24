@@ -71,27 +71,10 @@ The application toolbar provides convenient access to key functions and settings
 | <SvgButton svgFilename="ntfy.svg" /> &nbsp; Open NTFY                                                                                            | Access the ntfy.sh website for your configured notification topic. <br/> _Right-click_ to show a QR code to configure your device to receive notifications from duplistatus.               |
 | <SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Duplicati configuration](duplicati-configuration.md)       | Open the selected Duplicati server's web interface <br/> _Right-click_ to open the Duplicati legacy UI (`/ngax`) in a new tab                                                              |
 | <IconButton icon="lucide:download" href="collect-backup-logs" /> &nbsp; [Collect logs](collect-backup-logs.md)                                   | Connect to Duplicati servers and retrieve backup logs <br/> _Right-click_ to collect logs for all configured servers                                                                       |
-| <IconButton icon="lucide:siren" tone="alert" /> &nbsp; [Delivery failures](#delivery-failures)                                                   | Shown to administrators while email or ntfy delivery is failing. See [Delivery failures](#delivery-failures).                                                                              |
+| <IconButton icon="lucide:siren" tone="alert" href="delivery-failures" /> &nbsp; [Delivery failures](delivery-failures.md)                         | Shown to administrators while email or ntfy delivery is failing. See [Delivery failures](delivery-failures.md).                                                                            |
 | <IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [Settings](settings/backup-notifications-settings.md) | Configure notifications, monitoring, SMTP server, and notification templates                                                                                                               |
 | <IconButton icon="lucide:user" label="username" />                                                                                               | Show the connected user, user type (`Admin`, `User`), click for user menu (includes language selection). See more in [User Management](settings/user-management-settings.md)               |
 | <IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; User Guide                                                                    | Open the [User Guide](overview.md) to the section relevant to the page you are currently viewing. The tooltip shows "Help for [Page Name]" to indicate which documentation will be opened. |
-
-### Delivery failures {/* #delivery-failures */}
-
-A <IconButton icon="lucide:siren" tone="alert" /> button with a soft red tint appears in the toolbar for administrators while email or ntfy delivery is failing. It stays hidden when both channels are healthy, and it is not shown on the login page. Regular users do not see it.
-
-Open the button for one card per failing channel (Email, ntfy), not one row for every audit entry. Each card shows:
-
-- The error, and a monospace **Original error** when the SMTP reply was logged
-- The SMTP host or the ntfy topic
-- The last failure time
-- How many deliveries have failed since the last success, or since you last cleared that channel
-
-**Open Email settings** goes to [Settings → Email](settings/email-settings.md). **Open NTFY settings** goes to [Settings → NTFY](settings/ntfy-settings.md).
-
-**Close** only dismisses the panel. **Clear** hides the listed channels until a newer failure is logged, even when the error text is the same. A later successful delivery keeps the button hidden. That includes `email_sent`, `notification_sent`, and a successful [Daily Summary](settings/daily-summary-settings.md) send for that channel.
-
-The list loads with the page and refreshes about once a minute while the browser tab is visible.
 
 ### User Menu {/* #user-menu */}
 

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { withCSRF } from '@/lib/csrf-middleware';
-import { requireAuth } from '@/lib/auth-middleware';
+import { requireAuth, type AuthContext } from '@/lib/auth-middleware';
+import { getServerAccess } from '@/lib/server-access';
 import { getNotificationTemplates } from '@/lib/db-utils';
 import { collectDailySummarySnapshot, renderDailySummaryPayload } from '@/lib/daily-summary';
 import { renderMarkdownEmail, renderMarkdownNtfyText } from '@/lib/notification-template-renderer';
@@ -39,7 +40,7 @@ const SAMPLE_BACKUP_VALUES: Record<string, string> = {
   overdue_tolerance: '2 hours',
 };
 
-export const POST = withCSRF(requireAuth(async (request: NextRequest) => {
+export const POST = withCSRF(requireAuth(async (request: NextRequest, authContext: AuthContext) => {
   try {
     const body = await request.json() as {
       kind?: 'success' | 'warning' | 'overdueBackup' | 'dailySummaryEmail';
@@ -50,7 +51,7 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest) => {
     const stored = getNotificationTemplates();
 
     if (kind === 'dailySummaryEmail') {
-      const snapshot = await collectDailySummarySnapshot();
+      const snapshot = await collectDailySummarySnapshot(new Date(), getServerAccess(authContext));
       const override: DailySummaryTemplateSet = body.dailySummary ?? {
         email: (body.template as DailySummaryEmailTemplate | undefined) ?? stored.dailySummary.email,
       };

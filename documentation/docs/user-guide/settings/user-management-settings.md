@@ -40,16 +40,16 @@ You can access the User Management section in two ways:
 1. Click the <IconButton icon="lucide:edit" /> edit icon next to the user
 2. Modify any of the following:
    - **Username**: Change the username (must be unique)
-   - **Admin**: Toggle administrator privileges
+   - **Admin**: Toggle administrator privileges. Turning this on gives access to every server and clears a custom server list. Turning it off starts again at all servers
    - **Require Password Change**: Toggle password change requirement
 3. Click <IconButton icon="lucide:check" label="Save Changes" />.
 
 ## Resetting a User Password {/* #resetting-a-user-password */}
 
 1. Click the <IconButton icon="lucide:key-round" /> key icon next to the user
-2. Confirm the password reset
-3. A new temporary password will be generated and displayed
-4. Copy the password and provide it to the user securely
+2. A suggested password is already filled in and visible. Editing it hides the password; use the view icon to show it again, then copy it
+3. **Require password change on next login** is checked by default. Uncheck it if the user should keep this password
+4. Click **Reset password**. The password is not shown again
 
 
 ## Deleting a User {/* #deleting-a-user */}
@@ -57,6 +57,10 @@ You can access the User Management section in two ways:
 1. Click the <IconButton icon="lucide:trash-2" /> delete icon next to the user
 2. Confirm the deletion in the dialog box.  **User deletion is permanent and cannot be undone.**
 
+
+## Server visibility {/* #server-visibility */}
+
+Administrators always see every server. In the user list, **All servers** is a switch. Leave it on for every current and future server. Turn it off to expand a row and choose servers. The header checkbox selects or clears the visible rows. Save shows each selected server as alias (name), with an edit icon to change the list. A new server stays hidden until it is checked. Checking none means the user sees no servers. The dashboard, server detail, backup history, charts, and settings lists then include only those servers. A direct link or API request for another server is treated as not found. External API keys are not limited by this grant.
 
 ## Account Lockout {/* #account-lockout */}
 

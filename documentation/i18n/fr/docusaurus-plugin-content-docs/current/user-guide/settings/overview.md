@@ -51,7 +51,7 @@ Les administrateurs voient tous les paramètres disponibles.
 
 ## Vue Non-Administrateur {/* #non-administrator-view */}
 
-Les utilisateurs normaux voient un ensemble limité de paramètres.
+Les utilisateurs standard voient un ensemble limité de paramètres. Les noms de serveur et les données de sauvegarde sur ces pages suivent les autorisations de serveur des [Utilisateurs](user-management-settings.md#server-visibility).
 
 <table>
   <tr>

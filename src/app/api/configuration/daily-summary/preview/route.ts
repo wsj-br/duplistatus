@@ -1,11 +1,12 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { withCSRF } from '@/lib/csrf-middleware';
-import { requireAuth } from '@/lib/auth-middleware';
+import { requireAuth, type AuthContext } from '@/lib/auth-middleware';
 import { previewDailySummary } from '@/lib/daily-summary';
+import { getServerAccess } from '@/lib/server-access';
 
-export const POST = withCSRF(requireAuth(async () => {
+export const POST = withCSRF(requireAuth(async (_request: NextRequest, authContext: AuthContext) => {
   try {
-    const preview = await previewDailySummary();
+    const preview = await previewDailySummary(getServerAccess(authContext));
     return NextResponse.json({
       snapshot: preview.snapshot,
       payload: {

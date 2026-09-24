@@ -203,6 +203,7 @@ export function NotificationChannelAlertButton() {
           className="border-red-300 bg-red-50 text-red-700 hover:border-red-400 hover:bg-red-100 hover:text-red-800 dark:border-red-800 dark:bg-red-950/40 dark:text-red-400 dark:hover:border-red-700 dark:hover:bg-red-950/70 dark:hover:text-red-300"
           title={t("Delivery failures")}
           aria-label={t("Delivery failures")}
+          data-screenshot-target="delivery-failures-button"
         >
           <Siren className="h-4 w-4" />
         </Button>
@@ -210,6 +211,7 @@ export function NotificationChannelAlertButton() {
       <PopoverContent
         align="end"
         className="w-[28rem] max-w-[calc(100vw-2rem)] overflow-hidden p-0 shadow-lg backdrop-blur-sm bg-popover/95 border-border/50"
+        data-screenshot-target="delivery-failures-popup"
       >
         <GradientCardHeader className="m-0 rounded-t-md">
           <h4 className="text-lg font-semibold leading-none text-white">{t("Delivery failures")}</h4>

@@ -51,7 +51,7 @@ Administratoren sehen alle verfügbaren Einstellungen.
 
 ## Nicht-Administratoransicht {/* #non-administrator-view */}
 
-Reguläre Benutzer sehen einen eingeschränkten Satz an Einstellungen.
+Reguläre Benutzer sehen eine eingeschränkte Auswahl an Einstellungen. Servernamen und Sicherungsdaten auf diesen Seiten folgen der Server-Berechtigung aus [Benutzer](user-management-settings.md#server-visibility).
 
 <table>
   <tr>

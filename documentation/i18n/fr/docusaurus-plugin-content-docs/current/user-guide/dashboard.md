@@ -2,7 +2,7 @@
 
 ## Résumé du tableau de bord {/* #dashboard-summary */}
 
-Cette section affiche les statistiques agrégées pour toutes les sauvegardes.
+Cette section affiche les statistiques agrégées pour les serveurs que l'utilisateur connecté peut voir. Les administrateurs voient tous les serveurs. Un utilisateur non administrateur voit tous les serveurs, à moins qu'un administrateur ne limite ce compte dans [Utilisateurs](settings/user-management-settings.md#server-visibility).
 
 ![Résumé du tableau de bord - aperçu](../assets/screen-dashboard-summary.png)
 ![Résumé du tableau de bord - tableau](../assets/screen-dashboard-summary-table.png)

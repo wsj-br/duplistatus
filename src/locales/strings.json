@@ -23,6 +23,10 @@
       {
         "file": "src/components/settings/backup-notifications-form.tsx",
         "line": 2393
+      },
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 128
       }
     ]
   },
@@ -642,7 +646,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 354
+        "line": 356
       },
       {
         "file": "src/components/ui/backup-tooltip-content.tsx",
@@ -674,6 +678,31 @@
       {
         "file": "src/components/settings/backup-notifications-form.tsx",
         "line": 1808
+      }
+    ]
+  },
+  "77158928": {
+    "source": "Require password change on next login",
+    "translated": {
+      "es": "Requerir cambio de contraseña en el próximo inicio de sesión",
+      "de": "Passwortänderung bei nächster Anmeldung erzwingen",
+      "pt-BR": "Exigir alteração de senha no próximo login",
+      "fr": "Exiger le changement de mot de passe à la prochaine connexion",
+      "zh-Hans": "下次登录时要求更改密码",
+      "hi": "अगले लॉगिन पर पासवर्ड बदलना आवश्यक करें"
+    },
+    "models": {
+      "es": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 1506
       }
     ]
   },
@@ -860,6 +889,35 @@
       }
     ]
   },
+  "95743983": {
+    "source": "Edit servers",
+    "translated": {
+      "de": "Server bearbeiten",
+      "fr": "Modifier les serveurs",
+      "es": "Editar servidores",
+      "pt-BR": "Editar servidores",
+      "hi": "सर्वर संपादित करें",
+      "zh-Hans": "编辑服务器"
+    },
+    "models": {
+      "de": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "es": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 986
+      },
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 1187
+      }
+    ]
+  },
   "83c18bac": {
     "source": "Showing only the first {{count}}",
     "translated": {
@@ -881,7 +939,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 111
+        "line": 112
       }
     ]
   },
@@ -929,7 +987,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 111
+        "line": 112
       }
     ]
   },
@@ -956,7 +1014,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 118
+        "line": 119
       }
     ]
   },
@@ -981,7 +1039,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 123
+        "line": 124
       }
     ]
   },
@@ -1033,7 +1091,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 132
+        "line": 133
       }
     ]
   },
@@ -1060,7 +1118,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 193
+        "line": 194
       },
       {
         "file": "src/components/settings/audit-log-viewer.tsx",
@@ -1091,7 +1149,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 194
+        "line": 195
       }
     ]
   },
@@ -1118,7 +1176,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 195
+        "line": 196
       }
     ]
   },
@@ -1145,7 +1203,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 240
+        "line": 242
       }
     ]
   },
@@ -1172,7 +1230,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 245
+        "line": 247
       }
     ]
   },
@@ -1199,7 +1257,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 289
+        "line": 291
       }
     ]
   },
@@ -1226,7 +1284,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 322
+        "line": 324
       }
     ]
   },
@@ -1253,7 +1311,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 326
+        "line": 328
       },
       {
         "file": "src/components/ui/backup-tooltip-content.tsx",
@@ -1284,7 +1342,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 333
+        "line": 335
       }
     ]
   },
@@ -1311,7 +1369,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 339
+        "line": 341
       }
     ]
   },
@@ -1338,7 +1396,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 342
+        "line": 344
       }
     ]
   },
@@ -1365,7 +1423,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 346
+        "line": 348
       }
     ]
   },
@@ -1392,7 +1450,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 350
+        "line": 352
       }
     ]
   },
@@ -1419,7 +1477,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 358
+        "line": 360
       }
     ]
   },
@@ -1446,7 +1504,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 364
+        "line": 366
       }
     ]
   },
@@ -1473,7 +1531,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 368
+        "line": 370
       }
     ]
   },
@@ -1500,7 +1558,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 372
+        "line": 374
       }
     ]
   },
@@ -1527,7 +1585,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 376
+        "line": 378
       }
     ]
   },
@@ -1554,7 +1612,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 385
+        "line": 387
       }
     ]
   },
@@ -1581,7 +1639,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 399
+        "line": 401
       },
       {
         "file": "src/components/server-details/server-backup-table.tsx",
@@ -1641,7 +1699,7 @@
       },
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 173
+        "line": 175
       }
     ]
   },
@@ -1668,7 +1726,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 400
+        "line": 402
       },
       {
         "file": "src/components/server-details/server-backup-table.tsx",
@@ -1728,7 +1786,7 @@
       },
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 172
+        "line": 174
       }
     ]
   },
@@ -1755,7 +1813,7 @@
     "locations": [
       {
         "file": "src/app/detail/[serverId]/backup/[backupId]/page.tsx",
-        "line": 401
+        "line": 403
       }
     ]
   },
@@ -2072,11 +2130,11 @@
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 484
+        "line": 765
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 773
+        "line": 1214
       }
     ]
   },
@@ -2135,6 +2193,10 @@
       {
         "file": "src/components/backup-collect-menu.tsx",
         "line": 1184
+      },
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 1427
       }
     ]
   },
@@ -2521,7 +2583,7 @@
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 536
+        "line": 822
       }
     ]
   },
@@ -2967,23 +3029,31 @@
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 102
+        "line": 270
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 234
+        "line": 327
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 243
+        "line": 489
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 322
+        "line": 498
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 388
+        "line": 578
+      },
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 636
+      },
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 669
       },
       {
         "file": "src/components/status-badge.tsx",
@@ -4092,7 +4162,11 @@
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 314
+        "line": 570
+      },
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 664
       },
       {
         "file": "src/components/status-badge.tsx",
@@ -5355,11 +5429,23 @@
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 874
+        "line": 941
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 961
+        "line": 1151
+      },
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 1315
+      },
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 1402
+      },
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 1520
       }
     ]
   },
@@ -5542,7 +5628,7 @@
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 524
+        "line": 806
       }
     ]
   },
@@ -5600,7 +5686,7 @@
       },
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 294
+        "line": 296
       },
       {
         "file": "src/components/settings/api-keys-form.tsx",
@@ -5608,7 +5694,7 @@
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 1025
+        "line": 1587
       }
     ]
   },
@@ -6041,7 +6127,11 @@
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 809
+        "line": 1250
+      },
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 1466
       }
     ]
   },
@@ -6072,7 +6162,7 @@
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 202
+        "line": 457
       }
     ]
   },
@@ -6103,7 +6193,7 @@
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 203
+        "line": 458
       }
     ]
   },
@@ -6134,7 +6224,7 @@
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 204
+        "line": 459
       }
     ]
   },
@@ -6165,7 +6255,7 @@
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 205
+        "line": 460
       }
     ]
   },
@@ -6994,7 +7084,7 @@
       },
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 171
+        "line": 173
       }
     ]
   },
@@ -7090,6 +7180,10 @@
       {
         "file": "src/components/settings/server-settings-form.tsx",
         "line": 743
+      },
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 171
       }
     ]
   },
@@ -9023,7 +9117,7 @@
       },
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 215
+        "line": 217
       }
     ]
   },
@@ -9048,7 +9142,7 @@
     "locations": [
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 222
+        "line": 224
       }
     ]
   },
@@ -9073,7 +9167,7 @@
     "locations": [
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 222
+        "line": 224
       }
     ]
   },
@@ -9100,7 +9194,7 @@
     "locations": [
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 232
+        "line": 234
       },
       {
         "file": "src/components/settings/daily-summary-form.tsx",
@@ -9139,7 +9233,7 @@
     "locations": [
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 232
+        "line": 234
       },
       {
         "file": "src/components/settings/email-preview-dialog.tsx",
@@ -9176,7 +9270,7 @@
     "locations": [
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 243
+        "line": 245
       }
     ]
   },
@@ -9201,7 +9295,7 @@
     "locations": [
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 247
+        "line": 249
       }
     ]
   },
@@ -9226,7 +9320,7 @@
     "locations": [
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 267
+        "line": 269
       }
     ]
   },
@@ -9251,7 +9345,7 @@
     "locations": [
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 273
+        "line": 275
       }
     ]
   },
@@ -9276,7 +9370,7 @@
     "locations": [
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 278
+        "line": 280
       }
     ]
   },
@@ -9323,7 +9417,7 @@
     "locations": [
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 282
+        "line": 284
       }
     ]
   },
@@ -9350,7 +9444,7 @@
     "locations": [
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 304
+        "line": 306
       },
       {
         "file": "src/components/settings/backup-notifications-form.tsx",
@@ -9379,7 +9473,7 @@
     "locations": [
       {
         "file": "src/components/notification-channel-alert-button.tsx",
-        "line": 308
+        "line": 310
       }
     ]
   },
@@ -11076,7 +11170,7 @@
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 516
+        "line": 798
       },
       {
         "file": "src/components/ui/available-backups-modal.tsx",
@@ -11198,7 +11292,7 @@
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 526
+        "line": 808
       }
     ]
   },
@@ -11266,7 +11360,7 @@
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 553
+        "line": 854
       }
     ]
   },
@@ -11801,7 +11895,7 @@
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 877
+        "line": 1318
       }
     ]
   },
@@ -11907,7 +12001,7 @@
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 967
+        "line": 1408
       }
     ]
   },
@@ -12797,6 +12891,14 @@
       {
         "file": "src/components/settings/server-settings-form.tsx",
         "line": 1310
+      },
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 949
+      },
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 1154
       }
     ]
   },
@@ -13573,7 +13675,7 @@
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 540
+        "line": 826
       }
     ]
   },
@@ -16450,6 +16552,10 @@
       {
         "file": "src/components/settings/backup-monitoring-form.tsx",
         "line": 1463
+      },
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 1527
       }
     ]
   },
@@ -18248,6 +18354,10 @@
       {
         "file": "src/components/settings/backup-notifications-form.tsx",
         "line": 2398
+      },
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 134
       }
     ]
   },
@@ -18275,6 +18385,10 @@
       {
         "file": "src/components/settings/backup-notifications-form.tsx",
         "line": 2408
+      },
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 145
       },
       {
         "file": "src/components/ui/server-filter-input.tsx",
@@ -22500,7 +22614,7 @@
       },
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 168
+        "line": 170
       }
     ]
   },
@@ -22529,11 +22643,11 @@
       },
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 133
+        "line": 135
       },
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 182
+        "line": 184
       }
     ]
   },
@@ -24330,7 +24444,7 @@
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 967
+        "line": 1408
       }
     ]
   },
@@ -33081,6 +33195,10 @@
       {
         "file": "src/components/settings/server-settings-form.tsx",
         "line": 621
+      },
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 665
       }
     ]
   },
@@ -33762,6 +33880,14 @@
       {
         "file": "src/components/settings/server-settings-form.tsx",
         "line": 1166
+      },
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 949
+      },
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 1154
       }
     ]
   },
@@ -34289,6 +34415,85 @@
       }
     ]
   },
+  "9c6dffda": {
+    "source": "Some servers selected - click to select all visible",
+    "translated": {
+      "de": "Einige Server ausgewählt - klicken, um alle sichtbaren auszuwählen",
+      "fr": "Certains serveurs sélectionnés - cliquez pour sélectionner tous les serveurs visibles",
+      "es": "Algunos servidores seleccionados - haz clic para seleccionar todos los visibles",
+      "pt-BR": "Alguns servidores selecionados - clique para selecionar todos os visíveis",
+      "hi": "कुछ सर्वर चयनित - सभी दृश्यमान चुनने के लिए क्लिक करें",
+      "zh-Hans": "已选择部分服务器 - 点击全选可见服务器"
+    },
+    "models": {
+      "de": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "es": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 161
+      }
+    ]
+  },
+  "75c1cbbb": {
+    "source": "Select all visible servers",
+    "translated": {
+      "de": "Alle sichtbaren Server auswählen",
+      "fr": "Sélectionner tous les serveurs visibles",
+      "es": "Seleccionar todos los servidores visibles",
+      "pt-BR": "Selecionar todos os servidores visíveis",
+      "hi": "सभी दृश्यमान सर्वर चुनें",
+      "zh-Hans": "全选可见服务器"
+    },
+    "models": {
+      "de": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "es": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 161
+      }
+    ]
+  },
+  "9aa1b039": {
+    "source": "Server",
+    "translated": {
+      "es": "Servidor",
+      "pt-BR": "Servidor",
+      "fr": "Serveur",
+      "de": "Server",
+      "zh-Hans": "服务器",
+      "hi": "सर्वर"
+    },
+    "models": {
+      "es": "mistralai/codestral-2508",
+      "pt-BR": "mistralai/codestral-2508",
+      "fr": "mistralai/codestral-2508",
+      "de": "mistralai/codestral-2508",
+      "zh-Hans": "mistralai/codestral-2508",
+      "hi": "qwen/qwen-2.5-72b-instruct"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 164
+      },
+      {
+        "file": "src/lib/daily-summary.ts",
+        "line": 168
+      }
+    ]
+  },
   "3991706e": {
     "source": "Failed to load users",
     "translated": {
@@ -34312,61 +34517,7 @@
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 103
-      }
-    ]
-  },
-  "6f856966": {
-    "source": "Username is required",
-    "translated": {
-      "pt-BR": "Nome de usuário é obrigatório",
-      "es": "El nombre de usuario es obligatorio",
-      "de": "Benutzername ist erforderlich",
-      "fr": "Le nom d'utilisateur est requis",
-      "zh-CN": "用户名为必填项",
-      "zh-Hans": "用户名是必需的",
-      "hi": "उपयोगकर्ता नाम आवश्यक है"
-    },
-    "models": {
-      "pt-BR": "anthropic/claude-3.5-haiku",
-      "es": "anthropic/claude-3.5-haiku",
-      "de": "anthropic/claude-3.5-haiku",
-      "fr": "anthropic/claude-3.5-haiku",
-      "zh-CN": "manual",
-      "zh-Hans": "meta-llama/llama-3.3-70b-instruct",
-      "hi": "~anthropic/claude-sonnet-latest"
-    },
-    "locations": [
-      {
-        "file": "src/components/settings/user-management-form.tsx",
-        "line": 235
-      }
-    ]
-  },
-  "c1b0a30d": {
-    "source": "Password is required when not auto-generating",
-    "translated": {
-      "pt-BR": "Senha é obrigatória quando não está sendo gerada automaticamente",
-      "es": "La contraseña es obligatoria cuando no se genera automáticamente",
-      "de": "Passwort ist erforderlich, wenn es nicht automatisch generiert wird",
-      "fr": "Le mot de passe est requis lorsqu'il n'est pas généré automatiquement",
-      "zh-CN": "未自动生成时密码为必填项",
-      "zh-Hans": "在不自动生成时需要密码",
-      "hi": "जब स्वतः-जनरेट नहीं किया जा रहा हो तो पासवर्ड आवश्यक है"
-    },
-    "models": {
-      "pt-BR": "anthropic/claude-3.5-haiku",
-      "es": "anthropic/claude-3.5-haiku",
-      "de": "anthropic/claude-3.5-haiku",
-      "fr": "anthropic/claude-3.5-haiku",
-      "zh-CN": "manual",
-      "zh-Hans": "meta-llama/llama-3.3-70b-instruct",
-      "hi": "~anthropic/claude-sonnet-latest"
-    },
-    "locations": [
-      {
-        "file": "src/components/settings/user-management-form.tsx",
-        "line": 244
+        "line": 271
       }
     ]
   },
@@ -34393,11 +34544,73 @@
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 310
+        "line": 321
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 323
+        "line": 328
+      },
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 566
+      },
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 579
+      }
+    ]
+  },
+  "6f856966": {
+    "source": "Username is required",
+    "translated": {
+      "pt-BR": "Nome de usuário é obrigatório",
+      "es": "El nombre de usuario es obligatorio",
+      "de": "Benutzername ist erforderlich",
+      "fr": "Le nom d'utilisateur est requis",
+      "zh-CN": "用户名为必填项",
+      "zh-Hans": "用户名是必需的",
+      "hi": "उपयोगकर्ता नाम आवश्यक है"
+    },
+    "models": {
+      "pt-BR": "anthropic/claude-3.5-haiku",
+      "es": "anthropic/claude-3.5-haiku",
+      "de": "anthropic/claude-3.5-haiku",
+      "fr": "anthropic/claude-3.5-haiku",
+      "zh-CN": "manual",
+      "zh-Hans": "meta-llama/llama-3.3-70b-instruct",
+      "hi": "~anthropic/claude-sonnet-latest"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 490
+      }
+    ]
+  },
+  "c1b0a30d": {
+    "source": "Password is required when not auto-generating",
+    "translated": {
+      "pt-BR": "Senha é obrigatória quando não está sendo gerada automaticamente",
+      "es": "La contraseña es obligatoria cuando no se genera automáticamente",
+      "de": "Passwort ist erforderlich, wenn es nicht automatisch generiert wird",
+      "fr": "Le mot de passe est requis lorsqu'il n'est pas généré automatiquement",
+      "zh-CN": "未自动生成时密码为必填项",
+      "zh-Hans": "在不自动生成时需要密码",
+      "hi": "जब स्वतः-जनरेट नहीं किया जा रहा हो तो पासवर्ड आवश्यक है"
+    },
+    "models": {
+      "pt-BR": "anthropic/claude-3.5-haiku",
+      "es": "anthropic/claude-3.5-haiku",
+      "de": "anthropic/claude-3.5-haiku",
+      "fr": "anthropic/claude-3.5-haiku",
+      "zh-CN": "manual",
+      "zh-Hans": "meta-llama/llama-3.3-70b-instruct",
+      "hi": "~anthropic/claude-sonnet-latest"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 499
       }
     ]
   },
@@ -34424,7 +34637,32 @@
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 315
+        "line": 571
+      }
+    ]
+  },
+  "47be0569": {
+    "source": "Password is required",
+    "translated": {
+      "es": "La contraseña es obligatoria",
+      "de": "Passwort erforderlich",
+      "pt-BR": "A senha é obrigatória",
+      "fr": "Le mot de passe est requis",
+      "zh-Hans": "密码为必填项",
+      "hi": "पासवर्ड आवश्यक है"
+    },
+    "models": {
+      "es": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 637
       }
     ]
   },
@@ -34451,11 +34689,11 @@
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 379
+        "line": 656
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 389
+        "line": 670
       }
     ]
   },
@@ -34482,7 +34720,7 @@
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 439
+        "line": 720
       }
     ]
   },
@@ -34509,7 +34747,7 @@
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 442
+        "line": 723
       }
     ]
   },
@@ -34536,7 +34774,7 @@
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 450
+        "line": 731
       }
     ]
   },
@@ -34563,7 +34801,7 @@
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 461
+        "line": 742
       }
     ]
   },
@@ -34590,7 +34828,44 @@
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 492
+        "line": 773
+      }
+    ]
+  },
+  "a0681d05": {
+    "source": "All servers",
+    "translated": {
+      "de": "Alle Server",
+      "fr": "Tous les serveurs",
+      "es": "Todos los servidores",
+      "pt-BR": "Todos os servidores",
+      "hi": "सभी सर्वर",
+      "zh-Hans": "所有服务器"
+    },
+    "models": {
+      "de": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "es": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 775
+      },
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 842
+      },
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 1034
+      },
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 1036
       }
     ]
   },
@@ -34617,7 +34892,7 @@
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 500
+        "line": 782
       }
     ]
   },
@@ -34644,7 +34919,7 @@
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 508
+        "line": 790
       }
     ]
   },
@@ -34671,7 +34946,7 @@
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 570
+        "line": 871
       }
     ]
   },
@@ -34698,7 +34973,7 @@
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 572
+        "line": 873
       }
     ]
   },
@@ -34725,11 +35000,11 @@
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 583
+        "line": 884
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 656
+        "line": 1045
       }
     ]
   },
@@ -34756,11 +35031,19 @@
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 594
+        "line": 892
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 667
+        "line": 1053
+      },
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 1418
+      },
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 1527
       }
     ]
   },
@@ -34787,11 +35070,11 @@
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 605
+        "line": 903
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 678
+        "line": 1064
       }
     ]
   },
@@ -34818,11 +35101,11 @@
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 607
+        "line": 905
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 680
+        "line": 1066
       }
     ]
   },
@@ -34849,11 +35132,119 @@
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 608
+        "line": 906
       },
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 681
+        "line": 1067
+      }
+    ]
+  },
+  "bcfebcbf": {
+    "source": "Visible servers",
+    "translated": {
+      "de": "Sichtbare Server",
+      "fr": "Serveurs visibles",
+      "es": "Servidores visibles",
+      "pt-BR": "Servidores visíveis",
+      "hi": "दृश्यमान सर्वर",
+      "zh-Hans": "可见服务器"
+    },
+    "models": {
+      "de": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "es": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 959
+      },
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 1164
+      }
+    ]
+  },
+  "a1d0ffa3": {
+    "source": "Servers added later stay hidden until they are selected. Click on the button on the right to edit the server list.",
+    "translated": {
+      "pt-BR": "Servidores adicionados posteriormente ficam ocultos até serem selecionados. Clique no botão à direita para editar a lista de servidores.",
+      "es": "Los servidores añadidos posteriormente permanecen ocultos hasta que se seleccionan. Haga clic en el botón de la derecha para editar la lista de servidores.",
+      "de": "Später hinzugefügte Server bleiben ausgeblendet, bis sie ausgewählt werden. Klicken Sie auf die Schaltfläche rechts, um die Serverliste zu bearbeiten.",
+      "fr": "Les serveurs ajoutés ultérieurement restent masqués jusqu'à leur sélection. Cliquez sur le bouton à droite pour modifier la liste des serveurs.",
+      "zh-Hans": "稍后添加的服务器在选中前将保持隐藏。点击右侧按钮编辑服务器列表。",
+      "hi": "बाद में जोड़े गए सर्वर तब तक छिपे रहते हैं जब तक उन्हें चुना नहीं जाता। सर्वर सूची संपादित करने के लिए दाईं ओर के बटन पर क्लिक करें।"
+    },
+    "models": {
+      "pt-BR": "qwen/qwen3.7-max",
+      "es": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 966
+      }
+    ]
+  },
+  "f5fe00e4": {
+    "source": "No servers",
+    "translated": {
+      "de": "Keine Server",
+      "fr": "Aucun serveur",
+      "es": "No hay servidores",
+      "pt-BR": "Nenhum servidor",
+      "hi": "कोई सर्वर नहीं",
+      "zh-Hans": "无服务器"
+    },
+    "models": {
+      "de": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "es": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 974
+      },
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 1179
+      }
+    ]
+  },
+  "8da876e0": {
+    "source": "Each entry is the alias followed by the server name. Servers added later stay hidden until they are selected.",
+    "translated": {
+      "pt-BR": "Cada entrada é o alias seguido do nome do servidor. Servidores adicionados posteriormente ficam ocultos até serem selecionados.",
+      "es": "Cada entrada es el alias seguido del nombre del servidor. Los servidores añadidos posteriormente permanecen ocultos hasta que se seleccionan.",
+      "de": "Jeder Eintrag besteht aus dem Alias, gefolgt vom Servernamen. Später hinzugefügte Server bleiben ausgeblendet, bis sie ausgewählt werden.",
+      "fr": "Chaque entrée est l'alias suivi du nom du serveur. Les serveurs ajoutés ultérieurement restent masqués jusqu'à leur sélection.",
+      "zh-Hans": "每个条目依次为别名和服务器名称。稍后添加的服务器在选中前将保持隐藏。",
+      "hi": "प्रत्येक प्रविष्टि उपनाम है जिसके बाद सर्वर नाम आता है। बाद में जोड़े गए सर्वर तब तक छिपे रहते हैं जब तक उन्हें चुना नहीं जाता।"
+    },
+    "models": {
+      "pt-BR": "qwen/qwen3.7-max",
+      "es": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 1171
       }
     ]
   },
@@ -34880,7 +35271,7 @@
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 766
+        "line": 1207
       }
     ]
   },
@@ -34907,7 +35298,7 @@
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 768
+        "line": 1209
       }
     ]
   },
@@ -34934,7 +35325,7 @@
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 778
+        "line": 1219
       }
     ]
   },
@@ -34961,7 +35352,7 @@
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 796
+        "line": 1237
       }
     ]
   },
@@ -34988,7 +35379,7 @@
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 805
+        "line": 1246
       }
     ]
   },
@@ -35015,7 +35406,7 @@
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 851
+        "line": 1292
       }
     ]
   },
@@ -35042,7 +35433,7 @@
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 864
+        "line": 1305
       }
     ]
   },
@@ -35069,7 +35460,7 @@
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 877
+        "line": 1318
       }
     ]
   },
@@ -35096,7 +35487,7 @@
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 948
+        "line": 1389
       }
     ]
   },
@@ -35123,7 +35514,7 @@
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 950
+        "line": 1391
       }
     ]
   },
@@ -35150,142 +35541,57 @@
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 955
+        "line": 1396
       }
     ]
   },
-  "ba9600b6": {
-    "source": "Password Reset",
+  "894cd006": {
+    "source": "A suggested password for {{username}} is filled in below. Edit it if you want, and copy it before resetting.",
     "translated": {
-      "pt-BR": "Redefinição de Senha",
-      "es": "Restablecimiento de contraseña",
-      "de": "Passwort-Zurücksetzung",
-      "fr": "Réinitialisation du mot de passe",
-      "zh-CN": "密码重置",
-      "zh-Hans": "密码重置",
-      "hi": "पासवर्ड रीसेट करें"
+      "es": "A continuación se muestra una contraseña sugerida para {{username}}. Edítela si lo desea y cópiela antes de restablecerla.",
+      "de": "Ein vorgeschlagenes Passwort für {{username}} ist unten eingetragen. Bearbeiten Sie es bei Bedarf und kopieren Sie es vor dem Zurücksetzen.",
+      "pt-BR": "Uma senha sugerida para {{username}} foi preenchida abaixo. Edite-a se desejar e copie-a antes de redefinir.",
+      "fr": "Un mot de passe suggéré pour {{username}} est prérempli ci-dessous. Modifiez-le si vous le souhaitez, et copiez-le avant de le réinitialiser.",
+      "zh-Hans": "下方已填入 {{username}} 的建议密码。您可以按需修改，请在重置前复制。",
+      "hi": "{{username}} के लिए सुझाया गया पासवर्ड नीचे दिया गया है। चाहें तो इसे संपादित करें और रीसेट करने से पहले कॉपी कर लें।"
     },
     "models": {
-      "pt-BR": "anthropic/claude-3.5-haiku",
-      "es": "anthropic/claude-3.5-haiku",
-      "de": "anthropic/claude-3.5-haiku",
-      "fr": "anthropic/claude-3.5-haiku",
-      "zh-CN": "manual",
-      "zh-Hans": "meta-llama/llama-3.3-70b-instruct",
-      "hi": "~anthropic/claude-sonnet-latest"
+      "es": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
     },
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 977
+        "line": 1421
       }
     ]
   },
-  "09b6e1d1": {
-    "source": "A new temporary password has been generated for {{username}}.",
+  "47c453f6": {
+    "source": "A suggested password is filled in below. Edit it if you want, and copy it before resetting.",
     "translated": {
-      "pt-BR": "Uma nova senha temporária foi gerada para {{username}}.",
-      "es": "Se ha generado una nueva contraseña temporal para {{username}}.",
-      "de": "Für {{username}} wurde ein neues temporäres Passwort generiert.",
-      "fr": "Un nouveau mot de passe temporaire a été généré pour {{username}}.",
-      "zh-CN": "已为 {{username}} 生成新的临时密码。",
-      "zh-Hans": "已为 {{username}} 生成一个新的临时密码。",
-      "hi": "{{username}} के लिए एक नया अस्थायी पासवर्ड जनरेट किया गया है।"
+      "es": "A continuación se muestra una contraseña sugerida. Edítela si lo desea y cópiela antes de restablecerla.",
+      "de": "Ein vorgeschlagenes Passwort ist unten eingetragen. Bearbeiten Sie es bei Bedarf und kopieren Sie es vor dem Zurücksetzen.",
+      "pt-BR": "Uma senha sugerida foi preenchida abaixo. Edite-a se desejar e copie-a antes de redefinir.",
+      "fr": "Un mot de passe suggéré est prérempli ci-dessous. Modifiez-le si vous le souhaitez, et copiez-le avant de le réinitialiser.",
+      "zh-Hans": "下方已填入建议密码。您可以按需修改，请在重置前复制。",
+      "hi": "सुझाया गया पासवर्ड नीचे दिया गया है। चाहें तो इसे संपादित करें और रीसेट करने से पहले कॉपी कर लें।"
     },
     "models": {
-      "pt-BR": "anthropic/claude-3.5-haiku",
-      "es": "anthropic/claude-3.5-haiku",
-      "de": "anthropic/claude-3.5-haiku",
-      "fr": "anthropic/claude-3.5-haiku",
-      "zh-CN": "manual",
-      "zh-Hans": "meta-llama/llama-3.3-70b-instruct",
-      "hi": "~anthropic/claude-sonnet-latest"
+      "es": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
     },
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 980
-      }
-    ]
-  },
-  "ae4a9b20": {
-    "source": "A new temporary password has been generated for the user.",
-    "translated": {
-      "pt-BR": "Uma nova senha temporária foi gerada para o usuário.",
-      "es": "Se ha generado una nueva contraseña temporal para el usuario.",
-      "de": "Für den Benutzer wurde ein neues temporäres Passwort generiert.",
-      "fr": "Un nouveau mot de passe temporaire a été généré pour l'utilisateur.",
-      "zh-CN": "已为用户生成新的临时密码。",
-      "zh-Hans": "已为用户生成一个新的临时密码。",
-      "hi": "उपयोगकर्ता के लिए एक नया अस्थायी पासवर्ड जनरेट किया गया है।"
-    },
-    "models": {
-      "pt-BR": "anthropic/claude-3.5-haiku",
-      "es": "anthropic/claude-3.5-haiku",
-      "de": "anthropic/claude-3.5-haiku",
-      "fr": "anthropic/claude-3.5-haiku",
-      "zh-CN": "manual",
-      "zh-Hans": "meta-llama/llama-3.3-70b-instruct",
-      "hi": "~anthropic/claude-sonnet-latest"
-    },
-    "locations": [
-      {
-        "file": "src/components/settings/user-management-form.tsx",
-        "line": 981
-      }
-    ]
-  },
-  "cf13f546": {
-    "source": "Copy this password now - it will not be shown again!",
-    "translated": {
-      "pt-BR": "Copie esta senha agora - ela não será mostrada novamente!",
-      "es": "Copie esta contraseña ahora: ¡no se mostrará de nuevo!",
-      "de": "Kopieren Sie dieses Passwort jetzt - es wird nicht wieder angezeigt!",
-      "fr": "Copiez ce mot de passe maintenant - il ne sera plus affiché !",
-      "zh-CN": "请立即复制此密码——不会再次显示！",
-      "zh-Hans": "现在复制这个密码 - 它不会再次显示！",
-      "hi": "इस पासवर्ड को अभी कॉपी करें - यह दोबारा नहीं दिखाया जाएगा!"
-    },
-    "models": {
-      "pt-BR": "anthropic/claude-3.5-haiku",
-      "es": "anthropic/claude-3.5-haiku",
-      "de": "anthropic/claude-3.5-haiku",
-      "fr": "anthropic/claude-3.5-haiku",
-      "zh-CN": "manual",
-      "zh-Hans": "meta-llama/llama-3.3-70b-instruct",
-      "hi": "~anthropic/claude-sonnet-latest"
-    },
-    "locations": [
-      {
-        "file": "src/components/settings/user-management-form.tsx",
-        "line": 983
-      }
-    ]
-  },
-  "0afd501f": {
-    "source": "Temporary Password",
-    "translated": {
-      "pt-BR": "Senha Temporária",
-      "es": "Contraseña temporal",
-      "de": "Temporäres Passwort",
-      "fr": "Mot de passe temporaire",
-      "zh-CN": "临时密码",
-      "zh-Hans": "临时密码",
-      "hi": "अस्थायी पासवर्ड"
-    },
-    "models": {
-      "pt-BR": "anthropic/claude-3.5-haiku",
-      "es": "anthropic/claude-3.5-haiku",
-      "de": "anthropic/claude-3.5-haiku",
-      "fr": "anthropic/claude-3.5-haiku",
-      "zh-CN": "manual",
-      "zh-Hans": "meta-llama/llama-3.3-70b-instruct",
-      "hi": "~anthropic/claude-sonnet-latest"
-    },
-    "locations": [
-      {
-        "file": "src/components/settings/user-management-form.tsx",
-        "line": 989
+        "line": 1422
       }
     ]
   },
@@ -35312,7 +35618,146 @@
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 1000
+        "line": 1455
+      },
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 1560
+      }
+    ]
+  },
+  "ba9600b6": {
+    "source": "Password Reset",
+    "translated": {
+      "pt-BR": "Redefinição de Senha",
+      "es": "Restablecimiento de contraseña",
+      "de": "Passwort-Zurücksetzung",
+      "fr": "Réinitialisation du mot de passe",
+      "zh-CN": "密码重置",
+      "zh-Hans": "密码重置",
+      "hi": "पासवर्ड रीसेट करें"
+    },
+    "models": {
+      "pt-BR": "anthropic/claude-3.5-haiku",
+      "es": "anthropic/claude-3.5-haiku",
+      "de": "anthropic/claude-3.5-haiku",
+      "fr": "anthropic/claude-3.5-haiku",
+      "zh-CN": "manual",
+      "zh-Hans": "meta-llama/llama-3.3-70b-instruct",
+      "hi": "~anthropic/claude-sonnet-latest"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 1537
+      }
+    ]
+  },
+  "09b6e1d1": {
+    "source": "A new temporary password has been generated for {{username}}.",
+    "translated": {
+      "pt-BR": "Uma nova senha temporária foi gerada para {{username}}.",
+      "es": "Se ha generado una nueva contraseña temporal para {{username}}.",
+      "de": "Für {{username}} wurde ein neues temporäres Passwort generiert.",
+      "fr": "Un nouveau mot de passe temporaire a été généré pour {{username}}.",
+      "zh-CN": "已为 {{username}} 生成新的临时密码。",
+      "zh-Hans": "已为 {{username}} 生成一个新的临时密码。",
+      "hi": "{{username}} के लिए एक नया अस्थायी पासवर्ड जनरेट किया गया है।"
+    },
+    "models": {
+      "pt-BR": "anthropic/claude-3.5-haiku",
+      "es": "anthropic/claude-3.5-haiku",
+      "de": "anthropic/claude-3.5-haiku",
+      "fr": "anthropic/claude-3.5-haiku",
+      "zh-CN": "manual",
+      "zh-Hans": "meta-llama/llama-3.3-70b-instruct",
+      "hi": "~anthropic/claude-sonnet-latest"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 1540
+      }
+    ]
+  },
+  "ae4a9b20": {
+    "source": "A new temporary password has been generated for the user.",
+    "translated": {
+      "pt-BR": "Uma nova senha temporária foi gerada para o usuário.",
+      "es": "Se ha generado una nueva contraseña temporal para el usuario.",
+      "de": "Für den Benutzer wurde ein neues temporäres Passwort generiert.",
+      "fr": "Un nouveau mot de passe temporaire a été généré pour l'utilisateur.",
+      "zh-CN": "已为用户生成新的临时密码。",
+      "zh-Hans": "已为用户生成一个新的临时密码。",
+      "hi": "उपयोगकर्ता के लिए एक नया अस्थायी पासवर्ड जनरेट किया गया है।"
+    },
+    "models": {
+      "pt-BR": "anthropic/claude-3.5-haiku",
+      "es": "anthropic/claude-3.5-haiku",
+      "de": "anthropic/claude-3.5-haiku",
+      "fr": "anthropic/claude-3.5-haiku",
+      "zh-CN": "manual",
+      "zh-Hans": "meta-llama/llama-3.3-70b-instruct",
+      "hi": "~anthropic/claude-sonnet-latest"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 1541
+      }
+    ]
+  },
+  "cf13f546": {
+    "source": "Copy this password now - it will not be shown again!",
+    "translated": {
+      "pt-BR": "Copie esta senha agora - ela não será mostrada novamente!",
+      "es": "Copie esta contraseña ahora: ¡no se mostrará de nuevo!",
+      "de": "Kopieren Sie dieses Passwort jetzt - es wird nicht wieder angezeigt!",
+      "fr": "Copiez ce mot de passe maintenant - il ne sera plus affiché !",
+      "zh-CN": "请立即复制此密码——不会再次显示！",
+      "zh-Hans": "现在复制这个密码 - 它不会再次显示！",
+      "hi": "इस पासवर्ड को अभी कॉपी करें - यह दोबारा नहीं दिखाया जाएगा!"
+    },
+    "models": {
+      "pt-BR": "anthropic/claude-3.5-haiku",
+      "es": "anthropic/claude-3.5-haiku",
+      "de": "anthropic/claude-3.5-haiku",
+      "fr": "anthropic/claude-3.5-haiku",
+      "zh-CN": "manual",
+      "zh-Hans": "meta-llama/llama-3.3-70b-instruct",
+      "hi": "~anthropic/claude-sonnet-latest"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 1543
+      }
+    ]
+  },
+  "0afd501f": {
+    "source": "Temporary Password",
+    "translated": {
+      "pt-BR": "Senha Temporária",
+      "es": "Contraseña temporal",
+      "de": "Temporäres Passwort",
+      "fr": "Mot de passe temporaire",
+      "zh-CN": "临时密码",
+      "zh-Hans": "临时密码",
+      "hi": "अस्थायी पासवर्ड"
+    },
+    "models": {
+      "pt-BR": "anthropic/claude-3.5-haiku",
+      "es": "anthropic/claude-3.5-haiku",
+      "de": "anthropic/claude-3.5-haiku",
+      "fr": "anthropic/claude-3.5-haiku",
+      "zh-CN": "manual",
+      "zh-Hans": "meta-llama/llama-3.3-70b-instruct",
+      "hi": "~anthropic/claude-sonnet-latest"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 1549
       }
     ]
   },
@@ -35339,7 +35784,32 @@
     "locations": [
       {
         "file": "src/components/settings/user-management-form.tsx",
-        "line": 1010
+        "line": 1571
+      }
+    ]
+  },
+  "924b6f2b": {
+    "source": "The user will not be required to change this password on next login.",
+    "translated": {
+      "es": "No se requerirá que el usuario cambie esta contraseña en el próximo inicio de sesión.",
+      "de": "Der Benutzer muss dieses Passwort bei der nächsten Anmeldung nicht ändern.",
+      "pt-BR": "O usuário não será obrigado a alterar esta senha no próximo login.",
+      "fr": "L'utilisateur ne sera pas obligé de changer ce mot de passe à la prochaine connexion.",
+      "zh-Hans": "用户下次登录时无需更改此密码。",
+      "hi": "उपयोगकर्ता को अगले लॉगिन पर यह पासवर्ड बदलने की आवश्यकता नहीं होगी।"
+    },
+    "models": {
+      "es": "qwen/qwen3.7-max",
+      "de": "qwen/qwen3.7-max",
+      "pt-BR": "qwen/qwen3.7-max",
+      "fr": "qwen/qwen3.7-max",
+      "zh-Hans": "qwen/qwen3.7-max",
+      "hi": "qwen/qwen3.7-max"
+    },
+    "locations": [
+      {
+        "file": "src/components/settings/user-management-form.tsx",
+        "line": 1572
       }
     ]
   },
@@ -36880,32 +37350,7 @@
     "locations": [
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 148
-      }
-    ]
-  },
-  "9aa1b039": {
-    "source": "Server",
-    "translated": {
-      "es": "Servidor",
-      "pt-BR": "Servidor",
-      "fr": "Serveur",
-      "de": "Server",
-      "zh-Hans": "服务器",
-      "hi": "सर्वर"
-    },
-    "models": {
-      "es": "mistralai/codestral-2508",
-      "pt-BR": "mistralai/codestral-2508",
-      "fr": "mistralai/codestral-2508",
-      "de": "mistralai/codestral-2508",
-      "zh-Hans": "mistralai/codestral-2508",
-      "hi": "qwen/qwen-2.5-72b-instruct"
-    },
-    "locations": [
-      {
-        "file": "src/lib/daily-summary.ts",
-        "line": 166
+        "line": 150
       }
     ]
   },
@@ -36930,7 +37375,7 @@
     "locations": [
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 167
+        "line": 169
       }
     ]
   },
@@ -36955,7 +37400,7 @@
     "locations": [
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 169
+        "line": 171
       }
     ]
   },
@@ -36980,7 +37425,7 @@
     "locations": [
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 170
+        "line": 172
       }
     ]
   },
@@ -37005,7 +37450,7 @@
     "locations": [
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 174
+        "line": 176
       }
     ]
   },
@@ -37030,19 +37475,19 @@
     "locations": [
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 201
+        "line": 203
       },
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 202
+        "line": 204
       },
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 230
+        "line": 232
       },
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 234
+        "line": 236
       }
     ]
   },
@@ -37067,11 +37512,11 @@
     "locations": [
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 204
+        "line": 206
       },
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 205
+        "line": 207
       }
     ]
   },
@@ -37096,7 +37541,7 @@
     "locations": [
       {
         "file": "src/lib/daily-summary.ts",
-        "line": 237
+        "line": 239
       }
     ]
   }

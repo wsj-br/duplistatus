@@ -970,10 +970,42 @@ const migrations: Migration[] = [
         })
       );
     }
+  },
+  {
+    version: '4.3',
+    description: 'Add per-user server access for non-admin accounts',
+    up: (db: Database.Database) => {
+      const userColumns = db.prepare('PRAGMA table_info(users)').all() as Array<{ name: string }>;
+      const hasAccessColumn = userColumns.some((column) => column.name === 'access_all_servers');
+      const userServersExists = db.prepare(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='user_servers'"
+      ).get();
+
+      if (hasAccessColumn && userServersExists) {
+        throw new Error('MIGRATION_ALREADY_COMPLETED');
+      }
+
+      if (!hasAccessColumn) {
+        db.exec('ALTER TABLE users ADD COLUMN access_all_servers INTEGER NOT NULL DEFAULT 1');
+      }
+
+      if (!userServersExists) {
+        db.exec(`
+          CREATE TABLE user_servers (
+            user_id TEXT NOT NULL,
+            server_id TEXT NOT NULL,
+            PRIMARY KEY (user_id, server_id),
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+            FOREIGN KEY (server_id) REFERENCES servers(id) ON DELETE CASCADE
+          );
+          CREATE INDEX IF NOT EXISTS idx_user_servers_server_id ON user_servers(server_id);
+        `);
+      }
+    }
   }
 ];
 
-export const LATEST_SCHEMA_VERSION = '4.2';
+export const LATEST_SCHEMA_VERSION = '4.3';
 
 export const DAILY_SUMMARY_DELIVERIES_SCHEMA = `
         CREATE TABLE IF NOT EXISTS daily_summary_deliveries (

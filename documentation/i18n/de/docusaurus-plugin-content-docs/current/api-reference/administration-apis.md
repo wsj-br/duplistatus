@@ -383,6 +383,8 @@ Mit Fehlern:
         "id": "user-id",
         "username": "admin",
         "isAdmin": true,
+        "accessAllServers": true,
+        "serverIds": [],
         "mustChangePassword": false,
         "createdAt": "2024-01-01T00:00:00Z",
         "lastLoginAt": "2024-01-15T10:30:00Z",
@@ -422,14 +424,18 @@ Mit Fehlern:
     "username": "newuser",
     "password": "optional-password",
     "isAdmin": false,
-    "requirePasswordChange": true
+    "requirePasswordChange": true,
+    "accessAllServers": false,
+    "serverIds": ["server-id"]
   }
   ```
 
-- `username`: Erforderlich, muss 3-50 Zeichen haben, eindeutig sein
-  - `password`: Optional, falls nicht angegeben, wird ein sicheres temporäres Passwort generiert
-  - `isAdmin`: Optional, Standardwert false
-  - `requirePasswordChange`: Optional, Standardwert true
+- `username`: Erforderlich, muss 3-50 Zeichen lang und eindeutig sein
+  - `password`: Optional, wenn nicht angegeben, wird ein sicheres temporäres Passwort generiert
+  - `isAdmin`: Optional, Standard: false. Admin-Benutzer erhalten immer alle Server
+  - `requirePasswordChange`: Optional, Standard: true
+  - `accessAllServers`: Optional, Standard: true. Wenn false, ist `serverIds` die einzige Gruppe von Servern, die der Benutzer sehen kann
+  - `serverIds`: Optionales Array bestehender Server-IDs. Unbekannte IDs werden abgelehnt. Wird ignoriert, wenn der Benutzer ein Admin ist oder `accessAllServers` nicht false ist
 - **Antwort**:
 
   ```json
@@ -438,7 +444,9 @@ Mit Fehlern:
       "id": "user-id",
       "username": "newuser",
       "isAdmin": false,
-      "mustChangePassword": true
+      "mustChangePassword": true,
+      "accessAllServers": true,
+      "serverIds": []
     },
     "temporaryPassword": "generated-password-123"
   }
@@ -472,12 +480,17 @@ Mit Fehlern:
     "username": "updated-username",
     "isAdmin": true,
     "requirePasswordChange": false,
-    "resetPassword": true
+    "resetPassword": true,
+    "password": "optional-custom-password",
+    "accessAllServers": false,
+    "serverIds": ["server-id"]
   }
   ```
 
 - Alle Felder sind optional
-  - `resetPassword`: Wenn true, wird ein neues temporäres Passwort generiert und `requirePasswordChange` auf true gesetzt
+  - `accessAllServers` und `serverIds`: Dieselben Regeln wie beim Erstellen. Das Befördern eines Benutzers zum Admin speichert den Zugriff auf alle Server. Das Zurückstufen eines Admins beginnt wieder bei allen Servern, sofern nicht eine benutzerdefinierte Liste in derselben Anfrage gesendet wird
+  - `resetPassword`: Wenn true, wird ein neues Passwort festgelegt. `password`, falls angegeben, wird nach Richtlinienprüfungen verwendet. Wenn `password` weggelassen wird, wird ein temporäres Passwort generiert
+  - `requirePasswordChange`: Mit `resetPassword`, Standard: true. Senden Sie `false`, um das Flag zum Ändern des Passworts zu löschen
 - **Antwort** (mit Passwort-Zurücksetzung):
 
   ```json
@@ -486,7 +499,9 @@ Mit Fehlern:
       "id": "user-id",
       "username": "updated-username",
       "isAdmin": true,
-      "mustChangePassword": true
+      "mustChangePassword": true,
+      "accessAllServers": true,
+      "serverIds": []
     },
     "temporaryPassword": "new-temp-password-456"
   }
@@ -500,22 +515,25 @@ Mit Fehlern:
       "id": "user-id",
       "username": "updated-username",
       "isAdmin": true,
-      "mustChangePassword": false
+      "mustChangePassword": false,
+      "accessAllServers": true,
+      "serverIds": []
     }
   }
   ```
 
 - **Fehlerantworten**:
   - `400`: Ungültige Eingabe oder Validierungsfehler
-  - `401`: Nicht autorisiert - Ungültige Sitzung oder CSRF-Token
-  - `403`: Verboten - Administratorrechte erforderlich
+  - `401`: Nicht autorisiert – Ungültige Sitzung oder ungültiges CSRF-Token
+  - `403`: Verboten – Admin-Rechte erforderlich
   - `404`: Benutzer nicht gefunden
-  - `409`: Benutzername existiert bereits (bei Benutzernamensänderung)
+  - `409`: Benutzername existiert bereits (wenn der Benutzername geändert wird)
   - `500`: Interner Serverfehler
 - **Hinweise**:
-  - Nur für Administratoren zugänglich
-  - Benutzernamensänderungen werden auf Eindeutigkeit geprüft
-  - Passwortzurücksetzung generiert ein sicheres 12-stelliges temporäres Passwort
+  - Nur für Admin-Benutzer zugänglich
+  - Änderungen des Benutzernamens werden auf Eindeutigkeit geprüft
+  - Wenn kein Passwort zum Zurücksetzen angegeben wird, wird ein sicheres, 12 Zeichen langes temporäres Passwort generiert, das einmalig zurückgegeben wird
+  - Ein angegebenes Passwort zum Zurücksetzen muss der Passwortrichtlinie entsprechen und wird nicht zurückgegeben
   - Alle Änderungen werden im Audit-Protokoll protokolliert
 
 ### Benutzer löschen - `/api/users/:id` {/* #delete-user---apiusersid */}

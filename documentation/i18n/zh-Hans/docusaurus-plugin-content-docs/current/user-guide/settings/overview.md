@@ -51,7 +51,7 @@
 
 ## 非管理员视图 {/* #non-administrator-view */}
 
-普通用户只能看到有限的设置选项。
+普通用户只能看到有限的设置项。这些页面中的服务器名称和备份数据遵循 [用户](user-management-settings.md#server-visibility) 中的服务器授权。
 
 <table>
   <tr>

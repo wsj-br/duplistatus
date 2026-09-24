@@ -33,23 +33,27 @@ Sie können auf den Bereich Benutzerverwaltung auf zwei Arten zugreifen:
 ## Einen Benutzer bearbeiten {/* #editing-a-user */}
 
 1. Klicken Sie auf das Bearbeitungssymbol <IconButton icon="lucide:edit" /> neben dem Benutzer
-2. Ändern Sie eine der folgenden Angaben:
-   - **Benutzername**: Benutzername ändern (muss eindeutig sein)
-   - **Admin**: Administratorrechte umschalten
-   - **Passwortänderung erforderlich**: Passwortänderungserfordernis umschalten
+2. Ändern Sie bei Bedarf Folgendes:
+   - **Benutzername**: Ändern Sie den Benutzernamen (muss eindeutig sein)
+   - **Admin**: Aktivieren oder deaktivieren Sie die Administratorrechte. Bei Aktivierung erhält der Benutzer Zugriff auf alle Server und eine benutzerdefinierte Serverliste wird gelöscht. Bei Deaktivierung wird die Auswahl auf alle Server zurückgesetzt.
+   - **Passwortänderung erforderlich**: Aktivieren oder deaktivieren Sie die Pflicht zur Passwortänderung.
 3. Klicken Sie auf <IconButton icon="lucide:check" label="Änderungen speichern" />.
 
 ## Ein Benutzerpasswort zurücksetzen {/* #resetting-a-user-password */}
 
-1. Klicken Sie auf das Schlüsselsymbol <IconButton icon="lucide:key-round" /> neben dem Benutzer
-2. Bestätigen Sie das Zurücksetzen des Passworts
-3. Ein neues temporäres Passwort wird generiert und angezeigt
-4. Kopieren Sie das Passwort und geben Sie es dem Benutzer sicher weiter
+1. Klicken Sie auf das <IconButton icon="lucide:key-round" /> Schlüsselsymbol neben dem Benutzer
+2. Ein vorgeschlagenes Passwort ist bereits eingetragen und sichtbar. Durch das Bearbeiten wird das Passwort ausgeblendet; verwenden Sie das Anzeigen-Symbol, um es wieder anzuzeigen, und kopieren Sie es anschließend
+3. **Passwortänderung bei nächster Anmeldung erzwingen** ist standardmäßig aktiviert. Deaktivieren Sie diese Option, wenn der Benutzer dieses Passwort behalten soll
+4. Klicken Sie auf **Passwort zurücksetzen**. Das Passwort wird nicht wieder angezeigt.
 
 ## Einen Benutzer löschen {/* #deleting-a-user */}
 
 1. Klicken Sie auf das Löschen-Symbol <IconButton icon="lucide:trash-2" /> neben dem Benutzer
 2. Bestätigen Sie das Löschen im Dialogfeld. **Das Löschen eines Benutzers ist dauerhaft und kann nicht rückgängig gemacht werden.**
+
+## Serversichtbarkeit {/* #server-visibility */}
+
+Administratoren sehen immer alle Server. In der Benutzerliste ist **Alle Server** ein Schalter. Lassen Sie ihn für jeden aktuellen und zukünftigen Server aktiviert. Deaktivieren Sie ihn, um eine Zeile zu erweitern und Server auszuwählen. Das Kontrollkästchen in der Kopfzeile wählt die sichtbaren Zeilen aus oder hebt die Auswahl auf. Beim Speichern wird jeder ausgewählte Server als Alias (Name) mit einem Bearbeitungssymbol zum Ändern der Liste angezeigt. Ein neuer Server bleibt ausgeblendet, bis er ausgewählt wird. Wenn keine ausgewählt sind, sieht der Benutzer keine Server. Das Dashboard, die Serverdetails, der Sicherungsverlauf, die Diagramme und die Einstellungslisten enthalten dann nur diese Server. Ein direkter Link oder eine API-Anfrage für einen anderen Server wird als nicht gefunden behandelt. Externe API-Schlüssel sind durch diese Berechtigung nicht eingeschränkt.
 
 ## Kontosperrung {/* #account-lockout */}
 

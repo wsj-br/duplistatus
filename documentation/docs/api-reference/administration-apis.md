@@ -345,6 +345,8 @@
         "id": "user-id",
         "username": "admin",
         "isAdmin": true,
+        "accessAllServers": true,
+        "serverIds": [],
         "mustChangePassword": false,
         "createdAt": "2024-01-01T00:00:00Z",
         "lastLoginAt": "2024-01-15T10:30:00Z",
@@ -382,13 +384,17 @@
     "username": "newuser",
     "password": "optional-password",
     "isAdmin": false,
-    "requirePasswordChange": true
+    "requirePasswordChange": true,
+    "accessAllServers": false,
+    "serverIds": ["server-id"]
   }
   ```
   - `username`: Required, must be 3-50 characters, unique
   - `password`: Optional, if not provided a secure temporary password is generated
-  - `isAdmin`: Optional, default false
+  - `isAdmin`: Optional, default false. Admin users always receive every server
   - `requirePasswordChange`: Optional, default true
+  - `accessAllServers`: Optional, default true. When false, `serverIds` is the only set of servers that user can see
+  - `serverIds`: Optional array of existing server ids. Unknown ids are rejected. Ignored when the user is an admin or `accessAllServers` is not false
 - **Response**:
   ```json
   {
@@ -396,7 +402,9 @@
       "id": "user-id",
       "username": "newuser",
       "isAdmin": false,
-      "mustChangePassword": true
+      "mustChangePassword": true,
+      "accessAllServers": true,
+      "serverIds": []
     },
     "temporaryPassword": "generated-password-123"
   }
@@ -428,11 +436,16 @@
     "username": "updated-username",
     "isAdmin": true,
     "requirePasswordChange": false,
-    "resetPassword": true
+    "resetPassword": true,
+    "password": "optional-custom-password",
+    "accessAllServers": false,
+    "serverIds": ["server-id"]
   }
   ```
   - All fields are optional
-  - `resetPassword`: If true, generates a new temporary password and sets `requirePasswordChange` to true
+  - `accessAllServers` and `serverIds`: Same rules as create. Promoting a user to admin stores all-server access. Demoting an admin starts again at all servers unless a custom list is sent in the same request
+  - `resetPassword`: If true, sets a new password. `password`, when provided, is used after policy checks. When `password` is omitted, a temporary password is generated
+  - `requirePasswordChange`: With `resetPassword`, defaults to true. Send `false` to clear the must-change-password flag
 - **Response** (with password reset):
   ```json
   {
@@ -440,7 +453,9 @@
       "id": "user-id",
       "username": "updated-username",
       "isAdmin": true,
-      "mustChangePassword": true
+      "mustChangePassword": true,
+      "accessAllServers": true,
+      "serverIds": []
     },
     "temporaryPassword": "new-temp-password-456"
   }
@@ -452,7 +467,9 @@
       "id": "user-id",
       "username": "updated-username",
       "isAdmin": true,
-      "mustChangePassword": false
+      "mustChangePassword": false,
+      "accessAllServers": true,
+      "serverIds": []
     }
   }
   ```
@@ -466,7 +483,8 @@
 - **Notes**:
   - Only accessible to admin users
   - Username changes are validated for uniqueness
-  - Password reset generates a secure 12-character temporary password
+  - An omitted reset password generates a secure 12-character temporary password, returned once
+  - A supplied reset password must meet the password policy and is not returned
   - All changes are logged to audit log
 
 ### Delete User - `/api/users/:id` {/* #delete-user---apiusersid */}

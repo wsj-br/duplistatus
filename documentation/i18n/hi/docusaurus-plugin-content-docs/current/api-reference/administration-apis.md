@@ -383,6 +383,8 @@
         "id": "user-id",
         "username": "admin",
         "isAdmin": true,
+        "accessAllServers": true,
+        "serverIds": [],
         "mustChangePassword": false,
         "createdAt": "2024-01-01T00:00:00Z",
         "lastLoginAt": "2024-01-15T10:30:00Z",
@@ -422,14 +424,18 @@
     "username": "newuser",
     "password": "optional-password",
     "isAdmin": false,
-    "requirePasswordChange": true
+    "requirePasswordChange": true,
+    "accessAllServers": false,
+    "serverIds": ["server-id"]
   }
   ```
 
 - `username`: आवश्यक, 3-50 वर्णों का होना चाहिए, अद्वितीय
-  - `password`: वैकल्पिक, यदि प्रदान नहीं किया गया तो एक सुरक्षित अस्थायी पासवर्ड उत्पन्न किया जाता है
-  - `isAdmin`: वैकल्पिक, डिफ़ॉल्ट false
+  - `password`: वैकल्पिक, यदि प्रदान नहीं किया गया तो एक सुरक्षित अस्थायी पासवर्ड जनरेट किया जाता है
+  - `isAdmin`: वैकल्पिक, डिफ़ॉल्ट false. एडमिन उपयोगकर्ता हमेशा सभी सर्वर प्राप्त करते हैं
   - `requirePasswordChange`: वैकल्पिक, डिफ़ॉल्ट true
+  - `accessAllServers`: वैकल्पिक, डिफ़ॉल्ट true. false होने पर, `serverIds` सर्वर का एकमात्र ऐसा सेट है जिसे उपयोगकर्ता देख सकता है
+  - `serverIds`: मौजूदा सर्वर आईडी की वैकल्पिक सरणी. अज्ञात आईडी अस्वीकार कर दी जाती हैं. जब उपयोगकर्ता एडमिन हो या `accessAllServers` false न हो, तो इसे अनदेखा किया जाता है
 - **प्रतिक्रिया**:
 
   ```json
@@ -438,7 +444,9 @@
       "id": "user-id",
       "username": "newuser",
       "isAdmin": false,
-      "mustChangePassword": true
+      "mustChangePassword": true,
+      "accessAllServers": true,
+      "serverIds": []
     },
     "temporaryPassword": "generated-password-123"
   }
@@ -472,13 +480,18 @@
     "username": "updated-username",
     "isAdmin": true,
     "requirePasswordChange": false,
-    "resetPassword": true
+    "resetPassword": true,
+    "password": "optional-custom-password",
+    "accessAllServers": false,
+    "serverIds": ["server-id"]
   }
   ```
 
 - सभी फ़ील्ड वैकल्पिक हैं
-  - `resetPassword`: यदि true है, तो एक नया अस्थायी पासवर्ड उत्पन्न करता है और `requirePasswordChange` को true पर सेट करता है
-- **प्रतिक्रिया** (पासवर्ड रीसेट के साथ):
+  - `accessAllServers` और `serverIds`: बनाने वाले समान नियम. उपयोगकर्ता को एडमिन के रूप में प्रमोट करने पर सभी सर्वर तक पहुँच स्टोर हो जाती है. एडमिन को डिमोट करने पर सभी सर्वर से फिर से शुरुआत होती है, जब तक कि उसी अनुरोध में कस्टम सूची न भेजी गई हो
+  - `resetPassword`: true होने पर, एक नया पासवर्ड सेट करता है. `password`, प्रदान किए जाने पर, पॉलिसी जाँच के बाद उपयोग किया जाता है. जब `password` छोड़ दिया जाता है, तो एक अस्थायी पासवर्ड जनरेट किया जाता है
+  - `requirePasswordChange`: `resetPassword` के साथ, डिफ़ॉल्ट रूप से true. must-change-password फ्लैग को साफ़ करें, इसके लिए `false` भेजें
+- **प्रतिक्रिया** (पासवर्ड रीसेट करें):
 
   ```json
   {
@@ -486,7 +499,9 @@
       "id": "user-id",
       "username": "updated-username",
       "isAdmin": true,
-      "mustChangePassword": true
+      "mustChangePassword": true,
+      "accessAllServers": true,
+      "serverIds": []
     },
     "temporaryPassword": "new-temp-password-456"
   }
@@ -500,7 +515,9 @@
       "id": "user-id",
       "username": "updated-username",
       "isAdmin": true,
-      "mustChangePassword": false
+      "mustChangePassword": false,
+      "accessAllServers": true,
+      "serverIds": []
     }
   }
   ```
@@ -513,10 +530,11 @@
   - `409`: उपयोगकर्ता नाम पहले से मौजूद है (यदि उपयोगकर्ता नाम बदल रहे हैं)
   - `500`: आंतरिक सर्वर त्रुटि
 - **नोट्स**:
-  - केवल एडमिन उपयोगकर्ताओं के लिए सुलभ
-  - उपयोगकर्ता नाम परिवर्तनों की विशिष्टता के लिए सत्यापन किया जाता है
-  - पासवर्ड रीसेट एक सुरक्षित 12-वर्ण का अस्थायी पासवर्ड उत्पन्न करता है
-  - सभी परिवर्तन ऑडिट लॉग में दर्ज किए जाते हैं
+  - केवल एडमिन उपयोगकर्ता के लिए सुलभ
+  - उपयोगकर्ता नाम परिवर्तनों को विशिष्टता के लिए सत्यापित किया जाता है
+  - छोड़े गए पासवर्ड रीसेट करें से एक सुरक्षित 12-अक्षरों वाला अस्थायी पासवर्ड जनरेट होता है, जो एक बार लौटाया जाता है
+  - प्रदान किए गए पासवर्ड रीसेट करें को पासवर्ड नीति को पूरा करना होगा और इसे लौटाया नहीं जाता है
+  - सभी परिवर्तन ऑडिट लॉग में लॉग किए जाते हैं
 
 ### उपयोगकर्ता हटाएं - `/api/users/:id` {/* #delete-user---apiusersid */}
 - **एंडपॉइंट**: `/api/users/:id`

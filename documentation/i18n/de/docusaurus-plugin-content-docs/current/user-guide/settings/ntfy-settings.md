@@ -23,7 +23,7 @@ Wenn die Konfiguration nicht gültig ist, werden die NTFY-Kontrollkästchen im [
 | <IconButton icon="lucide:send-horizontal" label="Testnachricht senden"/> | Eine Testnachricht an Ihren NTFY-Server senden, um Ihre Konfiguration zu überprüfen.                          |
 | <IconButton icon="lucide:qr-code" label="Gerät konfigurieren"/>          | Einen QR-Code anzeigen, mit dem Sie Ihr mobiles Gerät oder Desktop schnell für NTFY-Benachrichtigungen konfigurieren können. |
 
-Wenn eine spätere ntfy-Zustellung fehlschlägt, sehen Administratoren ein rotes Sirenensymbol in der Symbolleiste. Siehe [Zustellungsfehler](../overview.md#delivery-failures).
+Wenn eine spätere ntfy-Zustellung fehlschlägt, sehen Administratoren eine rote Sirene in der Symbolleiste. Siehe [Zustellungsfehler](../delivery-failures.md).
 
 ## Gerätekonfiguration {/* #device-configuration */}
 

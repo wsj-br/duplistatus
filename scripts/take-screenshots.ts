@@ -196,6 +196,7 @@ const ORDERED_SCREENSHOT_FILENAMES: string[] = [
   'screen-overview-side-charts.png',
   'screen-collect-button-popup.png',
   'screen-collect-button-right-click-popup.png',
+  'screen-delivery-failures.png',
   'screen-duplicati-configuration.png',
   'screen-user-menu-admin.png',
   'screen-main-dashboard-table-mode.png',
@@ -1901,6 +1902,217 @@ async function captureCollectButtonPopup(
   }
 }
 
+const DELIVERY_FAILURE_CLEARS_KEY = 'notification_channel_alert_clears';
+
+const SCREENSHOT_EMAIL_FAILURE =
+  'SMTP authentication failed. Please verify your username and password are correct.\n\nOriginal error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-48868779472sm10141312f8f.23 - gsmtp';
+
+/** Original `notification_channel_alert_clears` value. `undefined` means it has not been saved yet. */
+let savedDeliveryFailureClears: string | null | undefined;
+
+interface ScreenshotBackupRef {
+  serverId: string;
+  serverName: string;
+  backupName: string;
+}
+
+async function readDeliveryFailureClears(): Promise<string | null> {
+  const dbModule = await import('../src/lib/db');
+  await dbModule.ensureDatabaseInitialized();
+  const row = dbModule.db.prepare('SELECT value FROM configurations WHERE key = ?').get(DELIVERY_FAILURE_CLEARS_KEY) as
+    | { value: string }
+    | undefined;
+  return row ? row.value : null;
+}
+
+async function writeDeliveryFailureClears(value: string | null): Promise<void> {
+  const dbModule = await import('../src/lib/db');
+  await dbModule.ensureDatabaseInitialized();
+  if (value === null) {
+    dbModule.db.prepare('DELETE FROM configurations WHERE key = ?').run(DELIVERY_FAILURE_CLEARS_KEY);
+    return;
+  }
+  dbModule.db.prepare('INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)').run(DELIVERY_FAILURE_CLEARS_KEY, value);
+}
+
+async function saveDeliveryFailureClears(): Promise<void> {
+  if (savedDeliveryFailureClears !== undefined) {
+    return;
+  }
+  savedDeliveryFailureClears = await readDeliveryFailureClears();
+}
+
+async function restoreDeliveryFailureClears(): Promise<void> {
+  if (savedDeliveryFailureClears === undefined) {
+    return;
+  }
+  await writeDeliveryFailureClears(savedDeliveryFailureClears);
+  savedDeliveryFailureClears = undefined;
+}
+
+/**
+ * Hide delivery failures already in the audit log for the screenshot admin.
+ * A row inserted after this call still appears, because its id is higher than the clear marker.
+ */
+async function hideOpenDeliveryFailures(): Promise<void> {
+  await saveDeliveryFailureClears();
+  const dbModule = await import('../src/lib/db');
+  await dbModule.ensureDatabaseInitialized();
+  const db = dbModule.db;
+  const admin = db.prepare('SELECT id FROM users WHERE username = ?').get(ADMIN_USERNAME) as { id: string } | undefined;
+  if (!admin) {
+    logError('Could not hide delivery failures: admin user not found');
+    return;
+  }
+  const maxRow = db.prepare('SELECT COALESCE(MAX(id), 0) AS maxId FROM audit_log').get() as { maxId: number };
+  const raw = await readDeliveryFailureClears();
+  let parsed: Record<string, unknown> = {};
+  if (raw) {
+    try {
+      const value: unknown = JSON.parse(raw);
+      if (value && typeof value === 'object' && !Array.isArray(value)) {
+        parsed = value as Record<string, unknown>;
+      }
+    } catch {
+      parsed = {};
+    }
+  }
+  const existing = parsed[admin.id];
+  const userClears: Record<string, number> =
+    existing && typeof existing === 'object' && !Array.isArray(existing) ? { ...(existing as Record<string, number>) } : {};
+  userClears.email = maxRow.maxId;
+  userClears.ntfy = maxRow.maxId;
+  parsed[admin.id] = userClears;
+  await writeDeliveryFailureClears(JSON.stringify(parsed));
+}
+
+async function insertScreenshotEmailFailure(): Promise<number | null> {
+  const dbModule = await import('../src/lib/db');
+  await dbModule.ensureDatabaseInitialized();
+  const db = dbModule.db;
+  const backup = db.prepare(`
+    SELECT b.server_id AS serverId, s.name AS serverName, b.backup_name AS backupName
+    FROM backups b
+    INNER JOIN servers s ON s.id = b.server_id
+    WHERE b.backup_name IS NOT NULL AND TRIM(b.backup_name) != ''
+    ORDER BY RANDOM()
+    LIMIT 1
+  `).get() as ScreenshotBackupRef | undefined;
+  if (!backup) {
+    logError('No backup found to seed a delivery failure');
+    return null;
+  }
+  const details = {
+    type: 'overdue',
+    channel: 'Email',
+    serverId: backup.serverId,
+    serverName: backup.serverName,
+    backupName: backup.backupName,
+    error: SCREENSHOT_EMAIL_FAILURE,
+    host: 'smtp.gmail.com',
+    port: 465,
+    connectionType: 'ssl',
+    secure: true,
+    requireTLS: false,
+    ignoreTLS: false,
+    requireAuth: true,
+    screenshotSeed: true,
+  };
+  const result = db.prepare(`
+    INSERT INTO audit_log (
+      user_id, username, action, category, target_type, target_id,
+      details, ip_address, user_agent, status, error_message
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(
+    null,
+    'system',
+    'email_failed',
+    'system',
+    null,
+    null,
+    JSON.stringify(details),
+    null,
+    null,
+    'error',
+    SCREENSHOT_EMAIL_FAILURE
+  );
+  log(`Seeded email delivery failure for ${backup.serverName} / ${backup.backupName} (audit id ${Number(result.lastInsertRowid)})`);
+  return Number(result.lastInsertRowid);
+}
+
+async function deleteScreenshotEmailFailure(id: number): Promise<void> {
+  const dbModule = await import('../src/lib/db');
+  await dbModule.ensureDatabaseInitialized();
+  dbModule.db.prepare('DELETE FROM audit_log WHERE id = ? AND action = ?').run(id, 'email_failed');
+  log(`Deleted seeded email delivery failure ${id}`);
+}
+
+async function captureDeliveryFailuresPopup(page: Page, screenshotDir: string): Promise<boolean> {
+  let seedId: number | null = null;
+  try {
+    await hideOpenDeliveryFailures();
+    seedId = await insertScreenshotEmailFailure();
+    if (seedId === null) {
+      return false;
+    }
+
+    log('🌐 Navigating to blank page (/blank) for delivery failures...');
+    await gotoWithRetry(page, makeUrl('/blank'), { waitUntil: PAGE_GOTO_WAIT, timeout: PAGE_GOTO_TIMEOUT_MS });
+    await page.waitForSelector('[data-screenshot-target="delivery-failures-button"]', { timeout: 15000, state: 'visible' });
+    await page.click('[data-screenshot-target="delivery-failures-button"]');
+    await delay(800);
+
+    try {
+      await page.waitForSelector('[data-screenshot-target="delivery-failures-popup"]', { timeout: 3000 });
+    } catch {
+      await page.waitForSelector('[role="dialog"], [data-radix-popper-content-wrapper], [data-radix-popover-content]', { timeout: 2000 });
+    }
+
+    const popupBounds = await page.evaluate(() => {
+      const popover = document.querySelector('[data-screenshot-target="delivery-failures-popup"]');
+      const target = popover ?? document.querySelector('[data-radix-popover-content], [role="dialog"], [data-radix-popper-content-wrapper]');
+      if (!target) {
+        return null;
+      }
+      const rect = target.getBoundingClientRect();
+      return {
+        x: Math.max(0, rect.x - 10),
+        y: Math.max(0, rect.y - 10),
+        width: rect.width + 20,
+        height: rect.height + 20,
+      };
+    });
+
+    if (!popupBounds) {
+      logError('Could not find delivery failures popup bounds');
+      return false;
+    }
+
+    const captured = await takeScreenshot(page, 'screen-delivery-failures.png', screenshotDir, {
+      clip: popupBounds,
+    });
+    if (captured) {
+      log('Captured delivery failures popup');
+    }
+    await page.keyboard.press('Escape');
+    await delay(300);
+    return captured;
+  } catch (error) {
+    logError('Error capturing delivery failures popup: ' + (error instanceof Error ? error.message : String(error)));
+    return false;
+  } finally {
+    if (seedId !== null) {
+      await deleteScreenshotEmailFailure(seedId);
+    }
+    await hideOpenDeliveryFailures();
+    try {
+      await page.reload({ waitUntil: PAGE_GOTO_WAIT, timeout: PAGE_GOTO_TIMEOUT_MS });
+    } catch (error) {
+      logError('Error reloading after delivery failures capture: ' + (error instanceof Error ? error.message : String(error)));
+    }
+  }
+}
+
 const OVERDUE_HOVER_MAX_ATTEMPTS = 3;
 const OVERDUE_HOVER_RETRY_DELAY_MS = 1500;
 const OVERDUE_HOVER_WAIT_SELECTOR_MS = 5000;
@@ -3102,6 +3314,7 @@ ${colors.reset}`);
       log('-------------------------------------------------------');
       log(`🌐 [Phase A] Capturing locale: ${locale}`);
 
+      await hideOpenDeliveryFailures();
       await setLocale(page, locale);
 
       // Navigate to dashboard
@@ -3165,6 +3378,14 @@ ${colors.reset}`);
         else failed.push('screen-collect-button-popup.png');
         if (collectPopups.rightClick) successful.push('screen-collect-button-right-click-popup.png');
         else failed.push('screen-collect-button-right-click-popup.png');
+      }
+
+      if (shouldCapture('screen-delivery-failures.png')) {
+        console.log('-------------------------------------------------------');
+        console.log('Capturing delivery failures popup...');
+        const deliveryFailures = await captureDeliveryFailuresPopup(page, screenshotDir);
+        if (deliveryFailures) successful.push('screen-delivery-failures.png');
+        else failed.push('screen-delivery-failures.png');
       }
 
       if (shouldCapture('screen-duplicati-configuration.png')) {
@@ -3468,6 +3689,7 @@ ${colors.reset}`);
       log('-------------------------------------------------------');
       log(`🌐 [Phase B] Capturing locale: ${locale}`);
 
+      await hideOpenDeliveryFailures();
       await setLocale(page, locale);
 
       // Set table view in localStorage BEFORE navigating to dashboard
@@ -4000,6 +4222,7 @@ ${colors.reset}`);
     logError('Error during screenshot automation: ' + (error instanceof Error ? error.message : String(error)));
     throw error;
   } finally {
+    await restoreDeliveryFailureClears();
     await browser.close();
     // Close log stream
     if (logStream) {

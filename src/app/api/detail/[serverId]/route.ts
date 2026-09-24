@@ -1,6 +1,7 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getServerById, getOverdueBackupsForServer, getLastOverdueBackupCheckTime, clearRequestCache, invalidateDataCache } from '@/lib/db-utils';
 import { withCSRF } from '@/lib/csrf-middleware';
+import { denyHiddenServer, requireServerAccess } from '@/lib/server-access-http';
 
 // Force dynamic rendering and disable all caching in production
 export const dynamic = 'force-dynamic';
@@ -8,10 +9,14 @@ export const revalidate = 0;
 export const fetchCache = 'force-no-store';
 
 export const GET = withCSRF(async (
-  request: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ serverId: string }> }
 ) => {
   try {
+    const accessResult = await requireServerAccess(request);
+    if (accessResult instanceof NextResponse) {
+      return accessResult;
+    }
     // Clear and invalidate all caches to ensure fresh data on each request
     // This is especially important in production mode where module-level cache might persist
     invalidateDataCache();
@@ -21,7 +26,8 @@ export const GET = withCSRF(async (
     
     // Get server data
     const server = await getServerById(serverId);
-    if (!server) {
+    const hidden = denyHiddenServer(accessResult.access, serverId);
+    if (!server || hidden) {
       return NextResponse.json(
         { error: 'Server not found' },
         { status: 404 }

@@ -1,6 +1,6 @@
 'use client';
 import { useTranslation } from "react-i18next";
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { Fragment, useState, useEffect, useMemo, useCallback } from 'react';
 import { useEffectiveFormatLocale, useRelativeTimeLocale } from '@/contexts/config-context';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -37,18 +37,175 @@ import { useToast } from '@/components/ui/use-toast';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { TogglePasswordInput } from '@/components/ui/toggle-password-input';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Plus, Edit, Trash2, KeyRound, Search, Copy, Check, X, UserCog } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Plus, Edit, Trash2, KeyRound, Search, Copy, Check, X, UserCog, Server, Info } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { formatRelativeTime } from '@/lib/utils';
 import { formatDateTime } from '@/lib/date-format';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ColoredIcon } from '@/components/ui/colored-icon';
-import { usePasswordPolicy } from '@/hooks/use-password-policy';
+import { usePasswordPolicy, type PasswordPolicy } from '@/hooks/use-password-policy';
+
+function suggestResetPassword(policy: PasswordPolicy | null): string {
+  const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+  const numbers = '0123456789';
+  const special = '!@#$%^&*';
+  const length = Math.max(policy?.minLength ?? 8, 12);
+  const chars: string[] = [];
+  const pick = (set: string) => set[Math.floor(Math.random() * set.length)];
+
+  if (policy?.requireUppercase !== false) chars.push(pick(uppercase));
+  if (policy?.requireLowercase !== false) chars.push(pick(lowercase));
+  if (policy?.requireNumbers !== false) chars.push(pick(numbers));
+
+  const all = uppercase + lowercase + numbers + special;
+  while (chars.length < length) chars.push(pick(all));
+
+  for (let i = chars.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const current = chars[i];
+    chars[i] = chars[j];
+    chars[j] = current;
+  }
+
+  return chars.join('');
+}
+
+interface ServerOption {
+  id: string;
+  name: string;
+  alias: string;
+}
+
+function serverLabel(server: ServerOption): string {
+  return server.alias ? `${server.alias} (${server.name})` : server.name;
+}
+
+const serverAccessRowClass = 'bg-muted/40 hover:bg-muted/40 dark:bg-[#0D1525] dark:hover:bg-[#0D1525]';
+
+function ServerAccessPicker({
+  servers,
+  selectedIds,
+  onChange,
+  disabled,
+}: {
+  servers: ServerOption[];
+  selectedIds: Set<string>;
+  onChange: (next: Set<string>) => void;
+  disabled: boolean;
+}) {
+  const { t } = useTranslation();
+  const [serverNameFilter, setServerNameFilter] = useState('');
+  const filteredServers = useMemo(() => {
+    const filterLower = serverNameFilter.trim().toLowerCase();
+    if (!filterLower) {
+      return servers;
+    }
+    return servers.filter((server) => {
+      return server.name.toLowerCase().includes(filterLower)
+        || server.alias.toLowerCase().includes(filterLower);
+    });
+  }, [servers, serverNameFilter]);
+  const allFilteredSelected = filteredServers.length > 0 && filteredServers.every((server) => selectedIds.has(server.id));
+  const someFilteredSelected = filteredServers.some((server) => selectedIds.has(server.id));
+
+  const handleSelectAll = (checked: boolean) => {
+    const next = new Set(selectedIds);
+    for (const server of filteredServers) {
+      if (checked) {
+        next.add(server.id);
+      } else {
+        next.delete(server.id);
+      }
+    }
+    onChange(next);
+  };
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center gap-2">
+        <Label htmlFor="server-access-filter" className="text-sm font-medium">{t("Filter by Server Name")}</Label>
+        <div className="relative w-full max-w-[360px]">
+          <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            id="server-access-filter"
+            type="text"
+            placeholder={t("Filter by server name or alias...")}
+            value={serverNameFilter}
+            onChange={(event) => setServerNameFilter(event.target.value)}
+            className="pl-8"
+            disabled={disabled}
+          />
+          {serverNameFilter && (
+            <button
+              type="button"
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground"
+              onClick={() => setServerNameFilter('')}
+              aria-label={t("Clear filter")}
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+      </div>
+      <div className="border rounded-md max-h-64 overflow-y-auto">
+        <Table>
+          <TableHeader className="sticky top-0 z-20 bg-muted border-b-2 border-border shadow-sm">
+            <TableRow className="bg-muted">
+              <th className="w-[40px] min-w-[40px] bg-muted pl-4 pr-0 py-3 text-left">
+                <Checkbox
+                  checked={allFilteredSelected}
+                  onCheckedChange={(checked) => handleSelectAll(checked === true)}
+                  disabled={disabled || filteredServers.length === 0}
+                  title={someFilteredSelected && !allFilteredSelected ? t("Some servers selected - click to select all visible") : t("Select all visible servers")}
+                />
+              </th>
+              <TableHead className="bg-muted">{t("Server")}</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredServers.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={2} className="text-muted-foreground">
+                  {t("No servers found")}
+                </TableCell>
+              </TableRow>
+            ) : filteredServers.map((server) => (
+              <TableRow key={server.id} className="border-l-4 border-l-blue-500">
+                <TableCell className="pl-4">
+                  <Checkbox
+                    checked={selectedIds.has(server.id)}
+                    onCheckedChange={(checked) => {
+                      const next = new Set(selectedIds);
+                      if (checked === true) {
+                        next.add(server.id);
+                      } else {
+                        next.delete(server.id);
+                      }
+                      onChange(next);
+                    }}
+                    disabled={disabled}
+                    aria-label={serverLabel(server)}
+                  />
+                </TableCell>
+                <TableCell>{serverLabel(server)}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
+  );
+}
 
 interface User {
   id: string;
   username: string;
   isAdmin: boolean;
   mustChangePassword: boolean;
+  accessAllServers?: boolean;
+  serverIds?: string[];
   createdAt: string;
   updatedAt: string;
   lastLoginAt: string | null;
@@ -76,8 +233,14 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [passwordResetDialogOpen, setPasswordResetDialogOpen] = useState(false);
+  const [passwordResetFormOpen, setPasswordResetFormOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [tempPassword, setTempPassword] = useState<string | null>(null);
+  const [tempPasswordRequiresChange, setTempPasswordRequiresChange] = useState(true);
+  const [resetPasswordValue, setResetPasswordValue] = useState('');
+  const [resetRequireChange, setResetRequireChange] = useState(true);
+  const [showResetPassword, setShowResetPassword] = useState(true);
+  const [resetPasswordEdited, setResetPasswordEdited] = useState(false);
   const [copiedPassword, setCopiedPassword] = useState(false);
 
   // Form state
@@ -87,6 +250,11 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
   const [formRequirePasswordChange, setFormRequirePasswordChange] = useState(true);
   const [formAutoGeneratePassword, setFormAutoGeneratePassword] = useState(true);
   const [formLoading, setFormLoading] = useState(false);
+  const [availableServers, setAvailableServers] = useState<ServerOption[]>([]);
+  const [serversReady, setServersReady] = useState(false);
+  const [serverAccessEditorUserId, setServerAccessEditorUserId] = useState<string | null>(null);
+  const [draftServerIds, setDraftServerIds] = useState<Set<string>>(new Set());
+  const [serverAccessSaving, setServerAccessSaving] = useState(false);
 
   // Load users - wrapped in useCallback to avoid recreating on each render
   const loadUsers = useCallback(async () => {
@@ -111,6 +279,69 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
   useEffect(() => {
     loadUsers();
   }, [loadUsers]);
+
+  useEffect(() => {
+    let cancelled = false;
+    authenticatedRequestWithRecovery('/api/servers')
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error('Failed to load servers');
+        }
+        const data = await response.json() as ServerOption[];
+        if (!cancelled) {
+          setAvailableServers(Array.isArray(data) ? data : []);
+          setServersReady(true);
+        }
+      })
+      .catch((error) => {
+        console.error('Error loading servers:', error);
+        if (!cancelled) {
+          setServersReady(true);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const openServerAccessEditor = (user: User) => {
+    setServerAccessEditorUserId(user.id);
+    setDraftServerIds(new Set(user.accessAllServers === false ? (user.serverIds ?? []) : []));
+  };
+
+  const saveServerAccess = async (user: User, accessAllServers: boolean, serverIds: string[]) => {
+    setServerAccessSaving(true);
+    try {
+      const response = await authenticatedRequestWithRecovery(`/api/users/${user.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ accessAllServers, serverIds }),
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || t("Failed to update user"));
+      }
+      setServerAccessEditorUserId(null);
+      await loadUsers();
+    } catch (error) {
+      toast({
+        title: t("Error"),
+        description: error instanceof Error ? error.message : t("Failed to update user"),
+        variant: 'destructive',
+      });
+    } finally {
+      setServerAccessSaving(false);
+    }
+  };
+
+  const selectedServerLabels = (user: User) => {
+    if (!serversReady) {
+      return [];
+    }
+    return (user.serverIds ?? []).flatMap((serverId) => {
+      const server = availableServers.find((item) => item.id === serverId);
+      return server ? [{ id: serverId, label: serverLabel(server) }] : [];
+    });
+  };
 
   // Filter users by search term
   const filteredUsers = users.filter(user =>
@@ -195,6 +426,30 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
     );
   }, [passwordRequirements, formAutoGeneratePassword, passwordPolicy]);
 
+  const resetPasswordRequirements = useMemo(() => {
+    const minLength = passwordPolicy?.minLength ?? 8;
+    const requireUppercase = passwordPolicy?.requireUppercase ?? true;
+    const requireLowercase = passwordPolicy?.requireLowercase ?? true;
+    const requireNumbers = passwordPolicy?.requireNumbers ?? true;
+
+    return {
+      minLength: resetPasswordValue.length >= minLength,
+      hasUppercase: !requireUppercase || /[A-Z]/.test(resetPasswordValue),
+      hasLowercase: !requireLowercase || /[a-z]/.test(resetPasswordValue),
+      hasNumber: !requireNumbers || /[0-9]/.test(resetPasswordValue),
+    };
+  }, [resetPasswordValue, passwordPolicy]);
+
+  const isResetPasswordValid = useMemo(() => {
+    if (!passwordPolicy) return false;
+    return (
+      resetPasswordRequirements.minLength &&
+      resetPasswordRequirements.hasUppercase &&
+      resetPasswordRequirements.hasLowercase &&
+      resetPasswordRequirements.hasNumber
+    );
+  }, [resetPasswordRequirements, passwordPolicy]);
+
   // Password requirement labels
   const passwordRequirementLabels = useMemo(() => {
     if (!passwordPolicy) return null;
@@ -269,6 +524,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
       // Show temporary password if generated
       if (data.temporaryPassword) {
         setTempPassword(data.temporaryPassword);
+        setTempPasswordRequiresChange(data.user?.mustChangePassword !== false);
         setPasswordResetDialogOpen(true);
       } else {
         toast({
@@ -361,9 +617,28 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
     }
   };
 
+  const openPasswordResetDialog = (user: User) => {
+    setSelectedUser(user);
+    setResetPasswordValue(suggestResetPassword(passwordPolicy));
+    setResetRequireChange(true);
+    setShowResetPassword(true);
+    setResetPasswordEdited(false);
+    setCopiedPassword(false);
+    setPasswordResetFormOpen(true);
+  };
+
   // Handle password reset
   const handlePasswordReset = async () => {
     if (!selectedUser) return;
+
+    if (!resetPasswordValue) {
+      toast({
+        title: t("Error"),
+        description: t("Password is required"),
+        variant: 'destructive',
+      });
+      return;
+    }
 
     setFormLoading(true);
     try {
@@ -371,6 +646,8 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
         method: 'PATCH',
         body: JSON.stringify({
           resetPassword: true,
+          password: resetPasswordValue,
+          requirePasswordChange: resetRequireChange,
         }),
       });
 
@@ -379,10 +656,14 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
         throw new Error(error.error || t("Failed to reset password"));
       }
 
-      const data = await response.json();
-      setTempPassword(data.temporaryPassword);
-      setPasswordResetDialogOpen(true);
+      await response.json();
+      setPasswordResetFormOpen(false);
+      setResetPasswordValue('');
       loadUsers();
+      toast({
+        title: t("Success"),
+        description: t("Password updated successfully"),
+      });
     } catch (error) {
       toast({
         title: t("Error"),
@@ -491,6 +772,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                 >
                   {t("Role")}
                 </SortableTableHead>
+                <TableHead className="bg-muted">{t("All servers")}</TableHead>
                 <SortableTableHead 
                   column="lastLoginAt" 
                   sortConfig={sortConfig} 
@@ -527,8 +809,12 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {sortedUsers.map((user) => (
-                <TableRow key={user.id}>
+              {sortedUsers.map((user) => {
+                const allServersOn = user.isAdmin || (user.accessAllServers !== false && serverAccessEditorUserId !== user.id);
+                const showServerAccess = !user.isAdmin && (user.accessAllServers === false || serverAccessEditorUserId === user.id);
+                return (
+                <Fragment key={user.id}>
+                <TableRow>
                   <TableCell className="font-medium">{user.username}</TableCell>
                   <TableCell>
                     {user.isAdmin ? (
@@ -540,6 +826,21 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                         {t("User")}
                       </span>
                     )}
+                  </TableCell>
+                  <TableCell>
+                    <Switch
+                      checked={allServersOn}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          setServerAccessEditorUserId(null);
+                          void saveServerAccess(user, true, []);
+                        } else {
+                          openServerAccessEditor(user);
+                        }
+                      }}
+                      disabled={user.isAdmin || serverAccessSaving}
+                      aria-label={t("All servers")}
+                    />
                   </TableCell>
                   <TableCell>
                     {user.lastLoginAt ? (
@@ -587,10 +888,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => {
-                          setSelectedUser(user);
-                          handlePasswordReset();
-                        }}
+                        onClick={() => openPasswordResetDialog(user)}
                         title={t("Reset password")}
                       >
                         <KeyRound className="h-4 w-4" />
@@ -622,7 +920,82 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                     </div>
                   </TableCell>
                 </TableRow>
-              ))}
+                {showServerAccess && serversReady && (
+                  <TableRow className={serverAccessRowClass}>
+                    <TableCell colSpan={8} className={serverAccessRowClass}>
+                      {serverAccessEditorUserId === user.id ? (
+                        <div className="space-y-3 py-2">
+                          <ServerAccessPicker
+                            servers={availableServers}
+                            selectedIds={draftServerIds}
+                            onChange={setDraftServerIds}
+                            disabled={serverAccessSaving}
+                          />
+                          <div className="flex justify-end gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setServerAccessEditorUserId(null)}
+                              disabled={serverAccessSaving}
+                            >
+                              {t("Cancel")}
+                            </Button>
+                            <Button
+                              variant="gradient"
+                              size="sm"
+                              onClick={() => void saveServerAccess(user, false, [...draftServerIds])}
+                              disabled={serverAccessSaving}
+                            >
+                              {serverAccessSaving ? t("Saving...") : t("Save Changes")}
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex items-start justify-between gap-3 py-2">
+                          <div className="space-y-2">
+                            <div>
+                              <div className="flex items-center gap-2 text-sm font-medium">
+                                <Server className="h-4 w-4" />
+                                {t("Visible servers")}
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Info className="h-3.5 w-3.5 text-muted-foreground" />
+                                    </TooltipTrigger>
+                                    <TooltipContent side="top" className="max-w-sm">
+                                      <p>{t("Servers added later stay hidden until they are selected. Click on the button on the right to edit the server list.")}</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              </div>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              {selectedServerLabels(user).length === 0 ? (
+                                <span className="text-sm text-muted-foreground">{t("No servers")}</span>
+                              ) : selectedServerLabels(user).map((server) => (
+                                <span key={server.id} className="rounded-md border border-border bg-background/80 px-2 py-1 text-sm dark:bg-white/5">
+                                  {server.label}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => openServerAccessEditor(user)}
+                            title={t("Edit servers")}
+                            disabled={serverAccessSaving}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                )}
+                </Fragment>
+              );
+              })}
             </TableBody>
           </Table>
           </div>
@@ -646,6 +1019,22 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                             User
                           </span>
                         )}
+                        <div className="mt-2 flex items-center gap-2">
+                          <Switch
+                            checked={user.isAdmin || (user.accessAllServers !== false && serverAccessEditorUserId !== user.id)}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                setServerAccessEditorUserId(null);
+                                void saveServerAccess(user, true, []);
+                              } else {
+                                openServerAccessEditor(user);
+                              }
+                            }}
+                            disabled={user.isAdmin || serverAccessSaving}
+                            aria-label={t("All servers")}
+                          />
+                          <span className="text-xs text-muted-foreground">{t("All servers")}</span>
+                        </div>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -660,10 +1049,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => {
-                          setSelectedUser(user);
-                          handlePasswordReset();
-                        }}
+                        onClick={() => openPasswordResetDialog(user)}
                         title={t("Reset password")}
                       >
                         <KeyRound className="h-4 w-4" />
@@ -750,6 +1136,61 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                       </div>
                     </div>
                   </div>
+                  {!user.isAdmin && serversReady && (user.accessAllServers === false || serverAccessEditorUserId === user.id) && (
+                    <div className={`border-t pt-3 ${serverAccessRowClass}`}>
+                      {serverAccessEditorUserId === user.id ? (
+                        <div className="space-y-3">
+                          <ServerAccessPicker
+                            servers={availableServers}
+                            selectedIds={draftServerIds}
+                            onChange={setDraftServerIds}
+                            disabled={serverAccessSaving}
+                          />
+                          <div className="flex justify-end gap-2">
+                            <Button variant="outline" size="sm" onClick={() => setServerAccessEditorUserId(null)} disabled={serverAccessSaving}>
+                              {t("Cancel")}
+                            </Button>
+                            <Button variant="gradient" size="sm" onClick={() => void saveServerAccess(user, false, [...draftServerIds])} disabled={serverAccessSaving}>
+                              {serverAccessSaving ? t("Saving...") : t("Save Changes")}
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="space-y-2">
+                            <div>
+                              <div className="flex items-center gap-2 text-sm font-medium">
+                                <Server className="h-4 w-4" />
+                                {t("Visible servers")}
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Info className="h-3.5 w-3.5 text-muted-foreground" />
+                                    </TooltipTrigger>
+                                    <TooltipContent side="top" className="max-w-sm">
+                                      <p>{t("Each entry is the alias followed by the server name. Servers added later stay hidden until they are selected.")}</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              </div>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              {selectedServerLabels(user).length === 0 ? (
+                                <span className="text-sm text-muted-foreground">{t("No servers")}</span>
+                              ) : selectedServerLabels(user).map((server) => (
+                                <span key={server.id} className="rounded-md border border-border bg-background/80 px-2 py-1 text-sm dark:bg-white/5">
+                                  {server.label}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                          <Button variant="ghost" size="icon" onClick={() => openServerAccessEditor(user)} title={t("Edit servers")} disabled={serverAccessSaving}>
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             ))}
@@ -970,6 +1411,125 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
         </AlertDialogContent>
       </AlertDialog>
 
+      {/* Password Reset Form Dialog */}
+      <Dialog open={passwordResetFormOpen} onOpenChange={setPasswordResetFormOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>{t("Reset password")}</DialogTitle>
+            <DialogDescription>
+              {selectedUser
+                ? t("A suggested password for {{username}} is filled in below. Edit it if you want, and copy it before resetting.", { username: selectedUser.username })
+                : t("A suggested password is filled in below. Edit it if you want, and copy it before resetting.")}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="reset-password">{t("Password")}</Label>
+              <div className="flex items-center gap-2">
+                <div className="min-w-0 flex-1">
+                  <TogglePasswordInput
+                    id="reset-password"
+                    value={resetPasswordValue}
+                    onChange={(value) => {
+                      setResetPasswordValue(value);
+                      if (!resetPasswordEdited) {
+                        setResetPasswordEdited(true);
+                        setShowResetPassword(false);
+                      }
+                    }}
+                    showPassword={showResetPassword}
+                    onTogglePassword={() => setShowResetPassword((visible) => !visible)}
+                    disabled={formLoading}
+                    className="font-mono"
+                  />
+                </div>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={async () => {
+                    if (!resetPasswordValue) return;
+                    await navigator.clipboard.writeText(resetPasswordValue);
+                    setCopiedPassword(true);
+                    setTimeout(() => setCopiedPassword(false), 2000);
+                  }}
+                  title={t("Copy password")}
+                  disabled={formLoading || !resetPasswordValue}
+                >
+                  {copiedPassword ? (
+                    <Check className="h-4 w-4 text-green-600" />
+                  ) : (
+                    <Copy className="h-4 w-4" />
+                  )}
+                </Button>
+              </div>
+              <div className="space-y-2 rounded-md bg-muted p-3">
+                <div className="text-sm font-semibold mb-2">{t("Password Requirements:")}</div>
+                <div className="space-y-1.5">
+                  {passwordPolicy && passwordRequirementLabels && (
+                    <>
+                      <RequirementItem
+                        met={resetPasswordRequirements.minLength}
+                        label={passwordRequirementLabels.minLength}
+                      />
+                      {passwordPolicy.requireUppercase && (
+                        <RequirementItem
+                          met={resetPasswordRequirements.hasUppercase}
+                          label={passwordRequirementLabels.uppercase}
+                        />
+                      )}
+                      {passwordPolicy.requireLowercase && (
+                        <RequirementItem
+                          met={resetPasswordRequirements.hasLowercase}
+                          label={passwordRequirementLabels.lowercase}
+                        />
+                      )}
+                      {passwordPolicy.requireNumbers && (
+                        <RequirementItem
+                          met={resetPasswordRequirements.hasNumber}
+                          label={passwordRequirementLabels.number}
+                        />
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="reset-require-password-change"
+                  checked={resetRequireChange}
+                  onCheckedChange={(checked) => setResetRequireChange(checked === true)}
+                  disabled={formLoading}
+                />
+                <Label htmlFor="reset-require-password-change" className="cursor-pointer">
+                  {t("Require password change on next login")}
+                </Label>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setPasswordResetFormOpen(false);
+                setResetPasswordValue('');
+              }}
+              disabled={formLoading}
+            >
+              {t("Cancel")}
+            </Button>
+            <Button
+              variant="gradient"
+              onClick={handlePasswordReset}
+              disabled={formLoading || !isResetPasswordValid}
+            >
+              {formLoading ? t("Resetting...") : t("Reset password")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Password Reset Dialog */}
       <Dialog open={passwordResetDialogOpen} onOpenChange={setPasswordResetDialogOpen}>
         <DialogContent className="sm:max-w-[500px]">
@@ -1007,7 +1567,9 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                   </Button>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  {t("The user will be required to change this password on first login.")}
+                  {tempPasswordRequiresChange
+                    ? t("The user will be required to change this password on first login.")
+                    : t("The user will not be required to change this password on next login.")}
                 </p>
               </div>
             )}

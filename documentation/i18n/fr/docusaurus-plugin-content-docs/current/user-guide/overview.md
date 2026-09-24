@@ -67,27 +67,10 @@ La barre d'outils de l'application fournit un accès pratique aux fonctions et p
 | <SvgButton svgFilename="ntfy.svg" /> &nbsp; Ouvrir NTFY                                                                                            | Accéder au site web ntfy.sh pour votre sujet de notification configuré. <br/> _Clic droit_ pour afficher un code QR afin de configurer votre appareil pour recevoir des notifications de duplistatus.               |
 | <SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Configuration de Duplicati](duplicati-configuration.md)       | Ouvrir l'interface web du serveur Duplicati sélectionné <br/> _Clic droit_ pour ouvrir l'interface utilisateur héritée de Duplicati (`/ngax`) dans un nouvel onglet                                                              |
 | <IconButton icon="lucide:download" href="collect-backup-logs" /> &nbsp; [Collecter les journaux](collect-backup-logs.md)                                   | Se connecter aux serveurs Duplicati et récupérer les journaux de sauvegarde <br/> _Clic droit_ pour collecter les journaux de tous les serveurs configurés                                                                       |
-| <IconButton icon="lucide:siren" tone="alert" /> &nbsp; [Échecs de livraison](#delivery-failures)                                                   | Affiché aux administrateurs lorsque la livraison par e-mail ou NTFY échoue. Voir [Échecs de livraison](#delivery-failures).                                                                              |
+| <IconButton icon="lucide:siren" tone="alert" href="delivery-failures" /> &nbsp; [Échecs de livraison](delivery-failures.md) | Affiché aux administrateurs lorsque la livraison par e-mail ou NTFY échoue. Voir [Échecs de livraison](delivery-failures.md). |
 | <IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [Paramètres](settings/backup-notifications-settings.md) | Configurer les notifications, la surveillance, le serveur SMTP et les modèles de notification                                                                                                               |
 | <IconButton icon="lucide:user" label="nom d'utilisateur" />                                                                                               | Afficher l'utilisateur connecté, le type d'utilisateur (`Admin`, `User`), cliquer pour ouvrir le menu utilisateur (inclut la sélection de la langue). Voir plus dans [Gestion des utilisateurs](settings/user-management-settings.md)               |
 | <IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; Guide de l'utilisateur                                                                    | Ouvrir le [Guide de l'utilisateur](overview.md) vers la section pertinente à la page que vous consultez actuellement. L'infobulle affiche "Aide pour [Nom de la page]" pour indiquer quelle documentation sera ouverte. |
-
-### Échecs de livraison {/* #delivery-failures */}
-
-Un bouton <IconButton icon="lucide:siren" tone="alert" /> avec une légère teinte rouge apparaît dans la barre d'outils pour les administrateurs lorsque la distribution par e-mail ou ntfy échoue. Il reste masqué quand les deux canaux sont opérationnels, et il n'est pas affiché sur la page de connexion. Les utilisateurs standards ne le voient pas.
-
-Cliquez sur le bouton pour afficher une carte par chaîne en échec (E-mail, ntfy), et non une ligne pour chaque entrée d'audit. Chaque carte affiche :
-
-- L'erreur, et une **Erreur d'origine** en police à chasse fixe lorsque la réponse SMTP a été journalisée
-- L'hôte SMTP ou le topic NTFY
-- L'heure du dernier échec
-- Le nombre de distributions ayant échoué depuis le dernier succès, ou depuis que vous avez effacé cette chaîne pour la dernière fois
-
-**Ouvrir les paramètres de messagerie** mène à [Paramètres → E-mail](settings/email-settings.md). **Ouvrir les paramètres NTFY** mène à [Paramètres → NTFY](settings/ntfy-settings.md).
-
-**Fermer** ferme uniquement le panneau. **Effacer** masque les chaînes répertoriées jusqu'à ce qu'un nouvel échec soit journalisé, même si le texte de l'erreur est identique. Une distribution réussie ultérieure maintient le bouton masqué. Cela inclut `email_sent`, `notification_sent` et l'envoi réussi d'un [Résumé quotidien](settings/daily-summary-settings.md) pour cette chaîne.
-
-La liste se charge avec la page et s'actualise environ une fois par minute tant que l'onglet du navigateur est visible.
 
 ### Menu utilisateur {/* #user-menu */}
 

@@ -3,6 +3,7 @@ import { withDb } from '@/lib/db-utils';
 import { dbOps } from '@/lib/db';
 import { withCSRF } from '@/lib/csrf-middleware';
 import { requireAdmin } from '@/lib/auth-middleware';
+import { denyHiddenServer, requireServerAccess } from '@/lib/server-access-http';
 
 interface ServerRow {
   id: string;
@@ -14,6 +15,10 @@ export const GET = withCSRF(async (
   request: NextRequest
 ) => {
   try {
+    const accessResult = await requireServerAccess(request);
+    if (accessResult instanceof NextResponse) {
+      return accessResult;
+    }
     // Extract serverId from URL pathname
     const pathname = request.nextUrl.pathname;
     const serverId = pathname.split('/')[3]; // /api/servers/[serverId]/server-url
@@ -27,7 +32,8 @@ export const GET = withCSRF(async (
       return dbOps.getServerById.get(serverId) as ServerRow | undefined;
     });
 
-    if (!server) {
+    const hidden = denyHiddenServer(accessResult.access, serverId);
+    if (!server || hidden) {
       return NextResponse.json(
         { error: 'Server not found' },
         { status: 404 }

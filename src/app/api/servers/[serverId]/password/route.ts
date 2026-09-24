@@ -6,6 +6,7 @@ import { requireAdmin } from '@/lib/auth-middleware';
 import { getClientIpAddress } from '@/lib/ip-utils';
 import { AuditLogger } from '@/lib/audit-logger';
 import { dbUtils } from '@/lib/db-utils';
+import { denyHiddenServer, requireServerAccess } from '@/lib/server-access-http';
 
 export const PATCH = withCSRF(requireAdmin(async (
   request: NextRequest,
@@ -97,7 +98,15 @@ export const GET = withCSRF(async (
         { status: 400 }
       );
     }
-    
+
+    const accessResult = await requireServerAccess(request);
+    if (accessResult instanceof NextResponse) {
+      return accessResult;
+    }
+    const hidden = denyHiddenServer(accessResult.access, serverId);
+    if (hidden) {
+      return hidden;
+    }
     
     // Get session ID and validate session
     const sessionId = getSessionIdFromRequest(request);

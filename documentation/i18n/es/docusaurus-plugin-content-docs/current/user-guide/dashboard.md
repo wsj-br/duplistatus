@@ -2,7 +2,7 @@
 
 ## Resumen del panel de control {/* #dashboard-summary */}
 
-Esta sección muestra estadísticas agregadas para todas las copias de seguridad.
+Esta sección muestra estadísticas agregadas de los servidores que puede ver el usuario que ha iniciado sesión. Los administradores ven todos los servidores. Un usuario no administrador ve todos los servidores a menos que un administrador limite dicha cuenta en [Usuarios](settings/user-management-settings.md#server-visibility).
 
 ![Resumen del panel de control - vista general](../assets/screen-dashboard-summary.png)
 ![Resumen del panel de control - tabla](../assets/screen-dashboard-summary-table.png)

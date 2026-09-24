@@ -49,7 +49,7 @@
  
  **duplistatus** only checks if your SMTP settings are filled in, not if emails can actually be delivered.
 
- If delivery later fails, administrators see a red siren in the toolbar. See [Delivery failures](../overview.md#delivery-failures).
+ If delivery later fails, administrators see a red siren in the toolbar. See [Delivery failures](../delivery-failures.md).
 :::
 
 <br/>

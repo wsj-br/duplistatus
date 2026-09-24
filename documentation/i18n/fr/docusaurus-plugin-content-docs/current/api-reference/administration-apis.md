@@ -383,6 +383,8 @@ Avec erreurs :
         "id": "user-id",
         "username": "admin",
         "isAdmin": true,
+        "accessAllServers": true,
+        "serverIds": [],
         "mustChangePassword": false,
         "createdAt": "2024-01-01T00:00:00Z",
         "lastLoginAt": "2024-01-15T10:30:00Z",
@@ -422,14 +424,18 @@ Avec erreurs :
     "username": "newuser",
     "password": "optional-password",
     "isAdmin": false,
-    "requirePasswordChange": true
+    "requirePasswordChange": true,
+    "accessAllServers": false,
+    "serverIds": ["server-id"]
   }
   ```
 
-- `username` : Requis, doit comporter 3 à 50 caractères, unique
+- `username` : Obligatoire, doit comporter entre 3 et 50 caractères et être unique
   - `password` : Facultatif, si non fourni, un mot de passe temporaire sécurisé est généré
-  - `isAdmin` : Facultatif, valeur par défaut false
-  - `requirePasswordChange` : Facultatif, valeur par défaut true
+  - `isAdmin` : Facultatif, par défaut false. Les utilisateurs Admin reçoivent toujours tous les serveurs
+  - `requirePasswordChange` : Facultatif, par défaut true
+  - `accessAllServers` : Facultatif, par défaut true. Quand false, `serverIds` est le seul ensemble de serveurs que l'utilisateur peut voir
+  - `serverIds` : Tableau facultatif d'identifiants de serveurs existants. Les identifiants inconnus sont rejetés. Ignoré quand l'utilisateur est un Admin ou que `accessAllServers` n'est pas false
 - **Réponse** :
 
   ```json
@@ -438,7 +444,9 @@ Avec erreurs :
       "id": "user-id",
       "username": "newuser",
       "isAdmin": false,
-      "mustChangePassword": true
+      "mustChangePassword": true,
+      "accessAllServers": true,
+      "serverIds": []
     },
     "temporaryPassword": "generated-password-123"
   }
@@ -472,12 +480,17 @@ Avec erreurs :
     "username": "updated-username",
     "isAdmin": true,
     "requirePasswordChange": false,
-    "resetPassword": true
+    "resetPassword": true,
+    "password": "optional-custom-password",
+    "accessAllServers": false,
+    "serverIds": ["server-id"]
   }
   ```
 
 - Tous les champs sont facultatifs
-  - `resetPassword` : Si true, génère un nouveau mot de passe temporaire et définit `requirePasswordChange` sur true
+  - `accessAllServers` et `serverIds` : Mêmes règles que pour la création. Promouvoir un utilisateur en Admin accorde l'accès à tous les serveurs. Rétrograder un Admin réinitialise l'accès à tous les serveurs à moins qu'une liste personnalisée ne soit envoyée dans la même requête
+  - `resetPassword` : Si true, définit un nouveau mot de passe. `password`, quand fourni, est utilisé après les vérifications de stratégie. Quand `password` est omis, un mot de passe temporaire est généré
+  - `requirePasswordChange` : Avec `resetPassword`, par défaut true. Envoyez `false` pour effacer l'indicateur de changement de mot de passe obligatoire
 - **Réponse** (avec réinitialisation du mot de passe) :
 
   ```json
@@ -486,7 +499,9 @@ Avec erreurs :
       "id": "user-id",
       "username": "updated-username",
       "isAdmin": true,
-      "mustChangePassword": true
+      "mustChangePassword": true,
+      "accessAllServers": true,
+      "serverIds": []
     },
     "temporaryPassword": "new-temp-password-456"
   }
@@ -500,23 +515,26 @@ Avec erreurs :
       "id": "user-id",
       "username": "updated-username",
       "isAdmin": true,
-      "mustChangePassword": false
+      "mustChangePassword": false,
+      "accessAllServers": true,
+      "serverIds": []
     }
   }
   ```
 
 - **Réponses d'erreur** :
-  - `400` : Entrée invalide ou erreurs de validation
-  - `401` : Non autorisé - Session ou jeton CSRF invalide
-  - `403` : Interdit - Privilèges administrateur requis
+  - `400` : Entrée non valide ou erreurs de validation
+  - `401` : Non autorisé - Session ou jeton CSRF non valide
+  - `403` : Interdit - Privilèges Admin requis
   - `404` : Utilisateur introuvable
-  - `409` : Nom d'utilisateur existe déjà (si changement de nom d'utilisateur)
+  - `409` : Le nom d'utilisateur existe déjà (si changement de nom d'utilisateur)
   - `500` : Erreur interne du serveur
-- **Remarques** :
-  - Uniquement accessible aux utilisateurs administrateurs
-  - Les modifications de nom d'utilisateur sont validées pour garantir l'unicité
-  - La réinitialisation du mot de passe génère un mot de passe temporaire sécurisé de 12 caractères
-  - Toutes les modifications sont enregistrées dans le journal d'audit
+- **Notes** :
+  - Uniquement accessible aux utilisateurs Admin
+  - Les modifications de nom d'utilisateur sont validées pour garantir leur unicité
+  - L'omission du mot de passe de réinitialisation génère un mot de passe temporaire sécurisé de 12 caractères, renvoyé une seule fois
+  - Un mot de passe de réinitialisation fourni doit respecter la politique de mots de passe et n'est pas renvoyé
+  - Toutes les modifications sont consignées dans le journal d'audit
 
 ### Supprimer l'utilisateur - `/api/users/:id` {/* #delete-user---apiusersid */}
 - **Point de terminaison** : `/api/users/:id`

@@ -35,21 +35,25 @@ Você pode acessar a seção de Gerenciamento de Usuários de duas maneiras:
 1. Clique no ícone de edição <IconButton icon="lucide:edit" /> ao lado do usuário
 2. Modifique qualquer um dos seguintes itens:
    - **Nome de usuário**: Altere o nome de usuário (deve ser único)
-   - **Administrador**: Alterne os privilégios de administrador
-   - **Exigir Alteração de Senha**: Alterne o requisito de alteração de senha
-3. Clique em <IconButton icon="lucide:check" label="Salvar Alterações" />.
+   - **Administrador**: Alterne os privilégios de administrador. Ativar esta opção concede acesso a todos os servidores e limpa uma lista de servidores personalizada. Desativá-la reinicia a seleção para todos os servidores
+   - **Exigir Alteração de Senha**: Alterne a exigência de alteração de senha
+3. Clique em <IconButton icon="lucide:check" label="Salvar alterações" />.
 
 ## Redefinindo a Senha de um Usuário {/* #resetting-a-user-password */}
 
 1. Clique no ícone de chave <IconButton icon="lucide:key-round" /> ao lado do usuário
-2. Confirme a redefinição da senha
-3. Uma nova senha temporária será gerada e exibida
-4. Copie a senha e forneça-a ao usuário com segurança
+2. Uma senha sugerida já está preenchida e visível. Editá-la oculta a senha; use o ícone de visualização para mostrá-la novamente e, em seguida, copiá-la
+3. **Exigir alteração de senha no próximo login** está marcada por padrão. Desmarque-a se o usuário deve manter esta senha
+4. Clique em **Redefinir senha**. A senha não é mostrada novamente
 
 ## Excluindo um Usuário {/* #deleting-a-user */}
 
 1. Clique no ícone de exclusão <IconButton icon="lucide:trash-2" /> ao lado do usuário
 2. Confirme a exclusão na caixa de diálogo. **A exclusão de usuário é permanente e não pode ser desfeita.**
+
+## Visibilidade dos servidores {/* #server-visibility */}
+
+Os administradores sempre veem todos os servidores. Na lista de usuários, **Todos os servidores** é um botão de alternância. Mantenha-o ativado para cada servidor atual e futuro. Desative-o para expandir uma linha e escolher servidores. A caixa de seleção do cabeçalho seleciona ou limpa as linhas visíveis. Salvar mostra cada servidor selecionado como alias (nome), com um ícone de edição para alterar a lista. Um novo servidor permanece oculto até ser marcado. Não selecionar nenhum significa que o usuário não vê nenhum servidor. O painel, os detalhes do servidor, o histórico de backup, os gráficos e as listas de configurações incluirão apenas esses servidores. Um link direto ou solicitação de API para outro servidor é tratado como não encontrado. As chaves de API externas não são limitadas por esta concessão.
 
 ## Bloqueio de Conta {/* #account-lockout */}
 

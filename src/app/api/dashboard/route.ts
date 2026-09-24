@@ -1,24 +1,30 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getServersSummary, getOverallSummaryFromServers, getAggregatedChartData, clearRequestCache, invalidateDataCache } from '@/lib/db-utils';
 import { withCSRF } from '@/lib/csrf-middleware';
+import { requireServerAccess } from '@/lib/server-access-http';
 
 // Force dynamic rendering and disable all caching in production
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 export const fetchCache = 'force-no-store';
 
-export const GET = withCSRF(async () => {
+export const GET = withCSRF(async (request: NextRequest) => {
   try {
+    const accessResult = await requireServerAccess(request);
+    if (accessResult instanceof NextResponse) {
+      return accessResult;
+    }
+    const { access } = accessResult;
     // Clear and invalidate all caches to ensure fresh data on each request
     // This is especially important in production mode where module-level cache might persist
     invalidateDataCache();
     clearRequestCache();
     
     // Fetch dashboard data efficiently - get serversSummary first, then use it for overallSummary
-    const serversSummary = await Promise.resolve(getServersSummary());
+    const serversSummary = await Promise.resolve(getServersSummary(access));
     const [overallSummary, chartData] = await Promise.all([
       Promise.resolve(getOverallSummaryFromServers(serversSummary)),
-      Promise.resolve(getAggregatedChartData())
+      Promise.resolve(getAggregatedChartData(access))
     ]);
 
     // Validate that we got valid data
@@ -29,8 +35,19 @@ export const GET = withCSRF(async () => {
     // Get the latest backup date across all servers for secondsSinceLastBackup calculation
     let latestBackup: { last_backup_date: string | null } | null = null;
     try {
-      const { dbUtils } = await import('@/lib/db-utils');
-      latestBackup = dbUtils.getLatestBackupDate() as { last_backup_date: string | null };
+      if (!access.unrestricted) {
+        let latestIso: string | null = null;
+        for (const server of serversSummary as Array<{ lastBackupDate?: string }>) {
+          const candidate = server.lastBackupDate;
+          if (candidate && candidate !== 'N/A' && (!latestIso || candidate > latestIso)) {
+            latestIso = candidate;
+          }
+        }
+        latestBackup = { last_backup_date: latestIso };
+      } else {
+        const { dbUtils } = await import('@/lib/db-utils');
+        latestBackup = dbUtils.getLatestBackupDate() as { last_backup_date: string | null };
+      }
     } catch (error) {
       console.error('Error getting latest backup date:', error instanceof Error ? error.message : String(error));
       latestBackup = null;

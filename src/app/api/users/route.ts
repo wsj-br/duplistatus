@@ -6,6 +6,7 @@ import { withCSRF } from '@/lib/csrf-middleware';
 import { requireAdmin } from '@/lib/auth-middleware';
 import { randomUUID } from 'crypto';
 import { getClientIpAddress } from '@/lib/ip-utils';
+import { grantFromList, grantsByUserId, parseServerGrantInput, saveUserServerGrant } from '@/lib/user-server-grants';
 
 // GET /api/users - List all users with pagination and search
 export const GET = withCSRF(requireAdmin(async (request: NextRequest, authContext) => {
@@ -29,6 +30,7 @@ export const GET = withCSRF(requireAdmin(async (request: NextRequest, authContex
       last_login_ip: string | null;
       failed_login_attempts: number;
       locked_until: string | null;
+      access_all_servers: number;
     }>;
 
     // Filter by search term if provided
@@ -47,11 +49,20 @@ export const GET = withCSRF(requireAdmin(async (request: NextRequest, authContex
     const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
 
     // Format response
-    const users = paginatedUsers.map(user => ({
+    const serverGrants = grantsByUserId();
+    const users = paginatedUsers.map(user => {
+      const grant = grantFromList(
+        user.is_admin === 1,
+        user.access_all_servers,
+        serverGrants.get(user.id) ?? []
+      );
+      return {
       id: user.id,
       username: user.username,
       isAdmin: user.is_admin === 1,
       mustChangePassword: user.must_change_password === 1,
+      accessAllServers: grant.accessAllServers,
+      serverIds: grant.serverIds,
       createdAt: user.created_at,
       updatedAt: user.updated_at,
       lastLoginAt: user.last_login_at,
@@ -59,7 +70,8 @@ export const GET = withCSRF(requireAdmin(async (request: NextRequest, authContex
       failedLoginAttempts: user.failed_login_attempts,
       lockedUntil: user.locked_until,
       isLocked: user.locked_until ? new Date(user.locked_until) > new Date() : false,
-    }));
+    };
+    });
 
     return NextResponse.json({
       users,
@@ -86,7 +98,11 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
     await ensureDatabaseInitialized();
 
     const body = await request.json();
-    const { username, password, isAdmin = false, requirePasswordChange = true } = body;
+    const { username, password, isAdmin = false, requirePasswordChange = true, accessAllServers, serverIds } = body;
+    const parsedGrant = parseServerGrantInput(Boolean(isAdmin), accessAllServers, serverIds);
+    if ('error' in parsedGrant) {
+      return NextResponse.json({ error: parsedGrant.error }, { status: 400 });
+    }
 
     // Validate input
     if (!username || typeof username !== 'string' || username.trim().length === 0) {
@@ -148,8 +164,18 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
       username.trim().toLowerCase(),
       passwordHash,
       isAdmin ? 1 : 0,
-      requirePasswordChange ? 1 : 0
+      requirePasswordChange ? 1 : 0,
+      1
     );
+    try {
+      saveUserServerGrant(userId, parsedGrant.grant);
+    } catch (error) {
+      dbOps.deleteUser.run(userId);
+      if (error instanceof Error && error.message === 'UNKNOWN_SERVER') {
+        return NextResponse.json({ error: 'One or more servers were not found' }, { status: 400 });
+      }
+      throw error;
+    }
 
     // Get created user
     const newUser = dbOps.getUserById.get(userId) as {
@@ -193,6 +219,8 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
         username: string;
         isAdmin: boolean;
         mustChangePassword: boolean;
+        accessAllServers: boolean;
+        serverIds: string[];
       };
       temporaryPassword?: string;
     } = {
@@ -201,6 +229,8 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
         username: newUser.username,
         isAdmin: newUser.is_admin === 1,
         mustChangePassword: newUser.must_change_password === 1,
+        accessAllServers: parsedGrant.grant.accessAllServers,
+        serverIds: parsedGrant.grant.serverIds,
       },
     };
 

@@ -5,6 +5,7 @@ import { AuditLogger } from '@/lib/audit-logger';
 import { withCSRF } from '@/lib/csrf-middleware';
 import { requireAdmin } from '@/lib/auth-middleware';
 import { getClientIpAddress } from '@/lib/ip-utils';
+import { parseServerGrantInput, readUserServerGrant, saveUserServerGrant } from '@/lib/user-server-grants';
 
 // PATCH /api/users/[id] - Update user
 export const PATCH = withCSRF(requireAdmin(async (request: NextRequest, authContext) => {
@@ -15,7 +16,7 @@ export const PATCH = withCSRF(requireAdmin(async (request: NextRequest, authCont
     const userId = pathname.split('/').pop() || '';
 
     const body = await request.json();
-    const { username, isAdmin, requirePasswordChange, resetPassword } = body;
+    const { username, isAdmin, requirePasswordChange, resetPassword, password, accessAllServers, serverIds } = body;
 
     // Get existing user
     const existingUser = dbOps.getUserById.get(userId) as {
@@ -23,6 +24,7 @@ export const PATCH = withCSRF(requireAdmin(async (request: NextRequest, authCont
       username: string;
       is_admin: number;
       must_change_password: number;
+      access_all_servers: number;
     } | undefined;
 
     if (!existingUser) {
@@ -50,6 +52,29 @@ export const PATCH = withCSRF(requireAdmin(async (request: NextRequest, authCont
       }
     }
 
+    const nextIsAdmin = isAdmin !== undefined ? Boolean(isAdmin) : existingUser.is_admin === 1;
+    const grantTouched = isAdmin !== undefined || accessAllServers !== undefined || serverIds !== undefined;
+    let savedGrant = readUserServerGrant(
+      userId,
+      existingUser.is_admin === 1,
+      existingUser.access_all_servers ?? 1
+    );
+    if (grantTouched) {
+      const parsedGrant = parseServerGrantInput(nextIsAdmin, nextIsAdmin ? true : accessAllServers, serverIds);
+      if ('error' in parsedGrant) {
+        return NextResponse.json({ error: parsedGrant.error }, { status: 400 });
+      }
+      try {
+        saveUserServerGrant(userId, parsedGrant.grant);
+        savedGrant = parsedGrant.grant;
+      } catch (error) {
+        if (error instanceof Error && error.message === 'UNKNOWN_SERVER') {
+          return NextResponse.json({ error: 'One or more servers were not found' }, { status: 400 });
+        }
+        throw error;
+      }
+    }
+
     // Prepare update data
     const updateData: {
       username?: string;
@@ -70,11 +95,33 @@ export const PATCH = withCSRF(requireAdmin(async (request: NextRequest, authCont
       updateData.must_change_password = requirePasswordChange ? 1 : 0;
     }
 
-    // Handle password reset
+    // Handle password reset. A supplied password is used as-is after policy
+    // checks; otherwise a temporary password is generated. must_change_password
+    // stays required unless the caller explicitly clears it.
     if (resetPassword === true) {
-      const tempPassword = generateSecurePassword(12);
-      updateData.password_hash = await hashPassword(tempPassword);
-      updateData.must_change_password = 1;
+      let temporaryPassword: string | undefined;
+      let passwordToSet: string;
+
+      if (typeof password === 'string' && password.length > 0) {
+        const validation = validatePassword(password);
+        if (!validation.valid) {
+          return NextResponse.json(
+            {
+              error: 'Password does not meet policy requirements',
+              validationErrors: validation.errors,
+            },
+            { status: 400 }
+          );
+        }
+        passwordToSet = password;
+      } else {
+        temporaryPassword = generateSecurePassword(12);
+        passwordToSet = temporaryPassword;
+      }
+
+      const mustChangePassword = requirePasswordChange === false ? 0 : 1;
+      updateData.password_hash = await hashPassword(passwordToSet);
+      updateData.must_change_password = mustChangePassword;
 
       // Update user
       dbOps.updateUser.run(
@@ -102,7 +149,8 @@ export const PATCH = withCSRF(requireAdmin(async (request: NextRequest, authCont
         existingUser.username,
         {
           reset_by: authContext.username,
-          temp_password: true,
+          temp_password: temporaryPassword !== undefined,
+          must_change_password: mustChangePassword === 1,
         },
         ipAddress,
         userAgent
@@ -116,15 +164,32 @@ export const PATCH = withCSRF(requireAdmin(async (request: NextRequest, authCont
         must_change_password: number;
       } | undefined;
 
-      return NextResponse.json({
+      const response: {
+        user: {
+          id: string;
+          username: string;
+          isAdmin: boolean;
+          mustChangePassword: boolean;
+          accessAllServers: boolean;
+          serverIds: string[];
+        };
+        temporaryPassword?: string;
+      } = {
         user: {
           id: updatedUser!.id,
           username: updatedUser!.username,
           isAdmin: updatedUser!.is_admin === 1,
           mustChangePassword: updatedUser!.must_change_password === 1,
+          accessAllServers: savedGrant.accessAllServers,
+          serverIds: savedGrant.serverIds,
         },
-        temporaryPassword: tempPassword,
-      });
+      };
+
+      if (temporaryPassword !== undefined) {
+        response.temporaryPassword = temporaryPassword;
+      }
+
+      return NextResponse.json(response);
     }
 
     // Regular update (no password reset)
@@ -172,6 +237,8 @@ export const PATCH = withCSRF(requireAdmin(async (request: NextRequest, authCont
         username: updatedUser!.username,
         isAdmin: updatedUser!.is_admin === 1,
         mustChangePassword: updatedUser!.must_change_password === 1,
+        accessAllServers: savedGrant.accessAllServers,
+        serverIds: savedGrant.serverIds,
       },
     });
 

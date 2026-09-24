@@ -2,13 +2,18 @@ import { NextResponse, NextRequest } from 'next/server';
 import { dbUtils } from '@/lib/db-utils';
 import { withCSRF } from '@/lib/csrf-middleware';
 import { requireAdmin } from '@/lib/auth-middleware';
+import { denyHiddenServer, requireServerAccess } from '@/lib/server-access-http';
 import { getClientIpAddress } from '@/lib/ip-utils';
 import { AuditLogger } from '@/lib/audit-logger';
 
 export const GET = withCSRF(async (
-  request: Request
+  request: NextRequest
 ) => {
   try {
+    const accessResult = await requireServerAccess(request);
+    if (accessResult instanceof NextResponse) {
+      return accessResult;
+    }
     // Extract serverId from URL pathname
     const url = new URL(request.url);
     const pathname = url.pathname;
@@ -22,8 +27,9 @@ export const GET = withCSRF(async (
     const includeChartData = searchParams.get('includeChartData') === 'true';
     
     const server = await dbUtils.getServerById(serverId);
+    const hidden = denyHiddenServer(accessResult.access, serverId);
     
-    if (!server) {
+    if (!server || hidden) {
       return NextResponse.json({ error: 'Server not found' }, { status: 404 });
     }
     

@@ -32,24 +32,28 @@ Vous pouvez accéder à la section Gestion des utilisateurs de deux manières :
 
 ## Modification d'un utilisateur {/* #editing-a-user */}
 
-1. Cliquez sur l'icône de modification <IconButton icon="lucide:edit" /> à côté de l'utilisateur
-2. Modifiez l'une des informations suivantes :
-   - **Nom d'utilisateur** : Modifier le nom d'utilisateur (doit être unique)
-   - **Admin** : Activer/désactiver les privilèges d'administrateur
-   - **Exiger le changement de mot de passe** : Activer/désactiver l'exigence de changement de mot de passe
+1. Cliquez sur l'icône d'édition <IconButton icon="lucide:edit" /> à côté de l'utilisateur
+2. Modifiez l'un des éléments suivants :
+   - **Nom d'utilisateur** : Modifiez le nom d'utilisateur (doit être unique)
+   - **Admin** : Basculez les privilèges d'administrateur. Activer cette option donne accès à tous les serveurs et efface une liste de serveurs personnalisée. La désactiver réinitialise l'accès à tous les serveurs
+   - **Exiger le changement de mot de passe** : Basculez l'obligation de changement de mot de passe
 3. Cliquez sur <IconButton icon="lucide:check" label="Enregistrer les modifications" />.
 
 ## Réinitialisation du mot de passe d'un utilisateur {/* #resetting-a-user-password */}
 
 1. Cliquez sur l'icône de clé <IconButton icon="lucide:key-round" /> à côté de l'utilisateur
-2. Confirmez la réinitialisation du mot de passe
-3. Un nouveau mot de passe temporaire sera généré et affiché
-4. Copiez le mot de passe et transmettez-le à l'utilisateur de manière sécurisée
+2. Un mot de passe suggéré est déjà renseigné et visible. Le modifier masque le mot de passe ; utilisez l'icône d'affichage pour l'afficher à nouveau, puis le copier
+3. **Exiger le changement de mot de passe à la prochaine connexion** est coché par défaut. Décochez cette option si l'utilisateur doit conserver ce mot de passe
+4. Cliquez sur **Réinitialiser le mot de passe**. Le mot de passe n'est plus affiché
 
 ## Suppression d'un utilisateur {/* #deleting-a-user */}
 
 1. Cliquez sur l'icône de suppression <IconButton icon="lucide:trash-2" /> à côté de l'utilisateur
 2. Confirmez la suppression dans la boîte de dialogue. **La suppression d'un utilisateur est permanente et ne peut pas être annulée.**
+
+## Visibilité des serveurs {/* #server-visibility */}
+
+Les administrateurs voient toujours tous les serveurs. Dans la liste des utilisateurs, **Tous les serveurs** est un commutateur. Laissez-le activé pour chaque serveur actuel et futur. Désactivez-le pour développer une ligne et choisir des serveurs. La case à cocher de l'en-tête sélectionne ou efface les lignes visibles. Enregistrer affiche chaque serveur sélectionné sous forme d'alias (nom), avec une icône d'édition pour modifier la liste. Un nouveau serveur reste masqué jusqu'à ce qu'il soit coché. N'en cocher aucun signifie que l'utilisateur ne voit aucun serveur. Le tableau de bord, les détails du serveur, l'historique des sauvegardes, les graphiques et les listes de paramètres n'incluent alors que ces serveurs. Un lien direct ou une requête API pour un autre serveur est traité comme introuvable. Les clés API externes ne sont pas limitées par cette autorisation.
 
 ## Verrouillage de compte {/* #account-lockout */}
 

@@ -51,7 +51,7 @@ Los administradores ven todas las configuraciones disponibles.
 
 ## Vista de No Administrador {/* #non-administrator-view */}
 
-Los usuarios normales ven un conjunto limitado de configuraciones.
+Los usuarios normales ven un conjunto limitado de opciones de configuración. Los nombres de servidor y los datos de copia de seguridad en esas páginas siguen la concesión del servidor de [Usuarios](user-management-settings.md#server-visibility).
 
 <table>
   <tr>

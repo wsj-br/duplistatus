@@ -383,6 +383,8 @@
         "id": "user-id",
         "username": "admin",
         "isAdmin": true,
+        "accessAllServers": true,
+        "serverIds": [],
         "mustChangePassword": false,
         "createdAt": "2024-01-01T00:00:00Z",
         "lastLoginAt": "2024-01-15T10:30:00Z",
@@ -422,14 +424,18 @@
     "username": "newuser",
     "password": "optional-password",
     "isAdmin": false,
-    "requirePasswordChange": true
+    "requirePasswordChange": true,
+    "accessAllServers": false,
+    "serverIds": ["server-id"]
   }
   ```
 
-- `username`：必填，必须为 3-50 个字符，唯一
-  - `password`：可选，如未提供则生成安全临时密码
-  - `isAdmin`：可选，默认为 false
-  - `requirePasswordChange`：可选，默认为 true
+- `username`：必填，长度必须为 3-50 个字符，且唯一
+  - `password`：选填，若未提供，将生成安全的临时密码
+  - `isAdmin`：选填，默认值为 false。管理员用户始终接收所有服务器
+  - `requirePasswordChange`：选填，默认值为 true
+  - `accessAllServers`：选填，默认值为 true。当为 false 时，`serverIds` 是该用户能看到的唯一服务器集合
+  - `serverIds`：选填，现有服务器 ID 数组。未知的 ID 将被拒绝。当用户为管理员或 `accessAllServers` 不为 false 时，此参数将被忽略
 - **响应**：
 
   ```json
@@ -438,7 +444,9 @@
       "id": "user-id",
       "username": "newuser",
       "isAdmin": false,
-      "mustChangePassword": true
+      "mustChangePassword": true,
+      "accessAllServers": true,
+      "serverIds": []
     },
     "temporaryPassword": "generated-password-123"
   }
@@ -472,13 +480,18 @@
     "username": "updated-username",
     "isAdmin": true,
     "requirePasswordChange": false,
-    "resetPassword": true
+    "resetPassword": true,
+    "password": "optional-custom-password",
+    "accessAllServers": false,
+    "serverIds": ["server-id"]
   }
   ```
 
-- 所有字段均为可选
-  - `resetPassword`：如果为 true，则生成新临时密码并将 `requirePasswordChange` 设为 true
-- **响应**（含密码重置）：
+- 所有字段均为选填
+  - `accessAllServers` 和 `serverIds`：与创建时的规则相同。将用户提升为管理员会存储所有服务器访问权限。将管理员降级时，除非在同一请求中发送自定义列表，否则将重新从所有服务器开始
+  - `resetPassword`：如果为 true，则设置新密码。提供 `password` 时，将在策略检查后使用。省略 `password` 时，将生成临时密码
+  - `requirePasswordChange`：与 `resetPassword` 一起使用时，默认值为 true。发送 `false` 以清除必须更改密码的标志
+- **响应**（包含密码重置）：
 
   ```json
   {
@@ -486,7 +499,9 @@
       "id": "user-id",
       "username": "updated-username",
       "isAdmin": true,
-      "mustChangePassword": true
+      "mustChangePassword": true,
+      "accessAllServers": true,
+      "serverIds": []
     },
     "temporaryPassword": "new-temp-password-456"
   }
@@ -500,7 +515,9 @@
       "id": "user-id",
       "username": "updated-username",
       "isAdmin": true,
-      "mustChangePassword": false
+      "mustChangePassword": false,
+      "accessAllServers": true,
+      "serverIds": []
     }
   }
   ```
@@ -513,10 +530,11 @@
   - `409`：用户名已存在（如果更改用户名）
   - `500`：内部服务器错误
 - **注意事项**：
-  - 仅管理员用户可访问
-  - 用户名更改需验证唯一性
-  - 密码重置会生成安全的 12 位临时密码
-  - 所有更改都会记录到审计日志
+  - 仅限管理员用户访问
+  - 更改用户名时会验证唯一性
+  - 省略重置密码时，将生成安全的 12 字符临时密码，仅返回一次
+  - 提供的重置密码必须符合密码策略，且不会返回
+  - 所有更改均会记录到审计日志中
 
 ### 删除用户 - `/api/users/:id` {/* #delete-user---apiusersid */}
 - **端点**：`/api/users/:id`

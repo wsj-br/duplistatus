@@ -21,6 +21,8 @@ import {
   getRawBackupSettingsMap,
   getSMTPConfig,
 } from '@/lib/db-utils';
+import type { ServerAccess } from '@/lib/server-access';
+import { filterBackupSettings } from '@/lib/server-access';
 import {
   buildDailySummarySnapshot,
   isProblemJob,
@@ -238,11 +240,20 @@ async function snapshotPlaceholderValues(
   };
 }
 
-export async function collectDailySummarySnapshot(generatedAt: Date = new Date()): Promise<DailySummarySnapshot> {
+export async function collectDailySummarySnapshot(
+  generatedAt: Date = new Date(),
+  access?: ServerAccess
+): Promise<DailySummarySnapshot> {
   const config = getDailySummaryConfig();
-  const servers = dbOps.getAllServers.all() as SummaryServerRow[];
-  const latestResults = dbOps.getLatestBackupResultsForSummary.all() as SummaryLatestResultRow[];
-  const backupSettings = getRawBackupSettingsMap();
+  const allServers = dbOps.getAllServers.all() as SummaryServerRow[];
+  const servers = !access || access.unrestricted
+    ? allServers
+    : allServers.filter((server) => access.serverIds.has(server.id));
+  const allLatestResults = dbOps.getLatestBackupResultsForSummary.all() as SummaryLatestResultRow[];
+  const latestResults = !access || access.unrestricted
+    ? allLatestResults
+    : allLatestResults.filter((row) => access.serverIds.has(row.server_id));
+  const backupSettings = filterBackupSettings(access ?? { unrestricted: true, serverIds: new Set() }, getRawBackupSettingsMap());
   const overdueToleranceMinutes = getConfigOverdueTolerance();
   return buildDailySummarySnapshot({
     generatedAt,
@@ -470,11 +481,11 @@ export async function retryFailedDailySummary(occurrenceKey?: string): Promise<D
   });
 }
 
-export async function previewDailySummary(): Promise<{
+export async function previewDailySummary(access?: ServerAccess): Promise<{
   snapshot: DailySummarySnapshot;
   payload: DailySummaryRenderedPayload;
 }> {
-  const snapshot = await collectDailySummarySnapshot();
+  const snapshot = await collectDailySummarySnapshot(new Date(), access);
   const locale = getNotificationTemplates().language || SOURCE_LOCALE;
   const payload = await renderDailySummaryPayload(snapshot, locale);
   return { snapshot, payload };

@@ -2,7 +2,7 @@
 
 ## 仪表板摘要 {/* #dashboard-summary */}
 
-本节显示所有备份的聚合统计信息。
+此部分显示已登录用户可见服务器的汇总统计信息。管理员可以查看所有服务器。非管理员用户也可以查看所有服务器，除非管理员在[用户](settings/user-management-settings.md#server-visibility)中限制了该账户。
 
 ![仪表板摘要 - 概览](../assets/screen-dashboard-summary.png)
 ![仪表板摘要 - 表格](../assets/screen-dashboard-summary-table.png)

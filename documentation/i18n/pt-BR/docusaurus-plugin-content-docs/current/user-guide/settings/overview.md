@@ -51,7 +51,7 @@ Os administradores veem todas as configurações disponíveis.
 
 ## Visualização Não Administrativa {/* #non-administrator-view */}
 
-Usuários regulares veem um conjunto limitado de configurações.
+Usuários regulares veem um conjunto limitado de configurações. Nomes de servidor e dados de backup nessas páginas seguem a concessão de servidor de [Usuários](user-management-settings.md#server-visibility).
 
 <table>
   <tr>

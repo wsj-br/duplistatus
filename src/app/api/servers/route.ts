@@ -1,15 +1,21 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { dbUtils } from '@/lib/db-utils';
 import { withCSRF } from '@/lib/csrf-middleware';
+import { requireServerAccess } from '@/lib/server-access-http';
 
-export const GET = withCSRF(async (request: Request) => {
+export const GET = withCSRF(async (request: NextRequest) => {
   try {
+    const accessResult = await requireServerAccess(request);
+    if (accessResult instanceof NextResponse) {
+      return accessResult;
+    }
+    const { access } = accessResult;
     const { searchParams } = new URL(request.url);
     const includeBackups = searchParams.get('includeBackups') === 'true';
     
     if (includeBackups) {
       // Return servers with backup information (consolidates /api/servers-with-backups functionality)
-      const serversBackupNames = dbUtils.getServersBackupNames();
+      const serversBackupNames = dbUtils.getServersBackupNames(access);
       
       // Transform the data to include server name and backup name
       const serversWithBackups = (serversBackupNames as { 
@@ -34,7 +40,7 @@ export const GET = withCSRF(async (request: Request) => {
       return NextResponse.json(serversWithBackups);
     } else {
       // Return basic server information (original functionality)
-      const servers = dbUtils.getAllServers();
+      const servers = dbUtils.getAllServers(access);
       
       // Transform the data to include server information with new fields
       const serverList = (servers as { id: string; name: string; alias: string; note: string }[]).map((server) => ({

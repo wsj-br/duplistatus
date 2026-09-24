@@ -23,7 +23,7 @@
 | <IconButton icon="lucide:send-horizontal" label="发送测试消息"/> | 向您的 NTFY 服务器发送测试消息以检查您的配置。                                                               |
 | <IconButton icon="lucide:qr-code" label="配置设备"/>          | 显示一个二维码，允许您快速为移动设备或桌面配置 NTFY 通知。                                                 |
 
-如果后续的 ntfy 发送失败，管理员将在工具栏中看到红色警报图标。请参阅[发送失败](../overview.md#delivery-failures)。
+如果后续的 ntfy 发送失败，管理员会在工具栏中看到一个红色的警报图标。请参阅[发送失败](../delivery-failures.md)。
 
 ## 设备配置 {/* #device-configuration */}
 

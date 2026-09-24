@@ -41,7 +41,7 @@ Wenn die Konfiguration nicht vollständig eingerichtet ist, wird ein gelbes Warn
  
  **duplistatus** prüft nur, ob Ihre SMTP-Einstellungen ausgefüllt sind, und nicht, ob E-Mails tatsächlich zugestellt werden können.
 
- Wenn die Zustellung später fehlschlägt, sehen Administratoren eine rote Sirene in der Symbolleiste. Siehe [Zustellungsfehler](../overview.md#delivery-failures).
+ Wenn die Zustellung später fehlschlägt, sehen Administratoren eine rote Sirene in der Symbolleiste. Siehe [Zustellungsfehler](../delivery-failures.md).
 :::
 
 <br/>

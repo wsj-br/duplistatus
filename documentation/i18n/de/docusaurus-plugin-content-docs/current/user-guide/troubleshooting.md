@@ -19,7 +19,7 @@
 - Stellen Sie die Konnektivität zum NTFY-Server sicher (falls NTFY verwendet wird)
 - Testen Sie die Benachrichtigungseinstellungen
 - Prüfen Sie die Benachrichtigungsprotokolle
-- Wenn Sie Administrator sind, suchen Sie nach der roten Sirene in der Symbolleiste und öffnen Sie die verknüpfte E-Mail- oder NTFY-Einstellungsseite. Siehe [Zustellungsfehler](overview.md#delivery-failures).
+- Wenn Sie Administrator sind, suchen Sie nach der roten Sirene in der Symbolleiste und öffnen Sie die verknüpfte Seite für E-Mail- oder NTFY-Einstellungen. Siehe [Zustellungsfehler](delivery-failures.md).
 
 ### Neue Sicherungen werden nicht angezeigt {/* #new-backups-not-showing */}
 

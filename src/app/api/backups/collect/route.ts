@@ -10,6 +10,7 @@ import { setConfiguration } from '@/lib/db-utils';
 import { encryptData, getServerPassword } from '@/lib/secrets';
 import { withCSRF } from '@/lib/csrf-middleware';
 import { requireAuth } from '@/lib/auth-middleware';
+import { getServerAccess, serverAllowed } from '@/lib/server-access';
 import { getClientIpAddress } from '@/lib/ip-utils';
 import { AuditLogger } from '@/lib/audit-logger';
 import {
@@ -440,6 +441,10 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
     downloadJson = Boolean(downloadJsonRequested);
     
     providedServerId = serverId;
+    const access = getServerAccess(authContext);
+    if (serverId && !serverAllowed(access, serverId)) {
+      return NextResponse.json({ error: 'Server not found' }, { status: 404 });
+    }
 
     let finalHostname: string;
     let finalPort: number;
@@ -657,6 +662,10 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
       // Check if server already exists
       const existingServer = dbOps.getServerById.get(effectiveServerId) as { id: string; name: string; server_url: string; alias: string; note: string; created_at: string } | undefined;
       
+      if (existingServer && !serverAllowed(access, effectiveServerId)) {
+        return NextResponse.json({ error: 'Server not found' }, { status: 404 });
+      }
+
       if (existingServer) {
         // Server exists - update server_url and password, preserve alias and note
         dbOps.upsertServer.run({
