@@ -110,14 +110,17 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       # One build, pushed by digest to both registries (no tag).
-      # Tags are applied later in the merge step. Both registries receive
-      # the same image, so the manifest digest matches.
+      # Tags are applied later in the merge step. Provenance is off because
+      # attestations embed the destination image name, so GHCR and Docker Hub
+      # would get different manifest-list digests and the merge could not
+      # reuse one digest for both registries.
       - name: Build and push by digest
         id: build
         uses: docker/build-push-action@v7
         with:
           context: .
           platforms: ${{ matrix.platform }}
+          provenance: false
           outputs: |
             type=image,name=ghcr.io/${{ github.repository }},push-by-digest=true,name-canonical=true,push=true
             type=image,name=${{ secrets.DOCKERHUB_USERNAME }}/duplistatus,push-by-digest=true,name-canonical=true,push=true

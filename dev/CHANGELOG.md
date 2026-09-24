@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+- **Docker multi-arch publish**: Release image builds no longer attach provenance attestations, so GHCR and Docker Hub share one digest and the merge job can tag `linux/amd64` and `linux/arm64` together (`.github/workflows/docker-image.yml`).
+
 ### Added
 - **GitHub release script**: `pnpm release:github` publishes `v<package.json version>` from `documentation/docs/release-notes/<version>.md`, generating `RELEASE_NOTES_github_<version>.md` first, then deploys the Docusaurus site to GitHub Pages. An existing tag or release for that version is replaced at HEAD (`scripts/release.mjs`).
 
