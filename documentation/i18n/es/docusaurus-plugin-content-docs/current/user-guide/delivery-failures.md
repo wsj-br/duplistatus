@@ -14,5 +14,3 @@ Abra el botón para ver una tarjeta por cada canal con errores (Correo electrón
 **Abrir configuración de correo electrónico** va a [Configuración → Correo electrónico](settings/email-settings.md). **Abrir configuración de NTFY** va a [Configuración → NTFY](settings/ntfy-settings.md).
 
 **Cerrar** solo descarta el panel. **Borrar** oculta los canales enumerados hasta que se registre un error más reciente, incluso cuando el texto del error es el mismo. Una entrega exitosa posterior mantiene el botón oculto. Eso incluye `email_sent`, `notification_sent` y un envío exitoso del [Resumen Diario](settings/daily-summary-settings.md) para ese canal.
-
-La lista se carga con la página y se actualiza aproximadamente una vez por minuto mientras la pestaña del navegador está visible.

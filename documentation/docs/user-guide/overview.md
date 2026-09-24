@@ -97,7 +97,7 @@ The application toolbar provides convenient access to key functions and settings
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:siren" tone="alert" href="delivery-failures" /> &nbsp; [Delivery failures](delivery-failures.md)</td>
-      <td>Shown to administrators while email or ntfy delivery is failing. See [Delivery failures](delivery-failures.md).</td>
+      <td>Shown to administrators when email or ntfy delivery is failing. If no failures are logged, the button is hidden. See [Delivery failures](delivery-failures.md).</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [Settings](settings/backup-notifications-settings.md)</td>

@@ -77,11 +77,11 @@ La barre d'outils de l'application fournit un accès pratique aux fonctions et p
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton label="Actualisation automatique" /></td>
-      <td>Activer ou désactiver la fonction d'actualisation automatique. Configurer dans les [Paramètres d'affichage](settings/display-settings.md) <br/> _Clic droit_ pour ouvrir la page des Paramètres d'affichage</td>
+      <td>Activer ou désactiver la fonction d'actualisation automatique. Configurer dans les [Paramètres d'affichage](settings/display-settings.md) <br/> _Clic droit_ pour ouvrir la page Paramètres d'affichage</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><SvgButton svgFilename="ntfy.svg" /> &nbsp; Ouvrir NTFY</td>
-      <td>Accédez au site web ntfy.sh pour votre sujet de notification configuré. <br/> _Clic droit_ pour afficher un code QR afin de configurer votre appareil pour recevoir les notifications de duplistatus.</td>
+      <td>Accédez au site web ntfy.sh pour votre sujet de notification configuré. <br/> _Clic droit_ pour afficher un code QR afin de configurer votre appareil pour recevoir des notifications de duplistatus.</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Configuration de Duplicati](duplicati-configuration.md)</td>
@@ -93,7 +93,7 @@ La barre d'outils de l'application fournit un accès pratique aux fonctions et p
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:siren" tone="alert" href="delivery-failures" /> &nbsp; [Échecs de livraison](delivery-failures.md)</td>
-      <td>Affiché aux administrateurs lorsque la livraison par e-mail ou ntfy échoue. Voir [Échecs de livraison](delivery-failures.md).</td>
+      <td>Affiché aux administrateurs quand la livraison par e-mail ou ntfy échoue. Si aucun échec n'est enregistré, le bouton est masqué. Voir [Échecs de livraison](delivery-failures.md).</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [Paramètres](settings/backup-notifications-settings.md)</td>

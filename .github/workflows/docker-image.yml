@@ -89,10 +89,6 @@ jobs:
     permissions:
       contents: read
       packages: write
-    outputs:
-      # Each matrix leg exposes its digest via a unique output key
-      digest-amd64: ${{ steps.set_digest.outputs.digest-amd64 }}
-      digest-arm64: ${{ steps.set_digest.outputs.digest-arm64 }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -113,32 +109,26 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # Build and push a per-architecture image by digest (no tag).
-      # Tags are applied later in the merge step.
-      - name: Build and push by digest (GHCR)
-        id: build_ghcr
+      # One build, pushed by digest to both registries (no tag).
+      # Tags are applied later in the merge step. Both registries receive
+      # the same image, so the manifest digest matches.
+      - name: Build and push by digest
+        id: build
         uses: docker/build-push-action@v7
         with:
           context: .
           platforms: ${{ matrix.platform }}
-          outputs: type=image,name=ghcr.io/${{ github.repository }},push-by-digest=true,name-canonical=true,push=true
+          outputs: |
+            type=image,name=ghcr.io/${{ github.repository }},push-by-digest=true,name-canonical=true,push=true
+            type=image,name=${{ secrets.DOCKERHUB_USERNAME }}/duplistatus,push-by-digest=true,name-canonical=true,push=true
 
-      - name: Build and push by digest (Docker Hub)
-        id: build_dockerhub
-        uses: docker/build-push-action@v7
-        with:
-          context: .
-          platforms: ${{ matrix.platform }}
-          outputs: type=image,name=${{ secrets.DOCKERHUB_USERNAME }}/duplistatus,push-by-digest=true,name-canonical=true,push=true
-
-      # Export digests for the merge step
+      # Export the shared digest for the merge step
       - name: Export digests
         run: |
           mkdir -p /tmp/digests/ghcr /tmp/digests/dockerhub
-          digest_ghcr="${{ steps.build_ghcr.outputs.digest }}"
-          digest_dh="${{ steps.build_dockerhub.outputs.digest }}"
-          touch "/tmp/digests/ghcr/${digest_ghcr#sha256:}"
-          touch "/tmp/digests/dockerhub/${digest_dh#sha256:}"
+          digest="${{ steps.build.outputs.digest }}"
+          touch "/tmp/digests/ghcr/${digest#sha256:}"
+          touch "/tmp/digests/dockerhub/${digest#sha256:}"
 
       - name: Upload GHCR digest
         uses: actions/upload-artifact@v7

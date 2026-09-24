@@ -69,11 +69,11 @@ La barra de herramientas de la aplicación proporciona acceso conveniente a func
   <tbody>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:search" /> &nbsp; Filtrar</td>
-      <td>Buscar y filtrar servidores por ID, URL o nombre del trabajo de copia de seguridad.</td>
+      <td>Buscar y filtrar servidores por ID, URL o nombre de la tarea de copia de seguridad.</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:rotate-ccw" /> &nbsp; Actualizar pantalla</td>
-      <td>Ejecutar una actualización manual inmediata de la pantalla con todos los datos</td>
+      <td>Ejecutar una actualización manual e inmediata de la pantalla con todos los datos</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton label="Actualización automática" /></td>
@@ -81,7 +81,7 @@ La barra de herramientas de la aplicación proporciona acceso conveniente a func
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><SvgButton svgFilename="ntfy.svg" /> &nbsp; Abrir NTFY</td>
-      <td>Acceda al sitio web ntfy.sh para su tema de notificaciones configurado. <br/> _Clic derecho_ para mostrar un código QR y configurar su dispositivo para recibir notificaciones de duplistatus.</td>
+      <td>Acceder al sitio web ntfy.sh para su tema de notificaciones configurado. <br/> _Clic derecho_ para mostrar un código QR y configurar su dispositivo para recibir notificaciones de duplistatus.</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Configuración de Duplicati](duplicati-configuration.md)</td>
@@ -93,19 +93,19 @@ La barra de herramientas de la aplicación proporciona acceso conveniente a func
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:siren" tone="alert" href="delivery-failures" /> &nbsp; [Errores de entrega](delivery-failures.md)</td>
-      <td>Se muestra a los administradores mientras falla la entrega por correo electrónico o ntfy. Consulte [Errores de entrega](delivery-failures.md).</td>
+      <td>Se muestra a los administradores cuando la entrega de correo electrónico o NTFY está fallando. Si no hay errores registrados, el botón se oculta. Consulte [Errores de entrega](delivery-failures.md).</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [Configuración](settings/backup-notifications-settings.md)</td>
-      <td>Configurar notificaciones, supervisión, servidor SMTP y plantillas de notificaciones</td>
+      <td>Configurar notificaciones, monitorización, servidor SMTP y plantillas de notificaciones</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:user" label="nombre de usuario" /></td>
-      <td>Mostrar el usuario conectado, tipo de usuario (`Admin`, `User`), haga clic para el menú de usuario (incluye selección de idioma). Ver más en [Gestión de usuarios](settings/user-management-settings.md)</td>
+      <td>Mostrar el usuario conectado, tipo de usuario (`Admin`, `User`), hacer clic para el menú de usuario (incluye selección de idioma). Ver más en [Gestión de usuarios](settings/user-management-settings.md)</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; Guía del usuario</td>
-      <td>Abra la [Guía del usuario](overview.md) en la sección relevante a la página que está viendo actualmente. La información sobre herramienta muestra "Ayuda para [Nombre de página]" para indicar qué documentación se abrirá.</td>
+      <td>Abrir la [Guía del usuario](overview.md) en la sección relevante a la página que está viendo actualmente. La información sobre herramienta muestra "Ayuda para [Nombre de la página]" para indicar qué documentación se abrirá.</td>
     </tr>
   </tbody>
 </table>

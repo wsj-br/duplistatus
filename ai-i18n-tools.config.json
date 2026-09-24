@@ -34,7 +34,7 @@
       ],
       "maxTokens": 8192,
       "temperature": 0.2,
-      "requestTimeoutMs": 240000
+      "requestTimeout": 240
     }
   },
   "features": {

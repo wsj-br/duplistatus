@@ -89,11 +89,11 @@ duplistatus 提供了一个直观的仪表板，用于监控整个基础架构�
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:download" href="collect-backup-logs" /> &nbsp; [收集日志](collect-backup-logs.md)</td>
-      <td>连接到 Duplicati 服务器和检索备份日志 <br/> _右键单击_ 收集所有已配置服务器的日志</td>
+      <td>连接到 Duplicati 服务器并检索备份日志 <br/> _右键单击_ 收集所有已配置服务器的日志</td>
     </tr>
     <tr>
-      <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:siren" tone="alert" href="delivery-failures" /> &nbsp; [发送失败](delivery-failures.md)</td>
-      <td>当电子邮件或 ntfy 发送失败时向管理员显示。请参阅[发送失败](delivery-failures.md)。</td>
+      <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:siren" tone="alert" href="delivery-failures" /> &nbsp; [投递失败](delivery-failures.md)</td>
+      <td>当电子邮件或 ntfy 投递失败时向管理员显示。如果没有记录任何失败，该按钮将被隐藏。请参阅[投递失败](delivery-failures.md)。</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [设置](settings/backup-notifications-settings.md)</td>
@@ -101,11 +101,11 @@ duplistatus 提供了一个直观的仪表板，用于监控整个基础架构�
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:user" label="用户名" /></td>
-      <td>显示已连接的用户、用户类型（`Admin`、`User`），单击打开用户菜单（包含语言选择）。在[用户管理](settings/user-management-settings.md)中查看更多信息</td>
+      <td>显示已连接的用户、用户类型（`Admin`、`User`），单击可打开用户菜单（包含语言选择）。在[用户管理](settings/user-management-settings.md)中查看更多信息</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; 用户指南</td>
-      <td>打开[用户指南](overview.md)并跳转到与您当前查看的页面相关的部分。工具提示显示“[页面名称]的帮助”，以指示将打开哪个文档。</td>
+      <td>打开[用户指南](overview.md)并跳转到与您当前查看的页面相关的部分。工具提示会显示"[页面名称]的帮助"，以指示将打开哪篇文档。</td>
     </tr>
   </tbody>
 </table>

@@ -14,5 +14,3 @@ Ouvrir le bouton pour afficher une carte par chaîne en échec (E-mail, ntfy), e
 **Ouvrir les paramètres de messagerie** redirige vers [Paramètres → E-mail](settings/email-settings.md). **Ouvrir les paramètres NTFY** redirige vers [Paramètres → NTFY](settings/ntfy-settings.md).
 
 **Fermer** ne fait que masquer le panneau. **Effacer** masque les chaînes répertoriées jusqu'à ce qu'un nouvel échec soit enregistré, même si le texte de l'erreur est identique. Une livraison réussie par la suite maintient le bouton masqué. Cela inclut `email_sent`, `notification_sent` et l'envoi réussi d'un [Résumé quotidien](settings/daily-summary-settings.md) pour cette chaîne.
-
-La liste se charge avec la page et se rafraîchit environ une fois par minute tant que l'onglet du navigateur est visible.

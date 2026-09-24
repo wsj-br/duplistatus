@@ -16,4 +16,4 @@ Open the button for one card per failing channel (Email, ntfy), not one row for 
 
 **Close** only dismisses the panel. **Clear** hides the listed channels until a newer failure is logged, even when the error text is the same. A later successful delivery keeps the button hidden. That includes `email_sent`, `notification_sent`, and a successful [Daily Summary](settings/daily-summary-settings.md) send for that channel.
 
-The list loads with the page and refreshes about once a minute while the browser tab is visible.
+

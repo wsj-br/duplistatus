@@ -69,43 +69,43 @@ duplistatus आपके संपूर्ण बुनियादी ढा�
   <tbody>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:search" /> &nbsp; फ़िल्टर</td>
-      <td>सर्वर को ID, URL, या बैकअप जॉब नाम से खोजें और फ़िल्टर करें।</td>
+      <td>आईडी, URL, या बैकअप जॉब नाम द्वारा सर्वर खोजें और फ़िल्टर करें।</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:rotate-ccw" /> &nbsp; स्क्रीन रीफ्रेश करें</td>
-      <td>सभी डेटा का तुरंत मैन्युअल स्क्रीन रीफ्रेश निष्पादित करें</td>
+      <td>सभी डेटा का तत्काल मैन्युअल स्क्रीन रीफ्रेश निष्पादित करें</td>
     </tr>
     <tr>
-      <td style={{whiteSpace: 'nowrap'}}><IconButton label="ऑटो-रीफ्रेश" /></td>
+      <td style={{whiteSpace: 'nowrap'}}><IconButton label="स्वतः रीफ्रेश" /></td>
       <td>स्वचालित रीफ्रेश कार्यक्षमता को सक्षम या अक्षम करें। [प्रदर्शन सेटिंग्स](settings/display-settings.md) में कॉन्फ़िगर करें <br/> प्रदर्शन सेटिंग्स पृष्ठ खोलने के लिए _राइट-क्लिक_ करें</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><SvgButton svgFilename="ntfy.svg" /> &nbsp; NTFY खोलें</td>
-      <td>अपने कॉन्फ़िगर किए गए सूचना विषय के लिए ntfy.sh वेबसाइट तक पहुँचें। <br/> duplistatus से सूचनाएं प्राप्त करने के लिए अपना डिवाइस कॉन्फ़िगर करने हेतु QR कोड दिखाने के लिए _राइट-क्लिक_ करें।</td>
+      <td>अपने कॉन्फ़िगर किए गए सूचना विषय के लिए ntfy.sh वेबसाइट एक्सेस करें। <br/> duplistatus से सूचनाएं प्राप्त करने के लिए अपना डिवाइस कॉन्फ़िगर करने हेतु QR कोड दिखाने के लिए _राइट-क्लिक_ करें।</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Duplicati कॉन्फ़िगरेशन](duplicati-configuration.md)</td>
-      <td>चयनित Duplicati सर्वर का वेब इंटरफ़ेस खोलें <br/> एक नए टैब में Duplicati लीगेसी UI (`/ngax`) खोलने के लिए _राइट-क्लिक_ करें</td>
+      <td>चयनित Duplicati सर्वर का वेब इंटरफ़ेस खोलें <br/> Duplicati लेगेसी UI (`/ngax`) को नए टैब में खोलने के लिए _राइट-क्लिक_ करें</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:download" href="collect-backup-logs" /> &nbsp; [लॉग एकत्र करें](collect-backup-logs.md)</td>
-      <td>Duplicati सर्वर से कनेक्ट करें और बैकअप लॉग प्राप्त करें <br/> सभी कॉन्फ़िगर किए गए सर्वर के लिए लॉग एकत्र करने हेतु _राइट-क्लिक_ करें</td>
+      <td>Duplicati सर्वर से कनेक्ट करें और बैकअप लॉग पुनर्प्राप्त करें <br/> सभी कॉन्फ़िगर किए गए सर्वर के लिए लॉग एकत्र करने हेतु _राइट-क्लिक_ करें</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:siren" tone="alert" href="delivery-failures" /> &nbsp; [डिलीवरी विफलताएँ](delivery-failures.md)</td>
-      <td>जब ईमेल या ntfy डिलीवरी विफल हो रही हो, तो प्रशासकों को दिखाया जाता है। अधिक जानकारी के लिए देखें [डिलीवरी विफलताएँ](delivery-failures.md)।</td>
+      <td>ईमेल या ntfy डिलीवरी विफल होने पर व्यवस्थापकों को दिखाया जाता है। यदि कोई विफलता लॉग नहीं की गई है, तो बटन छिपा रहता है। [डिलीवरी विफलताएँ](delivery-failures.md) देखें।</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [सेटिंग्स](settings/backup-notifications-settings.md)</td>
-      <td>सूचनाएं, मॉनिटरिंग, SMTP सर्वर, और सूचना टेम्पलेट कॉन्फ़िगर करें</td>
+      <td>सूचनाएं, निगरानी, SMTP सर्वर, और सूचना टेम्पलेट कॉन्फ़िगर करें</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:user" label="उपयोगकर्ता नाम" /></td>
-      <td>कनेक्टेड उपयोगकर्ता, उपयोगकर्ता प्रकार (`Admin`, `User`) दिखाएँ, उपयोगकर्ता मेनू (जिसमें भाषा चयन शामिल है) के लिए क्लिक करें। अधिक जानकारी के लिए देखें [उपयोगकर्ता प्रबंधन](settings/user-management-settings.md)</td>
+      <td>कनेक्टेड उपयोगकर्ता, उपयोगकर्ता प्रकार (`Admin`, `User`) दिखाएँ, उपयोगकर्ता मेनू के लिए क्लिक करें (भाषा चयन शामिल है)। [उपयोगकर्ता प्रबंधन](settings/user-management-settings.md) में और देखें</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; उपयोगकर्ता गाइड</td>
-      <td>आप वर्तमान में जिस पृष्ठ को देख रहे हैं, उससे संबंधित अनुभाग पर [उपयोगकर्ता गाइड](overview.md) खोलें। टूलटिप "[पृष्ठ का नाम] के लिए सहायता" दिखाता है ताकि यह पता चल सके कि कौन-सा दस्तावेज़ीकरण खोला जाएगा।</td>
+      <td>आप वर्तमान में जिस पृष्ठ को देख रहे हैं, उससे संबंधित अनुभाग के लिए [उपयोगकर्ता गाइड](overview.md) खोलें। टूलटिप यह इंगित करने के लिए "[पृष्ठ नाम] के लिए सहायता" दिखाता है कि कौन सा दस्तावेज़ खोला जाएगा।</td>
     </tr>
   </tbody>
 </table>

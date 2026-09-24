@@ -14,5 +14,3 @@ Abra o botão para ver um cartão por canal com falha (E-mail, ntfy), e não uma
 **Abrir configurações de e-mail** vai para [Configurações → E-mail](settings/email-settings.md). **Abrir configurações do NTFY** vai para [Configurações → NTFY](settings/ntfy-settings.md).
 
 **Fechar** apenas dispensa o painel. **Limpar** oculta os canais listados até que uma nova falha seja registrada, mesmo quando o texto do erro for o mesmo. Uma entrega bem-sucedida posterior mantém o botão oculto. Isso inclui `email_sent`, `notification_sent` e um envio bem-sucedido do [Resumo Diário](settings/daily-summary-settings.md) para esse canal.
-
-A lista é carregada com a página e atualiza cerca de uma vez por minuto enquanto a guia do navegador estiver visível.

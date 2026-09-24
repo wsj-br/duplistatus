@@ -14,5 +14,3 @@ Eine <IconButton icon="lucide:siren" tone="alert" />-Schaltfläche mit einem san
 **E-Mail-Einstellungen öffnen** führt zu [Einstellungen → E-Mail](settings/email-settings.md). **NTFY-Einstellungen öffnen** führt zu [Einstellungen → NTFY](settings/ntfy-settings.md).
 
 **Schließen** blendet nur das Panel aus. **Löschen** blendet die aufgelisteten Kanäle aus, bis ein neuerer Fehler protokolliert wird, selbst wenn der Fehlertext derselbe ist. Eine spätere erfolgreiche Zustellung hält den Button ausgeblendet. Dazu gehören `email_sent`, `notification_sent` und eine erfolgreiche Zustellung der [Tägliche Zusammenfassung](settings/daily-summary-settings.md) für diesen Kanal.
-
-Die Liste wird mit der Seite geladen und etwa einmal pro Minute aktualisiert, solange der Browser-Tab sichtbar ist.
