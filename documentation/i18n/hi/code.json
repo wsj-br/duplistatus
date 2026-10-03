@@ -360,5 +360,37 @@
   "theme.SearchPage.noResultsText": {
     "message": "कोई दस्तावेज़ नहीं मिला",
     "description": "The paragraph for empty search result"
+  },
+  "homepage.meta.title": {
+    "message": "प्रत्येक Duplicati बैकअप की निगरानी करें",
+    "description": "HTML document title for the landing page"
+  },
+  "homepage.meta.description": {
+    "message": "प्रत्येक Duplicati सर्वर और जॉब के लिए सेल्फ-होस्टेड डैशबोर्ड: स्थिति, अतिदेय अलर्ट, लॉग और रुझान — प्रत्येक बैकअप UI को खोले बिना।",
+    "description": "HTML meta description for the landing page"
+  },
+  "homepage.nav.docs": {
+    "message": "दस्तावेज़",
+    "description": "Landing navbar link to the documentation"
+  },
+  "homepage.nav.getStarted": {
+    "message": "शुरू करें",
+    "description": "Landing navbar call-to-action that scrolls to install"
+  },
+  "homepage.nav.features": {
+    "message": "सुविधाएँ",
+    "description": "Landing navbar link to the features section"
+  },
+  "homepage.nav.howItWorks": {
+    "message": "यह कैसे काम करता है",
+    "description": "Landing navbar link to the workflow section"
+  },
+  "homepage.nav.security": {
+    "message": "सुरक्षा",
+    "description": "Landing navbar link to the security section"
+  },
+  "homepage.nav.install": {
+    "message": "इंस्टॉल करें",
+    "description": "Landing navbar link to the install section"
   }
 }

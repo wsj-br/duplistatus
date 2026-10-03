@@ -1,3 +1,4 @@
+import path from 'node:path';
 import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
@@ -198,6 +199,24 @@ const config: Config = {
         },
       };
     },
+    function landingHtmlSource() {
+      return {
+        name: 'landing-html-source',
+        configureWebpack() {
+          return {
+            module: {
+              rules: [
+                {
+                  test: /\.html$/,
+                  include: [path.resolve(process.cwd(), 'src/landing')],
+                  type: 'asset/source',
+                },
+              ],
+            },
+          };
+        },
+      };
+    },
   ],
 
   themes: [
@@ -275,10 +294,12 @@ const config: Config = {
       },
       items: [
         {
-          type: 'docSidebar',
-          sidebarId: 'mainSidebar',
+          type: 'custom-docsLink',
           position: 'left',
-          label: 'Documentation',
+        },
+        {
+          type: 'custom-landingNavLinks',
+          position: 'left',
         },
         {
           type: 'localeDropdown',

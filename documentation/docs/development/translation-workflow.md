@@ -12,12 +12,12 @@ To try an unpublished checkout on the same machine (default `../ai-i18n-tools`),
 
 ## When English documentation changes {/* #when-english-documentation-changes */}
 
-1. **Edit source** in `documentation/docs/` (English only).
+1. **Edit source** in `documentation/docs/` (English only). Landing-page copy is `documentation/src/landing/landing.html`.
 2. **Docusaurus UI strings** (theme labels, navbar, etc.): if needed, run `pnpm write-translations` in `documentation/` so `i18n/en/*.json` picks up new keys.
 3. **Heading IDs**: `pnpm write-heading-ids` (from `documentation/`).
 4. **Translate** from the **repo root** (or use the shortcuts below from `documentation/`):
    - `pnpm i18n:extract` — refresh `src/locales/strings.json` from `t('…')` in the Next.js app.
-   - `pnpm i18n:translate:docs` — translate markdown/JSON into `documentation/i18n/` per config.
+   - `pnpm i18n:translate:docs` — translate markdown, Docusaurus shell JSON, and the landing HTML into `documentation/i18n/` and `documentation/src/landing/i18n/` per config.
    - `pnpm i18n:translate:svg` — translate SVGs under `documentation/static/img` as configured.
    - `pnpm i18n:translate:json` — translate default notification templates in `src/locales/templates/` from `en-GB.json`.
    - Or run everything: `pnpm i18n:translate`.
@@ -61,9 +61,21 @@ Settings → Templates → **Reset** loads defaults from `src/locales/templates/
 
 See the [ai-i18n-tools JSON guide](https://wsj-br.github.io/ai-i18n-tools/guide/json.html) for flags (`--locale`, `--force`, etc.).
 
+## Landing page HTML {/* #landing-page-html */}
+
+The docs homepage body is a single English HTML file, not React section components.
+
+1. Edit **`documentation/src/landing/landing.html`** (and `documentation/src/landing/landing.css` for layout). Keep the hash ids `features`, `dashboard`, `workflow`, `security`, and `install`.
+2. Run **`pnpm i18n:translate:docs`** from the repo root (or `pnpm translate:docs` from `documentation/`).
+3. Generated copies are written to **`documentation/src/landing/i18n/{locale}/landing.html`**. Do not edit those files by hand.
+
+`translate-docs` uses the [HTML pages](https://wsj-br.github.io/ai-i18n-tools/guide/documents/html-pages.html) pipeline: visible text and `alt` / `title` / `aria-label` are translated; `<pre>` and `<code>` stay in English. Navbar labels and the page title stay in Docusaurus `Translate` (`homepage.nav.*`, `homepage.meta.*`).
+
+Do not add `data-i18n` markers to this file, and do not list it under `ui.sourceRoots`. The same HTML file must not be in both the documents pipeline and the UI-strings pipeline.
+
 ## Glossary {/* #glossary */}
 
-- **UI terminology** for documentation is driven by `glossary.uiGlossary` in `ai-i18n-tools.config.json`, pointing at `src/locales/strings.json` (the catalog produced by `pnpm i18n:extract`).
+- **UI terminology** for documentation comes from each `ui[]` catalog with `uiGlossary` left on (the default). The Next.js app catalog is `src/locales/strings.json` (produced by `pnpm i18n:extract`). Do not set `glossary.uiGlossary`; that key is rejected.
 - **Overrides** live in `documentation/glossary-user.csv` (`glossary.userGlossary` in config). See the [ai-i18n-tools glossary docs](https://github.com/wsj-br/ai-i18n-tools/blob/main/docs/GETTING_STARTED.md) for column format.
 - Generate a CSV template: `pnpm i18n:glossary-generate` (root).
 

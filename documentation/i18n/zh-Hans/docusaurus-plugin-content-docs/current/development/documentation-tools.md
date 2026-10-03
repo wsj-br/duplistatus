@@ -23,7 +23,9 @@ documentation/
 ├── src/               # React components and pages
 │   ├── components/    # Custom React components
 │   ├── css/           # Custom styles
-│   └── pages/         # Additional pages (e.g., 404)
+│   ├── landing/       # Homepage HTML + CSS (English source; locale copies in landing/i18n/)
+│   ├── pages/         # Additional pages (homepage shell, 404)
+│   └── theme/         # Swizzled theme (navbar)
 ├── static/            # Static assets (images, files)
 ├── docusaurus.config.ts  # Docusaurus configuration
 ├── sidebars.ts        # Sidebar navigation configuration
@@ -39,10 +41,12 @@ documentation/
 - **UI 翻译**：`i18n/{locale}/docusaurus-theme-classic/*.json` 和其他 JSON 文件
 - **本地化截图**：`i18n/{locale}/docusaurus-plugin-content-docs/current/**/assets`，由根目录中的 `pnpm take-screenhots` 生成。
 
-`pnpm write-translations` 命令将 UI 字符串（来自 Docusaurus 主题和自定义组件）提取到 JSON 翻译文件中。`pnpm translate` 脚本（来自 `documentation/`，委托给仓库根目录）运行 **ai-i18n-tools** 按 `ai-i18n-tools.config.json` 翻译 markdown、JSON 和 SVG。
+`pnpm write-translations` 命令将 UI 字符串（来自 Docusaurus 主题和自定义组件）提取到 JSON 翻译文件中。`pnpm translate` 脚本（来自 `documentation/`，委托给代码仓库根目录）运行 **ai-i18n-tools**，按照 `ai-i18n-tools.config.json` 翻译 markdown、JSON、SVG 和落地页 HTML。
+
+文档主页是由 `src/pages/index.tsx` 包裹的 `src/landing/landing.html`。如需修改文案，请编辑该 HTML 文件；各语言区域的副本位于 `src/landing/i18n/` 下，由 `pnpm i18n:translate:docs` 生成。
 
 :::important
-仅编辑 `docs/` 中的文件和 `i18n/en/` 中的源 JSON 文件。`i18n/{other-locales}/` 中的翻译 markdown 文件是自动生成的，不应手动编辑。
+请仅编辑 `docs/` 中的文件、落地页源文件 `src/landing/landing.html` 和 `i18n/en-GB/` 中的源 JSON 文件。`i18n/{other-locales}/` 下已翻译的 markdown 和 `src/landing/i18n/` 下的落地页副本均为生成内容，请勿手动编辑。
 :::
 
 ### 支持的语言环境 {/* #supported-locales */}

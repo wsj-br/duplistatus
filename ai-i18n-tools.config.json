@@ -45,7 +45,6 @@
   },
   "cacheDir": ".translation-cache",
   "glossary": {
-    "uiGlossary": "src/locales/strings.json",
     "userGlossary": "glossary-user.csv"
   },
   "ui": {
@@ -77,6 +76,18 @@
       "docsOutput": {
         "style": "docusaurus",
         "docsRoot": "documentation/docs"
+      }
+    },
+    {
+      "description": "Docs site landing page",
+      "contentPaths": [
+        "documentation/src/landing/landing.html"
+      ],
+      "outputDir": "documentation/src/landing/i18n",
+      "addFrontmatter": false,
+      "docsOutput": {
+        "style": "nested",
+        "docsRoot": "documentation/src/landing"
       }
     }
   ],

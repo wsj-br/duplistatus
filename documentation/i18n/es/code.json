@@ -360,5 +360,37 @@
   "theme.SearchPage.noResultsText": {
     "message": "No se encontraron documentos",
     "description": "The paragraph for empty search result"
+  },
+  "homepage.meta.title": {
+    "message": "Supervisa cada copia de seguridad de Duplicati",
+    "description": "HTML document title for the landing page"
+  },
+  "homepage.meta.description": {
+    "message": "Panel de control autohospedado para cada servidor y tarea de Duplicati: estado, alertas de vencimiento, registros y tendencias — sin abrir la interfaz de cada copia de seguridad.",
+    "description": "HTML meta description for the landing page"
+  },
+  "homepage.nav.docs": {
+    "message": "Documentación",
+    "description": "Landing navbar link to the documentation"
+  },
+  "homepage.nav.getStarted": {
+    "message": "Primeros pasos",
+    "description": "Landing navbar call-to-action that scrolls to install"
+  },
+  "homepage.nav.features": {
+    "message": "Características",
+    "description": "Landing navbar link to the features section"
+  },
+  "homepage.nav.howItWorks": {
+    "message": "Cómo funciona",
+    "description": "Landing navbar link to the workflow section"
+  },
+  "homepage.nav.security": {
+    "message": "Seguridad",
+    "description": "Landing navbar link to the security section"
+  },
+  "homepage.nav.install": {
+    "message": "Instalar",
+    "description": "Landing navbar link to the install section"
   }
 }

@@ -12,15 +12,15 @@
 
 ## 当英文文档更改时 {/* #when-english-documentation-changes */}
 
-1. 在 `documentation/docs/` 中**编辑源文件**（仅英语）。
-2. **Docusaurus UI 字符串**（主题标签、导航栏等）：如果需要，在 `documentation/` 中运行 `pnpm write-translations`，以便 `i18n/en/*.json` 获取新键。
+1. 在 `documentation/docs/` 中**编辑源内容**（仅限英文）。着陆页文案为 `documentation/src/landing/landing.html`。
+2. **Docusaurus UI 字符串**（主题标签、导航栏等）：如有需要，在 `documentation/` 中运行 `pnpm write-translations`，以便 `i18n/en/*.json` 提取新键。
 3. **标题 ID**：`pnpm write-heading-ids`（来自 `documentation/`）。
-4. 从 **仓库根目录** 进行**翻译**（或从 `documentation/` 使用以下快捷方式）：
+4. 在**代码仓根目录**执行**翻译**（或在 `documentation/` 中使用以下快捷指令）：
    - `pnpm i18n:extract` — 从 Next.js 应用中的 `t('…')` 刷新 `src/locales/strings.json`。
-   - `pnpm i18n:translate:docs` — 根据配置将 markdown/JSON 翻译到 `documentation/i18n/`。
+   - `pnpm i18n:translate:docs` — 根据配置将 markdown、Docusaurus shell JSON 和着陆页 HTML 翻译为 `documentation/i18n/` 和 `documentation/src/landing/i18n/`。
    - `pnpm i18n:translate:svg` — 按配置翻译 `documentation/static/img` 下的 SVG。
-   - `pnpm i18n:translate:json` — 从 `en-GB.json` 翻译 `src/locales/templates/` 中的默认通知模板。
-   - 或运行全部：`pnpm i18n:translate`。
+   - `pnpm i18n:translate:json` — 根据 `en-GB.json` 翻译 `src/locales/templates/` 中的默认通知模板。
+   - 或运行全部任务：`pnpm i18n:translate`。
 5. **构建**：`cd documentation && pnpm build`（所有区域设置）。
 
 在 `documentation/` 内部，相同的流程连接为 `pnpm translate` → 根目录 `i18n:translate`，加上 `pnpm translate:docs`、`translate:ui`、`translate:svg`、`translate:status`、`i18n:extract`、`i18n:sync`。
@@ -61,10 +61,22 @@ t("{{count}} backups selected", { plurals: true, count: selectedBackups.size })
 
 请参阅 [ai-i18n-tools JSON 指南](https://wsj-br.github.io/ai-i18n-tools/guide/json.html) 了解标志（`--locale`、`--force` 等）。
 
+## 着陆页 HTML {/* #landing-page-html */}
+
+文档主页正文是一个单独的英文 HTML 文件，而不是 React 分区组件。
+
+1. 编辑 **`documentation/src/landing/landing.html`**（以及用于布局的 `documentation/src/landing/landing.css`）。保留哈希 ID `features`、`dashboard`、`workflow`、`security` 和 `install`。
+2. 从代码仓根目录运行 **`pnpm i18n:translate:docs`**（或从 `documentation/` 运行 `pnpm translate:docs`）。
+3. 生成的副本将写入 **`documentation/src/landing/i18n/{locale}/landing.html`**。请勿手动编辑这些文件。
+
+`translate-docs` 使用 [HTML 页面](https://wsj-br.github.io/ai-i18n-tools/guide/documents/html-pages.html) 流水线：可见文本和 `alt` / `title` / `aria-label` 会被翻译；`<pre>` 和 `<code>` 保持英文。导航栏标签和页面标题保留在 Docusaurus `Translate`（`homepage.nav.*`、`homepage.meta.*`）中。
+
+请勿在此文件中添加 `data-i18n` 标记，也不要将其列在 `ui.sourceRoots` 下。同一个 HTML 文件不能同时存在于文档流水线和界面字符串流水线中。
+
 ## 词汇表 {/* #glossary */}
 
-- 文档的**用户界面术语**由 `glossary.uiGlossary` 中的 `ai-i18n-tools.config.json` 驱动，指向 `src/locales/strings.json`（由 `pnpm i18n:extract` 生成的目录）。
-- **覆盖项**位于 `documentation/glossary-user.csv`（配置中的 `glossary.userGlossary`）。有关列格式，请参阅 [ai-i18n-tools 词汇表文档](https://github.com/wsj-br/ai-i18n-tools/blob/main/docs/GETTING_STARTED.md)。
+- 用于文档的**界面术语**来自各个保留了 `uiGlossary`（默认值）的 `ui[]` 目录。Next.js 应用目录为 `src/locales/strings.json`（由 `pnpm i18n:extract` 生成）。请勿设置 `glossary.uiGlossary`；该键会被拒绝。
+- **替代项**位于 `documentation/glossary-user.csv`（配置中的 `glossary.userGlossary`）。有关列格式，请参阅 [ai-i18n-tools 术语表文档](https://github.com/wsj-br/ai-i18n-tools/blob/main/docs/GETTING_STARTED.md)。
 - 生成 CSV 模板：`pnpm i18n:glossary-generate`（根目录）。
 
 ## 缓存 {/* #cache */}

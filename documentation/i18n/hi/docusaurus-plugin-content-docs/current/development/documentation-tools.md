@@ -23,7 +23,9 @@ documentation/
 ├── src/               # React components and pages
 │   ├── components/    # Custom React components
 │   ├── css/           # Custom styles
-│   └── pages/         # Additional pages (e.g., 404)
+│   ├── landing/       # Homepage HTML + CSS (English source; locale copies in landing/i18n/)
+│   ├── pages/         # Additional pages (homepage shell, 404)
+│   └── theme/         # Swizzled theme (navbar)
 ├── static/            # Static assets (images, files)
 ├── docusaurus.config.ts  # Docusaurus configuration
 ├── sidebars.ts        # Sidebar navigation configuration
@@ -39,10 +41,12 @@ documentation/
 - **यूआई अनुवाद**: `i18n/{locale}/docusaurus-theme-classic/*.json` और अन्य JSON फ़ाइलें
 - **स्थानीयकृत स्क्रीनशॉट**: `i18n/{locale}/docusaurus-plugin-content-docs/current/**/assets`, जिसे बेसडायर में `pnpm take-screenhots` द्वारा उत्पन्न किया गया है।
 
-`pnpm write-translations` कमांड यूआई स्ट्रिंग्स (डॉकुसॉरस थीम और कस्टम घटकों से) को JSON अनुवाद फ़ाइलों में निकालती है। `pnpm translate` स्क्रिप्ट (`documentation/` से, रेपो रूट पर निर्भर करता है) `ai-i18n-tools.config.json` प्रति मार्कडाउन, JSON, और एसवीजी अनुवाद करने के लिए **ai-i18n-tools** चलाता है।
+`pnpm write-translations` कमांड UI स्ट्रिंग्स (Docusaurus थीम और कस्टम कॉम्पोनेंट्स से) को JSON अनुवाद फ़ाइलों में निकालता है। `pnpm translate` स्क्रिप्ट (`documentation/` से, जो रेपो रूट को डेलिगेट करता है) `ai-i18n-tools.config.json` के अनुसार मार्कडाउन, JSON, SVGs और लैंडिंग HTML का अनुवाद करने के लिए **ai-i18n-tools** चलाता है।
+
+डॉक्स होमपेज `src/pages/index.tsx` द्वारा रैप किया गया `src/landing/landing.html` है। कॉपी के लिए HTML फ़ाइल संपादित करें; लोकेल कॉपीज़ `src/landing/i18n/` के अंतर्गत रहती हैं और `pnpm i18n:translate:docs` द्वारा जनरेट की जाती हैं।
 
 :::important
-केवल `docs/` में फ़ाइलों और `i18n/en/` में स्रोत JSON फ़ाइलों में संपादन करें। `i18n/{other-locales}/` में अनुवादित मार्कडाउन फ़ाइलें स्वतः उत्पन्न होती हैं और उन्हें मैन्युअल रूप से संपादित नहीं किया जाना चाहिए।
+केवल `docs/` में मौजूद फ़ाइलों, लैंडिंग सोर्स `src/landing/landing.html` और `i18n/en-GB/` में मौजूद सोर्स JSON फ़ाइलों को ही संपादित करें। `i18n/{other-locales}/` के अंतर्गत ट्रांसलेटेड मार्कडाउन और `src/landing/i18n/` के अंतर्गत लैंडिंग कॉपीज़ अपने आप जनरेट होती हैं और इन्हें मैन्युअल रूप से संपादित नहीं किया जाना चाहिए।
 :::
 
 ### समर्थित लोकेल {/* #supported-locales */}

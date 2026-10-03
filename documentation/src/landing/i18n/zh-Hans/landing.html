@@ -1,0 +1,785 @@
+<div class="landing">
+  <svg class="landing-sprite" aria-hidden="true" focusable="false">
+    <symbol id="icon-arrow-right" viewBox="0 0 24 24">
+      <path d="M5 12h14" />
+      <path d="m12 5 7 7-7 7" />
+    </symbol>
+    <symbol id="icon-server" viewBox="0 0 24 24">
+      <rect width="20" height="8" x="2" y="2" rx="2" ry="2" />
+      <rect width="20" height="8" x="2" y="14" rx="2" ry="2" />
+      <line x1="6" x2="6.01" y1="6" y2="6" />
+      <line x1="6" x2="6.01" y1="18" y2="18" />
+    </symbol>
+    <symbol id="icon-bell" viewBox="0 0 24 24">
+      <path d="M10.268 21a2 2 0 0 0 3.464 0" />
+      <path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />
+    </symbol>
+    <symbol id="icon-shield-check" viewBox="0 0 24 24">
+      <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+      <path d="m9 12 2 2 4-4" />
+    </symbol>
+    <symbol id="icon-layout-dashboard" viewBox="0 0 24 24">
+      <rect width="7" height="9" x="3" y="3" rx="1" />
+      <rect width="7" height="5" x="14" y="3" rx="1" />
+      <rect width="7" height="9" x="14" y="12" rx="1" />
+      <rect width="7" height="5" x="3" y="16" rx="1" />
+    </symbol>
+    <symbol id="icon-triangle-alert" viewBox="0 0 24 24">
+      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+      <path d="M12 9v4" />
+      <path d="M12 17h.01" />
+    </symbol>
+    <symbol id="icon-stethoscope" viewBox="0 0 24 24">
+      <path d="M11 2v2" />
+      <path d="M5 2v2" />
+      <path d="M5 3H4a2 2 0 0 0-2 2v4a6 6 0 0 0 12 0V5a2 2 0 0 0-2-2h-1" />
+      <path d="M8 15a6 6 0 0 0 12 0v-3" />
+      <circle cx="20" cy="10" r="2" />
+    </symbol>
+    <symbol id="icon-container" viewBox="0 0 24 24">
+      <path d="M22 7.7c0-.6-.4-1.2-.8-1.5l-6.3-3.9a1.72 1.72 0 0 0-1.7 0l-10.3 6c-.5.2-.9.8-.9 1.4v6.6c0 .5.4 1.2.8 1.5l6.3 3.9a1.72 1.72 0 0 0 1.7 0l10.3-6c.5-.3.9-1 .9-1.5Z" />
+      <path d="M10 21.9V14L2.1 9.1" />
+      <path d="m10 14 11.9-6.9" />
+      <path d="M14 19.8v-8.1" />
+      <path d="M18 17.5V9.4" />
+    </symbol>
+    <symbol id="icon-link-2" viewBox="0 0 24 24">
+      <path d="M9 17H7A5 5 0 0 1 7 7h2" />
+      <path d="M15 7h2a5 5 0 1 1 0 10h-2" />
+      <line x1="8" x2="16" y1="12" y2="12" />
+    </symbol>
+    <symbol id="icon-chart-column" viewBox="0 0 24 24">
+      <path d="M3 3v16a2 2 0 0 0 2 2h16" />
+      <path d="M18 17V9" />
+      <path d="M13 17V5" />
+      <path d="M8 17v-3" />
+    </symbol>
+    <symbol id="icon-key-round" viewBox="0 0 24 24">
+      <path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z" />
+      <circle cx="16.5" cy="7.5" r=".5" fill="currentColor" />
+    </symbol>
+    <symbol id="icon-network" viewBox="0 0 24 24">
+      <rect x="16" y="16" width="6" height="6" rx="1" />
+      <rect x="2" y="16" width="6" height="6" rx="1" />
+      <rect x="9" y="2" width="6" height="6" rx="1" />
+      <path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3" />
+      <path d="M12 12V8" />
+    </symbol>
+    <symbol id="icon-file-lock" viewBox="0 0 24 24">
+      <path d="M4 9.8V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.706.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2h-3" />
+      <path d="M14 2v5a1 1 0 0 0 1 1h5" />
+      <path d="M9 17v-2a2 2 0 0 0-4 0v2" />
+      <rect width="8" height="5" x="3" y="17" rx="1" />
+    </symbol>
+    <symbol id="icon-scroll-text" viewBox="0 0 24 24">
+      <path d="M15 12h-5" />
+      <path d="M15 8h-5" />
+      <path d="M19 17V5a2 2 0 0 0-2-2H4" />
+      <path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3" />
+    </symbol>
+    <symbol id="icon-terminal" viewBox="0 0 24 24">
+      <path d="M12 19h8" />
+      <path d="m4 17 6-6-6-6" />
+    </symbol>
+    <symbol id="icon-languages" viewBox="0 0 24 24">
+      <path d="m5 8 6 6" />
+      <path d="m4 14 6-6 2-3" />
+      <path d="M2 5h12" />
+      <path d="M7 2h1" />
+      <path d="m22 22-5-10-5 10" />
+      <path d="M14 18h6" />
+    </symbol>
+    <symbol id="icon-book-open" viewBox="0 0 24 24">
+      <path d="M12 5v16" />
+      <path d="M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z" />
+    </symbol>
+    <symbol id="icon-database" viewBox="0 0 24 24">
+      <ellipse cx="12" cy="5" rx="9" ry="3" />
+      <path d="M3 5V19A9 3 0 0 0 21 19V5" />
+      <path d="M3 12A9 3 0 0 0 21 12" />
+    </symbol>
+    <symbol id="icon-globe" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" />
+      <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+      <path d="M2 12h20" />
+    </symbol>
+    <symbol id="icon-github" viewBox="0 0 24 24">
+      <path
+        fill="currentColor"
+        stroke="none"
+        d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"
+      />
+    </symbol>
+  </svg>
+
+  <section class="landing-section landing-hero">
+    <div class="landing-hero-grid" aria-hidden="true"></div>
+    <div class="landing-inner landing-hero-inner">
+      <div class="landing-centered">
+        <div class="landing-eyebrow">
+          <span class="landing-pulse-dot" aria-hidden="true"></span>
+          开源 · 自托管 · 支持 Docker
+        </div>
+        <h1 class="landing-section-title landing-hero-title">
+          全部备份。<span class="landing-hero-accent">一个仪表板。</span>
+        </h1>
+        <p class="landing-section-lead">
+          无需再逐一登录各个 Duplicati Web 界面。duplistatus
+          通过单一屏幕监控所有服务器和任务——让您在遭遇突发数据丢失前，就能确信备份一切正常。
+        </p>
+        <div class="landing-cta-row">
+          <a class="button button--primary button--lg landing-cta" href="#install">
+            安装 duplistatus
+            <svg class="landing-icon" aria-hidden="true"><use href="#icon-arrow-right"></use></svg>
+          </a>
+          <a class="button button--secondary button--lg landing-cta" href="#dashboard">
+            查看仪表板
+          </a>
+        </div>
+        <div class="landing-chip-row">
+          <span class="landing-chip">
+            <svg class="landing-icon landing-chip-info" aria-hidden="true"><use href="#icon-server"></use></svg>
+            多服务器监控
+          </span>
+          <span class="landing-chip">
+            <svg class="landing-icon landing-chip-warning" aria-hidden="true"><use href="#icon-bell"></use></svg>
+            ntfy 和电子邮件告警
+          </span>
+          <span class="landing-chip">
+            <svg class="landing-icon landing-chip-success" aria-hidden="true"><use href="#icon-shield-check"></use></svg>
+            需要登录，可选额外安全加固
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="landing-section">
+    <div class="landing-inner">
+      <div class="landing-centered">
+        <h2 id="dashboard" class="landing-section-title">最核心的问题</h2>
+        <p class="landing-section-lead">
+          我的所有备份都正常吗？一个屏幕即可给出答案——涵盖每一台服务器、每一个任务和每一次运行。
+        </p>
+      </div>
+      <div class="landing-window">
+        <div class="landing-window-chrome">
+          <div class="landing-window-dots" aria-hidden="true">
+            <span class="landing-window-dot landing-window-dot-error"></span>
+            <span class="landing-window-dot landing-window-dot-warning"></span>
+            <span class="landing-window-dot landing-window-dot-success"></span>
+          </div>
+          <div class="landing-window-url">localhost:9666</div>
+        </div>
+        <div class="landing-screenshot-frame">
+          <img
+            class="landing-screenshot no-zoom"
+            data-landing-shot="dashboard"
+            data-nozoom
+            src="/assets/screen-main-dashboard-card-mode.png"
+            alt="卡片视图下的 duplistatus 仪表板，显示带有状态条的服务器、总量和逾期告警"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="landing-section">
+    <div class="landing-inner">
+      <div class="landing-centered">
+        <h2 id="features" class="landing-section-title">
+          专为在多台机器上运行 Duplicati 的用户打造
+        </h2>
+        <p class="landing-section-lead">
+          无论是 NAS、笔记本电脑、VPS 还是两台家庭服务器——duplistatus
+          都能为您提供一站式解答这个最核心的问题。
+        </p>
+      </div>
+      <div class="landing-benefit-stack">
+        <article id="see-every-backup" class="landing-benefit-grid">
+          <div class="landing-benefit-copy">
+            <div class="landing-benefit-badge landing-badge-info">
+              <svg class="landing-icon" aria-hidden="true"><use href="#icon-layout-dashboard"></use></svg>
+              <span>01</span>
+            </div>
+            <h3 class="landing-benefit-title">备份状态一览无余</h3>
+            <p class="landing-benefit-body">
+              在一个仪表板中监控每个 Duplicati 服务器和任务。具备清晰的状态指示器、包含 10 次运行状态条的单服务器卡片、可排序的表格视图，并可深入查看包含警告和错误信息的单次备份日志。
+            </p>
+            <ul class="landing-point-list">
+              <li class="landing-point-item">
+                <span class="landing-point-dot landing-dot-info"></span>
+                包含 10 次运行状态条的单服务器卡片
+              </li>
+              <li class="landing-point-item">
+                <span class="landing-point-dot landing-dot-info"></span>
+                跨所有服务器的可排序表格视图
+              </li>
+              <li class="landing-point-item">
+                <span class="landing-point-dot landing-dot-info"></span>
+                深入查看单项备份日志
+              </li>
+              <li class="landing-point-item">
+                <span class="landing-point-dot landing-dot-info"></span>
+                与 GitHub 最新发布版本进行版本对比
+              </li>
+            </ul>
+            <a class="landing-doc-link" href="/user-guide/dashboard">阅读仪表板指南</a>
+          </div>
+          <div class="landing-card landing-visual-shot">
+            <img
+              class="landing-benefit-shot no-zoom"
+              data-nozoom
+              src="/assets/screen-detail-cards.png"
+              alt="包含备份作业、状态条、大小和上次运行时间的服务器卡片"
+            />
+          </div>
+        </article>
+
+        <article id="catch-problems" class="landing-benefit-grid landing-benefit-grid-reverse">
+          <div class="landing-benefit-copy">
+            <div class="landing-benefit-badge landing-badge-warning">
+              <svg class="landing-icon" aria-hidden="true"><use href="#icon-triangle-alert"></use></svg>
+              <span>02</span>
+            </div>
+            <h3 class="landing-benefit-title">防患于未然，避免数据丢失</h3>
+            <p class="landing-benefit-body">
+              自动检测过期备份、警告和失败的备份。通过 ntfy 推送或 SMTP 电子邮件及时接收
+              警报 — 支持针对每个作业设置通知筛选器，
+              并可在固定的本地时间接收可选的每日摘要电子邮件。
+            </p>
+            <ul class="landing-point-list">
+              <li class="landing-point-item">
+                <span class="landing-point-dot landing-dot-warning"></span>
+                默认每 5 分钟进行一次过期检查
+              </li>
+              <li class="landing-point-item">
+                <span class="landing-point-dot landing-dot-warning"></span>
+                单个作业筛选器：关闭 / 所有 / 警告 / 错误
+              </li>
+              <li class="landing-point-item">
+                <span class="landing-point-dot landing-dot-warning"></span>
+                ntfy 推送通知和 SMTP 电子邮件
+              </li>
+              <li class="landing-point-item">
+                <span class="landing-point-dot landing-dot-warning"></span>
+                每日摘要仅暂停向默认收件人发送电子邮件
+              </li>
+            </ul>
+            <a class="landing-doc-link" href="/user-guide/backup-monitoring">阅读关于备份监控的说明</a>
+          </div>
+          <div class="landing-card landing-visual-shot">
+            <img
+              class="landing-benefit-shot no-zoom"
+              data-nozoom
+              src="/assets/screen-detail-status.png"
+              alt="过期备份、警告和错误面板"
+            />
+          </div>
+        </article>
+
+        <article id="troubleshoot" class="landing-benefit-grid">
+          <div class="landing-benefit-copy">
+            <div class="landing-benefit-badge landing-badge-success">
+              <svg class="landing-icon" aria-hidden="true"><use href="#icon-stethoscope"></use></svg>
+              <span>03</span>
+            </div>
+            <h3 class="landing-benefit-title">从容排查故障</h3>
+            <p class="landing-benefit-body">
+              使用详细日志和交互式性能趋势分析故障原因、
+              验证恢复点，并长期保持备份状态良好。
+              图表涵盖耗时、文件数量、文件大小、存储、上传大小和
+              可用版本。
+            </p>
+            <ul class="landing-point-list">
+              <li class="landing-point-item">
+                <span class="landing-point-dot landing-dot-success"></span>
+                交互式图表：耗时、文件数量、大小、存储
+              </li>
+              <li class="landing-point-item">
+                <span class="landing-point-dot landing-dot-success"></span>
+                1 周至 3 个月的趋势分析，支持同日合并
+              </li>
+              <li class="landing-point-item">
+                <span class="landing-point-dot landing-dot-success"></span>
+                自动从 Duplicati 服务器收集日志
+              </li>
+              <li class="landing-point-item">
+                <span class="landing-point-dot landing-dot-success"></span>
+                验证恢复点并跟踪备份运行状况
+              </li>
+            </ul>
+            <a class="landing-doc-link" href="/user-guide/backup-metrics">阅读关于备份指标的说明</a>
+          </div>
+          <div class="landing-card landing-visual-shot">
+            <img
+              class="landing-benefit-shot no-zoom"
+              data-nozoom
+              src="/assets/screen-detail-backup.png"
+              alt="包含统计信息、可用版本和日志消息的备份详情"
+            />
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="landing-section">
+    <div class="landing-inner">
+      <div class="landing-centered">
+        <h2 id="workflow" class="landing-section-title">仅需四步，从零开始实现全面监控</h2>
+        <p class="landing-section-lead">
+          容器化部署让您在数分钟内即可启动并运行 — 无需耗费数小时。
+        </p>
+      </div>
+      <div class="landing-step-grid">
+        <div class="landing-card landing-card-hover landing-step-card">
+          <div class="landing-step-header">
+            <div class="landing-step-icon">
+              <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-container"></use></svg>
+            </div>
+            <span class="landing-step-index">步骤 1</span>
+          </div>
+          <h3 class="landing-step-title">部署容器</h3>
+          <p class="landing-step-body">
+            从 Docker Hub 或 GitHub 拉取镜像，设置时区并挂载数据卷。Web UI 监听 9666 端口。架构迁移会在启动时自动应用。
+          </p>
+          <pre class="landing-step-code">wget https://github.com/wsj-br/duplistatus/raw/refs/heads/master/production.yml -O duplistatus.yml
+docker compose -f duplistatus.yml up -d</pre>
+          <a class="landing-doc-link" href="/installation">安装指南</a>
+        </div>
+        <div class="landing-card landing-card-hover landing-step-card">
+          <div class="landing-step-header">
+            <div class="landing-step-icon">
+              <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-link-2"></use></svg>
+            </div>
+            <span class="landing-step-index">步骤 2</span>
+          </div>
+          <h3 class="landing-step-title">将 Duplicati 指向 duplistatus</h3>
+          <p class="landing-step-body">
+            配置每个 Duplicati 服务器将 JSON 报告 POST 到 /api/upload。然后收集历史日志，以便自动填充监控间隔。
+          </p>
+          <pre class="landing-step-code">--send-http-json-urls=http://host:9666/api/upload
+--send-http-log-level=Information
+--send-http-max-log-lines=500</pre>
+          <a class="landing-doc-link" href="/installation/duplicati-server-configuration">Duplicati 配置</a>
+        </div>
+        <div class="landing-card landing-card-hover landing-step-card">
+          <div class="landing-step-header">
+            <div class="landing-step-icon">
+              <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-bell"></use></svg>
+            </div>
+            <span class="landing-step-index">步骤 3</span>
+          </div>
+          <h3 class="landing-step-title">配置告警</h3>
+          <p class="landing-step-body">
+            设置针对每个作业的通知过滤条件（关闭 / 所有 / 警告 / 错误），启用逾期检查，并选择 ntfy 推送或 SMTP 电子邮件。每日摘要为可选项，且仅暂停发送给默认收件人的电子邮件。
+          </p>
+          <pre class="landing-step-code">Notifications:
+  ntfy:   enabled
+  email:  enabled
+  filter: warnings + errors
+  overdue: every 5 minutes</pre>
+          <a class="landing-doc-link" href="/user-guide/settings/backup-notifications-settings">通知设置</a>
+        </div>
+        <div class="landing-card landing-card-hover landing-step-card">
+          <div class="landing-step-header">
+            <div class="landing-step-icon">
+              <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-chart-column"></use></svg>
+            </div>
+            <span class="landing-step-index">步骤 4</span>
+          </div>
+          <h3 class="landing-step-title">监控和故障排除</h3>
+          <p class="landing-step-body">
+            在仪表板中查看状态变化，深入探查任意备份日志，并使用交互式趋势图发现异常。cron 服务在后台处理逾期检查、版本刷新和日志清理。
+          </p>
+          <pre class="landing-step-code">Dashboard:  all servers · all jobs
+Last check: 2 min ago
+Overdue:    0
+Failures:   0</pre>
+          <a class="landing-doc-link" href="/user-guide/overview">用户指南</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="landing-section">
+    <div class="landing-inner">
+      <div class="landing-centered">
+        <h2 id="security" class="landing-section-title">登录功能始终开启。安全加固为可选项。</h2>
+        <p class="landing-section-lead">
+          在私有家庭实验室中轻松设置，面向公网安装时亦可随时使用强大的控制功能。
+        </p>
+      </div>
+      <div class="landing-feature-grid">
+        <article class="landing-card landing-card-hover landing-feature-card">
+          <div class="landing-feature-icon">
+            <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-shield-check"></use></svg>
+          </div>
+          <h3 class="landing-feature-title">
+            <a href="/user-guide/settings/user-management-settings">按角色登录</a>
+          </h3>
+          <p class="landing-feature-body">
+            支持 Admin 和 User 角色的身份验证登录。可按用户限制服务器可见性。
+          </p>
+        </article>
+        <article class="landing-card landing-card-hover landing-feature-card">
+          <div class="landing-feature-icon">
+            <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-key-round"></use></svg>
+          </div>
+          <h3 class="landing-feature-title">
+            <a href="/user-guide/settings/api-keys-settings">外部 API 密钥</a>
+          </h3>
+          <p class="landing-feature-body">
+            适用于 Duplicati 上传和只读外部仪表板的细粒度密钥，
+            支持上传大小和速率限制。
+          </p>
+        </article>
+        <article class="landing-card landing-card-hover landing-feature-card">
+          <div class="landing-feature-icon">
+            <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-network"></use></svg>
+          </div>
+          <h3 class="landing-feature-title">
+            <a href="/user-guide/settings/ip-allowlist-settings">网络限制</a>
+          </h3>
+          <p class="landing-feature-body">
+            两个独立的 CIDR 允许列表 —— 一个用于管理界面，另一个用于
+            外部API。包含受信任代理防伪造功能。
+          </p>
+        </article>
+        <article class="landing-card landing-card-hover landing-feature-card">
+          <div class="landing-feature-icon">
+            <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-file-lock"></use></svg>
+          </div>
+          <h3 class="landing-feature-title">
+            <a href="/installation/security-configuration">CSRF 防护</a>
+          </h3>
+          <p class="landing-feature-body">
+            所有基于会话的路由均受到跨站请求伪造保护。
+          </p>
+        </article>
+        <article class="landing-card landing-card-hover landing-feature-card">
+          <div class="landing-feature-icon">
+            <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-scroll-text"></use></svg>
+          </div>
+          <h3 class="landing-feature-title">
+            <a href="/user-guide/settings/audit-logs-viewer">审计日志</a>
+          </h3>
+          <p class="landing-feature-body">
+            记录每一次配置更改和用户操作，支持高级
+            筛选、导出和可配置的保留期。
+          </p>
+        </article>
+        <article class="landing-card landing-card-hover landing-feature-card">
+          <div class="landing-feature-icon">
+            <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-terminal"></use></svg>
+          </div>
+          <h3 class="landing-feature-title">
+            <a href="/user-guide/settings/application-logs-settings">应用程序日志查看器</a>
+          </h3>
+          <p class="landing-feature-body">
+            仅供管理员使用的界面，用于查看、搜索和导出应用程序日志，并支持
+            实时监控。
+          </p>
+        </article>
+        <article class="landing-card landing-card-hover landing-feature-card">
+          <div class="landing-feature-icon">
+            <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-languages"></use></svg>
+          </div>
+          <h3 class="landing-feature-title">多语言支持</h3>
+          <p class="landing-feature-body">
+            界面和文档支持英语、法语、德语、西班牙语、巴西
+            葡萄牙语、印地语和简体中文。
+          </p>
+        </article>
+        <article class="landing-card landing-card-hover landing-feature-card">
+          <div class="landing-feature-icon">
+            <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-server"></use></svg>
+          </div>
+          <h3 class="landing-feature-title">
+            <a href="/user-guide/homepage-integration">只读 API</a>
+          </h3>
+          <p class="landing-feature-body">
+            外部仪表板和小组件可以通过只读 API 显示相同的
+            备份状态信息。
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="landing-section">
+    <div class="landing-inner">
+      <div class="landing-trust-grid">
+        <div>
+          <h2 class="landing-section-title">专为自建托管社区打造</h2>
+          <p class="landing-section-lead">
+            duplistatus 是开源且自托管的，旨在贴合
+            家庭实验室所有者和小型团队系统管理员的实际工作方式。
+          </p>
+          <div class="landing-trust-list">
+            <div class="landing-trust-item">
+              <div class="landing-trust-icon">
+                <svg class="landing-icon landing-icon-lg landing-icon-fill" aria-hidden="true"><use href="#icon-github"></use></svg>
+              </div>
+              <div>
+                <h3 class="landing-trust-title">在 GitHub 上开源</h3>
+                <p class="landing-trust-body">
+                  完整的源代码、问题 (Issues) 和发布版本。无供应商锁定，
+                  支持自由贡献、复刻 (Fork) 或自建托管。
+                </p>
+                <a
+                  class="landing-doc-link"
+                  href="https://github.com/wsj-br/duplistatus"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="在 GitHub 上查看 duplistatus 仓库（在新标签页中打开）"
+                >
+                  在 GitHub 上查看
+                </a>
+              </div>
+            </div>
+            <div class="landing-trust-item">
+              <div class="landing-trust-icon">
+                <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-book-open"></use></svg>
+              </div>
+              <div>
+                <h3 class="landing-trust-title">完善的文档</h3>
+                <p class="landing-trust-body">
+                  安装指南、配置参考和安全加固——
+                  提供七种语言版本。
+                </p>
+                <a class="landing-doc-link" href="/intro">阅读文档</a>
+              </div>
+            </div>
+            <div class="landing-trust-item">
+              <div class="landing-trust-icon">
+                <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-container"></use></svg>
+              </div>
+              <div>
+                <h3 class="landing-trust-title">Docker、Portainer 和 Podman</h3>
+                <p class="landing-trust-body">
+                  镜像托管于 Docker Hub 和 GitHub。使用您偏好的容器
+                  运行时进行部署——除单个数据卷外无任何依赖项。
+                </p>
+                <a class="landing-doc-link" href="/installation">查看安装选项</a>
+              </div>
+            </div>
+            <div class="landing-trust-item">
+              <div class="landing-trust-icon">
+                <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-database"></use></svg>
+              </div>
+              <div>
+                <h3 class="landing-trust-title">SQLite + 自动迁移</h3>
+                <p class="landing-trust-body">
+                  状态保存在单个 SQLite 文件中，在启动时应用架构迁移。
+                  备份该文件即可完成。
+                </p>
+              </div>
+            </div>
+            <div class="landing-trust-item">
+              <div class="landing-trust-icon">
+                <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-globe"></use></svg>
+              </div>
+              <div>
+                <h3 class="landing-trust-title">七种语言</h3>
+                <p class="landing-trust-body">
+                  界面和文档支持英语、法语、德语、西班牙语、巴西
+                  葡萄牙语、印地语和简体中文。
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="landing-side-stack">
+          <div class="landing-stat-grid">
+            <div class="landing-card landing-stat-card">
+              <div class="landing-stat-value">9666</div>
+              <div class="landing-stat-label">Web UI 端口</div>
+              <div class="landing-stat-sub">HTTP</div>
+            </div>
+            <div class="landing-card landing-stat-card">
+              <div class="landing-stat-value">SQLite</div>
+              <div class="landing-stat-label">数据库</div>
+              <div class="landing-stat-sub">单文件，自动迁移</div>
+            </div>
+            <div class="landing-card landing-stat-card">
+              <div class="landing-stat-value">7</div>
+              <div class="landing-stat-label">语言</div>
+              <div class="landing-stat-sub">UI + 文档</div>
+            </div>
+            <div class="landing-card landing-stat-card">
+              <div class="landing-stat-value">Apache-2.0</div>
+              <div class="landing-stat-label">许可证</div>
+              <div class="landing-stat-sub">开源</div>
+            </div>
+          </div>
+          <div class="landing-card landing-arch-card">
+            <h3 class="landing-arch-title">架构概览</h3>
+            <div>
+              <div class="landing-arch-row">
+                <span class="landing-arch-label">前端</span>
+                <span class="landing-arch-value">Next.js App Router（独立输出）</span>
+              </div>
+              <div class="landing-arch-row">
+                <span class="landing-arch-label">后台</span>
+                <span class="landing-arch-value">独立 cron 服务（仅内部）</span>
+              </div>
+              <div class="landing-arch-row">
+                <span class="landing-arch-label">数据库</span>
+                <span class="landing-arch-value">基于 better-sqlite3 的 SQLite</span>
+              </div>
+              <div class="landing-arch-row">
+                <span class="landing-arch-label">密钥</span>
+                <span class="landing-arch-value">data/.duplistatus.key 文件</span>
+              </div>
+              <div class="landing-arch-row">
+                <span class="landing-arch-label">部署</span>
+                <span class="landing-arch-value">Docker · Portainer Stacks · Podman</span>
+              </div>
+              <div class="landing-arch-row">
+                <span class="landing-arch-label">告警</span>
+                <span class="landing-arch-value">ntfy 推送 · SMTP 邮件 · 每日摘要</span>
+              </div>
+            </div>
+          </div>
+          <div class="landing-card landing-arch-card">
+            <h3 class="landing-arch-title">Cron 服务处理内容</h3>
+            <div class="landing-pill-row">
+              <span class="landing-pill">逾期检查</span>
+              <span class="landing-pill">版本刷新</span>
+              <span class="landing-pill">每日摘要分发</span>
+              <span class="landing-pill">审计日志清理</span>
+              <span class="landing-pill">每周数据库压缩</span>
+            </div>
+          </div>
+          <p class="landing-note">
+            duplistatus 是一个独立项目，和 Duplicati 团队无任何关联。
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="landing-section">
+    <div class="landing-inner landing-inner-narrow">
+      <div class="landing-centered">
+        <h2 id="install" class="landing-section-title">几分钟内快速上手</h2>
+        <p class="landing-section-lead">
+          拉取镜像、挂载数据卷和开放 9666 端口。架构迁移会在启动时自动运行。
+        </p>
+      </div>
+      <div class="landing-card landing-install-card">
+        <div class="landing-tabs">
+          <input class="landing-tab-input" type="radio" name="landing-install" id="landing-tab-compose" checked />
+          <input class="landing-tab-input" type="radio" name="landing-install" id="landing-tab-portainer" />
+          <input class="landing-tab-input" type="radio" name="landing-install" id="landing-tab-docker" />
+          <input class="landing-tab-input" type="radio" name="landing-install" id="landing-tab-podman" />
+          <div class="landing-tab-list">
+            <label for="landing-tab-compose">Docker Compose</label>
+            <label for="landing-tab-portainer">Portainer Stack</label>
+            <label for="landing-tab-docker">Docker CLI</label>
+            <label for="landing-tab-podman">Podman</label>
+          </div>
+          <div class="landing-tab-panels">
+            <div class="landing-tab-panel landing-tab-panel-compose">
+              <pre class="landing-install-pre"># download the compose file
+wget https://github.com/wsj-br/duplistatus/raw/refs/heads/master/production.yml -O duplistatus.yml
+# start the container
+docker compose -f duplistatus.yml up -d</pre>
+            </div>
+            <div class="landing-tab-panel landing-tab-panel-portainer">
+              <pre class="landing-install-pre"># duplistatus production compose.yml
+services:
+  duplistatus:
+    image: ghcr.io/wsj-br/duplistatus:latest
+    container_name: duplistatus
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/London
+      - PWD_ENFORCE=true
+      - PWD_MIN_LEN=8
+    ports:
+      - "9666:9666"
+    volumes:
+      - duplistatus_data:/app/data
+    networks:
+      - duplistatus_network
+
+networks:
+  duplistatus_network:
+    driver: bridge
+
+volumes:
+  duplistatus_data:
+    name: duplistatus_data</pre>
+            </div>
+            <div class="landing-tab-panel landing-tab-panel-docker">
+              <pre class="landing-install-pre"># Create the volume
+docker volume create duplistatus_data
+
+# Start the container
+docker run -d \
+  --name duplistatus \
+  -p 9666:9666 \
+  -e TZ=Europe/London \
+  -e LANG=en_GB \
+  -v duplistatus_data:/app/data \
+  ghcr.io/wsj-br/duplistatus:latest</pre>
+            </div>
+            <div class="landing-tab-panel landing-tab-panel-podman">
+              <pre class="landing-install-pre">mkdir -p ~/duplistatus_data
+# Start the container (standalone)
+podman run -d \
+  --name duplistatus \
+  --userns=keep-id \
+  -e TZ=Europe/London \
+  -e LANG=en_GB \
+  -p 9666:9666 \
+  -v ~/duplistatus_data:/app/data \
+  ghcr.io/wsj-br/duplistatus:latest</pre>
+            </div>
+          </div>
+          <div class="landing-post-install">
+            <h3 class="landing-post-title">容器启动后：</h3>
+            <ol class="landing-post-list">
+              <li class="landing-post-item">
+                <span class="landing-post-index">1</span>
+                <span>在浏览器中打开 http://localhost:9666</span>
+              </li>
+              <li class="landing-post-item">
+                <span class="landing-post-index">2</span>
+                <span>使用<a href="/installation">安装指南</a>中说明的默认管理员账户登录</span>
+              </li>
+              <li class="landing-post-item">
+                <span class="landing-post-index">3</span>
+                <span>配置您的 <a href="/installation/duplicati-server-configuration">Duplicati 服务器</a>将备份报告发送至 /api/upload</span>
+              </li>
+              <li class="landing-post-item">
+                <span class="landing-post-index">4</span>
+                <span>使用<a href="/user-guide/collect-backup-logs">收集备份日志</a>导入历史记录，如果需要警报，请配置 ntfy 或 SMTP</span>
+              </li>
+              <li class="landing-post-item">
+                <span class="landing-post-index">5</span>
+                <span>可选择为面向公网的安装启用 API 密钥和 IP 白名单</span>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+      <div class="landing-cta-row">
+        <a
+          class="button button--secondary button--lg landing-cta"
+          href="https://github.com/wsj-br/duplistatus"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="在 GitHub 上查看 duplistatus 仓库（在新标签页中打开）"
+        >
+          <svg class="landing-icon landing-icon-fill" aria-hidden="true"><use href="#icon-github"></use></svg>
+          在 GitHub 上 Star
+        </a>
+        <a class="button button--primary button--lg landing-cta" href="/intro">阅读文档</a>
+      </div>
+    </div>
+  </section>
+</div>

@@ -23,7 +23,9 @@ documentation/
 ├── src/               # React components and pages
 │   ├── components/    # Custom React components
 │   ├── css/           # Custom styles
-│   └── pages/         # Additional pages (e.g., 404)
+│   ├── landing/       # Homepage HTML + CSS (English source; locale copies in landing/i18n/)
+│   ├── pages/         # Additional pages (homepage shell, 404)
+│   └── theme/         # Swizzled theme (navbar)
 ├── static/            # Static assets (images, files)
 ├── docusaurus.config.ts  # Docusaurus configuration
 ├── sidebars.ts        # Sidebar navigation configuration
@@ -39,10 +41,12 @@ Die Dokumentation verwendet das integrierte i18n-System von Docusaurus mit Engli
 - **UI-Übersetzungen**: `i18n/{locale}/docusaurus-theme-classic/*.json` und andere JSON-Dateien
 - **Lokalisierte Screenshots**: `i18n/{locale}/docusaurus-plugin-content-docs/current/**/assets`, generiert von `pnpm take-screenhots` im Basisverzeichnis.
 
-Der `pnpm write-translations`-Befehl extrahiert UI-Strings (aus dem Docusaurus-Design und benutzerdefinierten Komponenten) in JSON-Übersetzungsdateien. Das `pnpm translate`-Skript (aus `documentation/`, delegiert an das Repo-Wurzelverzeichnis) führt **ai-i18n-tools** aus, um Markdown, JSON und SVGs gemäß `ai-i18n-tools.config.json` zu übersetzen.
+Der Befehl `pnpm write-translations` extrahiert UI-Zeichenfolgen (aus dem Docusaurus-Design und benutzerdefinierten Komponenten) in JSON-Übersetzungsdateien. Das Skript `pnpm translate` (aus `documentation/`, delegiert an das Repository-Root) führt **ai-i18n-tools** aus, um Markdown, JSON, SVGs und das Landing-HTML gemäß `ai-i18n-tools.config.json` zu übersetzen.
+
+Die Docs-Startseite ist `src/landing/landing.html`, umschlossen von `src/pages/index.tsx`. Bearbeiten Sie die HTML-Datei für Textinhalte; länderspezifische Kopien befinden sich unter `src/landing/i18n/` und werden durch `pnpm i18n:translate:docs` generiert.
 
 :::important
-Bearbeiten Sie nur Dateien in `docs/` und die Quell-JSON-Dateien in `i18n/en/`. Die übersetzten Markdown-Dateien in `i18n/{other-locales}/` werden automatisch generiert und sollten nicht manuell bearbeitet werden.
+Bearbeiten Sie nur Dateien in `docs/`, die Landing-Quelle `src/landing/landing.html` und die Quell-JSON-Dateien in `i18n/en-GB/`. Übersetztes Markdown unter `i18n/{other-locales}/` und Landing-Kopien unter `src/landing/i18n/` werden generiert und sollten nicht manuell bearbeitet werden.
 :::
 
 ### Unterstützte Sprachen {/* #supported-locales */}

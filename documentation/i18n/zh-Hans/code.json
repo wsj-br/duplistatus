@@ -360,5 +360,37 @@
   "theme.SearchPage.noResultsText": {
     "message": "未找到任何文档",
     "description": "The paragraph for empty search result"
+  },
+  "homepage.meta.title": {
+    "message": "监控每个 Duplicati 备份",
+    "description": "HTML document title for the landing page"
+  },
+  "homepage.meta.description": {
+    "message": "适用于每个 Duplicati 服务器和任务的自托管仪表盘：无需打开各个备份界面即可查看状态、逾期告警、日志和趋势。",
+    "description": "HTML meta description for the landing page"
+  },
+  "homepage.nav.docs": {
+    "message": "文档",
+    "description": "Landing navbar link to the documentation"
+  },
+  "homepage.nav.getStarted": {
+    "message": "开始使用",
+    "description": "Landing navbar call-to-action that scrolls to install"
+  },
+  "homepage.nav.features": {
+    "message": "功能特性",
+    "description": "Landing navbar link to the features section"
+  },
+  "homepage.nav.howItWorks": {
+    "message": "工作原理",
+    "description": "Landing navbar link to the workflow section"
+  },
+  "homepage.nav.security": {
+    "message": "安全",
+    "description": "Landing navbar link to the security section"
+  },
+  "homepage.nav.install": {
+    "message": "安装",
+    "description": "Landing navbar link to the install section"
   }
 }

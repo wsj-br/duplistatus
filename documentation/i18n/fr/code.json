@@ -360,5 +360,37 @@
   "theme.SearchPage.noResultsText": {
     "message": "Aucun document n'a été trouvé",
     "description": "The paragraph for empty search result"
+  },
+  "homepage.meta.title": {
+    "message": "Surveillez chaque sauvegarde Duplicati",
+    "description": "HTML document title for the landing page"
+  },
+  "homepage.meta.description": {
+    "message": "Tableau de bord auto-hébergé pour chaque serveur et tâche Duplicati : statut, alertes en retard, journaux et tendances — sans ouvrir l'interface de chaque sauvegarde.",
+    "description": "HTML meta description for the landing page"
+  },
+  "homepage.nav.docs": {
+    "message": "Documentation",
+    "description": "Landing navbar link to the documentation"
+  },
+  "homepage.nav.getStarted": {
+    "message": "Démarrer",
+    "description": "Landing navbar call-to-action that scrolls to install"
+  },
+  "homepage.nav.features": {
+    "message": "Fonctionnalités",
+    "description": "Landing navbar link to the features section"
+  },
+  "homepage.nav.howItWorks": {
+    "message": "Comment ça marche",
+    "description": "Landing navbar link to the workflow section"
+  },
+  "homepage.nav.security": {
+    "message": "Sécurité",
+    "description": "Landing navbar link to the security section"
+  },
+  "homepage.nav.install": {
+    "message": "Installer",
+    "description": "Landing navbar link to the install section"
   }
 }

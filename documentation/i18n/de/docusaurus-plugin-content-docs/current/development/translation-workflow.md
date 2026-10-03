@@ -12,14 +12,14 @@ Um einen unveröffentlichten Checkout auf derselben Maschine zu testen (Standard
 
 ## Wann sich die englische Dokumentation ändert {/* #when-english-documentation-changes */}
 
-1. **Quelle bearbeiten** in `documentation/docs/` (nur Englisch).
-2. **Docusaurus UI-Zeichenfolgen** (Design-Bezeichnungen, Navigationsleiste usw.): falls erforderlich, führen Sie `pnpm write-translations` in `documentation/` aus, damit `i18n/en/*.json` neue Schlüssel übernimmt.
+1. **Quelle bearbeiten** in `documentation/docs/` (nur Englisch). Text der Landingpage ist `documentation/src/landing/landing.html`.
+2. **Docusaurus-UI-Zeichenfolgen** (Design-Labels, Navigationsleiste usw.): Führen Sie bei Bedarf `pnpm write-translations` in `documentation/` aus, damit `i18n/en/*.json` neue Schlüssel übernimmt.
 3. **Überschriften-IDs**: `pnpm write-heading-ids` (aus `documentation/`).
-4. **Übersetzen** aus der **Repository-Wurzel** (oder verwenden Sie die unten stehenden Verknüpfungen aus `documentation/`):
-   - `pnpm i18n:extract` — aktualisiert `src/locales/strings.json` aus `t('…')` in der Next.js-App.
-   - `pnpm i18n:translate:docs` — übersetzt Markdown/JSON in `documentation/i18n/` gemäß Konfiguration.
-   - `pnpm i18n:translate:svg` — übersetzt SVGs unter `documentation/static/img` wie konfiguriert.
-   - `pnpm i18n:translate:json` — übersetzt Standard-Benachrichtigungsvorlagen in `src/locales/templates/` aus `en-GB.json`.
+4. **Übersetzen** aus dem **Repo-Root** (oder verwenden Sie die folgenden Tastenkürzel aus `documentation/`):
+   - `pnpm i18n:extract` — `src/locales/strings.json` aus `t('…')` in der Next.js-App aktualisieren.
+   - `pnpm i18n:translate:docs` — Markdown, Docusaurus-Shell-JSON und das Landing-HTML gemäß Konfiguration nach `documentation/i18n/` und `documentation/src/landing/i18n/` übersetzen.
+   - `pnpm i18n:translate:svg` — SVGs unter `documentation/static/img` wie konfiguriert übersetzen.
+   - `pnpm i18n:translate:json` — Standard-Benachrichtigungsvorlagen in `src/locales/templates/` aus `en-GB.json` übersetzen.
    - Oder alles ausführen: `pnpm i18n:translate`.
 5. **Erstellen**: `cd documentation && pnpm build` (alle Gebietsschemas).
 
@@ -61,11 +61,23 @@ Einstellungen → Vorlagen → **Zurücksetzen** lädt Standards aus `src/locale
 
 Siehe [ai-i18n-tools JSON-Leitfaden](https://wsj-br.github.io/ai-i18n-tools/guide/json.html) für Flags (`--locale`, `--force` usw.).
 
+## Landingpage-HTML {/* #landing-page-html */}
+
+Der Textkörper der Docs-Startseite ist eine einzelne englische HTML-Datei, keine React-Abschnittskomponenten.
+
+1. Bearbeiten Sie **`documentation/src/landing/landing.html`** (und `documentation/src/landing/landing.css` für das Layout). Behalten Sie die Hash-IDs `features`, `dashboard`, `workflow`, `security` und `install` bei.
+2. Führen Sie **`pnpm i18n:translate:docs`** aus dem Repo-Root aus (oder `pnpm translate:docs` aus `documentation/`).
+3. Generierte Kopien werden nach **`documentation/src/landing/i18n/{locale}/landing.html`** geschrieben. Bearbeiten Sie diese Dateien nicht manuell.
+
+`translate-docs` verwendet die [HTML-Seiten](https://wsj-br.github.io/ai-i18n-tools/guide/documents/html-pages.html)-Pipeline: Sichtbarer Text und `alt` / `title` / `aria-label` werden übersetzt; `<pre>` und `<code>` bleiben auf Englisch. Navigationsleisten-Labels und der Seitentitel verbleiben in Docusaurus `Translate` (`homepage.nav.*`, `homepage.meta.*`).
+
+Fügen Sie dieser Datei keine `data-i18n`-Markierungen hinzu und listen Sie sie nicht unter `ui.sourceRoots` auf. Dieselbe HTML-Datei darf sich nicht sowohl in der Dokumenten-Pipeline als auch in der UI-Zeichenfolgen-Pipeline befinden.
+
 ## Glossar {/* #glossary */}
 
-- **UI-Terminologie** für die Dokumentation wird durch `glossary.uiGlossary` in `ai-i18n-tools.config.json` bestimmt, mit Verweis auf `src/locales/strings.json` (der Katalog, erstellt von `pnpm i18n:extract`).
-- **Überschreibungen** befinden sich in `documentation/glossary-user.csv` (`glossary.userGlossary` in der Konfiguration). Siehe [ai-i18n-tools Glossardokumentation](https://github.com/wsj-br/ai-i18n-tools/blob/main/docs/GETTING_STARTED.md) für das Spaltenformat.
-- Generiere eine CSV-Vorlage: `pnpm i18n:glossary-generate` (Root).
+- **UI-Terminologie** für die Dokumentation stammt aus jedem `ui[]`-Katalog, wobei `uiGlossary` aktiviert bleibt (Standard). Der Next.js-App-Katalog ist `src/locales/strings.json` (erstellt durch `pnpm i18n:extract`). Setzen Sie `glossary.uiGlossary` nicht; dieser Schlüssel wird abgelehnt.
+- **Überschreibungen** befinden sich in `documentation/glossary-user.csv` (`glossary.userGlossary` in der Konfiguration). Informationen zum Spaltenformat finden Sie in der [ai-i18n-tools-Glossardokumentation](https://github.com/wsj-br/ai-i18n-tools/blob/main/docs/GETTING_STARTED.md).
+- Eine CSV-Vorlage generieren: `pnpm i18n:glossary-generate` (Root).
 
 ## Cache {/* #cache */}
 

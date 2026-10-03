@@ -6,9 +6,5 @@
   "logo.alt": {
     "message": "Logotipo de duplistatus",
     "description": "The alt text of navbar logo"
-  },
-  "item.label.Documentation": {
-    "message": "Documentación",
-    "description": "Navbar item with label Documentation"
   }
 }

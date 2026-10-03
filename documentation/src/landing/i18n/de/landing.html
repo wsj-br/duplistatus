@@ -1,0 +1,791 @@
+<div class="landing">
+  <svg class="landing-sprite" aria-hidden="true" focusable="false">
+    <symbol id="icon-arrow-right" viewBox="0 0 24 24">
+      <path d="M5 12h14" />
+      <path d="m12 5 7 7-7 7" />
+    </symbol>
+    <symbol id="icon-server" viewBox="0 0 24 24">
+      <rect width="20" height="8" x="2" y="2" rx="2" ry="2" />
+      <rect width="20" height="8" x="2" y="14" rx="2" ry="2" />
+      <line x1="6" x2="6.01" y1="6" y2="6" />
+      <line x1="6" x2="6.01" y1="18" y2="18" />
+    </symbol>
+    <symbol id="icon-bell" viewBox="0 0 24 24">
+      <path d="M10.268 21a2 2 0 0 0 3.464 0" />
+      <path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />
+    </symbol>
+    <symbol id="icon-shield-check" viewBox="0 0 24 24">
+      <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+      <path d="m9 12 2 2 4-4" />
+    </symbol>
+    <symbol id="icon-layout-dashboard" viewBox="0 0 24 24">
+      <rect width="7" height="9" x="3" y="3" rx="1" />
+      <rect width="7" height="5" x="14" y="3" rx="1" />
+      <rect width="7" height="9" x="14" y="12" rx="1" />
+      <rect width="7" height="5" x="3" y="16" rx="1" />
+    </symbol>
+    <symbol id="icon-triangle-alert" viewBox="0 0 24 24">
+      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+      <path d="M12 9v4" />
+      <path d="M12 17h.01" />
+    </symbol>
+    <symbol id="icon-stethoscope" viewBox="0 0 24 24">
+      <path d="M11 2v2" />
+      <path d="M5 2v2" />
+      <path d="M5 3H4a2 2 0 0 0-2 2v4a6 6 0 0 0 12 0V5a2 2 0 0 0-2-2h-1" />
+      <path d="M8 15a6 6 0 0 0 12 0v-3" />
+      <circle cx="20" cy="10" r="2" />
+    </symbol>
+    <symbol id="icon-container" viewBox="0 0 24 24">
+      <path d="M22 7.7c0-.6-.4-1.2-.8-1.5l-6.3-3.9a1.72 1.72 0 0 0-1.7 0l-10.3 6c-.5.2-.9.8-.9 1.4v6.6c0 .5.4 1.2.8 1.5l6.3 3.9a1.72 1.72 0 0 0 1.7 0l10.3-6c.5-.3.9-1 .9-1.5Z" />
+      <path d="M10 21.9V14L2.1 9.1" />
+      <path d="m10 14 11.9-6.9" />
+      <path d="M14 19.8v-8.1" />
+      <path d="M18 17.5V9.4" />
+    </symbol>
+    <symbol id="icon-link-2" viewBox="0 0 24 24">
+      <path d="M9 17H7A5 5 0 0 1 7 7h2" />
+      <path d="M15 7h2a5 5 0 1 1 0 10h-2" />
+      <line x1="8" x2="16" y1="12" y2="12" />
+    </symbol>
+    <symbol id="icon-chart-column" viewBox="0 0 24 24">
+      <path d="M3 3v16a2 2 0 0 0 2 2h16" />
+      <path d="M18 17V9" />
+      <path d="M13 17V5" />
+      <path d="M8 17v-3" />
+    </symbol>
+    <symbol id="icon-key-round" viewBox="0 0 24 24">
+      <path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z" />
+      <circle cx="16.5" cy="7.5" r=".5" fill="currentColor" />
+    </symbol>
+    <symbol id="icon-network" viewBox="0 0 24 24">
+      <rect x="16" y="16" width="6" height="6" rx="1" />
+      <rect x="2" y="16" width="6" height="6" rx="1" />
+      <rect x="9" y="2" width="6" height="6" rx="1" />
+      <path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3" />
+      <path d="M12 12V8" />
+    </symbol>
+    <symbol id="icon-file-lock" viewBox="0 0 24 24">
+      <path d="M4 9.8V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.706.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2h-3" />
+      <path d="M14 2v5a1 1 0 0 0 1 1h5" />
+      <path d="M9 17v-2a2 2 0 0 0-4 0v2" />
+      <rect width="8" height="5" x="3" y="17" rx="1" />
+    </symbol>
+    <symbol id="icon-scroll-text" viewBox="0 0 24 24">
+      <path d="M15 12h-5" />
+      <path d="M15 8h-5" />
+      <path d="M19 17V5a2 2 0 0 0-2-2H4" />
+      <path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3" />
+    </symbol>
+    <symbol id="icon-terminal" viewBox="0 0 24 24">
+      <path d="M12 19h8" />
+      <path d="m4 17 6-6-6-6" />
+    </symbol>
+    <symbol id="icon-languages" viewBox="0 0 24 24">
+      <path d="m5 8 6 6" />
+      <path d="m4 14 6-6 2-3" />
+      <path d="M2 5h12" />
+      <path d="M7 2h1" />
+      <path d="m22 22-5-10-5 10" />
+      <path d="M14 18h6" />
+    </symbol>
+    <symbol id="icon-book-open" viewBox="0 0 24 24">
+      <path d="M12 5v16" />
+      <path d="M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z" />
+    </symbol>
+    <symbol id="icon-database" viewBox="0 0 24 24">
+      <ellipse cx="12" cy="5" rx="9" ry="3" />
+      <path d="M3 5V19A9 3 0 0 0 21 19V5" />
+      <path d="M3 12A9 3 0 0 0 21 12" />
+    </symbol>
+    <symbol id="icon-globe" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" />
+      <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+      <path d="M2 12h20" />
+    </symbol>
+    <symbol id="icon-github" viewBox="0 0 24 24">
+      <path
+        fill="currentColor"
+        stroke="none"
+        d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"
+      />
+    </symbol>
+  </svg>
+
+  <section class="landing-section landing-hero">
+    <div class="landing-hero-grid" aria-hidden="true"></div>
+    <div class="landing-inner landing-hero-inner">
+      <div class="landing-centered">
+        <div class="landing-eyebrow">
+          <span class="landing-pulse-dot" aria-hidden="true"></span>
+          Open Source · Selbst gehostet · Docker-ready
+        </div>
+        <h1 class="landing-section-title landing-hero-title">
+          Jede Sicherung. <span class="landing-hero-accent">Ein Dashboard.</span>
+        </h1>
+        <p class="landing-section-lead">
+          Schluss mit dem einzelnen Anmelden an jeder Duplicati-Weboberfläche. duplistatus
+          überwacht jeden Server und Auftrag auf einem einzigen Bildschirm – damit Sie wissen,
+          dass Ihre Sicherungen in Ordnung sind, bevor Sie ein Datenverlust unvorbereitet trifft.
+        </p>
+        <div class="landing-cta-row">
+          <a class="button button--primary button--lg landing-cta" href="#install">
+            duplistatus installieren
+            <svg class="landing-icon" aria-hidden="true"><use href="#icon-arrow-right"></use></svg>
+          </a>
+          <a class="button button--secondary button--lg landing-cta" href="#dashboard">
+            Dashboard ansehen
+          </a>
+        </div>
+        <div class="landing-chip-row">
+          <span class="landing-chip">
+            <svg class="landing-icon landing-chip-info" aria-hidden="true"><use href="#icon-server"></use></svg>
+            Multi-Server-Überwachung
+          </span>
+          <span class="landing-chip">
+            <svg class="landing-icon landing-chip-warning" aria-hidden="true"><use href="#icon-bell"></use></svg>
+            ntfy- &amp; E-Mail-Benachrichtigungen
+          </span>
+          <span class="landing-chip">
+            <svg class="landing-icon landing-chip-success" aria-hidden="true"><use href="#icon-shield-check"></use></svg>
+            Anmeldung erforderlich, zusätzliche Härtung optional
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="landing-section">
+    <div class="landing-inner">
+      <div class="landing-centered">
+        <h2 id="dashboard" class="landing-section-title">Die einzige Frage, auf die es ankommt</h2>
+        <p class="landing-section-lead">
+          Sind alle meine Sicherungen in Ordnung? Ein Bildschirm beantwortet es – über jeden Server, jeden Auftrag,
+          jeden Durchlauf hinweg.
+        </p>
+      </div>
+      <div class="landing-window">
+        <div class="landing-window-chrome">
+          <div class="landing-window-dots" aria-hidden="true">
+            <span class="landing-window-dot landing-window-dot-error"></span>
+            <span class="landing-window-dot landing-window-dot-warning"></span>
+            <span class="landing-window-dot landing-window-dot-success"></span>
+          </div>
+          <div class="landing-window-url">localhost:9666</div>
+        </div>
+        <div class="landing-screenshot-frame">
+          <img
+            class="landing-screenshot no-zoom"
+            data-landing-shot="dashboard"
+            data-nozoom
+            src="/assets/screen-main-dashboard-card-mode.png"
+            alt="duplistatus-Dashboard in Kartenansicht, zeigt Server mit Statusleisten, Gesamtwerten und Warnungen zu überfälligen Sicherungen"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="landing-section">
+    <div class="landing-inner">
+      <div class="landing-centered">
+        <h2 id="features" class="landing-section-title">
+          Entwickelt für alle, die Duplicati auf mehreren Rechnern ausführen
+        </h2>
+        <p class="landing-section-lead">
+          Ob NAS, Laptop, VPS und zwei Heimserver – duplistatus
+          bietet Ihnen einen zentralen Ort zur Beantwortung der einzigen Frage, auf die es ankommt.
+        </p>
+      </div>
+      <div class="landing-benefit-stack">
+        <article id="see-every-backup" class="landing-benefit-grid">
+          <div class="landing-benefit-copy">
+            <div class="landing-benefit-badge landing-badge-info">
+              <svg class="landing-icon" aria-hidden="true"><use href="#icon-layout-dashboard"></use></svg>
+              <span>01</span>
+            </div>
+            <h3 class="landing-benefit-title">Jede Sicherung auf einen Blick</h3>
+            <p class="landing-benefit-body">
+              Überwachen Sie jeden Duplicati-Server und -Auftrag über ein einziges Dashboard. Eindeutige Statusanzeigen,
+              Karten pro Server mit einer Statusleiste für 10 Durchläufe, sortierbare Tabellenansicht
+              und Detailansicht einzelner Sicherungsprotokolle mit Warnungen und Fehlern.
+            </p>
+            <ul class="landing-point-list">
+              <li class="landing-point-item">
+                <span class="landing-point-dot landing-dot-info"></span>
+                Karten pro Server mit Statusleisten für 10 Durchläufe
+              </li>
+              <li class="landing-point-item">
+                <span class="landing-point-dot landing-dot-info"></span>
+                Sortierbare Tabellenansicht über alle Server
+              </li>
+              <li class="landing-point-item">
+                <span class="landing-point-dot landing-dot-info"></span>
+                Detailansicht einzelner Sicherungsprotokolle
+              </li>
+              <li class="landing-point-item">
+                <span class="landing-point-dot landing-dot-info"></span>
+                Versionsvergleich mit dem neuesten GitHub-Release
+              </li>
+            </ul>
+            <a class="landing-doc-link" href="/user-guide/dashboard">Dashboard-Leitfaden lesen</a>
+          </div>
+          <div class="landing-card landing-visual-shot">
+            <img
+              class="landing-benefit-shot no-zoom"
+              data-nozoom
+              src="/assets/screen-detail-cards.png"
+              alt="Server-Karten mit Sicherungs-Jobs, Statusleisten, Größen und Zeiten der letzten Ausführung"
+            />
+          </div>
+        </article>
+
+        <article id="catch-problems" class="landing-benefit-grid landing-benefit-grid-reverse">
+          <div class="landing-benefit-copy">
+            <div class="landing-benefit-badge landing-badge-warning">
+              <svg class="landing-icon" aria-hidden="true"><use href="#icon-triangle-alert"></use></svg>
+              <span>02</span>
+            </div>
+            <h3 class="landing-benefit-title">Probleme erkennen, bevor es zu Datenverlust kommt</h3>
+            <p class="landing-benefit-body">
+              Erkennen Sie überfällige, fehlerhafte oder mit Warnungen beendete Sicherungen automatisch. Erhalten Sie rechtzeitige
+              Benachrichtigungen über ntfy-Push oder SMTP-E-Mail – mit Benachrichtigungsfiltern pro Job
+              und einer optionalen E-Mail mit Tägliche Zusammenfassung zu einer festen lokalen Uhrzeit.
+            </p>
+            <ul class="landing-point-list">
+              <li class="landing-point-item">
+                <span class="landing-point-dot landing-dot-warning"></span>
+                Prüfung auf überfällig standardmäßig alle 5 Minuten
+              </li>
+              <li class="landing-point-item">
+                <span class="landing-point-dot landing-dot-warning"></span>
+                Filter pro Job: Aus / Alle / Warnungen / Fehler
+              </li>
+              <li class="landing-point-item">
+                <span class="landing-point-dot landing-dot-warning"></span>
+                ntfy-Push-Benachrichtigungen und SMTP-E-Mail
+              </li>
+              <li class="landing-point-item">
+                <span class="landing-point-dot landing-dot-warning"></span>
+                Tägliche Zusammenfassung pausiert E-Mails nur für den Standard-Empfänger
+              </li>
+            </ul>
+            <a class="landing-doc-link" href="/user-guide/backup-monitoring">Mehr über die Backup-Überwachung lesen</a>
+          </div>
+          <div class="landing-card landing-visual-shot">
+            <img
+              class="landing-benefit-shot no-zoom"
+              data-nozoom
+              src="/assets/screen-detail-status.png"
+              alt="Panels für Überfällige Backups, Warnungen und Fehler"
+            />
+          </div>
+        </article>
+
+        <article id="troubleshoot" class="landing-benefit-grid">
+          <div class="landing-benefit-copy">
+            <div class="landing-benefit-badge landing-badge-success">
+              <svg class="landing-icon" aria-hidden="true"><use href="#icon-stethoscope"></use></svg>
+              <span>03</span>
+            </div>
+            <h3 class="landing-benefit-title">Probleme zuverlässig beheben</h3>
+            <p class="landing-benefit-body">
+              Nutzen Sie detaillierte Protokolle und interaktive Leistungstrends, um
+              Fehler nachzuvollziehen, Wiederherstellungspunkte zu überprüfen und Sicherungen dauerhaft fehlerfrei zu halten.
+              Diagramme decken Dauer, Anzahl der Dateien, Dateigröße, Speicher, hochgeladene Größe und
+              verfügbare Versionen ab.
+            </p>
+            <ul class="landing-point-list">
+              <li class="landing-point-item">
+                <span class="landing-point-dot landing-dot-success"></span>
+                Interaktive Diagramme: Dauer, Anzahl der Dateien, Größe, Speicher
+              </li>
+              <li class="landing-point-item">
+                <span class="landing-point-dot landing-dot-success"></span>
+                Trends über 1 Woche bis 3 Monate mit Konsolidierung am selben Tag
+              </li>
+              <li class="landing-point-item">
+                <span class="landing-point-dot landing-dot-success"></span>
+                Automatische Protokollerfassung von Duplicati-Servern
+              </li>
+              <li class="landing-point-item">
+                <span class="landing-point-dot landing-dot-success"></span>
+                Wiederherstellungspunkte überprüfen und Sicherungszustand verfolgen
+              </li>
+            </ul>
+            <a class="landing-doc-link" href="/user-guide/backup-metrics">Mehr über Sicherungs-Metriken lesen</a>
+          </div>
+          <div class="landing-card landing-visual-shot">
+            <img
+              class="landing-benefit-shot no-zoom"
+              data-nozoom
+              src="/assets/screen-detail-backup.png"
+              alt="Sicherungsdetails mit Statistiken, verfügbaren Versionen und Protokollnachrichten"
+            />
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="landing-section">
+    <div class="landing-inner">
+      <div class="landing-centered">
+        <h2 id="workflow" class="landing-section-title">In vier Schritten von null zur Überwachung</h2>
+        <p class="landing-section-lead">
+          Dank containerisierter Bereitstellung sind Sie in wenigen Minuten startklar – nicht erst nach Stunden.
+        </p>
+      </div>
+      <div class="landing-step-grid">
+        <div class="landing-card landing-card-hover landing-step-card">
+          <div class="landing-step-header">
+            <div class="landing-step-icon">
+              <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-container"></use></svg>
+            </div>
+            <span class="landing-step-index">Schritt 1</span>
+          </div>
+          <h3 class="landing-step-title">Den Container bereitstellen</h3>
+          <p class="landing-step-body">
+            Laden Sie das Image von Docker Hub oder GitHub herunter, legen Sie Ihre Zeitzone fest und binden Sie ein
+            Daten-Volume ein. Die Web-UI lauscht auf 9666. Schema-Migrationen werden
+            beim Start automatisch angewendet.
+          </p>
+          <pre class="landing-step-code">wget https://github.com/wsj-br/duplistatus/raw/refs/heads/master/production.yml -O duplistatus.yml
+docker compose -f duplistatus.yml up -d</pre>
+          <a class="landing-doc-link" href="/installation">Installationsanleitung</a>
+        </div>
+        <div class="landing-card landing-card-hover landing-step-card">
+          <div class="landing-step-header">
+            <div class="landing-step-icon">
+              <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-link-2"></use></svg>
+            </div>
+            <span class="landing-step-index">Schritt 2</span>
+          </div>
+          <h3 class="landing-step-title">Duplicati auf duplistatus ausrichten</h3>
+          <p class="landing-step-body">
+            Konfigurieren Sie jeden Duplicati-Server so, dass JSON-Berichte per POST an /api/upload gesendet werden. Sammeln Sie
+            anschließend historische Protokolle, damit Überwachungsintervalle automatisch ausgefüllt werden.
+          </p>
+          <pre class="landing-step-code">--send-http-json-urls=http://host:9666/api/upload
+--send-http-log-level=Information
+--send-http-max-log-lines=500</pre>
+          <a class="landing-doc-link" href="/installation/duplicati-server-configuration">Duplicati-Konfiguration</a>
+        </div>
+        <div class="landing-card landing-card-hover landing-step-card">
+          <div class="landing-step-header">
+            <div class="landing-step-icon">
+              <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-bell"></use></svg>
+            </div>
+            <span class="landing-step-index">Schritt 3</span>
+          </div>
+          <h3 class="landing-step-title">Benachrichtigungen konfigurieren</h3>
+          <p class="landing-step-body">
+            Legen Sie Benachrichtigungsfilter pro Auftrag fest (Aus / Alle / Warnungen / Fehler), aktivieren Sie
+            Überprüfungen auf überfällige Sicherungen und wählen Sie NTFY-Push oder SMTP-E-Mail. Die Tägliche Zusammenfassung ist
+            optional und pausiert nur E-Mails an den Standardempfänger.
+          </p>
+          <pre class="landing-step-code">Notifications:
+  ntfy:   enabled
+  email:  enabled
+  filter: warnings + errors
+  overdue: every 5 minutes</pre>
+          <a class="landing-doc-link" href="/user-guide/settings/backup-notifications-settings">Benachrichtigungseinstellungen</a>
+        </div>
+        <div class="landing-card landing-card-hover landing-step-card">
+          <div class="landing-step-header">
+            <div class="landing-step-icon">
+              <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-chart-column"></use></svg>
+            </div>
+            <span class="landing-step-index">Schritt 4</span>
+          </div>
+          <h3 class="landing-step-title">Überwachen und Fehler beheben</h3>
+          <p class="landing-step-body">
+            Beobachten Sie das Dashboard auf Statusänderungen, analysieren Sie beliebige Sicherungsprotokolle und nutzen Sie
+            interaktive Trenddiagramme, um Anomalien zu erkennen. Der Cron-Dienst übernimmt Überprüfungen auf überfällige
+            Sicherungen, Versionsaktualisierungen und die Protokollbereinigung im Hintergrund.
+          </p>
+          <pre class="landing-step-code">Dashboard:  all servers · all jobs
+Last check: 2 min ago
+Overdue:    0
+Failures:   0</pre>
+          <a class="landing-doc-link" href="/user-guide/overview">Benutzerhandbuch</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="landing-section">
+    <div class="landing-inner">
+      <div class="landing-centered">
+        <h2 id="security" class="landing-section-title">Die Anmeldung ist immer aktiv. Härtung ist optional.</h2>
+        <p class="landing-section-lead">
+          Einfache Einrichtung im privaten Homelab, mit starken Sicherheitskontrollen bereit, wenn Sie sie
+          für eine öffentlich zugängliche Installation benötigen.
+        </p>
+      </div>
+      <div class="landing-feature-grid">
+        <article class="landing-card landing-card-hover landing-feature-card">
+          <div class="landing-feature-icon">
+            <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-shield-check"></use></svg>
+          </div>
+          <h3 class="landing-feature-title">
+            <a href="/user-guide/settings/user-management-settings">Anmeldung mit Rollen</a>
+          </h3>
+          <p class="landing-feature-body">
+            Authentifizierte Anmeldungen mit den Rollen Admin und Benutzer. Die Server-Sichtbarkeit kann
+            pro Benutzer eingeschränkt werden.
+          </p>
+        </article>
+        <article class="landing-card landing-card-hover landing-feature-card">
+          <div class="landing-feature-icon">
+            <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-key-round"></use></svg>
+          </div>
+          <h3 class="landing-feature-title">
+            <a href="/user-guide/settings/api-keys-settings">Externe API-Schlüssel</a>
+          </h3>
+          <p class="landing-feature-body">
+            Feingranulare Schlüssel für Duplicati-Uploads und schreibgeschützte externe Dashboards mit Beschränkungen für Upload-Größe und Rate.
+          </p>
+        </article>
+        <article class="landing-card landing-card-hover landing-feature-card">
+          <div class="landing-feature-icon">
+            <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-network"></use></svg>
+          </div>
+          <h3 class="landing-feature-title">
+            <a href="/user-guide/settings/ip-allowlist-settings">Netzwerkbeschränkungen</a>
+          </h3>
+          <p class="landing-feature-body">
+            Zwei unabhängige CIDR-Allowlists – eine für das Administrationsinterface, eine weitere für externe APIs. Trusted-Proxy-Anti-Spoofing enthalten.
+          </p>
+        </article>
+        <article class="landing-card landing-card-hover landing-feature-card">
+          <div class="landing-feature-icon">
+            <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-file-lock"></use></svg>
+          </div>
+          <h3 class="landing-feature-title">
+            <a href="/installation/security-configuration">CSRF-Schutz</a>
+          </h3>
+          <p class="landing-feature-body">
+            Alle sitzungsbasierten Routen sind vor Cross-Site-Request-Forgery geschützt.
+          </p>
+        </article>
+        <article class="landing-card landing-card-hover landing-feature-card">
+          <div class="landing-feature-icon">
+            <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-scroll-text"></use></svg>
+          </div>
+          <h3 class="landing-feature-title">
+            <a href="/user-guide/settings/audit-logs-viewer">Audit-Protokollierung</a>
+          </h3>
+          <p class="landing-feature-body">
+            Jede Konfigurationsänderung und Benutzeraktion wird erfasst, mit erweiterten Filterfunktionen, Export und konfigurierbarer Aufbewahrungsdauer.
+          </p>
+        </article>
+        <article class="landing-card landing-card-hover landing-feature-card">
+          <div class="landing-feature-icon">
+            <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-terminal"></use></svg>
+          </div>
+          <h3 class="landing-feature-title">
+            <a href="/user-guide/settings/application-logs-settings">Anwendungsprotokolle-Viewer</a>
+          </h3>
+          <p class="landing-feature-body">
+            Interface nur für Admins zum Anzeigen, Durchsuchen und Exportieren von Anwendungsprotokollen mit Echtzeitüberwachung.
+          </p>
+        </article>
+        <article class="landing-card landing-card-hover landing-feature-card">
+          <div class="landing-feature-icon">
+            <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-languages"></use></svg>
+          </div>
+          <h3 class="landing-feature-title">Mehrsprachige Unterstützung</h3>
+          <p class="landing-feature-body">
+            Benutzeroberfläche und Dokumentation auf Englisch, Französisch, Deutsch, Spanisch, brasilianischem Portugiesisch, Hindi und vereinfachtem Chinesisch.
+          </p>
+        </article>
+        <article class="landing-card landing-card-hover landing-feature-card">
+          <div class="landing-feature-icon">
+            <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-server"></use></svg>
+          </div>
+          <h3 class="landing-feature-title">
+            <a href="/user-guide/homepage-integration">Schreibgeschützte API</a>
+          </h3>
+          <p class="landing-feature-body">
+            Externe Dashboards und Widgets können dieselben Sicherungsstatus-Informationen über eine schreibgeschützte API anzeigen.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="landing-section">
+    <div class="landing-inner">
+      <div class="landing-trust-grid">
+        <div>
+          <h2 class="landing-section-title">Entwickelt für die Self-Hosting-Community</h2>
+          <p class="landing-section-lead">
+            duplistatus ist Open Source, selbst gehostet und so konzipiert, dass es zur Arbeitsweise von Homelab-Betreibern und Sysadmins in kleinen Teams passt.
+          </p>
+          <div class="landing-trust-list">
+            <div class="landing-trust-item">
+              <div class="landing-trust-icon">
+                <svg class="landing-icon landing-icon-lg landing-icon-fill" aria-hidden="true"><use href="#icon-github"></use></svg>
+              </div>
+              <div>
+                <h3 class="landing-trust-title">Open Source auf GitHub</h3>
+                <p class="landing-trust-body">
+                  Vollständiger Quellcode, Issues und Releases. Beitragen, forken oder selbst hosten ohne Vendor-Lock-in.
+                </p>
+                <a
+                  class="landing-doc-link"
+                  href="https://github.com/wsj-br/duplistatus"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Das duplistatus-Repository auf GitHub anzeigen (öffnet in einer neuen Registerkarte)"
+                >
+                  Auf GitHub ansehen
+                </a>
+              </div>
+            </div>
+            <div class="landing-trust-item">
+              <div class="landing-trust-icon">
+                <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-book-open"></use></svg>
+              </div>
+              <div>
+                <h3 class="landing-trust-title">Umfassende Dokumentation</h3>
+                <p class="landing-trust-body">
+                  Einrichtungsanleitungen, Konfigurationsreferenz und Sicherheitshärtung –
+                  verfügbar in sieben Sprachen.
+                </p>
+                <a class="landing-doc-link" href="/intro">Dokumentation lesen</a>
+              </div>
+            </div>
+            <div class="landing-trust-item">
+              <div class="landing-trust-icon">
+                <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-container"></use></svg>
+              </div>
+              <div>
+                <h3 class="landing-trust-title">Docker, Portainer und Podman</h3>
+                <p class="landing-trust-body">
+                  Images auf Docker Hub und GitHub. Bereitstellung mit Ihrer bevorzugten Container-Laufzeitumgebung –
+                  keine Abhängigkeiten außer einem einzelnen Daten-Volume.
+                </p>
+                <a class="landing-doc-link" href="/installation">Installationsoptionen anzeigen</a>
+              </div>
+            </div>
+            <div class="landing-trust-item">
+              <div class="landing-trust-icon">
+                <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-database"></use></svg>
+              </div>
+              <div>
+                <h3 class="landing-trust-title">SQLite + automatische Migrationen</h3>
+                <p class="landing-trust-body">
+                  Der Zustand liegt in einer einzelnen SQLite-Datei, wobei Schema-Migrationen beim
+                  Start angewendet werden. Datei sichern, und fertig.
+                </p>
+              </div>
+            </div>
+            <div class="landing-trust-item">
+              <div class="landing-trust-icon">
+                <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-globe"></use></svg>
+              </div>
+              <div>
+                <h3 class="landing-trust-title">Sieben Sprachen</h3>
+                <p class="landing-trust-body">
+                  Benutzeroberfläche und Dokumentation auf Englisch, Französisch, Deutsch, Spanisch, brasilianischem
+                  Portugiesisch, Hindi und vereinfachtem Chinesisch.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="landing-side-stack">
+          <div class="landing-stat-grid">
+            <div class="landing-card landing-stat-card">
+              <div class="landing-stat-value">9666</div>
+              <div class="landing-stat-label">Web-UI-Port</div>
+              <div class="landing-stat-sub">HTTP</div>
+            </div>
+            <div class="landing-card landing-stat-card">
+              <div class="landing-stat-value">SQLite</div>
+              <div class="landing-stat-label">Datenbank</div>
+              <div class="landing-stat-sub">Einzelne Datei, automatisch migriert</div>
+            </div>
+            <div class="landing-card landing-stat-card">
+              <div class="landing-stat-value">7</div>
+              <div class="landing-stat-label">Sprachen</div>
+              <div class="landing-stat-sub">UI + Dokumentation</div>
+            </div>
+            <div class="landing-card landing-stat-card">
+              <div class="landing-stat-value">Apache-2.0</div>
+              <div class="landing-stat-label">Lizenz</div>
+              <div class="landing-stat-sub">Open Source</div>
+            </div>
+          </div>
+          <div class="landing-card landing-arch-card">
+            <h3 class="landing-arch-title">Architektur im Überblick</h3>
+            <div>
+              <div class="landing-arch-row">
+                <span class="landing-arch-label">Frontend</span>
+                <span class="landing-arch-value">Next.js App Router (Standalone-Ausgabe)</span>
+              </div>
+              <div class="landing-arch-row">
+                <span class="landing-arch-label">Hintergrund</span>
+                <span class="landing-arch-value">Separater Cron-Dienst (nur intern)</span>
+              </div>
+              <div class="landing-arch-row">
+                <span class="landing-arch-label">Datenbank</span>
+                <span class="landing-arch-value">SQLite über better-sqlite3</span>
+              </div>
+              <div class="landing-arch-row">
+                <span class="landing-arch-label">Secrets</span>
+                <span class="landing-arch-value">Datei data/.duplistatus.key</span>
+              </div>
+              <div class="landing-arch-row">
+                <span class="landing-arch-label">Bereitstellung</span>
+                <span class="landing-arch-value">Docker · Portainer Stacks · Podman</span>
+              </div>
+              <div class="landing-arch-row">
+                <span class="landing-arch-label">Benachrichtigungen</span>
+                <span class="landing-arch-value">ntfy-Push · SMTP-E-Mail · Tägliche Zusammenfassung</span>
+              </div>
+            </div>
+          </div>
+          <div class="landing-card landing-arch-card">
+            <h3 class="landing-arch-title">Der Cron-Dienst übernimmt</h3>
+            <div class="landing-pill-row">
+              <span class="landing-pill">Überfälligkeitsprüfungen</span>
+              <span class="landing-pill">Versionsaktualisierung</span>
+              <span class="landing-pill">Versand der Täglichen Zusammenfassung</span>
+              <span class="landing-pill">Bereinigung des Audit-Logs</span>
+              <span class="landing-pill">Wöchentliche DB-Komprimierung</span>
+            </div>
+          </div>
+          <p class="landing-note">
+            duplistatus ist ein unabhängiges Projekt und steht in keiner Verbindung zum Duplicati-Team.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="landing-section">
+    <div class="landing-inner landing-inner-narrow">
+      <div class="landing-centered">
+        <h2 id="install" class="landing-section-title">In wenigen Minuten loslegen</h2>
+        <p class="landing-section-lead">
+          Image abrufen, ein Daten-Volume einbinden und Port 9666 öffnen. Schema-Migrationen
+          werden beim Start automatisch ausgeführt.
+        </p>
+      </div>
+      <div class="landing-card landing-install-card">
+        <div class="landing-tabs">
+          <input class="landing-tab-input" type="radio" name="landing-install" id="landing-tab-compose" checked />
+          <input class="landing-tab-input" type="radio" name="landing-install" id="landing-tab-portainer" />
+          <input class="landing-tab-input" type="radio" name="landing-install" id="landing-tab-docker" />
+          <input class="landing-tab-input" type="radio" name="landing-install" id="landing-tab-podman" />
+          <div class="landing-tab-list">
+            <label for="landing-tab-compose">Docker Compose</label>
+            <label for="landing-tab-portainer">Portainer Stack</label>
+            <label for="landing-tab-docker">Docker CLI</label>
+            <label for="landing-tab-podman">Podman</label>
+          </div>
+          <div class="landing-tab-panels">
+            <div class="landing-tab-panel landing-tab-panel-compose">
+              <pre class="landing-install-pre"># download the compose file
+wget https://github.com/wsj-br/duplistatus/raw/refs/heads/master/production.yml -O duplistatus.yml
+# start the container
+docker compose -f duplistatus.yml up -d</pre>
+            </div>
+            <div class="landing-tab-panel landing-tab-panel-portainer">
+              <pre class="landing-install-pre"># duplistatus production compose.yml
+services:
+  duplistatus:
+    image: ghcr.io/wsj-br/duplistatus:latest
+    container_name: duplistatus
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/London
+      - PWD_ENFORCE=true
+      - PWD_MIN_LEN=8
+    ports:
+      - "9666:9666"
+    volumes:
+      - duplistatus_data:/app/data
+    networks:
+      - duplistatus_network
+
+networks:
+  duplistatus_network:
+    driver: bridge
+
+volumes:
+  duplistatus_data:
+    name: duplistatus_data</pre>
+            </div>
+            <div class="landing-tab-panel landing-tab-panel-docker">
+              <pre class="landing-install-pre"># Create the volume
+docker volume create duplistatus_data
+
+# Start the container
+docker run -d \
+  --name duplistatus \
+  -p 9666:9666 \
+  -e TZ=Europe/London \
+  -e LANG=en_GB \
+  -v duplistatus_data:/app/data \
+  ghcr.io/wsj-br/duplistatus:latest</pre>
+            </div>
+            <div class="landing-tab-panel landing-tab-panel-podman">
+              <pre class="landing-install-pre">mkdir -p ~/duplistatus_data
+# Start the container (standalone)
+podman run -d \
+  --name duplistatus \
+  --userns=keep-id \
+  -e TZ=Europe/London \
+  -e LANG=en_GB \
+  -p 9666:9666 \
+  -v ~/duplistatus_data:/app/data \
+  ghcr.io/wsj-br/duplistatus:latest</pre>
+            </div>
+          </div>
+          <div class="landing-post-install">
+            <h3 class="landing-post-title">Nachdem der Container gestartet wurde:</h3>
+            <ol class="landing-post-list">
+              <li class="landing-post-item">
+                <span class="landing-post-index">1</span>
+                <span>Öffnen Sie http://localhost:9666 in Ihrem Browser</span>
+              </li>
+              <li class="landing-post-item">
+                <span class="landing-post-index">2</span>
+                <span>Melden Sie sich mit dem im <a href="/installation">Installationsleitfaden</a> beschriebenen Standard-Admin-Konto an</span>
+              </li>
+              <li class="landing-post-item">
+                <span class="landing-post-index">3</span>
+                <span>Konfigurieren Sie Ihre <a href="/installation/duplicati-server-configuration">Duplicati-Server</a> so, dass Sicherungsberichte an /api/upload gesendet werden</span>
+              </li>
+              <li class="landing-post-item">
+                <span class="landing-post-index">4</span>
+                <span>Verwenden Sie <a href="/user-guide/collect-backup-logs">Backup-Protokolle sammeln</a>, um den Verlauf zu importieren, und konfigurieren Sie anschließend NTFY oder SMTP, falls Sie Benachrichtigungen wünschen</span>
+              </li>
+              <li class="landing-post-item">
+                <span class="landing-post-index">5</span>
+                <span>Aktivieren Sie optional API-Schlüssel und IP-Zulassungslisten für öffentlich zugängliche Installationen</span>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+      <div class="landing-cta-row">
+        <a
+          class="button button--secondary button--lg landing-cta"
+          href="https://github.com/wsj-br/duplistatus"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Das duplistatus-Repository auf GitHub anzeigen (öffnet in einer neuen Registerkarte)"
+        >
+          <svg class="landing-icon landing-icon-fill" aria-hidden="true"><use href="#icon-github"></use></svg>
+          Auf GitHub mit einem Stern markieren
+        </a>
+        <a class="button button--primary button--lg landing-cta" href="/intro">Dokumentation lesen</a>
+      </div>
+    </div>
+  </section>
+</div>

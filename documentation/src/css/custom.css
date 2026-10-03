@@ -1216,3 +1216,93 @@ mark {
     font-size: 1.2em;
   }
 
+  /* Landing navbar: Docs beside the brand; section links + Get Started
+     sit in the remaining space before the language selector. */
+  .navbar__items:not(.navbar__items--right) {
+    min-width: 0;
+  }
+
+  .navbar-center {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+  }
+
+  @media (max-width: 996px) {
+    .navbar-center {
+      display: none;
+    }
+  }
+
+  .navbar__link.navbar-landing-link {
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    letter-spacing: 0 !important;
+    white-space: nowrap;
+  }
+
+  [data-theme='dark'] .navbar__link.navbar-landing-link {
+    color: #9ca3af !important;
+  }
+
+  [data-theme='dark'] .navbar__link.navbar-landing-link:hover,
+  [data-theme='dark'] .navbar__link.navbar-landing-link.navbar__link--active {
+    color: #e5e7eb !important;
+    font-weight: 500 !important;
+  }
+
+  :root:not([data-theme='dark']) .navbar__link.navbar-landing-link {
+    color: #6b7280 !important;
+  }
+
+  :root:not([data-theme='dark']) .navbar__link.navbar-landing-link:hover,
+  :root:not([data-theme='dark']) .navbar__link.navbar-landing-link.navbar__link--active {
+    color: #111827 !important;
+    font-weight: 500 !important;
+  }
+
+  .navbar-docs-link {
+    display: inline-flex !important;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    letter-spacing: 0 !important;
+    white-space: nowrap;
+  }
+
+  .menu__link.navbar-docs-link {
+    display: flex !important;
+  }
+
+  .navbar-get-started {
+    white-space: nowrap;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-left: 0.35rem;
+    padding: 0.4rem 0.95rem;
+    border-radius: 0.375rem;
+  }
+
+  .navbar-get-started:hover {
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .navbar-get-started-mobile {
+    background: var(--ifm-color-primary);
+    color: #fff !important;
+    font-weight: 600 !important;
+    justify-content: center;
+    border-radius: 0.375rem;
+    margin-top: 0.35rem;
+  }
+
+  .navbar-get-started-mobile:hover {
+    color: #fff !important;
+    opacity: 0.92;
+  }
+

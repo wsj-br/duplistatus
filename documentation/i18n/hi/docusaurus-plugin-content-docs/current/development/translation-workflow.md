@@ -12,14 +12,14 @@
 
 ## जब अंग्रेजी प्रलेखन बदलता है {/* #when-english-documentation-changes */}
 
-1. **स्रोत संपादित करें** में `documentation/docs/` (केवल अंग्रेजी)।
-2. **डोकूसॉरस यूआई स्ट्रिंग्स** (थीम लेबल, नेवबार, आदि): यदि आवश्यक हो, तो `pnpm write-translations` में चलाएं `documentation/` ताकि `i18n/en/*.json` नए कुंजियाँ ले सके।
-3. **शीर्षक आईडी**: `pnpm write-heading-ids` (से `documentation/`)।
-4. **अनुवाद** से **रेपो रूट** (या नीचे दिए गए शॉर्टकट का उपयोग करें `documentation/` से):
-   - `pnpm i18n:extract` — रीफ्रेश करें `src/locales/strings.json` से `t('…')` में अगला.जेएस ऐप।
-   - `pnpm i18n:translate:docs` — मार्कडाउन/जेएसओएन को `documentation/i18n/` में कॉन्फ़िग के अनुसार अनुवाद करें।
-   - `pnpm i18n:translate:svg` — एसवीजी को `documentation/static/img` के तहत कॉन्फ़िग के अनुसार अनुवाद करें।
-   - `pnpm i18n:translate:json` — डिफ़ॉल्ट अधिसूचना टेम्पलेट को `src/locales/templates/` में से `en-GB.json` में अनुवाद करें।
+1. `documentation/docs/` में **सोर्स संपादित करें** (केवल अंग्रेज़ी)। लैंडिंग-पेज की कॉपी `documentation/src/landing/landing.html` है।
+2. **Docusaurus UI स्ट्रिंग्स** (थीम लेबल, navbar, आदि): यदि आवश्यक हो, तो `documentation/` में `pnpm write-translations` चलाएं ताकि `i18n/en/*.json` नई कुंजियों को ले सके।
+3. **हेडिंग ID**: `pnpm write-heading-ids` (`documentation/` से)।
+4. **रिपो रूट** से **अनुवाद करें** (या `documentation/` से नीचे दिए गए शॉर्टकट का उपयोग करें):
+   - `pnpm i18n:extract` — Next.js ऐप में `t('…')` से `src/locales/strings.json` को रीफ्रेश करें।
+   - `pnpm i18n:translate:docs` — कॉन्फ़िगरेशन के अनुसार मार्कडाउन, Docusaurus शेल JSON और लैंडिंग HTML का `documentation/i18n/` और `documentation/src/landing/i18n/` में अनुवाद करें।
+   - `pnpm i18n:translate:svg` — कॉन्फ़िगरेशन के अनुसार `documentation/static/img` के अंतर्गत SVG का अनुवाद करें।
+   - `pnpm i18n:translate:json` — `en-GB.json` से `src/locales/templates/` में डिफ़ॉल्ट नोटिफ़िकेशन टेम्पलेट का अनुवाद करें।
    - या सब कुछ चलाएं: `pnpm i18n:translate`।
 5. **बिल्ड**: `cd documentation && pnpm build` (सभी स्थान)।
 
@@ -61,11 +61,23 @@ t("{{count}} backups selected", { plurals: true, count: selectedBackups.size })
 
 झंडे के लिए [एआई-आई18एन-टूल्स जेएसओएन गाइड](https://wsj-br.github.io/ai-i18n-tools/guide/json.html) देखें (`--locale`, `--force`, आदि)।
 
+## लैंडिंग पेज HTML {/* #landing-page-html */}
+
+दस्तावेज़ों का होमपेज मुख्य भाग (body) एक एकल अंग्रेज़ी HTML फ़ाइल है, न कि React सेक्शन कॉम्पोनेन्ट।
+
+1. **`documentation/src/landing/landing.html`** संपादित करें (और लेआउट के लिए `documentation/src/landing/landing.css`)। हैश ID `features`, `dashboard`, `workflow`, `security` और `install` को बनाए रखें।
+2. रिपो रूट से **`pnpm i18n:translate:docs`** चलाएं (या `documentation/` से `pnpm translate:docs`)।
+3. जनरेट की गई प्रतियां **`documentation/src/landing/i18n/{locale}/landing.html`** में लिखी जाती हैं। उन फ़ाइलों को मैन्युअल रूप से संपादित न करें।
+
+`translate-docs` [HTML पृष्ठ](https://wsj-br.github.io/ai-i18n-tools/guide/documents/html-pages.html) पाइपलाइन का उपयोग करता है: दृश्यमान पाठ और `alt` / `title` / `aria-label` का अनुवाद किया जाता है; `<pre>` और `<code>` अंग्रेज़ी में रहते हैं। Navbar लेबल और पृष्ठ शीर्षक Docusaurus `Translate` (`homepage.nav.*`, `homepage.meta.*`) में रहते हैं।
+
+इस फ़ाइल में `data-i18n` मार्कर न जोड़ें, और इसे `ui.sourceRoots` के अंतर्गत सूचीबद्ध न करें। एक ही HTML फ़ाइल दस्तावेज़ पाइपलाइन और UI-स्ट्रिंग्स पाइपलाइन दोनों में नहीं होनी चाहिए।
+
 ## शब्दकोश {/* #glossary */}
 
-- प्रलेखन के लिए **UI शब्दावली** को `ai-i18n-tools.config.json` में `glossary.uiGlossary` द्वारा निर्देशित किया जाता है, जो `src/locales/strings.json` की ओर संकेत करता है (`pnpm i18n:extract` द्वारा उत्पादित सूची)।
-- **अधिरोहण** को `documentation/glossary-user.csv` में रखा जाता है (config में `glossary.userGlossary`)। स्तंभ प्रारूप के लिए [ai-i18n-tools शब्दकोश प्रलेख](https://github.com/wsj-br/ai-i18n-tools/blob/main/docs/GETTING_STARTED.md) देखें।
-- एक CSV टेम्पलेट उत्पन्न करें: `pnpm i18n:glossary-generate` (रूट)।
+- दस्तावेज़ों के लिए **UI शब्दावली** प्रत्येक `ui[]` कैटलॉग से आती है जिसमें `uiGlossary` चालू रहता है (डिफ़ॉल्ट)। Next.js ऐप कैटलॉग `src/locales/strings.json` है (`pnpm i18n:extract` द्वारा निर्मित)। `glossary.uiGlossary` सेट न करें; वह कुंजी अस्वीकार कर दी जाती है।
+- **ओवरराइड** `documentation/glossary-user.csv` (कॉन्फ़िगरेशन में `glossary.userGlossary`) में रहते हैं। कॉलम प्रारूप के लिए [ai-i18n-tools शब्दावली दस्तावेज़](https://github.com/wsj-br/ai-i18n-tools/blob/main/docs/GETTING_STARTED.md) देखें।
+- एक CSV टेम्पलेट जनरेट करें: `pnpm i18n:glossary-generate` (रूट)।
 
 ## कैश {/* #cache */}
 

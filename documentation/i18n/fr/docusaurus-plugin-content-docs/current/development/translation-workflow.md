@@ -12,14 +12,14 @@ Pour essayer un checkout non publié sur la même machine (`../ai-i18n-tools` pa
 
 ## Quand la documentation anglaise change {/* #when-english-documentation-changes */}
 
-1. **Modifier le code source** dans `documentation/docs/` (anglais uniquement).
-2. **Chaînes d’interface Docusaurus** (libellés de thème, barre de navigation, etc.) : si nécessaire, exécutez `pnpm write-translations` dans `documentation/` pour que `i18n/en/*.json` récupère les nouvelles clés.
-3. **ID des titres** : `pnpm write-heading-ids` (depuis `documentation/`).
-4. **Traduire** depuis la **racine du dépôt** (ou utilisez les raccourcis ci-dessous depuis `documentation/`) :
-   - `pnpm i18n:extract` — actualiser `src/locales/strings.json` depuis `t('…')` dans l’application Next.js.
-   - `pnpm i18n:translate:docs` — traduire markdown/JSON en `documentation/i18n/` selon la configuration.
-   - `pnpm i18n:translate:svg` — traduire les SVG sous `documentation/static/img` selon la configuration.
-   - `pnpm i18n:translate:json` — traduire les modèles de notification par défaut dans `src/locales/templates/` depuis `en-GB.json`.
+1. **Modifiez la source** dans `documentation/docs/` (en anglais uniquement). Le texte de la page de destination est `documentation/src/landing/landing.html`.
+2. **Chaînes d'interface utilisateur Docusaurus** (libellés de thème, barre de navigation, etc.) : si nécessaire, exécutez `pnpm write-translations` dans `documentation/` pour que `i18n/en/*.json` récupère les nouvelles clés.
+3. **Identifiants d'en-tête** : `pnpm write-heading-ids` (depuis `documentation/`).
+4. **Traduisez** depuis la **racine du dépôt** (ou utilisez les raccourcis ci-dessous depuis `documentation/`) :
+   - `pnpm i18n:extract` — actualise `src/locales/strings.json` à partir de `t('…')` dans l'application Next.js.
+   - `pnpm i18n:translate:docs` — traduit le Markdown, le JSON d'environnement Docusaurus et le code HTML de la page de destination vers `documentation/i18n/` et `documentation/src/landing/i18n/` selon la configuration.
+   - `pnpm i18n:translate:svg` — traduit les SVG sous `documentation/static/img` selon la configuration.
+   - `pnpm i18n:translate:json` — traduit les modèles de notification par défaut dans `src/locales/templates/` à partir de `en-GB.json`.
    - Ou exécutez tout : `pnpm i18n:translate`.
 5. **Générer** : `cd documentation && pnpm build` (toutes les locales).
 
@@ -61,10 +61,22 @@ Paramètres → Modèles → **Réinitialiser** charge les valeurs par défaut �
 
 Consultez le [guide JSON ai-i18n-tools](https://wsj-br.github.io/ai-i18n-tools/guide/json.html) pour les drapeaux (`--locale`, `--force`, etc.).
 
+## HTML de la page de destination {/* #landing-page-html */}
+
+Le corps de la page d'accueil de la documentation est un seul fichier HTML en anglais, et non des composants de section React.
+
+1. Modifiez **`documentation/src/landing/landing.html`** (et `documentation/src/landing/landing.css` pour la mise en page). Conservez les identifiants de hachage `features`, `dashboard`, `workflow`, `security` et `install`.
+2. Exécutez **`pnpm i18n:translate:docs`** depuis la racine du dépôt (ou `pnpm translate:docs` depuis `documentation/`).
+3. Les copies générées sont écrites dans **`documentation/src/landing/i18n/{locale}/landing.html`**. Ne modifiez pas ces fichiers manuellement.
+
+`translate-docs` utilise le pipeline [Pages HTML](https://wsj-br.github.io/ai-i18n-tools/guide/documents/html-pages.html) : le texte visible et `alt` / `title` / `aria-label` sont traduits ; `<pre>` et `<code>` restent en anglais. Les libellés de la barre de navigation et le titre de la page restent dans `Translate` de Docusaurus (`homepage.nav.*`, `homepage.meta.*`).
+
+N'ajoutez pas de marqueurs `data-i18n` à ce fichier et ne le listez pas sous `ui.sourceRoots`. Le même fichier HTML ne doit pas figurer à la fois dans le pipeline de documents et dans le pipeline de chaînes d'interface utilisateur.
+
 ## Glossaire {/* #glossary */}
 
-- **Terminologie UI** pour la documentation est pilotée par `glossary.uiGlossary` dans `ai-i18n-tools.config.json`, pointant vers `src/locales/strings.json` (le catalogue produit par `pnpm i18n:extract`).
-- **Les remplacements** se trouvent dans `documentation/glossary-user.csv` (`glossary.userGlossary` dans la config). Consultez la [documentation du glossaire ai-i18n-tools](https://github.com/wsj-br/ai-i18n-tools/blob/main/docs/GETTING_STARTED.md) pour le format des colonnes.
+- La **terminologie de l'interface utilisateur** pour la documentation provient de chaque catalogue `ui[]` avec `uiGlossary` activé (par défaut). Le catalogue de l'application Next.js est `src/locales/strings.json` (produit par `pnpm i18n:extract`). Ne définissez pas `glossary.uiGlossary` ; cette clé est rejetée.
+- Les **remplacements** se trouvent dans `documentation/glossary-user.csv` (`glossary.userGlossary` dans la configuration). Consultez la [documentation du glossaire ai-i18n-tools](https://github.com/wsj-br/ai-i18n-tools/blob/main/docs/GETTING_STARTED.md) pour le format des colonnes.
 - Générer un modèle CSV : `pnpm i18n:glossary-generate` (racine).
 
 ## Cache {/* #cache */}

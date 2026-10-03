@@ -233,7 +233,7 @@ ai-i18n-tools.config.json   # i18n tooling (UI + docs + SVG)
 
 - Run `pnpm i18n:extract` after adding or changing `t('…')` strings so `strings.json` stays current.
 - After adding or changing `{ plurals: true }` calls, also run `pnpm i18n:translate:ui` so source-locale `one`/`other` forms and `src/locales/en-GB.json` stay current.
-- Documentation and SVG translation use the same `ai-i18n-tools.config.json`; glossary UI terms come from `glossary.uiGlossary` → `src/locales/strings.json`.
+- Documentation, landing HTML, and SVG translation use the same `ai-i18n-tools.config.json`; glossary UI terms come from each `ui[]` catalog with `uiGlossary` left on (default), currently `src/locales/strings.json`.
 
 
 
