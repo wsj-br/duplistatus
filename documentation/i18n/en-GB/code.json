@@ -366,7 +366,7 @@
     "description": "HTML document title for the landing page"
   },
   "homepage.meta.description": {
-    "message": "Self-hosted dashboard for every Duplicati server and job: status, overdue alerts, logs, and trends — without opening each backup UI.",
+    "message": "Monitor every Duplicati backup from one dashboard. Open source, self-hosted and Docker-ready, with ntfy and email alerts.",
     "description": "HTML meta description for the landing page"
   },
   "homepage.nav.docs": {

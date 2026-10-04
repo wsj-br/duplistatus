@@ -1,4 +1,5 @@
-import type {JSX} from 'react';
+import {useEffect, type JSX} from 'react';
+import Head from '@docusaurus/Head';
 import {translate} from '@docusaurus/Translate';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import useBrokenLinks from '@docusaurus/useBrokenLinks';
@@ -155,20 +156,80 @@ export default function Home(): JSX.Element {
     brokenLinks.collectLink(link);
   }
 
+  const pageTitle = translate({
+    id: 'homepage.meta.title',
+    message: 'Monitor every Duplicati backup',
+    description: 'HTML document title for the landing page',
+  });
+  const pageDescription = translate({
+    id: 'homepage.meta.description',
+    message:
+      'Monitor every Duplicati backup from one dashboard. Open source, self-hosted and Docker-ready, with ntfy and email alerts.',
+    description: 'HTML meta description for the landing page',
+  });
+
+  useEffect(() => {
+    const root = document.querySelector('.landing');
+    const dialog = document.getElementById('landing-lightbox');
+    if (!(root instanceof HTMLElement) || !(dialog instanceof HTMLDialogElement)) {
+      return;
+    }
+    const enlarged = dialog.querySelector('img');
+    if (!(enlarged instanceof HTMLImageElement)) {
+      return;
+    }
+
+    const openShot = (event: MouseEvent) => {
+      const target = event.target;
+      if (!(target instanceof Element)) {
+        return;
+      }
+      const button = target.closest('[data-landing-zoom]');
+      if (!(button instanceof HTMLElement) || !root.contains(button)) {
+        return;
+      }
+      const source = button.querySelector('img');
+      if (!(source instanceof HTMLImageElement)) {
+        return;
+      }
+      enlarged.src = source.currentSrc || source.src;
+      enlarged.alt = source.alt;
+      const width = source.naturalWidth || source.width;
+      const height = source.naturalHeight || source.height;
+      if (width > 0) {
+        enlarged.width = width;
+      }
+      if (height > 0) {
+        enlarged.height = height;
+      }
+      if (!dialog.open) {
+        dialog.showModal();
+      }
+    };
+
+    const closeOnBackdrop = (event: MouseEvent) => {
+      if (event.target === dialog) {
+        dialog.close();
+      }
+    };
+
+    root.addEventListener('click', openShot);
+    dialog.addEventListener('click', closeOnBackdrop);
+    return () => {
+      root.removeEventListener('click', openShot);
+      dialog.removeEventListener('click', closeOnBackdrop);
+    };
+  }, [html]);
+
   return (
-    <Layout
-      title={translate({
-        id: 'homepage.meta.title',
-        message: 'Monitor every Duplicati backup',
-        description: 'HTML document title for the landing page',
-      })}
-      description={translate({
-        id: 'homepage.meta.description',
-        message:
-          'Self-hosted dashboard for every Duplicati server and job: status, overdue alerts, logs, and trends — without opening each backup UI.',
-        description: 'HTML meta description for the landing page',
-      })}
-    >
+    <Layout title={pageTitle} description={pageDescription}>
+      <Head>
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        {/* TODO(author): og:url and og:image */}
+      </Head>
       <div dangerouslySetInnerHTML={{__html: html}} />
     </Layout>
   );

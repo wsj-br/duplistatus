@@ -121,11 +121,15 @@
           开源 · 自托管 · 支持 Docker
         </div>
         <h1 class="landing-section-title landing-hero-title">
-          全部备份。<span class="landing-hero-accent">一个仪表板。</span>
+          您的所有备份。<span class="landing-hero-accent">一个仪表板。</span>
         </h1>
         <p class="landing-section-lead">
           无需再逐一登录各个 Duplicati Web 界面。duplistatus
           通过单一屏幕监控所有服务器和任务——让您在遭遇突发数据丢失前，就能确信备份一切正常。
+        </p>
+        <p class="landing-hero-note">
+          duplistatus 使用 Duplicati 的内置 HTTP 报告功能，因此无需在备份机器上安装任何软件。
+          <!-- TODO(author): add minimum supported Duplicati version -->
         </p>
         <div class="landing-cta-row">
           <a class="button button--primary button--lg landing-cta" href="#install">
@@ -136,6 +140,7 @@
             查看仪表板
           </a>
         </div>
+        <!-- TODO(author): live demo link, GitHub stars, latest release badge -->
         <div class="landing-chip-row">
           <span class="landing-chip">
             <svg class="landing-icon landing-chip-info" aria-hidden="true"><use href="#icon-server"></use></svg>
@@ -147,7 +152,7 @@
           </span>
           <span class="landing-chip">
             <svg class="landing-icon landing-chip-success" aria-hidden="true"><use href="#icon-shield-check"></use></svg>
-            需要登录，可选额外安全加固
+            默认安全，按需提供额外保护
           </span>
         </div>
       </div>
@@ -159,7 +164,7 @@
       <div class="landing-centered">
         <h2 id="dashboard" class="landing-section-title">最核心的问题</h2>
         <p class="landing-section-lead">
-          我的所有备份都正常吗？一个屏幕即可给出答案——涵盖每一台服务器、每一个任务和每一次运行。
+          我的所有备份都正常吗？一屏解答，覆盖每台服务器、每个任务和每次运行。
         </p>
       </div>
       <div class="landing-window">
@@ -172,13 +177,17 @@
           <div class="landing-window-url">localhost:9666</div>
         </div>
         <div class="landing-screenshot-frame">
-          <img
-            class="landing-screenshot no-zoom"
-            data-landing-shot="dashboard"
-            data-nozoom
-            src="/assets/screen-main-dashboard-card-mode.png"
-            alt="卡片视图下的 duplistatus 仪表板，显示带有状态条的服务器、总量和逾期告警"
-          />
+          <button type="button" class="landing-shot-button" data-landing-zoom aria-haspopup="dialog">
+            <img
+              class="landing-screenshot no-zoom"
+              data-landing-shot="dashboard"
+              data-nozoom
+              src="/assets/screen-main-dashboard-card-mode.png"
+              width="1905"
+              height="1080"
+              alt="卡片视图下的 duplistatus 仪表板，显示带有状态条的服务器、总量和逾期告警"
+            />
+          </button>
         </div>
       </div>
     </div>
@@ -191,8 +200,7 @@
           专为在多台机器上运行 Duplicati 的用户打造
         </h2>
         <p class="landing-section-lead">
-          无论是 NAS、笔记本电脑、VPS 还是两台家庭服务器——duplistatus
-          都能为您提供一站式解答这个最核心的问题。
+          无论您运行的是 NAS、笔记本电脑、VPS 还是两台家庭服务器，duplistatus 都能将它们汇总到同一个屏幕上。
         </p>
       </div>
       <div class="landing-benefit-stack">
@@ -204,35 +212,36 @@
             </div>
             <h3 class="landing-benefit-title">备份状态一览无余</h3>
             <p class="landing-benefit-body">
-              在一个仪表板中监控每个 Duplicati 服务器和任务。具备清晰的状态指示器、包含 10 次运行状态条的单服务器卡片、可排序的表格视图，并可深入查看包含警告和错误信息的单次备份日志。
+              每台服务器的卡片会显示每个任务最近 10 次的运行记录。服务器较多时可切换为可排序表格，并可打开任意一次运行以查看完整日志（包括警告和错误）。
             </p>
             <ul class="landing-point-list">
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-info"></span>
-                包含 10 次运行状态条的单服务器卡片
+                服务器、任务、运行次数、大小和存储空间的统计总览
               </li>
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-info"></span>
-                跨所有服务器的可排序表格视图
+                自动刷新的仪表板，带来大屏展示体验
               </li>
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-info"></span>
-                深入查看单项备份日志
-              </li>
-              <li class="landing-point-item">
-                <span class="landing-point-dot landing-dot-info"></span>
-                与 GitHub 最新发布版本进行版本对比
+                对照 GitHub 最新版本检查 Duplicati 服务器版本
               </li>
             </ul>
             <a class="landing-doc-link" href="/user-guide/dashboard">阅读仪表板指南</a>
           </div>
           <div class="landing-card landing-visual-shot">
-            <img
-              class="landing-benefit-shot no-zoom"
-              data-nozoom
-              src="/assets/screen-detail-cards.png"
-              alt="包含备份作业、状态条、大小和上次运行时间的服务器卡片"
-            />
+            <button type="button" class="landing-shot-button" data-landing-zoom aria-haspopup="dialog">
+              <img
+                class="landing-benefit-shot no-zoom"
+                data-nozoom
+                src="/assets/screen-detail-cards.png"
+                width="684"
+                height="493"
+                loading="lazy"
+                alt="包含备份作业、状态条、大小和上次运行时间的服务器卡片"
+              />
+            </button>
           </div>
         </article>
 
@@ -244,37 +253,36 @@
             </div>
             <h3 class="landing-benefit-title">防患于未然，避免数据丢失</h3>
             <p class="landing-benefit-body">
-              自动检测过期备份、警告和失败的备份。通过 ntfy 推送或 SMTP 电子邮件及时接收
-              警报 — 支持针对每个作业设置通知筛选器，
-              并可在固定的本地时间接收可选的每日摘要电子邮件。
+              duplistatus 自动检测过期、警告和失败的备份，并通过 ntfy 推送或 SMTP 电子邮件向您发出告警。
             </p>
             <ul class="landing-point-list">
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-warning"></span>
-                默认每 5 分钟进行一次过期检查
+                默认定期运行过期检查
               </li>
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-warning"></span>
-                单个作业筛选器：关闭 / 所有 / 警告 / 错误
+                获取各任务的通知，支持独立任务过滤：关闭、所有、警告或错误
               </li>
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-warning"></span>
-                ntfy 推送通知和 SMTP 电子邮件
-              </li>
-              <li class="landing-point-item">
-                <span class="landing-point-dot landing-dot-warning"></span>
-                每日摘要仅暂停向默认收件人发送电子邮件
+                通过每日摘要电子邮件减少通知干扰。
               </li>
             </ul>
             <a class="landing-doc-link" href="/user-guide/backup-monitoring">阅读关于备份监控的说明</a>
           </div>
           <div class="landing-card landing-visual-shot">
-            <img
-              class="landing-benefit-shot no-zoom"
-              data-nozoom
-              src="/assets/screen-detail-status.png"
-              alt="过期备份、警告和错误面板"
-            />
+            <button type="button" class="landing-shot-button" data-landing-zoom aria-haspopup="dialog">
+              <img
+                class="landing-benefit-shot no-zoom"
+                data-nozoom
+                src="/assets/screen-detail-status.png"
+                width="688"
+                height="392"
+                loading="lazy"
+                alt="过期备份、警告和错误的面板"
+              />
+            </button>
           </div>
         </article>
 
@@ -286,38 +294,36 @@
             </div>
             <h3 class="landing-benefit-title">从容排查故障</h3>
             <p class="landing-benefit-body">
-              使用详细日志和交互式性能趋势分析故障原因、
-              验证恢复点，并长期保持备份状态良好。
-              图表涵盖耗时、文件数量、文件大小、存储、上传大小和
-              可用版本。
+              打开任意一次运行以阅读其日志（包含警告和错误），并查看有哪些可用恢复点。需要更多详细信息时，还可查看耗时、大小和存储空间的图表。
             </p>
             <ul class="landing-point-list">
-              <li class="landing-point-item">
-                <span class="landing-point-dot landing-dot-success"></span>
-                交互式图表：耗时、文件数量、大小、存储
-              </li>
-              <li class="landing-point-item">
-                <span class="landing-point-dot landing-dot-success"></span>
-                1 周至 3 个月的趋势分析，支持同日合并
-              </li>
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-success"></span>
                 自动从 Duplicati 服务器收集日志
               </li>
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-success"></span>
-                验证恢复点并跟踪备份运行状况
+                每次运行均显示可用版本
+              </li>
+              <li class="landing-point-item">
+                <span class="landing-point-dot landing-dot-success"></span>
+                耗时、大小和存储空间的图表
               </li>
             </ul>
-            <a class="landing-doc-link" href="/user-guide/backup-metrics">阅读关于备份指标的说明</a>
+            <a class="landing-doc-link" href="/user-guide/server-details#backup-details">阅读备份详情</a>
           </div>
           <div class="landing-card landing-visual-shot">
-            <img
-              class="landing-benefit-shot no-zoom"
-              data-nozoom
-              src="/assets/screen-detail-backup.png"
-              alt="包含统计信息、可用版本和日志消息的备份详情"
-            />
+            <button type="button" class="landing-shot-button" data-landing-zoom aria-haspopup="dialog">
+              <img
+                class="landing-benefit-shot no-zoom"
+                data-nozoom
+                src="/assets/screen-detail-backup.png"
+                width="580"
+                height="311"
+                loading="lazy"
+                alt="包含统计信息、可用版本和日志消息的备份详情"
+              />
+            </button>
           </div>
         </article>
       </div>
@@ -342,10 +348,9 @@
           </div>
           <h3 class="landing-step-title">部署容器</h3>
           <p class="landing-step-body">
-            从 Docker Hub 或 GitHub 拉取镜像，设置时区并挂载数据卷。Web UI 监听 9666 端口。架构迁移会在启动时自动应用。
+            从 Docker Hub 或 GitHub 拉取镜像，设置时区并挂载数据卷。Web UI 监听端口 9666。数据库结构迁移会在启动时自动应用。
           </p>
-          <pre class="landing-step-code">wget https://github.com/wsj-br/duplistatus/raw/refs/heads/master/production.yml -O duplistatus.yml
-docker compose -f duplistatus.yml up -d</pre>
+          <a class="button button--primary landing-get-started" href="#install">开始使用</a> <br />
           <a class="landing-doc-link" href="/installation">安装指南</a>
         </div>
         <div class="landing-card landing-card-hover landing-step-card">
@@ -373,13 +378,23 @@ docker compose -f duplistatus.yml up -d</pre>
           </div>
           <h3 class="landing-step-title">配置告警</h3>
           <p class="landing-step-body">
-            设置针对每个作业的通知过滤条件（关闭 / 所有 / 警告 / 错误），启用逾期检查，并选择 ntfy 推送或 SMTP 电子邮件。每日摘要为可选项，且仅暂停发送给默认收件人的电子邮件。
+            ntfy 已配置完成。将主题更改为你自己的主题，然后扫描 duplistatus 生成的二维码，即可在手机上完成设置。<br />
+            配置电子邮件服务器设置，开始接收来自 duplistatus 的邮件。
           </p>
-          <pre class="landing-step-code">Notifications:
-  ntfy:   enabled
-  email:  enabled
-  filter: warnings + errors
-  overdue: every 5 minutes</pre>
+          <figure class="landing-shot-figure">
+            <button type="button" class="landing-shot-button" data-landing-zoom aria-haspopup="dialog">
+              <img
+                class="landing-benefit-shot no-zoom"
+                data-nozoom
+                src="/assets/screen-settings-monitoring.png"
+                width="1462"
+                height="926"
+                loading="lazy"
+                alt="备份监控设置，每个备份任务对应一行，显示监控是否开启、预期间隔以及允许的天数。"
+              />
+            </button>
+            <figcaption class="landing-shot-caption">设置每个备份预计运行的频率以及在哪些日期运行。</figcaption>
+          </figure>
           <a class="landing-doc-link" href="/user-guide/settings/backup-notifications-settings">通知设置</a>
         </div>
         <div class="landing-card landing-card-hover landing-step-card">
@@ -389,14 +404,25 @@ docker compose -f duplistatus.yml up -d</pre>
             </div>
             <span class="landing-step-index">步骤 4</span>
           </div>
-          <h3 class="landing-step-title">监控和故障排除</h3>
+          <h3 class="landing-step-title">让 duplistatus 监控您的备份</h3>
           <p class="landing-step-body">
-            在仪表板中查看状态变化，深入探查任意备份日志，并使用交互式趋势图发现异常。cron 服务在后台处理逾期检查、版本刷新和日志清理。
+            duplistatus 负责监控。如果备份过期，或在完成时出现警告或错误，你将收到通知或电子邮件。<br />
+            若想更加省心，可以开启可选的每日摘要：即使一切正常，你每天也能收到它。
           </p>
-          <pre class="landing-step-code">Dashboard:  all servers · all jobs
-Last check: 2 min ago
-Overdue:    0
-Failures:   0</pre>
+          <figure class="landing-shot-figure">
+            <button type="button" class="landing-shot-button" data-landing-zoom aria-haspopup="dialog">
+              <img
+                class="landing-benefit-shot no-zoom"
+                data-nozoom
+                src="/assets/screen-main-dashboard-card-mode.png"
+                width="1905"
+                height="1080"
+                loading="lazy"
+                alt="仪表盘包含每个备份任务的状态条，以及列出过期备份、警告和错误的面板。"
+              />
+            </button>
+            <figcaption class="landing-shot-caption">过期和失败的备份一目了然。</figcaption>
+          </figure>
           <a class="landing-doc-link" href="/user-guide/overview">用户指南</a>
         </div>
       </div>
@@ -406,9 +432,9 @@ Failures:   0</pre>
   <section class="landing-section">
     <div class="landing-inner">
       <div class="landing-centered">
-        <h2 id="security" class="landing-section-title">登录功能始终开启。安全加固为可选项。</h2>
+        <h2 id="security" class="landing-section-title">默认安全。需要时可添加更多保护。</h2>
         <p class="landing-section-lead">
-          在私有家庭实验室中轻松设置，面向公网安装时亦可随时使用强大的控制功能。
+          从首次启动起就已开启登录，因此私有家庭实验室开箱即可获得保护。将其暴露给互联网时，可添加 API 密钥和 IP 允许列表。
         </p>
       </div>
       <div class="landing-feature-grid">
@@ -420,7 +446,7 @@ Failures:   0</pre>
             <a href="/user-guide/settings/user-management-settings">按角色登录</a>
           </h3>
           <p class="landing-feature-body">
-            支持 Admin 和 User 角色的身份验证登录。可按用户限制服务器可见性。
+            以管理员或普通用户身份登录。限制每个用户可以查看的服务器。
           </p>
         </article>
         <article class="landing-card landing-card-hover landing-feature-card">
@@ -428,11 +454,10 @@ Failures:   0</pre>
             <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-key-round"></use></svg>
           </div>
           <h3 class="landing-feature-title">
-            <a href="/user-guide/settings/api-keys-settings">外部 API 密钥</a>
+            <a href="/user-guide/settings/api-keys-settings">API 密钥</a>
           </h3>
           <p class="landing-feature-body">
-            适用于 Duplicati 上传和只读外部仪表板的细粒度密钥，
-            支持上传大小和速率限制。
+            分别为 Duplicati 上传和只读仪表盘或小部件提供独立的密钥，并配有上传大小和速率限制。
           </p>
         </article>
         <article class="landing-card landing-card-hover landing-feature-card">
@@ -440,11 +465,10 @@ Failures:   0</pre>
             <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-network"></use></svg>
           </div>
           <h3 class="landing-feature-title">
-            <a href="/user-guide/settings/ip-allowlist-settings">网络限制</a>
+            <a href="/user-guide/settings/ip-allowlist-settings">IP 允许列表</a>
           </h3>
           <p class="landing-feature-body">
-            两个独立的 CIDR 允许列表 —— 一个用于管理界面，另一个用于
-            外部API。包含受信任代理防伪造功能。
+            两个独立的允许列表：一个用于管理界面，一个用于外部API。当 duplistatus 运行在反向代理之后时，它们可防止伪造的客户端 IP。
           </p>
         </article>
         <article class="landing-card landing-card-hover landing-feature-card">
@@ -455,7 +479,7 @@ Failures:   0</pre>
             <a href="/installation/security-configuration">CSRF 防护</a>
           </h3>
           <p class="landing-feature-body">
-            所有基于会话的路由均受到跨站请求伪造保护。
+            基于会话的路由受跨站请求伪造保护。
           </p>
         </article>
         <article class="landing-card landing-card-hover landing-feature-card">
@@ -466,8 +490,7 @@ Failures:   0</pre>
             <a href="/user-guide/settings/audit-logs-viewer">审计日志</a>
           </h3>
           <p class="landing-feature-body">
-            记录每一次配置更改和用户操作，支持高级
-            筛选、导出和可配置的保留期。
+            记录每一次配置更改和用户操作。支持筛选、导出并设置记录保留时长。
           </p>
         </article>
         <article class="landing-card landing-card-hover landing-feature-card">
@@ -475,36 +498,17 @@ Failures:   0</pre>
             <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-terminal"></use></svg>
           </div>
           <h3 class="landing-feature-title">
-            <a href="/user-guide/settings/application-logs-settings">应用程序日志查看器</a>
+            <a href="/user-guide/settings/application-logs-settings">应用程序日志</a>
           </h3>
           <p class="landing-feature-body">
-            仅供管理员使用的界面，用于查看、搜索和导出应用程序日志，并支持
-            实时监控。
-          </p>
-        </article>
-        <article class="landing-card landing-card-hover landing-feature-card">
-          <div class="landing-feature-icon">
-            <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-languages"></use></svg>
-          </div>
-          <h3 class="landing-feature-title">多语言支持</h3>
-          <p class="landing-feature-body">
-            界面和文档支持英语、法语、德语、西班牙语、巴西
-            葡萄牙语、印地语和简体中文。
-          </p>
-        </article>
-        <article class="landing-card landing-card-hover landing-feature-card">
-          <div class="landing-feature-icon">
-            <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-server"></use></svg>
-          </div>
-          <h3 class="landing-feature-title">
-            <a href="/user-guide/homepage-integration">只读 API</a>
-          </h3>
-          <p class="landing-feature-body">
-            外部仪表板和小组件可以通过只读 API 显示相同的
-            备份状态信息。
+            仅管理员可见的查看器支持搜索、筛选和导出应用程序日志，并带有实时更新。
           </p>
         </article>
       </div>
+      <p class="landing-security-note">
+        要暴露给互联网？请在支持 HTTPS 的反向代理后运行。
+        <a href="/installation/security-configuration#https-with-a-reverse-proxy">阅读指南</a>
+      </p>
     </div>
   </section>
 
@@ -546,8 +550,7 @@ Failures:   0</pre>
               <div>
                 <h3 class="landing-trust-title">完善的文档</h3>
                 <p class="landing-trust-body">
-                  安装指南、配置参考和安全加固——
-                  提供七种语言版本。
+                  安装指南、配置参考和安全设置，提供七种语言版本。
                 </p>
                 <a class="landing-doc-link" href="/intro">阅读文档</a>
               </div>
@@ -559,8 +562,7 @@ Failures:   0</pre>
               <div>
                 <h3 class="landing-trust-title">Docker、Portainer 和 Podman</h3>
                 <p class="landing-trust-body">
-                  镜像托管于 Docker Hub 和 GitHub。使用您偏好的容器
-                  运行时进行部署——除单个数据卷外无任何依赖项。
+                  镜像发布在 Docker Hub 和 GitHub 上。使用您偏好的容器运行时进行部署 — 除单个数据卷外无其他依赖项。
                 </p>
                 <a class="landing-doc-link" href="/installation">查看安装选项</a>
               </div>
@@ -577,26 +579,14 @@ Failures:   0</pre>
                 </p>
               </div>
             </div>
-            <div class="landing-trust-item">
-              <div class="landing-trust-icon">
-                <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-globe"></use></svg>
-              </div>
-              <div>
-                <h3 class="landing-trust-title">七种语言</h3>
-                <p class="landing-trust-body">
-                  界面和文档支持英语、法语、德语、西班牙语、巴西
-                  葡萄牙语、印地语和简体中文。
-                </p>
-              </div>
-            </div>
           </div>
         </div>
         <div class="landing-side-stack">
           <div class="landing-stat-grid">
             <div class="landing-card landing-stat-card">
-              <div class="landing-stat-value">9666</div>
-              <div class="landing-stat-label">Web UI 端口</div>
-              <div class="landing-stat-sub">HTTP</div>
+              <div class="landing-stat-value">5 分钟</div>
+              <div class="landing-stat-label">逾期检查</div>
+              <div class="landing-stat-sub">默认间隔</div>
             </div>
             <div class="landing-card landing-stat-card">
               <div class="landing-stat-value">SQLite</div>
@@ -606,7 +596,7 @@ Failures:   0</pre>
             <div class="landing-card landing-stat-card">
               <div class="landing-stat-value">7</div>
               <div class="landing-stat-label">语言</div>
-              <div class="landing-stat-sub">UI + 文档</div>
+              <div class="landing-stat-sub">UI 和文档</div>
             </div>
             <div class="landing-card landing-stat-card">
               <div class="landing-stat-value">Apache-2.0</div>
@@ -630,8 +620,8 @@ Failures:   0</pre>
                 <span class="landing-arch-value">基于 better-sqlite3 的 SQLite</span>
               </div>
               <div class="landing-arch-row">
-                <span class="landing-arch-label">密钥</span>
-                <span class="landing-arch-value">data/.duplistatus.key 文件</span>
+                <span class="landing-arch-label">加密</span>
+                <span class="landing-arch-value">bcrypt (登录) <br />AES-256-GCM/PBKDF2-SHA256 (机密)</span>
               </div>
               <div class="landing-arch-row">
                 <span class="landing-arch-label">部署</span>
@@ -644,7 +634,7 @@ Failures:   0</pre>
             </div>
           </div>
           <div class="landing-card landing-arch-card">
-            <h3 class="landing-arch-title">Cron 服务处理内容</h3>
+            <h3 class="landing-arch-title">Cron 服务处理</h3>
             <div class="landing-pill-row">
               <span class="landing-pill">逾期检查</span>
               <span class="landing-pill">版本刷新</span>
@@ -666,7 +656,7 @@ Failures:   0</pre>
       <div class="landing-centered">
         <h2 id="install" class="landing-section-title">几分钟内快速上手</h2>
         <p class="landing-section-lead">
-          拉取镜像、挂载数据卷和开放 9666 端口。架构迁移会在启动时自动运行。
+          拉取镜像，挂载数据卷，并开放 9666 端口。
         </p>
       </div>
       <div class="landing-card landing-install-card">
@@ -749,19 +739,15 @@ podman run -d \
               </li>
               <li class="landing-post-item">
                 <span class="landing-post-index">2</span>
-                <span>使用<a href="/installation">安装指南</a>中说明的默认管理员账户登录</span>
+                <span>使用默认管理员账户登录。首次登录时会要求您更改默认管理员密码。</span>
               </li>
               <li class="landing-post-item">
                 <span class="landing-post-index">3</span>
-                <span>配置您的 <a href="/installation/duplicati-server-configuration">Duplicati 服务器</a>将备份报告发送至 /api/upload</span>
+                <span><a href="/installation/duplicati-server-configuration">按照这些说明</a>连接您的 Duplicati 服务器，然后使用<a href="/user-guide/collect-backup-logs">收集备份日志</a>导入历史记录</span>
               </li>
               <li class="landing-post-item">
                 <span class="landing-post-index">4</span>
-                <span>使用<a href="/user-guide/collect-backup-logs">收集备份日志</a>导入历史记录，如果需要警报，请配置 ntfy 或 SMTP</span>
-              </li>
-              <li class="landing-post-item">
-                <span class="landing-post-index">5</span>
-                <span>可选择为面向公网的安装启用 API 密钥和 IP 白名单</span>
+                <span>需要暴露到互联网？通过启用 API 密钥和 IP 白名单<a href="/installation/security-configuration">添加更多保护</a>，并将其置于支持 HTTPS 的反向代理之后。</span>
               </li>
             </ol>
           </div>
@@ -782,4 +768,10 @@ podman run -d \
       </div>
     </div>
   </section>
+  <dialog class="landing-lightbox" id="landing-lightbox" aria-label="放大的屏幕截图">
+    <form method="dialog" class="landing-lightbox-bar">
+      <button type="submit" class="landing-lightbox-close">关闭</button>
+    </form>
+    <img class="landing-lightbox-img no-zoom" data-nozoom alt="" />
+  </dialog>
 </div>

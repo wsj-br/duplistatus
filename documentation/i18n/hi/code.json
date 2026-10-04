@@ -366,7 +366,7 @@
     "description": "HTML document title for the landing page"
   },
   "homepage.meta.description": {
-    "message": "प्रत्येक Duplicati सर्वर और जॉब के लिए सेल्फ-होस्टेड डैशबोर्ड: स्थिति, अतिदेय अलर्ट, लॉग और रुझान — प्रत्येक बैकअप UI को खोले बिना।",
+    "message": "एक ही डैशबोर्ड से हर Duplicati बैकअप की निगरानी करें। ओपन सोर्स, सेल्फ़-होस्टेड और Docker-रेडी, ntfy और ईमेल अलर्ट के साथ।",
     "description": "HTML meta description for the landing page"
   },
   "homepage.nav.docs": {

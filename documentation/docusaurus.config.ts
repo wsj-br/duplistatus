@@ -71,6 +71,8 @@ const config: Config = {
     v4: true, // Improve compatibility with the upcoming Docusaurus v4
   },
 
+  clientModules: [path.resolve(process.cwd(), 'src/client-modules/scroll-to-hash.ts')],
+
   // Set the production url of your site here
   url: 'https://wsj-br.github.io/',
   // Set the /<baseUrl>/ pathname under which your site is served|

@@ -121,12 +121,16 @@
           ओपन सोर्स · सेल्फ-होस्टेड · डॉकर-रेडी
         </div>
         <h1 class="landing-section-title landing-hero-title">
-          प्रत्येक बैकअप। <span class="landing-hero-accent">एक डैशबोर्ड।</span>
+          आपके सभी बैकअप। <span class="landing-hero-accent">एक&nbsp;डैशबोर्ड।</span>
         </h1>
         <p class="landing-section-lead">
           प्रत्येक Duplicati वेब इंटरफ़ेस में एक-एक करके लॉग इन करना बंद करें। duplistatus
           एक ही स्क्रीन से प्रत्येक सर्वर और जॉब की निगरानी करता है — ताकि डेटा हानि से पहले ही आपको पता चल सके कि आपके
           बैकअप ठीक हैं।
+        </p>
+        <p class="landing-hero-note">
+          duplistatus, Duplicati की इन-बिल्ट HTTP रिपोर्टिंग का उपयोग करता है, इसलिए आपकी बैकअप मशीनों पर कुछ भी इंस्टॉल करने की आवश्यकता नहीं है।
+          <!-- TODO(author): add minimum supported Duplicati version -->
         </p>
         <div class="landing-cta-row">
           <a class="button button--primary button--lg landing-cta" href="#install">
@@ -137,6 +141,7 @@
             डैशबोर्ड देखें
           </a>
         </div>
+        <!-- TODO(author): live demo link, GitHub stars, latest release badge -->
         <div class="landing-chip-row">
           <span class="landing-chip">
             <svg class="landing-icon landing-chip-info" aria-hidden="true"><use href="#icon-server"></use></svg>
@@ -148,7 +153,7 @@
           </span>
           <span class="landing-chip">
             <svg class="landing-icon landing-chip-success" aria-hidden="true"><use href="#icon-shield-check"></use></svg>
-            लॉगिन आवश्यक, अतिरिक्त हार्डनिंग वैकल्पिक
+            डिफ़ॉल्ट रूप से सुरक्षित, आवश्यकता होने पर अतिरिक्त सुरक्षा
           </span>
         </div>
       </div>
@@ -160,8 +165,7 @@
       <div class="landing-centered">
         <h2 id="dashboard" class="landing-section-title">एकमात्र सवाल जो मायने रखता है</h2>
         <p class="landing-section-lead">
-          क्या मेरे सभी बैकअप ठीक हैं? एक स्क्रीन इसका उत्तर देती है — प्रत्येक सर्वर, प्रत्येक जॉब,
-          प्रत्येक रन में।
+          क्या मेरे सभी बैकअप ठीक हैं? एक ही स्क्रीन हर सर्वर, हर जॉब और हर रन में इसका उत्तर देती है।
         </p>
       </div>
       <div class="landing-window">
@@ -174,13 +178,17 @@
           <div class="landing-window-url">localhost:9666</div>
         </div>
         <div class="landing-screenshot-frame">
-          <img
-            class="landing-screenshot no-zoom"
-            data-landing-shot="dashboard"
-            data-nozoom
-            src="/assets/screen-main-dashboard-card-mode.png"
-            alt="कार्ड दृश्य में duplistatus डैशबोर्ड, स्थिति पट्टियों, कुल और अतिदेय चेतावनियों के साथ सर्वर दिखाते हुए"
-          />
+          <button type="button" class="landing-shot-button" data-landing-zoom aria-haspopup="dialog">
+            <img
+              class="landing-screenshot no-zoom"
+              data-landing-shot="dashboard"
+              data-nozoom
+              src="/assets/screen-main-dashboard-card-mode.png"
+              width="1905"
+              height="1080"
+              alt="कार्ड दृश्य में duplistatus डैशबोर्ड, स्थिति पट्टियों, कुल और अतिदेय चेतावनियों के साथ सर्वर दिखाते हुए"
+            />
+          </button>
         </div>
       </div>
     </div>
@@ -193,8 +201,7 @@
           उन लोगों के लिए निर्मित जो एक से अधिक मशीनों पर Duplicati चलाते हैं
         </h2>
         <p class="landing-section-lead">
-          चाहे वह NAS हो, कोई लैपटॉप, VPS, और दो होम सर्वर — duplistatus
-          आपको एकमात्र महत्वपूर्ण सवाल का जवाब देने के लिए एक स्थान प्रदान करता है।
+          चाहे आप NAS, लैपटॉप, VPS या दो होम सर्वर चलाते हों, duplistatus उन सभी को एक स्क्रीन पर दिखाता है।
         </p>
       </div>
       <div class="landing-benefit-stack">
@@ -206,37 +213,36 @@
             </div>
             <h3 class="landing-benefit-title">एक नज़र में प्रत्येक बैकअप देखें</h3>
             <p class="landing-benefit-body">
-              एक ही डैशबोर्ड से प्रत्येक Duplicati सर्वर और जॉब की निगरानी करें। स्पष्ट स्थिति
-              संकेतक, 10-रन स्थिति पट्टी वाले प्रति-सर्वर कार्ड, क्रमबद्ध करने योग्य तालिका
-              दृश्य, और चेतावनियाँ और त्रुटियाँ के साथ व्यक्तिगत बैकअप लॉग का विवरण।
+              प्रति सर्वर एक कार्ड प्रत्येक जॉब के पिछले 10 रन दिखाता है। जब आपके पास कई सर्वर हों, तो सॉर्ट करने योग्य तालिका पर स्विच करें, और चेतावनियों और त्रुटियों सहित इसका पूरा लॉग पढ़ने के लिए किसी भी रन को खोलें।
             </p>
             <ul class="landing-point-list">
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-info"></span>
-                10-रन स्थिति पट्टियों के साथ प्रति-सर्वर कार्ड
+                सर्वर, जॉब्स, रन, आकार और संग्रहण के लिए कुल योग
               </li>
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-info"></span>
-                सभी सर्वर पर क्रमबद्ध करने योग्य तालिका दृश्य
+                वीडियो वॉल अनुभव के लिए ऑटो-रिफ्रेशिंग डैशबोर्ड
               </li>
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-info"></span>
-                व्यक्तिगत बैकअप लॉग का विस्तृत विवरण
-              </li>
-              <li class="landing-point-item">
-                <span class="landing-point-dot landing-dot-info"></span>
-                नवीनतम GitHub रिलीज़ के साथ संस्करण तुलना
+                नवीनतम GitHub रिलीज़ के विरुद्ध Duplicati सर्वर संस्करण जांचें
               </li>
             </ul>
             <a class="landing-doc-link" href="/user-guide/dashboard">डैशबोर्ड गाइड पढ़ें</a>
           </div>
           <div class="landing-card landing-visual-shot">
-            <img
-              class="landing-benefit-shot no-zoom"
-              data-nozoom
-              src="/assets/screen-detail-cards.png"
-              alt="बैकअप जॉब्स, स्थिति स्ट्रिप्स, आकार और अंतिम बार चलने के समय वाले सर्वर कार्ड"
-            />
+            <button type="button" class="landing-shot-button" data-landing-zoom aria-haspopup="dialog">
+              <img
+                class="landing-benefit-shot no-zoom"
+                data-nozoom
+                src="/assets/screen-detail-cards.png"
+                width="684"
+                height="493"
+                loading="lazy"
+                alt="बैकअप जॉब्स, स्थिति स्ट्रिप्स, आकार और अंतिम बार चलने के समय वाले सर्वर कार्ड"
+              />
+            </button>
           </div>
         </article>
 
@@ -248,35 +254,36 @@
             </div>
             <h3 class="landing-benefit-title">डेटा हानि बनने से पहले ही समस्याओं का पता लगाएं</h3>
             <p class="landing-benefit-body">
-              अतिदेय, चेतावनी और विफल बैकअप का स्वचालित रूप से पता लगाएं। ntfy पुश या SMTP ईमेल के माध्यम से समय पर अलर्ट प्राप्त करें — प्रति-जॉब सूचना फ़िल्टर और एक निश्चित स्थानीय समय पर एक वैकल्पिक दैनिक सारांश ईमेल के साथ।
+              duplistatus अतिदेय, चेतावनी और विफल बैकअप का स्वचालित रूप से पता लगाता है और ntfy पुश या SMTP ईमेल द्वारा आपको सचेत करता है।
             </p>
             <ul class="landing-point-list">
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-warning"></span>
-                डिफ़ॉल्ट रूप से हर 5 मिनट में अतिदेय जाँच
+                अतिदेय जांचें डिफ़ॉल्ट रूप से समय-समय पर चलती हैं
               </li>
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-warning"></span>
-                प्रति-जॉब फ़िल्टर: बंद / सभी / चेतावनियाँ / त्रुटियाँ
+                प्रति-जॉब फ़िल्टर के साथ प्रत्येक जॉब के लिए सूचनाएं प्राप्त करें: बंद, सभी, चेतावनियाँ या त्रुटियाँ
               </li>
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-warning"></span>
-                ntfy पुश सूचनाएं और SMTP ईमेल
-              </li>
-              <li class="landing-point-item">
-                <span class="landing-point-dot landing-dot-warning"></span>
-                दैनिक सारांश केवल डिफ़ॉल्ट प्राप्तकर्ता को भेजे जाने वाले ईमेल को रोकता है
+                दैनिक सारांश ईमेल के साथ सूचनाओं के शोर को कम करें।
               </li>
             </ul>
             <a class="landing-doc-link" href="/user-guide/backup-monitoring">बैकअप निगरानी के बारे में पढ़ें</a>
           </div>
           <div class="landing-card landing-visual-shot">
-            <img
-              class="landing-benefit-shot no-zoom"
-              data-nozoom
-              src="/assets/screen-detail-status.png"
-              alt="बकाया बैकअप और चेतावनियाँ और त्रुटियाँ पैनल"
-            />
+            <button type="button" class="landing-shot-button" data-landing-zoom aria-haspopup="dialog">
+              <img
+                class="landing-benefit-shot no-zoom"
+                data-nozoom
+                src="/assets/screen-detail-status.png"
+                width="688"
+                height="392"
+                loading="lazy"
+                alt="बकाया बैकअप, चेतावनियों और त्रुटियों के लिए पैनल"
+              />
+            </button>
           </div>
         </article>
 
@@ -288,35 +295,36 @@
             </div>
             <h3 class="landing-benefit-title">आत्मविश्वास के साथ समस्या निवारण करें</h3>
             <p class="landing-benefit-body">
-              विफलताओं को समझने, पुनर्प्राप्ति बिंदुओं को सत्यापित करने और समय के साथ बैकअप को दुरुस्त रखने के लिए विस्तृत लॉग और इंटरैक्टिव प्रदर्शन रुझानों का उपयोग करें। चार्ट में अवधि, फ़ाइल गणना, फ़ाइल आकार, संग्रहण, अपलोड किया गया आकार और उपलब्ध संस्करण शामिल हैं।
+              चेतावनियों और त्रुटियों के साथ इसका लॉग पढ़ने के लिए किसी भी रन को खोलें, और देखें कि कौन से रिकवरी पॉइंट उपलब्ध हैं। जब आप अधिक विवरण चाहते हैं तो अवधि, आकार और संग्रहण के लिए चार्ट मौजूद हैं।
             </p>
             <ul class="landing-point-list">
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-success"></span>
-                इंटरैक्टिव चार्ट: अवधि, फ़ाइल गणना, आकार, संग्रहण
+                आपके Duplicati सर्वर से स्वचालित लॉग संग्रह
               </li>
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-success"></span>
-                समान-दिन समेकन के साथ 1 सप्ताह से 3 महीने के रुझान
+                प्रत्येक रन के लिए उपलब्ध संस्करण दिखाए गए हैं
               </li>
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-success"></span>
-                Duplicati सर्वर से स्वचालित लॉग संग्रह
-              </li>
-              <li class="landing-point-item">
-                <span class="landing-point-dot landing-dot-success"></span>
-                पुनर्प्राप्ति बिंदुओं को सत्यापित करें और बैकअप स्थिति को ट्रैक करें
+                अवधि, आकार और संग्रहण के लिए चार्ट
               </li>
             </ul>
-            <a class="landing-doc-link" href="/user-guide/backup-metrics">बैकअप मेट्रिक्स के बारे में पढ़ें</a>
+            <a class="landing-doc-link" href="/user-guide/server-details#backup-details">बैकअप विवरण के बारे में पढ़ें</a>
           </div>
           <div class="landing-card landing-visual-shot">
-            <img
-              class="landing-benefit-shot no-zoom"
-              data-nozoom
-              src="/assets/screen-detail-backup.png"
-              alt="आँकड़े, उपलब्ध संस्करण और लॉग संदेश के साथ बैकअप विवरण"
-            />
+            <button type="button" class="landing-shot-button" data-landing-zoom aria-haspopup="dialog">
+              <img
+                class="landing-benefit-shot no-zoom"
+                data-nozoom
+                src="/assets/screen-detail-backup.png"
+                width="580"
+                height="311"
+                loading="lazy"
+                alt="आँकड़े, उपलब्ध संस्करण और लॉग संदेश के साथ बैकअप विवरण"
+              />
+            </button>
           </div>
         </article>
       </div>
@@ -341,10 +349,9 @@
           </div>
           <h3 class="landing-step-title">कंटेनर परिनियोजित करें</h3>
           <p class="landing-step-body">
-            Docker Hub या GitHub से इमेज पुल करें, अपना टाइमज़ोन सेट करें, और डेटा वॉल्यूम माउंट करें। वेब UI 9666 पर सुनता है। स्कीमा माइग्रेशन स्टार्टअप पर स्वचालित रूप से लागू होते हैं।
+            Docker Hub या GitHub से इमेज पुल करें, अपना टाइमज़ोन सेट करें, और डेटा वॉल्यूम माउंट करें। वेब UI पोर्ट 9666 पर सुनता है। स्कीमा माइग्रेशन स्टार्टअप पर स्वचालित रूप से लागू होते हैं।
           </p>
-          <pre class="landing-step-code">wget https://github.com/wsj-br/duplistatus/raw/refs/heads/master/production.yml -O duplistatus.yml
-docker compose -f duplistatus.yml up -d</pre>
+          <a class="button button--primary landing-get-started" href="#install">शुरू करें</a> <br />
           <a class="landing-doc-link" href="/installation">इंस्टॉलेशन गाइड</a>
         </div>
         <div class="landing-card landing-card-hover landing-step-card">
@@ -372,13 +379,23 @@ docker compose -f duplistatus.yml up -d</pre>
           </div>
           <h3 class="landing-step-title">अलर्ट कॉन्फ़िगर करें</h3>
           <p class="landing-step-body">
-            प्रति-कार्य सूचना फ़िल्टर (बंद / सभी / चेतावनियाँ / त्रुटियाँ) सेट करें, अतिदेय जाँच सक्षम करें, और NTFY पुश या SMTP ईमेल चुनें। दैनिक सारांश वैकल्पिक है और केवल डिफ़ॉल्ट प्राप्तकर्ता को ईमेल रोकता है।
+            ntfy पहले से ही कॉन्फ़िगर है। टॉपिक को अपने टॉपिक में बदलें, फिर इसे अपने फ़ोन पर सेट करने के लिए duplistatus द्वारा जनरेट किए गए QR कोड को स्कैन करें।  <br />
+            duplistatus से ईमेल प्राप्त करना शुरू करने के लिए ईमेल सर्वर सेटिंग्स कॉन्फ़िगर करें।
           </p>
-          <pre class="landing-step-code">Notifications:
-  ntfy:   enabled
-  email:  enabled
-  filter: warnings + errors
-  overdue: every 5 minutes</pre>
+          <figure class="landing-shot-figure">
+            <button type="button" class="landing-shot-button" data-landing-zoom aria-haspopup="dialog">
+              <img
+                class="landing-benefit-shot no-zoom"
+                data-nozoom
+                src="/assets/screen-settings-monitoring.png"
+                width="1462"
+                height="926"
+                loading="lazy"
+                alt="प्रति बैकअप जॉब एक पंक्ति के साथ बैकअप निगरानी सेटिंग्स, जो दर्शाती हैं कि निगरानी चालू है या नहीं, अपेक्षित अंतराल, और अनुमत दिन।"
+              />
+            </button>
+            <figcaption class="landing-shot-caption">सेट करें कि प्रत्येक बैकअप को कितनी बार और किन दिनों में चलना अपेक्षित है।</figcaption>
+          </figure>
           <a class="landing-doc-link" href="/user-guide/settings/backup-notifications-settings">सूचना सेटिंग्स</a>
         </div>
         <div class="landing-card landing-card-hover landing-step-card">
@@ -388,14 +405,26 @@ docker compose -f duplistatus.yml up -d</pre>
             </div>
             <span class="landing-step-index">चरण 4</span>
           </div>
-          <h3 class="landing-step-title">निगरानी करें और समस्या निवारण करें</h3>
+          <h3 class="landing-step-title">duplistatus को अपने बैकअप पर नज़र रखने दें</h3>
           <p class="landing-step-body">
-            स्थिति में परिवर्तनों के लिए डैशबोर्ड देखें, किसी भी बैकअप लॉग की विस्तृत जाँच करें, और विसंगतियों को पहचानने के लिए इंटरैक्टिव ट्रेंड चार्ट का उपयोग करें। cron सेवा बैकग्राउंड में अतिदेय जाँच, संस्करण रीफ़्रेश और लॉग सफ़ाई को संभालती है।
+            duplistatus निगरानी रखता है। यदि कोई बैकअप अतिदेय है, या चेतावनियों या त्रुटियों के साथ समाप्त होता है, 
+            तो आपको एक नोटिफ़िकेशन या ईमेल मिलता है। <br />
+            अतिरिक्त निश्चिंतता के लिए, वैकल्पिक दैनिक सारांश चालू करें: आप इसे हर दिन प्राप्त करते हैं, भले ही सब कुछ ठीक हो।
           </p>
-          <pre class="landing-step-code">Dashboard:  all servers · all jobs
-Last check: 2 min ago
-Overdue:    0
-Failures:   0</pre>
+          <figure class="landing-shot-figure">
+            <button type="button" class="landing-shot-button" data-landing-zoom aria-haspopup="dialog">
+              <img
+                class="landing-benefit-shot no-zoom"
+                data-nozoom
+                src="/assets/screen-main-dashboard-card-mode.png"
+                width="1905"
+                height="1080"
+                loading="lazy"
+                alt="प्रत्येक बैकअप जॉब के लिए स्थिति पट्टी और बकाया बैकअप, चेतावनियाँ और त्रुटियाँ सूचीबद्ध करने वाले पैनल के साथ डैशबोर्ड।"
+              />
+            </button>
+            <figcaption class="landing-shot-caption">अतिदेय और विफल होने वाले बैकअप एक नज़र में अलग दिखाई देते हैं।</figcaption>
+          </figure>
           <a class="landing-doc-link" href="/user-guide/overview">उपयोगकर्ता गाइड</a>
         </div>
       </div>
@@ -405,9 +434,9 @@ Failures:   0</pre>
   <section class="landing-section">
     <div class="landing-inner">
       <div class="landing-centered">
-        <h2 id="security" class="landing-section-title">लॉगिन हमेशा चालू रहता है। हार्डनिंग वैकल्पिक है।</h2>
+        <h2 id="security" class="landing-section-title">डिफ़ॉल्ट रूप से सुरक्षित। ज़रूरत पड़ने पर अधिक सुरक्षा जोड़ें।</h2>
         <p class="landing-section-lead">
-          निजी होमलैब में आसान सेटअप, सार्वजनिक इंस्टॉलेशन के लिए ज़रूरत पड़ने पर मज़बूत नियंत्रण तैयार हैं।
+          पहली शुरुआत से ही लॉगिन चालू रहता है, इसलिए एक निजी होमलैब शुरुआत से ही सुरक्षित रहता है। जब आप इसे इंटरनेट पर एक्सपोज़ करते हैं तो API कुंजियाँ और IP allowlists जोड़ें।
         </p>
       </div>
       <div class="landing-feature-grid">
@@ -419,7 +448,7 @@ Failures:   0</pre>
             <a href="/user-guide/settings/user-management-settings">भूमिकाओं के साथ लॉगिन</a>
           </h3>
           <p class="landing-feature-body">
-            एडमिन और उपयोगकर्ता भूमिकाओं के साथ प्रमाणित लॉगिन। सर्वर दृश्यता को प्रति उपयोगकर्ता सीमित किया जा सकता है।
+            एडमिन या उपयोगकर्ता के रूप में साइन इन करें। सीमित करें कि प्रत्येक उपयोगकर्ता कौन से सर्वर देख सकता है।
           </p>
         </article>
         <article class="landing-card landing-card-hover landing-feature-card">
@@ -427,10 +456,10 @@ Failures:   0</pre>
             <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-key-round"></use></svg>
           </div>
           <h3 class="landing-feature-title">
-            <a href="/user-guide/settings/api-keys-settings">बाहरी API कुंजियाँ</a>
+            <a href="/user-guide/settings/api-keys-settings">API कुंजियाँ</a>
           </h3>
           <p class="landing-feature-body">
-            Duplicati अपलोड और केवल-पढ़ने योग्य बाहरी डैशबोर्ड के लिए फ़ाइन-ग्रेन्ड कुंजियाँ, अपलोड आकार और दर सीमाओं के साथ।
+            Duplicati अपलोड और केवल-पढ़ने योग्य डैशबोर्ड या विजेट के लिए अलग-अलग कुंजियाँ, अपलोड आकार और दर सीमाओं के साथ।
           </p>
         </article>
         <article class="landing-card landing-card-hover landing-feature-card">
@@ -438,10 +467,10 @@ Failures:   0</pre>
             <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-network"></use></svg>
           </div>
           <h3 class="landing-feature-title">
-            <a href="/user-guide/settings/ip-allowlist-settings">नेटवर्क प्रतिबंध</a>
+            <a href="/user-guide/settings/ip-allowlist-settings">IP allowlists</a>
           </h3>
           <p class="landing-feature-body">
-            दो स्वतंत्र CIDR अनुमत सूचियाँ — एक एडमिन इंटरफ़ेस के लिए, दूसरी बाहरी API के लिए। ट्रस्टेड-प्रॉक्सी एंटी-स्पूफ़िंग शामिल।
+            दो स्वतंत्र अनुमति सूचियाँ: एक एडमिन इंटरफ़ेस के लिए, एक बाहरी API के लिए। जब duplistatus रिवर्स प्रॉक्सी के पीछे चलता है, तो वे स्पूफ़ किए गए क्लाइंट IP से सुरक्षा प्रदान करती हैं।
           </p>
         </article>
         <article class="landing-card landing-card-hover landing-feature-card">
@@ -452,7 +481,7 @@ Failures:   0</pre>
             <a href="/installation/security-configuration">CSRF सुरक्षा</a>
           </h3>
           <p class="landing-feature-body">
-            सभी सेशन-आधारित रूट क्रॉस-साइट रिक्वेस्ट फ़ॉर्जरे (CSRF) से सुरक्षित हैं।
+            सत्र-आधारित (Session-based) रूट्स क्रॉस-साइट रिक्वेस्ट फोर्जरी (CSRF) से सुरक्षित हैं।
           </p>
         </article>
         <article class="landing-card landing-card-hover landing-feature-card">
@@ -463,7 +492,7 @@ Failures:   0</pre>
             <a href="/user-guide/settings/audit-logs-viewer">ऑडिट लॉगिंग</a>
           </h3>
           <p class="landing-feature-body">
-            प्रत्येक कॉन्फ़िगरेशन परिवर्तन और उपयोगकर्ता कार्रवाई रिकॉर्ड की जाती है, उन्नत फ़िल्टरिंग, निर्यात और कॉन्फ़िगर करने योग्य अवधारण के साथ।
+            प्रत्येक कॉन्फ़िगरेशन परिवर्तन और उपयोगकर्ता कार्रवाई रिकॉर्ड की जाती है। फ़िल्टर करें, निर्यात करें और सेट करें कि रिकॉर्ड कितने समय तक रखे जाने हैं।
           </p>
         </article>
         <article class="landing-card landing-card-hover landing-feature-card">
@@ -471,33 +500,17 @@ Failures:   0</pre>
             <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-terminal"></use></svg>
           </div>
           <h3 class="landing-feature-title">
-            <a href="/user-guide/settings/application-logs-settings">एप्लिकेशन लॉग व्यूअर</a>
+            <a href="/user-guide/settings/application-logs-settings">एप्लिकेशन लॉग</a>
           </h3>
           <p class="landing-feature-body">
-            रीयल-टाइम मॉनिटरिंग के साथ एप्लिकेशन लॉग देखने, खोजने और निर्यात करने के लिए केवल-एडमिन इंटरफ़ेस।
-          </p>
-        </article>
-        <article class="landing-card landing-card-hover landing-feature-card">
-          <div class="landing-feature-icon">
-            <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-languages"></use></svg>
-          </div>
-          <h3 class="landing-feature-title">बहुभाषी समर्थन</h3>
-          <p class="landing-feature-body">
-            अंग्रेज़ी, फ़्रेंच, जर्मन, स्पैनिश, ब्राज़ीलियाई पुर्तगाली, हिंदी और सरलीकृत चीनी में इंटरफ़ेस और दस्तावेज़।
-          </p>
-        </article>
-        <article class="landing-card landing-card-hover landing-feature-card">
-          <div class="landing-feature-icon">
-            <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-server"></use></svg>
-          </div>
-          <h3 class="landing-feature-title">
-            <a href="/user-guide/homepage-integration">रीड-ओनली API</a>
-          </h3>
-          <p class="landing-feature-body">
-            बाहरी डैशबोर्ड और विजेट रीड-ओनली API के माध्यम से समान बैकअप स्थिति जानकारी प्रदर्शित कर सकते हैं।
+            केवल-एडमिन व्यूअर आपको लाइव अपडेट के साथ एप्लिकेशन लॉग खोजने, फ़िल्टर करने और निर्यात करने की सुविधा देता है।
           </p>
         </article>
       </div>
+      <p class="landing-security-note">
+        इसे इंटरनेट पर एक्सपोज़ कर रहे हैं? इसे HTTPS के साथ रिवर्स प्रॉक्सी के पीछे चलाएं।
+        <a href="/installation/security-configuration#https-with-a-reverse-proxy">गाइड पढ़ें</a>
+      </p>
     </div>
   </section>
 
@@ -537,8 +550,7 @@ Failures:   0</pre>
               <div>
                 <h3 class="landing-trust-title">विस्तृत दस्तावेज़</h3>
                 <p class="landing-trust-body">
-                  सेटअप गाइड, कॉन्फ़िगरेशन संदर्भ, और सुरक्षा सुदृढ़ीकरण —
-                  सात भाषाओं में उपलब्ध।
+                  सेटअप गाइड, कॉन्फ़िगरेशन संदर्भ और सुरक्षा सेटिंग्स, सात भाषाओं में उपलब्ध हैं।
                 </p>
                 <a class="landing-doc-link" href="/intro">दस्तावेज़ पढ़ें</a>
               </div>
@@ -550,8 +562,7 @@ Failures:   0</pre>
               <div>
                 <h3 class="landing-trust-title">Docker, Portainer, और Podman</h3>
                 <p class="landing-trust-body">
-                  Docker Hub और GitHub पर इमेज। अपने पसंदीदा कंटेनर
-                  रनटाइम के साथ डिप्लॉय करें — एकल डेटा वॉल्यूम के अलावा कोई निर्भरता नहीं।
+                  इमेज Docker Hub और GitHub पर प्रकाशित हैं। अपने पसंदीदा कंटेनर रनटाइम के साथ डिप्लॉय करें — एकल डेटा वॉल्यूम के अलावा कोई निर्भरता नहीं।
                 </p>
                 <a class="landing-doc-link" href="/installation">इंस्टॉलेशन विकल्प देखें</a>
               </div>
@@ -567,26 +578,14 @@ Failures:   0</pre>
                 </p>
               </div>
             </div>
-            <div class="landing-trust-item">
-              <div class="landing-trust-icon">
-                <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-globe"></use></svg>
-              </div>
-              <div>
-                <h3 class="landing-trust-title">सात भाषाएँ</h3>
-                <p class="landing-trust-body">
-                  अंग्रेज़ी, फ़्रेंच, जर्मन, स्पैनिश, ब्राज़ीलियाई
-                  पुर्तगाली, हिंदी, और सरलीकृत चीनी में UI और दस्तावेज़ीकरण।
-                </p>
-              </div>
-            </div>
           </div>
         </div>
         <div class="landing-side-stack">
           <div class="landing-stat-grid">
             <div class="landing-card landing-stat-card">
-              <div class="landing-stat-value">9666</div>
-              <div class="landing-stat-label">वेब UI पोर्ट</div>
-              <div class="landing-stat-sub">HTTP</div>
+              <div class="landing-stat-value">5 मिनट</div>
+              <div class="landing-stat-label">अतिदेय जाँचें</div>
+              <div class="landing-stat-sub">डिफ़ॉल्ट अंतराल</div>
             </div>
             <div class="landing-card landing-stat-card">
               <div class="landing-stat-value">SQLite</div>
@@ -596,7 +595,7 @@ Failures:   0</pre>
             <div class="landing-card landing-stat-card">
               <div class="landing-stat-value">7</div>
               <div class="landing-stat-label">भाषाएँ</div>
-              <div class="landing-stat-sub">UI + दस्तावेज़</div>
+              <div class="landing-stat-sub">UI और दस्तावेज़</div>
             </div>
             <div class="landing-card landing-stat-card">
               <div class="landing-stat-value">Apache-2.0</div>
@@ -620,8 +619,8 @@ Failures:   0</pre>
                 <span class="landing-arch-value">better-sqlite3 के माध्यम से SQLite</span>
               </div>
               <div class="landing-arch-row">
-                <span class="landing-arch-label">सीक्रेट्स</span>
-                <span class="landing-arch-value">data/.duplistatus.key फ़ाइल</span>
+                <span class="landing-arch-label">एन्क्रिप्शन</span>
+                <span class="landing-arch-value">bcrypt (लॉगिन) <br />AES-256-GCM/PBKDF2-SHA256 (सीक्रेट्स)</span>
               </div>
               <div class="landing-arch-row">
                 <span class="landing-arch-label">डिप्लॉय</span>
@@ -634,7 +633,7 @@ Failures:   0</pre>
             </div>
           </div>
           <div class="landing-card landing-arch-card">
-            <h3 class="landing-arch-title">क्रॉन सेवा संभालती है</h3>
+            <h3 class="landing-arch-title">Cron सेवा संभालती है</h3>
             <div class="landing-pill-row">
               <span class="landing-pill">अतिदेय जाँचें</span>
               <span class="landing-pill">संस्करण रीफ्रेश करें</span>
@@ -656,8 +655,7 @@ Failures:   0</pre>
       <div class="landing-centered">
         <h2 id="install" class="landing-section-title">कुछ ही मिनटों में शुरू करें</h2>
         <p class="landing-section-lead">
-          इमेज पुल करें, डेटा वॉल्यूम माउंट करें, और पोर्ट 9666 खोलें। स्कीमा माइग्रेशन
-          स्टार्टअप पर स्वचालित रूप से चलते हैं।
+          इमेज पुल करें, एक डेटा वॉल्यूम माउंट करें, और पोर्ट 9666 खोलें। 
         </p>
       </div>
       <div class="landing-card landing-install-card">
@@ -740,19 +738,15 @@ podman run -d \
               </li>
               <li class="landing-post-item">
                 <span class="landing-post-index">2</span>
-                <span><a href="/installation">इंस्टॉलेशन गाइड</a> में बताए गए डिफ़ॉल्ट एडमिन खाते से लॉग इन करें</span>
+                <span>डिफ़ॉल्ट एडमिन खाते से लॉग इन करें। पहले लॉगिन पर आपसे डिफ़ॉल्ट एडमिन पासवर्ड बदलने के लिए कहा जाता है।</span>
               </li>
               <li class="landing-post-item">
                 <span class="landing-post-index">3</span>
-                <span>बैकअप रिपोर्ट /api/upload पर भेजने के लिए अपने <a href="/installation/duplicati-server-configuration">Duplicati सर्वर</a> कॉन्फ़िगर करें</span>
+                <span><a href="/installation/duplicati-server-configuration">इन निर्देशों का पालन करते हुए</a> अपने Duplicati सर्वर कनेक्ट करें, फिर इतिहास आयात करने के लिए <a href="/user-guide/collect-backup-logs">बैकअप लॉग एकत्र करें</a> का उपयोग करें</span>
               </li>
               <li class="landing-post-item">
                 <span class="landing-post-index">4</span>
-                <span>इतिहास आयात करने के लिए <a href="/user-guide/collect-backup-logs">बैकअप लॉग एकत्र करें</a> का उपयोग करें, फिर यदि आप अलर्ट चाहते हैं तो ntfy या SMTP कॉन्फ़िगर करें</span>
-              </li>
-              <li class="landing-post-item">
-                <span class="landing-post-index">5</span>
-                <span>पब्लिक-फ़ेसिंग इंस्टॉलेशन के लिए वैकल्पिक रूप से API कुंजियाँ और IP allowlists सक्षम करें</span>
+                <span>क्या इसे इंटरनेट पर एक्सपोज़ कर रहे हैं? API कुंजियाँ और IP अनुमति सूचियाँ सक्षम करके <a href="/installation/security-configuration">अधिक सुरक्षा जोड़ें</a>, और इसे HTTPS युक्त रिवर्स प्रॉक्सी के पीछे रखें।</span>
               </li>
             </ol>
           </div>
@@ -773,4 +767,10 @@ podman run -d \
       </div>
     </div>
   </section>
+  <dialog class="landing-lightbox" id="landing-lightbox" aria-label="बड़ा किया गया स्क्रीनशॉट">
+    <form method="dialog" class="landing-lightbox-bar">
+      <button type="submit" class="landing-lightbox-close">बंद करें</button>
+    </form>
+    <img class="landing-lightbox-img no-zoom" data-nozoom alt="" />
+  </dialog>
 </div>

@@ -121,12 +121,16 @@
           Open source · Auto-hébergé · Prêt pour Docker
         </div>
         <h1 class="landing-section-title landing-hero-title">
-          Chaque sauvegarde. <span class="landing-hero-accent">Un seul tableau de bord.</span>
+          Toutes vos sauvegardes. <span class="landing-hero-accent">Un seul&nbsp;tableau de bord.</span>
         </h1>
         <p class="landing-section-lead">
           Ne vous connectez plus à chaque interface web Duplicati une par une. duplistatus
           surveille chaque serveur et tâche depuis un écran unique — pour savoir que vos
           sauvegardes sont en ordre avant qu'une perte de données ne vous prenne au dépourvu.
+        </p>
+        <p class="landing-hero-note">
+          duplistatus utilise les rapports HTTP intégrés de Duplicati, il n'y a donc rien à installer sur vos machines de sauvegarde.
+          <!-- TODO(author): add minimum supported Duplicati version -->
         </p>
         <div class="landing-cta-row">
           <a class="button button--primary button--lg landing-cta" href="#install">
@@ -137,6 +141,7 @@
             Voir le tableau de bord
           </a>
         </div>
+        <!-- TODO(author): live demo link, GitHub stars, latest release badge -->
         <div class="landing-chip-row">
           <span class="landing-chip">
             <svg class="landing-icon landing-chip-info" aria-hidden="true"><use href="#icon-server"></use></svg>
@@ -148,7 +153,7 @@
           </span>
           <span class="landing-chip">
             <svg class="landing-icon landing-chip-success" aria-hidden="true"><use href="#icon-shield-check"></use></svg>
-            Connexion requise, renforcement supplémentaire facultatif
+            Sécurisé par défaut, protection supplémentaire en cas de besoin
           </span>
         </div>
       </div>
@@ -160,8 +165,8 @@
       <div class="landing-centered">
         <h2 id="dashboard" class="landing-section-title">La seule question qui compte</h2>
         <p class="landing-section-lead">
-          Toutes mes sauvegardes sont-elles en ordre ? Un seul écran y répond — pour chaque serveur, chaque tâche,
-          chaque exécution.
+          Toutes mes sauvegardes vont-elles bien ? Un seul écran vous répond, pour chaque serveur, chaque tâche
+          et chaque exécution.
         </p>
       </div>
       <div class="landing-window">
@@ -174,13 +179,17 @@
           <div class="landing-window-url">localhost:9666</div>
         </div>
         <div class="landing-screenshot-frame">
-          <img
-            class="landing-screenshot no-zoom"
-            data-landing-shot="dashboard"
-            data-nozoom
-            src="/assets/screen-main-dashboard-card-mode.png"
-            alt="Tableau de bord duplistatus en vue cartes, affichant les serveurs avec des barres d'état, les totaux et les avertissements en retard"
-          />
+          <button type="button" class="landing-shot-button" data-landing-zoom aria-haspopup="dialog">
+            <img
+              class="landing-screenshot no-zoom"
+              data-landing-shot="dashboard"
+              data-nozoom
+              src="/assets/screen-main-dashboard-card-mode.png"
+              width="1905"
+              height="1080"
+              alt="Tableau de bord duplistatus en vue cartes, affichant les serveurs avec des barres d'état, les totaux et les avertissements en retard"
+            />
+          </button>
         </div>
       </div>
     </div>
@@ -193,8 +202,7 @@
           Conçu pour ceux qui exécutent Duplicati sur plusieurs machines
         </h2>
         <p class="landing-section-lead">
-          Qu'il s'agisse d'un NAS, d'un ordinateur portable, d'un VPS et de deux serveurs domestiques — duplistatus
-          vous offre un endroit unique pour répondre à la seule question qui compte.
+          Que vous utilisiez un NAS, un ordinateur portable, un VPS ou deux serveurs domestiques, duplistatus les regroupe tous sur un seul écran.
         </p>
       </div>
       <div class="landing-benefit-stack">
@@ -206,37 +214,36 @@
             </div>
             <h3 class="landing-benefit-title">Visualisez chaque sauvegarde d'un coup d'œil</h3>
             <p class="landing-benefit-body">
-              Surveillez chaque serveur et tâche Duplicati depuis un seul tableau de bord. Indicateurs d'état clairs,
-              cartes par serveur avec bande d'état des 10 dernières exécutions, vue tableau
-              triable et accès détaillé aux journaux de sauvegarde individuels avec avertissements et erreurs.
+              Une carte par serveur affiche les 10 dernières exécutions de chaque tâche. Passez à un tableau triable lorsque vous avez de nombreux serveurs, et ouvrez n'importe quelle exécution pour lire son journal complet, y compris les avertissements et les erreurs.
             </p>
             <ul class="landing-point-list">
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-info"></span>
-                Cartes par serveur avec bandes d'état des 10 dernières exécutions
+                Totaux pour les serveurs, les tâches, les exécutions, la taille et le stockage
               </li>
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-info"></span>
-                Vue tableau triable pour tous les serveurs
+                Tableau de bord à actualisation automatique pour une expérience de mur vidéo
               </li>
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-info"></span>
-                Accès détaillé aux journaux de sauvegarde individuels
-              </li>
-              <li class="landing-point-item">
-                <span class="landing-point-dot landing-dot-info"></span>
-                Comparaison de version avec la dernière version GitHub
+                Vérification de la version du serveur Duplicati par rapport à la dernière version publiée sur GitHub
               </li>
             </ul>
             <a class="landing-doc-link" href="/user-guide/dashboard">Lire le guide du tableau de bord</a>
           </div>
           <div class="landing-card landing-visual-shot">
-            <img
-              class="landing-benefit-shot no-zoom"
-              data-nozoom
-              src="/assets/screen-detail-cards.png"
-              alt="Cartes de serveur avec tâches de sauvegarde, bandeaux d'état, tailles et heures de dernière exécution"
-            />
+            <button type="button" class="landing-shot-button" data-landing-zoom aria-haspopup="dialog">
+              <img
+                class="landing-benefit-shot no-zoom"
+                data-nozoom
+                src="/assets/screen-detail-cards.png"
+                width="684"
+                height="493"
+                loading="lazy"
+                alt="Cartes de serveur avec tâches de sauvegarde, bandeaux d'état, tailles et heures de dernière exécution"
+              />
+            </button>
           </div>
         </article>
 
@@ -248,37 +255,36 @@
             </div>
             <h3 class="landing-benefit-title">Détectez les problèmes avant qu'ils ne se transforment en perte de données</h3>
             <p class="landing-benefit-body">
-              Détectez automatiquement les sauvegardes en retard, avec avertissement et en échec. Recevez des
-              alertes opportunes via notifications push NTFY ou e-mail SMTP — avec des filtres de notification par tâche
-              et un e-mail de Résumé quotidien facultatif à une heure locale fixe.
+              duplistatus détecte automatiquement les sauvegardes en retard, en avertissement et en échec, et vous alerte par notification push ntfy ou e-mail SMTP.
             </p>
             <ul class="landing-point-list">
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-warning"></span>
-                Vérifications des retards toutes les 5 minutes par défaut
+                Les vérifications des retards s'exécutent périodiquement par défaut
               </li>
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-warning"></span>
-                Filtres par tâche : désactivé / tout / avertissements / erreurs
+                Recevez des notifications pour chaque tâche avec des filtres par tâche : désactivé, tout, avertissements ou erreurs
               </li>
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-warning"></span>
-                Notifications push NTFY et e-mail SMTP
-              </li>
-              <li class="landing-point-item">
-                <span class="landing-point-dot landing-dot-warning"></span>
-                Le Résumé quotidien suspend uniquement les e-mails envoyés au destinataire par défaut
+                Réduisez le bruit des notifications grâce à l'e-mail de Résumé quotidien.
               </li>
             </ul>
             <a class="landing-doc-link" href="/user-guide/backup-monitoring">Lire les informations sur la surveillance des sauvegardes</a>
           </div>
           <div class="landing-card landing-visual-shot">
-            <img
-              class="landing-benefit-shot no-zoom"
-              data-nozoom
-              src="/assets/screen-detail-status.png"
-              alt="Panneaux des sauvegardes en retard, des avertissements et des erreurs"
-            />
+            <button type="button" class="landing-shot-button" data-landing-zoom aria-haspopup="dialog">
+              <img
+                class="landing-benefit-shot no-zoom"
+                data-nozoom
+                src="/assets/screen-detail-status.png"
+                width="688"
+                height="392"
+                loading="lazy"
+                alt="Panneaux pour les sauvegardes en retard, les avertissements et les erreurs"
+              />
+            </button>
           </div>
         </article>
 
@@ -290,38 +296,36 @@
             </div>
             <h3 class="landing-benefit-title">Dépanner en toute confiance</h3>
             <p class="landing-benefit-body">
-              Utilisez les journaux détaillés et les tendances de performances interactives pour comprendre
-              les échecs, vérifier les points de récupération et maintenir des sauvegardes saines dans la durée.
-              Les graphiques couvrent la durée, le nombre de fichiers, la taille de fichier, le stockage, la taille téléchargée et
-              les versions disponibles.
+              Ouvrez n'importe quelle exécution pour lire son journal, avec les avertissements et les erreurs, et voir les points de récupération disponibles. Des graphiques pour la durée, la taille et le stockage sont disponibles lorsque vous souhaitez plus de détails.
             </p>
             <ul class="landing-point-list">
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-success"></span>
-                Graphiques interactifs : durée, nombre de fichiers, taille, stockage
+                Collecte automatique des journaux depuis vos serveurs Duplicati
               </li>
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-success"></span>
-                Tendances sur 1 semaine à 3 mois avec consolidation le jour même
+                Versions disponibles affichées pour chaque exécution
               </li>
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-success"></span>
-                Collecte automatique des journaux à partir des serveurs Duplicati
-              </li>
-              <li class="landing-point-item">
-                <span class="landing-point-dot landing-dot-success"></span>
-                Vérifiez les points de récupération et suivez l'état de santé des sauvegardes
+                Graphiques pour la durée, la taille et le stockage
               </li>
             </ul>
-            <a class="landing-doc-link" href="/user-guide/backup-metrics">Lire les informations sur les métriques de sauvegarde</a>
+            <a class="landing-doc-link" href="/user-guide/server-details#backup-details">Lire les détails des sauvegardes</a>
           </div>
           <div class="landing-card landing-visual-shot">
-            <img
-              class="landing-benefit-shot no-zoom"
-              data-nozoom
-              src="/assets/screen-detail-backup.png"
-              alt="Détails de sauvegarde avec statistiques, versions disponibles et messages de journal"
-            />
+            <button type="button" class="landing-shot-button" data-landing-zoom aria-haspopup="dialog">
+              <img
+                class="landing-benefit-shot no-zoom"
+                data-nozoom
+                src="/assets/screen-detail-backup.png"
+                width="580"
+                height="311"
+                loading="lazy"
+                alt="Détails de sauvegarde avec statistiques, versions disponibles et messages de journal"
+              />
+            </button>
           </div>
         </article>
       </div>
@@ -347,11 +351,10 @@
           <h3 class="landing-step-title">Déployer le conteneur</h3>
           <p class="landing-step-body">
             Récupérez l'image depuis Docker Hub ou GitHub, définissez votre fuseau horaire et montez un
-            volume de données. L'interface utilisateur Web écoute sur le port 9666. Les migrations de schéma s'appliquent
+            volume de données. L'interface utilisateur web écoute sur le port 9666. Les migrations de schéma s'appliquent
             automatiquement au démarrage.
           </p>
-          <pre class="landing-step-code">wget https://github.com/wsj-br/duplistatus/raw/refs/heads/master/production.yml -O duplistatus.yml
-docker compose -f duplistatus.yml up -d</pre>
+          <a class="button button--primary landing-get-started" href="#install">Démarrer</a> <br />
           <a class="landing-doc-link" href="/installation">Guide d'installation</a>
         </div>
         <div class="landing-card landing-card-hover landing-step-card">
@@ -380,15 +383,24 @@ docker compose -f duplistatus.yml up -d</pre>
           </div>
           <h3 class="landing-step-title">Configurer les alertes</h3>
           <p class="landing-step-body">
-            Définissez des filtres de notification par tâche (désactivé / tout / avertissements / erreurs), activez
-            les vérifications d'éléments en retard et choisissez les notifications push ntfy ou les e-mails SMTP. Le Résumé quotidien est
-            facultatif et suspend uniquement les e-mails envoyés au destinataire par défaut.
+            ntfy est déjà configuré. Remplacez le sujet par le vôtre, puis scannez le code QR 
+            généré par duplistatus pour le configurer sur votre téléphone.  <br />
+            Configurez les paramètres du serveur de messagerie pour commencer à recevoir des e-mails de duplistatus.
           </p>
-          <pre class="landing-step-code">Notifications:
-  ntfy:   enabled
-  email:  enabled
-  filter: warnings + errors
-  overdue: every 5 minutes</pre>
+          <figure class="landing-shot-figure">
+            <button type="button" class="landing-shot-button" data-landing-zoom aria-haspopup="dialog">
+              <img
+                class="landing-benefit-shot no-zoom"
+                data-nozoom
+                src="/assets/screen-settings-monitoring.png"
+                width="1462"
+                height="926"
+                loading="lazy"
+                alt="Paramètres de surveillance des sauvegardes avec une ligne par tâche de sauvegarde, indiquant si la surveillance est activée, l'intervalle attendu et les jours autorisés."
+              />
+            </button>
+            <figcaption class="landing-shot-caption">Définissez la fréquence d'exécution prévue de chaque sauvegarde et les jours autorisés.</figcaption>
+          </figure>
           <a class="landing-doc-link" href="/user-guide/settings/backup-notifications-settings">Paramètres de notification</a>
         </div>
         <div class="landing-card landing-card-hover landing-step-card">
@@ -398,16 +410,26 @@ docker compose -f duplistatus.yml up -d</pre>
             </div>
             <span class="landing-step-index">Étape 4</span>
           </div>
-          <h3 class="landing-step-title">Surveiller et dépanner</h3>
+          <h3 class="landing-step-title">Laissez duplistatus surveiller vos sauvegardes</h3>
           <p class="landing-step-body">
-            Surveillez les changements d'état sur le tableau de bord, examinez le journal de n'importe quelle sauvegarde et utilisez
-            des graphiques de tendances interactifs pour repérer les anomalies. Le service cron gère les vérifications
-            des éléments en retard, l'actualisation des versions et le nettoyage des journaux en arrière-plan.
+            duplistatus se charge de la surveillance. Si une sauvegarde est en retard, ou se termine avec des avertissements ou des erreurs, 
+            vous recevez une notification ou un e-mail. <br />
+            Pour plus de sérénité, activez le Résumé quotidien optionnel : vous le recevez tous les jours, même quand tout va bien.
           </p>
-          <pre class="landing-step-code">Dashboard:  all servers · all jobs
-Last check: 2 min ago
-Overdue:    0
-Failures:   0</pre>
+          <figure class="landing-shot-figure">
+            <button type="button" class="landing-shot-button" data-landing-zoom aria-haspopup="dialog">
+              <img
+                class="landing-benefit-shot no-zoom"
+                data-nozoom
+                src="/assets/screen-main-dashboard-card-mode.png"
+                width="1905"
+                height="1080"
+                loading="lazy"
+                alt="Tableau de bord avec un bandeau d'état pour chaque tâche de sauvegarde et des panneaux listant les sauvegardes en retard, les avertissements et les erreurs."
+              />
+            </button>
+            <figcaption class="landing-shot-caption">Les sauvegardes en retard et en échec se repèrent d'un coup d'œil.</figcaption>
+          </figure>
           <a class="landing-doc-link" href="/user-guide/overview">Guide de l'utilisateur</a>
         </div>
       </div>
@@ -417,10 +439,9 @@ Failures:   0</pre>
   <section class="landing-section">
     <div class="landing-inner">
       <div class="landing-centered">
-        <h2 id="security" class="landing-section-title">La connexion est toujours activée. Le renforcement de la sécurité est facultatif.</h2>
+        <h2 id="security" class="landing-section-title">Sécurisé par défaut. Ajoutez une protection supplémentaire quand vous en avez besoin.</h2>
         <p class="landing-section-lead">
-          Configuration facile dans un homelab privé, avec des contrôles renforcés prêts à l'emploi quand vous en avez besoin
-          pour une installation exposée publiquement.
+          La connexion est activée dès le premier démarrage, ce qui protège votre homelab privé d'entrée de jeu. Ajoutez des clés API et des listes d'adresses IP autorisées quand vous l'exposez à Internet.
         </p>
       </div>
       <div class="landing-feature-grid">
@@ -432,8 +453,7 @@ Failures:   0</pre>
             <a href="/user-guide/settings/user-management-settings">Connexion avec des rôles</a>
           </h3>
           <p class="landing-feature-body">
-            Connexions authentifiées avec les rôles Admin et Utilisateur. La visibilité du Serveur peut être
-            restreinte par utilisateur.
+            Connectez-vous en tant qu'Admin ou Utilisateur. Limitez les serveurs visibles par chaque utilisateur.
           </p>
         </article>
         <article class="landing-card landing-card-hover landing-feature-card">
@@ -441,11 +461,10 @@ Failures:   0</pre>
             <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-key-round"></use></svg>
           </div>
           <h3 class="landing-feature-title">
-            <a href="/user-guide/settings/api-keys-settings">Clés API externes</a>
+            <a href="/user-guide/settings/api-keys-settings">Clés API</a>
           </h3>
           <p class="landing-feature-body">
-            Clés précises pour les téléversements Duplicati et les tableaux de bord externes en lecture seule,
-            avec limites de taille et de débit d'envoi.
+            Des clés distinctes pour les téléversements Duplicati et pour les tableaux de bord ou widgets en lecture seule, avec des limites de taille de téléversement et de débit.
           </p>
         </article>
         <article class="landing-card landing-card-hover landing-feature-card">
@@ -453,11 +472,10 @@ Failures:   0</pre>
             <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-network"></use></svg>
           </div>
           <h3 class="landing-feature-title">
-            <a href="/user-guide/settings/ip-allowlist-settings">Restrictions réseau</a>
+            <a href="/user-guide/settings/ip-allowlist-settings">Listes d'adresses IP autorisées</a>
           </h3>
           <p class="landing-feature-body">
-            Deux listes d'autorisation CIDR indépendantes — une pour l'interface d'administration, une autre pour
-            les API externes. Protection anti-usurpation par proxy de confiance incluse.
+            Deux listes d'autorisation indépendantes : une pour l'interface d'administration, une pour les API externes. Elles protègent contre l'usurpation d'IP client quand duplistatus fonctionne derrière un proxy inverse.
           </p>
         </article>
         <article class="landing-card landing-card-hover landing-feature-card">
@@ -468,7 +486,7 @@ Failures:   0</pre>
             <a href="/installation/security-configuration">Protection CSRF</a>
           </h3>
           <p class="landing-feature-body">
-            Toutes les routes basées sur les sessions sont protégées contre les falsifications de requêtes intersites.
+            Les routes basées sur des sessions sont protégées contre les attaques par falsification de requête intersites (CSRF).
           </p>
         </article>
         <article class="landing-card landing-card-hover landing-feature-card">
@@ -479,8 +497,7 @@ Failures:   0</pre>
             <a href="/user-guide/settings/audit-logs-viewer">Journalisation d'audit</a>
           </h3>
           <p class="landing-feature-body">
-            Chaque modification de configuration et action utilisateur est enregistrée, avec un
-            filtrage avancé, un export et une rétention configurable.
+            Chaque modification de configuration et action utilisateur est enregistrée. Filtrez, exportez et définissez la durée de conservation des enregistrements.
           </p>
         </article>
         <article class="landing-card landing-card-hover landing-feature-card">
@@ -488,36 +505,17 @@ Failures:   0</pre>
             <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-terminal"></use></svg>
           </div>
           <h3 class="landing-feature-title">
-            <a href="/user-guide/settings/application-logs-settings">Visionneuse de journaux d'application</a>
+            <a href="/user-guide/settings/application-logs-settings">Journaux de l'application</a>
           </h3>
           <p class="landing-feature-body">
-            Interface réservée aux administrateurs pour visualiser, rechercher et exporter les journaux de l'application avec
-            une surveillance en temps réel.
-          </p>
-        </article>
-        <article class="landing-card landing-card-hover landing-feature-card">
-          <div class="landing-feature-icon">
-            <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-languages"></use></svg>
-          </div>
-          <h3 class="landing-feature-title">Prise en charge multilingue</h3>
-          <p class="landing-feature-body">
-            Interface et documentation en anglais, français, allemand, espagnol, portugais
-            brésilien, hindi et chinois simplifié.
-          </p>
-        </article>
-        <article class="landing-card landing-card-hover landing-feature-card">
-          <div class="landing-feature-icon">
-            <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-server"></use></svg>
-          </div>
-          <h3 class="landing-feature-title">
-            <a href="/user-guide/homepage-integration">API en lecture seule</a>
-          </h3>
-          <p class="landing-feature-body">
-            Les tableaux de bord et widgets externes peuvent afficher les mêmes informations d'état des sauvegardes
-            via une API en lecture seule.
+            Une visionneuse réservée aux administrateurs vous permet de rechercher, filtrer et exporter les journaux de l'application, avec des mises à jour en direct.
           </p>
         </article>
       </div>
+      <p class="landing-security-note">
+        Vous l'exposez à Internet ? Exécutez-le derrière un proxy inverse avec HTTPS.
+        <a href="/installation/security-configuration#https-with-a-reverse-proxy">Lire le guide</a>
+      </p>
     </div>
   </section>
 
@@ -559,8 +557,7 @@ Failures:   0</pre>
               <div>
                 <h3 class="landing-trust-title">Documentation complète</h3>
                 <p class="landing-trust-body">
-                  Guides d'installation, référence de configuration et renforcement de la sécurité —
-                  disponibles en sept langues.
+                  Guides d'installation, référence de configuration et paramètres de sécurité, disponibles en sept langues.
                 </p>
                 <a class="landing-doc-link" href="/intro">Lire la documentation</a>
               </div>
@@ -572,8 +569,7 @@ Failures:   0</pre>
               <div>
                 <h3 class="landing-trust-title">Docker, Portainer et Podman</h3>
                 <p class="landing-trust-body">
-                  Images sur Docker Hub et GitHub. Déployez avec votre moteur de conteneurs
-                  préféré — aucune dépendance au-delà d'un simple volume de données.
+                  Les images sont publiées sur Docker Hub et GitHub. Déployez avec votre moteur d'exécution de conteneurs préféré — aucune dépendance au-delà d'un simple volume de données.
                 </p>
                 <a class="landing-doc-link" href="/installation">Voir les options d'installation</a>
               </div>
@@ -590,26 +586,14 @@ Failures:   0</pre>
                 </p>
               </div>
             </div>
-            <div class="landing-trust-item">
-              <div class="landing-trust-icon">
-                <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-globe"></use></svg>
-              </div>
-              <div>
-                <h3 class="landing-trust-title">Sept langues</h3>
-                <p class="landing-trust-body">
-                  Interface utilisateur et documentation en anglais, français, allemand, espagnol, portugais
-                  brésilien, hindi et chinois simplifié.
-                </p>
-              </div>
-            </div>
           </div>
         </div>
         <div class="landing-side-stack">
           <div class="landing-stat-grid">
             <div class="landing-card landing-stat-card">
-              <div class="landing-stat-value">9666</div>
-              <div class="landing-stat-label">Port de l'interface web</div>
-              <div class="landing-stat-sub">HTTP</div>
+              <div class="landing-stat-value">5 min</div>
+              <div class="landing-stat-label">Vérifications des retards</div>
+              <div class="landing-stat-sub">Intervalle par défaut</div>
             </div>
             <div class="landing-card landing-stat-card">
               <div class="landing-stat-value">SQLite</div>
@@ -619,7 +603,7 @@ Failures:   0</pre>
             <div class="landing-card landing-stat-card">
               <div class="landing-stat-value">7</div>
               <div class="landing-stat-label">Langues</div>
-              <div class="landing-stat-sub">Interface + documentation</div>
+              <div class="landing-stat-sub">UI et documentation</div>
             </div>
             <div class="landing-card landing-stat-card">
               <div class="landing-stat-value">Apache-2.0</div>
@@ -643,8 +627,8 @@ Failures:   0</pre>
                 <span class="landing-arch-value">SQLite via better-sqlite3</span>
               </div>
               <div class="landing-arch-row">
-                <span class="landing-arch-label">Secrets</span>
-                <span class="landing-arch-value">Fichier data/.duplistatus.key</span>
+                <span class="landing-arch-label">Chiffrement</span>
+                <span class="landing-arch-value">bcrypt (connexion) <br />AES-256-GCM/PBKDF2-SHA256 (secrets)</span>
               </div>
               <div class="landing-arch-row">
                 <span class="landing-arch-label">Déploiement</span>
@@ -680,8 +664,7 @@ Failures:   0</pre>
       <div class="landing-centered">
         <h2 id="install" class="landing-section-title">Démarrez en quelques minutes</h2>
         <p class="landing-section-lead">
-          Récupérez l'image, montez un volume de données et ouvrez le port 9666. Les migrations de schéma
-          s'exécutent automatiquement au démarrage.
+          Récupérez l'image, montez un volume de données et ouvrez le port 9666. 
         </p>
       </div>
       <div class="landing-card landing-install-card">
@@ -764,19 +747,15 @@ podman run -d \
               </li>
               <li class="landing-post-item">
                 <span class="landing-post-index">2</span>
-                <span>Connectez-vous avec le compte admin par défaut décrit dans le <a href="/installation">guide d'installation</a></span>
+                <span>Connectez-vous avec le compte admin par défaut. Il vous sera demandé de modifier le mot de passe admin par défaut lors de la première connexion.</span>
               </li>
               <li class="landing-post-item">
                 <span class="landing-post-index">3</span>
-                <span>Configurez vos <a href="/installation/duplicati-server-configuration">serveurs Duplicati</a> pour envoyer les rapports de sauvegarde vers /api/upload</span>
+                <span>Connectez vos serveurs Duplicati <a href="/installation/duplicati-server-configuration">en suivant ces instructions</a>, puis utilisez <a href="/user-guide/collect-backup-logs">Collecter les journaux de sauvegarde</a> pour importer l'historique</span>
               </li>
               <li class="landing-post-item">
                 <span class="landing-post-index">4</span>
-                <span>Utilisez <a href="/user-guide/collect-backup-logs">Collecter les journaux de sauvegarde</a> pour importer l'historique, puis configurez ntfy ou SMTP si vous souhaitez des alertes</span>
-              </li>
-              <li class="landing-post-item">
-                <span class="landing-post-index">5</span>
-                <span>Activez éventuellement les clés API et les listes d'adresses IP autorisées pour les installations exposées publiquement</span>
+                <span>Vous l'exposez à Internet ? <a href="/installation/security-configuration">Ajoutez une protection supplémentaire</a> en activant les clés API et les listes d'adresses IP autorisées, et placez-le derrière un proxy inverse avec HTTPS.</span>
               </li>
             </ol>
           </div>
@@ -797,4 +776,10 @@ podman run -d \
       </div>
     </div>
   </section>
+  <dialog class="landing-lightbox" id="landing-lightbox" aria-label="Capture d'écran agrandie">
+    <form method="dialog" class="landing-lightbox-bar">
+      <button type="submit" class="landing-lightbox-close">Fermer</button>
+    </form>
+    <img class="landing-lightbox-img no-zoom" data-nozoom alt="" />
+  </dialog>
 </div>

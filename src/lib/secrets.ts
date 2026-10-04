@@ -10,7 +10,8 @@ const ALGORITHM = 'aes-256-gcm';
 const IV_LENGTH = 12; // 96 bits is optimal for GCM
 const SALT_LENGTH = 32; // For key derivation 
 const TAG_LENGTH = 16; // For GCM
-const KEY_DERIVATION_ITERATIONS = 100000; // For key derivation
+const KEY_DERIVATION_ITERATIONS = 600000; // For key derivation
+const LEGACY_KEY_DERIVATION_ITERATIONS = 100000;
 
 // Key file name
 const KeyFileName = '.duplistatus.key';
@@ -82,8 +83,28 @@ export function secureCleanup(buffer: Buffer): void {
 }
 
 // Derive key from master key and salt
-function deriveKey(masterKey: Buffer, salt: Buffer): Buffer {
-  return crypto.pbkdf2Sync(masterKey, salt, KEY_DERIVATION_ITERATIONS, 32, 'sha256');
+function deriveKey(masterKey: Buffer, salt: Buffer, iterations: number): Buffer {
+  return crypto.pbkdf2Sync(masterKey, salt, iterations, 32, 'sha256');
+}
+
+function decryptPayload(
+  masterKey: Buffer,
+  salt: Buffer,
+  iv: Buffer,
+  tag: Buffer,
+  encrypted: Buffer,
+  iterations: number,
+): string {
+  const derivedKey = deriveKey(masterKey, salt, iterations);
+  try {
+    const decipher = crypto.createDecipheriv(ALGORITHM, derivedKey, iv);
+    decipher.setAuthTag(tag);
+    let decrypted = decipher.update(encrypted, undefined, 'utf8');
+    decrypted += decipher.final('utf8');
+    return decrypted;
+  } finally {
+    secureCleanup(derivedKey);
+  }
 }
 
 // Encrypt data
@@ -99,7 +120,7 @@ export function encryptData(plaintext: string): string {
     const iv = crypto.randomBytes(IV_LENGTH);
     
     // Derive key from master key and salt
-    const derivedKey = deriveKey(key, salt);
+    const derivedKey = deriveKey(key, salt, KEY_DERIVATION_ITERATIONS);
     
     // Create cipher
     const cipher = crypto.createCipheriv(ALGORITHM, derivedKey, iv);
@@ -174,24 +195,26 @@ export function decryptData(encryptedData: string): string {
     const tag = Buffer.from(tagHex, 'hex');
     const encrypted = Buffer.from(encryptedHex, 'hex');
     
-    // Derive key from master key and salt
-    const derivedKey = deriveKey(key, salt);
-    
-    // Create decipher
-    const decipher = crypto.createDecipheriv(ALGORITHM, derivedKey, iv);
-    decipher.setAuthTag(tag);
-    
-    // Decrypt the data
-    let decrypted = decipher.update(encrypted, undefined, 'utf8');
-    decrypted += decipher.final('utf8');
-    
-    // Clean up sensitive data
-    secureCleanup(salt);
-    secureCleanup(iv);
-    secureCleanup(tag);
-    secureCleanup(derivedKey);
-    
-    return decrypted;
+    const iterationCounts = [KEY_DERIVATION_ITERATIONS, LEGACY_KEY_DERIVATION_ITERATIONS];
+    let lastAuthError: Error | null = null;
+
+    for (const iterations of iterationCounts) {
+      try {
+        const decrypted = decryptPayload(key, salt, iv, tag, encrypted, iterations);
+        secureCleanup(salt);
+        secureCleanup(iv);
+        secureCleanup(tag);
+        return decrypted;
+      } catch (error) {
+        const err = error instanceof Error ? error : new Error(String(error));
+        if (!isInvalidMasterKeyError(err)) {
+          throw err;
+        }
+        lastAuthError = err;
+      }
+    }
+
+    throw lastAuthError ?? new Error('Unable to authenticate data');
   } catch (error) {
     const err = error instanceof Error ? error : new Error(String(error));
     

@@ -121,12 +121,16 @@
           Código aberto · Auto-hospedado · Pronto para Docker
         </div>
         <h1 class="landing-section-title landing-hero-title">
-          Cada backup. <span class="landing-hero-accent">Um único painel.</span>
+          Todos os seus backups. <span class="landing-hero-accent">Um&nbsp;painel.</span>
         </h1>
         <p class="landing-section-lead">
           Pare de fazer login em cada interface web do Duplicati uma a uma. O duplistatus
           monitora cada servidor e tarefa a partir de uma única tela — para que você saiba que seus
           backups estão em ordem antes que a perda de dados o pegue desprevenido.
+        </p>
+        <p class="landing-hero-note">
+          O duplistatus usa os relatórios HTTP integrados do Duplicati, portanto não há nada para instalar em suas máquinas de backup.
+          <!-- TODO(author): add minimum supported Duplicati version -->
         </p>
         <div class="landing-cta-row">
           <a class="button button--primary button--lg landing-cta" href="#install">
@@ -137,6 +141,7 @@
             Ver o painel
           </a>
         </div>
+        <!-- TODO(author): live demo link, GitHub stars, latest release badge -->
         <div class="landing-chip-row">
           <span class="landing-chip">
             <svg class="landing-icon landing-chip-info" aria-hidden="true"><use href="#icon-server"></use></svg>
@@ -148,7 +153,7 @@
           </span>
           <span class="landing-chip">
             <svg class="landing-icon landing-chip-success" aria-hidden="true"><use href="#icon-shield-check"></use></svg>
-            Login obrigatório, hardening adicional opcional
+            Seguro por padrão, proteção extra quando necessário
           </span>
         </div>
       </div>
@@ -160,8 +165,7 @@
       <div class="landing-centered">
         <h2 id="dashboard" class="landing-section-title">A única pergunta que importa</h2>
         <p class="landing-section-lead">
-          Todos os meus backups estão em ordem? Uma única tela responde — em cada servidor, cada tarefa,
-          cada execução.
+          Todos os meus backups estão operando corretamente? Uma única tela responde a isso, em cada servidor, cada trabalho e cada execução.
         </p>
       </div>
       <div class="landing-window">
@@ -174,13 +178,17 @@
           <div class="landing-window-url">localhost:9666</div>
         </div>
         <div class="landing-screenshot-frame">
-          <img
-            class="landing-screenshot no-zoom"
-            data-landing-shot="dashboard"
-            data-nozoom
-            src="/assets/screen-main-dashboard-card-mode.png"
-            alt="Painel do duplistatus em visualização de cartões, mostrando servidores com faixas de status, totais e avisos de atraso"
-          />
+          <button type="button" class="landing-shot-button" data-landing-zoom aria-haspopup="dialog">
+            <img
+              class="landing-screenshot no-zoom"
+              data-landing-shot="dashboard"
+              data-nozoom
+              src="/assets/screen-main-dashboard-card-mode.png"
+              width="1905"
+              height="1080"
+              alt="Painel do duplistatus em visualização de cartões, mostrando servidores com faixas de status, totais e avisos de atraso"
+            />
+          </button>
         </div>
       </div>
     </div>
@@ -193,8 +201,7 @@
           Criado para quem executa o Duplicati em mais de uma máquina
         </h2>
         <p class="landing-section-lead">
-          Seja um NAS, um notebook, uma VPS e dois servidores domésticos — o duplistatus
-          oferece um único lugar para responder à única pergunta que importa.
+          Quer você utilize um NAS, um notebook, um VPS ou dois servidores domésticos, o duplistatus reúne todos eles em uma única tela.
         </p>
       </div>
       <div class="landing-benefit-stack">
@@ -206,37 +213,36 @@
             </div>
             <h3 class="landing-benefit-title">Veja cada backup num relance</h3>
             <p class="landing-benefit-body">
-              Monitore cada servidor e tarefa do Duplicati a partir de um único painel. Indicadores claros de status,
-              cartões por servidor com uma faixa de status de 10 execuções, visualização em tabela ordenável
-              e detalhamento de logs de backup individuais com avisos e erros.
+              Um card por servidor exibe as últimas 10 execuções de cada trabalho. Alterne para uma tabela com ordenação quando tiver muitos servidores e abra qualquer execução para ler seu log completo, incluindo avisos e erros.
             </p>
             <ul class="landing-point-list">
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-info"></span>
-                Cartões por servidor com faixas de status de 10 execuções
+                Totais de servidores, trabalhos, execuções, tamanho e armazenamento
               </li>
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-info"></span>
-                Visualização em tabela ordenável para todos os servidores
+                Painel com atualização automática para uma experiência em video wall
               </li>
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-info"></span>
-                Detalhamento dos logs de backup individuais
-              </li>
-              <li class="landing-point-item">
-                <span class="landing-point-dot landing-dot-info"></span>
-                Comparação de versão com a versão mais recente do GitHub
+                Verificação da versão do servidor Duplicati em relação à versão mais recente do GitHub
               </li>
             </ul>
             <a class="landing-doc-link" href="/user-guide/dashboard">Leia o guia do painel</a>
           </div>
           <div class="landing-card landing-visual-shot">
-            <img
-              class="landing-benefit-shot no-zoom"
-              data-nozoom
-              src="/assets/screen-detail-cards.png"
-              alt="Cards de servidor com trabalhos de backup, faixas de status, tamanhos e horários da última execução"
-            />
+            <button type="button" class="landing-shot-button" data-landing-zoom aria-haspopup="dialog">
+              <img
+                class="landing-benefit-shot no-zoom"
+                data-nozoom
+                src="/assets/screen-detail-cards.png"
+                width="684"
+                height="493"
+                loading="lazy"
+                alt="Cards de servidor com trabalhos de backup, faixas de status, tamanhos e horários da última execução"
+              />
+            </button>
           </div>
         </article>
 
@@ -248,37 +254,36 @@
             </div>
             <h3 class="landing-benefit-title">Identifique problemas antes que se tornem perda de dados</h3>
             <p class="landing-benefit-body">
-              Detecte backups atrasados, com aviso e com falha automaticamente. Receba alertas
-              pontuais por push do ntfy ou e-mail SMTP — com filtros de notificação por trabalho
-              e um e-mail opcional de Resumo Diário em um horário local fixo.
+              O duplistatus detecta backups atrasados, com avisos ou com falha automaticamente e alerta você via push do NTFY ou e-mail SMTP.
             </p>
             <ul class="landing-point-list">
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-warning"></span>
-                Verificações de atraso a cada 5 minutos por padrão
+                Verificações de itens atrasados são executadas periodicamente por padrão
               </li>
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-warning"></span>
-                Filtros por trabalho: desativado / todos / avisos / erros
+                Receba notificações para cada trabalho com filtros por trabalho: desativado, todos, avisos ou erros
               </li>
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-warning"></span>
-                Notificações push do ntfy e e-mail SMTP
-              </li>
-              <li class="landing-point-item">
-                <span class="landing-point-dot landing-dot-warning"></span>
-                O Resumo Diário pausa e-mails apenas para o destinatário padrão
+                Reduza o excesso de notificações com o e-mail de Resumo Diário.
               </li>
             </ul>
             <a class="landing-doc-link" href="/user-guide/backup-monitoring">Leia sobre o monitoramento de backup</a>
           </div>
           <div class="landing-card landing-visual-shot">
-            <img
-              class="landing-benefit-shot no-zoom"
-              data-nozoom
-              src="/assets/screen-detail-status.png"
-              alt="Painéis de backups atrasados, avisos e erros"
-            />
+            <button type="button" class="landing-shot-button" data-landing-zoom aria-haspopup="dialog">
+              <img
+                class="landing-benefit-shot no-zoom"
+                data-nozoom
+                src="/assets/screen-detail-status.png"
+                width="688"
+                height="392"
+                loading="lazy"
+                alt="Painéis para backups atrasados, avisos e erros"
+              />
+            </button>
           </div>
         </article>
 
@@ -290,38 +295,36 @@
             </div>
             <h3 class="landing-benefit-title">Solucione problemas com confiança</h3>
             <p class="landing-benefit-body">
-              Use logs detalhados e tendências interativas de desempenho para entender
-              falhas, verificar pontos de recuperação e manter a integridade dos backups ao longo do tempo.
-              Os gráficos cobrem duração, número de arquivos, tamanho do arquivo, armazenamento, tamanho enviado e
-              versões disponíveis.
+              Abra qualquer execução para ler seu log, com avisos e erros, e veja quais pontos de recuperação estão disponíveis. Gráficos de duração, tamanho e armazenamento ficam disponíveis quando você quiser mais detalhes.
             </p>
             <ul class="landing-point-list">
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-success"></span>
-                Gráficos interativos: duração, número de arquivos, tamanho, armazenamento
+                Coleta automática de logs dos seus servidores Duplicati
               </li>
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-success"></span>
-                Tendências de 1 semana a 3 meses com consolidação no mesmo dia
+                Versões disponíveis exibidas para cada execução
               </li>
               <li class="landing-point-item">
                 <span class="landing-point-dot landing-dot-success"></span>
-                Coleta automática de logs dos servidores Duplicati
-              </li>
-              <li class="landing-point-item">
-                <span class="landing-point-dot landing-dot-success"></span>
-                Verifique pontos de recuperação e acompanhe a integridade dos backups
+                Gráficos de duração, tamanho e armazenamento
               </li>
             </ul>
-            <a class="landing-doc-link" href="/user-guide/backup-metrics">Leia sobre métricas de backup</a>
+            <a class="landing-doc-link" href="/user-guide/server-details#backup-details">Leia sobre os detalhes do backup</a>
           </div>
           <div class="landing-card landing-visual-shot">
-            <img
-              class="landing-benefit-shot no-zoom"
-              data-nozoom
-              src="/assets/screen-detail-backup.png"
-              alt="Detalhes do backup com estatísticas, versões disponíveis e mensagens de log"
-            />
+            <button type="button" class="landing-shot-button" data-landing-zoom aria-haspopup="dialog">
+              <img
+                class="landing-benefit-shot no-zoom"
+                data-nozoom
+                src="/assets/screen-detail-backup.png"
+                width="580"
+                height="311"
+                loading="lazy"
+                alt="Detalhes do backup com estatísticas, versões disponíveis e mensagens de log"
+              />
+            </button>
           </div>
         </article>
       </div>
@@ -346,12 +349,9 @@
           </div>
           <h3 class="landing-step-title">Implantar o contêiner</h3>
           <p class="landing-step-body">
-            Baixe a imagem do Docker Hub ou GitHub, defina seu fuso horário e monte um
-            volume de dados. A interface web escuta na porta 9666. As migrações de esquema são aplicadas
-            automaticamente na inicialização.
+            Baixe a imagem do Docker Hub ou GitHub, defina seu fuso horário e monte um volume de dados. A interface web escuta na porta 9666. As migrações de esquema são aplicadas automaticamente na inicialização.
           </p>
-          <pre class="landing-step-code">wget https://github.com/wsj-br/duplistatus/raw/refs/heads/master/production.yml -O duplistatus.yml
-docker compose -f duplistatus.yml up -d</pre>
+          <a class="button button--primary landing-get-started" href="#install">Primeiros passos</a> <br />
           <a class="landing-doc-link" href="/installation">Guia de instalação</a>
         </div>
         <div class="landing-card landing-card-hover landing-step-card">
@@ -380,15 +380,24 @@ docker compose -f duplistatus.yml up -d</pre>
           </div>
           <h3 class="landing-step-title">Configurar alertas</h3>
           <p class="landing-step-body">
-            Defina filtros de notificação por tarefa (desativado / todos / avisos / erros), ative
-            verificações de atraso e escolha notificações push ntfy ou e-mail SMTP. O Resumo Diário é
-            opcional e apenas pausa e-mails para o destinatário padrão.
+            O ntfy já está configurado. Altere o tópico para o seu próprio tópico e, em seguida, escaneie o código QR 
+            gerado pelo duplistatus para configurá-lo no seu celular.  <br />
+            Defina as configurações do servidor de e-mail para começar a receber e-mails do duplistatus.
           </p>
-          <pre class="landing-step-code">Notifications:
-  ntfy:   enabled
-  email:  enabled
-  filter: warnings + errors
-  overdue: every 5 minutes</pre>
+          <figure class="landing-shot-figure">
+            <button type="button" class="landing-shot-button" data-landing-zoom aria-haspopup="dialog">
+              <img
+                class="landing-benefit-shot no-zoom"
+                data-nozoom
+                src="/assets/screen-settings-monitoring.png"
+                width="1462"
+                height="926"
+                loading="lazy"
+                alt="Configurações de monitoramento de backup com uma linha por tarefa de backup, mostrando se o monitoramento está ativado, o intervalo esperado e os dias permitidos."
+              />
+            </button>
+            <figcaption class="landing-shot-caption">Defina a frequência com que cada backup deve ser executado e em quais dias.</figcaption>
+          </figure>
           <a class="landing-doc-link" href="/user-guide/settings/backup-notifications-settings">Configurações de notificação</a>
         </div>
         <div class="landing-card landing-card-hover landing-step-card">
@@ -398,16 +407,26 @@ docker compose -f duplistatus.yml up -d</pre>
             </div>
             <span class="landing-step-index">Passo 4</span>
           </div>
-          <h3 class="landing-step-title">Monitorar e solucionar problemas</h3>
+          <h3 class="landing-step-title">Deixe o duplistatus monitorar seus backups</h3>
           <p class="landing-step-body">
-            Acompanhe o painel para verificar alterações de status, examine detalhadamente qualquer log de backup e use
-            gráficos de tendências interativos para identificar anomalias. O serviço cron gerencia verificações de
-            atraso, atualizações de versão e limpeza de logs em segundo plano.
+            O duplistatus faz o monitoramento. Se um backup estiver atrasado ou for concluído com avisos ou erros, 
+            você receberá uma notificação ou e-mail. <br />
+            Para maior tranquilidade, ative o Resumo Diário opcional: você o recebe todos os dias, mesmo quando tudo estiver bem.
           </p>
-          <pre class="landing-step-code">Dashboard:  all servers · all jobs
-Last check: 2 min ago
-Overdue:    0
-Failures:   0</pre>
+          <figure class="landing-shot-figure">
+            <button type="button" class="landing-shot-button" data-landing-zoom aria-haspopup="dialog">
+              <img
+                class="landing-benefit-shot no-zoom"
+                data-nozoom
+                src="/assets/screen-main-dashboard-card-mode.png"
+                width="1905"
+                height="1080"
+                loading="lazy"
+                alt="Painel com uma barra de status para cada tarefa de backup e painéis listando backups atrasados, avisos e erros."
+              />
+            </button>
+            <figcaption class="landing-shot-caption">Backups atrasados e com falhas se destacam rapidamente.</figcaption>
+          </figure>
           <a class="landing-doc-link" href="/user-guide/overview">Guia do usuário</a>
         </div>
       </div>
@@ -417,10 +436,9 @@ Failures:   0</pre>
   <section class="landing-section">
     <div class="landing-inner">
       <div class="landing-centered">
-        <h2 id="security" class="landing-section-title">O login está sempre ativado. O reforço de segurança é opcional.</h2>
+        <h2 id="security" class="landing-section-title">Seguro por padrão. Adicione mais proteção quando precisar.</h2>
         <p class="landing-section-lead">
-          Configuração fácil em um homelab privado, com controles robustos prontos quando você precisar deles
-          para uma instalação exposta à internet.
+          O login já vem ativado desde a primeira inicialização, de modo que um homelab privado fica protegido imediatamente. Adicione chaves de API e listas de permissões de IP ao expor para a internet.
         </p>
       </div>
       <div class="landing-feature-grid">
@@ -432,8 +450,7 @@ Failures:   0</pre>
             <a href="/user-guide/settings/user-management-settings">Login com funções</a>
           </h3>
           <p class="landing-feature-body">
-            Logins autenticados com funções de Administrador e Usuário. A visibilidade do Servidor pode ser
-            restringida por usuário.
+            Faça login como Administrador ou Usuário. Limite quais servidores cada usuário pode ver.
           </p>
         </article>
         <article class="landing-card landing-card-hover landing-feature-card">
@@ -441,11 +458,10 @@ Failures:   0</pre>
             <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-key-round"></use></svg>
           </div>
           <h3 class="landing-feature-title">
-            <a href="/user-guide/settings/api-keys-settings">Chaves de API externas</a>
+            <a href="/user-guide/settings/api-keys-settings">Chaves de API</a>
           </h3>
           <p class="landing-feature-body">
-            Chaves granulares para uploads do Duplicati e painéis externos de somente leitura,
-            com limites de tamanho e taxa de upload.
+            Chaves separadas para uploads do Duplicati e para painéis ou widgets somente leitura, com limites de taxa e tamanho de upload.
           </p>
         </article>
         <article class="landing-card landing-card-hover landing-feature-card">
@@ -453,11 +469,10 @@ Failures:   0</pre>
             <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-network"></use></svg>
           </div>
           <h3 class="landing-feature-title">
-            <a href="/user-guide/settings/ip-allowlist-settings">Restrições de rede</a>
+            <a href="/user-guide/settings/ip-allowlist-settings">Listas de permissões de IP</a>
           </h3>
           <p class="landing-feature-body">
-            Duas listas de permissão CIDR independentes — uma para a interface de administração e outra para
-            APIs externas. Proteção contra falsificação com proxy confiável inclusa.
+            Duas listas de permissões independentes: uma para a interface de administração e outra para APIs externas. Elas protegem contra IPs de clientes forjados quando o duplistatus é executado atrás de um proxy reverso.
           </p>
         </article>
         <article class="landing-card landing-card-hover landing-feature-card">
@@ -468,7 +483,7 @@ Failures:   0</pre>
             <a href="/installation/security-configuration">Proteção contra CSRF</a>
           </h3>
           <p class="landing-feature-body">
-            Todas as rotas baseadas em sessão são protegidas contra cross-site request forgery.
+            Rotas baseadas em sessão são protegidas contra cross-site request forgery (CSRF).
           </p>
         </article>
         <article class="landing-card landing-card-hover landing-feature-card">
@@ -479,8 +494,7 @@ Failures:   0</pre>
             <a href="/user-guide/settings/audit-logs-viewer">Registro de auditoria</a>
           </h3>
           <p class="landing-feature-body">
-            Cada alteração de configuração e ação de usuário é registrada, com filtragem avançada,
-            exportação e retenção configurável.
+            Cada alteração de configuração e ação do usuário é registrada. Filtre, exporte e defina por quanto tempo os registros são mantidos.
           </p>
         </article>
         <article class="landing-card landing-card-hover landing-feature-card">
@@ -488,36 +502,17 @@ Failures:   0</pre>
             <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-terminal"></use></svg>
           </div>
           <h3 class="landing-feature-title">
-            <a href="/user-guide/settings/application-logs-settings">Visualizador de logs do aplicativo</a>
+            <a href="/user-guide/settings/application-logs-settings">Logs do aplicativo</a>
           </h3>
           <p class="landing-feature-body">
-            Interface exclusiva para administradores para visualizar, pesquisar e exportar logs do aplicativo com
-            monitoramento em tempo real.
-          </p>
-        </article>
-        <article class="landing-card landing-card-hover landing-feature-card">
-          <div class="landing-feature-icon">
-            <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-languages"></use></svg>
-          </div>
-          <h3 class="landing-feature-title">Suporte a múltiplos idiomas</h3>
-          <p class="landing-feature-body">
-            Interface e documentação em inglês, francês, alemão, espanhol, português
-            do Brasil, híndi e chinês simplificado.
-          </p>
-        </article>
-        <article class="landing-card landing-card-hover landing-feature-card">
-          <div class="landing-feature-icon">
-            <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-server"></use></svg>
-          </div>
-          <h3 class="landing-feature-title">
-            <a href="/user-guide/homepage-integration">API somente leitura</a>
-          </h3>
-          <p class="landing-feature-body">
-            Painéis e widgets externos podem exibir as mesmas informações de status de backup
-            por meio de uma API somente leitura.
+            Um visualizador exclusivo para administradores permite pesquisar, filtrar e exportar logs do aplicativo, com atualizações em tempo real.
           </p>
         </article>
       </div>
+      <p class="landing-security-note">
+        Vai expor para a internet? Execute-o atrás de um proxy reverso com HTTPS.
+        <a href="/installation/security-configuration#https-with-a-reverse-proxy">Leia o guia</a>
+      </p>
     </div>
   </section>
 
@@ -559,8 +554,7 @@ Failures:   0</pre>
               <div>
                 <h3 class="landing-trust-title">Documentação completa</h3>
                 <p class="landing-trust-body">
-                  Guias de instalação, referência de configuração e reforço de segurança —
-                  disponíveis em sete idiomas.
+                  Guias de configuração, referência de configuração e configurações de segurança, disponíveis em sete idiomas.
                 </p>
                 <a class="landing-doc-link" href="/intro">Leia a documentação</a>
               </div>
@@ -572,7 +566,7 @@ Failures:   0</pre>
               <div>
                 <h3 class="landing-trust-title">Docker, Portainer e Podman</h3>
                 <p class="landing-trust-body">
-                  Imagens no Docker Hub e GitHub. Implante com seu runtime de contêiner
+                  As imagens são publicadas no Docker Hub e GitHub. Implante com seu runtime de contêiner
                   preferido — sem dependências além de um único volume de dados.
                 </p>
                 <a class="landing-doc-link" href="/installation">Ver opções de instalação</a>
@@ -590,26 +584,14 @@ Failures:   0</pre>
                 </p>
               </div>
             </div>
-            <div class="landing-trust-item">
-              <div class="landing-trust-icon">
-                <svg class="landing-icon landing-icon-lg" aria-hidden="true"><use href="#icon-globe"></use></svg>
-              </div>
-              <div>
-                <h3 class="landing-trust-title">Sete idiomas</h3>
-                <p class="landing-trust-body">
-                  Interface e documentação em inglês, francês, alemão, espanhol, português
-                  do Brasil, híndi e chinês simplificado.
-                </p>
-              </div>
-            </div>
           </div>
         </div>
         <div class="landing-side-stack">
           <div class="landing-stat-grid">
             <div class="landing-card landing-stat-card">
-              <div class="landing-stat-value">9666</div>
-              <div class="landing-stat-label">Porta da interface web</div>
-              <div class="landing-stat-sub">HTTP</div>
+              <div class="landing-stat-value">5 min</div>
+              <div class="landing-stat-label">Verificações de atraso</div>
+              <div class="landing-stat-sub">Intervalo padrão</div>
             </div>
             <div class="landing-card landing-stat-card">
               <div class="landing-stat-value">SQLite</div>
@@ -619,7 +601,7 @@ Failures:   0</pre>
             <div class="landing-card landing-stat-card">
               <div class="landing-stat-value">7</div>
               <div class="landing-stat-label">Idiomas</div>
-              <div class="landing-stat-sub">Interface + documentação</div>
+              <div class="landing-stat-sub">UI e documentação</div>
             </div>
             <div class="landing-card landing-stat-card">
               <div class="landing-stat-value">Apache-2.0</div>
@@ -643,8 +625,8 @@ Failures:   0</pre>
                 <span class="landing-arch-value">SQLite via better-sqlite3</span>
               </div>
               <div class="landing-arch-row">
-                <span class="landing-arch-label">Segredos</span>
-                <span class="landing-arch-value">Arquivo data/.duplistatus.key</span>
+                <span class="landing-arch-label">Criptografia</span>
+                <span class="landing-arch-value">bcrypt (login) <br />AES-256-GCM/PBKDF2-SHA256 (segredos)</span>
               </div>
               <div class="landing-arch-row">
                 <span class="landing-arch-label">Implantação</span>
@@ -679,8 +661,7 @@ Failures:   0</pre>
       <div class="landing-centered">
         <h2 id="install" class="landing-section-title">Comece em minutos</h2>
         <p class="landing-section-lead">
-          Faça o pull da imagem, monte um volume de dados e abra a porta 9666. As migrações de schema
-          são executadas automaticamente na inicialização.
+          Faça o pull da imagem, monte um volume de dados e abra a porta 9666. 
         </p>
       </div>
       <div class="landing-card landing-install-card">
@@ -763,19 +744,15 @@ podman run -d \
               </li>
               <li class="landing-post-item">
                 <span class="landing-post-index">2</span>
-                <span>Entre com a conta de administrador padrão descrita no <a href="/installation">guia de instalação</a></span>
+                <span>Entre com a conta de administrador padrão. Será solicitado que você altere a senha de administrador padrão no primeiro login.</span>
               </li>
               <li class="landing-post-item">
                 <span class="landing-post-index">3</span>
-                <span>Configure os seus <a href="/installation/duplicati-server-configuration">servidores Duplicati</a> para enviar relatórios de backup para /api/upload</span>
+                <span>Conecte seus servidores Duplicati <a href="/installation/duplicati-server-configuration">seguindo estas instruções</a> e, em seguida, use <a href="/user-guide/collect-backup-logs">Coletar Logs de Backup</a> para importar o histórico</span>
               </li>
               <li class="landing-post-item">
                 <span class="landing-post-index">4</span>
-                <span>Use <a href="/user-guide/collect-backup-logs">Coletar Logs de Backup</a> para importar o histórico e, em seguida, configure o ntfy ou SMTP se desejar alertas</span>
-              </li>
-              <li class="landing-post-item">
-                <span class="landing-post-index">5</span>
-                <span>Opcionalmente, ative as chaves de API e listas de permissões de IP para instalações expostas publicamente</span>
+                <span>Vai expor à internet? <a href="/installation/security-configuration">Adicione mais proteção</a> ativando chaves de API e listas de permissões de IP, e coloque-o atrás de um proxy reverso com HTTPS.</span>
               </li>
             </ol>
           </div>
@@ -796,4 +773,10 @@ podman run -d \
       </div>
     </div>
   </section>
+  <dialog class="landing-lightbox" id="landing-lightbox" aria-label="Captura de tela ampliada">
+    <form method="dialog" class="landing-lightbox-bar">
+      <button type="submit" class="landing-lightbox-close">Fechar</button>
+    </form>
+    <img class="landing-lightbox-img no-zoom" data-nozoom alt="" />
+  </dialog>
 </div>

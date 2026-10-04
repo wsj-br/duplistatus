@@ -366,7 +366,7 @@
     "description": "HTML document title for the landing page"
   },
   "homepage.meta.description": {
-    "message": "Panel de control autohospedado para cada servidor y tarea de Duplicati: estado, alertas de vencimiento, registros y tendencias — sin abrir la interfaz de cada copia de seguridad.",
+    "message": "Supervisa cada copia de seguridad de Duplicati desde un único panel. De código abierto, autoalojado y listo para Docker, con alertas por ntfy y correo electrónico.",
     "description": "HTML meta description for the landing page"
   },
   "homepage.nav.docs": {
