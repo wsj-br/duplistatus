@@ -12,7 +12,7 @@
     "start:pt-br": "docusaurus start --locale pt-BR",
     "build": "docusaurus build",
     "swizzle": "docusaurus swizzle",
-    "deploy": "USE_SSH=true GIT_USER=wsj-br docusaurus deploy",
+    "deploy": "./scripts/deploy-github-pages.sh",
     "clear": "docusaurus clear",
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",

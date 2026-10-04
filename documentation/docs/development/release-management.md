@@ -80,7 +80,7 @@ pnpm release:github:dry   # print the planned tag, notes file, and gh command
 pnpm release:github       # generate GitHub notes, tag vVERSION at HEAD, publish the release, and deploy the docs
 ```
 
-`scripts/release.mjs` reads the version from `package.json`, runs `scripts/generate-readme-from-intro.sh` (so `RELEASE_NOTES_github_VERSION.md` has absolute links), and creates the GitHub release. Publishing it starts the Docker image workflow. The script then runs `pnpm run deploy` in `documentation/` to build the Docusaurus site and push it to `gh-pages`. If tag `vVERSION` or that GitHub release already exists, the script deletes them and recreates the tag at the current HEAD. Pass `--verify-clean=false` to skip the clean-tree checks.
+`scripts/release.mjs` reads the version from `package.json`, runs `scripts/generate-readme-from-intro.sh` (so `RELEASE_NOTES_github_VERSION.md` has absolute links), and creates the GitHub release. Publishing it starts the Docker image workflow. The script then runs `pnpm run deploy` in `documentation/` to start the **Deploy documentation** GitHub Actions workflow, which builds the Docusaurus site and publishes it to GitHub Pages. If tag `vVERSION` or that GitHub release already exists, the script deletes them and recreates the tag at the current HEAD. Pass `--verify-clean=false` to skip the clean-tree checks.
 
 The steps below are the same operations run by hand.
 
@@ -158,15 +158,8 @@ The documentation is hosted on [GitHub Pages](https://wsj-br.github.io/duplistat
 
 ### Prerequisites {/* #prerequisites */}
 
-1. Ensure you have a GitHub Personal Access Token with the `repo` scope.
-2. Set up Git credentials (one-time setup):
-
-```bash
-cd documentation
-./setup-git-credentials.sh
-```
-
-This will prompt you for your GitHub Personal Access Token and store it securely.
+1. Authenticate the GitHub CLI (`gh auth login`) so it can start workflows.
+2. In the repository **Settings → Pages**, set **Source** to **GitHub Actions** (not Deploy from a branch).
 
 ### Deploy Documentation {/* #deploy-documentation */}
 
@@ -176,7 +169,7 @@ This will prompt you for your GitHub Personal Access Token and store it securely
 cd documentation
 ```
 
-2. Ensure all documentation changes are committed and pushed to the repository.
+2. Ensure all documentation changes are committed and pushed to `master`.
 
 3. Build and deploy the documentation:
 
@@ -185,9 +178,9 @@ pnpm run deploy
 ```
 
 This command will:
-- Build the Docusaurus documentation site
-- Push the built site to the `gh-pages` branch
-- Make the documentation available at [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/)
+- Start the **Deploy documentation** workflow on `master`
+- Build the Docusaurus site on Node 24
+- Publish it to GitHub Pages at [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/)
 
 ### When to Deploy Documentation {/* #when-to-deploy-documentation */}
 

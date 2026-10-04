@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Docker multi-arch publish**: Release image builds no longer attach provenance attestations, so GHCR and Docker Hub share one digest and the merge job can tag `linux/amd64` and `linux/arm64` together (`.github/workflows/docker-image.yml`).
 
 ### Changed
+- **Docs GitHub Pages deploy**: `pnpm run deploy` in `documentation/` now starts a GitHub Actions workflow that builds Docusaurus on Node 24 and publishes with `actions/upload-pages-artifact@v5`. That replaces the legacy `pages-build-deployment` job, which still called `actions/upload-artifact@v4` (Node 20) (`.github/workflows/deploy-docs.yml`, `documentation/scripts/deploy-github-pages.sh`).
 - **Documentation landing page**: Homepage copy is tightened for grammar: complete sentences, a subject on the hero note and allowlist card, and a repaired install step that links “Add more protection” and then explains API keys, IP allowlists, and HTTPS (`documentation/src/landing/landing.html`).
 - **Documentation landing page**: Step 1 uses a Get Started button, matching the header, that scrolls to the install commands (`documentation/src/landing/landing.html`).
 - **Documentation landing page**: The alerts step explains the built-in ntfy topic, phone setup with the QR code, email, and the optional Daily Summary, and shows the backup monitoring screen (`documentation/src/landing/landing.html`).

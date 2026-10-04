@@ -8,7 +8,7 @@
  *
  * Publishing the release triggers "Build and Publish Docker Image".
  * The script then deploys the Docusaurus site with `pnpm run deploy`
- * in documentation/ (GitHub Pages, gh-pages branch).
+ * in documentation/ (GitHub Actions → GitHub Pages).
  * Run this from the commit that should be released (typically master,
  * already pushed). The script pushes the tag, not the branch.
  *
@@ -281,7 +281,7 @@ const docsDir = path.join(root, "documentation");
 
 function deployDocumentation() {
   if (dryRun) {
-    console.log("[dry-run] Would deploy Docusaurus docs: pnpm run deploy (documentation/)");
+    console.log("[dry-run] Would deploy Docusaurus docs: pnpm run deploy (documentation/, GitHub Actions)");
     return;
   }
 

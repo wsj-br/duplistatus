@@ -228,17 +228,13 @@ pnpm take-screenshots --locale en-GB,de,pt-BR
 ## Deploying the Documentation {/* #deploying-the-documentation */}
 
 
-To deploy the documentation to GitHub Pages, you will need to generate a GitHub Personal Access Token. Go to [GitHub Personal Access Tokens](https://github.com/settings/tokens) and create a new token with the `repo` scope.
-
-When you have the token, store it in the Git credential store (e.g. using `git config credential.helper store` or your system's credential manager).
-
-Then, to deploy the documentation to GitHub Pages, run the following command from the `documentation` directory:
+Commit and push the documentation changes to `master`, then from the `documentation` directory run:
 
 ```bash
 pnpm run deploy
 ```
 
-This will build the documentation and push it to the `gh-pages` branch of the repository, and the documentation will be available at [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/).
+This starts the **Deploy documentation** GitHub Actions workflow, which builds Docusaurus on Node 24 and publishes to GitHub Pages with `actions/upload-pages-artifact@v5`. The site is available at [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/). GitHub Pages must use **GitHub Actions** as its source (not the `gh-pages` branch).
 
 ## Working with Documentation {/* #working-with-documentation */}
 
