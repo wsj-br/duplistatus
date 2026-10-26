@@ -7,6 +7,7 @@ import { useToast } from '@/components/ui/use-toast';
 import QRCode from 'qrcode';
 import { NtfyQrModal } from '@/components/ui/ntfy-qr-modal';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
+import { buildNtfyTopicWebUrl } from '@/lib/ntfy-url';
 
 interface NtfyConfig {
   url: string;
@@ -81,7 +82,7 @@ export function NtfyMessagesButton() {
         return;
       }
 
-      const ntfyUrl = `https://ntfy.sh/${ntfyConfig.topic}`;
+      const ntfyUrl = buildNtfyTopicWebUrl(ntfyConfig.url || '', ntfyConfig.topic);
       window.open(ntfyUrl, '_blank', 'noopener,noreferrer');
     } catch (error) {
       console.error('Error fetching NTFY configuration:', error instanceof Error ? error.message : String(error));

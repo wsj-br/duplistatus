@@ -69,43 +69,43 @@ Die Anwendungssymbolleiste bietet bequemen Zugriff auf wichtige Funktionen und E
   <tbody>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:search" /> &nbsp; Filter</td>
-      <td>Server nach ID, URL oder Namen des Sicherungsauftrags durchsuchen und filtern.</td>
+      <td>Server nach ID, URL oder Sicherungsauftragsname suchen und filtern.</td>
     </tr>
     <tr>
-      <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:rotate-ccw" /> &nbsp; Bildschirm aktualisieren</td>
-      <td>Führt eine sofortige manuelle Aktualisierung aller Daten auf dem Bildschirm aus</td>
+      <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:rotate-ccw" /> &nbsp; Ansicht aktualisieren</td>
+      <td>Eine sofortige manuelle Aktualisierung aller Daten auf dem Bildschirm ausführen</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton label="Automatische Aktualisierung" /></td>
-      <td>Aktiviert oder deaktiviert die automatische Aktualisierungsfunktion. Konfigurieren Sie dies unter [Anzeigeeinstellungen](settings/display-settings.md) <br/> _Rechtsklick_, um die Seite Anzeigeeinstellungen zu öffnen</td>
+      <td>Automatische Aktualisierungsfunktion aktivieren oder deaktivieren. Konfigurieren unter [Anzeigeeinstellungen](settings/display-settings.md) <br/> _Rechtsklick_, um die Seite „Anzeigeeinstellungen“ zu öffnen</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><SvgButton svgFilename="ntfy.svg" /> &nbsp; NTFY öffnen</td>
-      <td>Öffnet die Website ntfy.sh für Ihr konfiguriertes Benachrichtigungsthema. <br/> _Rechtsklick_, um einen QR-Code anzuzeigen, mit dem Sie Ihr Gerät für den Empfang von Benachrichtigungen von duplistatus konfigurieren können.</td>
+      <td>Öffnen Sie den konfigurierten NTFY-Server für Ihr Benachrichtigungsthema. <br/> _Rechtsklick_, um einen QR-Code anzuzeigen, um Ihr Gerät für den Empfang von Benachrichtigungen von duplistatus zu konfigurieren.</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Duplicati-Konfiguration](duplicati-configuration.md)</td>
-      <td>Öffnet die Weboberfläche des ausgewählten Duplicati-Servers <br/> _Rechtsklick_, um die alte Duplicati-Benutzeroberfläche (`/ngax`) in einem neuen Tab zu öffnen</td>
+      <td>Weboberfläche des ausgewählten Duplicati-Servers öffnen <br/> _Rechtsklick_, um die klassische Duplicati-Benutzeroberfläche (`/ngax`) in einem neuen Tab zu öffnen</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:download" href="collect-backup-logs" /> &nbsp; [Protokolle sammeln](collect-backup-logs.md)</td>
-      <td>Verbindet sich mit Duplicati-Servern und ruft Sicherungsprotokolle ab <br/> _Rechtsklick_, um Protokolle für alle konfigurierten Server zu sammeln</td>
+      <td>Mit Duplicati-Servern verbinden und Sicherungsprotokolle abrufen <br/> _Rechtsklick_, um Protokolle für alle konfigurierten Server zu sammeln</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:siren" tone="alert" href="delivery-failures" /> &nbsp; [Zustellungsfehler](delivery-failures.md)</td>
-      <td>Wird Administratoren angezeigt, wenn die Zustellung per E-Mail oder ntfy fehlschlägt. Wenn keine Fehler protokolliert sind, wird die Schaltfläche ausgeblendet. Siehe [Zustellungsfehler](delivery-failures.md).</td>
+      <td>Wird Administratoren angezeigt, wenn die E-Mail- oder ntfy-Zustellung fehlschlägt. Wenn keine Fehler protokolliert sind, wird die Schaltfläche ausgeblendet. Siehe [Zustellungsfehler](delivery-failures.md).</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [Einstellungen](settings/backup-notifications-settings.md)</td>
-      <td>Konfigurieren Sie Benachrichtigungen, Überwachung, SMTP-Server und Benachrichtigungsvorlagen</td>
+      <td>Benachrichtigungen, Überwachung, SMTP-Server und Benachrichtigungsvorlagen konfigurieren</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:user" label="Benutzername" /></td>
-      <td>Zeigt den verbundenen Benutzer, den Benutzertyp (`Admin`, `User`) an; klicken Sie, um das Benutzermenü zu öffnen (enthält die Sprachauswahl). Weitere Informationen finden Sie unter [Benutzerverwaltung](settings/user-management-settings.md)</td>
+      <td>Zeigt den verbundenen Benutzer und Benutzertyp (`Admin`, `User`) an; klicken für das Benutzermenü (einschließlich Sprachauswahl). Weitere Informationen unter [Benutzerverwaltung](settings/user-management-settings.md)</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; Benutzerhandbuch</td>
-      <td>Öffnet das [Benutzerhandbuch](overview.md) im Abschnitt, der für die gerade angezeigte Seite relevant ist. Die QuickInfo zeigt „Hilfe für [Seitenname]“ an, um anzugeben, welche Dokumentation geöffnet wird.</td>
+      <td>Öffnen Sie das [Benutzerhandbuch](overview.md) in dem Abschnitt, der für die aktuell angezeigte Seite relevant ist. Der Tooltip zeigt „Hilfe für [Seitenname]“ an, um anzugeben, welche Dokumentation geöffnet wird.</td>
     </tr>
   </tbody>
 </table>

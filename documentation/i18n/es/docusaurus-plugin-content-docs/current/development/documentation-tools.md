@@ -150,12 +150,13 @@ Este script:
 - Extrae la `package.json` actual y añade un distintivo de versión
 - Copia contenido de `documentation/docs/intro.md`
 - Convierte admoniciones de Docusaurus (nota, consejo, advertencia, etc.) a alertas de estilo GitHub
-- Convierte todos los enlaces relativos de Docusaurus a URLs absolutas de documentos de GitHub (`https://wsj-br.github.io/duplistatus/...`)
-- Convierte rutas de imágenes de `/img/` a `documentation/static/img/` para compatibilidad con GitHub
-- Elimina el bloque IMPORTANT de migración y añade una sección de Información de Migración con un enlace a la documentación de Docusaurus
-- Genera una tabla de contenidos usando `doctoc`
-- Genera `README_dockerhub.md` con formato compatible con Docker Hub (convierte imágenes y enlaces a URLs absolutas, convierte alertas de GitHub a formato basado en emoji)
-- Genera notas de lanzamiento de GitHub (`RELEASE_NOTES_github_VERSION.md`) desde `documentation/docs/release-notes/VERSION.md` (convierte enlaces e imágenes a URLs absolutas)
+- Convierte todos los enlaces relativos de Docusaurus a URL absolutas de la documentación de GitHub (`https://wsj-br.github.io/duplistatus/...`)
+- Convierte las rutas de imágenes de `/img/` a `documentation/static/img/` para garantizar la compatibilidad con GitHub
+- Elimina las anclas de encabezado de Docusaurus (`{#id}` y `{/* #id */}`) para que GitHub pueda generar sus propios identificadores
+- Elimina el bloque IMPORTANTE de migración y añade una sección de Información de migración con un enlace a la documentación de Docusaurus
+- Genera una tabla de contenido mediante `doctoc`
+- Genera `README_dockerhub.md` con formato compatible con Docker Hub (convierte imágenes y enlaces a URL absolutas y transforma las alertas de GitHub a un formato basado en emojis)
+- Genera las notas de la versión de GitHub (`RELEASE_NOTES_github_VERSION.md`) a partir de `documentation/docs/release-notes/VERSION.md` (convierte enlaces e imágenes a URL absolutas)
 
 ## Actualizar README para Docker Hub {/* #update-readme-for-docker-hub */}
 
@@ -168,13 +169,14 @@ El script `generate-readme-from-intro.sh` genera automáticamente `README_docker
 
 ## Generar Notas de Lanzamiento de GitHub {/* #generate-github-release-notes */}
 
-El script `generate-readme-from-intro.sh` genera automáticamente notas de lanzamiento de GitHub cuando se ejecuta. Realiza lo siguiente:
-- Lee las notas de lanzamiento de `documentation/docs/release-notes/VERSION.md` (donde VERSION se extrae de `package.json`)
-- Cambia el título de "# Versión xxxx" a "# Notas de Lanzamiento - Versión xxxxx"
-- Convierte enlaces markdown relativos a URLs absolutas de documentos de GitHub (`https://wsj-br.github.io/duplistatus/...`)
-- Convierte rutas de imágenes a URLs raw de GitHub (`https://raw.githubusercontent.com/wsj-br/duplistatus/main/documentation/static/img/...`) para visualización correcta en descripciones de lanzamiento
-- Maneja rutas relativas con prefijo `../`
-- Preserva URLs absolutas (http:// y https://) sin cambios
+El script `generate-readme-from-intro.sh` genera automáticamente las notas de la versión de GitHub al ejecutarse. Realiza lo siguiente:
+- Lee las notas de la versión de `documentation/docs/release-notes/VERSION.md` (donde VERSION se extrae de `package.json`)
+- Cambia el título de "# Version xxxx" a "# Release Notes - Version xxxxx"
+- Elimina las anclas de encabezado de Docusaurus (`{#id}` y `{/* #id */}`)
+- Convierte enlaces relativos de Markdown a URL absolutas de la documentación de GitHub (`https://wsj-br.github.io/duplistatus/...`)
+- Convierte rutas de imágenes a URL sin procesar de GitHub (`https://raw.githubusercontent.com/wsj-br/duplistatus/main/documentation/static/img/...`) para que se muestren correctamente en las descripciones de las versiones
+- Gestiona rutas relativas con el prefijo `../`
+- Conserva sin cambios las URL absolutas (http:// y https://)
 - Crea `RELEASE_NOTES_github_VERSION.md` en la raíz del proyecto
 
 **Ejemplo:**
@@ -226,17 +228,13 @@ pnpm take-screenshots --locale en-GB,de,pt-BR
 
 ## Desplegar la Documentación {/* #deploying-the-documentation */}
 
-Para desplegar la documentación en GitHub Pages, necesitarás generar un Token de Acceso Personal de GitHub. Ve a [GitHub Personal Access Tokens](https://github.com/settings/tokens) y crea un nuevo token con el ámbito `repo`.
-
-Cuándo tengas el token, guárdalo en el almacén de credenciales de Git (por ejemplo, usando `git config credential.helper store` o el gestor de credenciales de tu sistema).
-
-Luego, para desplegar la documentación en GitHub Pages, ejecuta el siguiente comando desde el directorio `documentation`:
+Confirme (commit) y envíe (push) los cambios de la documentación a `master` y, a continuación, ejecute lo siguiente desde el directorio `documentation`:
 
 ```bash
 pnpm run deploy
 ```
 
-Esto compilará la documentación y la enviará a la rama `gh-pages` del repositorio, y la documentación estará disponible en [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/).
+Esto inicia el flujo de trabajo de GitHub Actions **Deploy documentation**, que compila Docusaurus en Node 24 y lo publica en GitHub Pages con `actions/upload-pages-artifact@v5`. El sitio está disponible en [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/). GitHub Pages debe utilizar **GitHub Actions** como origen (no la rama `gh-pages`).
 
 ## Trabajar con Documentación {/* #working-with-documentation */}
 

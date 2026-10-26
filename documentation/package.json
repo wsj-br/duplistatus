@@ -1,6 +1,6 @@
 {
   "name": "docs",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
@@ -37,23 +37,23 @@
     "@docusaurus/theme-common": "^3.10.2",
     "@docusaurus/theme-mermaid": "^3.10.2",
     "@easyops-cn/docusaurus-search-local": "^0.55.3",
-    "@iconify/react": "^6.0.2",
+    "@iconify/react": "^6.0.3",
     "@mdx-js/react": "^3.1.1",
     "clsx": "^2.1.1",
     "docusaurus-plugin-image-zoom": "^3.0.1",
     "prism-react-renderer": "^2.4.1",
-    "react": "^19.3.0",
-    "react-dom": "^19.3.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
     "remark-github-alerts": "^0.1.1",
-    "serialize-javascript": "^7.1.1"
+    "serialize-javascript": "^7.1.4"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "3.10.2",
     "@docusaurus/tsconfig": "3.10.2",
     "@docusaurus/types": "3.10.2",
-    "@typescript-eslint/parser": "^8.70.1",
+    "@typescript-eslint/parser": "^8.72.1",
     "eslint": "^10.9.1",
-    "eslint-config-next": "16.3.6",
+    "eslint-config-next": "16.4.3",
     "typescript": "~6.0.3"
   },
   "browserslist": {

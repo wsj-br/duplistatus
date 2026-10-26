@@ -85,7 +85,7 @@ The application toolbar provides convenient access to key functions and settings
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><SvgButton svgFilename="ntfy.svg" /> &nbsp; Open NTFY</td>
-      <td>Access the ntfy.sh website for your configured notification topic. <br/> _Right-click_ to show a QR code to configure your device to receive notifications from duplistatus.</td>
+      <td>Open the configured NTFY server for your notification topic. <br/> _Right-click_ to show a QR code to configure your device to receive notifications from duplistatus.</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Duplicati configuration](duplicati-configuration.md)</td>

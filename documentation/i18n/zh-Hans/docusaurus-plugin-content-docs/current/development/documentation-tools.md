@@ -150,12 +150,13 @@ pnpm serve
 - 从 `package.json` 提取当前版本并添加版本徽章
 - 复制 `documentation/docs/intro.md` 的内容
 - 将 Docusaurus 注释（注意、提示、警告等）转换为 GitHub 风格的警报
-- 将所有相对 Docusaurus 链接转换为绝对 GitHub 文档 URL（`https://wsj-br.github.io/duplistatus/...`）
-- 将图像路径从 `/img/` 转换为 `documentation/static/img/` 以兼容 GitHub
-- 移除迁移重要块并添加迁移信息部分，包含指向 Docusaurus 文档的链接
+- 将所有 Docusaurus 相对链接转换为 GitHub 文档绝对 URL（`https://wsj-br.github.io/duplistatus/...`）
+- 将图片路径从 `/img/` 转换为 `documentation/static/img/`，以实现 GitHub 兼容性
+- 移除 Docusaurus 标题锚点（`{#id}` 和 `{/* #id */}`），以便 GitHub 可以生成自己的 ID
+- 移除迁移 IMPORTANT 块，并添加包含 Docusaurus 文档链接的 Migration Information 章节
 - 使用 `doctoc` 生成目录
-- 生成具有 Docker Hub 兼容格式的 `README_dockerhub.md`（将图像和链接转换为绝对 URL，将 GitHub 警报转换为基于表情符号的格式）
-- 从 `documentation/docs/release-notes/VERSION.md` 生成 GitHub 发布说明（`RELEASE_NOTES_github_VERSION.md`）（将链接和图像转换为绝对 URL）
+- 生成具有 Docker Hub 兼容格式的 `README_dockerhub.md`（将图片和链接转换为绝对 URL，将 GitHub 警示框转换为基于表情符号的格式）
+- 从 `documentation/docs/release-notes/VERSION.md` 生成 GitHub 发行说明（`RELEASE_NOTES_github_VERSION.md`）（将链接和图片转换为绝对 URL）
 
 ## 更新 Docker Hub 的 README {/* #update-readme-for-docker-hub */}
 
@@ -168,14 +169,15 @@ pnpm serve
 
 ## 生成 GitHub 发布说明 {/* #generate-github-release-notes */}
 
-运行时，脚本 `generate-readme-from-intro.sh` 会自动生成 GitHub 发布说明。它：
-- 从 `documentation/docs/release-notes/VERSION.md` 读取发布说明（其中 VERSION 从 `package.json` 提取）
-- 将标题从 "# Version xxxx" 更改为 "# Release Notes - Version xxxxx"
-- 将相对 Markdown 链接转换为绝对 GitHub 文档 URL（`https://wsj-br.github.io/duplistatus/...`）
-- 将图像路径转换为 GitHub 原始 URL（`https://raw.githubusercontent.com/wsj-br/duplistatus/main/documentation/static/img/...`），以便在发布描述中正确显示
+`generate-readme-from-intro.sh` 脚本在运行时会自动生成 GitHub 发行说明。它将：
+- 从 `documentation/docs/release-notes/VERSION.md` 读取发行说明（其中 VERSION 提取自 `package.json`）
+- 将标题从“# Version xxxx”更改为“# Release Notes - Version xxxxx”
+- 移除 Docusaurus 标题锚点（`{#id}` 和 `{/* #id */}`）
+- 将 Markdown 相对链接转换为 GitHub 文档绝对 URL（`https://wsj-br.github.io/duplistatus/...`）
+- 将图片路径转换为 GitHub 原始 URL（`https://raw.githubusercontent.com/wsj-br/duplistatus/main/documentation/static/img/...`），以便在发行说明中正确显示
 - 处理带有 `../` 前缀的相对路径
 - 保持绝对 URL（http:// 和 https://）不变
-- 在项目根目录创建 `RELEASE_NOTES_github_VERSION.md`
+- 在项目根目录下创建 `RELEASE_NOTES_github_VERSION.md`
 
 **示例：**
 
@@ -226,17 +228,13 @@ pnpm take-screenshots --locale en-GB,de,pt-BR
 
 ## 部署文档 {/* #deploying-the-documentation */}
 
-要将文档部署到 GitHub Pages，您需要生成 GitHub 个人访问令牌。前往 [GitHub 个人访问令牌](https://github.com/settings/tokens) 并创建一个具有 `repo` 范围的新令牌。
-
-获取令牌后，将其存储在 Git 凭据存储中（例如使用 `git config credential.helper store` 或系统的凭据管理器）。
-
-然后，要将文档部署到 GitHub Pages，请从 `documentation` 目录运行以下命令：
+提交文档更改并推送到 `master`，然后从 `documentation` 目录运行：
 
 ```bash
 pnpm run deploy
 ```
 
-这将构建文档并将其推送到仓库的 `gh-pages` 分支，文档将在 [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/) 上提供。
+这将启动 **Deploy documentation** GitHub Actions 工作流，该工作流在 Node 24 上构建 Docusaurus 并使用 `actions/upload-pages-artifact@v5` 发布到 GitHub Pages。该站点可通过 [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/) 访问。GitHub Pages 必须使用 **GitHub Actions** 作为其源（而不是 `gh-pages` 分支）。
 
 ## 使用文档 {/* #working-with-documentation */}
 

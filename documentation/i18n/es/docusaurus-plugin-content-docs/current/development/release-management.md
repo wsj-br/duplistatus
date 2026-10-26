@@ -79,7 +79,7 @@ pnpm release:github:dry   # print the planned tag, notes file, and gh command
 pnpm release:github       # generate GitHub notes, tag vVERSION at HEAD, publish the release, and deploy the docs
 ```
 
-`scripts/release.mjs` lee la versión de `package.json`, ejecuta `scripts/generate-readme-from-intro.sh` (para que `RELEASE_NOTES_github_VERSION.md` tenga enlaces absolutos) y crea la release de GitHub. Al publicarla, se inicia el flujo de trabajo de la imagen de Docker. A continuación, el script ejecuta `pnpm run deploy` en `documentation/` para compilar el sitio de Docusaurus y subirlo a `gh-pages`. Si la etiqueta `vVERSION` o esa release de GitHub ya existen, el script las elimina y vuelve a crear la etiqueta en el HEAD actual. Pase `--verify-clean=false` para omitir las comprobaciones de árbol limpio.
+`scripts/release.mjs` lee la Versión de `package.json`, ejecuta `scripts/generate-readme-from-intro.sh` (para que `RELEASE_NOTES_github_VERSION.md` tenga enlaces absolutos) y crea la versión de GitHub. Publicarla inicia el flujo de trabajo de la imagen de Docker. A continuación, el script ejecuta `pnpm run deploy` en `documentation/` para iniciar el flujo de trabajo de GitHub Acciones **Deploy documentation**, que compila el sitio de Docusaurus y lo publica en GitHub Pages. Si la etiqueta `vVERSION` o esa versión de GitHub ya existen, el script las elimina y vuelve a crear la etiqueta en el HEAD Actual. Pase `--verify-clean=false` para omitir las comprobaciones de árbol limpio.
 
 Los pasos siguientes son las mismas operaciones ejecutadas manualmente.
 
@@ -157,15 +157,8 @@ La documentación está alojada en [GitHub Pages](https://wsj-br.github.io/dupli
 
 ### Requisitos previos {/* #prerequisites */}
 
-1. Asegúrate de tener un Token de Acceso Personal de GitHub con el ámbito `repo`.
-2. Configura las credenciales de Git (configuración única):
-
-```bash
-cd documentation
-./setup-git-credentials.sh
-```
-
-Esto te pedirá tu Token de Acceso Personal de GitHub y lo almacenará de forma segura.
+1. Autentique la CLI de GitHub (`gh auth login`) para que pueda iniciar flujos de trabajo.
+2. En la **Configuración → Pages** del repositorio, establezca **Source** en **GitHub Actions** (no en Deploy from a branch).
 
 ### Implementar Documentación {/* #deploy-documentation */}
 
@@ -175,7 +168,7 @@ Esto te pedirá tu Token de Acceso Personal de GitHub y lo almacenará de forma 
 cd documentation
 ```
 
-2. Asegúrate de que todos los cambios de documentación estén confirmados e insertados en el repositorio.
+2. Asegúrese de que Todos los cambios en la documentación estén confirmados y enviados a `master`.
 
 3. Compila e implementa la documentación:
 
@@ -183,10 +176,10 @@ cd documentation
 pnpm run deploy
 ```
 
-Este comando hará lo siguiente:
-- Compilará el sitio de documentación de Docusaurus
-- Insertará el sitio compilado en la rama `gh-pages`
-- Hará que la documentación esté disponible en [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/)
+Este comando:
+- Iniciará el flujo de trabajo **Deploy documentation** en `master`
+- Compilará el sitio de Docusaurus en Node 24
+- Lo publicará en GitHub Pages en [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/)
 
 ### Cuándo Implementar Documentación {/* #when-to-deploy-documentation */}
 

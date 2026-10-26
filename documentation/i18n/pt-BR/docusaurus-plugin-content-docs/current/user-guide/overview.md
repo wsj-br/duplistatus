@@ -69,11 +69,11 @@ A barra de ferramentas do aplicativo fornece acesso conveniente às funções e 
   <tbody>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:search" /> &nbsp; Filtrar</td>
-      <td>Pesquisar e filtrar servidores por ID, URL ou nome do job de backup.</td>
+      <td>Pesquisar e filtrar servidores por ID, URL ou nome da tarefa de backup.</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:rotate-ccw" /> &nbsp; Atualizar tela</td>
-      <td>Executar uma atualização manual imediata da tela com todos os dados</td>
+      <td>Executar uma atualização manual imediata da tela de todos os dados</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton label="Atualização automática" /></td>
@@ -81,7 +81,7 @@ A barra de ferramentas do aplicativo fornece acesso conveniente às funções e 
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><SvgButton svgFilename="ntfy.svg" /> &nbsp; Abrir NTFY</td>
-      <td>Acesse o site ntfy.sh para o seu tópico de notificação configurado. <br/> _Clique com o botão direito_ para mostrar um código QR e configure seu dispositivo para receber notificações do duplistatus.</td>
+      <td>Abrir o servidor NTFY configurado para o seu tópico de notificação. <br/> _Clique com o botão direito_ para mostrar um código QR para configure seu dispositivo para receber notificações do duplistatus.</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Configuração do Duplicati](duplicati-configuration.md)</td>
@@ -93,7 +93,7 @@ A barra de ferramentas do aplicativo fornece acesso conveniente às funções e 
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:siren" tone="alert" href="delivery-failures" /> &nbsp; [Falhas de entrega](delivery-failures.md)</td>
-      <td>Exibido para administradores quando a entrega de e-mail ou ntfy estiver falhando. Se nenhuma falha for registrada, o botão fica oculto. Consulte [Falhas de entrega](delivery-failures.md).</td>
+      <td>Exibido aos administradores quando a entrega por e-mail ou NTFY estiver falhando. Se nenhuma falha for registrada, o botão fica oculto. Consulte [Falhas de entrega](delivery-failures.md).</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [Configurações](settings/backup-notifications-settings.md)</td>
@@ -101,11 +101,11 @@ A barra de ferramentas do aplicativo fornece acesso conveniente às funções e 
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:user" label="nome de usuário" /></td>
-      <td>Mostrar o usuário conectado, tipo de usuário (`Admin`, `User`), clique para o menu do usuário (inclui seleção de idioma). Veja mais em [Gerenciamento de Usuários](settings/user-management-settings.md)</td>
+      <td>Mostrar o usuário conectado, o tipo de usuário (`Admin`, `User`), clique para o menu de usuário (inclui seleção de idioma). Veja mais em [Gerenciamento de Usuários](settings/user-management-settings.md)</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; Guia do Usuário</td>
-      <td>Abrir o [Guia do Usuário](overview.md) na seção relevante para a página que você está visualizando no momento. A dica de ferramenta mostra "Ajuda para [Nome da Página]" para indicar qual documentação será aberta.</td>
+      <td>Abrir o [Guia do Usuário](overview.md) na seção relevante para a página que você está visualizando no momento. A dica de ferramenta exibe "Ajuda para [Nome da Página]" para indicar qual documentação será aberta.</td>
     </tr>
   </tbody>
 </table>

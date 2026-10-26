@@ -63,7 +63,7 @@ duplistatus 提供了一个直观的仪表板，用于监控整个基础架构�
   <thead>
     <tr>
       <th style={{whiteSpace: 'nowrap'}}>按钮</th>
-      <th>描述</th>
+      <th>说明</th>
     </tr>
   </thead>
   <tbody>
@@ -73,27 +73,27 @@ duplistatus 提供了一个直观的仪表板，用于监控整个基础架构�
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:rotate-ccw" /> &nbsp; 刷新屏幕</td>
-      <td>立即手动刷新所有数据</td>
+      <td>立即手动刷新所有数据的屏幕显示</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton label="自动刷新" /></td>
-      <td>启用或禁用自动刷新功能。在[显示设置](settings/display-settings.md)中配置 <br/> _右键单击_ 打开显示设置页面</td>
+      <td>启用或禁用自动刷新功能。在[显示设置](settings/display-settings.md)中配置。<br/> _右键点击_ 打开显示设置页面</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><SvgButton svgFilename="ntfy.svg" /> &nbsp; 打开 NTFY</td>
-      <td>访问 ntfy.sh 网站以查看您配置的通知主题。 <br/> _右键单击_ 显示二维码，以配置您的设备接收来自 duplistatus 的通知。</td>
+      <td>打开为您通知主题配置的 NTFY 服务器。<br/> _右键点击_ 以显示二维码，配置您的设备接收来自 duplistatus 的通知。</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Duplicati 配置](duplicati-configuration.md)</td>
-      <td>打开所选 Duplicati 服务器的 Web 界面 <br/> _右键单击_ 在新标签页中打开 Duplicati 旧版 UI (`/ngax`)</td>
+      <td>打开所选 Duplicati 服务器的 Web 界面<br/> _右键点击_ 在新标签页中打开 Duplicati 传统 UI（`/ngax`）</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:download" href="collect-backup-logs" /> &nbsp; [收集日志](collect-backup-logs.md)</td>
-      <td>连接到 Duplicati 服务器并检索备份日志 <br/> _右键单击_ 收集所有已配置服务器的日志</td>
+      <td>连接到 Duplicati 服务器并检索备份日志<br/> _右键点击_ 收集所有已配置服务器的日志</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:siren" tone="alert" href="delivery-failures" /> &nbsp; [投递失败](delivery-failures.md)</td>
-      <td>当电子邮件或 ntfy 投递失败时向管理员显示。如果没有记录任何失败，该按钮将被隐藏。请参阅[投递失败](delivery-failures.md)。</td>
+      <td>当电子邮件或 ntfy 投递失败时向管理员显示。如果未记录任何失败，则隐藏该按钮。参见[投递失败](delivery-failures.md)。</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [设置](settings/backup-notifications-settings.md)</td>
@@ -101,11 +101,11 @@ duplistatus 提供了一个直观的仪表板，用于监控整个基础架构�
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:user" label="用户名" /></td>
-      <td>显示已连接的用户、用户类型（`Admin`、`User`），单击可打开用户菜单（包含语言选择）。在[用户管理](settings/user-management-settings.md)中查看更多信息</td>
+      <td>显示已连接的用户、用户类型（`Admin`、`User`），点击可打开用户菜单（包含语言选择）。更多信息请参见[用户管理](settings/user-management-settings.md)</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; 用户指南</td>
-      <td>打开[用户指南](overview.md)并跳转到与您当前查看的页面相关的部分。工具提示会显示"[页面名称]的帮助"，以指示将打开哪篇文档。</td>
+      <td>打开[用户指南](overview.md)中与您当前查看页面相关的部分。提示信息显示“针对[页面名称]的帮助”，以指明将打开哪份文档。</td>
     </tr>
   </tbody>
 </table>

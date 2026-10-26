@@ -79,7 +79,7 @@ pnpm release:github:dry   # print the planned tag, notes file, and gh command
 pnpm release:github       # generate GitHub notes, tag vVERSION at HEAD, publish the release, and deploy the docs
 ```
 
-`scripts/release.mjs` 从 `package.json` 中读取版本，运行 `scripts/generate-readme-from-intro.sh`（以便 `RELEASE_NOTES_github_VERSION.md` 包含绝对链接），并创建 GitHub release。发布该 release 会启动 Docker 镜像工作流。随后脚本会在 `documentation/` 中运行 `pnpm run deploy` 以构建 Docusaurus 站点并推送到 `gh-pages`。如果标签 `vVERSION` 或该 GitHub release 已存在，脚本将删除它们并在当前 HEAD 重新创建标签。传入 `--verify-clean=false` 可跳过工作树干净状态检查。
+`scripts/release.mjs` 从 `package.json` 读取版本，运行 `scripts/generate-readme-from-intro.sh`（以使 `RELEASE_NOTES_github_VERSION.md` 具有绝对链接），并创建 GitHub Release。发布该 Release 会启动 Docker 镜像工作流。随后，脚本会在 `documentation/` 中运行 `pnpm run deploy` 以启动 **Deploy documentation** GitHub Actions 工作流，该工作流会构建 Docusaurus 站点并将其发布到 GitHub Pages。如果标签 `vVERSION` 或该 GitHub Release 已存在，脚本将删除它们并在当前 HEAD 处重新创建该标签。传入 `--verify-clean=false` 可跳过干净工作树检查。
 
 以下步骤为手动执行的相同操作。
 
@@ -157,15 +157,8 @@ git push origin vMAJOR.MINOR.PATCH
 
 ### 先决条件 {/* #prerequisites */}
 
-1. 确保您拥有具有 `repo` 范围的 GitHub 个人访问令牌。
-2. 设置 Git 凭据（一次性设置）：
-
-```bash
-cd documentation
-./setup-git-credentials.sh
-```
-
-这将提示您输入 GitHub 个人访问令牌并安全存储。
+1. 对 GitHub CLI（`gh auth login`）进行身份验证，以便其能够启动工作流。
+2. 在代码仓库的 **Settings → Pages** 中，将 **Source** 设置为 **GitHub Actions**（而非 Deploy from a branch）。
 
 ### 部署文档 {/* #deploy-documentation */}
 
@@ -175,7 +168,7 @@ cd documentation
 cd documentation
 ```
 
-2. 确保所有文档更改都已提交并推送到仓库。
+2. 确保所有文档更改均已提交和推送到 `master`。
 
 3. 构建并部署文档：
 
@@ -184,9 +177,9 @@ pnpm run deploy
 ```
 
 此命令将：
-- 构建 Docusaurus 文档站点
-- 将构建的站点推送到 `gh-pages` 分支
-- 在 [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/) 提供文档访问
+- 在 `master` 上启动 **Deploy documentation** 工作流
+- 在 Node 24 上构建 Docusaurus 站点
+- 将其发布到 GitHub Pages：[https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/)
 
 ### 何时部署文档 {/* #when-to-deploy-documentation */}
 

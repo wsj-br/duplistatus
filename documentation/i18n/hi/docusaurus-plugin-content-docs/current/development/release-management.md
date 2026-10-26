@@ -79,7 +79,7 @@ pnpm release:github:dry   # print the planned tag, notes file, and gh command
 pnpm release:github       # generate GitHub notes, tag vVERSION at HEAD, publish the release, and deploy the docs
 ```
 
-`scripts/release.mjs`, `package.json` से संस्करण पढ़ता है, `scripts/generate-readme-from-intro.sh` चलाता है (ताकि `RELEASE_NOTES_github_VERSION.md` में एब्सोल्यूट लिंक हों), और GitHub रिलीज़ बनाता है। इसे पब्लिश करने से Docker इमेज वर्कफ़्लो शुरू होता है। फिर स्क्रिप्ट Docusaurus साइट बनाने और उसे `gh-pages` पर पुश करने के लिए `documentation/` में `pnpm run deploy` चलाती है। यदि टैग `vVERSION` या वह GitHub रिलीज़ पहले से मौजूद है, तो स्क्रिप्ट उन्हें हटा देती है और वर्तमान HEAD पर टैग फिर से बना देती है। क्लीन-ट्री जाँचों को छोड़ने के लिए `--verify-clean=false` पास करें।
+`scripts/release.mjs` `package.json` से संस्करण पढ़ता है, `scripts/generate-readme-from-intro.sh` चलाता है (ताकि `RELEASE_NOTES_github_VERSION.md` में पूर्ण लिंक हों), और GitHub रिलीज़ बनाता है। इसे प्रकाशित करने से Docker इमेज वर्कफ़्लो शुरू होता है। फिर स्क्रिप्ट **Deploy documentation** GitHub Actions वर्कफ़्लो शुरू करने के लिए `documentation/` में `pnpm run deploy` चलाती है, जो Docusaurus साइट का निर्माण करता है और इसे GitHub Pages पर प्रकाशित करता है। यदि टैग `vVERSION` या वह GitHub रिलीज़ पहले से मौजूद है, तो स्क्रिप्ट उन्हें हटा देती है और वर्तमान HEAD पर टैग को फिर से बनाती है। क्लीन-ट्री जाँचों को छोड़ने के लिए `--verify-clean=false` पास करें।
 
 नीचे दिए गए चरण वही ऑपरेशन हैं जो मैन्युअल रूप से चलाए जाते हैं।
 
@@ -157,15 +157,8 @@ git push origin vMAJOR.MINOR.PATCH
 
 ### पूर्वापेक्षाएँ {/* #prerequisites */}
 
-1. सुनिश्चित करें कि आपके पास `repo` स्कोप के साथ एक GitHub व्यक्तिगत पहुँच टोकन है।
-2. Git क्रेडेंशियल सेट करें (एक बार की सेटअप):
-
-```bash
-cd documentation
-./setup-git-credentials.sh
-```
-
-यह आपके GitHub व्यक्तिगत पहुँच टोकन के लिए आपसे प्रॉम्प्ट करेगा और इसे सुरक्षित रूप से संग्रहीत करेगा।
+1. GitHub CLI (`gh auth login`) को प्रमाणित करें ताकि यह वर्कफ़्लो शुरू कर सके।
+2. रिपॉजिटरी की **सेटिंग्स → Pages** में, **Source** को **GitHub Actions** पर सेट करें (ब्रांच से डिप्लॉय न करें)।
 
 ### दस्तावेज़ीकरण तैनात करें {/* #deploy-documentation */}
 
@@ -175,7 +168,7 @@ cd documentation
 cd documentation
 ```
 
-2. सुनिश्चित करें कि सभी दस्तावेज़ीकरण परिवर्तनों को कमिट किया गया है और रिपॉजिटरी में पुश किया गया है।
+2. सुनिश्चित करें कि सभी दस्तावेज़ीकरण परिवर्तन कमिट किए गए हैं और `master` पर पुश किए गए हैं।
 
 3. दस्तावेज़ीकरण बनाएँ और तैनात करें:
 
@@ -183,10 +176,10 @@ cd documentation
 pnpm run deploy
 ```
 
-यह कमांड ऐसा करेगा:
-- Docusaurus दस्तावेज़ीकरण साइट का निर्माण करेगा
-- बनाई गई साइट को `gh-pages` शाखा पर पुश करेगा
-- [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/) पर दस्तावेज़ीकरण उपलब्ध कराएगा
+यह कमांड:
+- `master` पर **Deploy documentation** वर्कफ़्लो शुरू करेगी
+- Node 24 पर Docusaurus साइट का निर्माण करेगी
+- इसे [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/) पर GitHub Pages पर प्रकाशित करेगी
 
 ### दस्तावेज़ीकरण कब तैनात करें {/* #when-to-deploy-documentation */}
 

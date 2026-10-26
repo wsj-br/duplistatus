@@ -153,6 +153,7 @@ This script:
 - Converts Docusaurus admonitions (note, tip, warning, etc.) to GitHub-style alerts
 - Converts all relative Docusaurus links to absolute GitHub docs URLs (`https://wsj-br.github.io/duplistatus/...`)
 - Converts image paths from `/img/` to `documentation/static/img/` for GitHub compatibility
+- Removes Docusaurus heading anchors (`{#id}` and `{/* #id */}`) so GitHub can generate its own IDs
 - Removes the migration IMPORTANT block and adds a Migration Information section with a link to the Docusaurus docs
 - Generates a table of contents using `doctoc`
 - Generates `README_dockerhub.md` with Docker Hub-compatible formatting (converts images and links to absolute URLs, converts GitHub alerts to emoji-based format)
@@ -172,6 +173,7 @@ The `generate-readme-from-intro.sh` script automatically generates `README_docke
 The `generate-readme-from-intro.sh` script automatically generates GitHub release notes when run. It:
 - Reads the release notes from `documentation/docs/release-notes/VERSION.md` (where VERSION is extracted from `package.json`)
 - Changes the title from "# Version xxxx" to "# Release Notes - Version xxxxx"
+- Removes Docusaurus heading anchors (`{#id}` and `{/* #id */}`)
 - Converts relative markdown links to absolute GitHub docs URLs (`https://wsj-br.github.io/duplistatus/...`)
 - Converts image paths to GitHub raw URLs (`https://raw.githubusercontent.com/wsj-br/duplistatus/main/documentation/static/img/...`) for proper display in release descriptions
 - Handles relative paths with `../` prefix

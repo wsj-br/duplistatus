@@ -150,12 +150,13 @@ README.md फ़ाइल बनाने या अपडेट करने �
 - `package.json` से वर्तमान संस्करण निकालती है और एक संस्करण बैज जोड़ती है
 - `documentation/docs/intro.md` से सामग्री कॉपी करती है
 - डॉकुसॉरस सलाह (नोट, टिप, चेतावनी, आदि) को गिटहब शैली के अलर्ट में परिवर्तित करती है
-- सभी सापेक्ष डॉकुसॉरस लिंक को निरपेक्ष गिटहब डॉक्स यूआरएल (`https://wsj-br.github.io/duplistatus/...`) में परिवर्तित करता है
-- गिटहब संगतता के लिए `/img/` से `documentation/static/img/` के लिए छवि पथ परिवर्तित करता है
-- माइग्रेशन महत्वपूर्ण ब्लॉक को हटा देता है और डॉकुसॉरस डॉक्स पर लिंक के साथ एक माइग्रेशन जानकारी अनुभाग जोड़ता है
-- `doctoc` का उपयोग करके एक विषय सूची उत्पन्न करता है
-- डॉकर हब संगत प्रारूपण के साथ `README_dockerhub.md` उत्पन्न करता है (छवियों और लिंक को निरपेक्ष यूआरएल में परिवर्तित करता है, गिटहब अलर्ट को इमोजी आधारित प्रारूप में परिवर्तित करता है)
-- `documentation/docs/release-notes/VERSION.md` से `RELEASE_NOTES_github_VERSION.md` (लिंक और छवियों को निरपेक्ष यूआरएल में परिवर्तित करता है) के लिए गिटहब रिलीज नोट्स उत्पन्न करता है
+- Docusaurus के सभी सापेक्ष लिंक को GitHub docs के निरपेक्ष URL में बदलता है (`https://wsj-br.github.io/duplistatus/...`)
+- GitHub संगतता के लिए इमेज पाथ को `/img/` से `documentation/static/img/` में बदलता है
+- Docusaurus हेडिंग एंकर (`{#id}` और `{/* #id */}`) को हटाता है ताकि GitHub अपनी स्वयं की ID जनरेट कर सके
+- माइग्रेशन IMPORTANT ब्लॉक को हटाता है और Docusaurus docs के लिंक के साथ एक माइग्रेशन जानकारी अनुभाग जोड़ता है
+- `doctoc` का उपयोग करके विषय-सूची जनरेट करता है
+- Docker Hub-संगत फ़ॉर्मेटिंग के साथ `README_dockerhub.md` जनरेट करता है (इमेज और लिंक को निरपेक्ष URL में बदलता है, GitHub अलर्ट को इमोजी-आधारित फ़ॉर्मेट में बदलता है)
+- `documentation/docs/release-notes/VERSION.md` से GitHub रिलीज़ नोट्स (`RELEASE_NOTES_github_VERSION.md`) जनरेट करता है (लिंक और इमेज को निरपेक्ष URL में बदलता है)
 
 ## डॉकर हब के लिए रीडमी अपडेट करें {/* #update-readme-for-docker-hub */}
 
@@ -168,13 +169,14 @@ README.md फ़ाइल बनाने या अपडेट करने �
 
 ## गिटहब रिलीज नोट्स उत्पन्न करें {/* #generate-github-release-notes */}
 
-`generate-readme-from-intro.sh` स्क्रिप्ट चलाए जाने पर स्वचालित रूप से गिटहब रिलीज नोट्स उत्पन्न करती है। यह:
-- `documentation/docs/release-notes/VERSION.md` से रिलीज नोट्स पढ़ता है (जहां संस्करण `package.json` से निकाला जाता है)
-- शीर्षक को "# संस्करण xxxx" से "# रिलीज नोट्स - संस्करण xxxxx" में बदल देता है
-- निरपेक्ष मार्कडाउन लिंक को निरपेक्ष गिटहब डॉक्स यूआरएल (`https://wsj-br.github.io/duplistatus/...`) में परिवर्तित करता है
-- रिलीज विवरण में उचित प्रदर्शन के लिए गिटहब रॉ यूआरएल (`https://raw.githubusercontent.com/wsj-br/duplistatus/main/documentation/static/img/...`) के लिए छवि पथ परिवर्तित करता है
-- `../` उपसर्ग के साथ सापेक्ष पथ संभालता है
-- निरपेक्ष यूआरएल (http:// और https://) को अपरिवर्तित रखता है
+`generate-readme-from-intro.sh` स्क्रिप्ट चलाए जाने पर स्वचालित रूप से GitHub रिलीज़ नोट्स जनरेट करती है। यह:
+- `documentation/docs/release-notes/VERSION.md` से रिलीज़ नोट्स पढ़ती है (जहाँ VERSION को `package.json` से निकाला जाता है)
+- शीर्षक को "# Version xxxx" से "# Release Notes - Version xxxxx" में बदलती है
+- Docusaurus हेडिंग एंकर (`{#id}` और `{/* #id */}`) को हटाती है
+- सापेक्ष markdown लिंक को GitHub docs के निरपेक्ष URL में बदलता है (`https://wsj-br.github.io/duplistatus/...`)
+- रिलीज़ विवरण में उचित प्रदर्शन के लिए इमेज पाथ को GitHub raw URL (`https://raw.githubusercontent.com/wsj-br/duplistatus/main/documentation/static/img/...`) में बदलता है
+- `../` उपसर्ग वाले सापेक्ष पाथ को संभालता है
+- निरपेक्ष URL (http:// और https://) को अपरिवर्तित रखता है
 - प्रोजेक्ट रूट में `RELEASE_NOTES_github_VERSION.md` बनाता है
 
 **उदाहरण:**
@@ -226,17 +228,13 @@ pnpm take-screenshots --locale en-GB,de,pt-BR
 
 ## दस्तावेज़ीकरण को डिप्लॉय करना {/* #deploying-the-documentation */}
 
-गिटहब पेजेज पर दस्तावेज़ीकरण डिप्लॉय करने के लिए, आपको एक गिटहब व्यक्तिगत पहुंच टोकन उत्पन्न करने की आवश्यकता होगी। [गिटहब व्यक्तिगत पहुंच टोकन](https://github.com/settings/tokens) पर जाएं और `repo` स्कोप के साथ एक नया टोकन बनाएं।
-
-जब आपके पास टोकन हो, तो इसे गिट क्रेडेंशियल स्टोर में संग्रहीत करें (उदाहरण के लिए `git config credential.helper store` का उपयोग करके या अपने सिस्टम के क्रेडेंशियल प्रबंधक का उपयोग करके)।
-
-फिर, गिटहब पेजेज पर दस्तावेज़ीकरण को डिप्लॉय करने के लिए, `documentation` निर्देशिका से निम्नलिखित कमांड चलाएँ:
+दस्तावेज़ीकरण परिवर्तनों को `master` में कमिट और पुश करें, फिर `documentation` डायरेक्टरी से चलाएँ:
 
 ```bash
 pnpm run deploy
 ```
 
-यह दस्तावेज़ीकरण का निर्माण करेगा और इसे रिपॉजिटरी की `gh-pages` शाखा पर पुश करेगा, और दस्तावेज़ीकरण [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/) पर उपलब्ध होगा।
+यह **Deploy documentation** GitHub Actions वर्कफ़्लो को शुरू करता है, जो Node 24 पर Docusaurus को बनाता है और `actions/upload-pages-artifact@v5` के साथ GitHub Pages पर प्रकाशित करता है। यह साइट [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/) पर उपलब्ध है। GitHub Pages को अपने स्रोत के रूप में **GitHub Actions** का उपयोग करना चाहिए (`gh-pages` शाखा का नहीं)।
 
 ## दस्तावेज़ीकरण के साथ काम करना {/* #working-with-documentation */}
 

@@ -69,7 +69,7 @@ La barre d'outils de l'application fournit un accès pratique aux fonctions et p
   <tbody>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:search" /> &nbsp; Filtrer</td>
-      <td>Rechercher et filtrer les serveurs par ID, URL ou nom de tâche de sauvegarde.</td>
+      <td>Rechercher et filtrer les serveurs par identifiant, URL ou nom de tâche de sauvegarde.</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:rotate-ccw" /> &nbsp; Actualiser l'écran</td>
@@ -77,11 +77,11 @@ La barre d'outils de l'application fournit un accès pratique aux fonctions et p
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton label="Actualisation automatique" /></td>
-      <td>Activer ou désactiver la fonction d'actualisation automatique. Configurer dans les [Paramètres d'affichage](settings/display-settings.md) <br/> _Clic droit_ pour ouvrir la page Paramètres d'affichage</td>
+      <td>Activer ou désactiver la fonctionnalité d'actualisation automatique. À configurer dans les [Paramètres d'affichage](settings/display-settings.md) <br/> _Clic droit_ pour ouvrir la page des Paramètres d'affichage</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><SvgButton svgFilename="ntfy.svg" /> &nbsp; Ouvrir NTFY</td>
-      <td>Accédez au site web ntfy.sh pour votre sujet de notification configuré. <br/> _Clic droit_ pour afficher un code QR afin de configurer votre appareil pour recevoir des notifications de duplistatus.</td>
+      <td>Ouvrir le serveur NTFY configuré pour votre sujet de notification. <br/> _Clic droit_ pour afficher un code QR afin de configurer votre appareil pour recevoir les notifications de duplistatus.</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Configuration de Duplicati](duplicati-configuration.md)</td>
@@ -93,7 +93,7 @@ La barre d'outils de l'application fournit un accès pratique aux fonctions et p
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:siren" tone="alert" href="delivery-failures" /> &nbsp; [Échecs de livraison](delivery-failures.md)</td>
-      <td>Affiché aux administrateurs quand la livraison par e-mail ou ntfy échoue. Si aucun échec n'est enregistré, le bouton est masqué. Voir [Échecs de livraison](delivery-failures.md).</td>
+      <td>Affiché aux administrateurs lorsque la distribution par e-mail ou ntfy échoue. Si aucun échec n'est consigné, le bouton est masqué. Voir [Échecs de livraison](delivery-failures.md).</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [Paramètres](settings/backup-notifications-settings.md)</td>
@@ -101,11 +101,11 @@ La barre d'outils de l'application fournit un accès pratique aux fonctions et p
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:user" label="nom d'utilisateur" /></td>
-      <td>Afficher l'utilisateur connecté, le type d'utilisateur (`Admin`, `User`), cliquer pour le menu utilisateur (inclut la sélection de la langue). Voir plus dans [Gestion des utilisateurs](settings/user-management-settings.md)</td>
+      <td>Afficher l'utilisateur connecté, le type d'utilisateur (`Admin`, `User`), cliquer pour ouvrir le menu utilisateur (inclut la sélection de la langue). En savoir plus dans [Gestion des utilisateurs](settings/user-management-settings.md)</td>
     </tr>
     <tr>
       <td style={{whiteSpace: 'nowrap'}}><IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; Guide de l'utilisateur</td>
-      <td>Ouvrir le [Guide de l'utilisateur](overview.md) à la section correspondant à la page que vous consultez actuellement. L'info-bulle affiche "Aide pour [Nom de la page]" pour indiquer quelle documentation sera ouverte.</td>
+      <td>Ouvrir le [Guide de l'utilisateur](overview.md) à la section correspondant à la page que vous consultez actuellement. L'infobulle affiche "Aide pour [Nom de la page]" pour indiquer quelle documentation sera ouverte.</td>
     </tr>
   </tbody>
 </table>

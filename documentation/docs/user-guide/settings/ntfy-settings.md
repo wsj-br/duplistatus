@@ -9,7 +9,7 @@
 | Setting               | Description                                                                                                                                   |
 |:----------------------|:----------------------------------------------------------------------------------------------------------------------------------------------|
 | **NTFY URL**          | The URL of your NTFY server (defaults to the public `https://ntfy.sh/`).                                                                      |
-| **NTFY Topic**        | A unique identifier for your notifications. The system will automatically generate a random topic if left empty, or you can specify your own. |
+| **NTFY Topic**        | A unique identifier for your notifications. The system will automatically generate a random topic if left empty, or you can specify your own. The "view this topic" link opens that topic on the NTFY URL above. |
 | **NTFY Access Token** | An optional access token for authenticated NTFY servers. Leave this field blank if your server does not require authentication.               |
 
 <br/>

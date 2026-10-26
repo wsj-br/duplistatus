@@ -7,7 +7,7 @@
 | Einstellung           | Beschreibung                                                                                                                                                        |
 |:----------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **NTFY-URL**          | Die URL Ihres NTFY-Servers (Standard ist der öffentliche `https://ntfy.sh/`).                                                                                        |
-| **NTFY-Thema**        | Ein eindeutiger Bezeichner für Ihre Benachrichtigungen. Das System generiert automatisch ein zufälliges Thema, wenn es leer gelassen wird, oder Sie können selbst eines angeben. |
+| **NTFY-Topic**        | Eine eindeutige Kennung für Ihre Benachrichtigungen. Das System generiert automatisch ein zufälliges Topic, wenn das Feld leer gelassen wird, oder Sie können ein eigenes angeben. Der Link „view this topic“ öffnet dieses Topic unter der oben angegebenen NTFY-URL. |
 | **NTFY-Zugriffstoken** | Ein optionales Zugriffstoken für authentifizierte NTFY-Server. Lassen Sie dieses Feld leer, wenn Ihr Server keine Authentifizierung erfordert.                           |
 
 <br/>

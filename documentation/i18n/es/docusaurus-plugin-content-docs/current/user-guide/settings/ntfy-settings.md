@@ -7,7 +7,7 @@
 | Configuración         | Descripción                                                                                                                                                             |
 |:----------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **URL de NTFY**       | La URL de su servidor NTFY (por defecto el público `https://ntfy.sh/`).                                                                                                    |
-| **Tema de NTFY**      | Un identificador único para sus notificaciones. El sistema generará automáticamente un tema aleatorio si se deja vacío, o puede especificar el suyo propio.             |
+| **Tema NTFY**        | Un identificador único para sus Notificaciones. El Sistema generará automáticamente un tema aleatorio si se deja vacío, o puede especificar el suyo propio. El enlace "ver este tema" abre dicho tema en la URL de NTFY indicada arriba. |
 | **Token de acceso NTFY** | Un token de acceso opcional para servidores NTFY autenticados. Deje este campo en blanco si su servidor no requiere autenticación.                                        |
 
 <br/>

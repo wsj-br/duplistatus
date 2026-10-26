@@ -7,7 +7,7 @@
 | Paramètre             | Description                                                                                                                                   |
 |:----------------------|:----------------------------------------------------------------------------------------------------------------------------------------------|
 | **URL NTFY**          | L'URL de votre serveur NTFY (par défaut le serveur public `https://ntfy.sh/`).                                                                      |
-| **Topic NTFY**        | Un identifiant unique pour vos notifications. Le système générera automatiquement un topic aléatoire si ce champ est vide, ou vous pouvez spécifier le vôtre. |
+| **Sujet NTFY**        | Un identifiant unique pour vos notifications. Le système génère automatiquement un sujet aléatoire si ce champ est laissé vide, ou vous pouvez spécifier le vôtre. Le lien « voir ce sujet » ouvre ce sujet sur l'URL NTFY ci-dessus. |
 | **Jeton d'accès NTFY** | Un jeton d'accès facultatif pour les serveurs NTFY authentifiés. Laissez ce champ vide si votre serveur ne nécessite pas d'authentification.               |
 
 <br/>

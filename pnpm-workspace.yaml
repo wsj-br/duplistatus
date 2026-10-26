@@ -85,6 +85,9 @@ overrides:
   undici: 8.10.1
   image-size: npm:image-size-next@2.1.1
   webpack-dev-server@<=5.2.5: ^5.2.6
+  next@>=16.0.0 <=16.4.0: ^16.4.1
+  tinypool@<2.1.2: ^2.1.2
+  undici@>=8.0.0 <8.12.2: ^8.12.2
 
 peerDependencyRules:
   allowedVersions:
@@ -139,3 +142,10 @@ minimumReleaseAgeExclude:
   - eslint-config-next@16.3.6
   - next@16.3.6
   - mdast-util-from-markdown@2.1.0
+  - "@typescript-eslint/parser@8.72.1"
+  - "@typescript-eslint/project-service@8.72.1"
+  - "@typescript-eslint/scope-manager@8.72.1"
+  - "@typescript-eslint/tsconfig-utils@8.72.1"
+  - "@typescript-eslint/types@8.72.1"
+  - "@typescript-eslint/typescript-estree@8.72.1"
+  - "@typescript-eslint/visitor-keys@8.72.1"

@@ -75,7 +75,7 @@ ENV npm_config_verify-deps-before-run= \
     npm_config_npm-globalconfig= \
     npm_config__jsr-registry=
 
-ENV VERSION=1.5.0 \
+ENV VERSION=1.5.1 \
     PORT=9666 \
     HOSTNAME=0.0.0.0 \
     CRON_PORT=9667 \

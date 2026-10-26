@@ -1,5 +1,6 @@
 import { CronServiceConfig, CronInterval, BackupNotificationConfig, StartOfWeek, FormatLocaleOverride, UploadLimitsConfig, CidrAllowlistConfig, TrustedProxiesConfig, DAILY_SUMMARY_DISPATCH_TASK, DATABASE_COMPACT_TASK, DATABASE_COMPACT_CRON_EXPRESSION } from './types';
 import { defaultDailySummaryConfig as defaultDailySummaryScheduleConfig, buildDailySummaryDispatchCronExpression, DEFAULT_DAILY_SUMMARY_UTC_TIME } from './daily-summary-schedule';
+import { DEFAULT_NTFY_SERVER_URL } from './ntfy-url';
 
 export {
   defaultNotificationTemplates,
@@ -56,7 +57,7 @@ export const defaultCronConfig: CronServiceConfig = {
 
 // Default NTFY configuration
 export const defaultNtfyConfig = {
-  url: 'https://ntfy.sh/',
+  url: DEFAULT_NTFY_SERVER_URL,
   topic: '', // Will be generated dynamically
   accessToken: '' // Optional access token for authenticated servers
 };

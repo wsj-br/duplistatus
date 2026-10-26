@@ -127,6 +127,11 @@ For detailed migration information, including migration steps, monitoring, and r
 \
 ' "$TEMP_FILE"
 
+# Drop Docusaurus heading anchors from the assembled README. The header is copied
+# before the intro pipeline, so {/* #id */} on that title would otherwise remain.
+# GitHub generates heading IDs from the heading text.
+sed -i -E 's/ \{#[^}]*\}//g; s/ \{\/\*[[:space:]]*#[^[:space:]]+[[:space:]]*\*\/\}//g' "$TEMP_FILE"
+
 # Copy to README.md
 cp "$TEMP_FILE" README.md
 
@@ -202,8 +207,8 @@ RELEASE_TEMP_FILE=$(mktemp)
 cat "$RELEASE_NOTES_FILE" | \
 # Change title from "# Version xxxx" to "# Release Notes - Version xxxxx"
 sed 's|^# Version |# Release Notes - Version |' | \
-# Remove Docusaurus section ID tags {#xxxxx}
-sed 's/ {#[^}]*}//g' | \
+# Remove Docusaurus heading IDs — classic {#id} and MDX {/* #id */}.
+sed -E 's/ \{#[^}]*\}//g; s/ \{\/\*[[:space:]]*#[^[:space:]]+[[:space:]]*\*\/\}//g' | \
 # Convert Docusaurus Admonitions to GitHub-style Alerts
 awk '
 BEGIN { in_admonition = 0; admonition_type = ""; }

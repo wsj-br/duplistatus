@@ -9,10 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [1.5.1] - 2026-10-26
+
 ### Security
+- **Next.js**: Declared `next` is 16.3.8 (Dependabot #84). The override `next@>=16.0.0 <=16.4.0` → `^16.4.1` installs 16.4.3, which includes that release's fixes for image-optimization SSRF, metadata-route and cache-poisoning issues, Draft Mode leakage through `use cache`, and a development-server information disclosure (`package.json`, `pnpm-workspace.yaml`).
 - **Secret key derivation**: PBKDF2-SHA256 iteration count for AES-256-GCM secret encryption increased from 100,000 to 600,000. New and re-saved secrets use the higher count; decryption still accepts values encrypted with the previous count (`src/lib/secrets.ts`).
 
 ### Fixed
+- **Custom NTFY server links**: The settings topic link and the toolbar NTFY icon open the configured server instead of always using `https://ntfy.sh` (issue #85) (`src/lib/ntfy-url.ts`, `src/components/settings/ntfy-form.tsx`, `src/components/ntfy-messages-button.tsx`, `documentation/docs/user-guide/overview.md`, `documentation/docs/user-guide/settings/ntfy-settings.md`).
+- **README heading anchors**: `scripts/generate-readme-from-intro.sh` now strips Docusaurus `{/* #id */}` anchors from the assembled README (including the title copied from `documentation/docs/_readme-header.md`) and from generated GitHub release notes. GitHub was showing those MDX comments in `README.md` and `README_dockerhub.md`.
 - **Docs hash links on first load**: Opening a docs URL with a hash, including landing-page links such as backup details, scrolls to that heading after the page renders. The dev server ships an empty HTML shell, so the browser's first hash scroll runs before the heading exists (`documentation/src/client-modules/scroll-to-hash.ts`).
 - **Docs landing broken-link check**: Homepage `collectLink` now reports baseUrl-prefixed paths (`/duplistatus/user-guide/…`), so `pnpm -C documentation build` no longer treats root-relative HTML hrefs as missing (`documentation/src/pages/index.tsx`).
 - **Docker multi-arch publish**: Release image builds no longer attach provenance attestations, so GHCR and Docker Hub share one digest and the merge job can tag `linux/amd64` and `linux/arm64` together (`.github/workflows/docker-image.yml`).

@@ -14,6 +14,7 @@ import QRCode from 'qrcode';
 import { NtfyConfig } from '@/lib/types';
 import { NtfyQrModal } from '@/components/ui/ntfy-qr-modal';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
+import { buildNtfyTopicWebUrl } from '@/lib/ntfy-url';
 import { useConfiguration } from '@/contexts/configuration-context';
 interface NtfyFormProps {
   config: NtfyConfig;
@@ -145,6 +146,11 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
     }
   };
 
+  const topicPreviewUrl = buildNtfyTopicWebUrl(
+    formData.url || '',
+    formData.topic || 'duplistatus-my-notification-topic'
+  );
+
   return (
     <div className="space-y-6" data-screenshot-target="settings-content-card">
       <Card variant="modern">
@@ -213,12 +219,12 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
             <p className="text-sm text-muted-foreground">
                 {t("Leave empty to automatically generate a random name when you save. You can view this topic at")}{' '}
                 <a
-                  href={`https://ntfy.sh/${formData.topic || "duplistatus-my-notification-topic"}`}
+                  href={topicPreviewUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-primary hover:underline"
                 >
-                  https://ntfy.sh/{formData.topic || t("duplistatus-my-notification-topic")}
+                  {topicPreviewUrl}
                 </a>.
             </p>
           </div>
