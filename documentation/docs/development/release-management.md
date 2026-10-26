@@ -18,7 +18,7 @@ Before releasing a new version, ensure you have completed the following:
 - [ ] Start a Docker container with `pnpm docker:up` and run `scripts/compare-versions.sh` to verify version consistency between development environment and Docker container (requires Docker container to be running). This script compares SQLite versions by major version only (e.g., 3.45.1 vs 3.51.1 are considered compatible), and compares Node, npm, and Duplistatus versions exactly.
 - [ ] Documentation is up to date, update the screenshots (use `pnpm take-screenshots`)
 - [ ] Release notes are prepared in `documentation/docs/release-notes/VERSION.md`.
-- [ ] Run `scripts/generate-readme-from-intro.sh` to update `README.md` with the new version and any changes from `documentation/docs/intro.md`. This script also automatically generates `README_dockerhub.md` and `RELEASE_NOTES_github_VERSION.md`.
+- [ ] Run `pnpm release:github:dry` to refresh `README.md`, `README_dockerhub.md`, and `RELEASE_NOTES_github_VERSION.md` from `documentation/docs/intro.md`. Commit `README.md` if it changes, then run the dry-run again until the working tree stays clean.
 
 
 ## Release Process Overview {/* #release-process-overview */}
@@ -76,11 +76,13 @@ Once the merge is complete, create a GitHub release:
 From the commit that should be released (typically `master`, already pushed), with a clean working tree and `documentation/docs/release-notes/VERSION.md` in place:
 
 ```bash
-pnpm release:github:dry   # print the planned tag, notes file, and gh command
-pnpm release:github       # generate GitHub notes, tag vVERSION at HEAD, publish the release, and deploy the docs
+pnpm release:github:dry   # regenerate README.md and GitHub notes; stop if tracked files changed
+pnpm release:github       # refresh GitHub notes only, tag vVERSION at HEAD, publish the release, and deploy the docs
 ```
 
-`scripts/release.mjs` reads the version from `package.json`, runs `scripts/generate-readme-from-intro.sh` (so `RELEASE_NOTES_github_VERSION.md` has absolute links), and creates the GitHub release. Publishing it starts the Docker image workflow. The script then runs `pnpm run deploy` in `documentation/` to start the **Deploy documentation** GitHub Actions workflow, which builds the Docusaurus site and publishes it to GitHub Pages. If tag `vVERSION` or that GitHub release already exists, the script deletes them and recreates the tag at the current HEAD. Pass `--verify-clean=false` to skip the clean-tree checks.
+`pnpm release:github:dry` runs `scripts/generate-readme-from-intro.sh`. That rewrites `README.md` and gitignored `RELEASE_NOTES_github_VERSION.md` (absolute links for the GitHub release body). If tracked files change, the dry-run stops so you can commit them — usually the version badge in `README.md` — and run the dry-run again.
+
+`pnpm release:github` does not rewrite `README.md`. It refreshes only the gitignored notes file, tags `vVERSION` at HEAD, and publishes the release. Publishing starts the Docker image workflow. The script then runs `pnpm run deploy` in `documentation/` to start the **Deploy documentation** GitHub Actions workflow, which builds the Docusaurus site and publishes it to GitHub Pages. If tag `vVERSION` or that GitHub release already exists, the script deletes them and recreates the tag at the current HEAD. Pass `--verify-clean=false` to skip the clean-tree checks.
 
 The steps below are the same operations run by hand.
 
@@ -207,10 +209,12 @@ The generated release notes file can be copied and pasted directly into the GitH
 
 ### Update README.md {/* #update-readmemd */}
 
-If you've made changes to `documentation/docs/intro.md`, regenerate the repository `README.md`:
+If you've made changes to `documentation/docs/intro.md`, regenerate the repository `README.md`. Before a GitHub release, `pnpm release:github:dry` runs the same script and also rewrites `RELEASE_NOTES_github_VERSION.md`:
 
 ```bash
 ./scripts/generate-readme-from-intro.sh
+# or, as the release preflight:
+pnpm release:github:dry
 ```
 
 This script:

@@ -7,6 +7,26 @@
 
 set -e  # Exit on any error
 
+# --notes-only writes RELEASE_NOTES_github_<version>.md and leaves README.md alone.
+# pnpm release:github uses that so a version-badge refresh cannot dirty the tree
+# after the dry-run has already committed README.md.
+NOTES_ONLY=0
+for arg in "$@"; do
+    case "$arg" in
+        --notes-only) NOTES_ONLY=1 ;;
+        -h|--help)
+            echo "Usage: scripts/generate-readme-from-intro.sh [--notes-only]"
+            echo "  (default)     Rewrite README.md, README_dockerhub.md, and RELEASE_NOTES_github_<version>.md"
+            echo "  --notes-only  Write RELEASE_NOTES_github_<version>.md only"
+            exit 0
+            ;;
+        *)
+            echo "❌ Error: Unknown argument: $arg"
+            exit 1
+            ;;
+    esac
+done
+
 # Get the directory where this script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Get the project root directory (parent of scripts directory)
@@ -14,8 +34,6 @@ PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 
 # Change to project root directory
 cd "$PROJECT_ROOT"
-
-echo "🔧 Generating README.md from intro.md..."
 
 # Extract version from package.json
 VERSION=$(grep '"version"' package.json | sed 's/.*"version": *"\([^"]*\)".*/\1/')
@@ -27,6 +45,14 @@ fi
 
 echo "📦 Current version: $VERSION"
 
+TEMP_FILE=""
+RELEASE_TEMP_FILE=""
+trap 'rm -f "$TEMP_FILE" "$RELEASE_TEMP_FILE"' EXIT
+
+if [ "$NOTES_ONLY" -eq 0 ]; then
+
+echo "🔧 Generating README.md from intro.md..."
+
 # Check if intro.md exists
 INTRO_FILE="documentation/docs/intro.md"
 if [ ! -f "$INTRO_FILE" ]; then
@@ -36,8 +62,6 @@ fi
 
 # Create temporary file for processing
 TEMP_FILE=$(mktemp)
-RELEASE_TEMP_FILE=""
-trap "rm -f $TEMP_FILE $RELEASE_TEMP_FILE" EXIT
 
 # Start building README.md with header (from documentation/docs/readme-header.md)
 cat "$PROJECT_ROOT/documentation/docs/_readme-header.md" > "$TEMP_FILE"
@@ -185,6 +209,8 @@ sed -i 's|https://github.com/wsj-br/duplistatus/blob/master/https://github.com/w
 
 echo "✅ README_dockerhub.md generated successfully"
 
+fi
+
 # Generate GitHub release notes
 echo ""
 echo "🔧 Generating GitHub release notes for version: $VERSION"
@@ -262,6 +288,8 @@ sed 's|(development/how-i-build-with-ai)|(https://wsj-br.github.io/duplistatus/d
 cp "$RELEASE_TEMP_FILE" "$OUTPUT_FILE"
 echo "✅ Release notes generated: $OUTPUT_FILE"
 
-echo ""
-echo "✅ README.md generated successfully from intro.md"
+if [ "$NOTES_ONLY" -eq 0 ]; then
+    echo ""
+    echo "✅ README.md generated successfully from intro.md"
+fi
 
