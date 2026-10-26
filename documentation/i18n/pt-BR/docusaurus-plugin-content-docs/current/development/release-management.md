@@ -17,8 +17,8 @@ Antes de lançar uma nova versão, certifique-se de ter concluído o seguinte:
 - [ ] Todos os testes passam (em modo devel, local, docker e podman).
 - [ ] Inicie um contêiner Docker com `pnpm docker:up` e execute `scripts/compare-versions.sh` para verificar a consistência da versão entre o ambiente de desenvolvimento e o contêiner Docker (requer que o contêiner Docker esteja em execução). Este script compara versões do SQLite apenas pela versão principal (por exemplo, 3.45.1 vs 3.51.1 são consideradas compatíveis) e compara as versões de Node, npm e Duplistatus exatamente.
 - [ ] A documentação está atualizada, atualize as capturas de tela (use `pnpm take-screenshots`)
-- [ ] As notas de lançamento foram preparadas em `documentation/docs/release-notes/VERSION.md`.
-- [ ] Execute `scripts/generate-readme-from-intro.sh` para atualizar `README.md` com a nova versão e quaisquer alterações de `documentation/docs/intro.md`. Este script também gera automaticamente `README_dockerhub.md` e `RELEASE_NOTES_github_VERSION.md`.
+- [ ] As notas de lançamento estão preparadas em `documentation/docs/release-notes/VERSION.md`.
+- [ ] Execute `pnpm release:github:dry` para atualizar `README.md`, `README_dockerhub.md` e `RELEASE_NOTES_github_VERSION.md` a partir de `documentation/docs/intro.md`. Faça o commit de `README.md` se houver alterações e, em seguida, execute o dry-run novamente até que a árvore de trabalho permaneça limpa.
 
 ## Visão Geral do Processo de Lançamento {/* #release-process-overview */}
 
@@ -75,11 +75,13 @@ Após a mesclagem ser concluída, crie um lançamento do GitHub:
 A partir do commit que deve ser lançado (normalmente `master`, já enviado via push), com uma árvore de trabalho limpa e `documentation/docs/release-notes/VERSION.md` no devido lugar:
 
 ```bash
-pnpm release:github:dry   # print the planned tag, notes file, and gh command
-pnpm release:github       # generate GitHub notes, tag vVERSION at HEAD, publish the release, and deploy the docs
+pnpm release:github:dry   # regenerate README.md and GitHub notes; stop if tracked files changed
+pnpm release:github       # refresh GitHub notes only, tag vVERSION at HEAD, publish the release, and deploy the docs
 ```
 
-`scripts/release.mjs` lê a versão de `package.json`, executa `scripts/generate-readme-from-intro.sh` (para que `RELEASE_NOTES_github_VERSION.md` tenha links absolutos) e cria a release do GitHub. A publicação inicia o workflow da imagem Docker. Em seguida, o script executa `pnpm run deploy` em `documentation/` para iniciar o workflow do GitHub Actions **Deploy documentation**, que compila o site do Docusaurus e o publica no GitHub Pages. Se a tag `vVERSION` ou essa release do GitHub já existir, o script as exclui e recria a tag no HEAD atual. Passe `--verify-clean=false` para ignorar as verificações de clean-tree.
+`pnpm release:github:dry` executa `scripts/generate-readme-from-intro.sh`. Isso reescreve `README.md` e `RELEASE_NOTES_github_VERSION.md` ignorados pelo git (links absolutos para o corpo do lançamento no GitHub). Se os arquivos rastreados forem alterados, o dry-run para para que você possa fazer o commit deles — geralmente o selo de `README.md` — e executar o dry-run novamente.
+
+`pnpm release:github` não reescreve `README.md`. Ele atualiza apenas o arquivo de notas gitignored, marca `vVERSION` em HEAD e publica o lançamento. A publicação inicia o fluxo de trabalho da imagem Docker. O script então executa `pnpm run deploy` em `documentation/` para iniciar o fluxo de trabalho de Ações do GitHub **Deploy documentation**, que cria o site Docusaurus e o publica no GitHub Pages. Se a tag `vVERSION` ou esse lançamento do GitHub já existir, o script os exclui e recria a tag no HEAD atual. Passe `--verify-clean=false` para pular as verificações de clean-tree.
 
 As etapas abaixo são as mesmas operações executadas manualmente.
 
@@ -207,10 +209,12 @@ O arquivo de notas de lançamento gerado pode ser copiado e colado diretamente n
 
 ### Atualizar README.md {/* #update-readmemd */}
 
-Se você fez alterações em `documentation/docs/intro.md`, regenere o repositório `README.md`:
+Se você fez alterações em `documentation/docs/intro.md`, regenere o `README.md` do repositório. Antes de um lançamento no GitHub, `pnpm release:github:dry` executa o mesmo script e também reescreve `RELEASE_NOTES_github_VERSION.md`:
 
 ```bash
 ./scripts/generate-readme-from-intro.sh
+# or, as the release preflight:
+pnpm release:github:dry
 ```
 
 Este script:

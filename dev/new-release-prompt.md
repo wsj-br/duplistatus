@@ -2,7 +2,8 @@
 
 You are an AI coding agent preparing a new release of **duplistatus**. Follow these
 instructions end to end. Work autonomously: gather the inputs, generate the release
-notes, update the changelog, and verify the build. Only stop to ask the user if you
+notes, update the changelog, regenerate the README files and GitHub release notes,
+and verify the build. Only stop to ask the user if you
 hit an ambiguous decision that you cannot resolve from the repo itself.
 
 ---
@@ -129,11 +130,10 @@ When upgrading to version <VERSION>:
 
 ### Getting help {/* #getting-help */}
 
-- **Documentation**: [User Guide](../user-guide/overview.md)
-- **Email settings**: [Email configuration guide](../user-guide/settings/email-settings.md)
-- **API reference**: [API documentation](../api-reference/overview.md)
-- **Migration guide**: [Version upgrade migration](../migration/version_upgrade.md)
-- **Community**: [GitHub Discussions](https://github.com/wsj-br/duplistatus/discussions)
+- **Documentation**: [User Guide](https://wsj-br.github.io/duplistatus/user-guide/overview)
+- **Email settings**: [Email configuration guide](https://wsj-br.github.io/duplistatus/user-guide/settings/email-settings)
+- **API reference**: [API documentation](https://wsj-br.github.io/duplistatus/api-reference/overview)
+- **Migration guide**: [Version upgrade migration](https://wsj-br.github.io/duplistatus/migration/version_upgrade)
 - **Issues**: [GitHub Issues](https://github.com/wsj-br/duplistatus/issues)
 
 ### Reporting bugs {/* #reporting-bugs */}
@@ -152,14 +152,14 @@ When reporting bugs, please include:
 ## Detailed changelog {/* #detailed-changelog */}
 
 The sections above are the highlights of this release. The complete list of
-changes is in [`dev/CHANGELOG.md`](https://github.com/wsj-br/duplistatus/blob/main/dev/CHANGELOG.md)
-under **[<VERSION>]**.
+changes is in [`dev/CHANGELOG.md`](https://github.com/wsj-br/duplistatus/blob/master/dev/CHANGELOG.md#<changelog-anchor>)
+under **[<VERSION>] - <YYYY-MM-DD>**.
 
 ---
 
 ## License {/* #license */}
 
-This project is licensed under the [Apache License 2.0](https://github.com/wsj-br/duplistatus/blob/main/LICENSE).
+This project is licensed under the [Apache License 2.0](https://github.com/wsj-br/duplistatus/blob/master/LICENSE).
 
 **Copyright © 2026 Waldemar Scudeller Jr.**
 ```
@@ -172,10 +172,20 @@ This project is licensed under the [Apache License 2.0](https://github.com/wsj-b
 - **Never** add a `## Changelog` (or similar) section that restates every Unreleased
   bullet, even as a “concise” Added/Changed/Fixed/Security list. That duplicates
   `dev/CHANGELOG.md`.
-- Keep **Detailed changelog** as a pointer only: one or two sentences plus the GitHub
-  link to [`dev/CHANGELOG.md`](https://github.com/wsj-br/duplistatus/blob/main/dev/CHANGELOG.md).
-  Do not paste changelog entries there. After step 5, the version heading in that
-  file is `## [<VERSION>] - <YYYY-MM-DD>`; name that section in the pointer.
+- Keep **Detailed changelog** as a pointer only: one or two sentences plus a GitHub
+  link to the version heading in `dev/CHANGELOG.md`. Do not paste changelog entries
+  there. The repository default branch is **`master`**. A `blob/main` URL 404s.
+  After step 5, the heading is `## [<VERSION>] - <YYYY-MM-DD>`. Link it as
+  `https://github.com/wsj-br/duplistatus/blob/master/dev/CHANGELOG.md#<changelog-anchor>`.
+  Build `<changelog-anchor>` from that heading by removing `[`, `]`, and `.`, then
+  replacing each space with `-`. Example: `## [1.5.1] - 2026-10-26` →
+  `#151---2026-10-26`.
+- **Support** links must be the absolute documentation-site URLs in the skeleton
+  (`https://wsj-br.github.io/duplistatus/...`). Do not use relative `../….md` paths
+  or root-relative `/user-guide/…` paths: GitHub release notes are generated from
+  this file, and those paths do not open the documentation site. Do not add a
+  GitHub Discussions link; Discussions is not enabled on the repository. The
+  license link uses `blob/master`, the same as the changelog.
 - Set the previous version in **Migration notes** to the most recent existing release
   notes file (the highest version currently in `documentation/docs/release-notes/`).
 - Use British/repo-consistent spelling to match existing notes (e.g. "internationalisation").
@@ -201,7 +211,30 @@ This project is licensed under the [Apache License 2.0](https://github.com/wsj-b
 - After this conversion, confirm the release-notes **Detailed changelog** pointer names
   the new `## [<VERSION>]` section (do not copy its bullets into the notes).
 
-## 6. Verify the build (run these in order, fix failures before continuing)
+## 6. Regenerate README.md, the Docker Hub README, and the GitHub release notes
+
+Run this from the repository root, with no extra flags, after the docs release notes
+and the changelog heading exist:
+
+```bash
+./scripts/generate-readme-from-intro.sh
+```
+
+That script reads `version` from `package.json` and `documentation/docs/intro.md`, then
+rewrites all three files:
+
+- `README.md` — GitHub repository README (version badge, banner, table of contents,
+  documentation links as absolute URLs).
+- `README_dockerhub.md` — Docker Hub README (absolute image and document URLs, Docker
+  Hub alert formatting).
+- `RELEASE_NOTES_github_<VERSION>.md` — GitHub release body, generated from
+  `documentation/docs/release-notes/<VERSION>.md`. This file is gitignored. Do not pass
+  `--notes-only`; that flag skips the two README files.
+
+If the script fails, fix the source (`documentation/docs/intro.md` or the release notes)
+and run it again. Do not hand-edit the three generated files.
+
+## 7. Verify the build (run these in order, fix failures before continuing)
 
 Run each command and **fix any failures** before moving on. Do not skip a step because a
 previous one passed. There is **no automated unit/integration test suite** in this repo
@@ -219,7 +252,7 @@ If any command fails:
 - If a failure is clearly unrelated to your changes and pre-existing, note it explicitly
   rather than silently working around it.
 
-## 7. Final review
+## 8. Final review
 
 Before finishing, confirm:
 
@@ -228,11 +261,18 @@ Before finishing, confirm:
 - [ ] The notes do **not** restate every `dev/CHANGELOG.md` Unreleased/version bullet
       (no mirroring Added/Changed/Fixed/Security list).
 - [ ] **Detailed changelog** points at
-      [`dev/CHANGELOG.md`](https://github.com/wsj-br/duplistatus/blob/main/dev/CHANGELOG.md)
-      for the `[<VERSION>]` section.
+      `https://github.com/wsj-br/duplistatus/blob/master/dev/CHANGELOG.md#<changelog-anchor>`
+      for the `## [<VERSION>] - <YYYY-MM-DD>` heading (`master`, not `main`).
+- [ ] **Support** uses the absolute `https://wsj-br.github.io/duplistatus/…` URLs
+      from the skeleton and does not mention GitHub Discussions. The license link
+      uses `blob/master`.
 - [ ] The new file is listed in `documentation/sidebars.ts` (newest first).
 - [ ] `dev/CHANGELOG.md` has the new `## [<VERSION>] - <date>` section and a fresh empty
       `## Unreleased` section.
+- [ ] `./scripts/generate-readme-from-intro.sh` has been run, and `README.md`,
+      `README_dockerhub.md`, and `RELEASE_NOTES_github_<VERSION>.md` match the current
+      version. The GitHub notes still use the absolute documentation URLs, the
+      `master` changelog anchor, and no GitHub Discussions link.
 - [ ] `pnpm install`, `pnpm lint`, `pnpm build` and `cd documentation && pnpm build` all succeed.
 
 Then summarise what you changed and the result of each verification command.

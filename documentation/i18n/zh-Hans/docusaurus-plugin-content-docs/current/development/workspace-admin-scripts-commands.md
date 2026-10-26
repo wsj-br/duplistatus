@@ -98,7 +98,7 @@ pnpm release:github:dry
 pnpm release:github
 ```
 
-`scripts/release.mjs` 会在 HEAD 处为 `v<package.json version>` 打上标签，发布 GitHub Release（其发布说明来自 `documentation/docs/release-notes/<version>.md`，并重写为 `RELEASE_NOTES_github_<version>.md`），然后部署 Docusaurus 站点。请参阅[发布管理](./release-management.md)。
+`pnpm release:github:dry` 重写 `README.md` 和 gitignored `RELEASE_NOTES_github_<version>.md`，如果已跟踪的文件发生更改，它会停止运行，以便您可以先提交它们。`pnpm release:github` 仅刷新该笔记文件，在 HEAD 处标记 `v<package.json version>`，发布 GitHub 发行版，并部署 Docusaurus 站点。请参阅 [Release Management](./release-management.md)。
 
 ## 预检查脚本 {/* #pre-checks-script */}
 

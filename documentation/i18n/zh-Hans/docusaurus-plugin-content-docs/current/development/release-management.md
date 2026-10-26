@@ -16,9 +16,9 @@
 - [ ] 版本号已在 `package.json` 中更新（使用 `scripts/update-version.sh` 在文件间同步）。
 - [ ] 所有测试均已通过（在开发模式、本地、docker 和 podman 中）。
 - [ ] 使用 `pnpm docker:up` 启动一个 Docker 容器并运行 `scripts/compare-versions.sh`，以验证开发环境和 Docker 容器之间的版本一致性（需要 Docker 容器正在运行）。此脚本仅按主要版本比较 SQLite 版本（例如，3.45.1 和 3.51.1 被视为兼容），并精确比较 Node、npm 和 duplistatus 版本。
-- [ ] 文档已更新，更新截图（使用 `pnpm take-screenshots`）
-- [ ] 发行说明已在 `documentation/docs/release-notes/VERSION.md` 中准备。
-- [ ] 运行 `scripts/generate-readme-from-intro.sh` 以使用新版本和来自 `documentation/docs/intro.md` 的任何更改更新 `README.md`。此脚本还会自动生成 `README_dockerhub.md` 和 `RELEASE_NOTES_github_VERSION.md`。
+- [ ] 文档已更新，请更新屏幕截图（使用 `pnpm take-screenshots`）
+- [ ] 发行说明已在 `documentation/docs/release-notes/VERSION.md` 中准备就绪。
+- [ ] 运行 `pnpm release:github:dry` 以从 `documentation/docs/intro.md` 刷新 `README.md`、`README_dockerhub.md` 和 `RELEASE_NOTES_github_VERSION.md`。如果发生更改，请提交 `README.md`，然后再次运行试运行，直到工作树保持干净。
 
 ## 发布流程概述 {/* #release-process-overview */}
 
@@ -75,11 +75,13 @@
 从应发布的提交（通常为已推送的 `master`）开始，保持干净的工作树和就绪的 `documentation/docs/release-notes/VERSION.md`：
 
 ```bash
-pnpm release:github:dry   # print the planned tag, notes file, and gh command
-pnpm release:github       # generate GitHub notes, tag vVERSION at HEAD, publish the release, and deploy the docs
+pnpm release:github:dry   # regenerate README.md and GitHub notes; stop if tracked files changed
+pnpm release:github       # refresh GitHub notes only, tag vVERSION at HEAD, publish the release, and deploy the docs
 ```
 
-`scripts/release.mjs` 从 `package.json` 读取版本，运行 `scripts/generate-readme-from-intro.sh`（以使 `RELEASE_NOTES_github_VERSION.md` 具有绝对链接），并创建 GitHub Release。发布该 Release 会启动 Docker 镜像工作流。随后，脚本会在 `documentation/` 中运行 `pnpm run deploy` 以启动 **Deploy documentation** GitHub Actions 工作流，该工作流会构建 Docusaurus 站点并将其发布到 GitHub Pages。如果标签 `vVERSION` 或该 GitHub Release 已存在，脚本将删除它们并在当前 HEAD 处重新创建该标签。传入 `--verify-clean=false` 可跳过干净工作树检查。
+`pnpm release:github:dry` 会运行 `scripts/generate-readme-from-intro.sh`。这会重写 `README.md` 和被 git 忽略的 `RELEASE_NOTES_github_VERSION.md`（用于 GitHub 发行版正文的绝对链接）。如果被跟踪的文件发生更改，试运行将停止，以便您可以提交它们（通常是 `README.md` 中的版本徽章），然后再次运行试运行。
+
+`pnpm release:github` 不会重写 `README.md`。它仅刷新被 git 忽略的说明文件，在 HEAD 处标记 `vVERSION`，并发布发行版。发布操作会启动 Docker 镜像工作流。随后脚本会在 `documentation/` 中运行 `pnpm run deploy` 以启动 **部署文档** GitHub Actions 工作流，该工作流会构建 Docusaurus 站点并将其发布到 GitHub Pages。如果标签 `vVERSION` 或该 GitHub 发行版已存在，脚本会将其删除并在当前 HEAD 处重新创建标签。传递 `--verify-clean=false` 以跳过干净树检查。
 
 以下步骤为手动执行的相同操作。
 
@@ -207,10 +209,12 @@ pnpm run deploy
 
 ### 更新 README.md {/* #update-readmemd */}
 
-如果您已对 `documentation/docs/intro.md` 进行了更改，请重新生成仓库 `README.md`：
+如果您对 `documentation/docs/intro.md` 进行了更改，请重新生成存储库 `README.md`。在 GitHub 发行之前，`pnpm release:github:dry` 会运行相同的脚本并重写 `RELEASE_NOTES_github_VERSION.md`：
 
 ```bash
 ./scripts/generate-readme-from-intro.sh
+# or, as the release preflight:
+pnpm release:github:dry
 ```
 
 此脚本：

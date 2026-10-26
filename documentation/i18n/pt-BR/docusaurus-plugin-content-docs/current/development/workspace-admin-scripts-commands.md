@@ -98,7 +98,7 @@ pnpm release:github:dry
 pnpm release:github
 ```
 
-`scripts/release.mjs` cria a tag `v<package.json version>` no HEAD, publica uma release do GitHub cujas notas vêm de `documentation/docs/release-notes/<version>.md` (reescrito para `RELEASE_NOTES_github_<version>.md`) e, em seguida, faz o deploy do site Docusaurus. Consulte [Gerenciamento de releases](./release-management.md).
+`pnpm release:github:dry` reescreve `README.md` e `RELEASE_NOTES_github_<version>.md` ignorados pelo git, e para se arquivos rastreados forem alterados para que você possa confirmá-los primeiro. `pnpm release:github` atualiza apenas esse arquivo de notas, marca `v<package.json version>` no HEAD, publica a versão do GitHub e implanta o site Docusaurus. Consulte [Gerenciamento de Versões](./release-management.md).
 
 ## Script de pré-verificações {/* #pre-checks-script */}
 

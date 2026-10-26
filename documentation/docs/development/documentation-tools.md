@@ -175,9 +175,9 @@ The `generate-readme-from-intro.sh` script automatically generates GitHub releas
 - Changes the title from "# Version xxxx" to "# Release Notes - Version xxxxx"
 - Removes Docusaurus heading anchors (`{#id}` and `{/* #id */}`)
 - Converts relative markdown links to absolute GitHub docs URLs (`https://wsj-br.github.io/duplistatus/...`)
-- Converts image paths to GitHub raw URLs (`https://raw.githubusercontent.com/wsj-br/duplistatus/main/documentation/static/img/...`) for proper display in release descriptions
-- Handles relative paths with `../` prefix
-- Preserves absolute URLs (http:// and https://) unchanged
+- Converts image paths to GitHub raw URLs (`https://raw.githubusercontent.com/wsj-br/duplistatus/master/documentation/static/img/...`) for proper display in release descriptions. The default branch is `master`; `main` URLs are rewritten to `master`
+- Handles relative paths with `../` prefix and root-relative documentation paths such as `/user-guide/overview`
+- Preserves absolute URLs (`http://` and `https://`) unchanged, except `blob/main` and `raw/main` links for this repository, which are rewritten to `master`
 - Creates `RELEASE_NOTES_github_VERSION.md` in the project root
 
 **Example:**

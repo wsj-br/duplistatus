@@ -98,7 +98,7 @@ pnpm release:github:dry
 pnpm release:github
 ```
 
-`scripts/release.mjs` HEAD पर `v<package.json version>` को टैग करता है, एक GitHub रिलीज़ प्रकाशित करता है जिसके नोट्स `documentation/docs/release-notes/<version>.md` (`RELEASE_NOTES_github_<version>.md` में रीराइट किए गए) से आते हैं, फिर Docusaurus साइट को डिप्लॉय करता है। [रिलीज़ मैनेजमेंट](./release-management.md) देखें।
+`pnpm release:github:dry` `README.md` और gitignored `RELEASE_NOTES_github_<version>.md` को फिर से लिखता है, और यदि ट्रैक की गई `pnpm release:github` फ़ाइलें बदलती हैं तो रुक जाता है ताकि आप उन्हें पहले कमिट कर सकें। `v<package.json version>` केवल उस नोट्स फ़ाइल को रिफ्रेश करता है, HEAD पर टैग करता है, GitHub रिलीज़ प्रकाशित करता है, और Docusaurus साइट को डिप्लॉय करता है। [Release Management](./release-management.md) देखें।
 
 ## प्री-चेक स्क्रिप्ट {/* #pre-checks-script */}
 

@@ -174,9 +174,9 @@ Das Skript `generate-readme-from-intro.sh` generiert bei der Ausführung automat
 - Ändert den Titel von „# Version xxxx“ in „# Release Notes - Version xxxxx“
 - Entfernt Docusaurus-Überschriftenanker (`{#id}` und `{/* #id */}`)
 - Konvertiert relative Markdown-Links in absolute GitHub-Dokumentations-URLs (`https://wsj-br.github.io/duplistatus/...`)
-- Konvertiert Bildpfade in GitHub-Raw-URLs (`https://raw.githubusercontent.com/wsj-br/duplistatus/main/documentation/static/img/...`) zur korrekten Anzeige in Release-Beschreibungen
-- Verarbeitet relative Pfade mit dem Präfix `../`
-- Behält absolute URLs (http:// und https://) unverändert bei
+- Konvertiert Bildpfade in GitHub-Raw-URLs (`https://raw.githubusercontent.com/wsj-br/duplistatus/master/documentation/static/img/...`) für die korrekte Anzeige in Release-Beschreibungen. Der Standard-Branch ist `master`; `main`-URLs werden zu `master` umgeschrieben
+- Verarbeitet relative Pfade mit `../`-Präfix und wurzelrelative Dokumentationspfade wie `/user-guide/overview`
+- Behält absolute URLs (`http://` und `https://`) unverändert bei, mit Ausnahme von `blob/main`- und `raw/main`-Links für dieses Repository, die zu `master` umgeschrieben werden
 - Erstellt `RELEASE_NOTES_github_VERSION.md` im Stammverzeichnis des Projekts
 
 **Beispiel:**

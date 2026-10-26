@@ -173,10 +173,10 @@ pnpm serve
 - 从 `documentation/docs/release-notes/VERSION.md` 读取发行说明（其中 VERSION 提取自 `package.json`）
 - 将标题从“# Version xxxx”更改为“# Release Notes - Version xxxxx”
 - 移除 Docusaurus 标题锚点（`{#id}` 和 `{/* #id */}`）
-- 将 Markdown 相对链接转换为 GitHub 文档绝对 URL（`https://wsj-br.github.io/duplistatus/...`）
-- 将图片路径转换为 GitHub 原始 URL（`https://raw.githubusercontent.com/wsj-br/duplistatus/main/documentation/static/img/...`），以便在发行说明中正确显示
-- 处理带有 `../` 前缀的相对路径
-- 保持绝对 URL（http:// 和 https://）不变
+- 将相对 Markdown 链接转换为绝对 GitHub 文档 URL (`https://wsj-br.github.io/duplistatus/...`)
+- 将图像路径转换为 GitHub 原始 URL (`https://raw.githubusercontent.com/wsj-br/duplistatus/master/documentation/static/img/...`)，以便在发布说明中正确显示。默认分支为 `master`；`main` URL 会被重写为 `master`
+- 处理带有 `../` 前缀的相对路径和根目录相对文档路径，例如 `/user-guide/overview`
+- 保持绝对 URL (`http://` 和 `https://`) 不变，但此仓库的 `blob/main` 和 `raw/main` 链接除外，它们会被重写为 `master`
 - 在项目根目录下创建 `RELEASE_NOTES_github_VERSION.md`
 
 **示例：**

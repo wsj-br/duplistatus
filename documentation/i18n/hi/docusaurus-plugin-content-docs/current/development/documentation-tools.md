@@ -173,10 +173,10 @@ README.md फ़ाइल बनाने या अपडेट करने �
 - `documentation/docs/release-notes/VERSION.md` से रिलीज़ नोट्स पढ़ती है (जहाँ VERSION को `package.json` से निकाला जाता है)
 - शीर्षक को "# Version xxxx" से "# Release Notes - Version xxxxx" में बदलती है
 - Docusaurus हेडिंग एंकर (`{#id}` और `{/* #id */}`) को हटाती है
-- सापेक्ष markdown लिंक को GitHub docs के निरपेक्ष URL में बदलता है (`https://wsj-br.github.io/duplistatus/...`)
-- रिलीज़ विवरण में उचित प्रदर्शन के लिए इमेज पाथ को GitHub raw URL (`https://raw.githubusercontent.com/wsj-br/duplistatus/main/documentation/static/img/...`) में बदलता है
-- `../` उपसर्ग वाले सापेक्ष पाथ को संभालता है
-- निरपेक्ष URL (http:// और https://) को अपरिवर्तित रखता है
+- सापेक्ष मार्कडाउन लिंक को एब्सोल्यूट GitHub डॉक्स URL (`https://wsj-br.github.io/duplistatus/...`) में बदलता है
+- रिलीज़ विवरण में उचित प्रदर्शन के लिए इमेज पाथ को GitHub रॉ URL (`https://raw.githubusercontent.com/wsj-br/duplistatus/master/documentation/static/img/...`) में बदलता है। डिफ़ॉल्ट ब्रांच `master` है; `main` URL को `master` में फिर से लिखा जाता है
+- `../` प्रीफ़िक्स वाले सापेक्ष पाथ और `/user-guide/overview` जैसे रूट-सापेक्ष डॉक्यूमेंटेशन पाथ को हैंडल करता है
+- एब्सोल्यूट URL (`http://` और `https://`) को अपरिवर्तित रखता है, सिवाय इस रिपॉजिटरी के लिए `blob/main` और `raw/main` लिंक के, जिन्हें `master` में फिर से लिखा जाता है
 - प्रोजेक्ट रूट में `RELEASE_NOTES_github_VERSION.md` बनाता है
 
 **उदाहरण:**

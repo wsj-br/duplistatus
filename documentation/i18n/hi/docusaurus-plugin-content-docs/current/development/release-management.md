@@ -16,9 +16,9 @@
 - [ ] `package.json` में संस्करण संख्या अपडेट की गई है (फ़ाइलों में इसे सिंक्रनाइज़ करने के लिए `scripts/update-version.sh` का उपयोग करें)।
 - [ ] सभी परीक्षण पास हो गए हैं (डेवल मोड, स्थानीय, डॉकर और पॉडमैन में)। 
 - [ ] `pnpm docker:up` के साथ डॉकर कंटेनर शुरू करें और डेवलपमेंट वातावरण और डॉकर कंटेनर के बीच संस्करण सुसंगतता को सत्यापित करने के लिए `scripts/compare-versions.sh` चलाएं (डॉकर कंटेनर के चलने की आवश्यकता है)। यह स्क्रिप्ट केवल मुख्य संस्करण के अनुसार SQLite संस्करणों की तुलना करती है (उदाहरण के लिए, 3.45.1 बनाम 3.51.1 को संगत माना जाता है), और नोड, एनपीएम और duplistatus संस्करणों की सटीक तुलना करती है।
-- [ ] दस्तावेज़ अद्यतन है, स्क्रीनशॉट अपडेट करें (`pnpm take-screenshots` का उपयोग करें)
-- [ ] `documentation/docs/release-notes/VERSION.md` में रिलीज़ नोट्स तैयार किए गए हैं।
-- [ ] `documentation/docs/intro.md` से नए संस्करण और कोई परिवर्तन के साथ `README.md` को अपडेट करने के लिए `scripts/generate-readme-from-intro.sh` चलाएं। यह स्क्रिप्ट स्वचालित रूप से `README_dockerhub.md` और `RELEASE_NOTES_github_VERSION.md` भी उत्पन्न करती है।
+- [ ] दस्तावेज़ीकरण अद्यतित है, स्क्रीनशॉट अपडेट करें (`pnpm take-screenshots` का उपयोग करें)
+- [ ] रिलीज़ नोट्स `documentation/docs/release-notes/VERSION.md` में तैयार किए गए हैं।
+- [ ] `documentation/docs/intro.md` से `README.md`, `README_dockerhub.md`, और `RELEASE_NOTES_github_VERSION.md` को रीफ्रेश करें करने के लिए `pnpm release:github:dry` चलाएँ। यदि `README.md` बदलता है तो उसे कमिट करें, फिर तब तक ड्राई-रन चलाएँ जब तक कि वर्किंग ट्री क्लीन न रहे।
 
 ## रिलीज प्रक्रिया अवलोकन {/* #release-process-overview */}
 
@@ -75,11 +75,13 @@
 उस कमिट से जिसे रिलीज़ किया जाना चाहिए (आमतौर पर `master`, जो पहले ही पुश किया जा चुका है), एक साफ़ वर्किंग ट्री और `documentation/docs/release-notes/VERSION.md` के अपनी जगह पर होने के साथ:
 
 ```bash
-pnpm release:github:dry   # print the planned tag, notes file, and gh command
-pnpm release:github       # generate GitHub notes, tag vVERSION at HEAD, publish the release, and deploy the docs
+pnpm release:github:dry   # regenerate README.md and GitHub notes; stop if tracked files changed
+pnpm release:github       # refresh GitHub notes only, tag vVERSION at HEAD, publish the release, and deploy the docs
 ```
 
-`scripts/release.mjs` `package.json` से संस्करण पढ़ता है, `scripts/generate-readme-from-intro.sh` चलाता है (ताकि `RELEASE_NOTES_github_VERSION.md` में पूर्ण लिंक हों), और GitHub रिलीज़ बनाता है। इसे प्रकाशित करने से Docker इमेज वर्कफ़्लो शुरू होता है। फिर स्क्रिप्ट **Deploy documentation** GitHub Actions वर्कफ़्लो शुरू करने के लिए `documentation/` में `pnpm run deploy` चलाती है, जो Docusaurus साइट का निर्माण करता है और इसे GitHub Pages पर प्रकाशित करता है। यदि टैग `vVERSION` या वह GitHub रिलीज़ पहले से मौजूद है, तो स्क्रिप्ट उन्हें हटा देती है और वर्तमान HEAD पर टैग को फिर से बनाती है। क्लीन-ट्री जाँचों को छोड़ने के लिए `--verify-clean=false` पास करें।
+`pnpm release:github:dry`, `scripts/generate-readme-from-intro.sh` चलाता है। यह `README.md` और gitignored `RELEASE_NOTES_github_VERSION.md` (GitHub रिलीज़ बॉडी के लिए एब्सोल्यूट लिंक) को फिर से लिखता है। यदि ट्रैक की गई फ़ाइलें बदलती हैं, तो ड्राई-रन रुक जाता है ताकि आप उन्हें कमिट कर सकें — आमतौर पर `README.md` में संस्करण बैज — और फिर से ड्राई-रन चला सकें।
+
+`pnpm release:github`, `README.md` को फिर से नहीं लिखता है। यह केवल gitignored नोट्स फ़ाइल को रीफ्रेश करता है, HEAD पर `vVERSION` को टैग करता है, और रिलीज़ प्रकाशित करता है। प्रकाशित करने से Docker इमेज वर्कफ़्लो शुरू हो जाता है। इसके बाद स्क्रिप्ट **Deploy documentation** GitHub कार्रवाइयाँ वर्कफ़्लो शुरू करने के लिए `documentation/` में `pnpm run deploy` चलाती है, जो Docusaurus साइट बनाता है और उसे GitHub Pages पर प्रकाशित करता है। यदि टैग `vVERSION` या वह GitHub रिलीज़ पहले से मौजूद है, तो स्क्रिप्ट उन्हें हटा देती है और वर्तमान HEAD पर टैग को फिर से बनाती है। क्लीन-ट्री चेक को छोड़ने के लिए `--verify-clean=false` पास करें।
 
 नीचे दिए गए चरण वही ऑपरेशन हैं जो मैन्युअल रूप से चलाए जाते हैं।
 
@@ -207,10 +209,12 @@ pnpm run deploy
 
 ### README.md अपडेट करें {/* #update-readmemd */}
 
-यदि आपने `documentation/docs/intro.md` में परिवर्तन किए हैं, तो रिपॉजिटरी `README.md` पुनः उत्पन्न करें:
+यदि आपने `documentation/docs/intro.md` में बदलाव किए हैं, तो रिपॉजिटरी `README.md` को फिर से जनरेट करें। GitHub रिलीज़ से पहले, `pnpm release:github:dry` वही स्क्रिप्ट चलाता है और `RELEASE_NOTES_github_VERSION.md` को भी फिर से लिखता है:
 
 ```bash
 ./scripts/generate-readme-from-intro.sh
+# or, as the release preflight:
+pnpm release:github:dry
 ```
 
 यह स्क्रिप्ट:

@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+- **New-release prompt**: After the changelog is updated, run `./scripts/generate-readme-from-intro.sh` so `README.md`, `README_dockerhub.md`, and `RELEASE_NOTES_github_<version>.md` are regenerated together (`dev/new-release-prompt.md`).
+
+### Fixed
+- **Release notes links**: The new-release prompt and the 1.5.1 notes use `master` for the changelog and license (with a heading anchor on the changelog), point support links at the documentation site, and omit GitHub Discussions. GitHub release-note generation rewrites root-relative documentation paths and `main` URLs for this repository to `master` (`dev/new-release-prompt.md`, `documentation/docs/release-notes/1.5.1.md`, `scripts/generate-readme-from-intro.sh`, `documentation/docs/development/documentation-tools.md`).
+
 ## [1.5.1] - 2026-10-26
 
 ### Security

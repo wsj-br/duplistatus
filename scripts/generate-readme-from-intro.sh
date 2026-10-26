@@ -272,14 +272,22 @@ sed 's|(\./\([^)]*\)\.md)|(https://wsj-br.github.io/duplistatus/\1)|g' | \
 # Convert relative paths with ../ prefix (e.g., ../user-guide/overview.md)
 # Remove ../ and convert to absolute URL
 sed 's|(\.\./\([^)]*\)\.md)|(https://wsj-br.github.io/duplistatus/\1)|g' | \
+# Root-relative docs paths, with or without .md (e.g. /user-guide/overview).
+# These are not rewritten by the ../ rules and do not resolve on GitHub.
+# Use # as the sed delimiter: the path list contains |.
+sed -E 's#\(/((user-guide|api-reference|migration|installation|development|release-notes)/[^)]+)\.md\)#(https://wsj-br.github.io/duplistatus/\1)#g' | \
+sed -E 's#\(/((user-guide|api-reference|migration|installation|development|release-notes)/[^)#]+)\)#(https://wsj-br.github.io/duplistatus/\1)#g' | \
+# This repository's default branch is master. blob/main and raw/main 404.
+sed 's|https://github.com/wsj-br/duplistatus/blob/main/|https://github.com/wsj-br/duplistatus/blob/master/|g' | \
+sed 's|https://raw.githubusercontent.com/wsj-br/duplistatus/main/|https://raw.githubusercontent.com/wsj-br/duplistatus/master/|g' | \
 # Convert image paths to GitHub raw URLs
 # Handle /img/ paths
-sed 's|(/img/|(https://raw.githubusercontent.com/wsj-br/duplistatus/main/documentation/static/img/|g' | \
+sed 's|(/img/|(https://raw.githubusercontent.com/wsj-br/duplistatus/master/documentation/static/img/|g' | \
 # Handle documentation/static/img/ paths
-sed 's|(documentation/static/img/|(https://raw.githubusercontent.com/wsj-br/duplistatus/main/documentation/static/img/|g' | \
+sed 's|(documentation/static/img/|(https://raw.githubusercontent.com/wsj-br/duplistatus/master/documentation/static/img/|g' | \
 # Handle relative image paths like ./img/ or ../img/
-sed 's|(\./img/|(https://raw.githubusercontent.com/wsj-br/duplistatus/main/documentation/static/img/|g' | \
-sed 's|(\.\./img/|(https://raw.githubusercontent.com/wsj-br/duplistatus/main/documentation/static/img/|g' | \
+sed 's|(\./img/|(https://raw.githubusercontent.com/wsj-br/duplistatus/master/documentation/static/img/|g' | \
+sed 's|(\.\./img/|(https://raw.githubusercontent.com/wsj-br/duplistatus/master/documentation/static/img/|g' | \
 # Fix specific development links that don't have .md extension
 sed 's|(development/setup)|(https://wsj-br.github.io/duplistatus/development/setup)|g' | \
 sed 's|(development/how-i-build-with-ai)|(https://wsj-br.github.io/duplistatus/development/how-i-build-with-ai)|g' > "$RELEASE_TEMP_FILE"

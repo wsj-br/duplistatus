@@ -173,10 +173,10 @@ El script `generate-readme-from-intro.sh` genera automáticamente las notas de l
 - Lee las notas de la versión de `documentation/docs/release-notes/VERSION.md` (donde VERSION se extrae de `package.json`)
 - Cambia el título de "# Version xxxx" a "# Release Notes - Version xxxxx"
 - Elimina las anclas de encabezado de Docusaurus (`{#id}` y `{/* #id */}`)
-- Convierte enlaces relativos de Markdown a URL absolutas de la documentación de GitHub (`https://wsj-br.github.io/duplistatus/...`)
-- Convierte rutas de imágenes a URL sin procesar de GitHub (`https://raw.githubusercontent.com/wsj-br/duplistatus/main/documentation/static/img/...`) para que se muestren correctamente en las descripciones de las versiones
-- Gestiona rutas relativas con el prefijo `../`
-- Conserva sin cambios las URL absolutas (http:// y https://)
+- Convierte enlaces markdown `https://wsj-br.github.io/duplistatus/...` a URLs absolutas de la documentación de GitHub.
+- Convierte rutas de imagen a URLs sin procesar de GitHub (`https://raw.githubusercontent.com/wsj-br/duplistatus/master/documentation/static/img/...`) para su correcta visualización en las descripciones de las versiones. La rama Predeterminada es `master`; las URLs `main` se reescriben a `master`.
+- Gestiona rutas relativas con el prefijo `../` y rutas de documentación relativas a la raíz como `/user-guide/overview`.
+- Conserva las URLs absolutas (`http://` y `https://`) sin cambios, excepto los enlaces `blob/main` y `raw/main` para este repositorio, que se reescriben a `master`.
 - Crea `RELEASE_NOTES_github_VERSION.md` en la raíz del proyecto
 
 **Ejemplo:**

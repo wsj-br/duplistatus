@@ -173,10 +173,10 @@ O script `generate-readme-from-intro.sh` gera automaticamente as notas de versã
 - Lê as notas de versão de `documentation/docs/release-notes/VERSION.md` (onde VERSION é extraído de `package.json`)
 - Altera o título de "# Version xxxx" para "# Release Notes - Version xxxxx"
 - Remove âncoras de títulos do Docusaurus (`{#id}` e `{/* #id */}`)
-- Converte links markdown relativos em URLs absolutas da documentação do GitHub (`https://wsj-br.github.io/duplistatus/...`)
-- Converte caminhos de imagem em URLs raw do GitHub (`https://raw.githubusercontent.com/wsj-br/duplistatus/main/documentation/static/img/...`) para exibição correta nas descrições de versões
-- Trata caminhos relativos com o prefixo `../`
-- Mantém URLs absolutas (http:// e https://) inalteradas
+- Converte links markdown Relativo para URLs absolutas de documentação do GitHub (`https://wsj-br.github.io/duplistatus/...`)
+- Converte caminhos de imagem para URLs raw do GitHub (`https://raw.githubusercontent.com/wsj-br/duplistatus/master/documentation/static/img/...`) para exibição adequada em descrições de release. O branch Padrão é `master`; URLs `main` são reescritas para `master`
+- Lida com caminhos relativos com prefixo `../` e caminhos de documentação relativos à raiz, como `/user-guide/overview`
+- Preserva URLs absolutas (`http://` e `https://`) inalteradas, exceto links `blob/main` e `raw/main` para este repositório, que são reescritos para `master`
 - Cria `RELEASE_NOTES_github_VERSION.md` na raiz do projeto
 
 **Exemplo:**
