@@ -176,6 +176,10 @@ echo "🔍 Generating README_dockerhub.md for Docker Hub..."
 # Copy README.md to README_dockerhub.md
 cp README.md README_dockerhub.md
 
+# Drop the static version badge. Docker Hub keeps this README between releases, so a
+# hardcoded version goes stale. The GitHub repository badge stays.
+sed -i '/^!\[version\](https:\/\/img\.shields\.io\/badge\/version-/d' README_dockerhub.md
+
 # Update image references from relative paths to GitHub raw URLs
 # Adds raw GitHub URLs for images under documentation/img, documentation/static/img, documentation/static/assets, documentation/docs/assets
 RAW_BASE='https://raw.githubusercontent.com/wsj-br/duplistatus/master'

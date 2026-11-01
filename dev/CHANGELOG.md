@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+- **Docker Hub README**: Generation drops the version badge so `README_dockerhub.md` does not show a stale version between releases. The GitHub repository badge stays (`scripts/generate-readme-from-intro.sh`, `documentation/docs/development/documentation-tools.md`).
+
 ## [1.5.2] - 2026-11-01
 
 ### Changed

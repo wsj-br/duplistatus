@@ -156,13 +156,14 @@ This script:
 - Removes Docusaurus heading anchors (`{#id}` and `{/* #id */}`) so GitHub can generate its own IDs
 - Removes the migration IMPORTANT block and adds a Migration Information section with a link to the Docusaurus docs
 - Generates a table of contents using `doctoc`
-- Generates `README_dockerhub.md` with Docker Hub-compatible formatting (converts images and links to absolute URLs, converts GitHub alerts to emoji-based format)
+- Generates `README_dockerhub.md` with Docker Hub-compatible formatting (drops the version badge, converts images and links to absolute URLs, converts GitHub alerts to emoji-based format)
 - Generates GitHub release notes (`RELEASE_NOTES_github_VERSION.md`) from `documentation/docs/release-notes/VERSION.md` (converts links and images to absolute URLs)
 
 ## Update README for Docker Hub {/* #update-readme-for-docker-hub */}
 
 The `generate-readme-from-intro.sh` script automatically generates `README_dockerhub.md` with Docker Hub-compatible formatting. It:
 - Copies `README.md` to `README_dockerhub.md`
+- Removes the version badge (`![version](https://img.shields.io/badge/version-…)`). The GitHub repository badge stays
 - Converts relative image paths to absolute GitHub raw URLs
 - Converts relative document links to absolute GitHub blob URLs
 - Converts GitHub-style alerts (`[!NOTE]`, `[!WARNING]`, etc.) to emoji-based format for better Docker Hub compatibility
