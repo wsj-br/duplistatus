@@ -42,7 +42,7 @@
   "9f1ae8ae_many": "de {{count}} mensajes",
   "9f1ae8ae_other": "de {{count}} mensajes",
   "If the backup log was collected using the Collect backup logs feature, the number of messages is limited to 20 due to a hardcoded limit in the Duplicati Server when saving to the local database.": "Si el registro de copia de seguridad se recopiló usando la función Recopilar registros de copia de seguridad, el número de mensajes está limitado a 20 debido a un límite codificado en el Servidor Duplicati al guardar en la base de datos local.",
-  "If the backup log was received directly from the Duplicati server, ensure you are using the following options: send-http-log-level=Information and send-http-max-log-lines=500 in the Duplicati server configuration.": "Si el registro de copia de seguridad se recibió directamente del servidor Duplicati, asegúrese de usar las siguientes opciones: send-http-log-level=Information y send-http-max-log-lines=500 en la configuración del servidor Duplicati.",
+  "If the backup log was received directly from the Duplicati server, ensure you are using the following options: send-http-log-level=Information, send-http-max-log-lines=500, and allow-paths-in-log-messages=true in the Duplicati server configuration.": "Si el registro de la copia de seguridad se recibió directamente del servidor de duplicati, asegúrese de usar las siguientes opciones: send-http-log-level=Information, send-http-max-log-lines=500 y allow-paths-in-log-messages=true en la configuración del servidor de duplicati.",
   "7dd6f627_original": "Showing all messages ({{count}})",
   "7dd6f627_one": "Mostrando todos los mensajes ({{count}})",
   "7dd6f627_many": "Mostrando todos los mensajes ({{count}})",

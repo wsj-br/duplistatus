@@ -195,6 +195,7 @@ O identificador do servidor deve ser codificado em URL.
   --send-http-json-urls=http://my.local.server:9666/api/upload?api_key=YOUR_UPLOAD_KEY
   --send-http-log-level=Information
   --send-http-max-log-lines=500
+  --allow-paths-in-log-messages=true
 ```
 
 Em Duplicati anterior a 2.0.9.106, use `--send-http-url` com `--send-http-result-output-format=Json`. Veja [Configuração do Servidor Duplicati](../installation/duplicati-server-configuration.md).

@@ -175,15 +175,14 @@ Quand les [listes d'autorisation d'IP](../user-guide/settings/ip-allowlist-setti
 
 ### Après activation de HTTPS {/* #after-enabling-https */}
 
+:::info[IMPORTANT]
+Mettez à jour la configuration de votre serveur duplicati pour utiliser l'URL HTTPS :
+
 ```bash
 --send-http-json-urls=https://your-domain.com/api/upload
 ```
 
-:::info[IMPORTANT]
-Mettez à jour la configuration de votre serveur Duplicati pour utiliser l'URL HTTPS :
-
-
-Ajoutez `?api_key=YOUR_UPLOAD_KEY` si les clés API sont requises. Sur Duplicati antérieur à 2.0.9.106, utilisez `--send-http-url=https://your-domain.com/api/upload` avec `--send-http-result-output-format=Json`. Voir [Configuration du serveur Duplicati](duplicati-server-configuration.md).
+Ajoutez `?api_key=YOUR_UPLOAD_KEY` si des Clés API sont requises. Sur les versions de duplicati antérieures à 2.0.9.106, utilisez `--send-http-url=https://your-domain.com/api/upload` avec `--send-http-result-output-format=Json`. Consultez [Duplicati Server Configuration](duplicati-server-configuration.md).
 :::
 
 :::tip

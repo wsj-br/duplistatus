@@ -122,7 +122,7 @@ const LogSection = ({ title, items, variant = "messages", expectedLines, t }: {
                 </p>
                 <p className="mt-2">
                   {t(
-                    "If the backup log was received directly from the Duplicati server, ensure you are using the following options: send-http-log-level=Information and send-http-max-log-lines=500 in the Duplicati server configuration.",
+                    "If the backup log was received directly from the Duplicati server, ensure you are using the following options: send-http-log-level=Information, send-http-max-log-lines=500, and allow-paths-in-log-messages=true in the Duplicati server configuration.",
                   )}
                 </p>
                 </TooltipContent>

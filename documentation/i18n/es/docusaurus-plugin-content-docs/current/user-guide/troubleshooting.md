@@ -63,7 +63,18 @@ Si las notificaciones no se están enviando o recibiendo:
 
 Si las versiones de copia de seguridad no se muestran en el panel o en la página de detalles:
 
-- **Comprobar configuración de Duplicati**: Asegúrese de que `send-http-log-level=Information` y `send-http-max-log-lines=500` estén configurados en las opciones avanzadas de Duplicati. Duplicati mantiene las primeras N líneas de registro. Si la lista de versiones aún falta, aumente el límite o utilice `0` cuando no esté enviando informes también al monitoreo de Duplicati. El **número** de versiones aún puede aparecer desde las estadísticas JSON cuando falta la lista detallada. Vea [Líneas de registro y versiones disponibles](../installation/duplicati-server-configuration.md#log-lines-and-available-versions).
+- **Comprobar Configuración de Duplicati**: Asegúrese de que `send-http-log-level=Information` y `send-http-max-log-lines=500` estén configurados en las opciones avanzadas de duplicati. duplicati mantiene las primeras N líneas de registro. Si la lista de Versión sigue faltando, aumente el límite o utilice `0` cuando no esté también Enviando informes a Duplicati Monitoring. El **count** de la versión aún puede aparecer a partir de las Estadísticas JSON cuando falta la lista detallada. Consulte [Log lines and available versions](../installation/duplicati-server-configuration.md#log-lines-and-available-versions).
+- **duplicati 2.4.1.0 y posteriores**: Si el count está presente y la lista de Marca de tiempo está vacía, es posible que las líneas de retención hayan sido reemplazadas por `-redacted-`. Consulte [Version list empty after Duplicati 2.4.1.0](#version-list-empty-after-duplicati-2410).
+
+### Version list empty after Duplicati 2.4.1.0 {/* #version-list-empty-after-duplicati-2410 */}
+
+Si el count de Versiones disponibles sigue apareciendo pero la lista de Marca de tiempo está vacía después de actualizar duplicati a 2.4.1.0 o posterior:
+
+- Abra un registro de Copia de seguridad reciente en **duplistatus**. Las líneas `Backups to consider:`, `Time frames and intervals pairs:` y `All backups to delete:` muestran `-redacted-` en lugar de fechas.
+- En ese Servidor duplicati, abra **Configuración → Default options** (o las opciones avanzadas de la Copia de seguridad) y Añadir `--allow-paths-in-log-messages=true`. Deje `--reduced-reporting` sin establecer, porque esa opción elimina el texto del mensaje.
+- Ejecute la Copia de seguridad de nuevo. El Siguiente informe completará la lista. Los informes ya almacenados permanecerán redactados.
+
+Esta opción también envía rutas de archivos locales de Advertencias y Errores en el informe HTTP. Consulte [Log lines and available versions](../installation/duplicati-server-configuration.md#log-lines-and-available-versions).
 
 ### Alertas de copia de seguridad vencida no funcionan {/* #overdue-backup-alerts-not-working */}
 

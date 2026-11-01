@@ -1,0 +1,111 @@
+{
+  "sourceLocale": "en-GB",
+  "targetLocales": [
+    "de",
+    "fr",
+    "es",
+    "pt-BR",
+    "hi",
+    "zh-Hans"
+  ],
+  "concurrency": 4,
+  "batchConcurrency": 4,
+  "batchSize": 20,
+  "fileConcurrency": 2,
+  "uiBatchConcurrency": 4,
+  "maxBatchChars": 4096,
+  "provider": "openrouter",
+  "providers": {
+    "openrouter": {
+      "translationModels": [
+        "google/gemini-3.1-flash-lite-preview",
+        "google/gemini-2.5-flash",
+        "google/gemma-4-31b-it",
+        "deepseek/deepseek-v4-flash",
+        "deepseek/deepseek-chat-v3.1",
+        "deepseek/deepseek-v3.2-exp",
+        "openai/gpt-5-mini",
+        "google/gemma-3-27b-it",
+        "z-ai/glm-4.5-air",
+        "meta-llama/llama-3.1-70b-instruct"
+      ],
+      "uiModels": [
+        "~anthropic/claude-sonnet-latest",
+        "qwen/qwen3.7-max"
+      ],
+      "maxTokens": 8192,
+      "temperature": 0.2,
+      "requestTimeout": 240
+    }
+  },
+  "features": {
+    "translateUIStrings": true,
+    "translateSVG": true,
+    "translateDocs": true,
+    "translateJson": true
+  },
+  "cacheDir": ".translation-cache",
+  "glossary": {
+    "userGlossary": "glossary-user.csv"
+  },
+  "ui": {
+    "sourceRoots": [
+      "src/"
+    ],
+    "stringsJson": "src/locales/strings.json",
+    "flatOutputDir": "src/locales/"
+  },
+  "svg": {
+    "sourcePath": [
+      "documentation/static/assets/duplistatus_dash-cards.svg",
+      "documentation/static/assets/duplistatus_toolbar.svg"
+    ],
+    "outputDir": "documentation/i18n",
+    "style": "nested",
+    "pathTemplate": "{outputDir}/{locale}/docusaurus-plugin-content-docs/current/assets/{basename}",
+    "forceLowercase": true
+  },
+  "docs": [
+    {
+      "description": "Docusaurus docs site",
+      "contentPaths": [
+        "documentation/docs"
+      ],
+      "outputDir": "documentation/i18n",
+      "addFrontmatter": false,
+      "docusaurusCatalogDir": "documentation/i18n/en-GB",
+      "docsOutput": {
+        "style": "docusaurus",
+        "docsRoot": "documentation/docs"
+      }
+    },
+    {
+      "description": "Docs site landing page",
+      "contentPaths": [
+        "documentation/src/landing/landing.html"
+      ],
+      "outputDir": "documentation/src/landing/i18n",
+      "addFrontmatter": false,
+      "docsOutput": {
+        "style": "nested",
+        "docsRoot": "documentation/src/landing"
+      }
+    }
+  ],
+  "json": [
+    {
+      "description": "Default notification templates",
+      "contentPaths": "src/locales/templates/en-GB.json",
+      "outputPathTemplate": "src/locales/templates/{locale}.json",
+      "keyPolicy": {
+        "mode": "denylist",
+        "skipKeys": [
+          "priority",
+          "tags"
+        ],
+        "translateKeys": []
+      }
+    }
+  ],
+  "languagesManifestPath": "src/locales/ui-languages.json"
+}

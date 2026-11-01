@@ -1043,22 +1043,22 @@
       }
     ]
   },
-  "ee538319": {
-    "source": "If the backup log was received directly from the Duplicati server, ensure you are using the following options: send-http-log-level=Information and send-http-max-log-lines=500 in the Duplicati server configuration.",
+  "aa0f6045": {
+    "source": "If the backup log was received directly from the Duplicati server, ensure you are using the following options: send-http-log-level=Information, send-http-max-log-lines=500, and allow-paths-in-log-messages=true in the Duplicati server configuration.",
     "translated": {
-      "pt-BR": "Se o log de backup foi recebido diretamente do servidor Duplicati, certifique-se de estar usando as seguintes opções: send-http-log-level=Information e send-http-max-log-lines=500 na configuração do servidor Duplicati.",
-      "fr": "Si le journal de sauvegarde a été reçu directement depuis le serveur Duplicati, assurez-vous d'utiliser les options suivantes : send-http-log-level=Information et send-http-max-log-lines=500 dans la configuration du serveur Duplicati.",
-      "es": "Si el registro de copia de seguridad se recibió directamente del servidor Duplicati, asegúrese de usar las siguientes opciones: send-http-log-level=Information y send-http-max-log-lines=500 en la configuración del servidor Duplicati.",
-      "de": "Wenn das Backup-Protokoll direkt vom Duplicati-Server empfangen wurde, stellen Sie sicher, dass Sie die folgenden Optionen verwenden: send-http-log-level=Information und send-http-max-log-lines=500 in der Duplicati-Server-Konfiguration.",
-      "zh-Hans": "如果备份日志是直接从Duplicati服务器接收的，请确保使用以下选项：send-http-log-level=Information和send-http-max-log-lines=500在Duplicati服务器配置中。",
-      "hi": "यदि बैकअप लॉग सीधे Duplicati सर्वर से प्राप्त हुआ था, तो सुनिश्चित करें कि आप Duplicati सर्वर कॉन्फ़िगरेशन में निम्न विकल्पों का उपयोग कर रहे हैं: send-http-log-level=Information और send-http-max-log-lines=500।"
+      "pt-BR": "Se o log de backup foi recebido diretamente do servidor duplicati, verifique se você está usando as seguintes opções: send-http-log-level=Information, send-http-max-log-lines=500 e allow-paths-in-log-messages=true na configuração do servidor duplicati.",
+      "fr": "Si le journal de sauvegarde a été reçu directement depuis le serveur duplicati, assurez-vous d'utiliser les options suivantes : send-http-log-level=Information, send-http-max-log-lines=500 et allow-paths-in-log-messages=true dans la configuration du serveur duplicati.",
+      "es": "Si el registro de la copia de seguridad se recibió directamente del servidor de duplicati, asegúrese de usar las siguientes opciones: send-http-log-level=Information, send-http-max-log-lines=500 y allow-paths-in-log-messages=true en la configuración del servidor de duplicati.",
+      "de": "Wenn das Backup-Protokoll direkt vom duplicati-Server empfangen wurde, stellen Sie sicher, dass in der duplicati-Serverkonfiguration die folgenden Optionen verwendet werden: send-http-log-level=Information, send-http-max-log-lines=500 und allow-paths-in-log-messages=true.",
+      "zh-Hans": "如果备份日志是直接从 Duplicati 服务器接收的，请确保在 Duplicati 服务器配置中使用以下选项：send-http-log-level=Information、send-http-max-log-lines=500 和 allow-paths-in-log-messages=true。",
+      "hi": "यदि बैकअप लॉग सीधे Duplicati सर्वर से प्राप्त हुआ है, तो सुनिश्चित करें कि आप Duplicati सर्वर कॉन्फ़िगरेशन में इन विकल्पों का उपयोग कर रहे हैं: send-http-log-level=Information, send-http-max-log-lines=500 और allow-paths-in-log-messages=true।"
     },
     "models": {
-      "pt-BR": "mistralai/codestral-2508",
-      "fr": "mistralai/codestral-2508",
-      "es": "mistralai/codestral-2508",
-      "de": "mistralai/codestral-2508",
-      "zh-Hans": "mistralai/codestral-2508",
+      "pt-BR": "~anthropic/claude-sonnet-latest",
+      "fr": "~anthropic/claude-sonnet-latest",
+      "es": "~anthropic/claude-sonnet-latest",
+      "de": "~anthropic/claude-sonnet-latest",
+      "zh-Hans": "~anthropic/claude-sonnet-latest",
       "hi": "~anthropic/claude-sonnet-latest"
     },
     "locations": [

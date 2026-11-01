@@ -195,6 +195,7 @@
   --send-http-json-urls=http://my.local.server:9666/api/upload?api_key=YOUR_UPLOAD_KEY
   --send-http-log-level=Information
   --send-http-max-log-lines=500
+  --allow-paths-in-log-messages=true
 ```
 
 duplicati के 2.0.9.106 से पुराने संस्करणों पर, `--send-http-url` का उपयोग `--send-http-result-output-format=Json` के साथ करें। देखें [Duplicati सर्वर कॉन्फ़िगरेशन](../installation/duplicati-server-configuration.md)।

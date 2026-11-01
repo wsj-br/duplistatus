@@ -16,11 +16,12 @@ Consulte la documentación de [notificaciones HTTP](https://docs.duplicati.com/m
 
 `--send-http-json-urls` ya envía JSON, por lo tanto `--send-http-result-output-format=Json` no es obligatorio (y se ignora para estas URLs).
 
-| Opción avanzada           | Valor                                    |
-    | ------------------------- | ---------------------------------------- |
-    | `send-http-json-urls`     | `http://my.local.server:9666/api/upload` (añadir `?api_key=` cuando se requieran claves de API) |
+| Opción avanzada              | Valor                                    |
+    | ---------------------------- | ---------------------------------------- |
+    | `send-http-json-urls`        | `http://my.local.server:9666/api/upload` (Añadir `?api_key=` cuándo se requieran Claves de API) |
     | `send-http-log-level`            | `Information`                            |
     | `send-http-max-log-lines`        | `500`                                    |
+    | `allow-paths-in-log-messages` | `true`                                  |
 
 Alternativamente, puede hacer clic en `Edit as text` y copiar las líneas siguientes, reemplazando `my.local.server` con su dirección de servidor real.
 
@@ -28,6 +29,7 @@ Alternativamente, puede hacer clic en `Edit as text` y copiar las líneas siguie
 --send-http-json-urls=http://my.local.server:9666/api/upload
 --send-http-log-level=Information
 --send-http-max-log-lines=500
+--allow-paths-in-log-messages=true
 ```
 
 Cuando se requieren [claves de API](../user-guide/settings/api-keys-settings.md), añada la clave de ámbito de subida a la URL:
@@ -66,6 +68,7 @@ Si su servidor Duplicati es anterior a la versión 2.0.9.106, utilice la opción
 - El valor predeterminado de Duplicati es `--send-http-max-log-lines=100`. El valor recomendado es `500`. Duplicati mantiene las **primeras** N líneas de registro. Las líneas utilizadas para la lista de versiones disponibles (`Backups to consider`) generalmente están entre esas primeras centenas de líneas; `100` suele ser muy poco.
 - `--send-http-max-log-lines=0` significa ilimitado. Utilice eso solo si la lista de versiones aún falta y **no** está enviando informes también a [Duplicati Monitoring](https://www.duplicati-monitoring.com/). Los registros ilimitados pueden hacer que ese servicio devuelva HTTP 500 en trabajos grandes.
 - La **cuenta** de versiones disponibles aún proviene de las estadísticas JSON (`BackupListCount`) incluso cuando falta la lista detallada de marcas de tiempo. Si el icono de lista está deshabilitado, aumente el límite (o use `0` cuando solo informe a **duplistatus**).
+- En duplicati 2.4.1.0 y versiones posteriores, establezca `--allow-paths-in-log-messages=true`. Sin esto, duplicati reemplaza las fechas de retención en `Backups to consider` con `-redacted-`, y la **lista** de Versiones disponibles permanece vacía. La opción también incluye rutas de archivos locales de Advertencias y Errores en el informe HTTP. Deje `--reduced-reporting` sin establecer, porque esa opción elimina el texto del mensaje. `--http-report-status-allow-paths-in-log-messages` se aplica solo al informador de Estado en tiempo real y deja el JSON de resultado sin cambios. Consulte [Version list empty after Duplicati 2.4.1.0](../user-guide/troubleshooting.md#version-list-empty-after-duplicati-2410).
 
 :::tip
 Después de configurar el servidor **duplistatus**, recopile los registros de copia de seguridad para todos sus servidores Duplicati usando [Recopilar registros de copias de seguridad](../user-guide/collect-backup-logs.md).
@@ -82,6 +85,7 @@ En ese servidor Duplicati, establezca las Opciones Predeterminadas en:
 --send-http-form-urls=https://www.duplicati-monitoring.com/log/<your-endpoint>
 --send-http-log-level=Information
 --send-http-max-log-lines=500
+--allow-paths-in-log-messages=true
 ```
 
 Reemplace `<your-endpoint>` con la URL de su cuenta Duplicati Monitoring.

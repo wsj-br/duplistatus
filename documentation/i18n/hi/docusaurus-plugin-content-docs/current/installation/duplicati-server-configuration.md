@@ -16,11 +16,12 @@
 
 `--send-http-json-urls` पहले से ही JSON भेजता है, इसलिए `--send-http-result-output-format=Json` आवश्यक नहीं है (और इन URLs के लिए अनदेखा किया जाता है)।
 
-| उन्नत विकल्प           | मान                                    |
-    | ------------------------- | ---------------------------------------- |
-    | `send-http-json-urls`     | `http://my.local.server:9666/api/upload` (जब API कुंजियाँ आवश्यक हों तो `?api_key=` जोड़ें) |
+| उन्नत विकल्प              | मान                                    |
+    | ---------------------------- | ---------------------------------------- |
+    | `send-http-json-urls`        | `http://my.local.server:9666/api/upload` (जब API कुंजियाँ आवश्यक हों तो `?api_key=` जोड़ें) |
     | `send-http-log-level`            | `Information`                            |
     | `send-http-max-log-lines`        | `500`                                    |
+    | `allow-paths-in-log-messages` | `true`                                  |
 
 वैकल्पिक रूप से, आप `Edit as text` पर क्लिक कर सकते हैं और नीचे की पंक्तियों को कॉपी कर सकते हैं, `my.local.server` को अपने वास्तविक सर्वर पते से बदलते हुए।
 
@@ -28,6 +29,7 @@
 --send-http-json-urls=http://my.local.server:9666/api/upload
 --send-http-log-level=Information
 --send-http-max-log-lines=500
+--allow-paths-in-log-messages=true
 ```
 
 जब [API कुंजियाँ](../user-guide/settings/api-keys-settings.md) आवश्यक होती हैं, तो URL में अपलोड-स्कोप कुंजी जोड़ें:
@@ -66,6 +68,7 @@ Duplicati कस्टम HTTP हेडर सेट नहीं कर सक
 - Duplicati का डिफ़ॉल्ट `--send-http-max-log-lines=100` है। अनुशंसित मान `500` है। Duplicati **पहली** N लॉग पंक्तियों को रखता है। उपलब्ध संस्करणों की सूची (`Backups to consider`) के लिए उपयोग की जाने वाली पंक्तियाँ आमतौर पर उन पहली सैकड़ों पंक्तियों में होती हैं; `100` अक्सर बहुत कम होता है।
 - `--send-http-max-log-lines=0` का अर्थ असीमित है। इसका उपयोग केवल तब करें जब संस्करण सूची अभी भी गायब हो और आप [Duplicati Monitoring](https://www.duplicati-monitoring.com/) को रिपोर्ट **नहीं** भेज रहे हों। असीमित लॉग बड़े जॉब्स पर उस सेवा को HTTP 500 लौटाने का कारण बन सकते हैं।
 - उपलब्ध संस्करणों की **गिनती** अभी भी JSON आँकड़ों (`BackupListCount`) से आती है, भले ही विस्तृत टाइमस्टैम्प सूची गायब हो। यदि सूची आइकन धूसरित है, तो सीमा बढ़ाएँ (या केवल **duplistatus** को रिपोर्ट करते समय `0` का उपयोग करें)।
+- duplicati 2.4.1.0 और बाद के संस्करणों पर, `--allow-paths-in-log-messages=true` सेट करें। इसके बिना, duplicati `Backups to consider` में प्रतिधारण तिथियों को `-redacted-` से बदल देता है, और उपलब्ध संस्करण **सूची** खाली रहती है। यह विकल्प HTTP रिपोर्ट में चेतावनियाँ और त्रुटियाँ से स्थानीय फ़ाइल पथों को भी शामिल करता है। `--reduced-reporting` को अनसेट छोड़ दें, क्योंकि वह विकल्प संदेश टेक्स्ट को हटा देता है। `--http-report-status-allow-paths-in-log-messages` केवल लाइव स्थिति रिपोर्टर पर लागू होता है और परिणाम JSON को अपरिवर्तित छोड़ देता है। देखें [Version list empty after Duplicati 2.4.1.0](../user-guide/troubleshooting.md#version-list-empty-after-duplicati-2410)।
 
 :::tip
 **duplistatus** सर्वर को कॉन्फ़िगर करने के बाद, अपने सभी Duplicati सर्वर के लिए बैकअप लॉग को [Collect Backup Logs](../user-guide/collect-backup-logs.md) का उपयोग करके एकत्र करें।
@@ -82,6 +85,7 @@ Duplicati कस्टम HTTP हेडर सेट नहीं कर सक
 --send-http-form-urls=https://www.duplicati-monitoring.com/log/<your-endpoint>
 --send-http-log-level=Information
 --send-http-max-log-lines=500
+--allow-paths-in-log-messages=true
 ```
 
 `<your-endpoint>` को अपने Duplicati Monitoring खाते से URL से बदलें।

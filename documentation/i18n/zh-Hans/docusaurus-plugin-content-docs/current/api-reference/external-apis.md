@@ -195,6 +195,7 @@
   --send-http-json-urls=http://my.local.server:9666/api/upload?api_key=YOUR_UPLOAD_KEY
   --send-http-log-level=Information
   --send-http-max-log-lines=500
+  --allow-paths-in-log-messages=true
 ```
 
 在早于 2.0.9.106 的 duplicati 版本中，使用 `--send-http-url` 和 `--send-http-result-output-format=Json`。参见 [duplicati 服务器配置](../installation/duplicati-server-configuration.md)。

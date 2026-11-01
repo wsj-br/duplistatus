@@ -63,7 +63,18 @@ Se as notificações não estiverem sendo enviadas ou recebidas:
 
 Se as versões de backup não forem mostradas no painel ou na página de detalhes:
 
-- **Verificar Configuração do Duplicati**: Certifique-se de que `send-http-log-level=Information` e `send-http-max-log-lines=500` estejam configurados nas opções avançadas do Duplicati. O Duplicati mantém as primeiras N linhas de log. Se a lista de versões ainda estiver ausente, aumente o limite ou use `0` quando você não estiver enviando relatórios também para o Monitoramento do Duplicati. A **contagem** de versões ainda pode aparecer nas estatísticas JSON quando a lista detalhada estiver ausente. Veja [Linhas de log e versões disponíveis](../installation/duplicati-server-configuration.md#log-lines-and-available-versions).
+- **Verificar Configuração do Duplicati**: Garanta que `send-http-log-level=Information` e `send-http-max-log-lines=500` estejam configurados nas opções avançadas do duplicati. O duplicati mantém as primeiras N linhas de log. Se a lista de Versão ainda estiver faltando, aumente o limite ou use `0` quando você não estiver também Enviando relatórios para o Monitoramento do Duplicati. A **contagem** de versão ainda pode aparecer a partir das Estatísticas JSON quando a lista detalhada estiver faltando. Veja [Log lines and available versions](../installation/duplicati-server-configuration.md#log-lines-and-available-versions).
+- **Duplicati 2.4.1.0 e posterior**: Se a contagem estiver presente e a lista de Timestamp estiver vazia, as linhas de retenção podem ter sido substituídas por `-redacted-`. Veja [Version list empty after Duplicati 2.4.1.0](#version-list-empty-after-duplicati-2410).
+
+### Version list empty after Duplicati 2.4.1.0 {/* #version-list-empty-after-duplicati-2410 */}
+
+Se a contagem de Versões Disponíveis ainda for exibida, mas a lista de Timestamp estiver vazia após atualizar o duplicati para 2.4.1.0 ou posterior:
+
+- Abra um log de Backup recente no **duplistatus**. As linhas `Backups to consider:`, `Time frames and intervals pairs:` e `All backups to delete:` mostram `-redacted-` em vez de datas.
+- Nesse Servidor duplicati, abra **Configurações → Opções Padrão** (ou as opções avançadas do Backup) e Adicionar `--allow-paths-in-log-messages=true`. Deixe `--reduced-reporting` sem definir, porque essa opção remove o texto da mensagem.
+- Execute o Backup novamente. O Próximo relatório preencherá a lista. Relatórios já armazenados permanecem redigidos.
+
+Essa opção também envia caminhos de arquivos locais de Avisos e Erros no relatório HTTP. Veja [Log lines and available versions](../installation/duplicati-server-configuration.md#log-lines-and-available-versions).
 
 ### Alertas de Backup Atrasado Não Funcionando {/* #overdue-backup-alerts-not-working */}
 

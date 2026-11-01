@@ -88,6 +88,9 @@ overrides:
   next@>=16.0.0 <=16.4.0: ^16.4.1
   tinypool@<2.1.2: ^2.1.2
   undici@>=8.0.0 <8.12.2: ^8.12.2
+  follow-redirects@>=1.16.0 <=1.16.1: ^1.16.2
+  joi@>=17.1.1 <17.13.9: ^17.13.9
+  minimatch@<11.0.1: ^11.0.1
 
 peerDependencyRules:
   allowedVersions:
@@ -119,14 +122,14 @@ minimumReleaseAgeExclude:
   - js-yaml@4.1.2
   - http-proxy-middleware@3.0.6
   - ai-i18n-tools
-  - i18next@26.4.2
+  - i18next@26.4.2 || 26.6.0
   - postcss@8.5.28
   - "@ai-sdk/gateway@4.0.74"
   - ai@7.0.92
   - autoprefixer@10.6.0
   - nodemailer@10.0.9
   - tailwind-merge@3.7.0
-  - react-i18next@17.0.14
+  - react-i18next@17.0.14 || 17.1.10
   - zod@4.6.5
   - tsx@4.23.15
   - "@next/env@16.3.6"
@@ -149,3 +152,4 @@ minimumReleaseAgeExclude:
   - "@typescript-eslint/types@8.72.1"
   - "@typescript-eslint/typescript-estree@8.72.1"
   - "@typescript-eslint/visitor-keys@8.72.1"
+  - "@iconify/react@6.0.4"

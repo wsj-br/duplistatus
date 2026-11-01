@@ -175,15 +175,14 @@ Wenn [IP-Allowlists](../user-guide/settings/ip-allowlist-settings.md) aktiviert 
 
 ### Nach Aktivierung von HTTPS {/* #after-enabling-https */}
 
+:::info[WICHTIG]
+Aktualisieren Sie Ihre duplicati-Serverkonfiguration, um die HTTPS-URL zu verwenden:
+
 ```bash
 --send-http-json-urls=https://your-domain.com/api/upload
 ```
 
-:::info[WICHTIG]
-Aktualisieren Sie Ihre Duplicati-Serverkonfiguration, um die HTTPS-URL zu verwenden:
-
-
-Hängen Sie `?api_key=YOUR_UPLOAD_KEY` an, falls API-Schlüssel erforderlich sind. Bei Duplicati älter als 2.0.9.106 verwenden Sie `--send-http-url=https://your-domain.com/api/upload` zusammen mit `--send-http-result-output-format=Json`. Siehe [Duplicati-Serverkonfiguration](duplicati-server-configuration.md).
+Hängen Sie `?api_key=YOUR_UPLOAD_KEY` an, falls API-Schlüssel erforderlich sind. Verwenden Sie bei duplicati-Versionen vor 2.0.9.106 `--send-http-url=https://your-domain.com/api/upload` zusammen mit `--send-http-result-output-format=Json`. Siehe [duplicati-Serverkonfiguration](duplicati-server-configuration.md).
 :::
 
 :::tip

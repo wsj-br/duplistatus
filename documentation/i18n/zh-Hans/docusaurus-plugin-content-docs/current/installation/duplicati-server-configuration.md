@@ -16,11 +16,12 @@
 
 `--send-http-json-urls` 已经发送 JSON，因此不需要 `--send-http-result-output-format=Json`（对于这些 URL 将被忽略）。
 
-| 高级选项           | 值                                    |
-    | ------------------------- | ---------------------------------------- |
-    | `send-http-json-urls`     | `http://my.local.server:9666/api/upload`（当需要 API 密钥时添加 `?api_key=`） |
+| 高级选项              | 值                                    |
+    | ---------------------------- | ---------------------------------------- |
+    | `send-http-json-urls`        | `http://my.local.server:9666/api/upload` (当需要 API 密钥时添加 `?api_key=`) |
     | `send-http-log-level`            | `Information`                            |
     | `send-http-max-log-lines`        | `500`                                    |
+    | `allow-paths-in-log-messages` | `true`                                  |
 
 或者，您可以单击 `Edit as text` 并复制下面的行，将 `my.local.server` 替换为您实际的服务器地址。
 
@@ -28,6 +29,7 @@
 --send-http-json-urls=http://my.local.server:9666/api/upload
 --send-http-log-level=Information
 --send-http-max-log-lines=500
+--allow-paths-in-log-messages=true
 ```
 
 当需要 [API 密钥](../user-guide/settings/api-keys-settings.md) 时，在 URL 后附加上传范围密钥：
@@ -66,6 +68,7 @@ Duplicati 无法设置自定义 HTTP 标头。查询参数是发送密钥的受�
 - Duplicati 的默认值是 `--send-http-max-log-lines=100`。推荐值是 `500`。Duplicati 保留 **first** N 条日志行。可用版本列表使用的行（`Backups to consider`）通常在前几百行中；`100` 通常太少了。
 - `--send-http-max-log-lines=0` 表示无限制。仅当版本列表仍然缺失且你 **not** 也没有向 [Duplicati 监控](https://www.duplicati-monitoring.com/) 发送报告时才使用该选项。无限制日志可能会导致该服务在大型任务上返回 HTTP 500。
 - 可用版本的 **count** 仍然来自 JSON 统计数据（`BackupListCount`），即使详细的时间戳列表缺失也是如此。如果列表图标呈灰显状态，请提高上限（或在仅向 **duplistatus** 报告时使用 `0`）。
+- 在 duplicati 2.4.1.0 及更高版本中，设置 `--allow-paths-in-log-messages=true`。如果不设置，duplicati 会将 `Backups to consider` 中的保留日期替换为 `-redacted-`，并且可用版本 **列表** 将保持为空。该选项还包括来自 HTTP 报告中警告和错误的本地文件路径。请勿设置 `--reduced-reporting`，因为该选项会移除消息文本。`--http-report-status-allow-paths-in-log-messages` 仅适用于实时状态报告程序，且不会更改结果 JSON。请参阅 [Version list empty after Duplicati 2.4.1.0](../user-guide/troubleshooting.md#version-list-empty-after-duplicati-2410)。
 
 :::tip
 配置 **duplistatus** 服务器后，使用 [收集备份日志](../user-guide/collect-backup-logs.md) 收集所有 Duplicati 服务器的备份日志。
@@ -82,6 +85,7 @@ Duplicati 无法设置自定义 HTTP 标头。查询参数是发送密钥的受�
 --send-http-form-urls=https://www.duplicati-monitoring.com/log/<your-endpoint>
 --send-http-log-level=Information
 --send-http-max-log-lines=500
+--allow-paths-in-log-messages=true
 ```
 
 将 `<your-endpoint>` 替换为您 Duplicati 监控账户中的 URL。

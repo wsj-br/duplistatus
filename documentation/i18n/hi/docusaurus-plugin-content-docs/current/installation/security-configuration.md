@@ -175,15 +175,14 @@ Caddy पहली बार जब साइट की सेवा करत�
 
 ### HTTPS सक्षम करने के बाद {/* #after-enabling-https */}
 
+:::info[महत्वपूर्ण]
+HTTPS URL का उपयोग करने के लिए अपने Duplicati सर्वर कॉन्फ़िगरेशन को अपडेट करें:
+
 ```bash
 --send-http-json-urls=https://your-domain.com/api/upload
 ```
 
-:::info[महत्वपूर्ण]
-अपने Duplicati सर्वर कॉन्फ़िगरेशन को HTTPS URL का उपयोग करने के लिए अद्यतन करें:
-
-
-यदि API कुंजियाँ आवश्यक हैं तो `?api_key=YOUR_UPLOAD_KEY` जोड़ें। Duplicati के 2.0.9.106 संस्करण से पुराने में, `--send-http-url=https://your-domain.com/api/upload` के साथ `--send-http-result-output-format=Json` का उपयोग करें। देखें [Duplicati सर्वर कॉन्फ़िगरेशन](duplicati-server-configuration.md)।
+यदि API कुंजियाँ आवश्यक हैं, तो `?api_key=YOUR_UPLOAD_KEY` जोड़ें। 2.0.9.106 से पुराने Duplicati पर, `--send-http-result-output-format=Json` के साथ `--send-http-url=https://your-domain.com/api/upload` का उपयोग करें। [Duplicati Server Configuration](duplicati-server-configuration.md) देखें।
 :::
 
 :::tip

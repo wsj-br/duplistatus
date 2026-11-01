@@ -38,7 +38,7 @@
   "9f1ae8ae_original": "of {{count}} messages",
   "9f1ae8ae_other": "共 {{count}} 条消息",
   "If the backup log was collected using the Collect backup logs feature, the number of messages is limited to 20 due to a hardcoded limit in the Duplicati Server when saving to the local database.": "如果备份日志是使用 \"收集备份日志\" 功能收集的，则消息数量限制为 20，这是由于 Duplicati 服务器在保存到本地数据库时的硬编码限制。",
-  "If the backup log was received directly from the Duplicati server, ensure you are using the following options: send-http-log-level=Information and send-http-max-log-lines=500 in the Duplicati server configuration.": "如果备份日志是直接从Duplicati服务器接收的，请确保使用以下选项：send-http-log-level=Information和send-http-max-log-lines=500在Duplicati服务器配置中。",
+  "If the backup log was received directly from the Duplicati server, ensure you are using the following options: send-http-log-level=Information, send-http-max-log-lines=500, and allow-paths-in-log-messages=true in the Duplicati server configuration.": "如果备份日志是直接从 Duplicati 服务器接收的，请确保在 Duplicati 服务器配置中使用以下选项：send-http-log-level=Information、send-http-max-log-lines=500 和 allow-paths-in-log-messages=true。",
   "7dd6f627_original": "Showing all messages ({{count}})",
   "7dd6f627_other": "显示所有消息 ({{count}})",
   "#": "#",

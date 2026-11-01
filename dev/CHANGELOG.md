@@ -9,7 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [1.5.2] - 2026-11-01
+
 ### Changed
+- **Duplicati reporting options**: The recommended Duplicati configuration now includes `--allow-paths-in-log-messages=true` so Duplicati 2.4.1.0 and later still send retention dates. Troubleshooting explains how to restore an empty available-version list when those lines show `-redacted-` (`documentation/docs/installation/duplicati-server-configuration.md`, `documentation/docs/api-reference/external-apis.md`, `documentation/docs/user-guide/troubleshooting.md`, `src/app/detail/[serverId]/backup/[backupId]/page.tsx`).
 - **New-release prompt**: After the changelog is updated, run `./scripts/generate-readme-from-intro.sh` so `README.md`, `README_dockerhub.md`, and `RELEASE_NOTES_github_<version>.md` are regenerated together (`dev/new-release-prompt.md`).
 
 ### Fixed

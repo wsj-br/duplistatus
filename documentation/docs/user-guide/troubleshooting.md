@@ -66,6 +66,17 @@ If notifications are not being sent or received:
 If backup versions are not shown on the dashboard or details page:
 
 - **Check Duplicati Configuration**: Ensure `send-http-log-level=Information` and `send-http-max-log-lines=500` are configured in Duplicati's advanced options. Duplicati keeps the first N log lines. If the version list is still missing, raise the cap or use `0` when you are not also sending reports to Duplicati Monitoring. The version **count** can still appear from the JSON statistics when the detailed list is missing. See [Log lines and available versions](../installation/duplicati-server-configuration.md#log-lines-and-available-versions).
+- **Duplicati 2.4.1.0 and later**: If the count is present and the timestamp list is empty, the retention lines may have been replaced with `-redacted-`. See [Version list empty after Duplicati 2.4.1.0](#version-list-empty-after-duplicati-2410).
+
+### Version list empty after Duplicati 2.4.1.0 {/* #version-list-empty-after-duplicati-2410 */}
+
+If the available-versions count still shows but the timestamp list is empty after upgrading Duplicati to 2.4.1.0 or later:
+
+- Open a recent backup log in **duplistatus**. The lines `Backups to consider:`, `Time frames and intervals pairs:`, and `All backups to delete:` show `-redacted-` instead of dates.
+- On that Duplicati server, open **Settings → Default options** (or the backup's advanced options) and add `--allow-paths-in-log-messages=true`. Leave `--reduced-reporting` unset, because that option removes the message text.
+- Run the backup again. The next report fills the list. Reports already stored stay redacted.
+
+This option also sends local file paths from warnings and errors in the HTTP report. See [Log lines and available versions](../installation/duplicati-server-configuration.md#log-lines-and-available-versions).
 
 ### Overdue Backup Alerts Not Working {/* #overdue-backup-alerts-not-working */}
 

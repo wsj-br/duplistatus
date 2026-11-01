@@ -63,7 +63,18 @@ Si les notifications ne sont pas envoyées ou reçues :
 
 Si les versions de sauvegarde ne sont pas affichées sur le tableau de bord ou la page de détails :
 
-- **Vérifier la configuration de Duplicati** : Assurez-vous que `send-http-log-level=Information` et `send-http-max-log-lines=500` sont configurés dans les options avancées de Duplicati. Duplicati conserve les N premières lignes de journal. Si la liste des versions est toujours manquante, augmentez la limite ou utilisez `0` lorsque vous n'envoyez pas également de rapports à la surveillance Duplicati. Le **nombre** de versions peut toujours apparaître à partir des statistiques JSON lorsque la liste détaillée est absente. Voir [Lignes de journal et versions disponibles](../installation/duplicati-server-configuration.md#log-lines-and-available-versions).
+- **Vérifier Configuration de Duplicati**: Assurez-vous que `send-http-log-level=Information` et `send-http-max-log-lines=500` sont configurés dans les options avancées de duplicati. duplicati conserve les N premières lignes de journal. Si la liste des Versions disponibles est toujours manquante, augmentez la limite ou utilisez `0` quand vous n'envoyez pas non plus de rapports à Duplicati Monitoring. Le **nombre** de versions peut toujours apparaître à partir des Statistiques JSON quand la liste détaillée est manquante. Voir [Log lines and available versions](../installation/duplicati-server-configuration.md#log-lines-and-available-versions).
+- **duplicati 2.4.1.0 et ultérieur**: Si le nombre est présent et que la liste d'Horodatage est vide, les lignes de rétention peuvent avoir été remplacées par `-redacted-`. Voir [Version list empty after Duplicati 2.4.1.0](#version-list-empty-after-duplicati-2410).
+
+### Version list empty after Duplicati 2.4.1.0 {/* #version-list-empty-after-duplicati-2410 */}
+
+Si le nombre de Versions disponibles s'affiche toujours mais que la liste d'Horodatage est vide après la mise à niveau de duplicati vers la 2.4.1.0 ou une version ultérieure :
+
+- Ouvrez un journal de Sauvegarde récent dans **duplistatus**. Les lignes `Backups to consider:`, `Time frames and intervals pairs:` et `All backups to delete:` affichent `-redacted-` au lieu des dates.
+- Sur ce Serveur duplicati, ouvrez **Paramètres → Options Par défaut** (ou les options avancées de la sauvegarde) et Ajouter `--allow-paths-in-log-messages=true`. Laissez `--reduced-reporting` non défini, car cette option supprime le texte du message.
+- Exécutez à nouveau la sauvegarde. Le rapport suivant remplit la liste. Les rapports déjà stockés restent expurgés.
+
+Cette option envoie également les chemins de fichiers locaux à partir des Avertissements et Erreurs dans le rapport HTTP. Voir [Log lines and available versions](../installation/duplicati-server-configuration.md#log-lines-and-available-versions).
 
 ### Les alertes de sauvegarde en retard ne fonctionnent pas {/* #overdue-backup-alerts-not-working */}
 

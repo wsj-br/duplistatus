@@ -63,7 +63,18 @@
 
 यदि बैकअप संस्करण डैशबोर्ड या विवरण पृष्ठ पर नहीं दिखाए जा रहे हैं:
 
-- **Duplicati कॉन्फ़िगरेशन की जांच करें**: सुनिश्चित करें कि Duplicati के उन्नत विकल्पों में `send-http-log-level=Information` और `send-http-max-log-lines=500` कॉन्फ़िगर किए गए हैं। Duplicati पहले N लॉग लाइनों को रखता है। यदि संस्करण सूची अभी भी गायब है, तो कैप बढ़ा दें या जब आप Duplicati निगरानी पर रिपोर्ट भेज रहे हों तो `0` का उपयोग करें। विस्तृत सूची गायब होने पर भी JSON आँकड़ों से संस्करण **गणना** दिख सकती है। देखें [लॉग लाइनें और उपलब्ध संस्करण](../installation/duplicati-server-configuration.md#log-lines-and-available-versions)।
+- **Duplicati कॉन्फ़िगरेशन जांचें**: सुनिश्चित करें कि Duplicati के उन्नत विकल्पों में `send-http-log-level=Information` और `send-http-max-log-lines=500` कॉन्फ़िगर किए गए हैं। Duplicati पहले N लॉग लाइनों को रखता है। यदि संस्करण सूची अभी भी गायब है, तो कैप बढ़ाएं या `0` का उपयोग करें जब आप Duplicati Monitoring को रिपोर्ट नहीं भेज रहे हों। जब विस्तृत सूची गायब होती है, तब भी JSON आँकड़े से संस्करण **संख्या (count)** दिखाई दे सकती है। [Log lines and available versions](../installation/duplicati-server-configuration.md#log-lines-and-available-versions) देखें।
+- **Duplicati 2.4.1.0 और उसके बाद के संस्करण**: यदि संख्या मौजूद है और टाइमस्टैम्प सूची खाली है, तो रिटेंशन लाइनों को `-redacted-` से बदल दिया गया होगा। [Version list empty after Duplicati 2.4.1.0](#version-list-empty-after-duplicati-2410) देखें।
+
+### Version list empty after Duplicati 2.4.1.0 {/* #version-list-empty-after-duplicati-2410 */}
+
+यदि duplicati को 2.4.1.0 या उसके बाद के संस्करण में अपग्रेड करने के बाद भी उपलब्ध-संस्करणों (available-versions) की संख्या दिखाई दे रही है, लेकिन टाइमस्टैम्प सूची खाली है:
+
+- **duplistatus** में हाल ही का एक बैकअप लॉग खोलें। `Backups to consider:`, `Time frames and intervals pairs:`, और `All backups to delete:` पंक्तियाँ तारीखों के बजाय `-redacted-` दिखाती हैं।
+- उस duplicati सर्वर पर, **Settings → Default options** (या बैकअप के उन्नत विकल्प) खोलें और `--allow-paths-in-log-messages=true` जोड़ें। `--reduced-reporting` को अनसेट (unset) छोड़ दें, क्योंकि वह विकल्प संदेश टेक्स्ट को हटा देता है।
+- बैकअप को फिर से चलाएँ। अगली रिपोर्ट सूची को भर देती है। पहले से संग्रहीत रिपोर्टें रिडैक्ट (redacted) ही रहती हैं।
+
+यह विकल्प HTTP रिपोर्ट में चेतावनियाँ और त्रुटियाँ से स्थानीय फ़ाइल पथ भी भेजता है। [Log lines and available versions](../installation/duplicati-server-configuration.md#log-lines-and-available-versions) देखें।
 
 ### अतिदेय बैकअप अलर्ट काम नहीं कर रहे हैं {/* #overdue-backup-alerts-not-working */}
 

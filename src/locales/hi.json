@@ -40,7 +40,7 @@
   "9f1ae8ae_one": "{{count}} संदेश का",
   "9f1ae8ae_other": "{{count}} संदेशों का",
   "If the backup log was collected using the Collect backup logs feature, the number of messages is limited to 20 due to a hardcoded limit in the Duplicati Server when saving to the local database.": "यदि बैकअप लॉग को बैकअप लॉग एकत्र करें सुविधा का उपयोग करके एकत्र किया गया था, तो स्थानीय डेटाबेस में सहेजते समय Duplicati सर्वर में हार्डकोडेड सीमा के कारण संदेशों की संख्या 20 तक सीमित है।",
-  "If the backup log was received directly from the Duplicati server, ensure you are using the following options: send-http-log-level=Information and send-http-max-log-lines=500 in the Duplicati server configuration.": "यदि बैकअप लॉग सीधे Duplicati सर्वर से प्राप्त हुआ था, तो सुनिश्चित करें कि आप Duplicati सर्वर कॉन्फ़िगरेशन में निम्न विकल्पों का उपयोग कर रहे हैं: send-http-log-level=Information और send-http-max-log-lines=500।",
+  "If the backup log was received directly from the Duplicati server, ensure you are using the following options: send-http-log-level=Information, send-http-max-log-lines=500, and allow-paths-in-log-messages=true in the Duplicati server configuration.": "यदि बैकअप लॉग सीधे Duplicati सर्वर से प्राप्त हुआ है, तो सुनिश्चित करें कि आप Duplicati सर्वर कॉन्फ़िगरेशन में इन विकल्पों का उपयोग कर रहे हैं: send-http-log-level=Information, send-http-max-log-lines=500 और allow-paths-in-log-messages=true।",
   "7dd6f627_original": "Showing all messages ({{count}})",
   "7dd6f627_one": "सभी संदेश दिखाएँ ({{count}})",
   "7dd6f627_other": "सभी संदेश दिखाएँ ({{count}})",

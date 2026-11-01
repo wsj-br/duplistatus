@@ -63,7 +63,18 @@ Wenn Benachrichtigungen nicht gesendet oder empfangen werden:
 
 Wenn Sicherungsversionen nicht im Dashboard oder auf der Detailseite angezeigt werden:
 
-- **Duplicati-Konfiguration prüfen**: Stellen Sie sicher, dass `send-http-log-level=Information` und `send-http-max-log-lines=500` in den erweiterten Optionen von Duplicati konfiguriert sind. Duplicati behält die ersten N Protokollzeilen bei. Wenn die Versionsliste weiterhin fehlt, erhöhen Sie das Limit oder verwenden Sie `0`, wenn Sie keine Berichte an die Duplicati-Überwachung senden. Die Anzahl der **Versionen** kann weiterhin aus den JSON-Statistiken erscheinen, wenn die detaillierte Liste fehlt. Siehe [Protokollzeilen und verfügbare Versionen](../installation/duplicati-server-configuration.md#log-lines-and-available-versions).
+- **Duplicati-Konfiguration prüfen**: Stellen Sie sicher, dass `send-http-log-level=Information` und `send-http-max-log-lines=500` in den erweiterten Optionen der Duplicati-Konfiguration konfiguriert sind. Duplicati behält die ersten N Protokollzeilen bei. Wenn die Liste der Versionen weiterhin fehlt, erhöhen Sie das Limit oder verwenden Sie `0`, wenn Sie nicht gleichzeitig Berichte an Duplicati Monitoring senden. Die **Anzahl** der Versionen kann weiterhin aus den JSON Statistiken hervorgehen, wenn die detaillierte Liste fehlt. Siehe [Log lines and available versions](../installation/duplicati-server-configuration.md#log-lines-and-available-versions).
+- **Duplicati 2.4.1.0 und höher**: Wenn die Anzahl vorhanden ist und die Liste der Zeitstempel leer ist, wurden die Aufbewahrungszeilen möglicherweise durch `-redacted-` ersetzt. Siehe [Version list empty after Duplicati 2.4.1.0](#version-list-empty-after-duplicati-2410).
+
+### Version list empty after Duplicati 2.4.1.0 {/* #version-list-empty-after-duplicati-2410 */}
+
+Wenn die Anzahl der verfügbaren Versionen immer noch angezeigt wird, die Zeitstempelliste jedoch nach dem Upgrade von Duplicati auf 2.4.1.0 oder höher leer ist:
+
+- Öffnen Sie ein aktuelles Sicherungsprotokoll in **duplistatus**. Die Zeilen `Backups to consider:`, `Time frames and intervals pairs:` und `All backups to delete:` zeigen `-redacted-` anstelle von Daten.
+- Öffnen Sie auf diesem duplicati Server **Einstellungen → Standardoptionen** (oder die erweiterten Optionen der Sicherung) und fügen Sie `--allow-paths-in-log-messages=true` hinzu. Lassen Sie `--reduced-reporting` nicht gesetzt, da diese Option den Nachrichtentext entfernt.
+- Führen Sie die Sicherung erneut aus. Der Nächste Bericht füllt die Liste. Bereits gespeicherte Berichte bleiben geschwärzt.
+
+Diese Option sendet auch lokale Dateipfade aus Warnungen und Fehlern im HTTP-Bericht. Siehe [Log-Zeilen und Verfügbare Versionen](../installation/duplicati-server-configuration.md#log-lines-and-available-versions).
 
 ### Überfällige Sicherungswarnungen funktionieren nicht {/* #overdue-backup-alerts-not-working */}
 

@@ -175,15 +175,14 @@ Caddy 在首次提供站点服务时获取证书，并在到期前续订。
 
 ### 启用 HTTPS 后 {/* #after-enabling-https */}
 
+:::info[重要]
+请更新您的 duplicati 服务器配置以使用 HTTPS URL：
+
 ```bash
 --send-http-json-urls=https://your-domain.com/api/upload
 ```
 
-:::info[重要]
-更新您的 Duplicati 服务器配置以使用 HTTPS URL：
-
-
-如果需要 API 密钥，请附加 `?api_key=YOUR_UPLOAD_KEY`。对于早于 2.0.9.106 版本的 Duplicati，请一起使用 `--send-http-url=https://your-domain.com/api/upload` 和 `--send-http-result-output-format=Json`。参见[Duplicati 服务器配置](duplicati-server-configuration.md)。
+如果需要 API 密钥，请附加 `?api_key=YOUR_UPLOAD_KEY`。在低于 2.0.9.106 版本的 duplicati 上，请将 `--send-http-url=https://your-domain.com/api/upload` 与 `--send-http-result-output-format=Json` 一起使用。请参阅 [duplicati 服务器配置](duplicati-server-configuration.md)。
 :::
 
 :::tip

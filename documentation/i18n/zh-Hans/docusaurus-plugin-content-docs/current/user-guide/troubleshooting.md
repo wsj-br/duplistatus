@@ -63,7 +63,18 @@
 
 如果备份版本未在仪表板或详细信息页面上显示：
 
-- **检查 Duplicati 配置**：确保在 Duplicati 的高级选项中配置了 `send-http-log-level=Information` 和 `send-http-max-log-lines=500`。Duplicati 保留前 N 行日志。如果版本列表仍然缺失，请提高上限或在不同时向 Duplicati 监控发送报告时使用 `0`。即使详细列表缺失，版本 **计数** 仍可从 JSON 统计信息中显示。请参阅 [日志行和可用版本](../installation/duplicati-server-configuration.md#log-lines-and-available-versions)。
+- **检查 Duplicati 配置**：确保 `send-http-log-level=Information` 和 `send-http-max-log-lines=500` 已在 duplicati 的高级选项中配置。duplicati 会保留前 N 行日志。如果仍然缺少可用版本列表，请提高上限或在不向 duplicati 监控发送报告时使用 `0`。当详细列表缺失时，版本 **计数** 仍可能通过 JSON 统计信息显示。请参阅 [Log lines and available versions](../installation/duplicati-server-configuration.md#log-lines-and-available-versions)。
+- **duplicati 2.4.1.0 及更高版本**：如果存在计数但时间戳列表为空，则保留行可能已被 `-redacted-` 替换。请参阅 [Version list empty after Duplicati 2.4.1.0](#version-list-empty-after-duplicati-2410)。
+
+### Version list empty after Duplicati 2.4.1.0 {/* #version-list-empty-after-duplicati-2410 */}
+
+如果将 duplicati 升级到 2.4.1.0 或更高版本后，可用版本计数仍然显示但时间戳列表为空：
+
+- 在 **duplistatus** 中打开最近的备份日志。`Backups to consider:`、`Time frames and intervals pairs:` 和 `All backups to delete:` 行显示 `-redacted-` 而不是日期。
+- 在该 duplicati 服务器上，打开 **设置 → 默认选项**（或备份的高级选项）并添加 `--allow-paths-in-log-messages=true`。请勿设置 `--reduced-reporting`，因为该选项会移除消息文本。
+- 再次运行备份。下一次报告将填充该列表。已存储的报告将保持脱敏状态。
+
+此选项还会从 HTTP 报告的警告和错误中发送本地文件路径。请参阅 [Log lines and available versions](../installation/duplicati-server-configuration.md#log-lines-and-available-versions)。
 
 ### 过期备份警报不工作 {/* #overdue-backup-alerts-not-working */}
 
